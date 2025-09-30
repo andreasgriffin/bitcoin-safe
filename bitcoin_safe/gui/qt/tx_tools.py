@@ -28,6 +28,7 @@
 
 import logging
 
+import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 
 from bitcoin_safe.cpfp_tools import CpfpTools
@@ -37,13 +38,7 @@ from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
 
 from ...psbt_util import FeeInfo
-from ...pythonbdk_types import (
-    FullTxDetail,
-    Recipient,
-    TransactionDetails,
-    _is_taproot_script,
-    get_prev_outpoints,
-)
+from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
 from ...signals import Signals
 from ...wallet import TxStatus, Wallet, get_tx_details, get_wallets
 from .util import Message
@@ -70,7 +65,7 @@ class TxTools:
     @classmethod
     def can_rbf_safely(
         cls,
-        tx_detail: FullTxDetail,
+        tx: bdk.Transaction,
         tx_status: TxStatus,
     ) -> bool:
         """Return True if the transaction can safely be replaced via RBF.
@@ -90,33 +85,19 @@ class TxTools:
             # prevents changing inputs
             return True
 
-        tx = tx_detail.tx.transaction
-
-        tx_inputs = tx.input()
-        if not tx_inputs:
-            return True
-
-        for prev_outpoint in get_prev_outpoints(tx):
-            prev_output = tx_detail.inputs.get(str(prev_outpoint))
-            if prev_output is None:
-                return False
-            if not _is_taproot_script(prev_output.txout.spk_bytes):
-                # Silent Payments require all inputs to be taproot
-                return True
-
         at_least_1_taproot_output = any(
             _is_taproot_script(bytes(output.script_pubkey.to_bytes())) for output in tx.output()
         )
 
         if at_least_1_taproot_output and not tx.is_explicitly_rbf():
-            # this is the
+            # this could be a Silent Payment tx
             return False
 
         return True
 
     @classmethod
     def edit_tx(
-        cls, replace_tx: FullTxDetail | None, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals
+        cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals
     ):
         if not tx_status.can_edit():
             return
@@ -130,18 +111,18 @@ class TxTools:
         if not GENERAL_RBF_AVAILABLE and replace_tx:
             txinfos.utxos_read_only = True
             txinfos.recipient_read_only = True
-            txinfos.replace_tx = replace_tx.tx.transaction
+            txinfos.replace_tx = replace_tx.transaction
 
         txinfos.hide_UTXO_selection = False
         signals.open_tx_like.emit(txinfos)
 
     @classmethod
-    def rbf_tx(cls, replace_tx: FullTxDetail, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals):
+    def rbf_tx(cls, replace_tx: bdk.Transaction, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals):
         if not tx_status.can_rbf():
             return
 
         if not cls.can_rbf_safely(
-            tx_detail=replace_tx,
+            tx=replace_tx,
             tx_status=tx_status,
         ):
             # cannot be done safely
@@ -150,7 +131,7 @@ class TxTools:
         if not GENERAL_RBF_AVAILABLE and replace_tx:
             txinfos.utxos_read_only = True
             txinfos.recipient_read_only = True
-            txinfos.replace_tx = replace_tx.tx.transaction
+            txinfos.replace_tx = replace_tx
 
         txinfos.hide_UTXO_selection = False
         signals.open_tx_like.emit(txinfos)

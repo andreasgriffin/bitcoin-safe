@@ -99,7 +99,6 @@ from ....wallet import (
     TxConfirmationStatus,
     TxStatus,
     Wallet,
-    get_fulltxdetail,
     get_tx_details,
     get_wallets,
 )
@@ -606,7 +605,7 @@ class UITx_Viewer(UITx_Base):
             txinfos.fee_rate = new_fee_rate
 
         txid = tx.compute_txid()
-        tx_details, wallet = get_fulltxdetail(txid=txid, signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=txid, signals=self.signals)
 
         if not wallet and txinfos.main_wallet_id:
             wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
@@ -652,7 +651,9 @@ class UITx_Viewer(UITx_Base):
             return
 
         tx_status = TxStatus.from_wallet(txid=txid, wallet=wallet)
-        TxTools.rbf_tx(replace_tx=tx_details, txinfos=txinfos, tx_status=tx_status, signals=self.signals)
+        TxTools.rbf_tx(
+            replace_tx=tx_details.transaction, txinfos=txinfos, tx_status=tx_status, signals=self.signals
+        )
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
@@ -1186,12 +1187,12 @@ class UITx_Viewer(UITx_Base):
         # no Fee is unknown if no fee_info was given
         self.column_fee.setVisible(fee_info is not None)
         if fee_info is not None:
-            tx_details, wallet = get_fulltxdetail(txid=self.txid(), signals=self.signals)
+            tx_details, wallet = get_tx_details(txid=self.txid(), signals=self.signals)
             self.column_fee.fee_group.set_fee_infos(
                 fee_info=fee_info,
                 tx_status=tx_status,
                 can_rbf_safely=bool(
-                    tx_details and TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status)
+                    tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status)
                 ),
             )
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
@@ -1300,7 +1301,7 @@ class UITx_Viewer(UITx_Base):
         self.tx_singning_steps_container.setVisible(is_psbt)
 
         tx_status = self.get_tx_status(chain_position=chain_position)
-        tx_details, wallet = get_fulltxdetail(txid=self.txid(), signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=self.txid(), signals=self.signals)
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
         logger.debug(
@@ -1313,7 +1314,7 @@ class UITx_Viewer(UITx_Base):
 
         self.button_edit_tx.setVisible(TxTools.can_edit_safely(tx_status=tx_status))
         self.button_rbf.setVisible(
-            bool(tx_details and TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status))
+            bool(tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status))
         )
         self.button_cpfp_tx.setVisible(TxTools.can_cpfp(tx_status=tx_status, signals=self.signals))
         self.set_next_prev_button_enabledness()

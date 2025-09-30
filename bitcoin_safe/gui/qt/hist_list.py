@@ -77,7 +77,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import FullTxDetail, Recipient, TransactionDetails
+from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -598,13 +598,13 @@ class HistList(MyTreeView[str]):
             txid = txids[0]
 
             wallet = self.get_wallet(txid=txid)
-            if wallet and (tx_details := wallet.get_dict_fulltxdetail().get(txid)):
+            if wallet and (tx_details := wallet.get_tx(txid)):
                 tx_status = TxStatus.from_wallet(txid, wallet)
                 menu.addSeparator()
                 if TxTools.can_cancel(tx_status=tx_status):
                     menu.add_action(
                         button_info(ButtonInfoType.cancel_with_rbf).text,
-                        partial(self.cancel_tx, tx_details.tx),
+                        partial(self.cancel_tx, tx_details),
                         icon=button_info(ButtonInfoType.cancel_with_rbf).icon,
                     )
                 if TxTools.can_edit_safely(tx_status=tx_status):
@@ -613,7 +613,7 @@ class HistList(MyTreeView[str]):
                         partial(self.edit_tx, tx_details, tx_status),
                         icon=button_info(ButtonInfoType.rbf).icon,
                     )
-                if TxTools.can_rbf_safely(tx_detail=tx_details, tx_status=tx_status):
+                if TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status):
                     menu.add_action(
                         button_info(ButtonInfoType.rbf).text,
                         partial(self.rbf_tx, tx_details, tx_status),
@@ -623,7 +623,7 @@ class HistList(MyTreeView[str]):
                 if TxTools.can_cpfp(wallet=wallet, tx_status=tx_status, signals=self.signals):
                     menu.add_action(
                         button_info(ButtonInfoType.cpfp).text,
-                        partial(self.cpfp_tx, tx_details.tx),
+                        partial(self.cpfp_tx, tx_details),
                         icon=button_info(ButtonInfoType.cpfp).icon,
                     )
 
@@ -668,25 +668,27 @@ class HistList(MyTreeView[str]):
 
     def rbf_tx(
         self,
-        tx_details: FullTxDetail,
+        tx_details: TransactionDetails,
         tx_status: TxStatus,
     ) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
-            tx_details.tx.transaction,
-            FeeInfo.from_txdetails(tx_details.tx),
+            tx_details.transaction,
+            FeeInfo.from_txdetails(tx_details),
             self.config.network,
             get_wallets(self.signals),
         )
-        TxTools.rbf_tx(replace_tx=tx_details, tx_status=tx_status, txinfos=txinfos, signals=self.signals)
+        TxTools.rbf_tx(
+            replace_tx=tx_details.transaction, tx_status=tx_status, txinfos=txinfos, signals=self.signals
+        )
 
     def edit_tx(
         self,
-        tx_details: FullTxDetail,
+        tx_details: TransactionDetails,
         tx_status: TxStatus,
     ) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
-            tx_details.tx.transaction,
-            FeeInfo.from_txdetails(tx_details.tx),
+            tx_details.transaction,
+            FeeInfo.from_txdetails(tx_details),
             self.config.network,
             get_wallets(self.signals),
         )
