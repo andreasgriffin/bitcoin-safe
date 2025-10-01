@@ -26,17 +26,16 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-import enum
 import logging
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
+from bitcoin_safe.client import SyncStatus
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -49,21 +48,13 @@ from .sidebar.sidebar_tree import SidebarNode
 logger = logging.getLogger(__name__)
 
 
-class SyncStatus(enum.Enum):
-    unknown = enum.auto()
-    unsynced = enum.auto()
-    syncing = enum.auto()
-    synced = enum.auto()
-    error = enum.auto()
-
-
 class WrapperQWidget(QWidget):
     def __init__(self, parent=None, **kwargs) -> None:
         super().__init__(parent, **kwargs)
 
 
 class QtWalletBase(WrapperQWidget):
-    signal_after_sync: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
+    signal_after_sync = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))  # SyncStatus
     wizard: WizardBase | None = None
     wallet_descriptor_ui: DescriptorUI
 

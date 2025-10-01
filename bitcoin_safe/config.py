@@ -35,7 +35,6 @@ from typing import Any, Dict, List
 
 import appdirs
 import bdkpython as bdk
-from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from packaging import version
 from PyQt6.QtCore import QCoreApplication
 
@@ -63,7 +62,7 @@ RECENT_WALLET_MAXLEN = 15
 
 
 class UserConfig(BaseSaveableClass):
-    known_classes = {**BaseSaveableClass.known_classes, "NetworkConfigs": NetworkConfigs}
+    known_classes = {**BaseSaveableClass.known_classes, NetworkConfigs.__name__: NetworkConfigs}
     VERSION = "0.2.3"
 
     app_name = "bitcoin_safe"
@@ -86,7 +85,6 @@ class UserConfig(BaseSaveableClass):
         self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET4
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
-        self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.recently_open_wallets: Dict[bdk.Network, UniqueDeque[str]] = {
             network: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network
@@ -127,7 +125,6 @@ class UserConfig(BaseSaveableClass):
         d.update(self.__dict__.copy())
 
         # for better portability between computers we make this relative to the home folder
-        d["data_dir"] = str(path_to_rel_home_path(self.data_dir))
         d["rates"] = self.rates
 
         d["recently_open_wallets"] = {
@@ -147,7 +144,6 @@ class UserConfig(BaseSaveableClass):
             if k in bdk.Network._member_map_
         }
         # for better portability between computers the saved string is relative to the home folder
-        dct["data_dir"] = rel_home_path_to_abs_path(dct["data_dir"])
         # dct["config_dir"] = rel_home_path_to_abs_path(dct["config_dir"])
         # dct["config_file"] = rel_home_path_to_abs_path(dct["config_file"])
 

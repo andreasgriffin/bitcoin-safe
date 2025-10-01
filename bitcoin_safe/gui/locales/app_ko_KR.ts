@@ -541,6 +541,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>노드에 연결 중</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>노드 검색 중</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>필터 동기화됨</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>헤더 동기화됨</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>새 체인 높이 {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>필터 헤더 동기화됨</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>동기화 중</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>트랜잭션 동기화됨</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1726,6 +1768,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>이미 사용된 주소  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>모든 파일 (*);;PSBT (*.psbt);;거래 (*.tx)</translation>
 		</message>
@@ -1743,6 +1790,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Close all transactions</source>
 			<translation>모든 트랜잭션 닫기  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>그래도 닫기</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1813,6 +1865,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>&amp;텍스트에서  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>트레이로 숨기기</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1933,6 +1990,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>선택된 파일: {file_path}  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>표시/숨기기</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2130,8 +2192,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>연결이 많을수록 프라이버시는 향상되지만 동기화 속도는 느려집니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>네트워크 설정  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p 연결 수:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2605,6 +2677,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>경과 시간: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>진행</translation>
 		</message>
@@ -2690,6 +2767,11 @@ The serializations of both differ, which could be caused by different collected 
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
 			<translation>지갑 '{wallet}'에 {number}개의 새 트랜잭션이 있습니다: {txs}  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - 완료 {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3267,11 +3349,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
-			<source>Install udev rules</source>
-			<translation>udev 규칙 설치</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
 			<source>PSBT</source>
 			<translation>PSBT  </translation>
 		</message>
@@ -3572,16 +3649,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB 장치를 찾을 수 없습니다. 누락된 udev 규칙 때문일 수 있습니다.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>장치가 선택되지 않음  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>udev 규칙을 설치하려면 다음 스크립트를 터미널에 복사하여 붙여넣으세요:</translation>
 		</message>
@@ -3604,11 +3671,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>컴퓨터 재시작  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB 장치  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4027,6 +4089,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>장치가 선택되지 않음  </translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>적합한 터미널 에뮬레이터를 찾을 수 없음.  </translation>
 		</message>
@@ -4319,6 +4386,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>"bitcoind -chain=regtest"로 bitcoind를 실행하세요  </translation>
 		</message>
@@ -4352,11 +4424,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>무료 테스트 코인을 받을 수 있는 {faucet}이 있습니다.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>이것은 비트코인 네트워크에 빠르고 비공개적으로 연결하는 방법입니다.  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>

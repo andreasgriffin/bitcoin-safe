@@ -75,7 +75,7 @@ class LabelType(enum.Enum):
 
 class Label(SaveAllClass):
     VERSION = "0.0.3"
-    known_classes = {**BaseSaveableClass.known_classes, "LabelType": LabelType}
+    known_classes = {**BaseSaveableClass.known_classes, LabelType.__name__: LabelType}
     bip329_keys = ["type", "ref", "label"]
     separator = " #"
 
@@ -202,7 +202,7 @@ class Label(SaveAllClass):
 
 class Labels(BaseSaveableClass):
     VERSION = "0.1.0"
-    known_classes = {**BaseSaveableClass.known_classes, "Label": Label}
+    known_classes = {**BaseSaveableClass.known_classes, Label.__name__: Label}
 
     def __init__(
         self,

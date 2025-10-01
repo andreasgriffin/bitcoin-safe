@@ -541,6 +541,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>नोड्स से कनेक्ट हो रहा है</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>नोड्स खोजे जा रहे हैं</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>फ़िल्टर सिंक हो गए</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>हेडर सिंक हो गए</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>चेन की नई ऊँचाई {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>फ़िल्टर हेडर सिंक हो गए</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>सिंक हो रहा है</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>लेन-देन सिंक हो गए</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1726,6 +1768,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>पता पहले से इस्तेमाल किया गया है</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>सभी फ़ाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
 		</message>
@@ -1743,6 +1790,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Close all transactions</source>
 			<translation>सभी लेन-देन बंद करें  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>फिर भी बंद करें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1813,6 +1865,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>टेक्स्ट से</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>ट्रे में छिपाएँ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1933,6 +1990,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>चयनित फ़ाइल: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>दिखाएँ/छिपाएँ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2133,8 +2195,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>अधिक कनेक्शन गोपनीयता बढ़ाते हैं, लेकिन सिंकिंग गति घटाते हैं।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>नेटवर्क सेटिंग्स</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p कनेक्शनों की संख्या:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2608,6 +2680,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>बीता समय: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>आगे बढ़ें</translation>
 		</message>
@@ -2693,6 +2770,11 @@ The serializations of both differ, which could be caused by different collected 
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
 			<translation>वॉलेट '{wallet}' में {number} नए लेनदेन हैं: {txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - पूर्ण {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3270,11 +3352,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
-			<source>Install udev rules</source>
-			<translation>udev नियम स्थापित करें</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3575,16 +3652,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>कोई USB डिवाइस नहीं मिला। यह udev नियमों के गायब होने के कारण हो सकता है।</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>कोई उपकरण चयनित नहीं  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>कृपया udev नियम इंस्टॉल करने के लिए नीचे दिया गया स्क्रिप्ट टर्मिनल में कॉपी और पेस्ट करें:</translation>
 		</message>
@@ -3607,11 +3674,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>कंप्यूटर पुनरारंभ करें  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB उपकरण  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4030,6 +4092,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>कोई उपकरण चयनित नहीं  </translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।  </translation>
 		</message>
@@ -4322,6 +4389,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>"bitcoind -chain=regtest" के साथ अपना bitcoind चलाएं</translation>
 		</message>
@@ -4355,11 +4427,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>मुफ्त टेस्ट कॉइन्स के लिए एक {faucet} है।</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

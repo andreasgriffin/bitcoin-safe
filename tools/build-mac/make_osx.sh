@@ -110,7 +110,10 @@ info "Using Poetry to install local project dependencies"
 # Optionally ensure Poetry does not create its own .venv:
 poetry config virtualenvs.create false
 # ...But we are already inside a venv, so Poetry *should* install into this environment:
-poetry install --with main,build_mac
+# run once; if it fails, run again; if that fails, exit 1
+poetry install --with main,build_mac \
+  || poetry install --with main,build_mac \
+  || { echo "poetry install failed twice"; exit 1; }
 
 # or, if you prefer an in-project .venv:
 # poetry config virtualenvs.in-project true

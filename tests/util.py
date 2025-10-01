@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Callable, List
+from typing import Callable, List, cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 
 class MySignalclass(QObject):
-    signal: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal = cast(TypedPyQtSignalNo, pyqtSignal())
 
 
 def chained_one_time_signal_connections(

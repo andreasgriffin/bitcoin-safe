@@ -33,7 +33,7 @@ import enum
 import logging
 from dataclasses import dataclass
 from math import ceil
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, cast
 
 import aiohttp
 import numpy as np
@@ -202,7 +202,7 @@ class BlockInfo:
 
 class MempoolManager(QObject):
 
-    signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_data_updated = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,
@@ -269,6 +269,7 @@ class MempoolManager(QObject):
 
     def close(self):
         self.loop_in_thread.stop()
+        logger.debug(f"{self.__class__.__name__} close")
 
     def set_data_from_mempoolspace(self, force=False) -> None:
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):

@@ -31,7 +31,6 @@ from pathlib import Path
 
 import bdkpython as bdk
 import pytest
-from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.pythonbdk_types import BlockchainType
@@ -64,7 +63,6 @@ def test_config010():
 
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.last_wallet_files == {"Network.REGTEST": [".config/bitcoin_safe/REGTEST/Coldcard.wallet"]}
-    assert config.data_dir == rel_home_path_to_abs_path(".local/share/bitcoin_safe")
 
     assert config
 

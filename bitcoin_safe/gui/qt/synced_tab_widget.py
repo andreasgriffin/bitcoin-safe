@@ -27,16 +27,19 @@
 # SOFTWARE.
 
 
-from typing import Dict
+import logging
+from typing import Dict, cast
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
+logger = logging.getLogger(__name__)
+
 
 class SignalEmitter(QObject):
-    change_tab: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    change_tab = cast(TypedPyQtSignal[int], pyqtSignal(int))
 
 
 class GroupSignalManager:

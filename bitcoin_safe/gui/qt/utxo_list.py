@@ -266,7 +266,9 @@ class UTXOList(MyTreeView[OutPoint]):
                     partial(self.signals.open_tx_like.emit, outpoints[0].txid),
                 )
 
-            txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
+            txid_URL = block_explorer_URL(
+                self.config.network_config.mempool_url, "tx", str(outpoints[0].txid)
+            )
             if txid_URL:
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
@@ -326,7 +328,7 @@ class UTXOList(MyTreeView[OutPoint]):
         else:
             txout = self.txout_dict.get(str(outpoint))
             if txout:
-                satoshis = Satoshis(txout.value, self.config.network)
+                satoshis = Satoshis(txout.value.to_sat(), self.config.network)
                 address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
@@ -447,7 +449,7 @@ class UTXOList(MyTreeView[OutPoint]):
         outpoint = OutPoint.from_bdk(key)
         wallet, python_utxo, address, satoshis = self.get_wallet_address_satoshis(outpoint)
 
-        txdetails = wallet.get_tx(outpoint.txid) if wallet else None
+        txdetails = wallet.get_tx(str(outpoint.txid)) if wallet else None
         status = TxStatus.from_wallet(txdetails.txid, wallet) if txdetails and wallet else None
         sort_id = status.sort_id() if status else -1
 
@@ -475,7 +477,7 @@ class UTXOList(MyTreeView[OutPoint]):
             wallet_id = wallet.id if wallet and address and wallet.is_my_address(address) else ""
             items[self.Columns.WALLET_ID].setText(wallet_id)
             items[self.Columns.WALLET_ID].setData(wallet_id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-            txid = outpoint.txid
+            txid = str(outpoint.txid)
 
             category = wallet.labels.get_category(address) if wallet and address else ""
 

@@ -29,7 +29,7 @@
 
 import logging
 from functools import partial
-from typing import Callable, Optional
+from typing import Callable, Optional, cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -131,7 +131,7 @@ class DragAndDropTextEdit(AnalyzerTextEdit):
 
 
 class DragAndDropButtonEdit(ButtonEdit):
-    signal_drop_file: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_drop_file = cast(TypedPyQtSignal[str], pyqtSignal(str))
 
     def __init__(
         self,
@@ -164,7 +164,7 @@ class DragAndDropButtonEdit(ButtonEdit):
 
 
 class ImportDialog(QWidget):
-    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    aboutToClose = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     from PyQt6.QtWidgets import QApplication
 
     class My(QObject):
-        close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+        close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
 
     my = My()
 

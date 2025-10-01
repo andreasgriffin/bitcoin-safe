@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, cast
 
 from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 class OrderTrackingTabBar(QTabBar):
-    signal_new_tab_order: TypedPyQtSignal[List[int]] = pyqtSignal(list)  # type: ignore
+    signal_new_tab_order = cast(TypedPyQtSignal[List[int]], pyqtSignal(list))
 
     def __init__(self, parent=None):
         super().__init__(parent)

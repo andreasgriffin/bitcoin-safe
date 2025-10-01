@@ -56,7 +56,7 @@ import enum
 import logging
 from enum import IntEnum
 from functools import partial
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -210,7 +210,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class AddressList(MyTreeView[str]):
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
+    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
 
     class Columns(MyTreeView.BaseColumnsEnum):
         NUM_TXS = enum.auto()

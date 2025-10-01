@@ -541,6 +541,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>جارٍ الاتصال بالعُقد</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>جارٍ اكتشاف العُقد</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>تمت مزامنة عوامل التصفية</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>تمت مزامنة الرؤوس</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>ارتفاع السلسلة الجديد {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>تمت مزامنة رؤوس عوامل التصفية</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>جارٍ المزامنة</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>تمت مزامنة المعاملات</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1726,6 +1768,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>العنوان مستخدم بالفعل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
 		</message>
@@ -1743,6 +1790,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Close all transactions</source>
 			<translation>إغلاق جميع المعاملات  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>إغلاق على أي حال</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1813,6 +1865,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>من &amp;نص</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>إخفاء إلى علبة النظام</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1933,6 +1990,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>الملف المحدد: {مسار_الملف}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>إظهار/إخفاء</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2133,8 +2195,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>المزيد من الاتصالات يزيد الخصوصية لكنه يقلل سرعة المزامنة.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>إعدادات الشبكة</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>عدد اتصالات p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2608,6 +2680,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>الوقت المنقضي: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>المتابعة</translation>
 		</message>
@@ -2693,6 +2770,11 @@ The serializations of both differ, which could be caused by different collected 
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
 			<translation>{number} معاملات جديدة في المحفظة '{wallet}': {txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - اكتمل {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3270,11 +3352,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>ToolGui</name>
 		<message>
-			<source>Install udev rules</source>
-			<translation>ثبّت قواعد udev</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -3575,16 +3652,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>لم يتم العثور على أي أجهزة USB. قد يكون ذلك بسبب عدم وجود قواعد udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>لم يتم اختيار جهاز  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
 			<translation>يرجى نسخ ولصق السكربت التالي في الطرفية لتثبيت قواعد udev:</translation>
 		</message>
@@ -3607,11 +3674,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>إعادة تشغيل الكمبيوتر  </translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>أجهزة USB  </translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4030,6 +4092,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>لم يتم اختيار جهاز  </translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>لم يتم العثور على محاكي طرفية مناسب.  </translation>
 		</message>
@@ -4322,6 +4389,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>قم بتشغيل bitcoind الخاص بك باستخدام "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4355,11 +4427,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>هذه طريقة خاصة وسريعة للاتصال بشبكة البيتكوين.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

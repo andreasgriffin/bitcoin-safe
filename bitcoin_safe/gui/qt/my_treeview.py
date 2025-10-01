@@ -534,9 +534,9 @@ class DropRule(NamedTuple):
 
 
 class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
-    signal_selection_changed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_update: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_finished_update: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_selection_changed = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_update = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_finished_update = cast(TypedPyQtSignalNo, pyqtSignal())
 
     filter_columns: Iterable[int]
     column_alignments: Dict[int, Qt.AlignmentFlag] = {}

@@ -85,6 +85,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
+from .cbf_progress_bar import CBFProgressBar
 from .drag_info import AddressDragInfo
 from .my_treeview import (
     MyItemDataRole,
@@ -144,7 +145,7 @@ class HistList(MyTreeView[str]):
         **BaseSaveableClass.known_classes,
     }
 
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
+    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -661,7 +662,7 @@ class HistList(MyTreeView[str]):
         return None
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
-        wallet = self.get_wallet(txid=tx_details.transaction.compute_txid())
+        wallet = self.get_wallet(txid=str(tx_details.transaction.compute_txid()))
         if not wallet:
             return
         TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, signals=self.signals)
@@ -702,7 +703,7 @@ class HistList(MyTreeView[str]):
             get_wallets(self.signals),
         )
 
-        txid = tx_details.transaction.compute_txid()
+        txid = str(tx_details.transaction.compute_txid())
         wallet = self.get_wallet(txid=txid)
         if not wallet:
             Message(
@@ -810,6 +811,11 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
         self.sync_button.clicked.connect(self._on_sync_button_clicked)
         self.toolbar.insertWidget(0, self.sync_button)
+
+        self.cbf_progress_bar = CBFProgressBar(config=config, parent=self)
+        self.toolbar.insertWidget(1, self.cbf_progress_bar)
+
+        # signals
         self.hist_list.signals.language_switch.connect(self.updateUi)
         for wallet in self.hist_list.wallets:
             self.hist_list.signals.wallet_signals[wallet.id].updated.connect(self.update_with_filter)

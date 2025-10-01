@@ -106,11 +106,13 @@ from bitcoin_safe.logging_handlers import mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import P2pListenerType
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.p2p.p2p_client import ConnectionInfo, Peer
+from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+from bitcoin_safe.util import OptExcInfo
+from bitcoin_safe.util_os import show_file_in_explorer, webopen, xdg_open_file
 
 from ...config import UserConfig
 from ...fx import FX
@@ -590,12 +592,7 @@ class MainWindow(QMainWindow):
         self.p2p_listener: P2pListener | None = None
         if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
             return
-        initial_peer = (
-            Peer.parse(self.config.network_config.p2p_inital_url, network=self.config.network)
-            if self.config.network_config.p2p_inital_url
-            and self.config.network_config.p2p_listener_type == P2pListenerType.inital
-            else None
-        )
+        initial_peer = self.config.network_config.get_p2p_initial_peer()
         self.p2p_listener = P2pListener(
             network=self.config.network, discovered_peers=self.config.network_config.discovered_peers
         )
@@ -943,28 +940,17 @@ class MainWindow(QMainWindow):
         dialog = WalletIdDialog(Path(self.config.wallet_dir), prefilled=old_id)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             new_wallet_id = dialog.wallet_id
-            new_wallet_filename = dialog.filename
             logger.info(f"new wallet name: {new_wallet_id}")
         else:
             return None
 
-        # in the wallet
-        qt_wallet.wallet.set_wallet_id(new_wallet_id)
+        new_file_path = qt_wallet.change_wallet_id(new_wallet_id)
+        if not new_file_path:
+            logger.warning(f"Failed change_wallet_id")
+            return None
 
-        # tab text
-        node = self.tab_wallets.root.findNodeByTitle(old_id)
-        if node:
-            node.setTitle(new_wallet_id)
-
-        # save under new filename
-        old_filepath = qt_wallet.file_path
-        directory, old_filename = os.path.split(old_filepath)
-
-        new_file_path = os.path.join(directory, new_wallet_filename)
-
-        qt_wallet.move_wallet_file(new_file_path)
         self.save_qt_wallet(qt_wallet)
-        logger.info(f"Saved {old_filepath} under new name {qt_wallet.file_path}")
+        logger.info(f"Moved wallet to {qt_wallet.file_path}")
         self.set_title()
         return new_wallet_id
 
@@ -985,7 +971,7 @@ class MainWindow(QMainWindow):
         if last_qt_wallet_involved:
             last_qt_wallet_involved.hist_node.select()
             last_qt_wallet_involved.history_list.select_row_by_key(
-                transaction.compute_txid(), scroll_to_last=True
+                str(transaction.compute_txid()), scroll_to_last=True
             )
 
         # due to fulcrum delay,
@@ -1000,17 +986,79 @@ class MainWindow(QMainWindow):
             qt_wallet.sync()
 
     def _init_tray(self) -> None:
+
+        self._tray_visible_windows: List[QWidget] = []
+        self._tray_prev_active: QWidget | None = None
+
         self.tray = QSystemTrayIcon(svg_tools.get_QIcon("logo.svg"), self)
         self.tray.setToolTip("Bitcoin Safe")
 
         menu = Menu(self)
-        menu.add_action(text=self.tr("&Exit"), slot=self.close)
+
+        menu.add_action(text=self.tr("Show/Hide"), slot=self.tray_toggle_window_visibility)
+        menu.add_action(text=self.tr("&Exit"), slot=self.on_tray_close)
 
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(self.onTrayIconActivated)
 
         self.signals.notification.connect(self.show_message_as_tray_notification)
         self.tray.show()
+
+    def tray_toggle_window_visibility(self):
+        """Toggle between hidden-to-tray and visible window."""
+        # If no tray, just toggle show/minimize
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            if not self.isVisible() or (self.windowState() & Qt.WindowState.WindowMinimized):
+                self.show()
+                self.setWindowState(Qt.WindowState.WindowActive)
+                self.activateWindow()
+            else:
+                self.showMinimized()
+            return
+
+        if self.isHidden() or (self.windowState() & Qt.WindowState.WindowMinimized):
+            self.restore_from_tray()
+        else:
+            self.minimize_to_tray()
+
+    def minimize_to_tray(self):
+        # Remember which windows were actually visible, and the active one
+        self._tray_visible_windows = [w for w in QApplication.topLevelWidgets() if w.isVisible()]
+        self._tray_prev_active = QApplication.activeWindow()
+
+        # Hide them all (or showMinimized() if you prefer)
+        for w in self._tray_visible_windows:
+            w.hide()
+
+    def restore_from_tray(self):
+        # Bring back only what we hid before
+        if not self._tray_visible_windows:
+            # Fallback: at least restore self
+            self.show()
+            self.setWindowState(
+                (self.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
+            )
+            self.activateWindow()
+            self.raise_()
+            return
+
+        # Show all previously visible top-level windows
+        for w in self._tray_visible_windows:
+            # Ensure the window is shown and not flagged as minimized
+            w.show()
+            w.setWindowState(
+                (w.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
+            )
+
+        # Prefer to activate the window that had focus before minimizing
+        target = self._tray_prev_active or self._tray_visible_windows[0]
+        if target:
+            target.activateWindow()
+            target.raise_()
+
+        # Clear state for next time
+        self._tray_visible_windows = []
+        self._tray_prev_active = None
 
     def show_message_as_tray_notification(self, message: Message) -> None:
         icon, _ = message.get_icon_and_title()
@@ -1021,11 +1069,12 @@ class MainWindow(QMainWindow):
         self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon))
 
     def onTrayIconActivated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
-        # Attempts to bring the window to the foreground
-        self.raise_()
-        self.activateWindow()
-        # if reason == QSystemTrayIcon.ActivationReason.Trigger:
-        #     Message(self.tr("test"), no_show=True).emit_with(self.signals.notification)
+
+        if reason in (
+            QSystemTrayIcon.ActivationReason.Trigger,
+            QSystemTrayIcon.ActivationReason.DoubleClick,
+        ):
+            self.restore_from_tray()
 
     def open_settings(self) -> None:
         self.settings.show()
@@ -1116,7 +1165,7 @@ class MainWindow(QMainWindow):
 
         for qt_wallet in self.qt_wallets.values():
             for tx in txs:
-                txid = tx.compute_txid()
+                txid = str(tx.compute_txid())
                 if qt_wallet.wallet.get_tx(txid=txid):
                     self.tab_wallets.setCurrentWidget(qt_wallet)
                     return
@@ -1281,7 +1330,7 @@ class MainWindow(QMainWindow):
 
         if isinstance(txlike, bdk.Transaction):
             # try to get all details from wallets
-            tx_details = self.fetch_txdetails(txlike.compute_txid())
+            tx_details = self.fetch_txdetails(str(txlike.compute_txid()))
             if tx_details and are_txs_identical(tx_details.transaction, txlike):
                 txlike = tx_details
 
@@ -1300,7 +1349,7 @@ class MainWindow(QMainWindow):
             return None
 
         data = Data.from_tx(tx, network=self.config.network)
-        existing_tx_viewer = self.get_tx_viewer(txid=tx.compute_txid())
+        existing_tx_viewer = self.get_tx_viewer(txid=str(tx.compute_txid()))
 
         # check if the same tab with exactly the same data is open already
         if existing_tx_viewer:
@@ -1435,7 +1484,7 @@ class MainWindow(QMainWindow):
             logger.warning(f"wrong datatype {type(data.data)=}")
             return None
 
-        existing_tx_viewer = self.get_tx_viewer(txid=data.data.extract_tx().compute_txid())
+        existing_tx_viewer = self.get_tx_viewer(txid=str(data.data.extract_tx().compute_txid()))
         if existing_tx_viewer:
             # if the tab_data is a tx, then just dismiss the psbt (a tx is better than a psbt)
             if existing_tx_viewer.data.data_type == DataType.Tx:
@@ -1530,7 +1579,7 @@ class MainWindow(QMainWindow):
             )
             return None
 
-        def try_load_without_error(password: str | None) -> QTWallet | Exception:
+        def try_load_without_error(password: str | None) -> QTWallet | Tuple[Exception, OptExcInfo]:
             try:
                 return QTWallet.from_file(
                     file_path=file_path,
@@ -1541,7 +1590,7 @@ class MainWindow(QMainWindow):
                     fx=self.fx,
                 )
             except Exception as e:
-                return e
+                return e, sys.exc_info()
 
         def try_load(file_path: str) -> Tuple[QTWallet | None, str | None]:
             password = None
@@ -1567,11 +1616,10 @@ class MainWindow(QMainWindow):
             result = try_load_without_error(password=password)
             if isinstance(result, QTWallet):
                 return result, password
-            elif isinstance(result, Exception):
-                e = result
-                logger.debug(f"{self.__class__.__name__}: {e}")
+            elif isinstance(result, tuple) and isinstance(result[0], Exception):
+                e, exc_info = result
                 # the file could also be corrupted, but the "wrong password" is by far the likliest
-                caught_exception_message(e, "Wrong password. Wallet could not be loaded.", log_traceback=True)
+                caught_exception_message(e, "Wrong password. Wallet could not be loaded.", exc_info=exc_info)
                 QTWallet.remove_lockfile(Path(file_path))
                 return None, password
             return None, password  # type: ignore[unreachable]
@@ -1641,8 +1689,23 @@ class MainWindow(QMainWindow):
     def create_qtwallet_from_protowallet(
         self, protowallet: ProtoWallet, tutorial_index: int | None
     ) -> QTWallet:
+        is_new_wallet = False
+        if self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
+            answer = question_dialog(
+                text=self.tr("Was this wallet ever used before?"),
+                true_button=self.tr("Yes, scan for transactions"),
+                false_button=self.tr("Don't scan"),
+            )
+            if answer is False:
+                is_new_wallet = True
+            else:
+                is_new_wallet = False
+
         wallet = Wallet.from_protowallet(
-            protowallet, self.config, default_category=CategoryCore.get_default_categories()[0]
+            protowallet,
+            self.config,
+            default_category=CategoryCore.get_default_categories()[0],
+            is_new_wallet=is_new_wallet,
         )
         file_path = None
         password = None
@@ -1847,6 +1910,8 @@ class MainWindow(QMainWindow):
 
         qt_wallet.password = password
         if file_path:
+            # very important! it saves the (possibly) new location into the qtwallet, such that
+            # it can save exactly there again
             qt_wallet.file_path = file_path
 
         qt_wallet.tabs.setIcon(svg_tools.get_QIcon("status_waiting.svg"))
@@ -1875,6 +1940,8 @@ class MainWindow(QMainWindow):
         self.language_chooser.add_signal_language_switch(language_switch)
         self.signals.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
         self.signals.event_wallet_tab_added.emit()
+
+        self.p2p_listening_update_lists(UpdateFilter())
 
         # this is a
         self.last_qtwallet = qt_wallet
@@ -1975,6 +2042,7 @@ class MainWindow(QMainWindow):
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
         self.event_wallet_tab_closed()
+        self.p2p_listening_update_lists(UpdateFilter())
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         self.config.add_recently_open_wallet(file_path)
@@ -1992,12 +2060,30 @@ class MainWindow(QMainWindow):
             return
         tab_data = node.data
         if isinstance(tab_data, QTWallet):
-            if not question_dialog(
-                self.tr("Close wallet {id}?").format(id=tab_data.wallet.id),
-                self.tr("Close wallet"),
-                true_button=self.tr("Close"),
-            ):
-                return
+
+            if tab_data.is_in_cbf_ibd():
+                res = question_dialog(
+                    text=self.tr(
+                        f"This wallet is still syncing and syncing would need to start from scratch if you close it.\nDo you want to keep the wallet open?",
+                    ),
+                    title=self.tr("Wallet syncing"),
+                    true_button=self.tr("Keep open"),
+                    false_button=self.tr("Close anyway"),
+                )
+                if res is None:
+                    return
+                elif res is True:
+                    return
+                elif res is False:
+                    pass
+            else:
+                if not question_dialog(
+                    self.tr("Close wallet {id}?").format(id=tab_data.wallet.id),
+                    self.tr("Close wallet"),
+                    true_button=self.tr("Close"),
+                ):
+                    return
+
             logger.info("Closing wallet {id}".format(id=tab_data.wallet.id))
             self.save_qt_wallet(tab_data)
             self._remove_qt_wallet(tab_data)
@@ -2034,7 +2120,43 @@ class MainWindow(QMainWindow):
         if qt_wallet:
             qt_wallet.sync()
 
+    def get_qt_wallets_in_cbf_ibd(self) -> List[QTWallet]:
+        qt_wallets: List[QTWallet] = []
+        for qt_wallet in self.qt_wallets.values():
+            if qt_wallet.is_in_cbf_ibd():
+                qt_wallets.append(qt_wallet)
+        return qt_wallets
+
+    def on_tray_close(self):
+        if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
+            # if i close it via the tray (hidden), then it shouldnt ask this question
+            if self.ask_to_minimize_only_because_cbf_sync():
+                self.minimize_to_tray()
+                return
+        self.close()
+
+    def ask_to_minimize_only_because_cbf_sync(self) -> bool:
+        res = question_dialog(
+            text=self.tr(
+                f"Wallets are still syncing and syncing would need to start from scratch if you close the app.\nDo you want to hide to tray instead?",
+            ),
+            title=self.tr("Wallets still syncing"),
+            true_button=self.tr("Hide to tray"),
+            false_button=self.tr("Close anyway"),
+        )
+        return bool(res)
+
     def closeEvent(self, a0: Optional[QCloseEvent]) -> None:
+        if not a0:
+            return
+        if a0.spontaneous() and not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
+            # event.spontaneous() == True → originated from the window system (user click, Alt+F4, OS session end).
+            # if i close it via the tray (hidden), then it shouldnt ask this question
+            if self.ask_to_minimize_only_because_cbf_sync():
+                a0.ignore()
+                self.minimize_to_tray()
+                return
+
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
@@ -2068,6 +2190,7 @@ class MainWindow(QMainWindow):
         logger.info(f"Finished close handling of {self.__class__.__name__}")
         super().closeEvent(a0)
         QApplication.closeAllWindows()
+        QCoreApplication.quit()
 
     def restart(self, new_startup_network: bdk.Network | None = None) -> None:
         """

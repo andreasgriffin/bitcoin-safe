@@ -542,6 +542,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Подключение к узлам</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Поиск узлов</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Фильтры синхронизированы</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Заголовки синхронизированы</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Новая высота цепочки {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Заголовки фильтров синхронизированы</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>Синхронизация</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>Транзакции синхронизированы</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -1727,6 +1769,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Address Already Used</source>
+			<translation>Адрес уже использован</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
 		</message>
@@ -1744,6 +1791,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Close all transactions</source>
 			<translation>Закрыть все транзакции</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Close anyway</source>
+			<translation>Всё равно закрыть</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1814,6 +1866,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Из &amp;текста</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Свернуть в трей</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1934,6 +1991,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Selected file: {file_path}</source>
 			<translation>Выбранный файл: {file_path}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Показать/Скрыть</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2134,8 +2196,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Большее число подключений повышает приватность, но снижает скорость синхронизации.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Настройки сети</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>Количество p2p-подключений:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2609,6 +2681,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Прошло времени: {passed_time}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Продолжить</translation>
 		</message>
@@ -2694,6 +2771,11 @@ The serializations of both differ, which could be caused by different collected 
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
 			<translation>{number} новых транзакций в кошельке '{wallet}': {txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Завершено {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -3269,11 +3351,6 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Get xpubs</source>
 			<translation>Получить xpubs</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Install udev rules</source>
-			<translation>Установить правила udev</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4035,6 +4112,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
+			<source>No device selected</source>
+			<translation>Не выбрано устройство  </translation>
+		</message>
+		<name>bitcoin_usb</name>
+		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Не найден подходящий эмулятор терминала.</translation>
 		</message>
@@ -4327,6 +4409,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation/>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>Запустите ваш bitcoind с "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4360,11 +4447,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>Есть {faucet} для получения бесплатных тестовых монет.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>Это приватный и быстрый способ подключения к биткойн-сети.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

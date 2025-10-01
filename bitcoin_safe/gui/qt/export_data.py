@@ -64,7 +64,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.wallet import filename_clean
+from bitcoin_safe.util import filename_clean
 
 from ...hardware_signers import (
     DescriptorExportType,
@@ -114,12 +114,12 @@ def get_txid(data: Data) -> str | None:
         if not isinstance(data.data, bdk.Psbt):
             logger.error(f"data is not of type bdk.Psbt")
             return None
-        return data.data.extract_tx().compute_txid()
+        return str(data.data.extract_tx().compute_txid())
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
             logger.error(f"data is not of type bdk.Transaction")
             return None
-        return data.data.compute_txid()
+        return str(data.data.compute_txid())
     return None
 
 

@@ -54,6 +54,32 @@ def is_address(a: str, network: bdk.Network) -> bool:
     return True
 
 
+class IpAddress(bdk.IpAddress):
+    @classmethod
+    def from_host(cls, host: str):
+        try:
+            a1, a2, a3, a4 = host.split(".")
+            return cls.from_ipv4(int(a1), int(a2), int(a3), int(a4))
+        except:
+            pass
+
+        try:
+            a1, a2, a3, a4, a5, a6, a7, a8 = host.split(":")
+            return cls.from_ipv6(
+                int(a1),
+                int(a2),
+                int(a3),
+                int(a4),
+                int(a5),
+                int(a6),
+                int(a7),
+                int(a8),
+            )
+        except:
+            pass
+        raise Exception(f"{host=} could not be converted to {cls}")
+
+
 @dataclass
 class Recipient:
     address: str
@@ -68,7 +94,7 @@ class Recipient:
 class OutPoint(bdk.OutPoint):
 
     def __key__(self) -> tuple[str, int]:
-        return (self.txid, self.vout)
+        return (str(self.txid), self.vout)
 
     def __hash__(self) -> int:
         "Necessary for the caching"
@@ -105,7 +131,7 @@ class OutPoint(bdk.OutPoint):
         if isinstance(outpoint_str, OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
-        return OutPoint(txid=txid, vout=int(vout))
+        return OutPoint(txid=bdk.Txid.from_string(txid), vout=int(vout))
 
 
 def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
@@ -128,7 +154,7 @@ class TxOut(bdk.TxOut):
 
     def __key__(self) -> tuple[str, int]:
         # use cached hex + value
-        return (self.spk_hex, self.value)
+        return (self.spk_hex, self.value.to_sat())
 
     def __hash__(self) -> int:
         # hash on bytes (fast) + value
@@ -140,7 +166,7 @@ class TxOut(bdk.TxOut):
             return h
 
     def seralized_tuple(self) -> tuple[str, int]:
-        return (self.spk_hex, self.value)
+        return (self.spk_hex, self.value.to_sat())
 
     @lru_cache(maxsize=200_000)
     def __str__(self) -> str:  # type: ignore
@@ -151,7 +177,9 @@ class TxOut(bdk.TxOut):
         return f"{self.__class__.__name__}({self.__key__()})"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, TxOut) and (self.value == other.value and self.spk_bytes == other.spk_bytes)
+        return isinstance(other, TxOut) and (
+            self.value.to_sat() == other.value.to_sat() and self.spk_bytes == other.spk_bytes
+        )
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
@@ -162,7 +190,9 @@ class TxOut(bdk.TxOut):
     @classmethod
     def from_seralized_tuple(cls, seralized_tuple: Tuple[str, int]) -> "TxOut":
         script_pubkey, value = seralized_tuple
-        return TxOut(script_pubkey=bdk.Script(list(hex_to_serialized(script_pubkey))), value=(value))
+        return TxOut(
+            script_pubkey=bdk.Script(hex_to_serialized(script_pubkey)), value=bdk.Amount.from_sat(value)
+        )
 
 
 @dataclass
@@ -200,7 +230,7 @@ class PythonUtxo(BaseSaveableClass):
 
     @cached_property
     def value(self):
-        return self.txout.value
+        return self.txout.value.to_sat()
 
 
 def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
@@ -281,8 +311,8 @@ class FullTxDetail:
                 if not tx.transaction.is_coinbase():
                     logger.error(f"Could not calculate the address of {this_txout}. This should not happen.")
                 continue
-            out_point = OutPoint(txid=txid, vout=vout)
-            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=this_txout)
+            out_point = OutPoint(txid=bdk.Txid.from_string(txid), vout=vout)
+            python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=TxOut.from_bdk(this_txout))
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
         return res
@@ -293,12 +323,13 @@ class FullTxDetail:
     ) -> None:
         for prev_outpoint in get_prev_outpoints(self.tx.transaction):
             prev_outpoint_str = str(prev_outpoint)
+            prevout_txid = str(prev_outpoint.txid)
 
             # check if I have the prev_outpoint fulltxdetail
-            if prev_outpoint.txid not in lookup_dict_fulltxdetail:
+            if prevout_txid not in lookup_dict_fulltxdetail:
                 self.inputs[prev_outpoint_str] = None
                 continue
-            fulltxdetail = lookup_dict_fulltxdetail[prev_outpoint.txid]
+            fulltxdetail = lookup_dict_fulltxdetail[prevout_txid]
             if prev_outpoint_str not in fulltxdetail.outputs:
                 self.inputs[prev_outpoint_str] = None
                 continue
@@ -404,8 +435,10 @@ class BlockchainType(enum.Enum):
             raise ValueError()
 
     @classmethod
-    def active_types(cls) -> List["BlockchainType"]:
-        return [cls.Electrum, cls.Esplora]
+    def active_types(cls, network: bdk.Network) -> List["BlockchainType"]:
+        if network == bdk.Network.TESTNET:
+            return [cls.Electrum, cls.Esplora]
+        return [cls.CompactBlockFilter, cls.Electrum, cls.Esplora]
 
 
 class Balance(QObject, SaveAllClass):
@@ -499,5 +532,5 @@ if __name__ == "__main__":
         testdict[v] = v.__hash__()
         print(testdict[v])
 
-    test_hashing(OutPoint(txid="txid", vout=0))
+    test_hashing(OutPoint(txid=bdk.Txid.from_string("txid"), vout=0))
     test_hashing(AddressInfoMin("ssss", 4, bdk.KeychainKind.EXTERNAL))

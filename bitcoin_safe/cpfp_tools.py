@@ -67,7 +67,7 @@ class CpfpTools:
             known_ancestors[tx.txid] = tx
 
             # recurse into parents (prune already-known to limit fan-out)
-            parents = {txin.previous_output.txid for txin in tx.transaction.input()}
+            parents = {str(txin.previous_output.txid) for txin in tx.transaction.input()}
             parents.difference_update(known_ancestors.keys())
             if parents:
                 self.get_unconfirmed_ancestors(parents, known_ancestors)

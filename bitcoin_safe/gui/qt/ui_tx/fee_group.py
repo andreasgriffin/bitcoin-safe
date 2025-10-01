@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import (
@@ -191,7 +191,7 @@ class FeeWarningBar(NotificationBar):
 
 
 class FeeGroup(QObject):
-    signal_fee_rate_change: TypedPyQtSignal[float] = pyqtSignal(float)  # type: ignore
+    signal_fee_rate_change = cast(TypedPyQtSignal[float], pyqtSignal(float))
 
     def __init__(
         self,
