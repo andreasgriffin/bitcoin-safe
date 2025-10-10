@@ -90,17 +90,13 @@ def mytest_start_time() -> datetime:
     return datetime.now()
 
 
-def update_counter():
-    """This method runs every 100ms."""
-    gc.collect()
-
-
 @contextmanager
 def main_window_context(test_config: UserConfig) -> Generator[MainWindow, None, None]:
     """Context manager that manages the MainWindow lifecycle."""
-    timer = QTimer()
-    timer.timeout.connect(update_counter)  # connect signal to slot
-    timer.start(100)  # 100 ms interval
+    # regularly collect garbage to detect unattached objects in test
+    garbe_collect_timer = QTimer()
+    garbe_collect_timer.timeout.connect(gc.collect)  # connect signal to slot
+    garbe_collect_timer.start(100)  # 100 ms interval
 
     window = MainWindow(config=test_config)
     window.show()
