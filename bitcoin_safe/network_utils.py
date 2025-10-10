@@ -32,7 +32,7 @@ import logging
 import socket
 import ssl
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlparse
 
 import socks  # Requires PySocks or similar package.
@@ -46,7 +46,7 @@ class ProxyInfo:
     port: int | None
     scheme: str = "socks5h"
 
-    def get_socks_scheme(self) -> Literal[1] | Literal[2]:
+    def get_socks_scheme(self) -> int:
         if self.scheme == "socks4":
             return socks.SOCKS4
         return socks.SOCKS5
