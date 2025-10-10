@@ -183,7 +183,7 @@ class ImportDialog(QWidget):
         self.on_open = on_open
 
         self.setWindowTitle(window_title)
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         self.instruction_label = QLabel(text_instruction_label)
         self.text_edit = DragAndDropButtonEdit(

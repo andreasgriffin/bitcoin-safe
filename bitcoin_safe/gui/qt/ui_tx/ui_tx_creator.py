@@ -577,7 +577,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 outpoints, self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY, scroll_to_last=True
             )
 
-        ImportDialog(
+        self._attached_import_dialog = ImportDialog(
             self.config.network,
             on_open=process_input,
             window_title=self.tr("Add Inputs"),
@@ -587,7 +587,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             ),
             text_placeholder=self.tr("Please paste UTXO here"),
             close_all_video_widgets=self.signals.close_all_video_widgets,
-        ).show()
+        )
+        self._attached_import_dialog.show()
 
     def opportunistic_merging_threshold(self) -> float:
         """Calculates the ema fee rate from past transactions.

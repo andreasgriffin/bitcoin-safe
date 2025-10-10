@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import gc
 import inspect
 import logging
 from datetime import datetime
@@ -57,6 +58,11 @@ from .helpers import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def update_counter():
+    """This method runs every 100ms."""
+    gc.collect()
 
 
 @pytest.mark.marker_qt_1

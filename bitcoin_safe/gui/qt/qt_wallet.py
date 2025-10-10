@@ -1239,8 +1239,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_done(self, result) -> None:
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
-        interval_timer_sync_regularly = max(
-            int(self._syncing_delay.total_seconds() * 200), MINIMUM_INTERVAL_SYNC_REGULARLY
+        interval_timer_sync_regularly = min(
+            60 * 60 * 24, max(int(self._syncing_delay.total_seconds() * 200), MINIMUM_INTERVAL_SYNC_REGULARLY)
         )  # in sec
         self.timer_sync_regularly.setInterval(interval_timer_sync_regularly * 1000)
         logger.info(

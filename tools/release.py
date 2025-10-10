@@ -289,6 +289,7 @@ def parse_args() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description="Release Bitcoin Safe")
     parser.add_argument("--skip_test", action="store_true")
+    parser.add_argument("--allow_branch", action="store_true")
 
     return parser.parse_args()
 
@@ -296,7 +297,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
 
-    get_checkout_main()
+    if not args.allow_branch:
+        get_checkout_main()
 
     if not args.skip_test:
         print("Running tests before proceeding...")

@@ -99,7 +99,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
 
         for i, keystore in enumerate(self.protowallet.keystores):
             keystore_ui = KeyStoreUI(
-                self,
                 self.protowallet.network,
                 get_address_type=self.get_address_type,
                 label=self.protowallet.signer_name(i),
@@ -109,7 +108,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             )
             keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
             self.addTab(
-                keystore_ui.tab,
+                keystore_ui,
                 icon=icon_for_label(keystore_ui.label),
                 description=keystore_ui.label,
                 data=keystore_ui,
@@ -282,7 +281,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         if self.count() < len(self.protowallet.keystores):
             for i in range(self.count(), len(self.protowallet.keystores)):
                 keystore_ui = KeyStoreUI(
-                    self,
                     self.protowallet.network,
                     get_address_type=self.get_address_type,
                     label=self.protowallet.signer_name(i),
@@ -292,7 +290,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 )
                 keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
                 self.addTab(
-                    keystore_ui.tab,
+                    keystore_ui,
                     icon=icon_for_label(keystore_ui.label),
                     description=keystore_ui.label,
                     data=keystore_ui,
@@ -311,7 +309,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             keystore_ui.label = keystore.label if keystore else self.protowallet.signer_name(i)
 
             # set the tab title
-            index = keystore_ui.tabs.indexOf(keystore_ui.tab)
+            index = self.indexOf(keystore_ui)
             self.setTabText(index, keystore_ui.label)
             self.setTabIcon(index, icon_for_label(keystore_ui.label))
             keystore_ui.format_all_fields()
