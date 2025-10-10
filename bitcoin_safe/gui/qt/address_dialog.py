@@ -187,7 +187,7 @@ class AddressDialog(QWidget):
         self.saved = True
 
         self.setMinimumWidth(700)
-        vbox = QVBoxLayout()
+        vbox = QVBoxLayout(self)
         self.setLayout(vbox)
 
         upper_widget = QWidget(self)

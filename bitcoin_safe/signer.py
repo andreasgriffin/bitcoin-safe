@@ -290,7 +290,7 @@ class SignatureImporterFile(SignatureImporterQR):
         )
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
-        tx_dialog = ImportDialog(
+        self.tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
             on_open=partial(self.handle_string_input, psbt),
@@ -299,7 +299,7 @@ class SignatureImporterFile(SignatureImporterQR):
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
             close_all_video_widgets=self.close_all_video_widgets,
         )
-        tx_dialog.show()
+        self.tx_dialog.show()
         # tx_dialog.text_edit.button_open_file.click()
 
     @property
@@ -329,7 +329,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
         )
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
-        tx_dialog = ImportDialog(
+        self.tx_dialog = ImportDialog(
             network=self.network,
             window_title=self.tr("Import signed PSBT"),
             on_open=partial(self.handle_string_input, psbt),
@@ -338,7 +338,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
             text_placeholder=self.tr("Paste your PSBT in here or drop a file"),
             close_all_video_widgets=self.close_all_video_widgets,
         )
-        tx_dialog.show()
+        self.tx_dialog.show()
 
     @property
     def label(self) -> str:

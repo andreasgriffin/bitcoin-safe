@@ -38,7 +38,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QIcon
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
@@ -68,7 +68,6 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerTextEdit,
     QCompleterLineEdit,
 )
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -208,46 +207,45 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
             self.button_hwi.setText(self.tr("USB"))
 
 
-class KeyStoreUI(QObject):
+class KeyStoreUI(QWidget):
     signal_signer_infos: TypedPyQtSignal[List[SignerInfo]] = pyqtSignal(list)  # type: ignore
 
     def __init__(
         self,
-        tabs: DataTabWidget,
         network: bdk.Network,
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
         label: str = "",
         hardware_signer_label="",
+        parent: QWidget | None = None,
         slow_hwi_listing=False,
     ) -> None:
-        super().__init__()
+        super().__init__(parent)
         self.signals_min = signals_min
 
         self.label = label
         self.hardware_signer_label = hardware_signer_label
-        self.tabs = tabs
         self.network = network
         self.get_address_type = get_address_type
         self.slow_hwi_listing = slow_hwi_listing
 
-        self.tab = QWidget()
-        self.tab_layout = QHBoxLayout(self.tab)
+        self.tab_layout = QHBoxLayout(self)
 
-        self.tabs_import_type = QTabWidget(self.tab)
+        self.tabs_import_type = QTabWidget(self)
         self.tab_layout.addWidget(self.tabs_import_type)
 
-        self.tab_import = QWidget(self.tab)
+        self.tab_import = QWidget(self)
         self.tab_import_layout = QVBoxLayout(self.tab_import)
         self.tabs_import_type.addTab(self.tab_import, "")
         self.tab_manual = QWidget(self.tab_import)
         self.tabs_import_type.addTab(self.tab_manual, "")
 
-        self.label_fingerprint = QLabel()
+        self.label_fingerprint = QLabel(self)
         language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_fingerprint = ButtonEdit(
             signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self,
         )
         self.edit_fingerprint.add_qr_input_from_camera_button(
             network=self.network,
@@ -256,13 +254,14 @@ class KeyStoreUI(QObject):
 
         self.edit_fingerprint.input_field.setAnalyzer(FingerprintAnalyzer(parent=self))
         # key_origin
-        self.label_key_origin = QLabel()
+        self.label_key_origin = QLabel(self)
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
         language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_key_origin = ButtonEdit(
             input_field=self.edit_key_origin_input,
             signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self,
         )
         self.edit_key_origin.add_qr_input_from_camera_button(
             network=self.network,
@@ -275,12 +274,13 @@ class KeyStoreUI(QObject):
         )
 
         # xpub
-        self.label_xpub = QLabel()
+        self.label_xpub = QLabel(self)
         language_switch = cast(TypedPyQtSignalNo, self.signals_min.language_switch)
         self.edit_xpub = ButtonEdit(
             input_field=AnalyzerTextEdit(),
             signal_update=language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self,
         )
         self.edit_xpub.setFixedHeight(50)
         self.edit_xpub.add_qr_input_from_camera_button(
@@ -290,8 +290,10 @@ class KeyStoreUI(QObject):
         self.edit_xpub.signal_data.connect(self._on_handle_input)
 
         self.edit_xpub.input_field.setAnalyzer(XpubAnalyzer(self.network, parent=self))
-        self.label_seed = QLabel()
-        self.edit_seed = ButtonEdit(close_all_video_widgets=self.signals_min.close_all_video_widgets)
+        self.label_seed = QLabel(self)
+        self.edit_seed = ButtonEdit(
+            close_all_video_widgets=self.signals_min.close_all_video_widgets, parent=self
+        )
 
         self.edit_seed.add_random_mnemonic_button(callback_seed=self.on_edit_seed_changed)
         self.edit_seed.input_field.setAnalyzer(SeedAnalyzer(parent=self))
@@ -313,10 +315,10 @@ class KeyStoreUI(QObject):
         # tab_import
 
         self.hardware_signer_interaction = HardwareSignerInteractionWidget()
-        button_qr = self.hardware_signer_interaction.add_qr_import_buttonn()
+        self.button_qr = self.hardware_signer_interaction.add_qr_import_buttonn()
         self.hardware_signer_interaction.add_help_button(ScreenshotsExportXpub())
 
-        button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
+        self.button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
 
         self.usb_gui = USBGui(self.network, initalization_label=self.hardware_signer_label)
         signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
@@ -325,8 +327,8 @@ class KeyStoreUI(QObject):
         )
         button_hwi.clicked.connect(self.on_hwi_click)
 
-        button_file = self.hardware_signer_interaction.add_import_file_button()
-        button_file.clicked.connect(self._import_dialog)
+        self.button_file = self.hardware_signer_interaction.add_import_file_button()
+        self.button_file.clicked.connect(self._import_dialog)
 
         # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         self.tab_import_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -348,11 +350,11 @@ class KeyStoreUI(QObject):
 
         # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
 
-        self.right_widget = QWidget()
+        self.right_widget = QWidget(self)
         self.right_widget_layout = QVBoxLayout(self.right_widget)
         # self.right_widget_layout.setContentsMargins(0,0,0,0)
 
-        self.label_description = QLabel()
+        self.label_description = QLabel(self)
 
         self.right_widget_layout.addWidget(self.label_description)
 
@@ -382,6 +384,7 @@ class KeyStoreUI(QObject):
             text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
             text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self,
         )
         self._attached_import_dialog.show()
 
@@ -542,10 +545,6 @@ class KeyStoreUI(QObject):
         return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
 
     def updateUi(self) -> None:
-        self.tabs.setTabText(
-            self.tabs.indexOf(self.tab),
-            self.label,
-        )
 
         self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_import), self.tr("Import"))
         self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_manual), self.tr("Advanced"))
@@ -639,7 +638,7 @@ class KeyStoreUI(QObject):
         )
 
     def set_ui_from_keystore(self, keystore: KeyStore) -> None:
-        with BlockChangesSignals([self.tab]):
+        with BlockChangesSignals([self]):
             self.label = keystore.label
 
             logger.debug(f"{self.__class__.__name__} set_ui_from_keystore")
@@ -661,13 +660,14 @@ class KeyStoreUI(QObject):
             if self.edit_seed.text() != mnemonic:
                 self.edit_seed.setText(mnemonic)
 
-    def close(self):
+    def close(self) -> bool:
         SignalTools.disconnect_all_signals_from(self)
         self.edit_seed.close()
         self.edit_key_origin.close()
         self.edit_fingerprint.close()
         self.edit_key_origin_input.close()
         self.edit_xpub.close()
+        return super().close()
 
 
 class SignedUI(QWidget):
@@ -722,7 +722,7 @@ class SignerUI(QWidget):
                     parent=self,
                 )
             else:
-                button = QPushButton(button_prefix + signer.label)
+                button = QPushButton(button_prefix + signer.label, parent=self)
                 button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
             self.buttons.append(button)
             callback = partial(signer.sign, self.psbt)

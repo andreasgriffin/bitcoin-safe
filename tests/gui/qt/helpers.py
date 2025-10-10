@@ -44,6 +44,7 @@ from unittest.mock import patch
 import objgraph
 import pytest
 from PyQt6 import QtCore
+from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QAction
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
@@ -89,9 +90,18 @@ def mytest_start_time() -> datetime:
     return datetime.now()
 
 
+def update_counter():
+    """This method runs every 100ms."""
+    gc.collect()
+
+
 @contextmanager
 def main_window_context(test_config: UserConfig) -> Generator[MainWindow, None, None]:
     """Context manager that manages the MainWindow lifecycle."""
+    timer = QTimer()
+    timer.timeout.connect(update_counter)  # connect signal to slot
+    timer.start(100)  # 100 ms interval
+
     window = MainWindow(config=test_config)
     window.show()
     try:

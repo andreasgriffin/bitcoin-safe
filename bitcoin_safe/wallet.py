@@ -1014,6 +1014,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.bdkwallet.reveal_addresses_to(
                 keychain=AddressInfoMin.is_change_to_keychain(is_change=bool(is_change)), index=tip
             )
+            self.persist()
 
     def is_multisig(self) -> bool:
         return len(self.keystores) > 1
@@ -1079,6 +1080,16 @@ class Wallet(BaseSaveableClass, CacheManager):
     def _get_uniquie_wallet_id(self) -> str:
         return f"{replace_non_alphanumeric(self.id)}-{hash_string(str(self.multipath_descriptor))}"
 
+    def _more_than_gap_revealed_addresses(self) -> bool:
+        for is_change in [False, True]:
+            address_info = self.reverse_search_unused_address(is_change=is_change)
+            if not address_info:
+                continue
+            tip = self.get_tip(is_change=is_change)
+            if tip >= address_info.index + self.gap:
+                return True
+        return False
+
     def sync(self) -> None:
         if not self.bdkwallet:
             logger.warning("Wallet not initialized; cannot sync.")
@@ -1093,8 +1104,11 @@ class Wallet(BaseSaveableClass, CacheManager):
             start_time = time()
 
             update = self.client.full_scan(self.bdkwallet.start_full_scan().build(), stop_gap=self.gap)
-
             self.bdkwallet.apply_update(update)
+
+            if self._more_than_gap_revealed_addresses():
+                update = self.client.sync(self.bdkwallet.start_sync_with_revealed_spks().build())
+                self.bdkwallet.apply_update(update)
 
             self.persist()
 

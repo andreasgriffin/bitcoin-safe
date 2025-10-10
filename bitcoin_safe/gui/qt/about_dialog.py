@@ -53,7 +53,7 @@ class LicenseDialog(QDialog):
         self.initUI()
 
     def initUI(self):
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         # Create a QWidget to hold the content
         content_widget = QWidget()

@@ -106,3 +106,11 @@ class Client:
             return self.client.full_scan(request=full_request, stop_gap=stop_gap, parallel_requests=2)
         else:
             raise ValueError("Unknown blockchain client type.")
+
+    def sync(self, request: bdk.SyncRequest) -> bdk.Update:
+        if isinstance(self.client, bdk.ElectrumClient):
+            return self.client.sync(request=request, batch_size=100, fetch_prev_txouts=True)
+        elif isinstance(self.client, bdk.EsploraClient):
+            return self.client.sync(request=request, parallel_requests=2)
+        else:
+            raise ValueError("Unknown blockchain client type.")
