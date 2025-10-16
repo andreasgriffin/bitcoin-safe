@@ -1698,22 +1698,22 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Tools</source>
-        <translation>&amp;Outils  </translation>
+        <translation>&amp;Outils</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;USB Signer Tools</source>
-        <translation>&amp;Outils de signataire USB  </translation>
+        <translation>&amp;Outils de signataire USB</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Version: {}</source>
-        <translation>&amp;Version : {}  </translation>
+        <translation>&amp;Version&#xa0;: {}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Wallet</source>
-        <translation>&amp;Portefeuille  </translation>
+        <translation>&amp;Portefeuille</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1738,17 +1738,17 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Close Tab</source>
-        <translation>Fermer l&apos;onglet  </translation>
+        <translation>Fermer l&apos;onglet</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Close all transactions</source>
-        <translation>Fermer toutes les transactions  </translation>
+        <translation>Fermer toutes les transactions</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Close wallet</source>
-        <translation>Fermer le portefeuille  </translation>
+        <translation>Fermer le portefeuille</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1758,7 +1758,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Closing tab {name}</source>
-        <translation>Fermeture de l&apos;onglet {name}  </translation>
+        <translation>Fermeture de l&apos;onglet {name}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1798,17 +1798,17 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Export &amp;Descriptor for hardware signers</source>
-        <translation>Exporter &amp;Descriptor pour les signataires matériels  </translation>
+        <translation>Exporter &amp;Descriptor pour les signataires matériels</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>From &amp;QR Code</source>
-        <translation>Depuis &amp;Code QR  </translation>
+        <translation>Depuis &amp;Code QR</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>From &amp;file</source>
-        <translation>Depuis &amp;fichier  </translation>
+        <translation>Depuis &amp;fichier</translation>
     </message>
     <name>MainWindow</name>
     <message>
