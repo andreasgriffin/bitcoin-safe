@@ -320,7 +320,15 @@ class FeeGroup(QObject):
 
     def _on_explorer_explorer_icon(self, index: int) -> None:
         if self.mempool_buttons.tx_status.is_confirmed():
-            url = block_explorer_URL(self.config.network_config.mempool_url, kind="block", item=index)
+            tx = self.mempool_buttons.tx_status.tx
+            if tx:
+                url = block_explorer_URL(
+                    self.config.network_config.mempool_url,
+                    kind="tx",
+                    item=str(tx.compute_txid()),
+                )
+            else:
+                url = block_explorer_URL(self.config.network_config.mempool_url, kind="block", item=index)
         else:
             url = block_explorer_URL(self.config.network_config.mempool_url, kind="mempool", item=index)
         if url:
