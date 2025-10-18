@@ -218,7 +218,7 @@ class KeyStoreUI(QWidget):
         label: str = "",
         hardware_signer_label="",
         parent: QWidget | None = None,
-        slow_hwi_listing=False,
+        slow_hwi_listing=True,
     ) -> None:
         super().__init__(parent)
         self.signals_min = signals_min
