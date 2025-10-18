@@ -74,6 +74,7 @@ class UpdateFilterReason(Enum):
     ForceRefresh = enum.auto()
     ChainHeightAdvanced = enum.auto()
     NewFxRates = enum.auto()
+    RestoredSnapshot = enum.auto()
     AddressMarkedUsed = enum.auto()
 
 

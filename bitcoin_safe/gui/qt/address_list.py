@@ -88,6 +88,7 @@ from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from ...config import UserConfig
 from ...i18n import translate
+from ...labels import LabelSnapshot, LabelSnapshotReason
 from ...network_config import BlockchainType
 from ...rpc import send_rpc_command
 from ...signals import (
@@ -111,6 +112,7 @@ from .my_treeview import (
 from .util import (
     ColorScheme,
     Message,
+    MessageType,
     block_explorer_URL,
     category_color,
     create_color_circle,
@@ -153,10 +155,10 @@ class ImportLabelMenu(Menu):
         )
 
     def updateUi(self) -> None:
-        self.setTitle(self.tr("Import Labels"))
-        self.action_import.setText(self.tr("Import Labels"))
-        self.action_bip329_import.setText(self.tr("Import Labels (BIP329 / Sparrow)"))
-        self.action_electrum_import.setText(self.tr("Import Labels (Electrum Wallet)"))
+        self.setTitle(self.tr("Import labels and categories"))
+        self.action_import.setText(self.tr("Full (Bitcoin Safe)"))
+        self.action_bip329_import.setText(self.tr("Exchange format (BIP329)"))
+        self.action_electrum_import.setText(self.tr("Electrum Wallet"))
         self.action_nostr_import.setText(self.tr("Restore labels from cloud using an existing sync key"))
 
 
@@ -174,9 +176,82 @@ class ExportLabelMenu(Menu):
         self.updateUi()
 
     def updateUi(self) -> None:
-        self.setTitle(self.tr("Export Labels"))
-        self.action_export_full.setText(self.tr("Export Labels"))
-        self.action_bip329.setText(self.tr("Export Labels for other wallets (BIP329)"))
+        self.setTitle(self.tr("Export labels and categories"))
+        self.action_export_full.setText(self.tr("Full (Bitcoin Safe)"))
+        self.action_bip329.setText(self.tr("Exchange format (BIP329)"))
+
+
+class LabelSnapshotMenu(Menu):
+    def __init__(self, wallets: Dict[str, Wallet], signals: Signals, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.signals = signals
+        self.wallets = wallets
+        self.aboutToShow.connect(self._populate_snapshot_menu)
+
+    def updateUi(self) -> None:
+        self.setTitle(self.tr("Restore labels and categories snapshot"))
+
+    def _populate_snapshot_menu(self) -> None:
+        self.clear()
+
+        if not self.wallets:
+            action = self.add_action(self.tr("No wallets available"))
+            action.setEnabled(False)
+            return
+
+        multiple_wallets = len(self.wallets) > 1
+        for wallet in self.wallets.values():
+            target_menu = self.add_menu(wallet.id) if multiple_wallets else self
+            self._fill_snapshot_menu_for_wallet(target_menu, wallet)
+
+    def _fill_snapshot_menu_for_wallet(self, menu: "Menu", wallet: Wallet) -> None:
+        snapshots = wallet.labels.get_snapshots()
+        if snapshots:
+            for snapshot in reversed(snapshots):
+                text = self._format_snapshot_label(snapshot)
+                action = menu.add_action(text)
+                action.triggered.connect(partial(self._restore_wallet_snapshot, wallet, snapshot))
+        else:
+            placeholder = menu.add_action(self.tr("No previous snapshots"))
+            placeholder.setEnabled(False)
+
+    def _snapshot_reason_text(self, reason: LabelSnapshotReason) -> str:
+        if reason == LabelSnapshotReason.AUTOMATIC:
+            return self.tr("Automatic snapshot")
+        if reason == LabelSnapshotReason.INITIAL:
+            return self.tr("Initial state")
+        if reason == LabelSnapshotReason.RESTORE:
+            return self.tr("State before restore")
+
+    def _format_snapshot_label(self, snapshot: LabelSnapshot) -> str:
+        timestamp_text = snapshot.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        reason_text = self._snapshot_reason_text(snapshot.reason)
+        if reason_text:
+            return " - ".join(
+                [
+                    timestamp_text,
+                    reason_text,
+                    self.tr("{count} Labels").format(count=snapshot.count_address_labels),
+                ]
+            )
+        return timestamp_text
+
+    def _restore_wallet_snapshot(self, wallet: Wallet, snapshot: LabelSnapshot) -> None:
+        changed_items = wallet.labels.restore_snapshot(snapshot)
+        if not changed_items:
+            return
+
+        wallet_signals = self.signals.wallet_signals.get(wallet.id)
+        if wallet_signals:
+            wallet_signals.updated.emit(
+                changed_items.to_update_filter(reason=UpdateFilterReason.RestoredSnapshot)
+            )
+
+        timestamp_text = snapshot.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        Message(
+            self.tr("Restored labels snapshot from {timestamp}").format(timestamp=timestamp_text),
+            type=MessageType.Info,
+        )
 
 
 class AddressUsageStateFilter(IntEnum):
@@ -843,6 +918,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.button_create_address_label = QLabel()
 
         self.category_combobox = CategoryComboBox(category_core=self.category_core)
+        self.snapshot_menu: LabelSnapshotMenu | None = None
 
         self.create_layout()
         self.updateUi()
@@ -906,12 +982,14 @@ class AddressListWithToolbar(TreeViewWithToolbar):
 
         for action in list(self.menu.actions()):
             sub = action.menu()
-            if isinstance(sub, (ExportLabelMenu, ImportLabelMenu)):
+            if isinstance(sub, (ExportLabelMenu, ImportLabelMenu, LabelSnapshotMenu)):
                 sub.updateUi()
 
         self.button_create_address.setText(self.tr("Create new Address"))
         self.button_create_address_label.setText(self.tr("for"))
         self.action_manage_categories.setText(self.tr("Manage Categories"))
+        if self.snapshot_menu:
+            self.snapshot_menu.updateUi()
 
         if self.balance_label:
             balance = Balance()
@@ -953,6 +1031,11 @@ class AddressListWithToolbar(TreeViewWithToolbar):
 
         self.menu.addSeparator()
         self._menu_import_export = self.address_list.recreate_export_import_menu(self.menu)
+
+        self.snapshot_menu = LabelSnapshotMenu(
+            self.address_list.wallets, signals=self.address_list.signals, parent=self.menu
+        )
+        self.menu.addMenu(self.snapshot_menu)
 
         if (
             self.config
