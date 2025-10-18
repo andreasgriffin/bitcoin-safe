@@ -36,24 +36,15 @@ import bdkpython as bdk
 import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
-from bitcoin_safe_lib.util_os import xdg_open_file
 from bitcoin_usb.address_types import DescriptorInfo
 from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import (
-    PageBreak,
-    Paragraph,
-    SimpleDocTemplate,
-    Table,
-    TableStyle,
-)
+from reportlab.platypus import PageBreak, Paragraph, Table, TableStyle
 
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.pdfrecovery import pilimage_to_reportlab, register_font, white_space
+from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space
 
 from .wallet import Wallet
 
@@ -116,44 +107,11 @@ class NumberedPageCanvas(Canvas):
         self.drawRightString(x_position, y_position, page_label)
 
 
-class PdfStatement:
+class PdfStatement(BasePDF):
 
     def __init__(self, network: bdk.Network, lang_code: str) -> None:
-        font_info = register_font(lang_code=lang_code)
-        self.font_name = font_info.font_name
+        super().__init__(lang_code=lang_code)
         self.network = network
-        self.no_translate = font_info.supported_lang_code == "en_US"
-
-        styles = getSampleStyleSheet()
-        self.style_paragraph = ParagraphStyle(
-            name="Centered",
-            fontName=self.font_name,
-            parent=styles["BodyText"],
-            alignment=TA_CENTER,
-        )
-        self.style_paragraph_left = ParagraphStyle(
-            name="LEFT",
-            fontName=self.font_name,
-            parent=styles["BodyText"],
-            alignment=TA_LEFT,
-        )
-        self.style_paragraph_right = ParagraphStyle(
-            name="LEFT",
-            fontName=self.font_name,
-            parent=styles["BodyText"],
-            alignment=TA_RIGHT,
-        )
-        self.style_heading = ParagraphStyle(
-            "centered_heading",
-            fontName=self.font_name,
-            parent=styles["Heading1"],
-            alignment=TA_CENTER,
-        )
-        self.style_text = ParagraphStyle(
-            name="normal",
-            fontName=self.font_name,
-        )
-        self.elements: List[Any] = []
 
     @property
     def TEXT_24_WORDS(self):
@@ -330,30 +288,6 @@ class PdfStatement:
                     self.style_paragraph,
                 )
             )
-
-    def save_pdf(self, filename: str) -> None:
-
-        # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
-        LEFT_MARGIN = 36  # 0.5 inch
-        RIGHT_MARGIN = 36  # 0.5 inch
-        TOP_MARGIN = 36  # 0.5 inch
-        BOTTOM_MARGIN = 36  # 0.5 inch
-
-        document = SimpleDocTemplate(
-            filename,
-            pagesize=letter,
-            leftMargin=LEFT_MARGIN,
-            rightMargin=RIGHT_MARGIN,
-            topMargin=TOP_MARGIN,
-            bottomMargin=BOTTOM_MARGIN,
-        )
-        document.build(self.elements, canvasmaker=NumberedPageCanvas)
-
-    def open_pdf(self, filename: str) -> None:
-        if os.path.exists(filename):
-            xdg_open_file(Path(filename))
-        else:
-            logger.info(translate("pdf", "File not found!"))
 
 
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:

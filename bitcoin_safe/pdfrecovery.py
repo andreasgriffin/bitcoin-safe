@@ -38,7 +38,7 @@ from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL.Image import Image as PilImage
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
@@ -64,6 +64,7 @@ logger = logging.getLogger(__name__)
 
 
 TEXT_24_WORDS = translate("pdf", "12 or 24")
+DEFAULT_MARGIN = 36
 
 
 def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
@@ -165,29 +166,35 @@ def register_font(lang_code: str) -> FontInfo:
 white_space = '<font color="white"> - </font>'
 
 
-class BitcoinWalletRecoveryPDF:
-
+class BasePDF:
     def __init__(self, lang_code: str) -> None:
         font_info = register_font(lang_code=lang_code)
         self.font_name = font_info.font_name
         self.no_translate = font_info.supported_lang_code == "en_US"
 
-        styles = getSampleStyleSheet()
+        self.styles = getSampleStyleSheet()
         self.style_paragraph = ParagraphStyle(
             name="Centered",
             fontName=self.font_name,
-            parent=styles["BodyText"],
+            parent=self.styles["BodyText"],
             alignment=TA_CENTER,
         )
         self.style_paragraph_left = ParagraphStyle(
             name="LEFT",
             fontName=self.font_name,
-            parent=styles["BodyText"],
+            parent=self.styles["BodyText"],
+            alignment=TA_LEFT,
+        )
+        self.style_paragraph_right = ParagraphStyle(
+            name="LEFT",
+            fontName=self.font_name,
+            parent=self.styles["BodyText"],
+            alignment=TA_RIGHT,
         )
         self.style_heading = ParagraphStyle(
             "centered_heading",
             fontName=self.font_name,
-            parent=styles["Heading1"],
+            parent=self.styles["Heading1"],
             alignment=TA_CENTER,
         )
         self.style_text = ParagraphStyle(
@@ -195,6 +202,33 @@ class BitcoinWalletRecoveryPDF:
             fontName=self.font_name,
         )
         self.elements: List[Any] = []
+
+    def save_pdf(self, filename: str) -> None:
+
+        # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
+        LEFT_MARGIN = 36  # 0.5 inch
+        RIGHT_MARGIN = 36  # 0.5 inch
+        TOP_MARGIN = 36  # 0.5 inch
+        BOTTOM_MARGIN = 36  # 0.5 inch
+
+        document = SimpleDocTemplate(
+            filename,
+            pagesize=letter,
+            leftMargin=LEFT_MARGIN,
+            rightMargin=RIGHT_MARGIN,
+            topMargin=TOP_MARGIN,
+            bottomMargin=BOTTOM_MARGIN,
+        )
+        document.build(self.elements)
+
+    def open_pdf(self, filename: str) -> None:
+        if os.path.exists(filename):
+            xdg_open_file(Path(filename))
+        else:
+            logger.info(translate("pdf", "File not found!"))
+
+
+class BitcoinWalletRecoveryPDF(BasePDF):
 
     @property
     def TEXT_24_WORDS(self):
@@ -449,30 +483,6 @@ class BitcoinWalletRecoveryPDF:
             self.style_paragraph_left,
         )
         self.elements.append(keystore_info_text)
-
-    def save_pdf(self, filename: str) -> None:
-
-        # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
-        LEFT_MARGIN = 36  # 0.5 inch
-        RIGHT_MARGIN = 36  # 0.5 inch
-        TOP_MARGIN = 36  # 0.5 inch
-        BOTTOM_MARGIN = 36  # 0.5 inch
-
-        document = SimpleDocTemplate(
-            filename,
-            pagesize=letter,
-            leftMargin=LEFT_MARGIN,
-            rightMargin=RIGHT_MARGIN,
-            topMargin=TOP_MARGIN,
-            bottomMargin=BOTTOM_MARGIN,
-        )
-        document.build(self.elements)
-
-    def open_pdf(self, filename: str) -> None:
-        if os.path.exists(filename):
-            xdg_open_file(Path(filename))
-        else:
-            logger.info(translate("pdf", "File not found!"))
 
 
 def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
