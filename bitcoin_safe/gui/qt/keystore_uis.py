@@ -84,7 +84,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         get_editable_protowallet: Callable[[], ProtoWallet],
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
-        slow_hwi_listing=False,
+        slow_hwi_listing=True,
     ) -> None:
         super().__init__()
         self.tab_bar = OrderTrackingTabBar()
