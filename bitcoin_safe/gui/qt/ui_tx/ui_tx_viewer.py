@@ -1184,17 +1184,17 @@ class UITx_Viewer(UITx_Base):
 
         tx_status = self.get_tx_status(chain_position=chain_position)
 
-        # no Fee is unknown if no fee_info was given
-        self.column_fee.setVisible(fee_info is not None)
+        tx_details, _wallet = get_tx_details(txid=self.txid(), signals=self.signals)
+
+        self.column_fee.fee_group.set_fee_infos(
+            fee_info=fee_info,
+            tx_status=tx_status,
+            can_rbf_safely=bool(
+                tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status)
+            ),
+        )
+
         if fee_info is not None:
-            tx_details, wallet = get_tx_details(txid=self.txid(), signals=self.signals)
-            self.column_fee.fee_group.set_fee_infos(
-                fee_info=fee_info,
-                tx_status=tx_status,
-                can_rbf_safely=bool(
-                    tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status)
-                ),
-            )
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
 
         outputs = [TxOut.from_bdk(txout) for txout in tx.output()]

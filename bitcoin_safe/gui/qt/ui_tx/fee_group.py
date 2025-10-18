@@ -292,7 +292,6 @@ class FeeGroup(QObject):
         self.totals_box.c0.setHidden(True)
         self.totals_box.c1.setHidden(True)
         self.totals_box.c2.mark_fiat_red_when_exceeding = DOLLAR_FEE_MARK_RED
-        self.totals_box.setHidden(True)
         if not totals_box:
             self.groupBox_Fee_layout.addWidget(self.totals_box, alignment=Qt.AlignmentFlag.AlignRight)
         self.fx.signal_data_updated.connect(self.updateUi)
@@ -377,15 +376,14 @@ class FeeGroup(QObject):
         )
         self.form.set_row_visibility_of_widget(
             self.fee_rate_label,
-            not show_approximate_fee_label,
+            bool((not show_approximate_fee_label) and self.fee_info),
         )
 
-        if self.fee_info:
-            self.approximate_fee_label.setToolTip(
-                self.tr(
-                    f"The fee rate cannot be known exactly,\nsince the final size of the transaction is unknown."
-                )
+        self.approximate_fee_label.setToolTip(
+            self.tr(
+                f"The fee rate cannot be known exactly,\nsince the final size of the transaction is unknown."
             )
+        )
 
         self.set_fee_amount_label()
         self.mempool_buttons.refresh(fee_rate=self.spin_fee_rate.value())
@@ -457,6 +455,7 @@ class FeeGroup(QObject):
         self.fee_info = fee_info
 
         if not fee_info:
+            self.updateUi()
             return
 
         decimal_precision = self.spin_fee_rate.decimals()
@@ -472,14 +471,15 @@ class FeeGroup(QObject):
 
     def set_fee_infos(
         self,
-        fee_info: FeeInfo,
+        fee_info: FeeInfo | None,
         tx_status: TxStatus,
         can_rbf_safely: bool,
     ) -> None:
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit
-        fee_rate = fee_info.fee_rate()
-        self.set_spin_fee_value(fee_rate)
+        fee_rate = fee_info.fee_rate() if fee_info else None
+        if fee_rate is not None:
+            self.set_spin_fee_value(fee_rate)
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
@@ -488,11 +488,8 @@ class FeeGroup(QObject):
         self.set_fee_info(fee_info)
 
     def set_fee_amount_label(self):
-        self.totals_box.setHidden(self.fee_info is None)
-        if self.fee_info is None:
-            return
-
-        self.totals_box.c2.set_amount(amount=self.fee_info.fee_amount)
+        amount = self.fee_info.fee_amount if self.fee_info is not None else None
+        self.totals_box.c2.set_amount(amount=amount)
 
     def update_spin_fee_range(self, value: float = 0) -> None:
         fee_range = self.config.fee_ranges[self.config.network].copy()
