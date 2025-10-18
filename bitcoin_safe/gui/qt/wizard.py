@@ -79,6 +79,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import Wallet
 from bitcoin_safe.wallet_util import signer_name
 
+from ...pdf_labels import make_and_open_labels_pdf
 from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...signals import TypedPyQtSignalNo
@@ -464,6 +465,11 @@ class StickerTheHardware(BaseTab):
         self.label = QLabel()
         widget_layout.addWidget(self.label)
 
+        self.button_print_labels = QPushButton()
+        self.button_print_labels.setIcon(svg_tools.get_QIcon("print.svg"))
+        self.button_print_labels.clicked.connect(self._print_labels)
+        self.buttonbox.addButton(self.button_print_labels, QDialogButtonBox.ButtonRole.ActionRole)
+
         svg_widgets = [
             svg_widget_hardware_signer(
                 index=i,
@@ -496,6 +502,22 @@ class StickerTheHardware(BaseTab):
         threshold, n = protowallet.get_mn_tuple()
         return signer_name(threshold=threshold, i=i)
 
+    def _print_labels(self) -> None:
+        protowallet = self.refs.qtwalletbase.get_editable_protowallet()
+        label_pairs = [
+            (
+                protowallet.sticker_name(i),
+                self.device_name(i),
+            )
+            for i in range(self.num_keystores())
+        ]
+
+        make_and_open_labels_pdf(
+            wallet_id=protowallet.id,
+            label_pairs=label_pairs,
+            lang_code=self.refs.qtwalletbase.signals.get_current_lang_code() or DEFAULT_LANG_CODE,
+        )
+
     def updateUi(self) -> None:
         super().updateUi()
         self.label.setText(
@@ -516,6 +538,7 @@ class StickerTheHardware(BaseTab):
                 size=12,
             )
         )
+        self.button_print_labels.setText(self.tr("Print labels"))
 
 
 class GenerateSeed(BaseTab):
