@@ -218,8 +218,6 @@ class LabelSnapshotMenu(Menu):
     def _snapshot_reason_text(self, reason: LabelSnapshotReason) -> str:
         if reason == LabelSnapshotReason.AUTOMATIC:
             return self.tr("Automatic snapshot")
-        if reason == LabelSnapshotReason.INITIAL:
-            return self.tr("Initial state")
         if reason == LabelSnapshotReason.RESTORE:
             return self.tr("State before restore")
 

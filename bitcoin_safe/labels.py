@@ -204,7 +204,6 @@ class Label(SaveAllClass):
 
 class LabelSnapshotReason(enum.Enum):
     AUTOMATIC = "automatic"
-    INITIAL = "initial"
     RESTORE = "restore"
 
 
@@ -263,9 +262,6 @@ class Labels(BaseSaveableClass):
         self.categories: List[str] = categories if categories else []
         self.default_category = default_category
         self._snapshots: List[LabelSnapshot] = _snapshots if _snapshots else []
-
-        if not self._snapshots:
-            self._store_snapshot(reason=LabelSnapshotReason.INITIAL)
 
     def count_address_labels(self):
         return sum(1 for label in self.data.values() if label.label)

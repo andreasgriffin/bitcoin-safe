@@ -60,11 +60,12 @@ def test_label_export():
         "type": "addr",
     }
 
+    labels._snapshots = []
     assert (
         labels.dumps()
         == """{"VERSION": """
         + f'"{labels.VERSION}"'
-        + """, "__class__": "Labels", "categories": ["category 0"], "data": {"some_address": {"VERSION": """
+        + """, "__class__": "Labels", "_snapshots": [], "categories": ["category 0"], "data": {"some_address": {"VERSION": """
         + f'"{data[0].VERSION}"'
         + ', "__class__": "Label", "category": "category 0", "label": "my label", "ref": "some_address", "timestamp": '
         + f"{timestamp}"
