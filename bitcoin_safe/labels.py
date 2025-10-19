@@ -32,6 +32,7 @@ import enum
 import json
 import logging
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, Union
 
@@ -39,6 +40,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from packaging import version
 
+from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.util import (
     jsonlines_to_list_of_dict,
     list_of_dict_to_jsonline_list,
@@ -200,15 +202,58 @@ class Label(SaveAllClass):
         return self.dump() == other.dump()
 
 
+class LabelSnapshotReason(enum.Enum):
+    AUTOMATIC = "automatic"
+    RESTORE = "restore"
+
+
+@dataclass
+class LabelSnapshot(SaveAllClass):
+    VERSION = "0.0.0"
+    known_classes = {**BaseSaveableClass.known_classes, LabelSnapshotReason.__name__: LabelSnapshotReason}
+
+    created_at: datetime
+    state: str
+    reason: LabelSnapshotReason = LabelSnapshotReason.AUTOMATIC
+    count: int = 0
+    count_address_labels: int = 0
+
+    def dump(self):
+        d = super().dump()
+        d["created_at"] = self.created_at.timestamp()
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+        dct["created_at"] = datetime.fromtimestamp(dct["created_at"])
+        return cls(**filtered_for_init(dct, cls))
+
+
+class ChangedItems(Dict[str, Label]):
+    def to_update_filter(self, reason: UpdateFilterReason) -> UpdateFilter:
+        addresses = []
+        txids = []
+        for label in self.values():
+            if label.type == LabelType.addr:
+                addresses.append(label.ref)
+            elif label.type == LabelType.tx:
+                txids.append(label.ref)
+        return UpdateFilter(addresses=addresses, txids=txids, reason=reason)
+
+
 class Labels(BaseSaveableClass):
     VERSION = "0.1.0"
-    known_classes = {**BaseSaveableClass.known_classes, "Label": Label}
+    known_classes = {**BaseSaveableClass.known_classes, "Label": Label, LabelSnapshot.__name__: LabelSnapshot}
+
+    _snapshot_limit = 20
 
     def __init__(
         self,
         data: Dict[str, Label] | None = None,
         categories: Optional[List[str]] = None,
         default_category: str = "default",
+        _snapshots: List[LabelSnapshot] | None = None,
     ) -> None:
         super().__init__()
 
@@ -216,14 +261,47 @@ class Labels(BaseSaveableClass):
         self.data: Dict[str, Label] = data if data else {}
         self.categories: List[str] = categories if categories else []
         self.default_category = default_category
+        self._snapshots: List[LabelSnapshot] = _snapshots if _snapshots else []
+
+    def count_address_labels(self):
+        return sum(1 for label in self.data.values() if label.label)
+
+    def _store_snapshot(self, reason: LabelSnapshotReason | None = None) -> bool:
+        snapshot = LabelSnapshot(
+            created_at=datetime.now(),
+            state=self.dumps_data_jsonlines(),
+            count_address_labels=self.count_address_labels(),
+            reason=reason or LabelSnapshotReason.AUTOMATIC,
+            count=len(self.data),
+        )
+        if self._snapshots and self._snapshots[-1].state == snapshot.state:
+            return False
+        self._snapshots.append(snapshot)
+        while len(self._snapshots) > self._snapshot_limit:
+            self._snapshots.pop(0)
+        return True
+
+    def get_snapshots(self) -> List[LabelSnapshot]:
+        return list(self._snapshots)
+
+    def restore_snapshot(self, snapshot: LabelSnapshot) -> ChangedItems:
+        self._store_snapshot(reason=LabelSnapshotReason.RESTORE)
+        return self.import_dumps_data(
+            snapshot.state,
+            force_overwrite=True,
+        )
 
     def add_category(self, value: str) -> None:
-        if value not in self.categories:
-            self.categories.append(value)
+        if value in self.categories:
+            return
+        self._store_snapshot()
+        self.categories.append(value)
 
     def del_item(self, ref: str) -> None:
-        if ref in self.data:
-            del self.data[ref]
+        if ref not in self.data:
+            return
+        self._store_snapshot()
+        del self.data[ref]
 
     def get_label(self, ref: str, default_value: str | None = None) -> Optional[str]:
         item = self.data.get(ref)
@@ -255,6 +333,7 @@ class Labels(BaseSaveableClass):
     def set_label(
         self, type: LabelType, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
+        self._store_snapshot()
         label = self.data.get(ref)
 
         if not label:
@@ -269,6 +348,7 @@ class Labels(BaseSaveableClass):
     def set_category(
         self, type: LabelType, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
     ) -> None:
+        self._store_snapshot()
         label = self.data.get(ref)
         if not label:
             self.data[ref] = label = Label(type, ref, timestamp)
@@ -338,6 +418,7 @@ class Labels(BaseSaveableClass):
 
         d["data"] = self.data
         d["default_category"] = self.default_category
+        d["_snapshots"] = self._snapshots
 
         keys = ["categories"]
         for k in keys:
@@ -451,13 +532,9 @@ class Labels(BaseSaveableClass):
         # prefer the labels with the oldest (non_automatic) entries
         return False if my_earliest_timestamp < other_earliest_timestamp else True
 
-    def import_labels(
-        self,
-        labels: List[Label],
-        fill_categories=True,
-        force_overwrite=False,
-    ) -> Dict[str, Label]:
-        changed_data: Dict[str, Label] = {}
+    def import_labels(self, labels: List[Label], fill_categories=True, force_overwrite=False) -> ChangedItems:
+        self._store_snapshot()
+        changed_data = ChangedItems()
 
         tiebreaker = self._should_overwrite_mine_when_tie(new_labels=labels)
 
@@ -468,6 +545,10 @@ class Labels(BaseSaveableClass):
                 force_overwrite
                 or self._should_overwrite(new_label=label, old_label=old_label, tiebreaker=tiebreaker)
             ):
+                if force_overwrite:
+                    # setting timestamp as now ensures
+                    # that it doesnt get reset by an old state (for example from the LabelSyncer)
+                    label.timestamp = datetime.now().timestamp()
                 self.data[label.ref] = label
                 changed_data[label.ref] = label
 
@@ -489,15 +570,16 @@ class Labels(BaseSaveableClass):
             [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
         )
 
-    def import_dumps_data(
-        self, dumps_data: str, fill_categories=True, force_overwrite=False
-    ) -> Dict[str, Label]:
+    def import_dumps_data(self, dumps_data: str, fill_categories=True, force_overwrite=False) -> ChangedItems:
         labels = [Label.from_dump(label_dict) for label_dict in jsonlines_to_list_of_dict(dumps_data)]
         return self.import_labels(
             labels=labels, fill_categories=fill_categories, force_overwrite=force_overwrite
         )
 
     def rename_category(self, old_category: str, new_category: str) -> List[str]:
+        if old_category == new_category:
+            return []
+        self._store_snapshot()
         affected_keys: List[str] = []
         for key, item in list(self.data.items()):
             if (item.category and item.category == old_category) or (
@@ -515,6 +597,7 @@ class Labels(BaseSaveableClass):
         return affected_keys
 
     def delete_category(self, category: str) -> List[str]:
+        self._store_snapshot()
         affected_keys = []
         for key, item in list(self.data.items()):
             if item.category and item.category == category:
@@ -525,5 +608,4 @@ class Labels(BaseSaveableClass):
         if category in self.categories:
             idx = self.categories.index(category)
             self.categories.pop(idx)
-
         return affected_keys
