@@ -792,7 +792,17 @@ class NetworkSettingsUI(QWidget):
     @property
     def p2p_inital_url(self) -> str | None:
         text = self.p2p_inital_url_edit.text().strip()
-        return text if text else None
+        if not text:
+            return None
+
+        host, port = get_host_and_port(text)
+        if host and port is None:
+            default_port = get_default_port(self.network, BlockchainType.CompactBlockFilter)
+            if ":" in host and not host.startswith("[") and not host.endswith("]"):
+                host = f"[{host}]"
+            return f"{host}:{default_port}"
+
+        return text
 
     @p2p_inital_url.setter
     def p2p_inital_url(self, url: str | None):
