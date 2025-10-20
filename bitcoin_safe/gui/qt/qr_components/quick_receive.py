@@ -38,6 +38,7 @@ from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QKeyEvent, QMouseEvent, QPalette
 from PyQt6.QtWidgets import (
     QFrame,
+    QGraphicsOpacityEffect,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -194,22 +195,32 @@ class AddCategoryButton(TitledComponent):
         self._content_widget = QWidget(self)
         self._content_layout = QVBoxLayout(self._content_widget)
         self._content_layout.setContentsMargins(0, 0, 0, 0)
-        self._content_layout.setSpacing(8)
+        self._content_layout.setSpacing(18)
 
         self.icon_label = QLabel(self._content_widget)
         self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._content_layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.caption_label = QLabel(self._content_widget)
+
         self.caption_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         font = self.caption_label.font()
-        font.setPixelSize(11)
+        font.setPixelSize(13)
         self.caption_label.setFont(font)
         self.caption_label.setWordWrap(True)
+        opacity_effect = QGraphicsOpacityEffect()
+        opacity_effect.setOpacity(0.7)  # 0.0 = transparent, 1.0 = opaque
+        self.caption_label.setGraphicsEffect(opacity_effect)
         self._content_layout.addWidget(self.caption_label)
 
         for widget in (self._content_widget, self.icon_label, self.caption_label):
             widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+
+        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
+        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36)))
+        opacity_effect = QGraphicsOpacityEffect()
+        opacity_effect.setOpacity(0.7)  # 0.0 = transparent, 1.0 = opaque
+        self.icon_label.setGraphicsEffect(opacity_effect)
 
         self._layout.insertWidget(1, self._content_widget)
         self._layout.addStretch(1)
@@ -224,8 +235,6 @@ class AddCategoryButton(TitledComponent):
     def updateUi(self) -> None:
         # self.title.setText(self.tr("Add New Category"))
         self.caption_label.setText(self.tr("Add new category"))
-        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
-        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36)))
         self.setToolTip(self.tr("Create a new category"))
 
     def mouseReleaseEvent(self, a0: Optional[QMouseEvent]) -> None:
