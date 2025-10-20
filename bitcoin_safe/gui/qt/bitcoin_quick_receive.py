@@ -54,7 +54,7 @@ class BitcoinQuickReceive(
         limit_to_categories=None,
         parent=None,
     ) -> None:
-        super().__init__(self.tr("Quick Receive"), parent=parent)
+        super().__init__("", parent=parent)
         self.wallet_signals = wallet_signals
         self.wallet = wallet
         self.signals_min = signals_min
@@ -64,6 +64,7 @@ class BitcoinQuickReceive(
 
         # fixed height
         self.setFixedHeight(220)
+        self.label_title.setVisible(False)
 
         # signals
         self.wallet_signals.updated.connect(self.update_content)
