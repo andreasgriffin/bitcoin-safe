@@ -188,33 +188,34 @@ class AddCategoryButton(TitledComponent):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self._layout.setContentsMargins(12, 12, 12, 12)
-        self._layout.setSpacing(12)
 
         self.title.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
 
         self._content_widget = QWidget(self)
         self._content_layout = QVBoxLayout(self._content_widget)
         self._content_layout.setContentsMargins(0, 0, 0, 0)
-        self._content_layout.setSpacing(18)
 
         self.icon_label = QLabel(self._content_widget)
         self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._content_layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignHCenter)
+        self._content_layout.addSpacing(24)
 
-        self.caption_label = QLabel(self._content_widget)
+        def add_label(size: int):
+            label = QLabel(self._content_widget)
 
-        self.caption_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        font = self.caption_label.font()
-        font.setPixelSize(13)
-        self.caption_label.setFont(font)
-        self.caption_label.setWordWrap(True)
-        opacity_effect = QGraphicsOpacityEffect()
-        opacity_effect.setOpacity(0.7)  # 0.0 = transparent, 1.0 = opaque
-        self.caption_label.setGraphicsEffect(opacity_effect)
-        self._content_layout.addWidget(self.caption_label)
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            font = label.font()
+            font.setPixelSize(size)
+            label.setFont(font)
+            label.setWordWrap(True)
+            opacity_effect = QGraphicsOpacityEffect()
+            opacity_effect.setOpacity(0.7)  # 0.0 = transparent, 1.0 = opaque
+            label.setGraphicsEffect(opacity_effect)
+            self._content_layout.addWidget(label)
+            return label
 
-        for widget in (self._content_widget, self.icon_label, self.caption_label):
-            widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self.caption_label = add_label(size=13)
+        self.caption_label_sub = add_label(size=11)
 
         icon = svg_tools.get_QIcon("bi--plus-lg.svg")
         self.icon_label.setPixmap(icon.pixmap(QSize(36, 36)))
@@ -235,7 +236,8 @@ class AddCategoryButton(TitledComponent):
     def updateUi(self) -> None:
         # self.title.setText(self.tr("Add New Category"))
         self.caption_label.setText(self.tr("Add new category"))
-        self.setToolTip(self.tr("Create a new category"))
+        self.caption_label_sub.setText(self.tr("KYC Exchange, Private, ..."))
+        self.setToolTip(self.tr("Add new category"))
 
     def mouseReleaseEvent(self, a0: Optional[QMouseEvent]) -> None:
         if not a0:
