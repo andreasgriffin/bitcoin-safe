@@ -29,19 +29,21 @@
 
 import logging
 from functools import partial
-from typing import List
+from typing import List, Optional, cast
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QFont, QKeyEvent, QMouseEvent, QPalette
 from PyQt6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
+    QSpacerItem,
     QVBoxLayout,
     QWidget,
 )
@@ -49,13 +51,15 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
-from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+from ..util import to_color_name
 
 logger = logging.getLogger(__name__)
 
 
 class TitledComponent(QWidget):
-    def __init__(self, title, hex_color, parent=None) -> None:
+    def __init__(self, title, hex_color: str, border_color: str | None = None, parent=None) -> None:
         super().__init__(parent=parent)
         self._layout = QVBoxLayout(self)
         self._layout.setSpacing(3)
@@ -83,11 +87,12 @@ class TitledComponent(QWidget):
         self.setObjectName(str(id(self)))
         self.setStyleSheet(
             f"""
-            #{self.objectName()} {{
-                background-color: {hex_color};
-                border-radius: 10px;
-            }}
-        """
+                #{self.objectName()} {{
+                    background-color: {hex_color};
+                    border: {'none' if border_color is None else f'2px dashed {border_color}'};
+                    border-radius: 10px;
+                }}
+                """
         )
 
 
@@ -165,15 +170,93 @@ class ReceiveGroup(TitledComponent):
         self.qr_button.setToolTip(self.tr("Magnify QR code"))
 
 
+class AddCategoryButton(TitledComponent):
+    clicked: TypedPyQtSignalNo = cast(TypedPyQtSignalNo, pyqtSignal())
+
+    def __init__(self, width=170, parent=None) -> None:
+        super().__init__(
+            title="",
+            hex_color=to_color_name(QPalette.ColorRole.Midlight),
+            border_color=to_color_name(QPalette.ColorRole.Mid),
+            parent=parent,
+        )
+        self._width = width
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        self.setFixedWidth(self._width)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+        self._layout.setContentsMargins(12, 12, 12, 12)
+        self._layout.setSpacing(12)
+
+        self.title.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+
+        self._content_widget = QWidget(self)
+        self._content_layout = QVBoxLayout(self._content_widget)
+        self._content_layout.setContentsMargins(0, 0, 0, 0)
+        self._content_layout.setSpacing(8)
+
+        self.icon_label = QLabel(self._content_widget)
+        self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._content_layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.caption_label = QLabel(self._content_widget)
+        self.caption_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        font = self.caption_label.font()
+        font.setPixelSize(11)
+        self.caption_label.setFont(font)
+        self.caption_label.setWordWrap(True)
+        self._content_layout.addWidget(self.caption_label)
+
+        for widget in (self._content_widget, self.icon_label, self.caption_label):
+            widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+
+        self._layout.insertWidget(1, self._content_widget)
+        self._layout.addStretch(1)
+
+        self.updateUi()
+
+    def sizeHint(self):
+        hint = super().sizeHint()
+        hint.setWidth(self._width)
+        return hint
+
+    def updateUi(self) -> None:
+        # self.title.setText(self.tr("Add New Category"))
+        self.caption_label.setText(self.tr("Add new category"))
+        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
+        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36)))
+        self.setToolTip(self.tr("Create a new category"))
+
+    def mouseReleaseEvent(self, a0: Optional[QMouseEvent]) -> None:
+        if not a0:
+            return
+        pos = a0.position().toPoint() if hasattr(a0, "position") else a0.pos()
+        if a0.button() == Qt.MouseButton.LeftButton and self.isEnabled() and self.rect().contains(pos):
+            self.clicked.emit()
+            a0.accept()
+            return
+        super().mouseReleaseEvent(a0)
+
+    def keyPressEvent(self, a0: Optional[QKeyEvent]) -> None:
+        if not a0:
+            return
+        if a0.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter, Qt.Key.Key_Space) and self.isEnabled():
+            self.clicked.emit()
+            a0.accept()
+            return
+        super().keyPressEvent(a0)
+
+
 class QuickReceive(QWidget):
+    signal_manage_categories_requested = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_add_category_requested = cast(TypedPyQtSignalNo, pyqtSignal())
+
     def __init__(self, title="Quick Receive", parent=None) -> None:
         super().__init__(parent)
         self.signal_tracker = SignalTracker()
 
-        self.setSizePolicy(
-            QSizePolicy.Policy.Preferred,  # Horizontal size policy
-            QSizePolicy.Policy.Fixed,  # Vertical size policy
-        )
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
         # Horizontal Layout for Scroll Area content
 
@@ -182,6 +265,13 @@ class QuickReceive(QWidget):
         self.content_widget.setAutoFillBackground(True)
         self.content_widget_layout = QHBoxLayout(self.content_widget)
         # self.content_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self._trailing_spacer = QSpacerItem(
+            0,
+            0,
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Minimum,
+        )
+        self.content_widget_layout.addItem(self._trailing_spacer)
 
         # Scroll Area
         self.scroll_area = QScrollArea()
@@ -197,21 +287,41 @@ class QuickReceive(QWidget):
 
         # Main Layout
         main_layout = QVBoxLayout(self)
+        header_widget = QWidget(self)
+        header_layout = QHBoxLayout(header_widget)
+        header_layout.setContentsMargins(0, 0, 0, 0)
+
         self.label_title = QLabel(title)
         font = QFont()
         # font.setBold(True)
         self.label_title.setFont(font)
-        main_layout.addWidget(self.label_title)
+        header_layout.addWidget(self.label_title)
+        header_layout.addStretch(1)
+
+        self.manage_categories_button = QPushButton(self)
+        self.manage_categories_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
+        self.manage_categories_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.manage_categories_button.setFlat(True)
+        self.manage_categories_button.setText(self.tr("Manage Categories"))
+        self.manage_categories_button.setToolTip(self.tr("Open the category manager"))
+        self.manage_categories_button.clicked.connect(self.signal_manage_categories_requested.emit)
+        header_layout.addWidget(self.manage_categories_button)
+
+        main_layout.addWidget(header_widget)
         main_layout.addWidget(self.scroll_area)
 
         # Group Box Management
         self.group_boxes: List[ReceiveGroup] = []
+        self.add_category_button = AddCategoryButton(parent=self.content_widget)
+        self.add_category_button.clicked.connect(self.signal_add_category_requested.emit)
+        self._insert_before_trailing_spacer(self.add_category_button)
 
     def add_box(self, receive_group: ReceiveGroup) -> None:
         self.group_boxes.append(receive_group)
-        self.content_widget_layout.addWidget(receive_group)
+        self._insert_before_widget(receive_group, self.add_category_button)
 
     def remove_box(self, group_box: ReceiveGroup) -> None:
+        self.content_widget_layout.removeWidget(group_box)
         group_box.setHidden(True)
         group_box.close()
         group_box.setParent(None)  # type: ignore[call-overload]
@@ -225,6 +335,13 @@ class QuickReceive(QWidget):
         while self.group_boxes:
             self.remove_last_box()
 
+    def set_manage_categories_enabled(self, enabled: bool) -> None:
+        """Toggle the Manage Categories button availability."""
+
+        self.manage_categories_button.setEnabled(enabled)
+        self.manage_categories_button.setVisible(True)
+        self.add_category_button.setEnabled(enabled)
+
     def close(self) -> bool:
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
@@ -233,7 +350,23 @@ class QuickReceive(QWidget):
         self.setParent(None)
         return super().close()
 
+    def _insert_before_trailing_spacer(self, widget: QWidget) -> None:
+        index = self.content_widget_layout.count()
+        if self._trailing_spacer is not None:
+            index -= 1
+        self.content_widget_layout.insertWidget(index, widget)
+
+    def _insert_before_widget(self, widget: QWidget, before_widget: QWidget) -> None:
+        index = self.content_widget_layout.indexOf(before_widget)
+        if index == -1:
+            self._insert_before_trailing_spacer(widget)
+            return
+        self.content_widget_layout.insertWidget(index, widget)
+
     def updateUi(self):
         self.label_title.setText(self.tr("Quick Receive"))
+        self.manage_categories_button.setText(self.tr("Manage Categories"))
+        self.manage_categories_button.setToolTip(self.tr("Open the category manager"))
+        self.add_category_button.updateUi()
         for gb in self.group_boxes:
             gb.updateUi()

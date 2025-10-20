@@ -55,6 +55,8 @@ from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import set_no_margins, set_translucent, svg_tools
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
+from ..util import to_color_name
+
 logger = logging.getLogger(__name__)
 
 
@@ -127,19 +129,15 @@ class SidebarRow(QWidget):
         base = f"#{widget.objectName()}"
         css = ""
         if self.hover_color:
-            css += f"\n{base}:hover {{ background-color: {self._to_color_name(self.hover_color)}; }}"
+            css += f"\n{base}:hover {{ background-color: {to_color_name(self.hover_color)}; }}"
         if self.selected_color:
-            css += f'\n{base}[selected="true"] {{ background-color: {self._to_color_name(self.selected_color)}; }}'
+            css += f'\n{base}[selected="true"] {{ background-color: {to_color_name(self.selected_color)}; }}'
         if self.selected_hover_color:
-            css += f'\n{base}[selected="true"]:hover {{ background-color: {self._to_color_name(self.selected_hover_color)}; }}'
+            css += f'\n{base}[selected="true"]:hover {{ background-color: {to_color_name(self.selected_hover_color)}; }}'
         return css
 
     def style_widget(self, widget: QWidget):
         self.setStyleSheet(self.get_css(widget=widget))
-
-    @staticmethod
-    def _to_color_name(color: str | QPalette.ColorRole) -> str:
-        return QApplication.palette().color(color).name() if isinstance(color, QPalette.ColorRole) else color
 
     def _on_main_toggled(self, selected: bool) -> None:
         # Update dynamic property and repolish so QSS re-evaluates selectors

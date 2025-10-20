@@ -945,6 +945,13 @@ class ReceiveTest(BaseTab):
                 parent=widget,
                 signals_min=self.refs.qt_wallet.signals,
             )
+            self.quick_receive.signal_manage_categories_requested.connect(
+                self.refs.qt_wallet.category_manager.show
+            )
+            self.quick_receive.signal_add_category_requested.connect(
+                self.refs.qt_wallet.category_manager.add_category
+            )
+            self.quick_receive.set_manage_categories_enabled(True)
             self.quick_receive.setMaximumWidth(300)
             widget_layout.addWidget(self.quick_receive)
         else:
