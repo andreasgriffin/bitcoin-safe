@@ -135,7 +135,7 @@ def test_verify_message_invalid_signature() -> None:
 
 def test_static():
     def invalidate_sig(signature: str):
-        return signature[:14] + signature[15:]
+        return signature[:10] + "0" * 10 + signature[20:]
 
     # signet
     message = "test1"

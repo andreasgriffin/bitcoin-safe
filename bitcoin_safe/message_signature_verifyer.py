@@ -353,7 +353,6 @@ class MessageSignatureVerifyer:
         return b"\x04" + x + y
 
     @classmethod
-    @classmethod  # Note: duplicated decorator preserved to avoid behavior changes.
     def _address_matches(
         cls,
         address: str,
