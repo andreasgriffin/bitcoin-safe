@@ -28,7 +28,7 @@
 
 
 import base64
-from typing import Tuple
+from typing import Tuple, Union
 
 from ecdsa import SECP256k1, SigningKey, VerifyingKey, util
 from hwilib import _bech32
@@ -132,9 +132,73 @@ def test_verify_message_invalid_signature() -> None:
     assert not different_message_result.match
 
 
+def _b64_to_bytes(sig_b64: str) -> bytearray:
+    try:
+        raw = base64.b64decode(sig_b64)
+    except Exception as e:
+        raise ValueError("Invalid base64 signature") from e
+    if len(raw) != 65:
+        raise ValueError("Decoded signature must be 65 bytes (recoverable ECDSA signature)")
+    return bytearray(raw)
+
+
+def _bytes_to_b64(raw: Union[bytes, bytearray]) -> str:
+    return base64.b64encode(bytes(raw)).decode("ascii")
+
+
+def invalidate_header(signature_b64: str) -> str:
+    """
+    Corrupt only the header (recovery byte) of a 65-byte recoverable signature.
+    This will typically prevent public-key recovery (and therefore verification).
+    """
+    sig = _b64_to_bytes(signature_b64)
+    # Modify header byte. Use XOR with a value that flips meaningful bits (but not 0).
+    # We make sure to change it (in case header is weird) by toggling lower 3 bits + compression bit.
+    sig[0] ^= 0x07  # flip recovery id bits (0..3) (simple deterministic change)
+    # also flip compression bit (bit 2 in common encodings) to be sure header changes
+    sig[0] ^= 0x04
+    return _bytes_to_b64(sig)
+
+
+def invalidate_r(signature_b64: str) -> str:
+    """
+    Corrupt the R component of the signature (bytes 1..32).
+    This keeps header untouched but makes the signature invalid for verification.
+    """
+    sig = _b64_to_bytes(signature_b64)
+    # R occupies bytes 1..32 (inclusive). We'll flip a pattern across those bytes.
+    for i in range(1, 33):
+        # XOR with 0xAA on alternating bytes for deterministic corruption
+        sig[i] ^= 0xAA if (i % 2 == 0) else 0x55
+    return _bytes_to_b64(sig)
+
+
+def invalidate_s(signature_b64: str) -> str:
+    """
+    Corrupt the S component of the signature (bytes 33..64).
+    This keeps header and R untouched but makes the signature invalid for verification.
+    """
+    sig = _b64_to_bytes(signature_b64)
+    # S occupies bytes 33..64 inclusive (indices 33..64 -> python indices 33..64)
+    for i in range(33, 65):
+        # XOR with a different deterministic pattern to avoid accidental collision with R corruption
+        sig[i] ^= 0x3C if (i % 3 == 0) else 0xC3
+    return _bytes_to_b64(sig)
+
+
 def test_static():
-    def invalidate_sig(signature: str):
-        return signature[:10] + "0" * 10 + signature[20:]
+    def check_all(verifyer: MessageSignatureVerifyer, address, message, signature):
+        result = verifyer.verify_message(address, message, signature)
+        assert result.match
+
+        result = verifyer.verify_message(address, message, invalidate_header(signature))
+        assert not result.match
+
+        result = verifyer.verify_message(address, message, invalidate_r(signature))
+        assert not result.match
+
+        result = verifyer.verify_message(address, message, invalidate_s(signature))
+        assert not result.match
 
     # signet
     message = "test1"
@@ -142,12 +206,10 @@ def test_static():
     signature = "IGuLwe0qHi/YdhnhABMLjYi7O+kMxeo6l15GC+ar6NUcKJV4LMZm8vu29U+J0w9SuX8Oik5JGzYO4beWdfO+Rrw="
 
     verifyer = MessageSignatureVerifyer()
-
     result = verifyer.verify_message(address, message, signature)
     assert result.match
 
-    result = verifyer.verify_message(address, message, invalidate_sig(signature))
-    assert not result.match
+    check_all(verifyer, address, message, signature)
 
     # regtest
     message = "test1"
@@ -155,12 +217,7 @@ def test_static():
     signature = "IGf3B02DcceJBhqh3/vVgXOKOwpshWHs5WvGmzBsIQnYPyWtj5wseXOIQkEc/jw3NjzpMWnIXRaQoHbiDA6Gi4w="
 
     verifyer = MessageSignatureVerifyer()
-
-    result = verifyer.verify_message(address, message, signature)
-    assert result.match
-
-    result = verifyer.verify_message(address, message, invalidate_sig(signature))
-    assert not result.match
+    check_all(verifyer, address, message, signature)
 
     # mainnet
     message = "test1"
@@ -168,12 +225,7 @@ def test_static():
     signature = "HwEe8N9JI/ALgTgT+XCYUm621CzKEp9s1TdicXRN7eeUESwi6A5e5impxIdcOZjnuM6e4Xk9tfGxozNMq2dDYA0="
 
     verifyer = MessageSignatureVerifyer()
-
-    result = verifyer.verify_message(address, message, signature)
-    assert result.match
-
-    result = verifyer.verify_message(address, message, invalidate_sig(signature))
-    assert not result.match
+    check_all(verifyer, address, message, signature)
 
     # mainnet legacy
     message = "test1"
@@ -181,12 +233,7 @@ def test_static():
     signature = "IDqaBpfSu2F/U/z38SFptC2LyVfQ7ODfPaJ/LR85MKEJBfKN0a/9OPOT1p2bbwaLzZs5wtFoiYO75mwNvxVcpyo="
 
     verifyer = MessageSignatureVerifyer()
-
-    result = verifyer.verify_message(address, message, signature)
-    assert result.match
-
-    result = verifyer.verify_message(address, message, invalidate_sig(signature))
-    assert not result.match
+    check_all(verifyer, address, message, signature)
 
     # legacy
     message = "test1"
@@ -194,9 +241,4 @@ def test_static():
     signature = "IDUagVRDc3ApRRIrRccMsWbYOu9Aj8Eq4cRIXFzBGfT7UZAq3+XnoZI/tw6EehSHD/52KuA+q+gy5ilnzIrTwQI="
 
     verifyer = MessageSignatureVerifyer()
-
-    result = verifyer.verify_message(address, message, signature)
-    assert result.match
-
-    result = verifyer.verify_message(address, message, invalidate_sig(signature))
-    assert not result.match
+    check_all(verifyer, address, message, signature)
