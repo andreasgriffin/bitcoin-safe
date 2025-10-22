@@ -56,11 +56,22 @@ import binascii
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
+from Crypto.Hash import RIPEMD160, SHA256
 from ecdsa import BadSignatureError, SECP256k1, VerifyingKey, util
 from hwilib import _base58, _bech32
-from hwilib.common import hash160, sha256
+from hwilib.common import sha256
 
 from .i18n import translate
+
+
+def hash160(data: bytes) -> bytes:
+    """Compute RIPEMD160(SHA256(data))."""
+
+    sha = SHA256.new()
+    sha.update(data)
+    ripe = RIPEMD160.new()
+    ripe.update(sha.digest())
+    return ripe.digest()
 
 
 class MessageVerificationError(Exception):

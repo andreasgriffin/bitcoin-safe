@@ -32,9 +32,8 @@ from typing import Tuple
 
 from ecdsa import SECP256k1, SigningKey, VerifyingKey, util
 from hwilib import _bech32
-from hwilib.common import hash160
 
-from bitcoin_safe.message_signature_verifyer import MessageSignatureVerifyer
+from bitcoin_safe.message_signature_verifyer import MessageSignatureVerifyer, hash160
 
 
 def _create_message_signature(message: str, privkey_hex: str, compressed: bool) -> Tuple[str, bytes]:
