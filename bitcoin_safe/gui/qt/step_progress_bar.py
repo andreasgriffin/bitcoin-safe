@@ -32,7 +32,7 @@ import sys
 from dataclasses import dataclass
 from functools import partial
 from math import ceil
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Union, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
@@ -78,7 +78,7 @@ def height_of_str(text, widget: QWidget, max_width: float) -> float:
 
 class StepProgressBar(QWidget):
     # Define a new signal that emits the number of the index clicked
-    signal_index_clicked: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    signal_index_clicked = cast(TypedPyQtSignal[int], pyqtSignal(int))
 
     def __init__(
         self,
@@ -447,9 +447,9 @@ class AutoResizingStackedWidget(QWidget):
 
 
 class StepProgressContainer(QWidget):
-    signal_set_current_widget: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
-    signal_widget_focus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
-    signal_widget_unfocus: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    signal_set_current_widget = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
+    signal_widget_focus = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
+    signal_widget_unfocus = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
 
     def __init__(
         self,

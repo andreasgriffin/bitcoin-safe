@@ -30,10 +30,9 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import Dict, cast
 
 import requests
-from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
@@ -44,17 +43,16 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.typestubs import TypedPyQtSignal
-
-from ...signals import TypedPyQtSignalNo
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+from bitcoin_safe.util_os import show_file_in_explorer
 
 logger = logging.getLogger(__name__)
 
 
 class DownloadThread(QThread):
-    progress: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    progress = cast(TypedPyQtSignal[int], pyqtSignal(int))
     finished: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    aborted: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    aborted = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
         super().__init__()
@@ -86,7 +84,7 @@ class DownloadThread(QThread):
 
 
 class Downloader(QWidget):
-    finished: TypedPyQtSignal[DownloadThread] = pyqtSignal(DownloadThread)  # type: ignore
+    finished = cast(TypedPyQtSignal[DownloadThread], pyqtSignal(DownloadThread))
 
     def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
         super().__init__()

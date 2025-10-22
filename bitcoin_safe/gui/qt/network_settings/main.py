@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -170,8 +170,8 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
 
 
 class NetworkSettingsUI(QWidget):
-    signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = pyqtSignal(bdk.Network)  # type: ignore
-    signal_cancel: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_apply_and_shutdown = cast(TypedPyQtSignal[bdk.Network], pyqtSignal(bdk.Network))
+    signal_cancel = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,

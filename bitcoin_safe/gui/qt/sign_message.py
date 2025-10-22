@@ -29,6 +29,7 @@
 
 import logging
 import typing
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
@@ -37,7 +38,6 @@ from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QWidget
 
-from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.export_data import QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
@@ -46,13 +46,13 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...signals import SignalsMin, TypedPyQtSignal
-from .util import Message, do_copy
+from .util import Message
 
 logger = logging.getLogger(__name__)
 
 
 class SignMessage(QWidget):
-    signal_signed_message: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_signed_message = cast(TypedPyQtSignal[str], pyqtSignal(str))
 
     def __init__(
         self,
@@ -123,6 +123,10 @@ class SignMessage(QWidget):
             close_all_video_widgets=self.close_all_video_widgets,
             title=self.tr("Signed Message"),
         )
+        self._qr_scanner.signal_raw_content.connect(self.on_raw_content)
+
+    def on_raw_content(self, o: object):
+        self.signal_signed_message.emit(str(o))
 
     def on_show_export_widget(self):
         self.sign_qr_button.set_data(self.get_data())
@@ -139,7 +143,4 @@ class SignMessage(QWidget):
         )
 
         if signed_message:
-            title = self.tr("Signed Message")
             self.signal_signed_message.emit(signed_message)
-            do_copy(signed_message, title=title)
-            show_textedit_message(text=signed_message, label_description="", title=title)

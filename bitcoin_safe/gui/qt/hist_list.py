@@ -144,7 +144,7 @@ class HistList(MyTreeView[str]):
         **BaseSaveableClass.known_classes,
     }
 
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = pyqtSignal(AddressDragInfo)  # type: ignore
+    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter

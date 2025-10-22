@@ -29,7 +29,7 @@
 
 import logging
 from functools import partial
-from typing import List
+from typing import List, cast
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -92,7 +92,7 @@ class TitledComponent(QWidget):
 
 
 class ReceiveGroup(TitledComponent):
-    signal_set_address_as_used: TypedPyQtSignal[AddressInfoMin] = pyqtSignal(AddressInfoMin)  # type: ignore
+    signal_set_address_as_used = cast(TypedPyQtSignal[AddressInfoMin], pyqtSignal(AddressInfoMin))
 
     def __init__(
         self,

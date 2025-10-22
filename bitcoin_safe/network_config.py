@@ -419,8 +419,8 @@ class NetworkConfig(BaseSaveableClass):
     VERSION = "0.2.3"
     known_classes = {
         **BaseSaveableClass.known_classes,
-        "BlockchainType": BlockchainType,
-        "Network": bdk.Network,
+        BlockchainType.__name__: BlockchainType,
+        bdk.Network.__name__: bdk.Network,
         P2pListenerType.__name__: P2pListenerType,
         MempoolData.__name__: MempoolData,
     }
@@ -528,7 +528,7 @@ class NetworkConfig(BaseSaveableClass):
 
 class NetworkConfigs(BaseSaveableClass):
     VERSION = "0.1.0"
-    known_classes = {**BaseSaveableClass.known_classes, "NetworkConfig": NetworkConfig}
+    known_classes = {**BaseSaveableClass.known_classes, NetworkConfig.__name__: NetworkConfig}
 
     def __init__(self, configs: dict[str, NetworkConfig] | None = None) -> None:
         super().__init__()

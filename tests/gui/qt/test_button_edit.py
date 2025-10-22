@@ -28,6 +28,7 @@
 
 
 import logging
+from typing import cast
 from unittest.mock import patch
 
 import pytest
@@ -58,7 +59,7 @@ from bitcoin_safe.signals import TypedPyQtSignalNo
 
 
 class My(QObject):
-    close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
 
 
 @pytest.fixture()

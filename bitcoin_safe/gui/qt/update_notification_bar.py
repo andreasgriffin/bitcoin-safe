@@ -33,7 +33,7 @@ import platform
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from packaging import version
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar):
-    signal_on_success: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_on_success = cast(TypedPyQtSignalNo, pyqtSignal())
 
     key = KnownGPGKeys.andreasgriffin
 
