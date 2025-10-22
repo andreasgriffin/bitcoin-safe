@@ -63,7 +63,7 @@ RECENT_WALLET_MAXLEN = 15
 
 
 class UserConfig(BaseSaveableClass):
-    known_classes = {**BaseSaveableClass.known_classes, "NetworkConfigs": NetworkConfigs}
+    known_classes = {**BaseSaveableClass.known_classes, NetworkConfigs.__name__: NetworkConfigs}
     VERSION = "0.2.3"
 
     app_name = "bitcoin_safe"

@@ -29,7 +29,7 @@
 
 import logging
 from functools import lru_cache
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 
 class FX(QObject):
-    signal_data_updated: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_data_updated = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(self, config: UserConfig) -> None:
         super().__init__()  # type: ignore
@@ -101,6 +101,7 @@ class FX(QObject):
 
     def close(self):
         self.loop_in_thread.stop()
+        logger.debug(f"{self.__class__.__name__} close")
 
     def update_if_needed(self) -> None:
         if self.rates:

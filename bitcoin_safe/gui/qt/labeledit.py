@@ -28,7 +28,7 @@
 
 
 import logging
-from typing import Callable, List, Optional, Set
+from typing import Callable, List, Optional, Set, cast
 
 from PyQt6 import QtGui
 from PyQt6.QtCore import QEvent, QObject, QStringListModel, Qt, pyqtSignal
@@ -60,8 +60,10 @@ logger = logging.getLogger(__name__)
 
 
 class LabelLineEdit(QLineEdit):
-    signal_enterPressed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore  # Signal for Enter key
-    signal_textEditedAndFocusLost: TypedPyQtSignalNo = pyqtSignal()  # type: ignore  # Signal for text edited and focus lost
+    signal_enterPressed = cast(TypedPyQtSignalNo, pyqtSignal())  # Signal for Enter key
+    signal_textEditedAndFocusLost = cast(
+        TypedPyQtSignalNo, pyqtSignal()
+    )  # Signal for text edited and focus lost
 
     def __init__(self, parent=None):
         super().__init__(parent)

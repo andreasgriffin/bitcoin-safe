@@ -29,7 +29,7 @@
 
 import logging
 from pathlib import Path
-from typing import Callable, List
+from typing import Callable, List, cast
 from unittest.mock import patch
 
 import bdkpython as bdk
@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 class MySignalclass(QObject):
-    signal: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal = cast(TypedPyQtSignalNo, pyqtSignal())
 
 
 def chained_one_time_signal_connections(

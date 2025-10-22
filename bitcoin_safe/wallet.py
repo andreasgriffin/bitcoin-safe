@@ -608,11 +608,11 @@ class Wallet(BaseSaveableClass, CacheManager):
     VERSION = "0.3.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
-        "KeyStore": KeyStore,
-        "UserConfig": UserConfig,
-        "Labels": Labels,
-        "Balance": Balance,
-        "LabelType": LabelType,
+        KeyStore.__name__: KeyStore,
+        UserConfig.__name__: UserConfig,
+        Labels.__name__: Labels,
+        Balance.__name__: Balance,
+        LabelType.__name__: LabelType,
     }
 
     def __init__(

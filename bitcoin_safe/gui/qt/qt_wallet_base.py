@@ -26,11 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import enum
 import logging
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -63,7 +62,7 @@ class WrapperQWidget(QWidget):
 
 
 class QtWalletBase(WrapperQWidget):
-    signal_after_sync: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
+    signal_after_sync = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))  # SyncStatus
     wizard: WizardBase | None = None
     wallet_descriptor_ui: DescriptorUI
 

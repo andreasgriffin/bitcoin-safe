@@ -30,7 +30,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Literal
+from typing import List, Literal, cast
 
 import bdkpython as bdk
 import pytest
@@ -150,7 +150,7 @@ romance slush habit speed type also grace coffee grape inquiry receive filter"""
 
 
 class My(QObject):
-    close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
 
 
 @pytest.fixture()

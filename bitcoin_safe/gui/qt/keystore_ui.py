@@ -101,7 +101,7 @@ def icon_for_label(label: str) -> QIcon:
 
 
 class BaseHardwareSignerInteractionWidget(QWidget):
-    aboutToClose: TypedPyQtSignal[QWidget] = pyqtSignal(QWidget)  # type: ignore
+    aboutToClose = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -208,7 +208,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
 
 
 class KeyStoreUI(QWidget):
-    signal_signer_infos: TypedPyQtSignal[List[SignerInfo]] = pyqtSignal(list)  # type: ignore
+    signal_signer_infos = cast(TypedPyQtSignal[List[SignerInfo]], pyqtSignal(list))
 
     def __init__(
         self,
@@ -692,8 +692,8 @@ class SignedUI(QWidget):
 
 
 class SignerUI(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
-    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
+    signal_signature_added = cast(TypedPyQtSignal[bdk.Psbt], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
 
     def __init__(
         self,
@@ -735,8 +735,8 @@ class SignerUI(QWidget):
 
 
 class SignerUIHorizontal(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
-    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
+    signal_signature_added = cast(TypedPyQtSignal[bdk.Psbt], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
 
     def __init__(
         self,

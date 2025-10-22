@@ -1,4 +1,5 @@
 import random
+from typing import cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -22,7 +23,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     class My(QObject):
-        close_all_video_widgets: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+        close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
 
     my = My()
 
