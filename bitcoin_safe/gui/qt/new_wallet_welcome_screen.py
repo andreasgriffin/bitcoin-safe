@@ -114,6 +114,7 @@ class NewWalletWelcomeScreen(QWidget):
                 title=self.tr("Create new wallet"),
                 data=self,
                 widget=self,
+                closable=True,
             )
         )
 

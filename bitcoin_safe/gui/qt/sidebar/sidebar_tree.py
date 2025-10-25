@@ -37,7 +37,7 @@ from typing import Generic, TypeVar, cast
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import is_dark_mode
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
-from PyQt6.QtGui import QAction, QColor, QIcon, QKeySequence, QPalette, QShortcut
+from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
     QFrame,
@@ -61,7 +61,6 @@ from bitcoin_safe.gui.qt.qr_components.square_buttons import (
 from bitcoin_safe.gui.qt.util import (
     set_no_margins,
     set_translucent,
-    svg_tools,
     to_color_name,
 )
 
@@ -94,6 +93,7 @@ class SidebarRow(QWidget):
 
         # Dynamic property we will toggle from the main button
         self.setProperty("selected", False)
+        self.setProperty("kbd_focus", False)
 
         self.style_widget(self)
         self._layout = QHBoxLayout(self)
@@ -145,8 +145,10 @@ class SidebarRow(QWidget):
             css += f"\n{base}:hover {{ background-color: {to_color_name(self.hover_color)}; }}"
         if self.selected_color:
             css += f'\n{base}[selected="true"] {{ background-color: {to_color_name(self.selected_color)}; }}'  # noqa: E501
+            css += f'\n{base}[selected="false"][kbd_focus="true"] {{ background-color: {to_color_name(self.selected_color)}; }}'
         if self.selected_hover_color:
             css += f'\n{base}[selected="true"]:hover {{ background-color: {to_color_name(self.selected_hover_color)}; }}'  # noqa: E501
+            css += f'\n{base}[selected="false"][kbd_focus="true"]:hover {{ background-color: {to_color_name(self.selected_hover_color)}; }}'
         return css
 
     def style_widget(self, widget: QWidget):
@@ -184,6 +186,26 @@ class SidebarButton(QPushButton):
         self.setFixedHeight(36)
         self._apply_style()
 
+    def _update_row_focus(self, focused: bool) -> None:
+        """Mirror focus state onto the parent row for custom styling."""
+        parent = self.parentWidget()
+        while parent and not isinstance(parent, SidebarRow):
+            parent = parent.parentWidget()
+        if isinstance(parent, SidebarRow):
+            parent.setProperty("kbd_focus", focused)
+            if style := parent.style():
+                style.unpolish(parent)
+                style.polish(parent)
+            parent.update()
+
+    def focusInEvent(self, a0: QFocusEvent | None) -> None:
+        super().focusInEvent(a0)
+        self._update_row_focus(True)
+
+    def focusOutEvent(self, a0: QFocusEvent | None) -> None:
+        super().focusOutEvent(a0)
+        self._update_row_focus(False)
+
     def setIndent(self, indent: int, bf=False) -> None:
         """SetIndent."""
         self._indent = indent
@@ -202,10 +224,15 @@ class SidebarButton(QPushButton):
     padding-left: {padding}px;
     {font_weight}
 }}"""
+        css += f"\n#{self.objectName()}:focus {{\n    outline: none;\n    background-color: transparent;\n}}"
         self.setStyleSheet(css)
 
 
 TT = TypeVar("TT")
+
+
+class HideButton(CloseButton):
+    pass
 
 
 class SidebarNode(QFrame, Generic[TT]):
@@ -526,7 +553,7 @@ class SidebarNode(QFrame, Generic[TT]):
             self.header_row.add_square_button(close_btn)
 
         if self.hidable:
-            hide_btn = FlatSquareButton(svg_tools.get_QIcon(self.hide_icon_name))
+            hide_btn = HideButton()
             hide_btn.clicked.connect(partial(self.hideClicked.emit, self))
             hide_btn.clicked.connect(partial(self.setVisible, False))
             self.header_row.add_square_button(hide_btn)
@@ -769,6 +796,27 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.parent_node is None:
             return
         self._select_adjacent_sibling(idx_hint=idx)
+
+    def get_nested_titles(
+        self,
+    ) -> list[str]:
+        if not self.parent_node:
+            return [self.title]
+        else:
+            return self.parent_node.get_nested_titles() + [self.title]
+
+    def select_by_titles(self, titles: list[str]):
+        if not titles:
+            return
+        node = self.findNodeByTitle(titles[0])
+        if not node:
+            return
+
+        new_titles = titles[1:]
+        if not new_titles:
+            node.select()
+        else:
+            node.select_by_titles(new_titles)
 
     def set_current_tab_by_text(self, title: str):
         """Set current tab by text."""

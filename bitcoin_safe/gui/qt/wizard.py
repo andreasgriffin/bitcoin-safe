@@ -1017,7 +1017,8 @@ class ReceiveTest(BaseTab):
                 self.refs.qt_wallet.category_manager.add_category
             )
             self.quick_receive.set_manage_categories_enabled(True)
-            self.quick_receive.setMaximumWidth(300)
+            self.quick_receive.setMaximumWidth(250)
+            self.quick_receive.setMaximumHeight(300)
             left_widget_layout.addWidget(self.quick_receive)
 
             self.cbf_progress_bar = CBFProgressBar(config=self.refs.qt_wallet.config, parent=widget)

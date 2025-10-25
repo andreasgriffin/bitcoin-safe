@@ -37,7 +37,7 @@ from bitcoin_safe.pythonbdk_types import TxOut, robust_address_str_from_txout
 logger = logging.getLogger(__name__)
 
 
-def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: list[str]) -> bool:
+def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: set[str]) -> bool:
     """Address match."""
     for output in tx.output():
         address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
@@ -46,7 +46,7 @@ def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: lis
     return False
 
 
-def outpoint_match(tx: bdk.Transaction, outpoint_filter: list[str]) -> bool:
+def outpoint_match(tx: bdk.Transaction, outpoint_filter: set[str]) -> bool:
     """Outpoint match."""
     for inp in tx.input():
         outpoint = f"{inp.previous_output.txid}:{inp.previous_output.vout}"

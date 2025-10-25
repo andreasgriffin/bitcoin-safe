@@ -45,11 +45,8 @@ def advance_tip_to_address_info(
     address_info: AddressInfoMin, wallet: Wallet, wallet_signals: WalletSignals, min_advance: int = 1
 ) -> list[bdk.AddressInfo]:
     """Advance tip to address info."""
-    revealed_address_infos: list[bdk.AddressInfo] = []
-    if address_info.index > (current_tip := wallet.get_tip(is_change=address_info.is_change())):
-        revealed_address_infos += wallet.advance_tip_if_necessary(
-            is_change=address_info.is_change(), target=max(address_info.index, current_tip + min_advance)
-        )
+    revealed_address_infos = wallet.advance_tip_to_addresses([str(address_info.address)])
+    if revealed_address_infos:
         wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=set([str(address_info.address) for address_info in revealed_address_infos]),

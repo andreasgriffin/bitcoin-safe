@@ -69,8 +69,8 @@ class P2pListener(QObject):
         self.fetch_txs = fetch_txs
         self.client = P2PClient(network=network, debug=debug, timeout=timeout, parent=self)
         self.loop_in_thread = LoopInThread()
-        self.address_filter: list[str] | None = None
-        self.outpoint_filter: list[str] | None = None
+        self.address_filter: set[str] | None = None
+        self.outpoint_filter: set[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network)
 
         self.discovered_peers = discovered_peers if discovered_peers else Peers()
@@ -83,11 +83,11 @@ class P2pListener(QObject):
         self.client.signal_tx.connect(self.on_tx)
         self.signal_break_current_connection.connect(self._on_break_current_connection)
 
-    def set_address_filter(self, address_filter: list[str] | None):
+    def set_address_filter(self, address_filter: set[str] | None):
         """Set address filter."""
         self.address_filter = address_filter
 
-    def set_outpoint_filter(self, outpoint_filter: list[str] | None):
+    def set_outpoint_filter(self, outpoint_filter: set[str] | None):
         """Set outpoint filter."""
         self.outpoint_filter = outpoint_filter
 

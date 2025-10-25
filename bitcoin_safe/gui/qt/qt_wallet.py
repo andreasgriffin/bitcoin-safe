@@ -573,7 +573,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if _node := self.tabs.findNodeByWidget(self.history_tab):
             _node.setTitle(self.tr("History"))
         if _node := self.tabs.findNodeByWidget(self.address_tab):
-            _node.setTitle(self.tr("Receive"))
+            _node.setTitle(self.tr("Addresses"))
         if _node := self.tabs.findNodeByWidget(self.plugin_manager_widget):
             _node.setTitle(self.tr("Plugins"))
 
@@ -1751,18 +1751,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         applied_txs = self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
         if not applied_txs:
             return
-        self.hist_node.select()
-        self.wallet_signals.updated.emit(
-            UpdateFilter(refresh_all=True, reason=UpdateFilterReason.TransactionChange)
-        )
 
-        self._rows_after_hist_list_update = [str(tx.compute_txid()) for tx in txs]
-
-        self.history_list.select_rows(
-            self._rows_after_hist_list_update,
-            self.history_list.key_column,
-            role=MyItemDataRole.ROLE_KEY,
-            scroll_to_last=True,
+        self.refresh_caches_and_ui_lists(
+            force_ui_refresh=False,
         )
 
     def export_pdf_statement(self, wallet_id: str | None = None) -> None:

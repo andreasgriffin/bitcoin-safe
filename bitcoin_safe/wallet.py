@@ -1955,7 +1955,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     @instance_lru_cache()
     def get_address_dict_with_peek(
-        self, peek_receive_ahead: int, peek_change_ahead: int
+        self, peek_receive_ahead: int = 1000, peek_change_ahead: int = 1000
     ) -> dict[str, AddressInfoMin]:
         """Return metadata for an address by peeking ahead if needed."""
         start_time = time()
@@ -2550,6 +2550,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
     ) -> list[bdk.UnconfirmedTx]:
         """Add unconfirmed transactions to the cache and state."""
+
+        # important is to first advance, such that bdk can detect all outputs correctly
+        self.advance_tip_to_addresses([address for tx in txs for address in self.get_output_addresses(tx)])
+
         applied_txs: list[bdk.UnconfirmedTx] = []
         for tx in txs:
             wallet_tx = self.get_tx(str(tx.compute_txid()))
@@ -2565,7 +2569,23 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         self.bdkwallet.apply_unconfirmed_txs(applied_txs)
         self.persist()
+
         return applied_txs
+
+    def advance_tip_to_addresses(self, addresses: list[str]) -> list[bdk.AddressInfo]:
+        """Advance tip to address info."""
+        revealed_address_infos: list[bdk.AddressInfo] = []
+
+        for address in addresses:
+            address_info = self.is_my_address_with_peek(address=address)
+            if not address_info:
+                continue
+            if address_info.index > (current_tip := self.get_tip(is_change=address_info.is_change())):
+                revealed_address_infos += self.advance_tip_if_necessary(
+                    is_change=address_info.is_change(), target=max(address_info.index, current_tip + self.gap)
+                )
+
+        return revealed_address_infos
 
     def close(self) -> None:
         """Shutdown the wallet and release background resources."""
