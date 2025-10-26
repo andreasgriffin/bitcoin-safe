@@ -321,7 +321,7 @@ files = [
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "1.0.3"
+version = "1.0.4"
 description = "A Nostr Chat with participant discovery"
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -333,7 +333,7 @@ develop = false
 bitcoin-qr-tools = {git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main"}
 bitcoin-safe-lib = "^0.2.0"
 cbor2 = "^5.6.3"
-nostr-sdk = "^0.38.0"
+nostr-sdk = "^0.43.1"
 pyqt6 = "^6.6.1"
 requests = "^2.31.0"
 
@@ -341,7 +341,7 @@ requests = "^2.31.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
 reference = "main"
-resolved_reference = "4072570afc8abaed8ee480e9abe8e5ccee7e95d2"
+resolved_reference = "968f9a4a818533905dd6ccc5caa9811e85e10b0a"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -392,7 +392,7 @@ pyqt6 = ">=6.9.0,<7.0.0"
 
 [[package]]
 name = "bitcoin-usb"
-version = "1.0.1"
+version = "1.0.2"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -403,7 +403,7 @@ develop = false
 [package.dependencies]
 bdkpython = "1.2.0"
 bitcoin-safe-lib = "^0.2.6"
-hwi = {git = "https://github.com/JamieDriver/HWI.git", rev = "4d17ae6e4e9d669a30f7df0e4dbc2781d4ed531d"}
+hwi = {git = "https://github.com/bitcoin-core/HWI.git", branch = "master"}
 mnemonic = "^0.21"
 pyqt6 = "^6.6.1"
 requests = "^2.32.3"
@@ -412,8 +412,8 @@ trezor = "^0.13.9"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-usb.git"
-reference = "2e6970956967ba00bdad93b41e877b1c005c5f3e"
-resolved_reference = "2e6970956967ba00bdad93b41e877b1c005c5f3e"
+reference = "master"
+resolved_reference = "065d2cd42130db64084703d4c2389bc858ea1298"
 
 [[package]]
 name = "build"
@@ -1478,7 +1478,7 @@ name = "hwi"
 version = "3.1.0"
 description = "A library for working with Bitcoin hardware wallets"
 optional = false
-python-versions = "^3.8,<3.13"
+python-versions = "^3.9,<3.13"
 groups = ["main"]
 files = []
 develop = false
@@ -1501,9 +1501,9 @@ qt = ["pyside2 (>=5.14.0,<6.0.0) ; python_version < \"3.10\""]
 
 [package.source]
 type = "git"
-url = "https://github.com/JamieDriver/HWI.git"
-reference = "4d17ae6e4e9d669a30f7df0e4dbc2781d4ed531d"
-resolved_reference = "4d17ae6e4e9d669a30f7df0e4dbc2781d4ed531d"
+url = "https://github.com/bitcoin-core/HWI.git"
+reference = "master"
+resolved_reference = "4e342db25d58354cf838734173d2bf195cda32f9"
 
 [[package]]
 name = "identify"
@@ -2177,32 +2177,25 @@ cryptography = ">=2.8"
 
 [[package]]
 name = "nostr-sdk"
-version = "0.38.0"
+version = "0.43.1"
 description = "Nostr protocol implementation, Relay, RelayPool, high-level client library, NWC client and more."
 optional = false
-python-versions = "*"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "nostr_sdk-0.38.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:617b3521234614a99833cbc25a2e448fa0eccc4ca9ff1882bda645dae246c09f"},
-    {file = "nostr_sdk-0.38.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:c5c497fdf0a5f6eee6f4ea6108ea8c376c7ef3fbb6654b1565151514e5b4c941"},
-    {file = "nostr_sdk-0.38.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:5a141ec8946e54cac6ec0a08c2d5a91e45c3c778ec933e5a1315f9555be9df58"},
-    {file = "nostr_sdk-0.38.0-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:de2a8fab3eddab73a8ecd17774eac9d4c77b69ee4d16ca8bf91b791a81b6c278"},
-    {file = "nostr_sdk-0.38.0-cp310-cp310-win_amd64.whl", hash = "sha256:5977c99cbce8d5f3bf76f343fcf291b84756d39c30b3703a7e6447c02a4dee88"},
-    {file = "nostr_sdk-0.38.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d92a830e85c23401fbc086cad9ece2a961170f42e928232c1809983ce6c210fe"},
-    {file = "nostr_sdk-0.38.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:005b2a632c93f970425cf90b0c15ea04fc084a1e6c2b0cefa250ae3fbf1cb604"},
-    {file = "nostr_sdk-0.38.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:4b7ae46fb54f2f5522d536ad3adc08cb78cf6447830c0ffd9d4921257656cddb"},
-    {file = "nostr_sdk-0.38.0-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:d599680f22e46d029c6a0ed2b856b16afad0e5f94a455e2f9bdd92d32ba65c36"},
-    {file = "nostr_sdk-0.38.0-cp311-cp311-win_amd64.whl", hash = "sha256:d894ed51eebf8aaf4f33e66b008fc8ee461c464929b7dcd193de20f1b889ea4c"},
-    {file = "nostr_sdk-0.38.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a4a111d8979014b14f92195f1e91c55a44a1b54ab2220280bf308ab7dbf3cf5c"},
-    {file = "nostr_sdk-0.38.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:cf4ceb92be21a17cf683110f41312e3cc1e1c0c2147793f1c6637b5c1d0e1a13"},
-    {file = "nostr_sdk-0.38.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:19ec898013f05d1eeaa3bd1bf7c55da2d05a3e74d3b041d9d659558496abe55d"},
-    {file = "nostr_sdk-0.38.0-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:98c2749d440ec95c1d78ef2b5c736859b60ddbb5524f0054f8275b2042ee928b"},
-    {file = "nostr_sdk-0.38.0-cp312-cp312-win_amd64.whl", hash = "sha256:c1ee12f9244fc375d785c07ac07c08e16ec18c5eac61b96e831dd37416a9a034"},
-    {file = "nostr_sdk-0.38.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:7145df59f91cdcf66e1cf29bf6dd8f26b097aea1f0f12ac08113dfedcb8ed859"},
-    {file = "nostr_sdk-0.38.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:69c5c7b92fa523482afb8e2c0721739545dc3645014f1bae03446994d9f54e92"},
-    {file = "nostr_sdk-0.38.0-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:f967377c18a3f1a38761ebe7cb17420ec07e0c1c71dbe94d16c05cf6f59933b3"},
-    {file = "nostr_sdk-0.38.0-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:3309a069f91dc31b38f3c6f620a62b119d726a6905ba30a15f10435fd24c1abe"},
-    {file = "nostr_sdk-0.38.0-cp39-cp39-win_amd64.whl", hash = "sha256:04394129463165204536cfbeb7c8d40dd5364af0d9bb8b98bcb24a754ddc2958"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:85f4ae5e98599e62564fc37c2e0b92692d823f2828b6b7bdbf198b11ca609fea"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-macosx_11_0_x86_64.whl", hash = "sha256:5a2b6d6a1bf46455b45fdf788ec9ff513e8b1de83eb39c8750a74ced56767986"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:8ddd0a90d728e4d8ee81f443043e6e2e8e090f4eebcb7b4f6f84a5459671629e"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:9e37058e7c00b162418095d160bd2cc92bf3cbc81a439ba5c8baefa5a851d7b0"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-manylinux_2_17_i686.whl", hash = "sha256:6342d9aee9df7b26a8c570a0bbdec8a15307f19da72898bf2a2b52931c96fcef"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-manylinux_2_17_x86_64.whl", hash = "sha256:69009418f437f0df9b843757fc33344d0b849cf1c81b56f16e209301e30e133b"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:a43ade3ee1cf45452a981f324f2a87b20e11e2bdcb872c1ebe81e34521ae90e7"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:36fc37504912767493c642c0af1845fcd46eb2748eaed081cb31326a1ba4ad9c"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-musllinux_1_2_i686.whl", hash = "sha256:29f7c21ebbb2dc5d54aab30521e28da8bbcde8918ff9fdf519f9a30a6d6d6ed5"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:6e432d3e10993447afabcf4dba39697ec07351660df1108fa9acc7787a7ee943"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-win32.whl", hash = "sha256:f8fda6b129309d584f2e39b3152467f6a9001f767173f93632071f6c659cd9e1"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-win_amd64.whl", hash = "sha256:16d830574d74978cb01bd2464b319651d2d5e77f807eec8a17b154d305bca922"},
+    {file = "nostr_sdk-0.43.1-cp39-abi3-win_arm64.whl", hash = "sha256:aa03f541ad64fcb332035f235a9b79d8fc0229740fb893beb26904d75859b43b"},
 ]
 
 [[package]]
@@ -4231,4 +4224,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "f37f4c459ce8b8787c1d9e59d14851e0cca24ffccebd7e38092e8c8157208cfb"
+content-hash = "2c9b3bb5951ecd15c8509462573b0725034ec7b133d610aa5494ed9e14a5936d"
