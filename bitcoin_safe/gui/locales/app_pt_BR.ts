@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>Adicionar nova categoria</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>Exchange KYC, Privado, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -345,13 +357,6 @@
 		</message>
 	</context>
 	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>Recebimento rápido</translation>
-		</message>
-	</context>
-	<context>
 		<name>BlockingWaitingDialog</name>
 		<message>
 			<source>Please wait</source>
@@ -393,7 +398,8 @@
                             &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
                         &lt;/ul&gt;
                            </source>
-			<translation>Comprar {number} assinadores de hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe é compatível com todos os principais assinadores de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;</translation>
+			<translation>Comprar {number} assinadores de hardware                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe é compatível com todos os principais assinadores de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
+                           </translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +873,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>Exportar rótulos</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Formato de exchange (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Exportar rótulos para outras carteiras (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>Exportar etiquetas e categorias</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Completo (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1240,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>Importar rótulos</translation>
+			<source>Electrum Wallet</source>
+			<translation>Carteira Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importar rótulos (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Formato de exchange (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importar rótulos (Carteira Electrum)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Completo (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>Importar etiquetas e categorias</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1496,6 +1512,43 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>Snapshot automático</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>Nenhum snapshot anterior</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>Nenhuma carteira disponível</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>Restaurar snapshot de etiquetas e categorias</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>Snapshot de etiquetas restaurado de {timestamp}</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>Estado antes da restauração</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} Etiquetas</translation>
+		</message>
+	</context>
+	<context>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} hours</source>
@@ -1537,7 +1590,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>Por favor, abra a carteira de envio para editar esta transação.</translation>
+			<translation> Por favor, abra a carteira de envio para editar esta transação.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1717,7 +1770,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Uma carteira com o ID {name} já está aberta.</translation>
+			<translation>Uma carteira com o ID {name} já está aberta.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2111,7 +2164,7 @@ Do you want to proceed anyway?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Erro na conexão com o servidor. {responses}   Deseja continuar mesmo assim?</translation>
+			<translation>Erro na conexão com o servidor. {responses} Deseja continuar mesmo assim?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2168,7 +2221,7 @@ Do you want to proceed anyway?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Respostas:     {name}: {status}     Instância do Mempool: {server}</translation>
+			<translation>Respostas: {name}: {status} Instância do Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2653,7 +2706,7 @@ The serializations of both differ, which could be caused by different collected 
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>As transações  {txs}  na carteira '{wallet}' foram removidas do histórico!!!</translation>
+			<translation>As transações {txs} na carteira '{wallet}' foram removidas do histórico!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2700,6 +2753,16 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QuickReceive</name>
+		<message>
+			<source>Manage Categories</source>
+			<translation>Gerenciar Categorias</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>Abrir o gerenciador de categorias</translation>
+		</message>
 		<name>QuickReceive</name>
 		<message>
 			<source>Quick Receive</source>
@@ -2773,7 +2836,8 @@ The serializations of both differ, which could be caused by different collected 
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Receba um valor &lt;b&gt;pequeno&lt;/b&gt; (menos de {test_amount}) em 1 endereço desta carteira.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Por quê?&lt;/b&gt; &lt;br&gt;                     Para saber se você controla os fundos, é preciso testar o gasto pela carteira.                      &lt;br&gt;                     Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar pela carteira e testar todos os assinadores.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Não envie grandes valores para a carteira ainda. Conclua todos os testes de envio primeiro!&lt;/b&gt;</translation>
+			<translation>Receba um valor &lt;b&gt;pequeno&lt;/b&gt; (menos de {test_amount}) em 1 endereço desta carteira.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Por quê?&lt;/b&gt; &lt;br&gt;                     Para saber se você controla os fundos, é preciso testar o gasto pela carteira.                      &lt;br&gt;                     Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar pela carteira e testar todos os assinadores.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Não envie grandes valores para a carteira ainda. Conclua todos os testes de envio primeiro!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3196,6 +3260,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
+			<source>Print labels</source>
+			<translation>Imprimir etiquetas</translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
 			<source>Put the following stickers on your hardware:</source>
 			<translation>Coloque os seguintes adesivos no seu hardware:</translation>
 		</message>
@@ -3365,7 +3434,10 @@ Signatures:
 
 
 </source>
-			<translation>Transação assinada com a chave privada pertencente a {label}  Assinaturas: {signatures}</translation>
+			<translation>Transação assinada com a chave privada pertencente a {label} Assinaturas: {signatures}
+
+
+</translation>
 		</message>
 	</context>
 	<context>
@@ -3406,7 +3478,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Sua chave de sincronização é:  {sync_key}   Guarde-a e, ao clicar em 'importar chave de sincronização', seus rótulos devem ser restaurados dos relays Nostr.</translation>
+			<translation>Sua chave de sincronização é: {sync_key} Guarde-a e, ao clicar em 'importar chave de sincronização', seus rótulos devem ser restaurados dos relays Nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -3461,7 +3533,7 @@ otherwise you will not be able to broadcast it.</source>
 		<message>
 			<source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>Cole o UTXO aqui no formato  txid:outpoint txid:outpoint</translation>
+			<translation>Cole o UTXO aqui no formato txid:outpoint txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3498,7 +3570,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Rótulo:</translation>
+			<translation>Rótulo: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -3820,7 +3892,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>e</translation>
+			<translation> e </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -3898,7 +3970,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>A transação de teste  '{tx_text}'  foi concluída com sucesso. Prossiga para fazer o teste de envio:  '{next_text}'</translation>
+			<translation>A transação de teste '{tx_text}' foi concluída com sucesso. Prossiga para fazer o teste de envio: '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4074,13 +4146,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>Insira o novo nome da categoria...</translation>
+			<source>Default</source>
+			<translation>Padrão</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>Exchange com KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>Insira o novo nome da categoria...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4091,11 +4163,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>Novo nome da categoria:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>Privado</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4416,7 +4483,8 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Anexe a 'Folha de Recuperação' ({number} palavras) a este papel ou duplique as 12/24 palavras neste papel.&lt;br/&gt;                 2. Dobre este papel na linha abaixo &lt;br/&gt;                 3. Coloque cada papel em um local seguro diferente, onde só você tenha acesso&lt;br/&gt;                 4. Você pode colocar os assinadores de hardware a) junto com o respectivo backup de semente em papel, ou b)   cada um em outro local seguro (se disponível)</translation>
+			<translation>1. Anexe a 'Folha de Recuperação' ({number} palavras) a este papel ou duplique as 12/24 palavras neste papel.&lt;br/&gt;                 2. Dobre este papel na linha abaixo &lt;br/&gt;                 3. Coloque cada papel em um local seguro diferente, onde só você tenha acesso&lt;br/&gt;                 4. Você pode colocar os assinadores de hardware a) junto com o respectivo backup de semente em papel, ou b)   cada um em outro local seguro (se disponível)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4425,7 +4493,8 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Anexe a 'Folha de Recuperação' ({number} palavras) a este papel ou duplique as 12/24 palavras neste papel.&lt;br/&gt;                 2. Dobre este papel na linha abaixo &lt;br/&gt;                 3. Coloque este papel em um local seguro, onde só você tenha acesso&lt;br/&gt;                 4. Você pode colocar o assinador de hardware a) junto com o backup de semente em papel, ou b)   em outro local seguro (se disponível)</translation>
+			<translation>1. Anexe a 'Folha de Recuperação' ({number} palavras) a este papel ou duplique as 12/24 palavras neste papel.&lt;br/&gt;                 2. Dobre este papel na linha abaixo &lt;br/&gt;                 3. Coloque este papel em um local seguro, onde só você tenha acesso&lt;br/&gt;                 4. Você pode colocar o assinador de hardware a) junto com o backup de semente em papel, ou b)   em outro local seguro (se disponível)   
+                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4469,13 +4538,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>Recorte as etiquetas abaixo e anexe cada uma ao assinador de hardware correspondente.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Arquivo não encontrado!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>Etiquetas do assinador de hardware para a carteira “{wallet_id}”</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>Etiquetas do assinador de hardware para {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Chave de backup de sincronização de rótulos: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>Nenhum assinador de hardware configurado ainda.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4536,6 +4625,88 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>O endereço não corresponde à chave pública recuperada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>Endereço bech32 inválido.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>ID de recuperação inválido na assinatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>A mensagem tinha espaços em volta. A verificação foi bem-sucedida após aparar a mensagem.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>A assinatura não corresponde à mensagem.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>O byte de cabeçalho da assinatura é inválido.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>A assinatura não é base64 válida.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>A assinatura deve ter 65 bytes.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>A assinatura deve usar uma chave pública comprimida para endereços SegWit.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>A assinatura deve usar uma chave pública comprimida para endereços SegWit aninhados.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>Não foi possível recuperar a chave pública da assinatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>Rede bech32 desconhecida.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>Comprimento de endereço Base58 não suportado.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>Versão de endereço Base58 não suportada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>Comprimento de programa testemunha bech32 não suportado.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>Versão de testemunha bech32 não suportada.</translation>
+		</message>
+	</context>
+	<context>
 		<name>tutorial</name>
 		<message>
 			<source>Never make a picture of them!</source>
@@ -4575,7 +4746,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Por favor, compare e confirme o código de pareamento no seu BitBox02:  {code}</translation>
+			<translation>Por favor, compare e confirme o código de pareamento no seu BitBox02: {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -4599,7 +4770,7 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-			<translation>Cancelar com RBF, criará uma nova transação  com você como destinatário e uma taxa maior para substituir a antiga. Não há garantia de que funcionará!!!</translation>
+			<translation>Cancelar com RBF, criará uma nova transação com você como destinatário e uma taxa maior para substituir a antiga. Não há garantia de que funcionará!!!</translation>
 		</message>
 		<name>util</name>
 		<message>

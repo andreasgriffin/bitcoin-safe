@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>새 카테고리 추가</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>KYC 거래소, 개인, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>나</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>빠른 수신  </translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +872,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>명칭 내보내기  </translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>거래소 형식 (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>다른 지갑용 명칭 내보내기 (BIP329)  </translation>
+			<source>Export labels and categories</source>
+			<translation>라벨 및 카테고리 내보내기</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>전체 (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1239,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>명칭 가져오기  </translation>
+			<source>Electrum Wallet</source>
+			<translation>Electrum 지갑</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>명칭 가져오기 (BIP329 / Sparrow)  </translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>거래소 형식 (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>명칭 가져오기 (Electrum 지갑)  </translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>전체 (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>라벨 및 카테고리 가져오기</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1493,6 +1508,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>동기화 비디오</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>자동 스냅샷</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>이전 스냅샷 없음</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>사용 가능한 지갑 없음</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>라벨 및 카테고리 스냅샷 복원</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>{timestamp}부터 라벨 스냅샷이 복원됨</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>복원 전 상태</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} 라벨</translation>
 		</message>
 	</context>
 	<context>
@@ -2702,6 +2754,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>카테고리 관리</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>카테고리 관리자 열기</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>빠른 수신  </translation>
 		</message>
@@ -3193,6 +3255,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" on {device_name}  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>라벨 인쇄</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4074,13 +4141,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>새로운 카테고리 이름 입력...</translation>
+			<source>Default</source>
+			<translation>기본값</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC 거래소  </translation>
+			<source>Enter new category name...</source>
+			<translation>새로운 카테고리 이름 입력...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4091,11 +4158,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>새 카테고리 이름:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>개인</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4469,13 +4531,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>아래 라벨을 잘라내고 각각 해당 하드웨어 서명기기에 부착하십시오.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>파일을 찾을 수 없습니다!  </translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>지갑 “{wallet_id}”용 하드웨어 서명기기 라벨</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>{ id }용 하드웨어 서명기기 라벨</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>명칭 동기화 백업 키: {label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>아직 구성된 하드웨어 서명기기가 없습니다.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4533,6 +4615,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>이미 사용된 주소  </translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>주소가 복구된 공개키와 일치하지 않습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>잘못된 bech32 주소입니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>서명에 잘못된 복구 ID가 있습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>메시지에 주변 공백이 있었습니다. 메시지를 트리밍한 후 검증이 성공했습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>서명이 메시지와 일치하지 않습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>서명 헤더 바이트가 유효하지 않습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>서명이 유효한 base64가 아닙니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>서명은 65바이트여야 합니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>SegWit 주소에는 압축된 공개키를 사용해야 합니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>중첩된 SegWit 주소에는 압축된 공개키를 사용해야 합니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>서명에서 공개키를 복구할 수 없습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>알 수 없는 bech32 네트워크입니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>지원되지 않는 Base58 주소 길이입니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>지원되지 않는 Base58 주소 버전입니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>지원되지 않는 bech32 증인 프로그램 길이입니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>지원되지 않는 bech32 증인 버전입니다.</translation>
 		</message>
 	</context>
 	<context>

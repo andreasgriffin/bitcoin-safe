@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>Dodaj nową kategorię</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>Wymiana KYC, Prywatne, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>Ja</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>Szybki odbiór</translation>
 		</message>
 	</context>
 	<context>
@@ -872,13 +877,18 @@ Domyślnie 20</translation>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>Eksportuj etykiety</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format wymiany (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Eksportuj etykiety dla innych portfeli (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>Eksportuj etykiety i kategorie</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Pełny (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1242,18 +1252,23 @@ wysyłanej kwoty {sent}</translation>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>Importuj etykiety</translation>
+			<source>Electrum Wallet</source>
+			<translation>Portfel Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importuj etykiety (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format wymiany (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importuj etykiety (Portfel Electrum)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Pełny (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>Importuj etykiety i kategorie</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1508,6 +1523,43 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Synchronization video</source>
 			<translation>Film instruktażowy synchronizacji</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>Automatyczny snapshot</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>Brak poprzednich snapshotów</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>Brak dostępnych portfeli</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>Przywróć snapshot etykiet i kategorii</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>Snapshot etykiet przywrócony od {timestamp}</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>Stan przed przywróceniem</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} Etykiet</translation>
 		</message>
 	</context>
 	<context>
@@ -2727,6 +2779,16 @@ w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>Zarządzaj kategoriami</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>Otwórz menedżera kategorii</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>Szybki odbiór</translation>
 		</message>
@@ -3220,6 +3282,11 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" na {device_name}</translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>Drukuj etykiety</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4117,13 +4184,13 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>Wpisz nową nazwę kategorii...</translation>
+			<source>Default</source>
+			<translation>Domyślny</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>Giełda wymagająca KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>Wpisz nową nazwę kategorii...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4134,11 +4201,6 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		<message>
 			<source>New category name:</source>
 			<translation>Nowa nazwa kategorii:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>Prywatny</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4518,13 +4580,33 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>Wytnij poniższe etykiety i przymocuj każdą do odpowiadającego podpisującego sprzętowego.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Nie znaleziono pliku!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>Etykiety podpisującego sprzętowego dla portfela „{wallet_id}”</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>Etykiety podpisującego sprzętowego dla {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Klucz kopii zapasowej synchronizacji etykiet: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>Nie skonfigurowano jeszcze żadnego podpisującego sprzętowego.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4582,6 +4664,88 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>Address Already Used</source>
 			<translation>Adres już użyty</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>Adres nie pasuje do odzyskanego klucza publicznego.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>Nieprawidłowy adres bech32.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>Nieprawidłowy identyfikator odzyskiwania w podpisie.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>Wiadomość miała otaczające spacje. Weryfikacja powiodła się po przycięciu wiadomości.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>Podpis nie pasuje do wiadomości.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>Bajt nagłówka podpisu jest nieprawidłowy.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>Podpis nie jest prawidłowym base64.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>Podpis musi mieć długość 65 bajtów.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>Podpis musi używać skompresowanego klucza publicznego dla adresów SegWit.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>Podpis musi używać skompresowanego klucza publicznego dla zagnieżdżonych adresów SegWit.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>Nie można odzyskać klucza publicznego z podpisu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>Nieznana sieć bech32.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>Nieobsługiwana długość adresu Base58.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>Nieobsługiwana wersja adresu Base58.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>Nieobsługiwana długość programu świadków bech32.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>Nieobsługiwana wersja świadka bech32.</translation>
 		</message>
 	</context>
 	<context>

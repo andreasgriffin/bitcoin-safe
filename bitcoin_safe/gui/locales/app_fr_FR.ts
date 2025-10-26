@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>Ajouter une nouvelle catégorie</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>Échange KYC, Privé, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>Moi</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>Réception rapide</translation>
 		</message>
 	</context>
 	<context>
@@ -868,13 +873,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>Exporter les étiquettes</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format d’échange (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Exporter les étiquettes pour d'autres portefeuilles (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>Exporter les étiquettes et catégories</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Complet (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1230,18 +1240,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>Importer des étiquettes</translation>
+			<source>Electrum Wallet</source>
+			<translation>Portefeuille Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importer des étiquettes (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format d’échange (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importer des étiquettes (Electrum Wallet)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Complet (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>Importer les étiquettes et catégories</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1488,7 +1503,7 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Multi-computer synchronization and chat</source>
-			<translation>Synchronisation multi-ordinateurs et chat  </translation>
+			<translation>Synchronisation multi-ordinateurs et chat</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1497,22 +1512,59 @@ Do you want to proceed anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>Instantané automatique</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>Aucun instantané antérieur</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>Aucun portefeuille disponible</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>Restaurer l’instantané des étiquettes et catégories</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>Instantané des étiquettes restauré depuis {timestamp}</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>État avant restauration</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} Étiquettes</translation>
+		</message>
+	</context>
+	<context>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} hours</source>
-			<translation>~en {t} heures  </translation>
+			<translation>~en {t} heures</translation>
 		</message>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} min</source>
-			<translation>~en {t} min  </translation>
+			<translation>~en {t} min</translation>
 		</message>
 	</context>
 	<context>
 		<name>LicenseDialog</name>
 		<message>
 			<source>License Info</source>
-			<translation>Infos sur la licence  </translation>
+			<translation>Infos sur la licence</translation>
 		</message>
 	</context>
 	<context>
@@ -1524,7 +1576,7 @@ Do you want to proceed anyway?</source>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>{category} (in wallet {wallet_ids})</source>
-			<translation>{category} (dans le portefeuille {wallet_ids})  </translation>
+			<translation>{category} (dans le portefeuille {wallet_ids})</translation>
 		</message>
 	</context>
 	<context>
@@ -1543,22 +1595,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;About</source>
-			<translation>&amp;À propos  </translation>
+			<translation>&amp;À propos</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Change</source>
-			<translation>&amp;Changer  </translation>
+			<translation>&amp;Changer</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Change Password</source>
-			<translation>&amp;Changer le mot de passe  </translation>
+			<translation>&amp;Changer le mot de passe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Check for update</source>
-			<translation>&amp;Vérifier les mises à jour  </translation>
+			<translation>&amp;Vérifier les mises à jour</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1588,12 +1640,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export</source>
-			<translation>&amp;Exporter  </translation>
+			<translation>&amp;Exporter</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Exporter le PDF du portefeuille  </translation>
+			<translation>&amp;Exporter le PDF du portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1603,7 +1655,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Générer le relevé de solde PDF  </translation>
+			<translation>&amp;Générer le relevé de solde PDF</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1613,12 +1665,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Languages</source>
-			<translation>&amp;Langues  </translation>
+			<translation>&amp;Langues</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;License</source>
-			<translation>&amp;Licence  </translation>
+			<translation>&amp;Licence</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1628,7 +1680,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Load Transaction or PSBT</source>
-			<translation>&amp;Charger Transaction ou PSBT  </translation>
+			<translation>&amp;Charger Transaction ou PSBT</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1643,7 +1695,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;New Wallet</source>
-			<translation>&amp;Nouveau Portefeuille  </translation>
+			<translation>&amp;Nouveau Portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1653,7 +1705,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Open Wallet</source>
-			<translation>&amp;Ouvrir Portefeuille  </translation>
+			<translation>&amp;Ouvrir Portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1663,32 +1715,32 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
-			<translation>&amp;Enregistrer le Multisig avec les signataires matériels  </translation>
+			<translation>&amp;Enregistrer le Multisig avec les signataires matériels</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Rename Wallet</source>
-			<translation>&amp;Renommer le portefeuille  </translation>
+			<translation>&amp;Renommer le portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;Sauvegarder le Portefeuille Actuel  </translation>
+			<translation>&amp;Sauvegarder le Portefeuille Actuel</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
-			<translation>&amp;Rechercher  </translation>
+			<translation>&amp;Rechercher</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Settings</source>
-			<translation>&amp;Paramètres  </translation>
+			<translation>&amp;Paramètres</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Show Logs</source>
-			<translation>&amp;Afficher les journaux  </translation>
+			<translation>&amp;Afficher les journaux</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1698,22 +1750,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Tools</source>
-			<translation>&amp;Outils  </translation>
+			<translation>&amp;Outils</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;Outils de signataire USB  </translation>
+			<translation>&amp;Outils de signataire USB</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Version: {}</source>
-			<translation>&amp;Version : {}  </translation>
+			<translation>&amp;Version : {}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Wallet</source>
-			<translation>&amp;Portefeuille  </translation>
+			<translation>&amp;Portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1738,17 +1790,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close Tab</source>
-			<translation>Fermer l'onglet  </translation>
+			<translation>Fermer l'onglet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close all transactions</source>
-			<translation>Fermer toutes les transactions  </translation>
+			<translation>Fermer toutes les transactions</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close wallet</source>
-			<translation>Fermer le portefeuille  </translation>
+			<translation>Fermer le portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1758,7 +1810,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Closing tab {name}</source>
-			<translation>Fermeture de l'onglet {name}  </translation>
+			<translation>Fermeture de l'onglet {name}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1798,17 +1850,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>Exporter &amp;Descriptor pour les signataires matériels  </translation>
+			<translation>Exporter &amp;Descriptor pour les signataires matériels</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;QR Code</source>
-			<translation>Depuis &amp;Code QR  </translation>
+			<translation>Depuis &amp;Code QR</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;file</source>
-			<translation>Depuis &amp;fichier  </translation>
+			<translation>Depuis &amp;fichier</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2703,6 +2755,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>Gérer les catégories</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>Ouvrir le gestionnaire de catégories</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>Réception rapide</translation>
 		</message>
@@ -3195,6 +3257,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" sur {device_name}  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>Imprimer les étiquettes</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4079,13 +4146,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>Saisir un nouveau nom de catégorie...</translation>
+			<source>Default</source>
+			<translation>Par défaut</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>Échange KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>Saisir un nouveau nom de catégorie...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4096,11 +4163,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>Nouveau nom de catégorie :</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>Privé</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4476,13 +4538,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>Détachez les étiquettes ci-dessous et fixez chacune à l’appareil de signature matérielle correspondant.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Fichier introuvable!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>Étiquettes du signataire matériel pour le portefeuille « {wallet_id} »</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>Étiquettes du signataire matériel pour {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Clé de sauvegarde de synchronisation des étiquettes : {label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>Aucun signataire matériel encore configuré.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4540,6 +4622,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>Adresse déjà utilisée  </translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>L’adresse ne correspond pas à la clé publique récupérée.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>Adresse bech32 invalide.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>Identifiant de récupération invalide dans la signature.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>Le message avait des espaces autour. La vérification a réussi après avoir supprimé les espaces.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>La signature ne correspond pas au message.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>L’octet d’en-tête de la signature est invalide.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>La signature n’est pas un base64 valide.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>La signature doit faire 65 octets.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>La signature doit utiliser une clé publique compressée pour les adresses SegWit.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>La signature doit utiliser une clé publique compressée pour les adresses SegWit imbriquées.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>Impossible de récupérer la clé publique depuis la signature.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>Réseau bech32 inconnu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>Longueur d’adresse Base58 non prise en charge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>Version d’adresse Base58 non prise en charge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>Longueur du programme témoin bech32 non prise en charge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>Version du témoin bech32 non prise en charge.</translation>
 		</message>
 	</context>
 	<context>
