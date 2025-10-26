@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>افزودن دسته‌بندی جدید</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>صرافی KYC، خصوصی، …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>من</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>دریافت سریع</translation>
 		</message>
 	</context>
 	<context>
@@ -868,13 +873,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>خروجی برچسب‌ها</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>فرمت صرافی (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>خروجی‌گرفتن برچسب‌ها برای کیف پول‌های دیگر (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>صادرات برچسب‌ها و دسته‌ها</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>کامل (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1230,18 +1240,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>وارد کردن برچسب‌ها</translation>
+			<source>Electrum Wallet</source>
+			<translation>کیف‌پول Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>وارد کردن برچسب‌ها (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>فرمت صرافی (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>وارد کردن برچسب‌ها (کیف پول Electrum)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>کامل (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>واردات برچسب‌ها و دسته‌ها</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1494,6 +1509,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>ویدیوی همگام‌سازی</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>عکس فوری خودکار</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>هیچ عکس فوری قبلی نیست</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>هیچ کیف پولی در دسترس نیست</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>بازگردانی عکس فوری برچسب‌ها و دسته‌ها</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>عکس فوری برچسب‌ها از {timestamp} بازگردانی شد</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>وضعیت قبل از بازگردانی</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} برچسب</translation>
 		</message>
 	</context>
 	<context>
@@ -2703,6 +2755,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>مدیریت دسته‌بندی‌ها</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>باز کردن مدیر دسته‌ها</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>دریافت سریع</translation>
 		</message>
@@ -3195,6 +3257,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>«{sticker}» روی {device_name}</translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>چاپ برچسب‌ها</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4079,13 +4146,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>نام دسته‌بندی جدید را وارد کنید...</translation>
+			<source>Default</source>
+			<translation>پیش‌فرض</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>صرافی KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>نام دسته‌بندی جدید را وارد کنید...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4096,11 +4163,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>نام دسته‌بندی جدید:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>خصوصی</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4476,13 +4538,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>برچسب‌های زیر را ببُرید و هر یک را به امضاکننده سخت‌افزاری مطابقت داده شده ضمیمه کنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>فایل پیدا نشد!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>برچسب‌های امضاکننده سخت‌افزاری برای کیف‌پول «{wallet_id}»</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>برچسب‌های امضاکننده سخت‌افزاری برای {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>کلید پشتیبان همگام‌سازی برچسب: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>هنوز امضاکننده سخت‌افزاری پیکربندی نشده است.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4540,6 +4622,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>آدرس از قبل استفاده شده است</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>آدرس با کلید عمومی بازیابی‌شده مطابقت ندارد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>آدرس bech32 نامعتبر است.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>شناسه بازیابی در امضا نامعتبر است.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>پیام دارای فاصله در اطراف بود. پس از بریدن پیام، تأیید موفق بود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>امضا با پیام مطابقت ندارد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>بایت سربرگ امضا نامعتبر است.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>امضا base64 معتبر نیست.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>امضا باید ۶۵ بایت باشد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>امضا باید برای آدرس‌های SegWit از کلید عمومی فشرده استفاده کند.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>امضا باید برای آدرس‌های SegWit تودرتو از کلید عمومی فشرده استفاده کند.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>امکان بازیابی کلید عمومی از امضا وجود ندارد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>شبکه bech32 ناشناخته است.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>طول آدرس Base58 پشتیبانی نمی‌شود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>نسخه آدرس Base58 پشتیبانی نمی‌شود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>طول برنامه witness bech32 پشتیبانی نمی‌شود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>نسخه witness bech32 پشتیبانی نمی‌شود.</translation>
 		</message>
 	</context>
 	<context>

@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>Afegeix una nova categoria</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>Intercanvi KYC, Privat, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>Jo</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>Recepció ràpida</translation>
 		</message>
 	</context>
 	<context>
@@ -868,13 +873,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>Exporta etiquetes</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format d’intercanvi (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Exporta etiquetes per a altres carteres (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>Exporta etiquetes i categories</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Sencer (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1230,18 +1240,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>Importa etiquetes</translation>
+			<source>Electrum Wallet</source>
+			<translation>Cartera Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Importa etiquetes (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Format d’intercanvi (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Importa etiquetes (Cartera Electrum)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Sencer (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>Importa etiquetes i categories</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1494,6 +1509,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>Vídeo de sincronització</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>Instantània automàtica</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>Cap instantània anterior</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>Cap cartera disponible</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>Restaura l’instantània d’etiquetes i categories</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>Instantània d’etiquetes restaurada des de {timestamp}</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>Estat abans de la restauració</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} Etiquetes</translation>
 		</message>
 	</context>
 	<context>
@@ -2703,6 +2755,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>Gestionar categories</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>Obre el gestor de categories</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>Recepció ràpida</translation>
 		</message>
@@ -3195,6 +3257,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" a {device_name}</translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>Imprimeix etiquetes</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4079,13 +4146,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>Introdueix un nom de categoria nou...</translation>
+			<source>Default</source>
+			<translation>Predeterminat</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>Exchange amb KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>Introdueix un nom de categoria nou...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4096,11 +4163,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>Nom de la categoria nova:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>Privat</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4476,13 +4538,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>Retalla les etiquetes a continuació i adjunta cadascuna al signant de maquinari corresponent.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Fitxer no trobat!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>Etiquetes del signant de maquinari per a la cartera «{wallet_id}»</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>Etiquetes del signant de maquinari per a {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Clau de còpia de seguretat de sincronització d'etiquetes: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>Cap signant de maquinari configurat encara.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4540,6 +4622,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>Adreça ja utilitzada</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>L’adreça no coincideix amb la clau pública recuperada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>Adreça bech32 no vàlida.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>ID de recuperació invàlid a la signatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>El missatge tenia espais al voltant. La verificació va tenir èxit després de retallar el missatge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>La signatura no coincideix amb el missatge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>El byte d’encapçalament de la signatura no és vàlid.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>La signatura no és un base64 vàlid.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>La signatura ha de tenir 65 bytes.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>La signatura ha d’utilitzar una clau pública comprimida per a adreces SegWit.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>La signatura ha d’utilitzar una clau pública comprimida per a adreces SegWit anidades.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>No s’ha pogut recuperar la clau pública de la signatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>Xarxa bech32 desconeguda.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>Longitud d’adreça Base58 no compatible.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>Versió d’adreça Base58 no compatible.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>Longitud del programa witness bech32 no compatible.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>Versió del witness bech32 no compatible.</translation>
 		</message>
 	</context>
 	<context>

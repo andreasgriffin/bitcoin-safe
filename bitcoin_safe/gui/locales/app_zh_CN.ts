@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>添加新类别</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>KYC 交易所、私人、…</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>我</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>快速接收</translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +872,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>导出标签</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>交易所格式 (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>为其他钱包导出标签（BIP329）  </translation>
+			<source>Export labels and categories</source>
+			<translation>导出标签和类别</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>完整（Bitcoin Safe）</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1239,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>导入标签</translation>
+			<source>Electrum Wallet</source>
+			<translation>Electrum 钱包</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>导入标签（BIP329 / Sparrow）</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>交易所格式 (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>导入标签（Electrum 钱包）</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>完整（Bitcoin Safe）</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>导入标签和类别</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1494,6 +1509,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>同步视频</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>自动快照</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>无先前快照</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>无可用钱包</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>还原标签和类别快照</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>已从 {timestamp} 恢复标签快照</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>恢复前状态</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} 个标签</translation>
 		</message>
 	</context>
 	<context>
@@ -2708,6 +2760,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>管理分类</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>打开类别管理器</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>快速接收</translation>
 		</message>
@@ -3199,6 +3261,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>“{sticker}”在{device_name}上  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>打印标签</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4083,13 +4150,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>输入新的分类名称...</translation>
+			<source>Default</source>
+			<translation>默认</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC 交易所  </translation>
+			<source>Enter new category name...</source>
+			<translation>输入新的分类名称...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4100,11 +4167,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>新的分类名称：</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>私人的  </translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4478,13 +4540,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>剪下下面的标签，并将每一个附加到相应的硬件签名器。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>文件未找到！  </translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>钱包“{wallet_id}”的硬件签名器标签</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>{ id } 的硬件签名器标签</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>标签同步备份密钥：{label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>尚未配置硬件签名器。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4542,6 +4624,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>地址已被使用</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>地址与恢复的公钥不匹配。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>无效的 bech32 地址。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>签名中的恢复 ID 无效。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>消息周围有空白。修剪消息后验证成功。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>签名与消息不匹配。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>签名字节头无效。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>签名不是有效的 base64。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>签名必须为 65 字节长。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>签名必须针对 SegWit 地址使用压缩公钥。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>签名必须针对嵌套 SegWit 地址使用压缩公钥。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>无法从签名中恢复公钥。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>未知的 bech32 网络。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>不支持的 Base58 地址长度。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>不支持的 Base58 地址版本。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>不支持的 bech32 witness 程序长度。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>不支持的 bech32 witness 版本。</translation>
 		</message>
 	</context>
 	<context>

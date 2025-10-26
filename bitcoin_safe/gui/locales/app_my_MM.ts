@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>အမျိုးအစားအသစ်ထည့်ရန်</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>KYC လဲ လှယ်ခြင်း၊ ပုဂ္ဂိုလ်ရေး၊ …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>ငါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>အမြန်လက်ခံပါ  </translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +872,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>တံဆိပ်များထုတ်ပို့ပါ  </translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>လဲ လှယ်ဖော်မတ် (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>အခြားပိုက်ဆံအိတ်များအတွက်တံဆိပ်များထုတ်ပို့ပါ (BIP329)  </translation>
+			<source>Export labels and categories</source>
+			<translation>ဆိုဒ်နှင့်အမျိုးအစားများကို ထုတ်ယူမည်</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>လုံးဝ (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1239,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>တံဆိပ်များတင်သွင်းပါ  </translation>
+			<source>Electrum Wallet</source>
+			<translation>Electrum ဝေါလက်</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>တံဆိပ်များ တင်သွင်းပါ (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>လဲ လှယ်ဖော်မတ် (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Electrum Wallet အတွက်တံဆိပ်များတင်သွင်းပါ  </translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>လုံးဝ (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>ဆိုဒ်နှင့်အမျိုးအစားများကို ထည့်သွင်းမည်</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1493,6 +1508,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>အချိန်ညှိဗီဒီယို</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>အလိုအလျောက် snapshot</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>ယခင် snapshot မရှိပါ</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>ဝေါလက်များရရှိနိုင်ခြင်းမရှိပါ</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>ဆိုဒ်နှင့်အမျိုးအစားများ၏ snapshot ကို ပြန်လည်ထူမည်</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>{timestamp} မှတ်တမ်းမှ ဆိုဒ် snapshot ပြန်လည်ထူပြီးပါပြီ</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>ပြန်လည်ထူခါစမီ အခြေအနေ</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} ဆိုဒ်</translation>
 		</message>
 	</context>
 	<context>
@@ -2702,6 +2754,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>အမျိုးအစားများကို စီမံရန်</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>အမျိုးအစားမန်နေဂျာကို ဖွင့်ပါ</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>အမြန်လက်ခံပါ  </translation>
 		</message>
@@ -3193,6 +3255,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" သည် {device_name} တွင်  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>ဆိုဒ်များကို ပုံနှိပ်ပါ</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4074,13 +4141,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>အမျိုးအစား အမည်အသစ် အရိုက်ထည့်ပါ...</translation>
+			<source>Default</source>
+			<translation>အနည်းဆုံးရွေးချယ်ထားသော</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC လဲလှယ်ရေး</translation>
+			<source>Enter new category name...</source>
+			<translation>အမျိုးအစား အမည်အသစ် အရိုက်ထည့်ပါ...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4091,11 +4158,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>အမျိုးအစား အသစ်အမည်:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>ပုဂ္ဂလိက  </translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4469,13 +4531,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>အောက်ပါဆိုဒ်များကို ဖြတ်၍ မတူညီသော hardware signer တစ်ခုချင်းစီတွင် ချိတ်ဆက်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ဖိုင်မတွေ့ပါ!  </translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>ဝေါလက် “{wallet_id}” အတွက် hardware signer ဆိုဒ်များ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>{id} အတွက် hardware signer ဆိုဒ်များ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>တံဆိပ်ကိုက်ညီစေရန်အရန်လက်မှတ်သော့: {label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>hardware signer မည်သူမှ ထိန်းသိမ်းခြင်းမပြုထားပါ။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4533,6 +4615,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>လိပ်စာကိုသုံးပြီးဖြစ်သည်  </translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>လိပ်စာသည် ပြန်လည်ရယူထားသော public key နှင့် မကိုက်ညီပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>bech32 လိပ်စာမရှိနိုင်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>စာဆိုင်းတွင် ပြန်လည်ရယူနိုင်သော ID မမှန်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>စာမှာ ညာဘက်/ဘယ်ဘက်အားဖြင့် ရွှေ့မှု ရှိခဲ့သည်။ စာကို စတဲ့ ချိန်တွင် ရှင်းလိုက်ပြီး စစ်ဆေးမှုအောင်မြင်ခဲ့သည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>လက်မှတ်သည် စာနှင့် မကိုက်ညီပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>လက်မှတ်ခေါင်းစဥ် Byte မမှန်ကန်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>လက်မှတ်သည် တရားဝင် base64 မဟုတ်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>လက်မှတ်သည် 65 Bytes ရှိရမည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>SegWit လိပ်စာများအတွက် လက်မှတ်သည် ဖိထားသော public key ကို အသုံးပြုရမည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>Nested SegWit လိပ်စာများအတွက်လည်း ဖိထားသော public key ကို အသုံးပြုရမည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>လက်မှတ်မှ public key ကို ပြန်လည်ရယူ၍ မရပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>မသိသော bech32 ကြိုး ကွန်ယက်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>ထောက်ခံမထားသော Base58 လိပ်စာရှည်လျားမှု။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>ထောက်ခံမထားသော Base58 လိပ်စာဗားရှင်း။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>ထောက်ခံမထားသော bech32 witness ပရိုဂရမ်ရှည်လျားမှု။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>ထောက်ခံမထားသော bech32 witness ဗားရှင်း။</translation>
 		</message>
 	</context>
 	<context>

@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>Yeni kategori ekle</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>KYC Borsa, Özel, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>Ben</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>Hızlı Al</translation>
 		</message>
 	</context>
 	<context>
@@ -868,13 +873,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>Etiketleri dışa aktar</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Borsa formatı (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>Diğer cüzdanlar için Etiketleri dışa aktar (BIP329)</translation>
+			<source>Export labels and categories</source>
+			<translation>Etiketleri ve kategorileri dışa aktar</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Tam (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1230,18 +1240,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>Etiketleri İçe Aktar</translation>
+			<source>Electrum Wallet</source>
+			<translation>Electrum Cüzdan</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>Etiketleri İçe Aktar (BIP329 / Sparrow)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>Borsa formatı (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>Etiketleri İçe Aktar (Electrum Wallet)</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>Tam (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>Etiketleri ve kategorileri içe aktar</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1494,6 +1509,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>Senkronizasyon videosu</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>Otomatik anlık görüntü</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>Önceki anlık görüntü yok</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>Kullanılabilir cüzdan yok</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>Etiketler ve kategoriler anlık görüntüsünü geri yükle</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>{timestamp} zaman damgasından itibaren etiketler anlık görüntüsü geri yüklendi</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>Geri yükleme öncesi durum</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} Etiket</translation>
 		</message>
 	</context>
 	<context>
@@ -2703,6 +2755,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>Kategorileri Yönet</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>Kategori yöneticisini aç</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>Hızlı Al</translation>
 		</message>
@@ -3195,6 +3257,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" {device_name} üzerinde</translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>Etiketleri yazdır</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4079,13 +4146,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>Yeni kategori adı girin...</translation>
+			<source>Default</source>
+			<translation>Varsayılan</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC Borsası</translation>
+			<source>Enter new category name...</source>
+			<translation>Yeni kategori adı girin...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4096,11 +4163,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>Yeni kategori adı:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>Özel</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4476,13 +4538,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>Aşağıdaki etiketleri çıkarın ve her birini eşleşen donanım imzalayıcıya iliştirin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Dosya bulunamadı!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>Cüzdan «{wallet_id}» için donanım imzalayıcı etiketleri</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>{ id } için donanım imzalayıcı etiketleri</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Etiket senkronizasyon yedekleme anahtarı: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>Henüz yapılandırılmış donanım imzalayıcı yok.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4540,6 +4622,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>Adres Zaten Kullanıldı</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>Adres kurtarılan açık anahtarla eşleşmiyor.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>Geçersiz bech32 adresi.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>İmzada geçersiz kurtarma kimliği.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>Mesaj çevresinde boşluk vardı. Kırpma sonrası doğrulama başarılı oldu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>İmza mesajla eşleşmiyor.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>İmza başlık baytı geçersiz.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>İmza geçerli base64 değil.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>İmza 65 bayt uzunluğunda olmalı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>İmza SegWit adresleri için sıkıştırılmış açık anahtar kullanmalı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>İmza iç içe geçmiş SegWit adresleri için sıkıştırılmış açık anahtar kullanmalı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>İmzadan açık anahtar kurtarılamıyor.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>Bilinmeyen bech32 ağı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>Desteklenmeyen Base58 adres uzunluğu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>Desteklenmeyen Base58 adres sürümü.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>Desteklenmeyen bech32 witness program uzunluğu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>Desteklenmeyen bech32 witness sürümü.</translation>
 		</message>
 	</context>
 	<context>

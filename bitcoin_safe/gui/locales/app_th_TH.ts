@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>เพิ่มหมวดหมู่ใหม่</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>แลกเปลี่ยน KYC, ส่วนตัว, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>ฉัน</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>รับด่วน</translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +872,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>ส่งออกป้ายกำกับ  </translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>รูปแบบการแลกเปลี่ยน (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>ส่งออกป้ายกำกับสำหรับกระเป๋าเงินอื่น (BIP329)  </translation>
+			<source>Export labels and categories</source>
+			<translation>ส่งออกป้ายและหมวดหมู่</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>เต็ม (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1239,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>นำเข้าป้ายกำกับ  </translation>
+			<source>Electrum Wallet</source>
+			<translation>กระเป๋าเงิน Electrum</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>นำเข้าป้ายกำกับ (BIP329 / Sparrow)  </translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>รูปแบบการแลกเปลี่ยน (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>นำเข้าป้ายกำกับ (Electrum Wallet)  </translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>เต็ม (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>นำเข้าป้ายและหมวดหมู่</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1493,6 +1508,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>วิดีโอซิงโครไนซ์</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>สแนปช็อตอัตโนมัติ</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>ไม่มีสแนปช็อตก่อนหน้า</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>ไม่มีวอลเล็ตที่ใช้งานได้</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>กู้คืนสแนปช็อตป้ายและหมวดหมู่</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>สแนปช็อตป้ายได้รับการกู้คืนจาก {timestamp}</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>สถานะก่อนการกู้คืน</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} ป้าย</translation>
 		</message>
 	</context>
 	<context>
@@ -2702,6 +2754,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>จัดการหมวดหมู่</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>เปิดตัวจัดการหมวดหมู่</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>รับด่วน</translation>
 		</message>
@@ -3193,6 +3255,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" บน {device_name}  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>พิมพ์ป้าย</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4074,13 +4141,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>ป้อนชื่อหมวดหมู่ใหม่...</translation>
+			<source>Default</source>
+			<translation>ค่าเริ่มต้น</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>แลกเปลี่ยน KYC</translation>
+			<source>Enter new category name...</source>
+			<translation>ป้อนชื่อหมวดหมู่ใหม่...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4091,11 +4158,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>ชื่อหมวดหมู่ใหม่:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>ส่วนตัว  </translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4469,13 +4531,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>ตัดป้ายด้านล่างแล้วแนบแต่ละป้ายกับผู้รับรองฮาร์ดแวร์ที่ตรงกัน</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ไม่พบไฟล์!  </translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>ป้ายผู้รับรองฮาร์ดแวร์สำหรับกระเป๋าเงิน “{wallet_id}”</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>ป้ายผู้รับรองฮาร์ดแวร์สำหรับ {id}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>ป้ายกำกับกุญแจซิงค์สำรอง: {label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>ยังไม่มีการตั้งค่าผู้รับรองฮาร์ดแวร์</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4533,6 +4615,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>ที่อยู่ที่ใช้แล้ว  </translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>ที่อยู่ไม่ตรงกับคีย์สาธารณะที่กู้คืนได้</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>ที่อยู่ bech32 ไม่ถูกต้อง</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>รหัสการกู้คืนในลายเซ็นไม่ถูกต้อง</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>ข้อความมีช่องว่างรอบๆ การตรวจสอบสำเร็จหลังจากตัดข้อความแล้ว</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>ลายเซ็นไม่ตรงกับข้อความ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>ไบต์หัวลายเซ็นไม่ถูกต้อง</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>ลายเซ็นไม่ใช่ base64 ที่ถูกต้อง</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>ลายเซ็นต้องยาว 65 ไบต์</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>ลายเซ็นต้องใช้คีย์สาธารณะที่บีบอัดสำหรับที่อยู่ SegWit</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>ลายเซ็นต้องใช้คีย์สาธาราที่บีบอัดสำหรับที่อยู่ SegWit ซ้อน</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>ไม่สามารถกู้คืนคีย์สาธารณะจากลายเซ็น</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>เครือข่าย bech32 ไม่รู้จัก</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>ความยาวที่อยู่ Base58 ไม่ได้รับการรองรับ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>เวอร์ชันที่อยู่ Base58 ไม่ได้รับการรองรับ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>ความยาวโปรแกรมพยาน bech32 ไม่ได้รับการรองรับ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>เวอร์ชันพยาน bech32 ไม่ได้รับการรองรับ</translation>
 		</message>
 	</context>
 	<context>

@@ -23,6 +23,18 @@
 		</message>
 	</context>
 	<context>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>Add new category</source>
+			<translation>नई श्रेणी जोड़ें</translation>
+		</message>
+		<name>AddCategoryButton</name>
+		<message>
+			<source>KYC Exchange, Private, ...</source>
+			<translation>KYC एक्सचेंज, निजी, …</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -342,13 +354,6 @@
 		<message>
 			<source>Me</source>
 			<translation>मैं</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>क्विक रिसीव</translation>
 		</message>
 	</context>
 	<context>
@@ -867,13 +872,18 @@ Default 20</source>
 	<context>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels</source>
-			<translation>लेबल निर्यात करें</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>एक्सचेंज प्रारूप (BIP329)</translation>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Export Labels for other wallets (BIP329)</source>
-			<translation>अन्य वॉलेट्स के लिए लेबल निर्यात करें (BIP329)  </translation>
+			<source>Export labels and categories</source>
+			<translation>लेबल और श्रेणियों को निर्यात करें</translation>
+		</message>
+		<name>ExportLabelMenu</name>
+		<message>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>पूर्ण (Bitcoin Safe)</translation>
 		</message>
 	</context>
 	<context>
@@ -1229,18 +1239,23 @@ the sending value {sent}</source>
 	<context>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels</source>
-			<translation>लेबल आयात करें</translation>
+			<source>Electrum Wallet</source>
+			<translation>Electrum वॉलेट</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (BIP329 / Sparrow)</source>
-			<translation>लेबल आयात करें (BIP329 / स्पैरो)</translation>
+			<source>Exchange format (BIP329)</source>
+			<translation>एक्सचेंज प्रारूप (BIP329)</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Import Labels (Electrum Wallet)</source>
-			<translation>इलेक्ट्रम वॉलेट के लिए लेबल आयात करें</translation>
+			<source>Full (Bitcoin Safe)</source>
+			<translation>पूर्ण (Bitcoin Safe)</translation>
+		</message>
+		<name>ImportLabelMenu</name>
+		<message>
+			<source>Import labels and categories</source>
+			<translation>लेबल और श्रेणियों को आयात करें</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1493,6 +1508,43 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Synchronization video</source>
 			<translation>सिंक्रनाइज़ेशन वीडियो</translation>
+		</message>
+	</context>
+	<context>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Automatic snapshot</source>
+			<translation>स्वचालित स्नैपशॉट</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No previous snapshots</source>
+			<translation>पिछले कोई स्नैपशॉट नहीं</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>No wallets available</source>
+			<translation>कोई वॉलेट उपलब्ध नहीं</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restore labels and categories snapshot</source>
+			<translation>लेबल और श्रेणियों के स्नैपशॉट को पुनर्स्थापित करें</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>Restored labels snapshot from {timestamp}</source>
+			<translation>{timestamp} से लेबल स्नैपशॉट पुनर्स्थापित किया गया</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>State before restore</source>
+			<translation>पुनर्स्थापना से पहले की स्थिति</translation>
+		</message>
+		<name>LabelSnapshotMenu</name>
+		<message>
+			<source>{count} Labels</source>
+			<translation>{count} लेबल</translation>
 		</message>
 	</context>
 	<context>
@@ -2705,6 +2757,16 @@ The serializations of both differ, which could be caused by different collected 
 	<context>
 		<name>QuickReceive</name>
 		<message>
+			<source>Manage Categories</source>
+			<translation>श्रेणियाँ प्रबंधित करें</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
+			<source>Open the category manager</source>
+			<translation>श्रेणी प्रबंधक खोलें</translation>
+		</message>
+		<name>QuickReceive</name>
+		<message>
 			<source>Quick Receive</source>
 			<translation>क्विक रिसीव</translation>
 		</message>
@@ -3196,6 +3258,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
 			<translation>"{sticker}" पर {device_name}  </translation>
+		</message>
+		<name>StickerTheHardware</name>
+		<message>
+			<source>Print labels</source>
+			<translation>लेबल मुद्रित करें</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -4077,13 +4144,13 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>category</name>
 		<message>
-			<source>Enter new category name...</source>
-			<translation>नई श्रेणी का नाम दर्ज करें...</translation>
+			<source>Default</source>
+			<translation>डिफ़ॉल्ट</translation>
 		</message>
 		<name>category</name>
 		<message>
-			<source>KYC Exchange</source>
-			<translation>KYC एक्सचेंज  </translation>
+			<source>Enter new category name...</source>
+			<translation>नई श्रेणी का नाम दर्ज करें...</translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4094,11 +4161,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>New category name:</source>
 			<translation>नई श्रेणी का नाम:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Private</source>
-			<translation>निजी  </translation>
 		</message>
 		<name>category</name>
 		<message>
@@ -4472,13 +4534,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+			<translation>नीचे दिए गए लेबल काटें और प्रत्येक को मिलान हार्डवेयर साइनर से संलग्न करें।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>फ़ाइल नहीं मिली!  </translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Hardware signer labels for wallet "{wallet_id}"</source>
+			<translation>वॉलेट “{wallet_id}” के हार्डवेयर साइनर लेबल</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Hardware signer labels for {id}</source>
+			<translation>{id} के लिए हार्डवेयर साइनर लेबल</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>लेबल सिंक्रोनाइजेशन बैकअप कुंजी: {label_sync_nsec}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>No hardware signers configured yet.</source>
+			<translation>अब तक कोई हार्डवेयर साइनर कॉन्फ़िगर नहीं है।</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -4536,6 +4618,88 @@ Click here to learn more.</source>
 		<message>
 			<source>Address Already Used</source>
 			<translation>पता पहले से इस्तेमाल किया गया है</translation>
+		</message>
+	</context>
+	<context>
+		<name>signatures</name>
+		<message>
+			<source>Address does not match recovered public key.</source>
+			<translation>पता पुनर्प्राप्त सार्वजनिक कुंजी से मेल नहीं खाता।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid bech32 address.</source>
+			<translation>अमान्य bech32 पता।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Invalid recovery id in signature.</source>
+			<translation>हस्ताक्षर में पुनर्प्राप्ति आईडी अमान्य है।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+			<translation>संदेश के चारों ओर अतिरिक्त रिक्त स्थान था। संदेश को ट्रिम करने के बाद सत्यापन सफल हुआ।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature does not match message.</source>
+			<translation>हस्ताक्षर संदेश से मेल नहीं खाता।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature header byte is invalid.</source>
+			<translation>हस्ताक्षर हेडर बाइट अमान्य है।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature is not valid base64.</source>
+			<translation>हस्ताक्षर मान्य base64 नहीं है।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must be 65 bytes long.</source>
+			<translation>हस्ताक्षर की लंबाई 65 बाइट होनी चाहिए।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for SegWit addresses.</source>
+			<translation>हस्ताक्षर को SegWit पतों के लिए संकुचित सार्वजनिक कुंजी का उपयोग करना चाहिए।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
+			<translation>हस्ताक्षर को नेस्टेड SegWit पतों के लिए संकुचित सार्वजनिक कुंजी का उपयोग करना चाहिए।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unable to recover public key from signature.</source>
+			<translation>हस्ताक्षर से सार्वजनिक कुंजी पुनर्प्राप्त करना असंभव है।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unknown bech32 network.</source>
+			<translation>अज्ञात bech32 नेटवर्क।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address length.</source>
+			<translation>असमर्थित Base58 पता लंबाई।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported Base58 address version.</source>
+			<translation>असमर्थित Base58 पता संस्करण।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness program length.</source>
+			<translation>असमर्थित bech32 प्रमाण कार्यक्रम लंबाई।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Unsupported bech32 witness version.</source>
+			<translation>असमर्थित bech32 प्रमाण संस्करण।</translation>
 		</message>
 	</context>
 	<context>
