@@ -361,9 +361,9 @@ def test_wizard(
                 box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
                 shutter.save(main_window)
                 assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
-                    "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
+                    "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 ]
-                assert box.address == "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
+                assert box.address == "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 assert (
                     box.recipient_widget.address_edit.input_field.palette()
                     .color(QtGui.QPalette.ColorRole.Base)
@@ -387,7 +387,7 @@ def test_wizard(
                 viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(viewer, UITx_Viewer)
                 assert [recipient.address for recipient in viewer.recipients.recipients] == [
-                    "bcrt1qz07mxz0pm3mj4jhypc6llm5mtzkcdeu3pnw042"
+                    "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 ]
                 assert [recipient.label for recipient in viewer.recipients.recipients] == ["Send Test"]
                 assert [recipient.amount for recipient in viewer.recipients.recipients] == [999890]

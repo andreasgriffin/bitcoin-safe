@@ -132,9 +132,9 @@ class TranslationHandler:
             f"""
 Translate all following lines   to the following languages
  {self.languages}
-Information context:  A bitcoin only bitcoin wallet.   So a term like "KYC Exchange"  means a trading place, that requires KYC. A wallet is a software that shows the balances on bitcoin addresses that belong to the user.  An address is a bitcoin address. 
+Information context:  A bitcoin only bitcoin wallet.   So a term like "Default" describes the fallback spending category that new wallets start with. A wallet is a software that shows the balances on bitcoin addresses that belong to the user.  An address is a bitcoin address.
 Formatting instructions:
-- no bullets points.  
+- no bullets points.
 - preserve the linebreaks of each line perfectly! keep the newline after each translated line.
 - leave the brackets {{}} and their content unchanged
 - group by language  (add 2 linebreaks after the language caption)
