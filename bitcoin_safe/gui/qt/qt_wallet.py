@@ -34,7 +34,7 @@ import os
 import shutil
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -80,7 +80,7 @@ from bitcoin_safe.pythonbdk_types import (
     python_utxo_balance,
 )
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
@@ -211,6 +211,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     signal_settext_balance_label: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
     signal_on_change_sync_status: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
+    signal_show_manage_categories = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,
@@ -281,6 +282,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.address_list_with_toolbar,
         ) = self._create_addresses_tab(self.tabs, address_list_with_toolbar=address_list_with_toolbar)
 
+        self.quick_receive.set_manage_categories_enabled(True)
+
         self.uitx_creator, self.send_node = self._create_send_tab(uitx_creator=uitx_creator)
         self.wallet_descriptor_ui, self.settings_node = self.create_and_add_settings_tab()
 
@@ -310,6 +313,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signals.language_switch, self.wallet_signals.language_switch)
         self.signal_tracker.connect(self.signals.currency_switch, self.wallet_signals.currency_switch)
         self.signal_tracker.connect(self.signals.currency_switch, self.update_display_balance)
+        self.quick_receive.signal_manage_categories_requested.connect(self.signal_show_manage_categories)
+        self.quick_receive.signal_add_category_requested.connect(self.category_manager.add_category)
+        self.signal_tracker.connect(self.signal_show_manage_categories, self.category_manager.show)
 
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
@@ -1115,8 +1121,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         chart_container_layout.addWidget(balance_group)
         chart_container_layout.addWidget(wallet_balance_chart)
-        top_widget_layout.addWidget(chart_container)
-        top_widget_layout.addWidget(self.quick_receive)
+        top_widget_layout.addWidget(chart_container, stretch=3)
+        top_widget_layout.addWidget(self.quick_receive, stretch=2)
 
         splitter.addWidget(top_widget)
         splitter.addWidget(list_widget)

@@ -1144,3 +1144,7 @@ def button_info(name: ButtonInfoType) -> ButtonInfo:
             ),
             icon_name="pen.svg",
         )
+
+
+def to_color_name(color: str | QPalette.ColorRole) -> str:
+    return QApplication.palette().color(color).name() if isinstance(color, QPalette.ColorRole) else color

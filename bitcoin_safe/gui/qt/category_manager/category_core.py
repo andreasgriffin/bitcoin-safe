@@ -155,7 +155,7 @@ class CategoryCore(QObject):
 
     @classmethod
     def get_default_categories(cls) -> List[str]:
-        return [translate("category", "KYC Exchange"), translate("category", "Private")]
+        return [translate("category", "Default")]
 
     def add_default_categories(self) -> None:
         for category in self.get_default_categories():
