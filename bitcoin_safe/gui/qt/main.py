@@ -1487,7 +1487,7 @@ class MainWindow(QMainWindow):
     def open_last_opened_wallets(self) -> List[QTWallet]:
         opened_wallets: List[QTWallet] = []
         for file_path in self.config.last_wallet_files.get(str(self.config.network), []):
-            qt_wallet = self.open_wallet(file_path=str(rel_home_path_to_abs_path(file_path)))
+            qt_wallet = self.open_wallet(file_path=str(rel_home_path_to_abs_path(file_path)), focus=False)
             if qt_wallet:
                 opened_wallets.append(qt_wallet)
         return opened_wallets
@@ -1496,7 +1496,7 @@ class MainWindow(QMainWindow):
         for serialized in self.config.opened_txlike.get(str(self.config.network), []):
             self.open_tx_like_in_tab(serialized)
 
-    def open_wallet(self, file_path: Optional[str] = None) -> Optional[QTWallet]:
+    def open_wallet(self, file_path: Optional[str] = None, focus=True) -> Optional[QTWallet]:
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
@@ -1594,7 +1594,9 @@ class MainWindow(QMainWindow):
             )
             return None
 
-        qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
+        qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
+        QApplication.processEvents()
+        qt_wallet.restore_last_selected_tab()
         qt_wallet.sync()
 
         self.add_recently_open_wallet(qt_wallet.file_path)
@@ -1840,7 +1842,11 @@ class MainWindow(QMainWindow):
                 logger.debug(f"on_set_tab_properties {tab_text=} {icon_name=} {tooltip=}")
 
     def add_qt_wallet(
-        self, qt_wallet: QTWallet, file_path: str | None = None, password: str | None = None
+        self,
+        qt_wallet: QTWallet,
+        file_path: str | None = None,
+        password: str | None = None,
+        focus: bool = True,
     ) -> QTWallet:
 
         assert qt_wallet.wallet.id not in self.qt_wallets, self.tr(
@@ -1863,7 +1869,7 @@ class MainWindow(QMainWindow):
             )
             qt_wallet.wizard = wizard
 
-        self.tab_wallets.root.addChildNode(qt_wallet.tabs)
+        self.tab_wallets.root.addChildNode(qt_wallet.tabs, focus=focus)
 
         if qt_wallet.tutorial_index is not None:
             qt_wallet.wizard.set_current_index(qt_wallet.tutorial_index)
