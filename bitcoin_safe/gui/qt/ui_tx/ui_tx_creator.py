@@ -516,6 +516,17 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
 
         tx_ui_infos = self.get_tx_ui_infos()
+
+        if self.column_inputs.checkBox_manual_coin_select.isChecked() and not tx_ui_infos.utxo_dict:
+            Message(
+                self.tr(
+                    'Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.'
+                ),
+                type=MessageType.Warning,
+            )
+            self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+            return
+
         wallets = get_wallets(self.signals)
 
         if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < MIN_RELAY_FEE:
