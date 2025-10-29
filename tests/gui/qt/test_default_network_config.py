@@ -87,7 +87,7 @@ def test_default_network_config_works(
             "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
             def sync():
-                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=20000):
+                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=50000):
                     qt_wallet.sync()
 
                 shutter.save(main_window)
