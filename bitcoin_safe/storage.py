@@ -165,7 +165,7 @@ class ClassSerializer:
                 if obj_cls:
                     return getattr(obj_cls, dct["value"])
                 else:
-                    raise Exception(f"Could not do from_dump(**{dct})")
+                    logger.exception(f"Could not deserialize {obj_cls}({dct.get('value')})")
 
             # For normal cases, json.loads will handle default JSON data types
             # No need to use json.Decoder here, just return the dictionary as-is

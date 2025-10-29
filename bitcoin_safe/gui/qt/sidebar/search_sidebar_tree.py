@@ -124,7 +124,6 @@ if __name__ == "__main__":
     search_view = SearchTreeView(
         do_search=demo_do_search,
         on_click=demo_on_click,
-        placeholder="Search…",
     )
 
     # Stack: SearchTreeView on top, SidebarTree underneath (shown only when not searching)

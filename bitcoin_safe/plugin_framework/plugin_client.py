@@ -1,0 +1,117 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2024 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import logging
+from abc import abstractmethod
+from typing import Any, Dict, cast
+
+from packaging import version
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QWidget
+
+from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
+from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
+from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.typestubs import TypedPyQtSignal
+
+logger = logging.getLogger(__name__)
+
+
+class PluginClient(BaseSaveableClass, QWidget):
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
+    VERSION = "0.0.2"
+    plugin_conditions = PluginConditions()
+    title = "Base Plugin"
+    description = ""
+    provider = ""
+
+    signal_set_enabled = cast(TypedPyQtSignal[bool], pyqtSignal(bool))
+
+    def __init__(self, enabled: bool, icon: QIcon) -> None:
+        super().__init__()
+        self.icon = icon
+        self.node = SidebarNode[object](data=self, widget=self, title=self.title, icon=icon)
+        self.enabled = enabled
+        self.node.setVisible(enabled)
+        self.signal_set_enabled.connect(self.on_set_enabled)
+
+    @abstractmethod
+    def get_widget(self) -> QWidget:
+        pass
+
+    def on_set_enabled(self, value: bool):
+        if self.enabled == value:
+            return
+
+        self.node.setVisible(value)
+
+        logger.debug(f"on_triggered {value=}")
+        self.enabled = value
+        if value:
+            self.load()
+        else:
+            self.unload()
+
+    @abstractmethod
+    def load(self):
+        pass
+
+    @abstractmethod
+    def unload(self):
+        pass
+
+    def dump(self) -> Dict[str, Any]:
+        d = super().dump()
+        d["tab_text"] = self.title
+        d["enabled"] = self.enabled
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
+        return cls(**filtered_for_init(dct, cls))
+
+    @classmethod
+    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+            pass
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+            dct["tab_text"] = dct["title"]
+
+        # now the version is newest, so it can be deleted from the dict
+        if "VERSION" in dct:
+            del dct["VERSION"]
+        return dct
+
+    def close(self) -> bool:
+        return super().close()
+
+    def updateUi(self):
+        pass

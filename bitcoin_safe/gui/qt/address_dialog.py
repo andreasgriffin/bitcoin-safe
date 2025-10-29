@@ -290,12 +290,11 @@ class AddressDialog(QWidget):
         self.shortcut_close2 = QShortcut(QKeySequence("ESC"), self)
         self.shortcut_close2.activated.connect(self.close)
 
-    # Override keyPressEvent method
-    def keyPressEvent(self, event: QKeyEvent) -> None:  # type: ignore[override]
-        # Check if the pressed key is 'Esc'
-        if event.key() == Qt.Key.Key_Escape:
-            # Close the widget
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        if a0 and a0.key() == Qt.Key.Key_Escape:
             self.close()
+
+        super().keyPressEvent(a0)
 
     def setupUi(self) -> None:
         self.recipient_box.updateUi()

@@ -26,23 +26,33 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
-IS_PRODUCTION = True  # change this for testing
+import logging
 
-DEMO_MODE = False
-DEFAULT_MAINNET = IS_PRODUCTION
-ENABLE_THREADING = True
-ENABLE_PLUGINS = True
-ENABLE_TIMERS = True
-DEFAULT_LANG_CODE = "en_US"
-MEMPOOL_SCHEDULE_TIMER = 10 * 60 * 1000 if IS_PRODUCTION else 1 * 60 * 1000
-GENERAL_RBF_AVAILABLE = False
-DONATION_ADDRESS = "bc1qs8vxaclc0ncf92nrhc4rcdgppwganny6mpn9d4"
+import bdkpython as bdk
 
-if IS_PRODUCTION:
-    if not ENABLE_TIMERS:
-        raise ValueError("Timers must be enabled for production")
-    if not ENABLE_THREADING:
-        raise ValueError("Threading must be enabled for production")
-    if DEMO_MODE:
-        raise ValueError("Cannot be in demo mode for production")
+from bitcoin_safe.plugin_framework.plugin_server import PluginServer
+from bitcoin_safe.signals import Signals
+from bitcoin_safe.wallet import Wallet, get_wallet
+
+logger = logging.getLogger(__name__)
+
+
+class WalletGraphServer(PluginServer):
+    def __init__(self, wallet_id: str, network: bdk.Network, signals: Signals) -> None:
+        super().__init__()
+        self.wallet_id = wallet_id
+        self.network = network
+        self._signals = signals
+
+    def get_wallet(self) -> Wallet | None:
+        return get_wallet(self.wallet_id, self._signals)
+
+    def start(self) -> None:
+        # A local server that only exposes helper methods does not need to be started.
+        logger.debug("WalletGraphServer.start() called")
+
+    def stop(self) -> None:
+        # A local server that only exposes helper methods does not need to be stopped.
+        logger.debug("WalletGraphServer.stop() called")

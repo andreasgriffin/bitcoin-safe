@@ -30,7 +30,7 @@
 import logging
 from functools import partial
 from time import time
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -59,6 +59,7 @@ from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.my_treeview import needs_frequent_flag
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
+from bitcoin_safe.gui.qt.qt_wallet import get_syncclients
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
@@ -161,8 +162,8 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
 
 
 class UITx_Viewer(UITx_Base):
-    signal_updated_content: TypedPyQtSignal[Data] = pyqtSignal(Data)  # type: ignore
-    signal_edit_tx: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
+    signal_updated_content = cast(TypedPyQtSignal[Data], pyqtSignal(Data))
+    signal_edit_tx = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
         self,
@@ -320,7 +321,7 @@ class UITx_Viewer(UITx_Base):
             signals_min=self.signals,
             loop_in_thread=self.loop_in_thread,
             parent=self,
-            sync_tabs=self.get_synctabs(),
+            sync_client=get_syncclients(signals=self.signals),
         )
         self._layout.addWidget(self.export_data_simple)
 
@@ -1217,7 +1218,7 @@ class UITx_Viewer(UITx_Base):
         self.set_psbt_already_broadcasted_bar()
         self.set_tab_properties(chain_position=chain_position)
         self.update_all_totals()
-        self.export_data_simple.set_data(data=self.data, sync_tabs=self.get_synctabs())
+        self.export_data_simple.set_data(data=self.data, sync_client=get_syncclients(signals=self.signals))
 
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
@@ -1235,11 +1236,6 @@ class UITx_Viewer(UITx_Base):
         for wallet_ in get_wallets(self.signals):
             txo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
         return txo_dict
-
-    def get_synctabs(self):
-        return {
-            wallet_id: qt_wallet.sync_tab for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
-        }
 
     def set_sankey(
         self,

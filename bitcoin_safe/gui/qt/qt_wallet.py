@@ -51,6 +51,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QMessageBox,
     QSplitter,
     QVBoxLayout,
@@ -60,8 +61,8 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
+from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
 from bitcoin_safe.gui.qt.category_manager.category_manager import CategoryManager
-from bitcoin_safe.gui.qt.label_syncer import LabelSyncer
 from bitcoin_safe.gui.qt.my_treeview import (
     MyItemDataRole,
     SearchableTab,
@@ -69,11 +70,15 @@ from bitcoin_safe.gui.qt.my_treeview import (
 )
 from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
-from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
+from bitcoin_safe.plugin_framework.plugin_list_widget import PluginListWidget
+from bitcoin_safe.plugin_framework.plugin_manager import PluginManager
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
+from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.pythonbdk_types import (
     Balance,
     TransactionDetails,
@@ -84,7 +89,7 @@ from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
-from ...execute_config import DEFAULT_LANG_CODE, ENABLE_TIMERS
+from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
 from ...mempool_manager import MempoolManager
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
@@ -113,8 +118,8 @@ MINIMUM_INTERVAL_SYNC_REGULARLY = (
 
 
 class QTProtoWallet(QtWalletBase):
-    signal_create_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
-    signal_close_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
+    signal_create_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_close_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))
 
     def __init__(
         self,
@@ -199,18 +204,19 @@ class ProgressSignal:
 
 
 class QTWallet(QtWalletBase, BaseSaveableClass):
-    VERSION = "0.2.0"
+    VERSION = "0.3.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
-        "Wallet": Wallet,
-        "Balance": Balance,
+        Wallet.__name__: Wallet,
+        Balance.__name__: Balance,
         HistListWithToolbar.__name__: HistListWithToolbar,
         AddressListWithToolbar.__name__: AddressListWithToolbar,
         UITx_Creator.__name__: UITx_Creator,
+        PluginManager.__name__: PluginManager,
     }
 
-    signal_settext_balance_label: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
-    signal_on_change_sync_status: TypedPyQtSignal[SyncStatus] = pyqtSignal(SyncStatus)  # type: ignore  # SyncStatus
+    signal_settext_balance_label = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_on_change_sync_status = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))  # SyncStatus
     signal_show_manage_categories = cast(TypedPyQtSignalNo, pyqtSignal())
 
     def __init__(
@@ -220,7 +226,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         signals: Signals,
         mempool_manager: MempoolManager,
         fx: FX,
-        sync_tab: SyncTab | None = None,
         password: str | None = None,
         file_path: str | None = None,
         notified_tx_ids: Iterable[str] | None = None,
@@ -229,6 +234,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         address_list_with_toolbar: AddressListWithToolbar | None = None,
         uitx_creator: UITx_Creator | None = None,
         last_tab_title: str = "",
+        plugin_manager: PluginManager | None = None,
         parent=None,
     ) -> None:
         super().__init__(
@@ -241,6 +247,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet = self.set_wallet(wallet)
         self.password = password
         self.fx = fx
+        self.plugins_menu = QMenu()
         self._file_path = file_path
         self.sync_status: SyncStatus = SyncStatus.unknown
         self.timer_sync_retry = QTimer()
@@ -252,18 +259,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self._syncing_delay = timedelta(seconds=0)
         self._last_sync_chain_height = 0
         self._rows_after_hist_list_update: List[str] = []
-
-        self.sync_tab = (
-            sync_tab
-            if sync_tab
-            else SyncTab.from_descriptor_new_device_keys(
-                self.wallet.multipath_descriptor,
-                network=self.config.network,
-                signals=self.signals,
-                parent=self,
-            )
-        )
-        self.sync_tab.set_wallet_id(self.wallet.id)
 
         ########### create tabs
         (
@@ -287,7 +282,30 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.uitx_creator, self.send_node = self._create_send_tab(uitx_creator=uitx_creator)
         self.wallet_descriptor_ui, self.settings_node = self.create_and_add_settings_tab()
 
-        self.sync_tab, self.label_syncer, self.sync_node = self.add_sync_tab()
+        self.plugin_manager: PluginManager | None = None
+        if ENABLE_PLUGINS:
+            self.plugin_manager = (
+                plugin_manager
+                if plugin_manager
+                else PluginManager(
+                    network=self.config.network,
+                    signals=self.signals,
+                    config=self.config,
+                    fx=self.fx,
+                )
+            )
+            self.plugin_manager_widget = PluginListWidget()
+            self.tabs.addChildNode(self.plugin_manager_widget.node)
+
+            # register and save details
+            self.plugin_manager.create_and_connect_clients(
+                descriptor=self.wallet.multipath_descriptor,
+                wallet_id=self.wallet.id,
+                category_core=self.category_core,
+            )
+
+            self.plugin_manager.load_all_enabled()
+            self.plugin_manager_widget.set_plugins(plugins=self.plugin_manager.clients)
 
         self.create_status_bar(self, self.outer_layout)
         self.update_status_visualization(self.sync_status)
@@ -327,13 +345,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         d = super().dump()
 
         d["wallet"] = self.wallet.dump()
-        d["sync_tab"] = self.sync_tab.dump()
         d["tutorial_index"] = self.tutorial_index
         d["notified_tx_ids"] = list(self.notified_tx_ids)
         d["history_list_with_toolbar"] = self.history_list_with_toolbar.dump()
         d["address_list_with_toolbar"] = self.address_list_with_toolbar.dump()
         d["uitx_creator"] = self.uitx_creator.dump()
         d["last_tab_title"] = current.title if (current := self.tabs.currentChildNode()) else None
+        d["plugin_manager"] = self.plugin_manager
 
         return d
 
@@ -351,52 +369,62 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             filename=file_path,
             password=password,
             class_kwargs={
-                "Wallet": {"config": config},
-                "QTWallet": {
+                Wallet.__name__: {"config": config},
+                QTWallet.__name__: {
                     "config": config,
                     "signals": signals,
                     "mempool_manager": mempool_manager,
                     "fx": fx,
                     "file_path": file_path,
                 },
-                "HistList": {
+                HistList.__name__: {
                     "config": config,
                     "signals": signals,
                     "mempool_manager": mempool_manager,
                     "fx": fx,
                 },
-                "HistListWithToolbar": {
+                HistListWithToolbar.__name__: {
                     "config": config,
                 },
-                "UTXOList": {
-                    "config": config,
-                    "signals": signals,
-                    "fx": fx,
-                },
-                "UtxoListWithToolbar": {
-                    "config": config,
-                },
-                "AddressList": {
+                UTXOList.__name__: {
                     "config": config,
                     "signals": signals,
                     "fx": fx,
                 },
-                "AddressListWithToolbar": {
+                UtxoListWithToolbar.__name__: {
                     "config": config,
                 },
-                "SyncTab": {
+                AddressList.__name__: {
+                    "config": config,
+                    "signals": signals,
+                    "fx": fx,
+                },
+                AddressListWithToolbar.__name__: {
+                    "config": config,
+                },
+                PluginManager.__name__: {
+                    "signals": signals,
+                    "network": config.network,
+                    "config": config,
+                    "fx": fx,
+                },
+                SyncClient.__name__: {
                     "signals": signals,
                     "network": config.network,
                 },
-                "UITx_Creator": {
+                UITx_Creator.__name__: {
                     "signals": signals,
                     "config": config,
                     "mempool_manager": mempool_manager,
                     "fx": fx,
                 },
-                "CategoryList": {
+                CategoryList.__name__: {
                     "signals": signals,
                     "config": config,
+                },
+                WalletGraphClient.__name__: {
+                    "signals": signals,
+                    "network": config.network,
                 },
             },
         )
@@ -406,6 +434,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         "this class can be overwritten in child classes"
 
         dct = json.loads(file_content)
+        qt_wallet_version = dct.get("VERSION")
 
         if dct["__class__"] == "Wallet":
             d: Dict[str, Any] = {}
@@ -418,6 +447,22 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             d["sync_tab"] = d["wallet"]["data_dump"].get("SyncTab", {})
             del d["wallet"]["data_dump"]
             dct = d
+
+        if (qt_wallet_version) and version.parse(qt_wallet_version) < version.parse("0.3.0"):
+            # new plugin_manager
+            if dct.get("sync_tab") and not dct.get("plugin_manager"):
+                sync_tab = dct["sync_tab"]
+                sync_client = {
+                    **sync_tab,
+                    "VERSION": "0.0.2",
+                    "__class__": SyncClient.__name__,
+                }
+                dct["plugin_manager"] = {
+                    "VERSION": "0.0.1",
+                    "__class__": PluginManager.__name__,
+                    "clients": [sync_client],
+                }
+                del dct["sync_tab"]
 
         # in the function above, only default json serilizable things can be set in dct
         return json.dumps(dct)
@@ -447,17 +492,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             # must contain "Wallet":{"config": ... }
             dct.update(class_kwargs[cls.__name__])
 
-        if class_kwargs:
-            dct["sync_tab"] = (
-                SyncTab.from_dump(dct["sync_tab"], network=dct["config"].network, signals=dct["signals"])
-                if dct.get("sync_tab")
-                else None
-            )
-        else:
-            logger.warning(f"No class_kwargs given for {cls.__name__}.from_dump")
-
-        instance = cls(**filtered_for_init(dct, cls))
-        return instance
+        return cls(**filtered_for_init(dct, cls))
 
     @property
     def wallet_signals(self) -> WalletSignals:
@@ -477,12 +512,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             _node.setTitle(self.tr("Send"))
         if _node := self.tabs.findNodeByWidget(self.wallet_descriptor_ui):
             _node.setTitle(self.tr("Descriptor"))
-        if _node := self.tabs.findNodeByWidget(self.sync_tab):
-            _node.setTitle(self.tr("Sync && Chat"))
         if _node := self.tabs.findNodeByWidget(self.history_tab):
             _node.setTitle(self.tr("History"))
         if _node := self.tabs.findNodeByWidget(self.address_tab):
             _node.setTitle(self.tr("Receive"))
+        if _node := self.tabs.findNodeByWidget(self.plugin_manager_widget):
+            _node.setTitle(self.tr("Plugins"))
 
         self.balance_label_title.setText(self.tr("Balance"))
         self.fiat_value_label_title.setText(self.tr("Value"))
@@ -617,27 +652,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)
         qt_wallet.sync()
-
-    def add_sync_tab(self) -> Tuple[SyncTab, LabelSyncer, SidebarNode]:
-        "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
-
-        icon_basename = SyncTab.get_icon_basename(enabled=self.sync_tab.enabled())
-        sync_node = SidebarNode[object](
-            data=self.sync_tab, widget=self.sync_tab, icon=svg_tools.get_QIcon(icon_basename), title=""
-        )
-        self.tabs.addChildNode(sync_node)
-        self.sync_tab.checkbox.stateChanged.connect(self._set_sync_tab_icon)
-
-        label_syncer = LabelSyncer(self.wallet.labels, self.sync_tab, self.wallet_signals)
-        self.sync_tab.finish_init_after_signal_connection()
-        return self.sync_tab, label_syncer, sync_node
-
-    def _set_sync_tab_icon(self, enabled: bool):
-        node = self.tabs.findNodeByWidget(self.sync_tab)
-        if not node:
-            return
-        icon_basename = SyncTab.get_icon_basename(enabled=enabled)
-        node.setIcon(svg_tools.get_QIcon(icon_basename))
 
     def save_backup(self) -> str:
         """_summary_
@@ -1444,13 +1458,19 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if wallet_id and wallet_id != self.wallet.id:
             logger.error(f"Cannot export for {wallet_id=}, since this is {self.wallet.id=}")
             return
+        if not self.plugin_manager:
+            return
+
+        sync_client = self.plugin_manager.get_instance(SyncClient)
+        if not sync_client:
+            return
 
         make_and_open_pdf_statement(
             self.wallet,
             lang_code=self.signals.get_current_lang_code() or DEFAULT_LANG_CODE,
             label_sync_nsec=(
-                self.sync_tab.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
-                if self.sync_tab.enabled()
+                sync_client.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
+                if sync_client.enabled
                 else None
             ),
         )
@@ -1458,6 +1478,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def close(self) -> bool:
         # crucial is to explicitly close everything that has a wallet attached
         self.stop_sync_timer()
+        if self.plugin_manager:
+            self.plugin_manager.disconnect_all()
         self.quick_receive.close()
         self.address_tab.close()
         self.address_list_with_toolbar.close()
@@ -1467,12 +1489,25 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_descriptor_ui.close()
         self.uitx_creator.close()
         self.wallet_balance_chart.close()
-        self.label_syncer.send_all_labels_to_myself()
-        self.sync_tab.unsubscribe_all()
-        self.sync_tab.close()
+        if self.plugin_manager:
+            self.plugin_manager.close()
         self.tabs.clearChildren()
         self.tabs.close()
         self.wallet.close()
         SignalTools.disconnect_all_signals_from(self.wallet_signals)
         self.setParent(None)  #  THIS made it that the qt wallet is destroyed
         return super().close()
+
+
+def get_syncclients(signals: Signals) -> Dict[str, SyncClient]:
+    d: Dict[str, SyncClient] = {}
+    for wallet_id, qt_wallet in signals.get_qt_wallets().items():
+        if not isinstance(qt_wallet, QTWallet):
+            continue
+        if not qt_wallet.plugin_manager:
+            continue
+        client = qt_wallet.plugin_manager.get_instance(SyncClient)
+        if not client:
+            continue
+        d[wallet_id] = client
+    return d

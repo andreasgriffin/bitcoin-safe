@@ -81,6 +81,14 @@
       "preLaunchTask": "Poetry Install",
     },
     {
+      "name": "plugins demo",
+      "type": "python",
+      "request": "launch",
+      "program": "bitcoin_safe/plugin_framework/plugins/demo_client.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
       "name": "step_progress_bar",
       "type": "python",
       "request": "launch",

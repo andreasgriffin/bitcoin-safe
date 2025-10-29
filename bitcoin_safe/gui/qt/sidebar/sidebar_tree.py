@@ -277,6 +277,8 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def setTitle(self, text: str) -> None:
         self.title = text
+        if "&&" not in text and "&" in text:
+            text = text.replace("&", "&&")
         self.header_btn.setText(text)
 
     def setIcon(self, icon: QIcon) -> None:

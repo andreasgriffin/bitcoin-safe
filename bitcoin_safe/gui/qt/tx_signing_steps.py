@@ -37,6 +37,7 @@ from PyQt6.QtWidgets import QWidget
 from bitcoin_safe.gui.qt.export_data import DataGroupBox, HorizontalImportExportGroups
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignedUI, SignerUI
+from bitcoin_safe.gui.qt.qt_wallet import get_syncclients
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.signer import (
@@ -155,6 +156,7 @@ class TxSigningSteps(StepProgressContainer):
             self.set_current_index(self.current_index() - 1)
 
     def create_export_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
+
         if not signature_importers:
             return QWidget()
 
@@ -192,10 +194,7 @@ class TxSigningSteps(StepProgressContainer):
                 signals_min=self.signals_min,
                 loop_in_thread=self.loop_in_thread,
                 signature_importers=signature_importers,
-                sync_tabs={
-                    wallet_id: qt_wallet.sync_tab
-                    for wallet_id, qt_wallet in self.signals.get_qt_wallets().items()
-                },
+                sync_client=get_syncclients(signals=self.signals),
             )
 
 

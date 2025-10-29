@@ -1,0 +1,1 @@
+"""Wallet graph plugin."""

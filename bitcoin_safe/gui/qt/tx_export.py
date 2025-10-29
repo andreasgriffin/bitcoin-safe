@@ -40,7 +40,7 @@ from bitcoin_safe.gui.qt.export_data import (
     SyncChatToolButton,
 )
 from bitcoin_safe.gui.qt.keystore_ui import BaseHardwareSignerInteractionWidget
-from bitcoin_safe.gui.qt.sync_tab import SyncTab
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         network: bdk.Network,
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
-        sync_tabs: dict[str, SyncTab] | None = None,
+        sync_client: dict[str, SyncClient] | None = None,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent=parent)
@@ -79,7 +79,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
 
         # Sync & Chat
         self.button_sync_share = SyncChatToolButton(
-            data=self.data, network=network, sync_tabs=sync_tabs, parent=self
+            data=self.data, network=network, sync_client=sync_client, parent=self
         )
         self.add_button(self.button_sync_share)
 
@@ -91,10 +91,10 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.button_sync_share.updateUi()
         super().updateUi()
 
-    def set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None = None):
+    def set_data(self, data: Data, sync_client: dict[str, SyncClient] | None = None):
         self.export_qr_button.set_data(data=data)
         self.button_export_file.set_data(data=data)
-        self.button_sync_share.set_data(data=data, sync_tabs=sync_tabs)
+        self.button_sync_share.set_data(data=data, sync_clients=sync_client)
 
         self.updateUi()
 

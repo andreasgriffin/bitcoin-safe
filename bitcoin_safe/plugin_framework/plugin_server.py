@@ -27,22 +27,23 @@
 # SOFTWARE.
 
 
-IS_PRODUCTION = True  # change this for testing
+import logging
 
-DEMO_MODE = False
-DEFAULT_MAINNET = IS_PRODUCTION
-ENABLE_THREADING = True
-ENABLE_PLUGINS = True
-ENABLE_TIMERS = True
-DEFAULT_LANG_CODE = "en_US"
-MEMPOOL_SCHEDULE_TIMER = 10 * 60 * 1000 if IS_PRODUCTION else 1 * 60 * 1000
-GENERAL_RBF_AVAILABLE = False
-DONATION_ADDRESS = "bc1qs8vxaclc0ncf92nrhc4rcdgppwganny6mpn9d4"
+logger = logging.getLogger(__name__)
 
-if IS_PRODUCTION:
-    if not ENABLE_TIMERS:
-        raise ValueError("Timers must be enabled for production")
-    if not ENABLE_THREADING:
-        raise ValueError("Threading must be enabled for production")
-    if DEMO_MODE:
-        raise ValueError("Cannot be in demo mode for production")
+
+class PluginServer:
+    def __init__(self) -> None:
+        self._enabled = False
+
+    def is_enabled(self) -> bool:
+        return self._enabled
+
+    def set_enabled(self, enabled: bool):
+        self._enabled = enabled
+
+    def start(self):
+        raise NotImplementedError()
+
+    def stop(self):
+        raise NotImplementedError()

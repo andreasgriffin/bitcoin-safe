@@ -33,7 +33,7 @@ import xml.etree.ElementTree as ET
 from abc import abstractmethod
 from functools import partial
 from math import ceil
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -66,7 +66,6 @@ from bitcoin_safe.gui.qt.keystore_ui import (
 )
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet, QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
-from bitcoin_safe.gui.qt.sync_tab import SyncTab
 from bitcoin_safe.gui.qt.tutorial_screenshots import (
     ScreenshotsGenerateSeed,
     ScreenshotsViewSeed,
@@ -74,6 +73,7 @@ from bitcoin_safe.gui.qt.tutorial_screenshots import (
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import Wallet
@@ -237,7 +237,7 @@ class FloatingButtonBar(QDialogButtonBox):
         self.tutorial_button_prev_step.setText(self.tr("Previous Step"))
 
 
-class TabInfo:
+class WizardTabInfo:
     def __init__(
         self,
         container: StepProgressContainer,
@@ -261,7 +261,7 @@ class TabInfo:
 
 
 class BaseTab(QObject):
-    def __init__(self, refs: TabInfo, loop_in_thread: LoopInThread) -> None:
+    def __init__(self, refs: WizardTabInfo, loop_in_thread: LoopInThread) -> None:
         self.refs = refs
         super().__init__(parent=refs.container)
 
@@ -1232,9 +1232,14 @@ class LabelBackup(BaseTab):
 
         self.checkbox = QCheckBox()
         self.checkbox.setEnabled(bool(self.refs.qt_wallet))
-        if self.refs.qt_wallet:
-            self.refs.qt_wallet.sync_tab.checkbox.stateChanged.connect(self.checkbox_state_changed)
-            self.checkbox.stateChanged.connect(self.refs.qt_wallet.sync_tab.checkbox.setChecked)
+        if (
+            self.refs.qt_wallet
+            and self.refs.qt_wallet.plugin_manager
+            and (sync_client := self.refs.qt_wallet.plugin_manager.get_instance(SyncClient))
+        ):
+            sync_client.nostr_sync.ui.signal_reset_keys.connect(self.updateUi)
+            sync_client.nostr_sync.ui.signal_set_keys.connect(self.updateUi)
+        self.checkbox.stateChanged.connect(self.on_checkbox_stateChanged)
 
         left_widget = QWidget()
         left_widget_layout = QVBoxLayout(left_widget)
@@ -1277,20 +1282,29 @@ class LabelBackup(BaseTab):
         self.updateUi()
         return tutorial_widget
 
-    def checkbox_state_changed(self, state) -> None:
-        # update the icon
-        self.updateUi()
+    def on_checkbox_stateChanged(self):
+        if (
+            self.refs.qt_wallet
+            and self.refs.qt_wallet.plugin_manager
+            and (sync_client := self.refs.qt_wallet.plugin_manager.get_instance(SyncClient))
+        ):
+            sync_client.signal_set_enabled.emit(self.checkbox.isChecked())
 
     def updateUi(self) -> None:
         super().updateUi()
 
-        self.label_main.setText(
-            html_f(
-                f"""                
+        if (
+            self.refs.qt_wallet
+            and self.refs.qt_wallet.plugin_manager
+            and (sync_client := self.refs.qt_wallet.plugin_manager.get_instance(SyncClient))
+        ):
+            self.label_main.setText(
+                html_f(
+                    f"""                
 <ul>
 <li>{self.tr('Encrypted cloud backup of the address labels and categories')}</li>
     <ul>
-    <li>{self.tr('Backup secret sync key:')  + '<br>'+ html_f( self.refs.qt_wallet.sync_tab.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(), bf=True) if self.refs.qt_wallet else ''}</li> 
+    <li>{self.tr('Backup secret sync key:')  + '<br>'+ html_f( sync_client.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(), bf=True) if self.refs.qt_wallet else ''}</li> 
     </ul>   
 <li>{self.tr('Multi-computer synchronization and chat')}</li> 
     <ul>
@@ -1298,18 +1312,23 @@ class LabelBackup(BaseTab):
     </ul>
 </ul>   
  """,
-                add_html_and_body=True,
-                p=True,
-                size=12,
+                    add_html_and_body=True,
+                    p=True,
+                    size=12,
+                )
             )
-        )
+        else:
+            self.label_main.setText("")
         self.button_next.setText(self.tr("Finish"))
         self.checkbox.setText(self.tr("Enable"))
-        icon_basename = SyncTab.get_icon_basename(
-            enabled=bool(self.refs.qt_wallet and self.refs.qt_wallet.sync_tab.enabled())
+
+        sync_client = (
+            self.refs.qt_wallet.plugin_manager.get_instance(SyncClient)
+            if self.refs.qt_wallet and (self.refs.qt_wallet.plugin_manager)
+            else None
         )
-        self.icon.setSvgContent(svg_content=svg_tools.get_svg_content(icon_basename=icon_basename))
-        self.checkbox.setChecked(self.refs.qt_wallet.sync_tab.enabled() if self.refs.qt_wallet else False)
+        self.icon.setSvgContent(svg_content=svg_tools.get_svg_content(icon_basename="bi--cloud.svg"))
+        self.checkbox.setChecked(sync_client.enabled if sync_client else False)
 
 
 class SendTest(BaseTab):
@@ -1318,7 +1337,7 @@ class SendTest(BaseTab):
         test_label: str,
         test_number: int,
         tx_text: str,
-        refs: TabInfo,
+        refs: WizardTabInfo,
         loop_in_thread: LoopInThread,
     ) -> None:
         super().__init__(refs, loop_in_thread=loop_in_thread)
@@ -1433,8 +1452,8 @@ class SendTest(BaseTab):
 
 
 class Wizard(WizardBase):
-    signal_create_wallet: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore  # protowallet_id
-    signal_step_change: TypedPyQtSignal[int] = pyqtSignal(int)  # type: ignore
+    signal_create_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))  # protowallet_id
+    signal_step_change = cast(TypedPyQtSignal[int], pyqtSignal(int))
 
     def __init__(
         self,
@@ -1469,7 +1488,7 @@ class Wizard(WizardBase):
         self.floating_button_box.fill()
         self._layout.addWidget(self.floating_button_box)
 
-        refs = TabInfo(
+        refs = WizardTabInfo(
             container=self.step_container,
             qtwalletbase=qtwalletbase,
             go_to_next_index=self.go_to_next_index,
@@ -1566,7 +1585,11 @@ class Wizard(WizardBase):
             if self.qt_wallet.wallet.get_balance().total > 0:
                 step = TutorialStep.send
 
-            if self.qt_wallet.sync_tab.enabled():
+            if (
+                self.qt_wallet.plugin_manager
+                and (sync_cient := self.qt_wallet.plugin_manager.get_instance(SyncClient))
+                and sync_cient.enabled
+            ):
                 step = TutorialStep.sync
 
         return step
