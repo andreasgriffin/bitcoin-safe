@@ -353,6 +353,8 @@ class SidebarNode(QFrame, Generic[TT]):
             node.select()
 
     def removeChildNode(self, node: SidebarNode[TT]) -> None:
+        node.clearChildren()
+
         try:
             idx = self.child_nodes.index(node)
         except ValueError:
