@@ -1260,6 +1260,8 @@ class UITx_Viewer(UITx_Base):
 
         def on_success(success) -> None:
             self.fill_button_group()
+            if not success:
+                self.set_tab_focus(UiElements.default)
 
         def on_error(packed_error_info) -> None:
             logger.warning(str(packed_error_info))

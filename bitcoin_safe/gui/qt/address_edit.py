@@ -191,9 +191,9 @@ class AddressEdit(ButtonEdit):
         self.input_field.setPalette(palette)
         self.input_field.update()
         self.update()
-        logger.debug(
-            f"{self.__class__.__name__} format_address_field for self.address {str(self.address)[:6]}, background_color = {background_color.name() if background_color else None}"
-        )
+        # logger.debug(
+        #     f"{self.__class__.__name__} format_address_field for self.address {str(self.address)[:6]}, background_color = {background_color.name() if background_color else None}"
+        # )
 
     def ask_to_replace_address(self, wallet: Wallet, address: str) -> None:
         if question_dialog(

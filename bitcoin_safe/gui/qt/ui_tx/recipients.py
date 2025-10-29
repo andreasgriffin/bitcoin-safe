@@ -489,6 +489,7 @@ class Recipients(QWidget):
 
         self.header_widget = header_widget
         self.setup_header_widget()
+        self._count = 0
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
@@ -674,8 +675,10 @@ class Recipients(QWidget):
             index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
             if index >= 0:
                 self.recipient_list_content_layout.insertWidget(index, new_widget)
+                self._count += 1
             else:
                 self.recipient_list_content_layout.addWidget(new_widget)
+                self._count += 1
 
         insert_before_button(recipient_box)
 
@@ -700,6 +703,7 @@ class Recipients(QWidget):
                 widget.hide()
                 widget.setParent(None)
                 self.signal_removed_recipient.emit(widget)
+                self._count -= 1
                 break
         self.update_recipient_title()
 
@@ -728,4 +732,4 @@ class Recipients(QWidget):
         return self.recipient_list.findChildren(RecipientBox)
 
     def count(self) -> int:
-        return len(self.get_recipient_group_boxes())
+        return self._count
