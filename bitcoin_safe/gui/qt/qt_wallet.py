@@ -243,6 +243,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             tutorial_index=tutorial_index,
             parent=parent,
         )
+        self.last_tab_title = last_tab_title
         self.mempool_manager = mempool_manager
         self.wallet = self.set_wallet(wallet)
         self.password = password
@@ -311,7 +312,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.update_status_visualization(self.sync_status)
 
         self.updateUi()
-        self.tabs.set_current_tab_by_text(last_tab_title)
         self.quick_receive.update_content(UpdateFilter(refresh_all=True))
 
         #### connect signals
@@ -497,6 +497,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     @property
     def wallet_signals(self) -> WalletSignals:
         return self.signals.wallet_signals[self.wallet.id]
+
+    def restore_last_selected_tab(self):
+        self.tabs.set_current_tab_by_text(self.last_tab_title)
 
     def on_updated(self, update_filter: UpdateFilter):
         address_infos = [

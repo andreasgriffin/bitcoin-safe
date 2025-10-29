@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
@@ -52,10 +53,13 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
-from bitcoin_safe.gui.qt.util import set_no_margins, set_translucent, svg_tools
+from bitcoin_safe.gui.qt.util import (
+    set_no_margins,
+    set_translucent,
+    svg_tools,
+    to_color_name,
+)
 from bitcoin_safe.typestubs import TypedPyQtSignal
-
-from ..util import to_color_name
 
 logger = logging.getLogger(__name__)
 
@@ -204,6 +208,7 @@ class SidebarNode(QFrame, Generic[TT]):
     closeClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
     hideClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
     nodeSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
+    nodeUnSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
     nodeToggled = cast(TypedPyQtSignal[object, bool], pyqtSignal(object, bool))
 
     close_icon_name = "close.svg"
@@ -228,7 +233,7 @@ class SidebarNode(QFrame, Generic[TT]):
         selected_hover_color: str | None | QPalette.ColorRole = None,
         indent: int = 0,
         bf_top_level: bool = True,
-        parent_node: Optional["SidebarNode[TT]"] = None,
+        parent_node: Optional[SidebarNode[TT]] = None,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(parent)
@@ -253,7 +258,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
         self.indent = indent
         self.parent_node = parent_node
-        self.child_nodes: List["SidebarNode[TT]"] = []
+        self.child_nodes: List[SidebarNode[TT]] = []
         self.stack: Optional[QStackedWidget] = None  # wired by SidebarTree
 
         self.setObjectName(str(id(self)))
@@ -271,7 +276,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.setVisible(not self.hide_header and visible)
         super().setVisible(visible)
         if not visible and self.header_row.is_selected():
-            self.select_neighbor()
+            self.nodeUnSelected.emit(self)
 
     # -------------------- Public API: mutation-friendly --------------------
 
@@ -316,11 +321,11 @@ class SidebarNode(QFrame, Generic[TT]):
         """Add a custom trailing button to this node's header row."""
         self.header_row.add_square_button(button)
 
-    def addChildNode(self, node: "SidebarNode[TT]", focus: bool = True) -> None:
+    def addChildNode(self, node: SidebarNode[TT], focus: bool = True) -> None:
         """Append a child node and wire it up (indent, stack, signals)."""
         self.insertChildNode(len(self.child_nodes), node, focus=focus)
 
-    def insertChildNode(self, index: int, node: "SidebarNode[TT]", focus: bool = True) -> None:
+    def insertChildNode(self, index: int, node: SidebarNode[TT], focus: bool = True) -> None:
         node.setParent(self)
         node.parent_node = self
         node.indent = self.indent + 1
@@ -332,6 +337,7 @@ class SidebarNode(QFrame, Generic[TT]):
         # Wire signals
         node.closeClicked.connect(self.closeClicked)
         node.nodeSelected.connect(self._bubble_selected)
+        node.nodeUnSelected.connect(self._bubble_unselected)
         node.nodeToggled.connect(self._bubble_toggled)
 
         # Insert into layout/list
@@ -346,7 +352,7 @@ class SidebarNode(QFrame, Generic[TT]):
         if focus:
             node.select()
 
-    def removeChildNode(self, node: "SidebarNode[TT]") -> None:
+    def removeChildNode(self, node: SidebarNode[TT]) -> None:
         try:
             idx = self.child_nodes.index(node)
         except ValueError:
@@ -410,10 +416,10 @@ class SidebarNode(QFrame, Generic[TT]):
         self.nodeSelected.emit(self)
         return True
 
-    def findNodeByWidget(self, widget: QWidget) -> Optional["SidebarNode[TT]"]:
+    def findNodeByWidget(self, widget: QWidget) -> Optional[SidebarNode[TT]]:
         return self._find(lambda n: n.widget is widget)
 
-    def findNodeByTitle(self, title: str) -> Optional["SidebarNode[TT]"]:
+    def findNodeByTitle(self, title: str) -> Optional[SidebarNode[TT]]:
         return self._find(lambda n: n.title == title)
 
     def set_collapsed(self, value: bool, emit: bool = True) -> None:
@@ -531,8 +537,8 @@ class SidebarNode(QFrame, Generic[TT]):
         for child in self.child_nodes:
             child._attach_to_stack(stack)
 
-    def _root(self) -> "SidebarNode[TT]":
-        n: "SidebarNode[TT]" = self
+    def _root(self) -> SidebarNode[TT]:
+        n = self
         while n.parent_node is not None:
             n = n.parent_node
         return n
@@ -549,8 +555,13 @@ class SidebarNode(QFrame, Generic[TT]):
     def _bubble_selected(self, entry: object) -> None:
         if not isinstance(entry, SidebarNode):
             return
-        # REMOVE checked sync
         self.nodeSelected.emit(entry)
+
+    def _bubble_unselected(self, entry: object) -> None:
+        if not isinstance(entry, SidebarNode):
+            return
+        # REMOVE checked sync
+        self.nodeUnSelected.emit(entry)
 
     def _bubble_toggled(self, entry: object, expanded: bool) -> None:
         if not isinstance(entry, SidebarNode):
@@ -568,7 +579,7 @@ class SidebarNode(QFrame, Generic[TT]):
             p.set_collapsed(False)
             p = p.parent_node
 
-    def _first_leaf_with_widget(self, must_be_visible=True) -> Optional["SidebarNode[TT]"]:
+    def _first_leaf_with_widget(self, must_be_visible=True) -> Optional[SidebarNode[TT]]:
         if self.widget is not None:
             return self
         for child in self.child_nodes:
@@ -577,7 +588,7 @@ class SidebarNode(QFrame, Generic[TT]):
                 return found
         return None
 
-    def _find(self, predicate: Callable[["SidebarNode[TT]"], bool]) -> Optional["SidebarNode[TT]"]:
+    def _find(self, predicate: Callable[[SidebarNode[TT]], bool]) -> Optional[SidebarNode[TT]]:
         if predicate(self):
             return self
         for c in self.child_nodes:
@@ -586,8 +597,8 @@ class SidebarNode(QFrame, Generic[TT]):
                 return r
         return None
 
-    def _node_by_index_path(self, index_path: List[int]) -> Optional["SidebarNode[TT]"]:
-        node: "SidebarNode[TT]" = self
+    def _node_by_index_path(self, index_path: List[int]) -> Optional[SidebarNode[TT]]:
+        node = self
         for i in index_path:
             if not node.child_nodes or i < 0 or i >= len(node.child_nodes):
                 return None
@@ -600,7 +611,7 @@ class SidebarNode(QFrame, Generic[TT]):
         node = self._find(lambda n: n.widget is widget)
         return node.select() if node else False
 
-    def setCurrentNode(self, node: "SidebarNode[TT]") -> bool:
+    def setCurrentNode(self, node: SidebarNode[TT]) -> bool:
         target = self._find(lambda n: n is node)
         return target.select() if target else False
 
@@ -619,17 +630,12 @@ class SidebarNode(QFrame, Generic[TT]):
             return
 
         parent = self.parent_node
-        try:
-            idx = parent.child_nodes.index(self)
-        except ValueError:
-            # Already removed
-            return
 
         # Remove the node from the UI tree
         parent.removeChildNode(self)
 
         if self.header_row.is_selected():
-            self.select_neighbor(idx=idx)
+            self.nodeUnSelected.emit(self)
 
     def _iter_selectable_leaves(self, must_be_visible: bool = True):
         """Yield leaves that have a widget (and are visible, unless disabled)."""
@@ -714,12 +720,11 @@ class SidebarNode(QFrame, Generic[TT]):
         self._select_adjacent_sibling(idx_hint=idx)
 
     def set_current_tab_by_text(self, title: str):
-        for node in self.child_nodes:
-            if node.title == title:
-                node.select()
-                break
+        node = self.findNodeByTitle(title)
+        if node:
+            node.select()
 
-    def currentChildNode(self) -> Optional["SidebarNode[TT]"]:
+    def currentChildNode(self) -> Optional[SidebarNode[TT]]:
         if not self.stack:
             return None
         w = self.stack.currentWidget()
@@ -754,6 +759,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
     nodeToggled = cast(TypedPyQtSignal[SidebarNode[TT], bool], pyqtSignal(object, bool))
     nodeSelected = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
+    nodeUnSelected = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
     closeClicked = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
     currentChanged = cast(
         TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object)
@@ -767,6 +773,8 @@ class SidebarTree(QWidget, Generic[TT]):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.stack = QStackedWidget(self)
+        self._selection_history: List[SidebarNode[TT]] = []
+        self._current_node: Optional[SidebarNode[TT]] = None
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
         pal = self.stack.palette()
@@ -848,6 +856,7 @@ class SidebarTree(QWidget, Generic[TT]):
         # Bubble node signals once from the master root
         self.root.closeClicked.connect(self._on_close_clicked)
         self.root.nodeSelected.connect(self._on_node_selected)
+        self.root.nodeUnSelected.connect(self._on_node_unselected)
         self.root.nodeToggled.connect(self._on_node_toggled)
 
         # Put the hidden root into the container
@@ -898,9 +907,21 @@ class SidebarTree(QWidget, Generic[TT]):
         else:
             for t in self.root.child_nodes:
                 t._root()._uncheck_all_recursively()
+            self._current_node = None
 
         if node:
             self.currentChanged.emit(node)
+
+    def _select_previous_from_history(self, excluding: Optional[SidebarNode[TT]] = None) -> bool:
+        while self._selection_history:
+            candidate = self._selection_history.pop()
+            if candidate is excluding:
+                continue
+            if candidate.widget is None or candidate.isHidden():
+                continue
+            if candidate.select():
+                return True
+        return False
 
     def nodeAtGlobalPos(self, global_pos: QPoint) -> Optional[SidebarNode[TT]]:
         container_pos = self.container.mapFromGlobal(global_pos)
@@ -928,9 +949,34 @@ class SidebarTree(QWidget, Generic[TT]):
             return
         self.closeClicked.emit(node)
 
+    def _on_node_unselected(self, node: object) -> None:
+        if not isinstance(node, SidebarNode):
+            return
+        successful_new_selection = self._select_previous_from_history()
+        if not successful_new_selection:
+            idx = None
+            if node.parent_node:
+                try:
+                    idx = node.parent_node.child_nodes.index(node)
+                except ValueError:
+                    # Already removed
+                    return
+            node.select_neighbor(idx=idx)
+
+        self.nodeUnSelected.emit(node)
+
+    def _append_to_slection_history(self, node: SidebarNode):
+        self._selection_history = [n for n in self._selection_history if n is not node]
+        self._selection_history.append(node)
+
     def _on_node_selected(self, node: object) -> None:
         if not isinstance(node, SidebarNode):
             return
+        prev = self._current_node
+        if prev is not None and prev is not node:
+            self._append_to_slection_history(prev)
+        self._append_to_slection_history(node)
+        self._current_node = node
         self.nodeSelected.emit(node)
 
     def _on_node_toggled(self, node: object, expanded: bool) -> None:
