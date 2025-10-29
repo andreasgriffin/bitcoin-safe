@@ -99,6 +99,13 @@ from bitcoin_safe.util import resource_path
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class TabInfo:
+    widget: QWidget
+    text: str
+    icon: QIcon
+
+
 if platform.system() == "Windows":
     MONOSPACE_FONT = "Lucida Console"
 elif platform.system() == "Darwin":

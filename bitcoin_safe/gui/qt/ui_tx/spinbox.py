@@ -142,22 +142,39 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self.include_currrency_symbol = include_currrency_symbol
         self._btc_amount: int = 0
         self._is_max = False
+        self._currency_code: str | None = None
         self.setDecimals(2)  # Set the number of decimal places
         self.setRange(0, 1e12)
-        self.set_currency()
+        self.update_currency()
         self.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
         # signals
-        signal_currency_changed.connect(self.set_currency)
-        signal_language_switch.connect(self.set_currency)
+        signal_currency_changed.connect(self.update_currency)
+        signal_language_switch.connect(self.update_currency)
 
-    def set_currency(self):
+    def setCurrencyCode(self, currency_code: str | None) -> None:
+        normalized = currency_code.upper() if currency_code else None
+        if normalized == self._currency_code:
+            return
+        self._currency_code = normalized
+        self.update_currency()
+
+    def _get_currency_code(self) -> str | None:
+        if self._currency_code:
+            return self._currency_code
+        if self.fx:
+            return self.fx.config.currency.upper()
+        return None
+
+    def update_currency(self):
         if not self.fx:
             return
 
-        # use Qt's default locale for symbol/format
-        locale = self.fx.get_locale()
-        currency_symbol = self.fx.get_currency_symbol()
+        currency_code = self._get_currency_code()
+        currency_locale = self.fx.get_currency_locale(currency_code)
+        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+
+        locale = currency_locale or self.fx.get_locale()
         self.setLocale(locale)
 
         # clear any old prefix/suffix
@@ -171,7 +188,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             else:
                 self.setSuffix(" " + currency_symbol)
 
-        new_fiat_value = self.fx.btc_to_fiat(self.btc_value())
+        new_fiat_value = self.fx.btc_to_fiat(self.btc_value(), currency=currency_code)
         if new_fiat_value is not None:
             with QSignalBlocker(self):
                 # do not set the btc value new, as it should be unchanged
@@ -187,26 +204,42 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def btc_value(self) -> int:
         return self._btc_amount
 
+    def fiat_value(self) -> float | None:
+        if not self.fx:
+            return None
+        return self.fx.btc_to_fiat(self.btc_value(), currency=self._get_currency_code())
+
     def setBtcValue(self, btc_amount: int) -> None:
         self._btc_amount = btc_amount
-        if self.fx and (fiat_value := self.fx.btc_to_fiat(btc_amount)) is not None:
+        if (
+            self.fx
+            and (fiat_value := self.fx.btc_to_fiat(btc_amount, currency=self._get_currency_code()))
+            is not None
+        ):
             self.setValue(fiat_value)
 
     def _set_btc_from_fiat(self, val: float):
         if self.fx:
-            self._btc_amount = self.fx.fiat_to_btc(val) or 0
+            self._btc_amount = self.fx.fiat_to_btc(val, currency=self._get_currency_code()) or 0
 
     def setValue(self, val: float) -> None:
         self._set_btc_from_fiat(val)
         super().setValue(val)
 
-    def value(self) -> int:
-        return round(super().value())
+    def value(self) -> float:
+        return super().value()
 
     def textFromValue(self, fiat_value: float) -> str:  # type: ignore[override]
         if not self.fx:
             return ""
-        fiat_str = self.fx.fiat_to_str(fiat_value, use_currency_symbol=False)
+
+        currency_code = self._get_currency_code()
+        currency_locale = self.fx.get_currency_locale(currency_code)
+        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+
+        fiat_str = self.fx.fiat_to_str_custom(
+            fiat_value, use_currency_symbol=False, locale=self.locale(), currency_symbol=currency_symbol
+        )
         if self._is_max:
             return self.tr("Max ≈ {amount}").format(amount=fiat_str)
         return fiat_str
@@ -216,7 +249,14 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             return 0
         if not self.fx:
             return 0
-        value = self.fx.parse_fiat(text if text else "0")
+
+        currency_code = self._get_currency_code()
+        currency_locale = self.fx.get_currency_locale(currency_code)
+        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+
+        value = self.fx.parse_fiat_custom(
+            formatted=text if text else "0", locale=self.locale(), currency_symbol=currency_symbol
+        )
         if value is None:
             raise ValueError()
         return value

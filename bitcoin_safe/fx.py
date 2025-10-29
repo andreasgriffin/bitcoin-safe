@@ -108,10 +108,9 @@ class FX(QObject):
             return
         self.update()
 
-    def fiat_to_str(self, fiat_amount: float, use_currency_symbol=True) -> str:
-        locale = self.get_locale()
-        currency_symbol = self.get_currency_symbol()
-
+    def fiat_to_str_custom(
+        self, fiat_amount: float, locale: QLocale, currency_symbol: str, use_currency_symbol=True
+    ) -> str:
         formatted_amount = locale.toCurrencyString(fiat_amount)
         locale_symbol = self.get_currency_symbol(currency_loc=locale)
         new_symbol = currency_symbol if use_currency_symbol else ""
@@ -123,6 +122,16 @@ class FX(QObject):
 
         return formatted_amount
 
+    def fiat_to_str(self, fiat_amount: float, use_currency_symbol=True) -> str:
+        locale = self.get_locale()
+        currency_symbol = self.get_currency_symbol()
+        return self.fiat_to_str_custom(
+            locale=locale,
+            currency_symbol=currency_symbol,
+            fiat_amount=fiat_amount,
+            use_currency_symbol=use_currency_symbol,
+        )
+
     def fiat_to_splitted(self, fiat_amount: float) -> Tuple[str, str]:
         currency_symbol = self.get_currency_symbol()
         formatted_amount = self.fiat_to_str(fiat_amount=fiat_amount, use_currency_symbol=False)
@@ -133,10 +142,16 @@ class FX(QObject):
         Parse a string like '$1,234.56' (or '1,234.56') back into a float.
         Returns None if parsing fails.
         """
-        text = formatted.strip()
-
         locale = self.get_locale()
         currency_symbol = self.get_currency_symbol()
+        return self.parse_fiat_custom(formatted=formatted, locale=locale, currency_symbol=currency_symbol)
+
+    def parse_fiat_custom(self, formatted: str, locale: QLocale, currency_symbol: str) -> float | None:
+        """
+        Parse a string like '$1,234.56' (or '1,234.56') back into a float.
+        Returns None if parsing fails.
+        """
+        text = formatted.strip()
 
         # get the locale’s thousands‐separator character
         sep = locale.groupSeparator()
@@ -183,20 +198,43 @@ class FX(QObject):
         # gold entry: {'name': 'Gold - Troy Ounce', 'unit': 'XAU', 'value': 35.399, 'type': 'commodity'}
 
         xau = rates.get("xau")
-        if not xau:
-            return
-        rates["xaug"] = {
-            "name": "Gold - Gram (g)",
-            "unit": "XAUg",
-            "value": xau["value"] * 31.10,
-            "type": "commodity",
-        }
-        rates["xaukg"] = {
-            "name": "Gold - Kilogram (kg)",
-            "unit": "XAUkg",
-            "value": xau["value"] * 31.10 / 1000,
-            "type": "commodity",
-        }
+        if xau:
+            rates["xaug"] = {
+                "name": "Gold - Gram (g)",
+                "unit": "XAUg",
+                "value": xau["value"] * 31.10,
+                "type": "commodity",
+            }
+            rates["xaukg"] = {
+                "name": "Gold - Kilogram (kg)",
+                "unit": "XAUkg",
+                "value": xau["value"] * 31.10 / 1000,
+                "type": "commodity",
+            }
+
+        sats = rates.get("sats")
+        if sats:
+            rates["tsat"] = {
+                "name": "Satoshis",
+                "unit": "tSat",
+                "value": sats["value"],
+                "type": "crypto",
+            }
+            rates["tsats"] = {
+                "name": "Satoshis",
+                "unit": "tSats",
+                "value": sats["value"],
+                "type": "crypto",
+            }
+
+        btc = rates.get("btc")
+        if btc:
+            rates["tbtc"] = {
+                "name": "Bitcoin",
+                "unit": "tBTC",
+                "value": btc["value"],
+                "type": "crypto",
+            }
 
     async def _update(self) -> None:
         data = await fetch_from_url(

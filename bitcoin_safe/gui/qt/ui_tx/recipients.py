@@ -47,7 +47,6 @@ from PyQt6.QtWidgets import (
     QLabel,
     QPushButton,
     QSizePolicy,
-    QTabWidget,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -164,8 +163,6 @@ class RecipientWidget(QWidget):
 
         self.set_allow_edit(allow_edit)
         self.label_line_edit.set_label_readonly(not allow_label_edit)
-
-        self.updateUi()
 
         # signals
         self.address_edit.signal_text_change.connect(self.on_address_change)
@@ -349,10 +346,10 @@ class NotificationBarRecipient(NotificationBar):
 
 
 class RecipientBox(QWidget):
-    signal_close: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(QTabWidget)  # type: ignore
-    signal_clicked_send_max_button: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
-    signal_address_text_changed: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
-    signal_amount_changed: "TypedPyQtSignal[RecipientWidget]" = pyqtSignal(RecipientWidget)  # type: ignore
+    signal_close = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_clicked_send_max_button = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_address_text_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_amount_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
 
     def __init__(
         self,
@@ -654,6 +651,16 @@ class Recipients(QWidget):
 
         self.action_export_csv.setText(self.tr("Export as CSV file"))
 
+    # insert before the button position
+    def _insert_before_button(self, new_widget: QWidget) -> None:
+        index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
+        if index >= 0:
+            self.recipient_list_content_layout.insertWidget(index, new_widget)
+            self._count += 1
+        else:
+            self.recipient_list_content_layout.addWidget(new_widget)
+            self._count += 1
+
     def add_recipient(self, recipient: Recipient | None = None) -> RecipientBox:
         if not recipient:
             recipient = Recipient("", 0)
@@ -670,17 +677,7 @@ class Recipients(QWidget):
         if recipient.label is not None:
             recipient_box.label = recipient.label
 
-        # insert before the button position
-        def insert_before_button(new_widget: QWidget) -> None:
-            index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
-            if index >= 0:
-                self.recipient_list_content_layout.insertWidget(index, new_widget)
-                self._count += 1
-            else:
-                self.recipient_list_content_layout.addWidget(new_widget)
-                self._count += 1
-
-        insert_before_button(recipient_box)
+        self._insert_before_button(recipient_box)
 
         recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
         recipient_box.signal_clicked_send_max_button.connect(self.signal_amount_changed)

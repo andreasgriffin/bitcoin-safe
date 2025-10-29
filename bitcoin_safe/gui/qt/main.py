@@ -919,6 +919,8 @@ class MainWindow(QMainWindow):
         self.notification_bar_testnet.updateUi()
         self.update_notification_bar.updateUi()
 
+        self.search_box.updateUi()
+
     def focus_search_box(self):
         self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
 

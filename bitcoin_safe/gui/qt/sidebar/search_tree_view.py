@@ -377,7 +377,6 @@ class SearchTreeView(QWidget):
         do_search: Callable[[str], ResultItem],
         parent: Optional[QWidget] = None,
         on_click: Optional[Callable[[ResultItem], None]] = None,
-        placeholder: str | None = None,
         search_box_on_bottom=True,
     ) -> None:
         super().__init__(parent)
@@ -392,7 +391,6 @@ class SearchTreeView(QWidget):
         # Search field
         self.search_field = QLineEdit(self)
         self.search_field.setClearButtonEnabled(True)
-        self.search_field.setPlaceholderText(placeholder or self.tr("Type to search..."))
 
         # Results view (hidden until there is text)
         self.tree_view = CustomTreeView(self, on_click=on_click, on_double_click=self._on_double_click)
@@ -506,7 +504,7 @@ class SearchTreeView(QWidget):
         self.search_field.clear()
 
     def updateUi(self):
-        pass
+        self.search_field.setPlaceholderText(self.tr("Type to search..."))
 
 
 if __name__ == "__main__":

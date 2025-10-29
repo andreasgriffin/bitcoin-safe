@@ -42,6 +42,7 @@ from bitcoin_safe.gui.qt.export_data import (
     SyncChatToolButton,
 )
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signer import (
     AbstractSignatureImporter,
     SignatureImporterFile,
@@ -51,7 +52,6 @@ from bitcoin_safe.signer import (
 )
 
 from ...signals import SignalsMin
-from .sync_tab import SyncTab
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +168,7 @@ class HorizontalImportExportClipboard(QGroupBox):
         self,
         psbt: bdk.Psbt,
         network: bdk.Network,
-        sync_tabs: dict[str, SyncTab] | None,
+        sync_client: dict[str, SyncClient] | None,
         signature_importers: Iterable[SignatureImporterFile],
         parent: QWidget | None = None,
     ) -> None:
@@ -181,7 +181,7 @@ class HorizontalImportExportClipboard(QGroupBox):
         data = Data.from_psbt(psbt, network=network)
 
         self.button_sync_share = SyncChatToolButton(
-            data=data, network=network, sync_tabs=sync_tabs, parent=self, button_prefix="1. "
+            data=data, network=network, sync_client=sync_client, parent=self, button_prefix="1. "
         )
         self.button_sync_share.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._layout.addWidget(self.button_sync_share)
@@ -231,7 +231,7 @@ class HorizontalImportExportAll(QWidget):
         self,
         psbt: bdk.Psbt,
         network: bdk.Network,
-        sync_tabs: dict[str, SyncTab] | None,
+        sync_client: dict[str, SyncClient] | None,
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread | None,
         signature_importers: Iterable[AbstractSignatureImporter],
@@ -297,7 +297,7 @@ class HorizontalImportExportAll(QWidget):
 
         # clipboard
         self.clipboard = HorizontalImportExportClipboard(
-            psbt=psbt, network=network, signature_importers=file_signers, sync_tabs=sync_tabs
+            psbt=psbt, network=network, signature_importers=file_signers, sync_client=sync_client
         )
         self._layout.addStretch()
         self._layout.addWidget(self.clipboard)

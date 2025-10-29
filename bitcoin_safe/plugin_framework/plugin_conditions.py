@@ -26,23 +26,37 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
+from dataclasses import dataclass
 
-IS_PRODUCTION = True  # change this for testing
+from bitcoin_usb.address_types import DescriptorInfo
 
-DEMO_MODE = False
-DEFAULT_MAINNET = IS_PRODUCTION
-ENABLE_THREADING = True
-ENABLE_PLUGINS = True
-ENABLE_TIMERS = True
-DEFAULT_LANG_CODE = "en_US"
-MEMPOOL_SCHEDULE_TIMER = 10 * 60 * 1000 if IS_PRODUCTION else 1 * 60 * 1000
-GENERAL_RBF_AVAILABLE = False
-DONATION_ADDRESS = "bc1qs8vxaclc0ncf92nrhc4rcdgppwganny6mpn9d4"
+logger = logging.getLogger(__name__)
 
-if IS_PRODUCTION:
-    if not ENABLE_TIMERS:
-        raise ValueError("Timers must be enabled for production")
-    if not ENABLE_THREADING:
-        raise ValueError("Threading must be enabled for production")
-    if DEMO_MODE:
-        raise ValueError("Cannot be in demo mode for production")
+
+@dataclass
+class PluginConditions:
+    """
+    if a condition is None, it means it is not active
+    """
+
+    # allowed_address_types:List[ AddressType]|None =None
+    # disallowed_address_types:List[ AddressType]|None =None
+
+    min_allowed_signers: int | None = None
+    max_allowed_signers: int | None = None
+
+    # min_allowed_threshold:int|None =None
+    # max_allowed_threshold:int|None =None
+
+    def descriptor_allowed(self, descriptor: str) -> bool:
+        descriptor_info = DescriptorInfo.from_str(descriptor)
+        if (self.min_allowed_signers is not None) and not (
+            self.min_allowed_signers <= len(descriptor_info.spk_providers)
+        ):
+            return False
+        if (self.max_allowed_signers is not None) and not (
+            len(descriptor_info.spk_providers) <= self.max_allowed_signers
+        ):
+            return False
+        return True

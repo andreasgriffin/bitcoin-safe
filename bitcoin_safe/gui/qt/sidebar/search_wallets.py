@@ -54,12 +54,13 @@ class SearchWallets(SearchTreeView):
             search_box_on_bottom=search_box_on_bottom,
         )
         self.signals = signals
+
+        self.updateUi()
+
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self):
         super().updateUi()
-        # self.search_field.setPlaceholderText( self.tr( "Type to search...")
-        # )
 
     def search_result_on_click(self, result_item: ResultItem) -> None:
         # call the parent action first

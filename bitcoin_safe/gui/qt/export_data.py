@@ -33,7 +33,7 @@ import os
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
@@ -62,6 +62,7 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import filename_clean
@@ -75,7 +76,6 @@ from ...hardware_signers import (
     SignMessageRequestQrExportTypes,
 )
 from ...signals import SignalsMin
-from .sync_tab import SyncTab
 from .util import (
     Message,
     MessageType,
@@ -344,17 +344,17 @@ class SyncChatToolButton(QToolButton):
         self,
         data: Data,
         network: bdk.Network,
-        sync_tabs: dict[str, SyncTab] | None = None,
+        sync_client: dict[str, SyncClient] | None = None,
         parent: QWidget | None = None,
         button_prefix: str = "",
     ) -> None:
         super().__init__(parent)
-        self.sync_tabs = sync_tabs
+        self.sync_clients = sync_client
         self.network = network
         self.action_share_with_all_devices: Dict[str, QAction] = {}
         self.menu_share_with_single_devices: Dict[str, Menu] = {}
         self.button_prefix = button_prefix
-        self._set_data(data=data, sync_tabs=sync_tabs)
+        self._set_data(data=data, sync_clients=sync_client)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
@@ -367,20 +367,22 @@ class SyncChatToolButton(QToolButton):
         self.updateUi()
 
     def _share_with_device(
-        self, wallet_id: str, sync_tab: SyncTab, receiver_public_key_bech32: str | None = None
+        self, wallet_id: str, sync_client: SyncClient, receiver_public_key_bech32: str | None = None
     ) -> None:
-        if not sync_tab.enabled():
+        if not sync_client.enabled:
             Message(self.tr("Please enable the sync tab first"))
             return
         if receiver_public_key_bech32:
-            self.on_nostr_share_with_member(PublicKey.parse(receiver_public_key_bech32), wallet_id, sync_tab)
+            self.on_nostr_share_with_member(
+                PublicKey.parse(receiver_public_key_bech32), wallet_id, sync_client
+            )
         else:
-            self.on_nostr_share_in_group(wallet_id, sync_tab)
+            self.on_nostr_share_in_group(wallet_id, sync_client)
 
     def _fill_menu(self):
         menu = self._menu
         menu.clear()
-        if not self.sync_tabs:
+        if not self.sync_clients:
             return
 
         with QSignalBlocker(self._menu):
@@ -388,34 +390,34 @@ class SyncChatToolButton(QToolButton):
             # Create a menu for the button
             self.action_share_with_all_devices.clear()
             self.menu_share_with_single_devices.clear()
-            for wallet_id, sync_tab in self.sync_tabs.items():
+            for wallet_id, sync_client in self.sync_clients.items():
                 action_alldevices = partial(
                     self._share_with_device,
                     wallet_id=wallet_id,
-                    sync_tab=sync_tab,
+                    sync_client=sync_client,
                     receiver_public_key_bech32=None,
                 )
                 self.action_share_with_all_devices[wallet_id] = menu.add_action("", action_alldevices)
 
                 self.menu_share_with_single_devices[wallet_id] = menu.add_menu("")
-                for member in sync_tab.nostr_sync.group_chat.members:
+                for member in sync_client.nostr_sync.group_chat.members:
                     action = partial(
                         self._share_with_device,
                         wallet_id=wallet_id,
-                        sync_tab=sync_tab,
+                        sync_client=sync_client,
                         receiver_public_key_bech32=member.to_bech32(),
                     )
                     self.menu_share_with_single_devices[wallet_id].add_action(
-                        f"{ sync_tab.nostr_sync.chat.get_alias(member)  }", action
+                        f"{ sync_client.nostr_sync.chat.get_alias(member)  }", action
                     )
                 menu.addSeparator()
 
-    def _set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None) -> None:
+    def _set_data(self, data: Data, sync_clients: dict[str, SyncClient] | None) -> None:
         self.data = data
-        self.sync_tabs = sync_tabs
+        self.sync_clients = sync_clients
 
-    def set_data(self, data: Data, sync_tabs: dict[str, SyncTab] | None):
-        self._set_data(data=data, sync_tabs=sync_tabs)
+    def set_data(self, data: Data, sync_clients: dict[str, SyncClient] | None):
+        self._set_data(data=data, sync_clients=sync_clients)
         self._fill_menu()
         self.updateUi()
 
@@ -428,15 +430,15 @@ class SyncChatToolButton(QToolButton):
             menu.setTitle(self.tr("Share with single device"))
 
     def on_nostr_share_with_member(
-        self, receiver_public_key: PublicKey, wallet_id: str, sync_tab: SyncTab
+        self, receiver_public_key: PublicKey, wallet_id: str, sync_client: SyncClient
     ) -> None:
-        if not sync_tab.enabled():
+        if not sync_client.enabled:
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
             )
             return
-        sync_tab.nostr_sync.group_chat.dm_connection.send(
-            self.to_dm(use_compression=sync_tab.nostr_sync.group_chat.use_compression),
+        sync_client.nostr_sync.group_chat.dm_connection.send(
+            self.to_dm(use_compression=sync_client.nostr_sync.group_chat.use_compression),
             receiver_public_key,
         )
 
@@ -453,15 +455,15 @@ class SyncChatToolButton(QToolButton):
             use_compression=use_compression,
         )
 
-    def on_nostr_share_in_group(self, wallet_id: str, sync_tab: SyncTab) -> None:
-        if not sync_tab.enabled():
+    def on_nostr_share_in_group(self, wallet_id: str, sync_client: SyncClient) -> None:
+        if not sync_client.enabled:
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
             )
             return
 
-        sync_tab.nostr_sync.group_chat.send(
-            self.to_dm(use_compression=sync_tab.nostr_sync.group_chat.use_compression),
+        sync_client.nostr_sync.group_chat.send(
+            self.to_dm(use_compression=sync_client.nostr_sync.group_chat.use_compression),
             send_also_to_me=False,
         )
 
@@ -558,7 +560,7 @@ class HorizontalImportExportGroups(QWidget):
 
 
 class ExportDataSimple(HorizontalImportExportGroups):
-    signal_set_qr_images: TypedPyQtSignal[List[str]] = pyqtSignal(list)  # type: ignore
+    signal_set_qr_images = cast(TypedPyQtSignal[List[str]], pyqtSignal(list))
     signal_close = pyqtSignal()
     signal_show = pyqtSignal()
 
@@ -567,7 +569,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         data: Data,
         signals_min: SignalsMin,
         network: bdk.Network,
-        sync_tabs: dict[str, SyncTab] | None = None,
+        sync_client: dict[str, SyncClient] | None = None,
         usb_signer_ui: SignerUI | None = None,
         layout: QBoxLayout | None = None,
         enable_qr=True,
@@ -586,7 +588,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         )
         self.loop_in_thread = loop_in_thread
         self.network = network
-        self.sync_tabs = sync_tabs if sync_tabs else {}
+        self.sync_client = sync_client if sync_client else {}
         self.signals_min = signals_min
         self.txid = None
         self.json_data = None
@@ -627,7 +629,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
         # sync
         self.button_sync_share = SyncChatToolButton(
-            data=data, network=network, sync_tabs=sync_tabs, parent=self
+            data=data, network=network, sync_client=sync_client, parent=self
         )
         self.group_share._layout.addWidget(self.wrap_in_widget(self.button_sync_share))
 

@@ -913,13 +913,15 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.reset_splitter_sizes()
         self.utxo_list.update_content()
+
+        categories: Set[str] = set()
         if tx_ui_infos.utxo_dict:
             # first select the correct categories
-
-            categories: Set[str] = set()
             if self.wallet:
                 for utxo in tx_ui_infos.utxo_dict.keys():
                     categories = categories.union(self.wallet.get_categories_for_txid(utxo.txid))
+
+        if categories:
             self.category_list.select_rows(
                 categories,
                 column=self.category_list.key_column,

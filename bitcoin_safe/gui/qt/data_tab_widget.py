@@ -28,12 +28,14 @@
 
 
 import logging
-from typing import Dict, Generic, TypeVar
+from typing import Dict, Generic, TypeVar, cast
 
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget
 
 from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
+from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +44,12 @@ T2 = TypeVar("T2")
 
 
 class DataTabWidget(HistTabWidget, Generic[T]):
+    signal_on_tab_change = cast(TypedPyQtSignalNo, pyqtSignal())
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
         self._tab_data: Dict[QWidget, T] = {}
+        self.currentChanged.connect(self.signal_on_tab_change.emit)
 
     def setTabData(self, widget: QWidget, data: T) -> None:
         self._tab_data[widget] = data
@@ -84,6 +89,8 @@ class DataTabWidget(HistTabWidget, Generic[T]):
             index = super().addTab(widget, description)
         if data is not None:
             self.setTabData(widget, data)
+
+        self.signal_on_tab_change.emit()
         return index
 
     def insertTab(  # type: ignore[override]
@@ -95,6 +102,8 @@ class DataTabWidget(HistTabWidget, Generic[T]):
             new_index = super().insertTab(index, widget, description)
         if data is not None:
             self.setTabData(widget, data)
+
+        self.signal_on_tab_change.emit()
         return new_index
 
     def add_tab(
@@ -122,6 +131,7 @@ class DataTabWidget(HistTabWidget, Generic[T]):
         super().removeTab(index)
         if widget:
             widget.setParent(None)  # Detach it from the parent
+        self.signal_on_tab_change.emit()
 
 
 if __name__ == "__main__":
