@@ -29,25 +29,64 @@
 
 import logging
 
-from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QEvent, QSize, Qt
+from PyQt6.QtGui import QEnterEvent, QIcon, QPalette
 from PyQt6.QtWidgets import QPushButton, QWidget
 
-from bitcoin_safe.gui.qt.util import set_translucent, svg_tools
+from bitcoin_safe.gui.qt.util import set_translucent, svg_tools, to_color_name
 
 logger = logging.getLogger(__name__)
 
 
 class FlatSquareButton(QPushButton):
-    def __init__(self, qicon: QIcon, size=QSize(24, 24), parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        qicon: QIcon,
+        size=QSize(24, 24),
+        parent: QWidget | None = None,
+        hover_icon: QIcon | None = None,
+    ) -> None:
         super().__init__(parent)
-        self.setIcon(qicon)
+        self._default_icon = qicon
+        self._hover_icon = hover_icon
         self.setFlat(True)
         self.setFixedSize(size)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         set_translucent(self)
+        self._set_current_icon(qicon)
+
+    def setIcon(self, icon: QIcon) -> None:
+        self._default_icon = icon
+        self._set_current_icon(icon)
+
+    def _set_current_icon(self, icon: QIcon) -> None:
+        super().setIcon(icon)
+
+    def enterEvent(self, event: QEnterEvent | None) -> None:
+        if self._hover_icon is not None and self.isEnabled():
+            self._set_current_icon(self._hover_icon)
+        super().enterEvent(event)
+
+    def leaveEvent(self, a0: QEvent | None) -> None:
+        if self._hover_icon is not None:
+            self._set_current_icon(self._default_icon)
+        super().leaveEvent(a0)
+
+    def changeEvent(self, e: QEvent | None) -> None:
+        if e and e.type() == QEvent.Type.EnabledChange and not self.isEnabled():
+            self._set_current_icon(self._default_icon)
+        super().changeEvent(e)
 
 
 class CloseButton(FlatSquareButton):
     def __init__(self, size=QSize(16, 16), parent: QWidget | None = None) -> None:
-        super().__init__(qicon=svg_tools.get_QIcon("close.svg"), size=size, parent=parent)
+        default_icon = svg_tools.get_QIcon(
+            "close.svg",
+            auto_theme=False,
+            replace_tuples=(("#FE1D01", to_color_name(QPalette.ColorRole.Dark)),),
+        )
+        hover_icon = svg_tools.get_QIcon(
+            "close.svg",
+            auto_theme=False,
+        )
+        super().__init__(qicon=default_icon, size=size, parent=parent, hover_icon=hover_icon)
