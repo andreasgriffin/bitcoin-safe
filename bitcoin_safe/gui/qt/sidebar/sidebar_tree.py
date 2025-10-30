@@ -52,7 +52,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
+from bitcoin_safe.gui.qt.qr_components.square_buttons import (
+    CloseButton,
+    FlatSquareButton,
+)
 from bitcoin_safe.gui.qt.util import (
     set_no_margins,
     set_translucent,
@@ -211,7 +214,6 @@ class SidebarNode(QFrame, Generic[TT]):
     nodeUnSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
     nodeToggled = cast(TypedPyQtSignal[object, bool], pyqtSignal(object, bool))
 
-    close_icon_name = "close.svg"
     hide_icon_name = "close.svg"
 
     def __init__(
@@ -489,7 +491,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.square_buttons.clear()
 
         if self.closable:
-            close_btn = FlatSquareButton(svg_tools.get_QIcon(self.close_icon_name))
+            close_btn = CloseButton()
             close_btn.clicked.connect(partial(self.closeClicked.emit, self))
             self.header_row.add_square_button(close_btn)
 
