@@ -310,7 +310,6 @@ class WalletGraphView(QGraphicsView):
         self,
         tx_node: GraphTransactionNode,
         circle: GraphUtxoCircle,
-        *,
         utxo_is_input: bool,
     ) -> QGraphicsPathItem:
         if utxo_is_input and circle.utxo:

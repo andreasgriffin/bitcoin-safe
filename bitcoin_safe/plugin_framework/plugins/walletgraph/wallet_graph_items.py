@@ -166,13 +166,6 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
                 self.value_label.setToolTip(self._tooltip_text)
         return self.value_label
 
-    def append_wallet_label(
-        self,
-        text: str,
-        color: QColor | ColorSchemeItem | None = None,
-    ) -> UtxoLabelItem | None:
-        return self.append_label_line(text, color=color)
-
     def set_composite_tooltip(self, tooltip: str) -> None:
         self._tooltip_text = tooltip
         if ENABLE_WALLET_GRAPH_TOOLTIPS:
@@ -227,7 +220,6 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         detail: FullTxDetail,
         outpoint_str: str,
         python_utxo: PythonUtxo,
-        *,
         transaction_signal: pyqtBoundSignal,
         network: bdk.Network,
         wallet: Wallet | None,
@@ -236,7 +228,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         max_utxo_value: int,
         min_radius: float,
         max_radius: float,
-        tx_item: "TransactionItem",
+        tx_item: TransactionItem,
         axis_y: float,
         tx_width: float,
         output_gap: float,
@@ -279,7 +271,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
                 utxo_label = ""
             utxo_label_value = utxo_label.strip() if utxo_label else ""
             display_utxo_label = elide_text(utxo_label_value, label_max_chars) if utxo_label_value else ""
-            ellipse.append_wallet_label(display_utxo_label)
+            ellipse.append_label_line(display_utxo_label)
 
         tooltip_lines = [
             f"{translate('WalletGraphClient', 'UTXO')}: {outpoint_str}",
@@ -305,10 +297,9 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         cls,
         outpoint_str: str,
         python_utxo: PythonUtxo | None,
-        *,
         transaction_signal: pyqtBoundSignal,
         axis_y: float,
-        tx_item: "TransactionItem",
+        tx_item: TransactionItem,
         tx_width: float,
         input_gap: float,
         vertical_spacing: float,
@@ -392,7 +383,7 @@ class GraphUtxoCircle:
 @dataclass
 class GraphTransactionNode:
     detail: FullTxDetail
-    item: "TransactionItem"
+    item: TransactionItem
     default_pen: QPen = field(init=False)
     default_brush: QBrush = field(init=False)
     default_z_value: float = field(init=False)
@@ -415,7 +406,6 @@ class GraphTransactionNode:
         self,
         connection: QGraphicsPathItem,
         circle: GraphUtxoCircle | None,
-        *,
         incoming: bool,
     ) -> None:
         original_pen = QPen(connection.pen())
