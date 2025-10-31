@@ -900,7 +900,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         # --- skip pages whose row is invisible *and* not already selected ----
         if node and not node.header_row.isVisible() and not node.header_row.is_selected():
-            node.select_neighbor()  # jump to next visible neighbour
+            self._on_node_unselected(node)
             return  # wait for the second currentChanged
         # ---------------------------------------------------------------------
 
