@@ -124,7 +124,7 @@ class SyncClient(PluginClient):
     title = translate("SyncClient", "Sync & Chat")
     description = translate(
         "SyncClient",
-        "- Backup your labels and coin categories in the cloud.<br>- Synchronize your labels and coin categories between multiple computers. {synclink}<br>- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}<br>- Everything is always encrypted",
+        "- Backup your labels and coin categories in the cloud.<br>- Synchronize your labels and coin categories between multiple computers. {synclink}<br>- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}<br>- Everything is always encrypted (learn more about the {protocol_link})",
     ).format(
         videolink=link(
             url="https://bitcoin-safe.org/en/features/collaboration/",
@@ -133,6 +133,10 @@ class SyncClient(PluginClient):
         synclink=link(
             url="https://bitcoin-safe.org/en/features/label-sync/",
             text=translate("SyncClient", "Synchronization Video"),
+        ),
+        protocol_link=link(
+            url="https://github.com/andreasgriffin/bitcoin-nostr-chat/?tab=readme-ov-file#protocol",
+            text=translate("SyncClient", "protocol"),
         ),
     )
     provider = "Bitcoin Safe (via Nostr)"

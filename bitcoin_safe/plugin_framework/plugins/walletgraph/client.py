@@ -37,11 +37,12 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from PyQt6.QtCore import QPointF, Qt, pyqtSignal
+from PyQt6.QtCore import QPointF, Qt, pyqtBoundSignal, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QWheelEvent
 from PyQt6.QtWidgets import (
     QFileDialog,
     QGraphicsEllipseItem,
+    QGraphicsItem,
     QGraphicsPathItem,
     QGraphicsRectItem,
     QGraphicsScene,
@@ -71,34 +72,66 @@ from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraphServer
 from bitcoin_safe.pythonbdk_types import FullTxDetail, PythonUtxo
 from bitcoin_safe.signals import Signals, UpdateFilter
+from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
+def elide_text(text: str, max_length: int) -> str:
+    if max_length <= 0 or len(text) <= max_length:
+        return text
+    if max_length == 1:
+        return "…"
+    return f"{text[: max_length - 1]}…"
+
+
 class UtxoEllipseItem(QGraphicsEllipseItem):
+    DEFAULT_HORIZONTAL_OFFSET = 40.0
+    MIN_RADIUS = 10.0
+    MAX_RADIUS = 28.0
+    OUTPUT_GAP = 120.0
+    INPUT_GAP = 120.0
+    VERTICAL_SPACING = 90.0
+    LABEL_MAX_CHARS = 40
+
     def __init__(
         self,
         creating_txid: str,
         spending_txid: str | None,
-        view: "WalletGraphView",
+        radius: float,
+        transaction_signal: pyqtBoundSignal,
+        value_text: str,
+        value_label_color: QColor | ColorSchemeItem | None = ColorScheme.DEFAULT,
+        value_label_offset: float | None = None,
     ) -> None:
-        super().__init__()
+        super().__init__(-radius, -radius, radius * 2, radius * 2)
         self.creating_txid = creating_txid
         self._spending_txid = spending_txid
-        self._view = view
+        self._transaction_signal = transaction_signal
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.value_label = UtxoLabelItem(
+            creating_txid,
+            value_text,
+            transaction_signal=transaction_signal,
+            vertical_offset=value_label_offset if value_label_offset is not None else radius + 8,
+            color=value_label_color,
+            parent=self,
+        )
+        self._additional_labels: List[UtxoLabelItem] = []
+        self._tooltip_text: str | None = None
 
     def mousePressEvent(self, event) -> None:
         if not event:
             return
         if event.button() == Qt.MouseButton.LeftButton:
-            self._view.transactionClicked.emit(self.creating_txid)
+            self._transaction_signal.emit(self.creating_txid)
             event.accept()
             return
         if event.button() == Qt.MouseButton.RightButton:
-            menu = QMenu(self._view)
+            menu = QMenu()
             center_funding_action = menu.addAction(
                 translate("WalletGraphClient", "Center funding transaction")
             )
@@ -110,70 +143,369 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
 
             selected_action = menu.exec(event.screenPos().toPointF().toPoint())
             if selected_action == center_funding_action:
-                self._view.center_on_transaction(self.creating_txid)
+                self._center_view_on_transaction(self.creating_txid)
             elif center_spending_action and self._spending_txid and selected_action == center_spending_action:
-                self._view.center_on_transaction(self._spending_txid)
+                self._center_view_on_transaction(self._spending_txid)
             event.accept()
             return
         super().mousePressEvent(event)
+
+    def add_secondary_label(
+        self,
+        text: str,
+        color: QColor | ColorSchemeItem | None = None,
+        spacing: float = 1.0,
+    ) -> UtxoLabelItem:
+        previous_bottom = (
+            self._additional_labels[-1].bottom_y if self._additional_labels else self.value_label.bottom_y
+        )
+        label = UtxoLabelItem(
+            self.creating_txid,
+            text,
+            transaction_signal=self._transaction_signal,
+            vertical_offset=previous_bottom + spacing,
+            color=color,
+            parent=self,
+        )
+        self._additional_labels.append(label)
+        if self._tooltip_text:
+            label.setToolTip(self._tooltip_text)
+        return label
+
+    def set_wallet_label(
+        self,
+        text: str,
+        color: QColor | ColorSchemeItem | None = None,
+        spacing: float = 1.0,
+    ) -> UtxoLabelItem | None:
+        if not text:
+            return None
+        return self.add_secondary_label(text, color=color, spacing=spacing)
+
+    def set_composite_tooltip(self, tooltip: str) -> None:
+        self._tooltip_text = tooltip
+        self.setToolTip(tooltip)
+        self.value_label.setToolTip(tooltip)
+        for label in self._additional_labels:
+            label.setToolTip(tooltip)
+
+    def _center_view_on_transaction(self, txid: str | None) -> None:
+        if not txid:
+            return
+        scene = self.scene()
+        if not scene:
+            return
+        for view in scene.views():
+            center_method = getattr(view, "center_on_transaction", None)
+            if callable(center_method):
+                center_method(txid)
+                break
+
+    @staticmethod
+    def _radius_for_value(value: int, max_value: int, min_radius: float, max_radius: float) -> float:
+        if max_value <= 0:
+            return min_radius
+        ratio = value / max_value
+        return min_radius + ratio * (max_radius - min_radius)
+
+    @staticmethod
+    def _color_for_utxo(
+        utxo: PythonUtxo,
+        wallet: Wallet | None,
+        signals: Signals,
+    ) -> QColor:
+        if not wallet:
+            return ColorScheme.Purple.as_color()
+        color = AddressEdit.color_address(utxo.address, wallet, signals)
+        if color:
+            return color
+        return ColorScheme.Purple.as_color()
+
+    @classmethod
+    def create_output(
+        cls,
+        detail: FullTxDetail,
+        outpoint_str: str,
+        python_utxo: PythonUtxo,
+        *,
+        transaction_signal: pyqtBoundSignal,
+        network: bdk.Network,
+        wallet: Wallet | None,
+        signals: Signals,
+        label_max_chars: int,
+        max_utxo_value: int,
+        min_radius: float,
+        max_radius: float,
+        tx_item: "TransactionItem",
+        axis_y: float,
+        tx_width: float,
+        output_gap: float,
+        vertical_spacing: float,
+        index: int,
+        horizontal_offset: float | None = None,
+    ) -> "UtxoEllipseItem":
+        radius = cls._radius_for_value(python_utxo.value, max_utxo_value, min_radius, max_radius)
+        label_text = Satoshis(python_utxo.value, network).str_with_unit(color_formatting=None)
+        ellipse = cls(
+            detail.txid,
+            python_utxo.is_spent_by_txid,
+            radius,
+            transaction_signal=transaction_signal,
+            value_text=label_text,
+            value_label_color=ColorScheme.DEFAULT,
+        )
+
+        color = cls._color_for_utxo(python_utxo, wallet, signals)
+        brush_color = QColor(color)
+        alpha = 0.45 if python_utxo.is_spent_by_txid else 0.95
+        brush_color.setAlphaF(alpha)
+        ellipse.setBrush(brush_color)
+        ellipse.setPen(QPen(color))
+
+        horizontal_offset = (
+            horizontal_offset if horizontal_offset is not None else cls.DEFAULT_HORIZONTAL_OFFSET
+        )
+        x_pos = tx_item.pos().x() + tx_width / 2 + horizontal_offset
+        y_offset = axis_y + output_gap + vertical_spacing * index
+        ellipse.setPos(x_pos, y_offset)
+        ellipse.setZValue(1)
+
+        utxo_label_value = ""
+        if wallet:
+            try:
+                utxo_label = wallet.get_label_for_address(python_utxo.address)
+            except Exception:  # pragma: no cover - defensive
+                logger.exception("Failed to fetch label for address %s", python_utxo.address)
+                utxo_label = ""
+            utxo_label_value = utxo_label.strip() if utxo_label else ""
+            display_utxo_label = elide_text(utxo_label_value, label_max_chars) if utxo_label_value else ""
+            ellipse.set_wallet_label(display_utxo_label)
+
+        tooltip_lines = [
+            f"{translate('WalletGraphClient', 'UTXO')}: {outpoint_str}",
+            f"{translate('WalletGraphClient', 'Address')}: {python_utxo.address}",
+            f"{translate('WalletGraphClient', 'Value')}: {label_text}",
+            translate("WalletGraphClient", "Status: {status}").format(
+                status=(
+                    translate("WalletGraphClient", "Spent")
+                    if python_utxo.is_spent_by_txid
+                    else translate("WalletGraphClient", "Unspent")
+                )
+            ),
+        ]
+        if utxo_label_value:
+            tooltip_lines.append(f"{translate('WalletGraphClient', 'Label')}: {utxo_label_value}")
+        tooltip_lines.append(translate("WalletGraphClient", "Click to open the creating transaction."))
+        ellipse.set_composite_tooltip("\n".join(tooltip_lines))
+
+        return ellipse
+
+    @classmethod
+    def create_input_placeholder(
+        cls,
+        outpoint_str: str,
+        python_utxo: PythonUtxo | None,
+        *,
+        transaction_signal: pyqtBoundSignal,
+        axis_y: float,
+        tx_item: "TransactionItem",
+        tx_width: float,
+        input_gap: float,
+        vertical_spacing: float,
+        min_radius: float,
+        index: int,
+        horizontal_offset: float | None = None,
+    ) -> "UtxoEllipseItem":
+        creating_txid = outpoint_str.split(":", 1)[0] if outpoint_str else ""
+        label_text = translate("WalletGraphClient", "External input") if not python_utxo else outpoint_str
+        offset = -min_radius - 20
+        ellipse = cls(
+            creating_txid,
+            python_utxo.is_spent_by_txid if python_utxo else None,
+            min_radius,
+            transaction_signal=transaction_signal,
+            value_text=label_text,
+            value_label_color=ColorScheme.GRAY,
+            value_label_offset=offset,
+        )
+
+        placeholder_color = ColorScheme.Purple.as_color(background=True)
+        placeholder_color.setAlphaF(0.4)
+        ellipse.setBrush(placeholder_color)
+        ellipse.setPen(QPen(ColorScheme.Purple.as_color()))
+        ellipse.setAcceptHoverEvents(False)
+        ellipse.setCursor(Qt.CursorShape.ArrowCursor)
+        ellipse.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
+        ellipse.value_label.setAcceptHoverEvents(False)
+        ellipse.value_label.setCursor(Qt.CursorShape.ArrowCursor)
+        ellipse.value_label.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
+
+        horizontal_offset = (
+            horizontal_offset if horizontal_offset is not None else cls.DEFAULT_HORIZONTAL_OFFSET
+        )
+        x_pos = tx_item.pos().x() - tx_width / 2 - horizontal_offset
+        y_pos = axis_y - input_gap - vertical_spacing * index
+        ellipse.setPos(x_pos, y_pos)
+        ellipse.setZValue(1)
+        return ellipse
 
 
 @dataclass
 class GraphUtxoCircle:
     utxo: PythonUtxo | None
     ellipse: UtxoEllipseItem
-    label_item: UtxoLabelItem | None
 
 
 class TransactionLabelItem(QGraphicsTextItem):
-    def __init__(self, txid: str, text: str, view: "WalletGraphView") -> None:
-        super().__init__(text)
+    MAX_LABEL_CHARS = 40
+
+    def __init__(
+        self,
+        txid: str,
+        text: str,
+        transaction_signal: pyqtBoundSignal,
+        vertical_offset: float,
+        color: QColor | ColorSchemeItem | None = None,
+        parent: QGraphicsItem | None = None,
+    ) -> None:
+        super().__init__(text, parent)
         self.txid = txid
-        self._view = view
+        self._transaction_signal = transaction_signal
+        self._vertical_offset = vertical_offset
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._apply_color(color)
+        self._update_position()
 
     def mousePressEvent(self, event: Optional[QGraphicsSceneMouseEvent]) -> None:
         if not event:
             return super().mousePressEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:
-            self._view.transactionClicked.emit(self.txid)
+            self._transaction_signal.emit(self.txid)
             event.accept()
             return
         super().mousePressEvent(event)
+
+    def _apply_color(self, color: QColor | ColorSchemeItem | None) -> None:
+        if isinstance(color, ColorSchemeItem):
+            self.setDefaultTextColor(color.as_color())
+        elif isinstance(color, QColor):
+            self.setDefaultTextColor(color)
+        else:
+            self.setDefaultTextColor(ColorScheme.DEFAULT.as_color())
+
+    def _update_position(self) -> None:
+        rect = self.boundingRect()
+        self.setPos(-rect.width() / 2, self._vertical_offset)
+
+    @property
+    def bottom_y(self) -> float:
+        rect = self.boundingRect()
+        return self.pos().y() + rect.height()
 
 
 class UtxoLabelItem(QGraphicsTextItem):
-    def __init__(self, creating_txid: str, text: str, view: "WalletGraphView") -> None:
-        super().__init__(text)
+    def __init__(
+        self,
+        creating_txid: str,
+        text: str,
+        transaction_signal: pyqtBoundSignal,
+        vertical_offset: float,
+        color: QColor | ColorSchemeItem | None = None,
+        parent: QGraphicsItem | None = None,
+    ) -> None:
+        super().__init__(text, parent)
         self.creating_txid = creating_txid
-        self._view = view
+        self._transaction_signal = transaction_signal
+        self._vertical_offset = vertical_offset
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._apply_color(color)
+        self._update_position()
 
     def mousePressEvent(self, event: Optional[QGraphicsSceneMouseEvent]) -> None:
         if not event:
             return super().mousePressEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:
-            self._view.transactionClicked.emit(self.creating_txid)
+            self._transaction_signal.emit(self.creating_txid)
             event.accept()
             return
         super().mousePressEvent(event)
+
+    def _apply_color(self, color: QColor | ColorSchemeItem | None) -> None:
+        if isinstance(color, ColorSchemeItem):
+            self.setDefaultTextColor(color.as_color())
+        elif isinstance(color, QColor):
+            self.setDefaultTextColor(color)
+        else:
+            self.setDefaultTextColor(ColorScheme.DEFAULT.as_color())
+
+    def _update_position(self) -> None:
+        rect = self.boundingRect()
+        self.setPos(-rect.width() / 2, self._vertical_offset)
+
+    @property
+    def bottom_y(self) -> float:
+        rect = self.boundingRect()
+        return self.pos().y() + rect.height()
 
 
 class TransactionItem(QGraphicsRectItem):
     BORDER_WIDTH = 1.6
+    LABEL_MARGIN = 12.0
+    DEFAULT_WIDTH = 100.0
+    DEFAULT_HEIGHT = 44.0
 
-    def __init__(self, txid: str, width: float, height: float, view: "WalletGraphView") -> None:
+    def __init__(
+        self,
+        detail: FullTxDetail,
+        width: float,
+        height: float,
+        transaction_signal: pyqtBoundSignal,
+        timestamp: datetime.datetime,
+        position_x: float,
+        axis_y: float,
+        network: bdk.Network,
+        wallet: Wallet | None,
+        label_max_chars: int,
+        label_color: QColor | ColorSchemeItem | None = ColorScheme.DEFAULT,
+        show_txid=False,
+    ) -> None:
         super().__init__(-width / 2, -height / 2, width, height)
-        self.txid = txid
-        self._view = view
+        self.txid = detail.txid
+        self._transaction_signal = transaction_signal
 
         self.apply_color(ColorScheme.Purple)
 
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setZValue(2)
+
+        self.setPos(position_x, axis_y)
+
+        highlight_color = self._transaction_input_color(wallet, detail)
+        if highlight_color:
+            self.apply_color(highlight_color)
+
+        label_offset = self.rect().height() / 2 + self.LABEL_MARGIN
+        label_value, display_label = self._resolve_label_value(wallet, detail, label_max_chars)
+        display_identifier = (
+            display_label if display_label else (short_tx_id(detail.txid) if show_txid else "")
+        )
+        label_text = f"{timestamp.strftime('%Y-%m-%d')}\n{display_identifier}"
+        self.label_item = TransactionLabelItem(
+            detail.txid,
+            label_text,
+            transaction_signal=transaction_signal,
+            vertical_offset=label_offset,
+            color=label_color,
+            parent=self,
+        )
+
+        tooltip = self._transaction_tooltip(detail, timestamp, network)
+        self.setToolTip(tooltip)
+        label_tooltip = f"{detail.txid}\n{label_value}" if label_value else detail.txid
+        self.label_item.setToolTip(label_tooltip)
 
     def apply_color(self, color_item: ColorSchemeItem) -> None:
         border_color = color_item.as_color()
@@ -189,10 +521,70 @@ class TransactionItem(QGraphicsRectItem):
         if not event:
             return super().mousePressEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:
-            self._view.transactionClicked.emit(self.txid)
+            self._transaction_signal.emit(self.txid)
             event.accept()
             return
         super().mousePressEvent(event)
+
+    @staticmethod
+    def _transaction_input_color(wallet: Wallet | None, detail: FullTxDetail) -> ColorSchemeItem | None:
+        if not wallet:
+            return None
+
+        has_receive_input = False
+        has_change_input = False
+
+        for python_utxo in detail.inputs.values():
+            if not python_utxo:
+                continue
+            is_my = wallet.is_my_address(python_utxo.address)
+            if is_my:
+                has_receive_input = True
+            is_change = wallet.is_change(python_utxo.address)
+            if is_change:
+                has_change_input = True
+
+        if has_receive_input and has_change_input:
+            return ColorScheme.BLUE
+        if has_receive_input:
+            return ColorScheme.GREEN
+        if has_change_input:
+            return ColorScheme.OrangeBitcoin
+        return None
+
+    @staticmethod
+    def _resolve_label_value(
+        wallet: Wallet | None, detail: FullTxDetail, label_max_chars: int
+    ) -> Tuple[str, str]:
+        label_value = ""
+        if wallet:
+            try:
+                tx_label = wallet.get_label_for_txid(detail.txid)
+            except Exception:  # pragma: no cover - defensive: label lookup should not crash UI
+                logger.exception("Failed to fetch label for txid %s", detail.txid)
+                tx_label = ""
+            label_value = tx_label.strip() if tx_label else ""
+        display_label = elide_text(label_value, label_max_chars) if label_value else ""
+        return label_value, display_label
+
+    @staticmethod
+    def _transaction_tooltip(detail: FullTxDetail, timestamp: datetime.datetime, network: bdk.Network) -> str:
+        abbreviated = short_tx_id(detail.txid)
+        sent = Satoshis(detail.tx.sent, network).str_with_unit(color_formatting=None)
+        received = Satoshis(detail.tx.received, network).str_with_unit(color_formatting=None)
+        fee = (
+            Satoshis(detail.tx.fee, network).str_with_unit(color_formatting=None)
+            if detail.tx.fee is not None
+            else translate("WalletGraphClient", "Unknown fee")
+        )
+        return (
+            f"{translate('WalletGraphClient', 'Transaction')}: {abbreviated}\n"
+            f"{translate('WalletGraphClient', 'Full txid')}: {detail.txid}\n"
+            f"{translate('WalletGraphClient', 'Date')}: {timestamp.isoformat()}\n"
+            f"{translate('WalletGraphClient', 'Received')}: {received}\n"
+            f"{translate('WalletGraphClient', 'Sent')}: {sent}\n"
+            f"{translate('WalletGraphClient', 'Fee')}: {fee}"
+        )
 
 
 class WalletGraphView(QGraphicsView):
@@ -201,14 +593,6 @@ class WalletGraphView(QGraphicsView):
     MIN_TX_SPACING = 180.0
     MIN_SCENE_WIDTH = 900.0
     AXIS_Y = 0.0
-    TX_WIDTH = 100.0
-    TX_HEIGHT = 44.0
-    OUTPUT_GAP = 120.0
-    INPUT_GAP = 120.0
-    UTXO_VERTICAL_SPACING = 90.0
-    MIN_RADIUS = 10.0
-    MAX_RADIUS = 28.0
-    LABEL_MAX_CHARS = 40
 
     def __init__(self, signals: Signals, network: bdk.Network, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -304,39 +688,24 @@ class WalletGraphView(QGraphicsView):
 
         for detail, x_pos, timestamp in zip(sorted_details, positions, times):
             dt = datetime.datetime.fromtimestamp(timestamp)
-            tx_item = TransactionItem(detail.txid, self.TX_WIDTH, self.TX_HEIGHT, self)
-            tx_item.setPos(x_pos, self.AXIS_Y)
-            highlight_color = self._transaction_input_color(detail)
-            if highlight_color:
-                tx_item.apply_color(highlight_color)
-            tx_item.setToolTip(self._transaction_tooltip(detail, dt))
+            tx_item = TransactionItem(
+                detail,
+                TransactionItem.DEFAULT_WIDTH,
+                TransactionItem.DEFAULT_HEIGHT,
+                transaction_signal=self.transactionClicked,
+                timestamp=dt,
+                position_x=x_pos,
+                axis_y=self.AXIS_Y,
+                network=self.network,
+                wallet=self._current_wallet,
+                label_max_chars=TransactionLabelItem.MAX_LABEL_CHARS,
+                label_color=ColorScheme.DEFAULT,
+            )
             self._scene.addItem(tx_item)
 
             tick_pen = QPen(ColorScheme.GRAY.as_color())
             tick_pen.setWidthF(1.0)
             self._scene.addLine(x_pos, self.AXIS_Y - 6, x_pos, self.AXIS_Y + 6, tick_pen)
-
-            abbreviated_txid = self._abbreviate_txid(detail.txid)
-            tx_label = ""
-            if self._current_wallet:
-                try:
-                    tx_label = self._current_wallet.get_label_for_txid(detail.txid)
-                except Exception:  # pragma: no cover - defensive: label lookup should not crash UI
-                    logger.exception("Failed to fetch label for txid %s", detail.txid)
-                    tx_label = ""
-            raw_label_value = tx_label.strip() if tx_label else ""
-            label_value = self._elide_text(raw_label_value, self.LABEL_MAX_CHARS) if raw_label_value else ""
-            display_identifier = label_value if label_value else abbreviated_txid
-            label_text = f"{dt.strftime('%Y-%m-%d')}\n{display_identifier}"
-            label_item = TransactionLabelItem(detail.txid, label_text, self)
-            label_item.setDefaultTextColor(ColorScheme.DEFAULT.as_color())
-            label_rect = label_item.boundingRect()
-            label_item.setPos(x_pos - label_rect.width() / 2, self.AXIS_Y + self.TX_HEIGHT / 2 + 12)
-            if label_value:
-                label_item.setToolTip(f"{detail.txid}\n{label_value}")
-            else:
-                label_item.setToolTip(detail.txid)
-            self._scene.addItem(label_item)
 
             self._render_inputs(detail, tx_item)
             self._render_outputs(detail, tx_item, max_utxo_value)
@@ -359,68 +728,11 @@ class WalletGraphView(QGraphicsView):
             dt = datetime.datetime.fromtimestamp(fallback)
         return dt.timestamp()
 
-    def _abbreviate_txid(self, txid: str, prefix: int = 6, suffix: int = 6) -> str:
-        if len(txid) <= prefix + suffix + 1:
-            return txid
-        return f"{txid[:prefix]}…{txid[-suffix:]}"
-
-    def _elide_text(self, text: str, max_length: int) -> str:
-        if max_length <= 0 or len(text) <= max_length:
-            return text
-        if max_length == 1:
-            return "…"
-        return f"{text[: max_length - 1]}…"
-
-    def _transaction_tooltip(self, detail: FullTxDetail, dt: datetime.datetime) -> str:
-        abbreviated_txid = self._abbreviate_txid(detail.txid)
-        sent = Satoshis(detail.tx.sent, self.network).str_with_unit(color_formatting=None)
-        received = Satoshis(detail.tx.received, self.network).str_with_unit(color_formatting=None)
-        fee = (
-            Satoshis(detail.tx.fee, self.network).str_with_unit(color_formatting=None)
-            if detail.tx.fee is not None
-            else translate("WalletGraphClient", "Unknown fee")
-        )
-        return (
-            f"{translate('WalletGraphClient', 'Transaction')}: {abbreviated_txid}\n"
-            f"{translate('WalletGraphClient', 'Full txid')}: {detail.txid}\n"
-            f"{translate('WalletGraphClient', 'Date')}: {dt.isoformat()}\n"
-            f"{translate('WalletGraphClient', 'Received')}: {received}\n"
-            f"{translate('WalletGraphClient', 'Sent')}: {sent}\n"
-            f"{translate('WalletGraphClient', 'Fee')}: {fee}"
-        )
-
     def _max_output_value(self, details: Iterable[FullTxDetail]) -> int:
         values = [
             python_utxo.value for detail in details for python_utxo in detail.outputs.values() if python_utxo
         ]
         return max(values) if values else 0
-
-    def _transaction_input_color(self, detail: FullTxDetail) -> ColorSchemeItem | None:
-        wallet = self._current_wallet
-        if not wallet:
-            return None
-
-        has_receive_input = False
-        has_change_input = False
-
-        for python_utxo in detail.inputs.values():
-            if not python_utxo:
-                continue
-            address = python_utxo.address
-            if not wallet.is_my_address(address):
-                continue
-            if wallet.is_change(address):
-                has_change_input = True
-            elif wallet.is_receive(address):
-                has_receive_input = True
-            else:
-                has_receive_input = True
-
-        if has_receive_input:
-            return ColorScheme.GREEN
-        if has_change_input:
-            return ColorScheme.YELLOW
-        return None
 
     def _render_inputs(self, detail: FullTxDetail, tx_item: TransactionItem) -> None:
         inputs = list(detail.inputs.items())
@@ -432,29 +744,24 @@ class WalletGraphView(QGraphicsView):
                 self._connect_utxo_to_transaction(circle, tx_item, incoming=True)
                 continue
 
-            placeholder_color = ColorScheme.Purple.as_color(background=True)
-            placeholder_color.setAlphaF(0.4)
-            radius = self.MIN_RADIUS
-            y_offset = self.AXIS_Y - self.INPUT_GAP - index * self.UTXO_VERTICAL_SPACING
-            ellipse = self._scene.addEllipse(-radius, -radius, radius * 2, radius * 2)
-            if not ellipse:
-                continue
-            ellipse.setBrush(placeholder_color)
-            ellipse.setPen(QPen(ColorScheme.Purple.as_color()))
-            ellipse.setPos(tx_item.pos().x() - self.TX_WIDTH / 2 - 40, y_offset)
-            ellipse.setZValue(1)
-
-            label_text = translate("WalletGraphClient", "External input") if not python_utxo else outpoint_str
-            label_item = QGraphicsTextItem(label_text)
-            label_item.setDefaultTextColor(ColorScheme.GRAY.as_color())
-            label_rect = label_item.boundingRect()
-            label_item.setPos(ellipse.pos().x() - label_rect.width() / 2, y_offset - radius - 20)
-            self._scene.addItem(label_item)
+            ellipse = UtxoEllipseItem.create_input_placeholder(
+                outpoint_str,
+                python_utxo,
+                transaction_signal=self.transactionClicked,
+                axis_y=self.AXIS_Y,
+                tx_item=tx_item,
+                tx_width=TransactionItem.DEFAULT_WIDTH,
+                input_gap=UtxoEllipseItem.INPUT_GAP,
+                vertical_spacing=UtxoEllipseItem.VERTICAL_SPACING,
+                min_radius=UtxoEllipseItem.MIN_RADIUS,
+                index=index,
+            )
+            self._scene.addItem(ellipse)
 
             self._connect_points(
                 ellipse.pos(),
-                QPointF(tx_item.pos().x() - self.TX_WIDTH / 2, self.AXIS_Y),
-                placeholder_color,
+                QPointF(tx_item.pos().x() - TransactionItem.DEFAULT_WIDTH / 2, self.AXIS_Y),
+                ellipse.pen().color(),
             )
 
     def _render_outputs(self, detail: FullTxDetail, tx_item: TransactionItem, max_utxo_value: int) -> None:
@@ -465,80 +772,37 @@ class WalletGraphView(QGraphicsView):
         for index, (outpoint_str, python_utxo) in enumerate(outputs):
             if not python_utxo:
                 continue
-            radius = self._radius_for_value(python_utxo.value, max_utxo_value)
-            y_offset = self.AXIS_Y + self.OUTPUT_GAP + index * self.UTXO_VERTICAL_SPACING
-            ellipse = UtxoEllipseItem(detail.txid, python_utxo.is_spent_by_txid, self)
-            ellipse.setRect(-radius, -radius, radius * 2, radius * 2)
-            color = self._color_for_utxo(python_utxo)
-            brush_color = QColor(color)
-            alpha = 0.45 if python_utxo.is_spent_by_txid else 0.95
-            brush_color.setAlphaF(alpha)
-            ellipse.setBrush(brush_color)
-            ellipse.setPen(QPen(color))
-            ellipse.setPos(tx_item.pos().x() + self.TX_WIDTH / 2 + 40, y_offset)
-            ellipse.setZValue(1)
+            ellipse = UtxoEllipseItem.create_output(
+                detail,
+                outpoint_str,
+                python_utxo,
+                transaction_signal=self.transactionClicked,
+                network=self.network,
+                wallet=self._current_wallet,
+                signals=self.signals,
+                label_max_chars=UtxoEllipseItem.LABEL_MAX_CHARS,
+                max_utxo_value=max_utxo_value,
+                min_radius=UtxoEllipseItem.MIN_RADIUS,
+                max_radius=UtxoEllipseItem.MAX_RADIUS,
+                tx_item=tx_item,
+                axis_y=self.AXIS_Y,
+                tx_width=TransactionItem.DEFAULT_WIDTH,
+                output_gap=UtxoEllipseItem.OUTPUT_GAP,
+                vertical_spacing=UtxoEllipseItem.VERTICAL_SPACING,
+                index=index,
+            )
             self._scene.addItem(ellipse)
-
-            label_text = Satoshis(python_utxo.value, self.network).str_with_unit(color_formatting=None)
-            label_item = UtxoLabelItem(detail.txid, label_text, self)
-            label_item.setDefaultTextColor(ColorScheme.DEFAULT.as_color())
-            label_rect = label_item.boundingRect()
-            label_y = y_offset + radius + 8
-            label_item.setPos(ellipse.pos().x() - label_rect.width() / 2, label_y)
-            self._scene.addItem(label_item)
-
-            utxo_label_item: UtxoLabelItem | None = None
-            if self._current_wallet:
-                try:
-                    utxo_label = self._current_wallet.get_label_for_address(python_utxo.address)
-                except Exception:  # pragma: no cover - defensive
-                    logger.exception("Failed to fetch label for address %s", python_utxo.address)
-                    utxo_label = ""
-                utxo_label_value = utxo_label.strip() if utxo_label else ""
-                display_utxo_label = (
-                    self._elide_text(utxo_label_value, self.LABEL_MAX_CHARS) if utxo_label_value else ""
-                )
-                if display_utxo_label:
-                    utxo_label_item = UtxoLabelItem(detail.txid, display_utxo_label, self)
-                    utxo_label_rect = utxo_label_item.boundingRect()
-                    utxo_label_item.setPos(
-                        ellipse.pos().x() - utxo_label_rect.width() / 2,
-                        label_y + label_rect.height() + 1,
-                    )
-                    self._scene.addItem(utxo_label_item)
-            else:
-                utxo_label_item = None
-
-            tooltip_lines = [
-                f"{translate('WalletGraphClient', 'UTXO')}: {outpoint_str}",
-                f"{translate('WalletGraphClient', 'Address')}: {python_utxo.address}",
-                f"{translate('WalletGraphClient', 'Value')}: {label_text}",
-                translate("WalletGraphClient", "Status: {status}").format(
-                    status=(
-                        translate("WalletGraphClient", "Spent")
-                        if python_utxo.is_spent_by_txid
-                        else translate("WalletGraphClient", "Unspent")
-                    )
-                ),
-            ]
-            tooltip_lines.append(translate("WalletGraphClient", "Click to open the creating transaction."))
-            tooltip_text = "\n".join(tooltip_lines)
-            ellipse.setToolTip(tooltip_text)
-            label_item.setToolTip(tooltip_text)
-            if utxo_label_item:
-                utxo_label_item.setToolTip(tooltip_text)
 
             circle = GraphUtxoCircle(
                 utxo=python_utxo,
                 ellipse=ellipse,
-                label_item=label_item,
             )
             self._utxo_items[outpoint_str] = circle
 
             self._connect_points(
-                QPointF(tx_item.pos().x() + self.TX_WIDTH / 2, self.AXIS_Y),
+                QPointF(tx_item.pos().x() + TransactionItem.DEFAULT_WIDTH / 2, self.AXIS_Y),
                 ellipse.pos(),
-                color,
+                ellipse.pen().color(),
             )
 
             if python_utxo.is_spent_by_txid and python_utxo.is_spent_by_txid in self._tx_positions:
@@ -546,23 +810,9 @@ class WalletGraphView(QGraphicsView):
                 spending_x = self._tx_positions[python_utxo.is_spent_by_txid]
                 self._connect_points(
                     ellipse.pos(),
-                    QPointF(spending_x - self.TX_WIDTH / 2, self.AXIS_Y),
-                    color,
+                    QPointF(spending_x - TransactionItem.DEFAULT_WIDTH / 2, self.AXIS_Y),
+                    ellipse.pen().color(),
                 )
-
-    def _radius_for_value(self, value: int, max_value: int) -> float:
-        if max_value <= 0:
-            return self.MIN_RADIUS
-        ratio = value / max_value
-        return self.MIN_RADIUS + ratio * (self.MAX_RADIUS - self.MIN_RADIUS)
-
-    def _color_for_utxo(self, utxo: PythonUtxo) -> QColor:
-        if not self._current_wallet:
-            return ColorScheme.Purple.as_color()
-        color = AddressEdit.color_address(utxo.address, self._current_wallet, self.signals)
-        if color:
-            return color
-        return ColorScheme.Purple.as_color()
 
     def _connect_utxo_to_transaction(
         self, circle: GraphUtxoCircle, tx_item: TransactionItem, incoming: bool
@@ -570,7 +820,11 @@ class WalletGraphView(QGraphicsView):
         if circle.utxo:
             circle.ellipse.setOpacity(0.45)
         start = circle.ellipse.pos()
-        end_x = tx_item.pos().x() - self.TX_WIDTH / 2 if incoming else tx_item.pos().x() + self.TX_WIDTH / 2
+        end_x = (
+            tx_item.pos().x() - TransactionItem.DEFAULT_WIDTH / 2
+            if incoming
+            else tx_item.pos().x() + TransactionItem.DEFAULT_WIDTH / 2
+        )
         end_point = QPointF(end_x, self.AXIS_Y)
         color = circle.ellipse.pen().color()
         self._connect_points(start, end_point, color)
@@ -868,8 +1122,8 @@ class WalletGraphClient(PluginClient):
         node_id = str(utxo.outpoint)
         node = ET.SubElement(graph, "node", id=node_id)
         status = "spent" if utxo.is_spent_by_txid else "unspent"
-        color = self.graph_view._color_for_utxo(utxo)
         wallet = self.graph_view.current_wallet
+        color = UtxoEllipseItem._color_for_utxo(utxo, wallet=wallet, signals=self.signals)
         is_mine = wallet.is_my_address(utxo.address) if wallet else False
         self._set_data(node, "d0", "utxo")
         self._set_data(node, "d2", node_id)
