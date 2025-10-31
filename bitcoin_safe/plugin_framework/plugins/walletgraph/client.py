@@ -32,7 +32,7 @@ import datetime
 import logging
 import time
 import xml.etree.ElementTree as ET
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Optional
 
 import bdkpython as bdk
 from PyQt6.QtWidgets import (
@@ -247,6 +247,13 @@ class WalletGraphClient(PluginClient):
             ("d5", "node", "value_sats", "long"),  # prefer numeric type for sats
             ("d6", "node", "color", "string"),
             ("d7", "node", "is_mine", "boolean"),
+            ("d8", "node", "wallet_label", "string"),
+            ("d9", "node", "wallet_label_category", "string"),
+            ("d10", "node", "wallet_label_last_modified", "string"),
+            ("d11", "node", "wallet_label_origin", "string"),
+            ("d12", "node", "wallet_label_spendable", "boolean"),
+            ("d13", "node", "wallet_categories", "string"),
+            ("d14", "node", "wallet_name", "string"),
         ]
         for key_id, domain, name, key_type in key_specs:
             ET.SubElement(
@@ -266,6 +273,8 @@ class WalletGraphClient(PluginClient):
             return str(utxo.outpoint)
 
         fallback_base = time.time()
+        wallet = self.graph_view.current_wallet
+
         timestamped_details = [
             (detail, self.graph_view._detail_timestamp(detail, fallback_base + idx))
             for idx, detail in enumerate(details)
@@ -283,6 +292,22 @@ class WalletGraphClient(PluginClient):
             self._set_data(tx_node, "d1", ts_iso)
 
             self._set_data(tx_node, "d2", detail.txid)
+
+            tx_label = ""
+            categories = []
+            metadata_ref: Optional[str] = None
+            if wallet:
+                metadata_ref = detail.txid
+                tx_label = wallet.get_label_for_txid(detail.txid) or ""
+
+                categories = wallet.get_categories_for_txid(detail.txid) or []
+
+            self._apply_wallet_label_metadata(
+                tx_node,
+                metadata_ref,
+                wallet_label=tx_label,
+                categories=categories,
+            )
 
             # Outputs: edge from transaction -> UTXO
             for _, _utxo in detail.outputs.items():
@@ -324,7 +349,9 @@ class WalletGraphClient(PluginClient):
                 self._set_data(node, "d0", "external_utxo")
                 self._set_data(node, "d2", external_id)
                 self._set_data(node, "d4", "spent")
+                self._set_data(node, "d7", "false")
                 self._set_data(node, "d6", ColorScheme.Purple.as_color().name())
+                self._apply_wallet_label_metadata(node, None, wallet_label="", categories=[])
                 ET.SubElement(
                     graph,
                     "edge",
@@ -351,9 +378,94 @@ class WalletGraphClient(PluginClient):
         self._set_data(node, "d6", color.name())
         self._set_data(node, "d7", "true" if is_mine else "false")
 
+        utxo_label = ""
+        metadata_ref: Optional[str] = None
+        if wallet:
+            metadata_ref = utxo.address
+            utxo_label = wallet.get_label_for_address(utxo.address) or ""
+
+        self._apply_wallet_label_metadata(node, metadata_ref, wallet_label=utxo_label)
+
     @staticmethod
-    def _set_data(node: ET.Element, key: str, value: str) -> None:
-        ET.SubElement(node, "data", key=key).text = value
+    def _set_data(node: ET.Element, key: str, value: Optional[str | bool | int | float]) -> None:
+        data_element = ET.SubElement(node, "data", key=key)
+        if isinstance(value, bool):
+            data_element.text = "true" if value else "false"
+        elif value is None:
+            data_element.text = ""
+        else:
+            data_element.text = str(value)
+
+    @staticmethod
+    def _format_timestamp(timestamp: Optional[float]) -> Optional[str]:
+        if timestamp is None:
+            return None
+        dt = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+        iso = dt.isoformat()
+        if iso.endswith("+00:00"):
+            iso = iso[:-6] + "Z"
+        return iso
+
+    def _apply_wallet_label_metadata(
+        self,
+        node: ET.Element,
+        ref: Optional[str],
+        *,
+        wallet_label: str = "",
+        categories: Iterable[str] | None = None,
+    ) -> None:
+        wallet_label_value = wallet_label or ""
+        categories_value = ""
+        if categories:
+            categories_value = ", ".join(str(cat) for cat in categories if cat is not None)
+
+        wallet = self.graph_view.current_wallet
+        wallet_name_value = self._get_wallet_name(wallet)
+
+        category_value = ""
+        timestamp_iso = ""
+        origin_value = ""
+        spendable_value: Optional[bool] | str = ""
+
+        labels = wallet.labels if wallet else None
+        if ref and labels:
+            category_value = labels.get_category_raw(ref) or ""
+
+            if not category_value and hasattr(labels, "get_category"):
+                category_value = labels.get_category(ref) or ""
+
+            timestamp_iso = self._format_timestamp(labels.get_timestamp(ref)) or ""
+
+            label_entry = None
+            if hasattr(labels, "data"):
+                label_entry = labels.data.get(ref)
+
+            if label_entry:
+                origin_value = getattr(label_entry, "origin", "") or ""
+                spendable = getattr(label_entry, "spendable", None)
+                if spendable is not None:
+                    spendable_value = bool(spendable)
+                else:
+                    spendable_value = ""
+
+        self._set_data(node, "d8", wallet_label_value)
+        self._set_data(node, "d9", category_value)
+        self._set_data(node, "d10", timestamp_iso)
+        self._set_data(node, "d11", origin_value)
+        self._set_data(node, "d12", spendable_value)
+        self._set_data(node, "d13", categories_value)
+        self._set_data(node, "d14", wallet_name_value)
+
+    @staticmethod
+    def _get_wallet_name(wallet: Optional[object]) -> str:
+        if not wallet:
+            return ""
+
+        for attr in ("id", "name", "wallet_name"):
+            value = getattr(wallet, attr, None)
+            if value:
+                return str(value)
+        return ""
 
     def updateUi(self) -> None:
         self.export_button.setText(self.tr("Export graph…"))
