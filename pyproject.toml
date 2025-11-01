@@ -37,8 +37,8 @@ hwi = ">=2.3.1"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
 cbor2 = "^5.6.0"
-pyqt6 = "<6.10"         # increasing this to >=6.10 leads to a win9x style, because the qwindowsvista.dll isn't available any more
-pyqt6-charts = "<6.10"  # increasing this to >=6.10 leads to a crash: ImportError: DLL load failed while importing QtCharts: The specified procedure could not be found.
+pyqt6 = "^6.10"
+pyqt6-charts = "^6.10"
 pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
