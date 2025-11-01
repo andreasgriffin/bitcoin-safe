@@ -163,6 +163,13 @@ jobs:
           echo "Found app at: $APP_PATH" | tee -a test_dmg.log
 
           # Launch the app.
+          LOG_DIR="$HOME/Library/Application Support/bitcoin_safe"
+
+          if [ -d "$LOG_DIR" ]; then
+            echo "Removing pre-existing bitcoin_safe logs under $LOG_DIR" | tee -a test_dmg.log
+            rm -f "$LOG_DIR"/bitcoin_safe.log* || true
+          fi
+
           echo "Launching app via open" | tee -a test_dmg.log
           open "$APP_PATH"
 
@@ -192,8 +199,9 @@ jobs:
 
       - name: Check for pyzbar log entry in bitcoin_safe.log
         run: |
-          echo "Checking bitcoin_safe.log for 'pyzbar could be loaded successfully'..." | tee -a test_dmg.log
-          if ! grep -q "pyzbar could be loaded successfully" "/Users/runner/Library/Application Support/bitcoin_safe/bitcoin_safe.log"; then
+          LOG_PATH="$HOME/Library/Application Support/bitcoin_safe/bitcoin_safe.log"
+          echo "Checking bitcoin_safe.log for 'pyzbar could be loaded successfully' at $LOG_PATH..." | tee -a test_dmg.log
+          if ! grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
             echo "Error: 'pyzbar could be loaded successfully' not found in bitcoin_safe.log" | tee -a test_dmg.log
             exit 1
           fi
