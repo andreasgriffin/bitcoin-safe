@@ -231,6 +231,11 @@ jobs:
           APP_CMD=$(cat package_path.txt)
           echo "Launching $APP_CMD"
           LOG_FILE="run-${{ matrix.package }}.log"
+          LOG_DIR="$HOME/.config/bitcoin_safe"
+          if [ -d "$LOG_DIR" ]; then
+            echo "Removing pre-existing bitcoin_safe logs under $LOG_DIR"
+            rm -f "$LOG_DIR"/bitcoin_safe.log* || true
+          fi
           touch "$LOG_FILE"
           "$APP_CMD" >>"$LOG_FILE" 2>&1 &
           echo $! > app_launch.pid

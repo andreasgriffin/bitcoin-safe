@@ -228,6 +228,14 @@ jobs:
           $expectedLogPath = Join-Path $env:LOCALAPPDATA 'bitcoin_safe\bitcoin_safe\bitcoin_safe.log'
           $resolvedLogPath = $null
 
+          $logDirectory = Split-Path $expectedLogPath -Parent
+          if (Test-Path $logDirectory) {
+            Get-ChildItem -Path $logDirectory -Filter 'bitcoin_safe.log*' -File -ErrorAction SilentlyContinue | ForEach-Object {
+              Write-Log "Removing pre-existing application log $($_.FullName)"
+              Remove-Item -Path $_.FullName -Force -ErrorAction SilentlyContinue
+            }
+          }
+
           try {
             Write-Log "Starting portable executable..."
             $process = Start-Process -FilePath $portableExe.FullName -WorkingDirectory $portableExe.DirectoryName -PassThru
