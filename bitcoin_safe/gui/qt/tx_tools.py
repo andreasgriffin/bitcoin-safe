@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 
 import bdkpython as bdk
@@ -47,12 +49,12 @@ logger = logging.getLogger(__name__)
 
 
 class TxTools:
-
     @classmethod
     def can_edit_safely(
         cls,
         tx_status: TxStatus,
     ) -> bool:
+        """Can edit safely."""
         return tx_status.can_edit()
 
     @classmethod
@@ -60,6 +62,7 @@ class TxTools:
         cls,
         tx_status: TxStatus,
     ) -> bool:
+        """Can cancel."""
         return GENERAL_RBF_AVAILABLE and tx_status.can_rbf()
 
     @classmethod
@@ -74,9 +77,11 @@ class TxTools:
 
         Silent payment burn protection
         Explanation: Silent payments outputs are dependent on all inputs of the tx
-        if any input is changed, but the SP output is left untouched, the output becomes: undetectable for the receiver and unspendable if the replaces transaction is not known
-        ref https://github.com/spesmilo/electrum/pull/9900#issuecomment-3318598185  and https://github.com/sparrowwallet/sparrow/issues/1434#issuecomment-3345317202
-
+        if any input is changed, but the SP output is left untouched,
+        the output becomes: undetectable for the receiver and unspendable
+        if the replaces transaction is not known
+        ref https://github.com/spesmilo/electrum/pull/9900#issuecomment-3318598185
+        and https://github.com/sparrowwallet/sparrow/issues/1434#issuecomment-3345317202
         """
         if not tx_status.can_rbf():
             return False
@@ -103,6 +108,7 @@ class TxTools:
         tx_status: TxStatus,
         wallet_functions: WalletFunctions,
     ):
+        """Edit tx."""
         if not cls.can_edit_safely(
             tx_status=tx_status,
         ):
@@ -125,6 +131,7 @@ class TxTools:
         tx_status: TxStatus,
         wallet_functions: WalletFunctions,
     ):
+        """Rbf tx."""
         if not cls.can_rbf_safely(
             tx=replace_tx,
             tx_status=tx_status,
@@ -147,6 +154,7 @@ class TxTools:
         wallet_functions: WalletFunctions,
         wallet: Wallet | None = None,
     ) -> bool:
+        """Can cpfp."""
         tx = tx_status.tx
         if not tx:
             return False
@@ -172,6 +180,7 @@ class TxTools:
         fee_rate: float | None = None,
         target_total_unconfirmed_fee_rate: float | None = None,
     ) -> None:
+        """Cpfp tx."""
         utxo = wallet.get_cpfp_utxos(tx=tx_details.transaction)
         if not utxo:
             Message(translate("tx", "Cannot CPFP the transaction because no receiving output could be found"))
@@ -220,7 +229,11 @@ class TxTools:
 
             txinfos.fee_rate = new_tx_fee_info.fee_rate()
             logger.info(
-                f"Choosing feerate {format_fee_rate( txinfos.fee_rate, network=wallet.config.network)} to bump the existing unconfirmed transactions from {format_fee_rate(unconfirmed_ancestors_fee_info.fee_rate(), network=wallet.config.network)} to {format_fee_rate(goal_total_fee_info.fee_rate(), network=wallet.config.network)}"
+                f"Choosing feerate {format_fee_rate(txinfos.fee_rate, network=wallet.config.network)} "
+                f"to bump the existing unconfirmed transactions from "
+                f"{format_fee_rate(unconfirmed_ancestors_fee_info.fee_rate(), network=wallet.config.network)}"
+                " to "
+                f"{format_fee_rate(goal_total_fee_info.fee_rate(), network=wallet.config.network)}"
             )
         else:
             txinfos.fee_rate = fee_rate

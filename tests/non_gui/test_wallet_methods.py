@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import bdkpython as bdk
 import pytest
@@ -43,16 +44,19 @@ class DummyConfig:
     """Minimal stand‑in for UserConfig used in tests."""
 
     def __init__(self, network: bdk.Network) -> None:
+        """Initialize instance."""
         self.network = network
 
 
 def _make_config() -> UserConfig:
+    """Make config."""
     config = UserConfig()
     config.network = bdk.Network.REGTEST
     return config
 
 
 def make_test_wallet() -> Wallet:
+    """Make test wallet."""
     network = bdk.Network.REGTEST
     config = DummyConfig(network)
     descriptor = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)"
@@ -74,6 +78,7 @@ def make_test_wallet() -> Wallet:
 
 
 def test_check_consistency_errors():
+    """Test check consistency errors."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
         threshold=1,
@@ -95,6 +100,7 @@ def test_check_consistency_errors():
 
 
 def test_check_self_consistency():
+    """Test check self consistency."""
     wallet = make_test_wallet()
     descriptor = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)"
 
@@ -102,6 +108,7 @@ def test_check_self_consistency():
 
 
 def test_check_protowallet_consistency_valid():
+    """Test check protowallet consistency valid."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
         threshold=1,
@@ -116,11 +123,13 @@ def test_check_protowallet_consistency_valid():
 
 
 def test_get_mn_tuple_single_sig():
+    """Test get mn tuple single sig."""
     wallet = make_test_wallet()
     assert wallet.get_mn_tuple() == (1, 1)
 
 
 def test_mark_all_labeled_addresses_used():
+    """Test mark all labeled addresses used."""
     wallet = make_test_wallet()
     addr_info = wallet.get_address(force_new=True)
     address_str = str(addr_info.address)
@@ -136,6 +145,7 @@ def test_mark_all_labeled_addresses_used():
 
 
 def test_as_protowallet_roundtrip():
+    """Test as protowallet roundtrip."""
     wallet = make_test_wallet()
     proto = wallet.as_protowallet()
     restored = Wallet.from_protowallet(proto, config=DummyConfig(proto.network))
@@ -148,8 +158,9 @@ def test_as_protowallet_roundtrip():
 
 
 def test_get_differences_descriptor_change():
+    """Test get differences descriptor change."""
     config = _make_config()
-    key_origins = [f"m/{i+41}h/1h/0h/2h" for i in range(2)]
+    key_origins = [f"m/{i + 41}h/1h/0h/2h" for i in range(2)]
     protowallet1 = create_multisig_protowallet(
         threshold=2,
         signers=2,
@@ -174,6 +185,7 @@ def test_get_differences_descriptor_change():
 
 
 def test_get_differences_gap_change():
+    """Test get differences gap change."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
         threshold=1,
@@ -207,8 +219,9 @@ def test_get_differences_gap_change():
 
 
 def test_get_mn_tuple():
+    """Test get mn tuple."""
     config = _make_config()
-    key_origins = [f"m/{i+41}h/1h/0h/2h" for i in range(3)]
+    key_origins = [f"m/{i + 41}h/1h/0h/2h" for i in range(3)]
     protowallet = create_multisig_protowallet(
         threshold=2,
         signers=3,

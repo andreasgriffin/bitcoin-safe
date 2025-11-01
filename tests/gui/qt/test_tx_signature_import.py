@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -55,11 +56,10 @@ def test_signature_import_of_psbt_without_utxos(
     test_config: UserConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
+    """Test signature import of psbt without utxos."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -101,6 +101,7 @@ def test_signature_import_of_psbt_without_utxos(
         assert isinstance(widget_import_export, HorizontalImportExportAll)
 
         def text_entry(dialog: ImportDialog) -> None:
+            """Text entry."""
             shutter.save(dialog)
 
             dialog.text_edit.setText(signed_psbt)

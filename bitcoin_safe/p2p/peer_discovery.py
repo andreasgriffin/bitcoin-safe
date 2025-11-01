@@ -32,8 +32,9 @@ import asyncio
 import logging
 import random
 import socket
+from collections.abc import Sequence
 from ipaddress import ip_address
-from typing import Any, Dict, List, Sequence, Set
+from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -48,7 +49,7 @@ DEFAULT_REQUIRED_SERVICE_FLAGS = (1 << 0) | (1 << 3)
 CBF_REQUIRED_SERVICE_FLAGS = DEFAULT_REQUIRED_SERVICE_FLAGS | (1 << 6)
 
 # Mapping of networks to their DNS seeds and default port
-DNS_SEEDS: Dict[bdk.Network, Dict[str, Any]] = {
+DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
     bdk.Network.BITCOIN: {
         "hosts": [
             "seed.bitcoin.sipa.be",  # Pieter Wuille
@@ -59,7 +60,8 @@ DNS_SEEDS: Dict[bdk.Network, Dict[str, Any]] = {
             "seed.bitcoin.sprovoost.nl",  # Sjors Provoost
             "dnsseed.emzy.de",  # Stephan Oeste
             "seed.bitcoin.wiz.biz",  # Jason Maurice
-            "seed.mainnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
+            "seed.mainnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809,
+            # x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
             "127.0.0.1",  # Local fallback
         ],
         "port": 8333,
@@ -70,7 +72,8 @@ DNS_SEEDS: Dict[bdk.Network, Dict[str, Any]] = {
             "seed.tbtc.petertodd.net",  # Peter Todd
             "seed.testnet.bitcoin.sprovoost.nl",  # Sjors Provoost
             "testnet-seed.bluematt.me",  # Matt Corallo
-            "seed.testnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
+            "seed.testnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809,
+            # x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
             "127.0.0.1",  # Local fallback
         ],
         "port": 18333,
@@ -102,11 +105,13 @@ DNS_SEEDS: Dict[bdk.Network, Dict[str, Any]] = {
 
 class PeerDiscovery:
     def __init__(self, network: bdk.Network, timeout: int = 200) -> None:
+        """Initialize instance."""
         self.network = network
         self.timeout = timeout
         self._loop_in_thread = LoopInThread()
 
     def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
+        """Seed with service bits."""
         if required_services is None:
             return host
 
@@ -130,7 +135,8 @@ class PeerDiscovery:
         self,
         candidate_seed: str,
         seed_port: int,
-    ) -> List[Peer]:
+    ) -> list[Peer]:
+        """Resolve dns seed."""
         loop = asyncio.get_running_loop()
 
         try:
@@ -144,7 +150,7 @@ class PeerDiscovery:
             return []
 
         random.shuffle(addrinfos)
-        peers: List[Peer] = []
+        peers: list[Peer] = []
         for ai in addrinfos:
             sockaddr = ai[4]
             ip = sockaddr[0]
@@ -154,6 +160,7 @@ class PeerDiscovery:
         return peers
 
     async def _get_bitcoin_peers_async(self, lower_bound, required_services):
+        """Get bitcoin peers async."""
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
 
@@ -162,6 +169,7 @@ class PeerDiscovery:
         )
 
         async def resolve(seed_host: str) -> list[Peer]:
+            """Resolve."""
             seed_info = Peer.parse(seed_host, self.network)
             candidate_seed = self._seed_with_service_bits(
                 seed_info.host,
@@ -170,6 +178,7 @@ class PeerDiscovery:
             return await self._resolve_dns_seed(candidate_seed, seed_info.port)
 
         def enough(results: Sequence[list[Peer]]) -> bool:
+            """Enough."""
             if lower_bound is None:
                 return False
             unique_peers = {peer for batch in results for peer in batch}
@@ -187,12 +196,14 @@ class PeerDiscovery:
         self,
         lower_bound: int | None = None,
         required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS,
-    ) -> Set[Peer]:
+    ) -> set[Peer]:
+        """Get bitcoin peers."""
         return self._loop_in_thread.run_foreground(
             self._get_bitcoin_peers_async(lower_bound=lower_bound, required_services=required_services)
         )
 
     def get_bitcoin_peer(self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS) -> None | Peer:
+        """Get bitcoin peer."""
         peers = self.get_bitcoin_peers(lower_bound=1, required_services=required_services)
         if not peers:
             return None

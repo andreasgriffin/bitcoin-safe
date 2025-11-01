@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List, Optional, Union
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QFontMetrics, QPainter, QPixmap
@@ -51,10 +51,12 @@ logger = logging.getLogger(__name__)
 
 class ElidedLabel(QLabel):
     def __init__(self, elide_mode: Qt.TextElideMode = Qt.TextElideMode.ElideRight):
+        """Initialize instance."""
         super().__init__()
         self.elide_mode = elide_mode
 
     def paintEvent(self, a0):
+        """PaintEvent."""
         painter = QPainter(self)
         metrics = QFontMetrics(self.font())
         elided = "\n".join(
@@ -64,6 +66,7 @@ class ElidedLabel(QLabel):
 
     def _requirey_y_size(self) -> int:
         # Create a QFontMetrics object to measure text dimensions
+        """Requirey y size."""
         metrics = QFontMetrics(self.font())
         text_height = metrics.height()  # Height of one line of text
 
@@ -75,18 +78,20 @@ class ElidedLabel(QLabel):
         return total_height
 
     def minimumSizeHint(self):
+        """MinimumSizeHint."""
         return QSize(1, self._requirey_y_size())  # Fixed width, dynamic height
 
 
 class AnalyzerIndicator(QWidget):
     def __init__(
         self,
-        line_edits: List[Union[AnalyzerLineEdit, AnalyzerTextEdit]],
-        icon_OK: Optional[QPixmap] = None,
-        icon_warning: Optional[QPixmap] = None,
-        icon_error: Optional[QPixmap] = None,
+        line_edits: list[AnalyzerLineEdit | AnalyzerTextEdit],
+        icon_OK: QPixmap | None = None,
+        icon_warning: QPixmap | None = None,
+        icon_error: QPixmap | None = None,
         hide_if_all_empty=False,
     ):
+        """Initialize instance."""
         super().__init__()
         self.line_edits = line_edits
         self.hide_if_all_empty = hide_if_all_empty
@@ -141,10 +146,12 @@ class AnalyzerIndicator(QWidget):
         self.updateUi()
 
     def updateUi(self):
+        """UpdateUi."""
         self.update_status()
         self.update_label_text()
 
-    def get_analysis_list(self, min_state=AnalyzerState.Valid) -> List[AnalyzerMessage]:
+    def get_analysis_list(self, min_state=AnalyzerState.Valid) -> list[AnalyzerMessage]:
+        """Get analysis list."""
         analysis_list = []
         for le in self.line_edits:
             analyzer = le.analyzer()
@@ -156,6 +163,7 @@ class AnalyzerIndicator(QWidget):
         return analysis_list
 
     def get_worst_analysis(self) -> AnalyzerMessage:
+        """Get worst analysis."""
         return BaseAnalyzer.worst_message(self.get_analysis_list())
 
     def update_status(self) -> None:
@@ -169,11 +177,12 @@ class AnalyzerIndicator(QWidget):
             self.setHidden(all([le.text() == "" for le in self.line_edits]))
 
     def update_label_text(self) -> None:
-        """Update text label to show text of all line edits formatted with their object names."""
+        """Update text label to show text of all line edits formatted with their object
+        names."""
         titles = [f"{le.display_name}:" for le in self.line_edits]
         self.title_label.setText("\n".join(titles))
 
-        texts: List[str] = [le.text() for le in self.line_edits]
+        texts: list[str] = [le.text() for le in self.line_edits]
         self.text_label.setText("\n".join(texts))
         self.text_label.setToolTip("\n".join(texts))
 
@@ -184,18 +193,20 @@ if __name__ == "__main__":
         """Custom validator that allows any input but validates numeric input."""
 
         def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+            """Analyze."""
             if input.isdigit():
                 return AnalyzerMessage("ok", AnalyzerState.Valid)
             elif not input:
                 return AnalyzerMessage("empty", AnalyzerState.Warning)
             return AnalyzerMessage("invalid", AnalyzerState.Invalid)
 
-    def setup_line_edit(line_edit: Union[AnalyzerLineEdit, AnalyzerTextEdit]):
-        """Set up a QLineEdit with a custom validator that allows all inputs and styles the QLineEdit based on validity."""
+    def setup_line_edit(line_edit: AnalyzerLineEdit | AnalyzerTextEdit):
+        """Set up a QLineEdit with a custom validator that allows all inputs and styles
+        the QLineEdit based on validity."""
         analyzer = CustomIntAnalyzer()
         line_edit.setAnalyzer(analyzer)
 
-    def validate_input(line_edit: Union[AnalyzerLineEdit, AnalyzerTextEdit], analyzer: CustomIntAnalyzer):
+    def validate_input(line_edit: AnalyzerLineEdit | AnalyzerTextEdit, analyzer: CustomIntAnalyzer):
         """Update the line edit style based on validation."""
         analysis = analyzer.analyze(line_edit.text(), 0)
 
@@ -204,7 +215,7 @@ if __name__ == "__main__":
         if analysis.state == AnalyzerState.Warning:
             line_edit.setStyleSheet(f"#{line_edit.objectName()} {{ background-color: #ff6c54; }}")
         else:
-            line_edit.setStyleSheet(f"")
+            line_edit.setStyleSheet("")
 
     app = QApplication([])
     le1 = AnalyzerLineEdit()

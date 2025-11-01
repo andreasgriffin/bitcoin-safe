@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import argparse
 import datetime
@@ -38,7 +39,7 @@ import subprocess
 import sys
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import requests
 
@@ -53,6 +54,7 @@ assert ENABLE_TIMERS
 
 
 def get_default_description(latest_tag: str):
+    """Get default description."""
     return f"""
 ### New Features
 
@@ -89,8 +91,8 @@ gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
 
 
 def run_command(command, cwd=None):
-    """
-    Runs a shell command, logs its stdout and stderr, and raises an exception on failure.
+    """Runs a shell command, logs its stdout and stderr, and raises an exception on
+    failure.
 
     :param command: The command to run (string).
     :param cwd: The working directory for the command (string or None).
@@ -116,6 +118,7 @@ def run_command(command, cwd=None):
 
 def update_website(website_dir, version):
     # Pull the latest changes from git.
+    """Update website."""
     run_command("git pull", cwd=website_dir)
 
     # Run the fetch_release.sh script.
@@ -133,8 +136,8 @@ def update_website(website_dir, version):
 
 
 def run_pytest() -> None:
-    """
-    Run pytest to execute all unit tests in the project.
+    """Run pytest to execute all unit tests in the project.
+
     Aborts the script if any tests fail.
     """
     try:
@@ -154,6 +157,7 @@ def get_git_tag() -> str:
 
 
 def get_checkout_main():
+    """Get checkout main."""
     try:
         # Retrieve the list of remotes and their URLs
         result = subprocess.run(["git", "checkout", "main"], check=True, text=True, capture_output=True)
@@ -164,6 +168,7 @@ def get_checkout_main():
 
 
 def get_default_remote():
+    """Get default remote."""
     try:
         # Retrieve the list of remotes and their URLs
         result = subprocess.run(["git", "remote", "-v"], check=True, text=True, capture_output=True)
@@ -177,7 +182,7 @@ def get_default_remote():
         return None
 
 
-def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
+def create_pypi_wheel(dist_dir="dist") -> tuple[str, str]:
     """_summary_
 
     Returns:
@@ -186,10 +191,12 @@ def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
 
     def run_poetry_build():
         # Run `poetry build`
+        """Run poetry build."""
         subprocess.run(["poetry", "build"], check=True)
 
     def get_whl_file():
         # Locate the .whl file in the dist directory
+        """Get whl file."""
         for filename in os.listdir(dist_dir):
             if filename.endswith(".whl"):
                 return os.path.join(dist_dir, filename)
@@ -197,6 +204,7 @@ def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
 
     def calculate_sha256(file_path):
         # Calculate the SHA-256 hash of the file
+        """Calculate sha256."""
         sha256_hash = hashlib.sha256()
         with open(file_path, "rb") as f:
             for byte_block in iter(partial(f.read, 4096), b""):
@@ -210,12 +218,13 @@ def create_pypi_wheel(dist_dir="dist") -> Tuple[str, str]:
         raise Exception("No .whl file found in the dist directory.")
 
     hash_value = calculate_sha256(whl_file)
-    pip_install_command = f"pip install {Path(dist_dir)/whl_file} --hash=sha256:{hash_value}"
+    pip_install_command = f"pip install {Path(dist_dir) / whl_file} --hash=sha256:{hash_value}"
     print(pip_install_command)
     return whl_file, hash_value
 
 
 def publish_pypi_wheel(dist_dir="dist"):
+    """Publish pypi wheel."""
     whl_file, hash_value = create_pypi_wheel(dist_dir=dist_dir)
     subprocess.run(["poetry", "publish"], check=True)
 
@@ -229,7 +238,7 @@ def create_github_release(
     body: str,
     draft: bool = False,
     prerelease: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Create a release on GitHub using the GitHub API."""
     url = f"https://api.github.com/repos/{owner}/{repo}/releases"
     headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
@@ -246,7 +255,7 @@ def create_github_release(
 
 def upload_release_asset(
     token: str, owner: str, repo: str, release_id: int, asset_path: Path
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Upload an asset to an existing GitHub release."""
     headers = {"Authorization": f"token {token}", "Content-Type": "application/octet-stream"}
     params = {"name": asset_path.name}
@@ -256,7 +265,7 @@ def upload_release_asset(
     return response.json()
 
 
-def list_directory_files(directory: Path) -> List[Tuple[Path, int, str]]:
+def list_directory_files(directory: Path) -> list[tuple[Path, int, str]]:
     """List all files in a directory with their sizes and modification dates."""
     files = []
     for filepath in directory.iterdir():
@@ -268,9 +277,8 @@ def list_directory_files(directory: Path) -> List[Tuple[Path, int, str]]:
 
 
 def get_input_with_default(prompt: str, default: str = "") -> str:
-    """
-    Get user input with the option to use a default value by pressing enter.
-    If no default is provided, just press enter to provide an empty string.
+    """Get user input with the option to use a default value by pressing enter. If no
+    default is provided, just press enter to provide an empty string.
 
     Args:
     prompt (str): The prompt to display to the user.
@@ -286,7 +294,7 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
 
 
 def parse_args() -> argparse.Namespace:
-
+    """Parse args."""
     parser = argparse.ArgumentParser(description="Release Bitcoin Safe")
     parser.add_argument("--skip_test", action="store_true")
     parser.add_argument("--allow_branch", action="store_true")
@@ -295,6 +303,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Main."""
     args = parse_args()
 
     if not args.allow_branch:
@@ -309,7 +318,7 @@ def main() -> None:
 
     from bitcoin_safe import __version__
 
-    git_tag: Optional[str] = get_git_tag()
+    git_tag: str | None = get_git_tag()
 
     if get_input_with_default(f"Is this version {__version__} correct? (y/n): ", "y").lower() != "y":
         return
@@ -344,7 +353,7 @@ def main() -> None:
         if __version__ not in file_path.name:
             continue
         upload_release_asset(token, owner, repo, release_result["id"], file_path)
-        print(f"Asset {file_path.name} uploaded successfully. ({round(i/len(files)*100)}%)")
+        print(f"Asset {file_path.name} uploaded successfully. ({round(i / len(files) * 100)}%)")
 
     if (
         get_input_with_default(

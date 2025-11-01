@@ -26,25 +26,26 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import binascii
 import json
 import logging
+from collections.abc import Iterable
 from heapq import heappop, heappush
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.util import time_logger
 
 logger = logging.getLogger(__name__)
 
-JsonDict = Dict[str, Any]
+JsonDict = dict[str, Any]
 DEFAULT_CHAIN_PRUNE_DEPTH = 10
 
 
 class ChangeSetConverter:
-    """
-    Convert between bdk.ChangeSet and a JSON-serializable dict structure.
-    """
+    """Convert between bdk.ChangeSet and a JSON-serializable dict structure."""
 
     # ---------------------------
     # Small conversion utilities
@@ -52,10 +53,12 @@ class ChangeSetConverter:
 
     @staticmethod
     def _bytes_to_hex(b: bytes) -> str:
+        """Bytes to hex."""
         return b.hex()
 
     @staticmethod
     def _hex_to_bytes(h: str) -> bytes:
+        """Hex to bytes."""
         try:
             return binascii.unhexlify(h)
         except (binascii.Error, ValueError) as e:
@@ -64,17 +67,19 @@ class ChangeSetConverter:
     @staticmethod
     def _txid_to_hex(txid: bdk.Txid) -> str:
         # bdk.Txid typically has serialize(); accept string fallback
+        """Txid to hex."""
         try:
             return ChangeSetConverter._bytes_to_hex(txid.serialize())
-        except AttributeError:
+        except AttributeError as e:
             # already a string, or incompatible type
             if isinstance(txid, str):
                 return txid
-            raise TypeError(f"Unsupported txid type: {type(txid)}")
+            raise TypeError(f"Unsupported txid type: {type(txid)}") from e
 
     @staticmethod
     def _hex_to_txid(h: str) -> bdk.Txid:
         # Prefer from_bytes if hex, else let bdk.Txid(h) handle non-hex encodings
+        """Hex to txid."""
         try:
             return bdk.Txid.from_bytes(ChangeSetConverter._hex_to_bytes(h))
         except ValueError:
@@ -82,23 +87,27 @@ class ChangeSetConverter:
             return bdk.Txid(h)
 
     @staticmethod
-    def _blockhash_to_hex(bh: Optional[bdk.BlockHash]) -> Optional[str]:
+    def _blockhash_to_hex(bh: bdk.BlockHash | None) -> str | None:
+        """Blockhash to hex."""
         if bh is None:
             return None
         return ChangeSetConverter._bytes_to_hex(bh.serialize())
 
     @staticmethod
-    def _hex_to_blockhash(h: Optional[str]) -> Optional[bdk.BlockHash]:
+    def _hex_to_blockhash(h: str | None) -> bdk.BlockHash | None:
+        """Hex to blockhash."""
         if h is None:
             return None
         return bdk.BlockHash.from_bytes(ChangeSetConverter._hex_to_bytes(h))
 
     @staticmethod
-    def _network_to_string(net: Optional[bdk.Network]) -> Optional[str]:
+    def _network_to_string(net: bdk.Network | None) -> str | None:
+        """Network to string."""
         return None if net is None else net.name
 
     @staticmethod
-    def _string_to_network(name: Optional[str]) -> Optional[bdk.Network]:
+    def _string_to_network(name: str | None) -> bdk.Network | None:
+        """String to network."""
         if name is None:
             return None
         try:
@@ -109,10 +118,12 @@ class ChangeSetConverter:
     @staticmethod
     def _canonical_outpoint_key(txid_hex: str, vout: int) -> str:
         # Keep schema (JSON string key) but make it canonical and stable
+        """Canonical outpoint key."""
         return json.dumps({"txid": txid_hex, "vout": vout}, sort_keys=True, separators=(",", ":"))
 
     @staticmethod
-    def _parse_outpoint_key(key: str) -> Tuple[str, int]:
+    def _parse_outpoint_key(key: str) -> tuple[str, int]:
+        """Parse outpoint key."""
         obj = json.loads(key)
         return obj["txid"], int(obj["vout"])
 
@@ -123,10 +134,10 @@ class ChangeSetConverter:
     @classmethod
     def anchor_heights_from_changeset(
         cls,
-        tx_graph_changeset: Optional[bdk.TxGraphChangeSet],
-    ) -> Set[int]:
-        """
-        Extract the set of block heights that contain anchored transactions.
+        tx_graph_changeset: bdk.TxGraphChangeSet | None,
+    ) -> set[int]:
+        """Extract the set of block heights that contain anchored transactions.
+
         O(#anchors) time and memory.
         """
         if tx_graph_changeset is None:
@@ -139,10 +150,9 @@ class ChangeSetConverter:
         cls,
         chain_changes: Iterable[bdk.ChainChange],
         prune_depth: int,
-        anchor_heights: Set[int],
+        anchor_heights: set[int],
     ) -> Iterable[bdk.ChainChange]:
-        """
-        Single-pass, memory-bounded filter.
+        """Single-pass, memory-bounded filter.
 
         Keeps:
           - all anchored changes (any height)
@@ -171,8 +181,8 @@ class ChangeSetConverter:
         top_heights_heap: list[int] = []
         top_heights_set: set[int] = set()
 
-        window_by_height: Dict[int, bdk.ChainChange] = {}
-        anchored_by_height: Dict[int, bdk.ChainChange] = {}
+        window_by_height: dict[int, bdk.ChainChange] = {}
+        anchored_by_height: dict[int, bdk.ChainChange] = {}
 
         # ─────────────────────────────────────────────────────────────
         # Main single-pass loop
@@ -204,7 +214,8 @@ class ChangeSetConverter:
         merged_result = (window_by_height | anchored_by_height).values()
         len_merged_result = len(merged_result)
         logger.debug(
-            f"Kept {len_merged_result} of {counter_total_cc}, so pruned {(1-len_merged_result/max(counter_total_cc,1))*100:.2f}%"
+            f"Kept {len_merged_result} of {counter_total_cc}, "
+            f"so pruned {(1 - len_merged_result / max(counter_total_cc, 1)) * 100:.2f}%"
         )
 
         return merged_result
@@ -217,6 +228,7 @@ class ChangeSetConverter:
         tx_graph_changeset: bdk.TxGraphChangeSet,
         prune_depth: int,
     ) -> Iterable[bdk.ChainChange]:
+        """Filter chain changes."""
         anchor_heights = cls.anchor_heights_from_changeset(tx_graph_changeset)
         # add genesis
         anchor_heights.add(0)
@@ -231,18 +243,19 @@ class ChangeSetConverter:
         changeset: bdk.ChangeSet,
         prune_depth: int = DEFAULT_CHAIN_PRUNE_DEPTH,
         restrict_chain_changes: bool = True,
-    ) -> Dict[str, Any]:
-        """
-        Serialize a bdk.ChangeSet into a plain Python dict (JSON-safe).
-        """
+    ) -> dict[str, Any]:
+        """Serialize a bdk.ChangeSet into a plain Python dict (JSON-safe)."""
 
-        def _serialize_descriptor(descriptor: Optional[bdk.Descriptor]) -> Optional[str]:
+        def _serialize_descriptor(descriptor: bdk.Descriptor | None) -> str | None:
+            """Serialize descriptor."""
             return None if descriptor is None else str(descriptor)
 
-        def _serialize_chainchange(cc: bdk.ChainChange) -> Dict[str, Any]:
+        def _serialize_chainchange(cc: bdk.ChainChange) -> dict[str, Any]:
+            """Serialize chainchange."""
             return {"height": cc.height, "hash": ChangeSetConverter._blockhash_to_hex(cc.hash)}
 
-        def _serialize_local_chain(local_chain: bdk.LocalChainChangeSet) -> Dict[str, Any]:
+        def _serialize_local_chain(local_chain: bdk.LocalChainChangeSet) -> dict[str, Any]:
+            """Serialize local chain."""
             chain_changes = local_chain.changes
             if restrict_chain_changes:
                 chain_changes = ChangeSetConverter._filter_chain_changes(
@@ -254,16 +267,19 @@ class ChangeSetConverter:
             return {"changes": [_serialize_chainchange(cc) for cc in chain_changes]}
 
         def _serialize_tx(tx: bdk.Transaction) -> str:
+            """Serialize tx."""
             return ChangeSetConverter._bytes_to_hex(tx.serialize())
 
-        def _serialize_outpoint(hop: bdk.HashableOutPoint) -> Dict[str, Any]:
+        def _serialize_outpoint(hop: bdk.HashableOutPoint) -> dict[str, Any]:
+            """Serialize outpoint."""
             op = hop.outpoint()
             return {
                 "txid": ChangeSetConverter._txid_to_hex(op.txid),
                 "vout": op.vout,
             }
 
-        def _serialize_txout(txout: bdk.TxOut) -> Dict[str, Any]:
+        def _serialize_txout(txout: bdk.TxOut) -> dict[str, Any]:
+            """Serialize txout."""
             script_obj: bdk.Script = txout.script_pubkey
             script_bytes = script_obj.to_bytes()
             return {
@@ -271,16 +287,17 @@ class ChangeSetConverter:
                 "script_pubkey": ChangeSetConverter._bytes_to_hex(script_bytes),
             }
 
-        def _serialize_tx_graph(tx_graph: bdk.TxGraphChangeSet) -> Dict[str, Any]:
+        def _serialize_tx_graph(tx_graph: bdk.TxGraphChangeSet) -> dict[str, Any]:
+            """Serialize tx graph."""
             txs_list = [_serialize_tx(tx) for tx in tx_graph.txs]
 
-            txouts_dict: Dict[str, Dict[str, Any]] = {}
+            txouts_dict: dict[str, dict[str, Any]] = {}
             for hop, txout in tx_graph.txouts.items():
                 op = _serialize_outpoint(hop)
                 key = ChangeSetConverter._canonical_outpoint_key(op["txid"], op["vout"])
                 txouts_dict[key] = _serialize_txout(txout)
 
-            anchors_list: List[Dict[str, Any]] = []
+            anchors_list: list[dict[str, Any]] = []
             for anchor in tx_graph.anchors:
                 cbt = anchor.confirmation_block_time
                 block_id = cbt.block_id
@@ -291,7 +308,7 @@ class ChangeSetConverter:
                 anchors_list.append({"confirmation_block_time": cbt_obj, "txid": txid_hex})
 
             # Support all three maps
-            last_seen_dict: Dict[str, int] = {
+            last_seen_dict: dict[str, int] = {
                 ChangeSetConverter._txid_to_hex(txid_obj): height
                 for txid_obj, height in tx_graph.last_seen.items()
             }
@@ -299,11 +316,11 @@ class ChangeSetConverter:
             first_seen_src = getattr(tx_graph, "first_seen", {})
             last_evicted_src = getattr(tx_graph, "last_evicted", {})
 
-            first_seen_dict: Dict[str, int] = {
+            first_seen_dict: dict[str, int] = {
                 ChangeSetConverter._txid_to_hex(txid_obj): height
                 for txid_obj, height in first_seen_src.items()
             }
-            last_evicted_dict: Dict[str, int] = {
+            last_evicted_dict: dict[str, int] = {
                 ChangeSetConverter._txid_to_hex(txid_obj): height
                 for txid_obj, height in last_evicted_src.items()
             }
@@ -317,13 +334,14 @@ class ChangeSetConverter:
                 "last_evicted": last_evicted_dict,
             }
 
-        def _serialize_indexer(indexer: bdk.IndexerChangeSet) -> Dict[str, Any]:
-            lr: Dict[str, int] = {}
+        def _serialize_indexer(indexer: bdk.IndexerChangeSet) -> dict[str, Any]:
+            """Serialize indexer."""
+            lr: dict[str, int] = {}
             for did_obj, idx in indexer.last_revealed.items():
                 lr[ChangeSetConverter._bytes_to_hex(did_obj.serialize())] = idx
             return {"last_revealed": lr}
 
-        out: Dict[str, Any] = {
+        out: dict[str, Any] = {
             "descriptor": _serialize_descriptor(changeset.descriptor()),
             "change_descriptor": _serialize_descriptor(changeset.change_descriptor()),
             "network": ChangeSetConverter._network_to_string(changeset.network()),
@@ -338,14 +356,14 @@ class ChangeSetConverter:
     # -------------
 
     @staticmethod
-    def from_dict(parsed_json: Dict[str, Any]) -> bdk.ChangeSet:
-        """
-        Deserialize a plain Python dict (as produced by to_dict) into a bdk.ChangeSet.
-        """
+    def from_dict(parsed_json: dict[str, Any]) -> bdk.ChangeSet:
+        """Deserialize a plain Python dict (as produced by to_dict) into a
+        bdk.ChangeSet."""
 
         def _deserialize_descriptor(
-            descriptor_str: Optional[str], network: Optional[bdk.Network]
-        ) -> Optional[bdk.Descriptor]:
+            descriptor_str: str | None, network: bdk.Network | None
+        ) -> bdk.Descriptor | None:
+            """Deserialize descriptor."""
             if descriptor_str is None:
                 return None
             if network is None:
@@ -353,28 +371,33 @@ class ChangeSetConverter:
             # If your bdk has a dedicated constructor, keep as-is:
             return bdk.Descriptor(descriptor_str, network)
 
-        def _deserialize_chainchange(data: Dict[str, Any]) -> bdk.ChainChange:
+        def _deserialize_chainchange(data: dict[str, Any]) -> bdk.ChainChange:
+            """Deserialize chainchange."""
             return bdk.ChainChange(
                 height=int(data["height"]),
                 hash=ChangeSetConverter._hex_to_blockhash(data.get("hash")),
             )
 
-        def _deserialize_local_chain(data: Dict[str, Any]) -> bdk.LocalChainChangeSet:
+        def _deserialize_local_chain(data: dict[str, Any]) -> bdk.LocalChainChangeSet:
+            """Deserialize local chain."""
             changes_list = data.get("changes", [])
-            cc_objs: List[bdk.ChainChange] = [_deserialize_chainchange(cc) for cc in changes_list]
+            cc_objs: list[bdk.ChainChange] = [_deserialize_chainchange(cc) for cc in changes_list]
             return bdk.LocalChainChangeSet(changes=cc_objs)
 
         def _deserialize_tx(hexstr: str) -> bdk.Transaction:
+            """Deserialize tx."""
             raw = ChangeSetConverter._hex_to_bytes(hexstr)
             return bdk.Transaction(raw)
 
         def _deserialize_outpoint(key_str: str) -> bdk.HashableOutPoint:
+            """Deserialize outpoint."""
             txid_hex, vout = ChangeSetConverter._parse_outpoint_key(key_str)
             txid_obj = ChangeSetConverter._hex_to_txid(txid_hex)
             outpoint = bdk.OutPoint(txid=txid_obj, vout=int(vout))
             return bdk.HashableOutPoint(outpoint=outpoint)
 
-        def _deserialize_txout(data: Dict[str, Any]) -> bdk.TxOut:
+        def _deserialize_txout(data: dict[str, Any]) -> bdk.TxOut:
+            """Deserialize txout."""
             value = int(data["value"])
             script_hex = data["script_pubkey"]
             script_bytes = ChangeSetConverter._hex_to_bytes(script_hex)
@@ -387,17 +410,18 @@ class ChangeSetConverter:
 
             return bdk.TxOut(value=bdk.Amount.from_sat(value), script_pubkey=script_obj)
 
-        def _deserialize_tx_graph(data: Dict[str, Any]) -> bdk.TxGraphChangeSet:
+        def _deserialize_tx_graph(data: dict[str, Any]) -> bdk.TxGraphChangeSet:
+            """Deserialize tx graph."""
             tx_hex_list = data.get("txs", [])
-            tx_objs: List[bdk.Transaction] = [_deserialize_tx(h) for h in tx_hex_list]
+            tx_objs: list[bdk.Transaction] = [_deserialize_tx(h) for h in tx_hex_list]
 
             txouts_data = data.get("txouts", {})
-            txouts_dict: Dict[bdk.HashableOutPoint, bdk.TxOut] = {}
+            txouts_dict: dict[bdk.HashableOutPoint, bdk.TxOut] = {}
             for key_str, txout_data in txouts_data.items():
                 hop = _deserialize_outpoint(key_str)
                 txouts_dict[hop] = _deserialize_txout(txout_data)
 
-            anchors_list: List[bdk.Anchor] = []
+            anchors_list: list[bdk.Anchor] = []
             for anc in data.get("anchors", []):
                 cbt_data = anc["confirmation_block_time"]
                 block_id_data = cbt_data["block_id"]
@@ -419,8 +443,9 @@ class ChangeSetConverter:
                 anchors_list.append(bdk.Anchor(confirmation_block_time=cbt_obj, txid=txid_obj))
 
             # All three maps → Dict[bdk.Txid, int]
-            def _txid_height_map(d: Dict[str, Any]) -> Dict[bdk.Txid, int]:
-                out: Dict[bdk.Txid, int] = {}
+            def _txid_height_map(d: dict[str, Any]) -> dict[bdk.Txid, int]:
+                """Txid height map."""
+                out: dict[bdk.Txid, int] = {}
                 for txid_hex, height in d.items():
                     out[ChangeSetConverter._hex_to_txid(txid_hex)] = int(height)
                 return out
@@ -439,9 +464,10 @@ class ChangeSetConverter:
                 last_evicted=last_evicted_dict,
             )
 
-        def _deserialize_indexer(data: Dict[str, Any]) -> bdk.IndexerChangeSet:
+        def _deserialize_indexer(data: dict[str, Any]) -> bdk.IndexerChangeSet:
+            """Deserialize indexer."""
             lr_data = data.get("last_revealed", {})
-            lr_dict: Dict[bdk.DescriptorId, int] = {}
+            lr_dict: dict[bdk.DescriptorId, int] = {}
             for did_hex, idx in lr_data.items():
                 did_obj = bdk.DescriptorId.from_bytes(ChangeSetConverter._hex_to_bytes(did_hex))
                 lr_dict[did_obj] = int(idx)

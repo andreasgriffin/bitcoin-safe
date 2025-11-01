@@ -26,14 +26,16 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
+import asyncio
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import requests
-from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QProgressBar,
@@ -43,50 +45,79 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+
 from bitcoin_safe.util_os import show_file_in_explorer
 
 logger = logging.getLogger(__name__)
 
 
-class DownloadThread(QThread):
-    progress = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    finished: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    aborted = cast(TypedPyQtSignalNo, pyqtSignal())
+class DownloadWorker(QObject):
+    progress: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_finished: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    aborted: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
-    def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
+    def __init__(self, url, destination_dir, proxies: dict | None) -> None:
+        """Initialize instance."""
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
         self.proxies = proxies
         self.filename: Path = self.destination_dir / Path(url).name
+        self._loop_in_thread = LoopInThread()
 
-    def run(self) -> None:
-        try:
-            response = requests.get(self.url, stream=True, timeout=10, proxies=self.proxies)
-            content_length = response.headers.get("content-length")
+    def start(self) -> None:
+        """Start the download in a background event loop thread."""
 
-            if content_length is None:  # no content length header
-                self.progress.emit(100)
-                self.filename.write_bytes(response.content)
-            else:
-                with open(self.filename, "wb") as f:
-                    dl = 0
-                    for data in response.iter_content(chunk_size=4096):
-                        dl += len(data)
-                        f.write(data)
-                        self.progress.emit(int(100 * dl / int(content_length)))
-            self.finished.emit()
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
+        async def _runner() -> None:
+            await asyncio.to_thread(self._download)
+
+        def _on_success(_: Any) -> None:
+            self.signal_finished.emit()
+
+        def _on_error(exc_info: tuple[type[BaseException], BaseException, Any]) -> None:
+            _, err, _ = exc_info
+            logger.debug(f"{self.__class__.__name__}: {err}")
             self.aborted.emit()
-            logger.warning(str(e))
+            logger.warning(str(err))
+
+        def _on_done(_: Any) -> None:
+            self._loop_in_thread.stop()
+
+        self._loop_in_thread.run_task(
+            _runner(),
+            on_success=_on_success,
+            on_error=_on_error,
+            on_done=_on_done,
+        )
+
+    def _download(self) -> None:
+        """Perform the download and emit progress updates."""
+        response = requests.get(self.url, stream=True, timeout=10, proxies=self.proxies)
+        response.raise_for_status()
+        content_length = response.headers.get("content-length")
+
+        if content_length is None:  # no content length header
+            self.progress.emit(100)
+            self.filename.write_bytes(response.content)
+            return
+
+        with open(self.filename, "wb") as f:
+            dl = 0
+            total = int(content_length)
+            for data in response.iter_content(chunk_size=4096):
+                dl += len(data)
+                f.write(data)
+                self.progress.emit(int(100 * dl / total))
 
 
 class Downloader(QWidget):
-    finished = cast(TypedPyQtSignal[DownloadThread], pyqtSignal(DownloadThread))
+    finished: TypedPyQtSignal[DownloadWorker] = cast(Any, pyqtSignal(DownloadWorker))
 
-    def __init__(self, url, destination_dir, proxies: Dict | None) -> None:
+    def __init__(self, url, destination_dir, proxies: dict | None) -> None:
+        """Initialize instance."""
         super().__init__()
         self.url = url
         self.destination_dir = Path(destination_dir)
@@ -95,6 +126,7 @@ class Downloader(QWidget):
         self.initUI()
 
     def initUI(self) -> None:
+        """InitUI."""
         self.setWindowTitle(self.tr("Download Progress"))
         self._layout = QVBoxLayout(self)
 
@@ -121,20 +153,23 @@ class Downloader(QWidget):
         self.setGeometry(400, 400, 300, 100)
 
     def startDownload(self) -> None:
+        """StartDownload."""
         self.startButton.hide()
         self.progress.show()
-        self.mythread = DownloadThread(self.url, str(self.destination_dir), proxies=self.proxies)
+        self.mythread = DownloadWorker(self.url, str(self.destination_dir), proxies=self.proxies)
         self.mythread.progress.connect(self.progress.setValue)
-        self.mythread.finished.connect(self.downloadFinished)
+        self.mythread.signal_finished.connect(self.downloadFinished)
         self.mythread.aborted.connect(self.download_aborted)
         self.mythread.start()
 
     def downloadFinished(self) -> None:
+        """DownloadFinished."""
         self.progress.hide()
         self.showFileButton.show()
         self.finished.emit(self.mythread)
 
     def download_aborted(self) -> None:
+        """Download aborted."""
         self.startButton.show()
         self.progress.hide()
         self.progress.setValue(0)
@@ -142,6 +177,7 @@ class Downloader(QWidget):
         # self.finished.emit(self.mythread)
 
     def showFile(self) -> None:
+        """ShowFile."""
         show_file_in_explorer(filename=self.mythread.filename)
 
 

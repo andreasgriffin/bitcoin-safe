@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import platform
@@ -34,8 +35,8 @@ import subprocess
 import tarfile
 import time
 import zipfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
 import bdkpython as bdk
 import pytest
@@ -84,8 +85,8 @@ tcp=127.0.0.1:{FULCRUM_PORT}
 # 1) Download and extract Fulcrum
 # -------------------------------------------------------------------------
 def download_fulcrum():
-    """
-    Downloads and extracts the Fulcrum binaries for your platform.
+    """Downloads and extracts the Fulcrum binaries for your platform.
+
     Adjust the URLs, archive names, and extraction logic as needed.
     """
     system = platform.system()
@@ -140,9 +141,8 @@ def download_fulcrum():
 
 
 def is_fulcrum_running() -> bool:
-    """
-    Checks if Fulcrum is running by looking for a matching process name
-    in the process list on Linux using pgrep.
+    """Checks if Fulcrum is running by looking for a matching process name in the
+    process list on Linux using pgrep.
 
     Returns:
         bool: True if Fulcrum is running, False otherwise.
@@ -155,10 +155,8 @@ def is_fulcrum_running() -> bool:
 
 
 def stop_fulcrum():
-    """
-    Stops Fulcrum by sending a kill signal to the process if it is running,
-    using pkill.
-    """
+    """Stops Fulcrum by sending a kill signal to the process if it is running, using
+    pkill."""
     if is_fulcrum_running():
         logger.info("Stopping Fulcrum...")
         # pkill will send SIGTERM by default, which should gracefully stop Fulcrum.
@@ -169,9 +167,7 @@ def stop_fulcrum():
 
 
 def start_fulcrum():
-    """
-    Starts Fulcrum.
-    """
+    """Starts Fulcrum."""
     logger.info("Starting Fulcrum...")
 
     # Create fulcrum.conf
@@ -190,9 +186,7 @@ def start_fulcrum():
 
 
 def remove_fulcrum_data():
-    """
-    Removes old Fulcrum data, if desired, between test runs.
-    """
+    """Removes old Fulcrum data, if desired, between test runs."""
     data_dir = FULCRUM_DIR / "data"
     if data_dir.exists():
         logger.info("Removing old Fulcrum data folder...")
@@ -204,10 +198,10 @@ def remove_fulcrum_data():
 # -------------------------------------------------------------------------
 @pytest.fixture(scope="session")
 def fulcrum(bitcoin_core: Path) -> Generator[str, None, None]:
-    """
-    Ensures Bitcoin Core is running (through the bitcoin_core fixture),
-    then downloads, configures, and starts Fulcrum. Yields the path to
-    Fulcrum's binary directory for test usage, then tears it down.
+    """Ensures Bitcoin Core is running (through the bitcoin_core fixture), then
+    downloads, configures, and starts Fulcrum.
+
+    Yields the path to Fulcrum's binary directory for test usage, then tears it down.
     """
     # Make sure the Fulcrum directory exists
     FULCRUM_DIR.mkdir(parents=True, exist_ok=True)
@@ -243,6 +237,7 @@ class Faucet:
         fulcrum: str,
         mnemonic="romance slush habit speed type also grace coffee grape inquiry receive filter",
     ) -> None:
+        """Initialize instance."""
         self.bitcoin_core = bitcoin_core
 
         self.seed = mnemonic
@@ -272,6 +267,7 @@ class Faucet:
         self.initial_mine()
 
     def send(self, destination_address: str, amount=100_000_000, fee_rate=1):
+        """Send."""
         psbt_for_signing = make_psbt(
             bdk_wallet=self.bdk_wallet,
             network=self.network,
@@ -290,6 +286,7 @@ class Faucet:
         return tx
 
     def sync(self):
+        """Sync."""
         request = self.bdk_wallet.start_full_scan()
         changeset = self.client.full_scan(
             request=request.build(), stop_gap=20, batch_size=10, fetch_prev_txouts=True
@@ -298,6 +295,7 @@ class Faucet:
         self.bdk_wallet.persist(self.connection)
 
     def mine(self, blocks=1, address=None):
+        """Mine."""
         txs = self.bdk_wallet.transactions()
         address = (
             address
@@ -315,6 +313,7 @@ class Faucet:
         logger.debug(f"Faucet Wallet balance is: {self.bdk_wallet.balance().total.to_sat()}")
 
     def initial_mine(self):
+        """Initial mine."""
         self.mine(
             blocks=200,
             address=str(self.bdk_wallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL).address),
@@ -323,4 +322,5 @@ class Faucet:
 
 @pytest.fixture(scope="session")
 def faucet(bitcoin_core: Path, fulcrum: str) -> Faucet:
+    """Faucet."""
     return Faucet(bitcoin_core=bitcoin_core, fulcrum=fulcrum)

@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Iterable
+from collections.abc import Iterable
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -66,6 +67,7 @@ class HorizontalImportExportQR(QGroupBox):
         signature_importers: Iterable[SignatureImporterQR],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -93,6 +95,7 @@ class HorizontalImportExportQR(QGroupBox):
         self.updateUI()
 
     def updateUI(self):
+        """UpdateUI."""
         self.setTitle(self.tr("QR"))
 
 
@@ -104,6 +107,7 @@ class HorizontalImportExportUSB(QGroupBox):
         signature_importers: Iterable[SignatureImporterUSB],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -123,6 +127,7 @@ class HorizontalImportExportUSB(QGroupBox):
         self.updateUI()
 
     def updateUI(self):
+        """UpdateUI."""
         self.setTitle(self.tr("USB"))
 
 
@@ -134,6 +139,7 @@ class HorizontalImportExportFile(QGroupBox):
         signature_importers: Iterable[SignatureImporterFile],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -160,6 +166,7 @@ class HorizontalImportExportFile(QGroupBox):
         self.updateUI()
 
     def updateUI(self):
+        """UpdateUI."""
         self.setTitle(self.tr("File"))
 
 
@@ -172,6 +179,7 @@ class HorizontalImportExportClipboard(QGroupBox):
         signature_importers: Iterable[SignatureImporterFile],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -196,6 +204,7 @@ class HorizontalImportExportClipboard(QGroupBox):
         self.updateUI()
 
     def updateUI(self):
+        """UpdateUI."""
         self.setTitle(self.tr("Share"))
 
 
@@ -207,6 +216,7 @@ class HorizontalImportExportWallet(QGroupBox):
         signature_importers: Iterable[SignatureImporterWallet],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -223,6 +233,7 @@ class HorizontalImportExportWallet(QGroupBox):
         self.updateUI()
 
     def updateUI(self):
+        """UpdateUI."""
         self.setTitle(self.tr("Seed"))
 
 
@@ -237,6 +248,7 @@ class HorizontalImportExportAll(QWidget):
         signature_importers: Iterable[AbstractSignatureImporter],
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self._layout = QHBoxLayout(self)
         signals_min.language_switch.connect(self.updateUi)
@@ -322,6 +334,7 @@ class HorizontalImportExportAll(QWidget):
             self._layout.addWidget(self.wallet_importers)
 
     def updateUi(self):
+        """UpdateUi."""
         if self.qr:
             self.qr.updateUI()
         if self.usb:

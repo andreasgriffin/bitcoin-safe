@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Callable, Tuple
+from collections.abc import Callable
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub
@@ -52,12 +53,14 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
     def __init__(
         self, get_expected_key_origin: Callable[[], str], network: bdk.Network, parent: QObject | None
     ) -> None:
+        """Initialize instance."""
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
         self.get_expected_key_origin = get_expected_key_origin
         self.network = network
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Key origin"), AnalyzerState.Invalid)
 
@@ -103,6 +106,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
 
 class FingerprintAnalyzer(BaseAnalyzer, QObject):
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Fingerprint"), AnalyzerState.Invalid)
 
@@ -120,12 +124,14 @@ class FingerprintAnalyzer(BaseAnalyzer, QObject):
 
 class XpubAnalyzer(BaseAnalyzer, QObject):
     def __init__(self, network: bdk.Network, parent: QObject | None) -> None:
+        """Initialize instance."""
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
 
         self.network = network
 
-    def normalize(self, input: str, pos: int = 0) -> Tuple[str, int]:
+    def normalize(self, input: str, pos: int = 0) -> tuple[str, int]:
+        """Normalize."""
         if ConverterXpub.is_slip132(input):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
@@ -138,6 +144,7 @@ class XpubAnalyzer(BaseAnalyzer, QObject):
         return input, pos
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing xPub"), AnalyzerState.Invalid)
 
@@ -149,6 +156,7 @@ class XpubAnalyzer(BaseAnalyzer, QObject):
 
 class SeedAnalyzer(BaseAnalyzer, QObject):
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Seed"), AnalyzerState.Valid)
 
@@ -160,12 +168,14 @@ class SeedAnalyzer(BaseAnalyzer, QObject):
 
 class DescriptorAnalyzer(BaseAnalyzer, QObject):
     def __init__(self, network: bdk.Network, parent: QObject | None) -> None:
+        """Initialize instance."""
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
 
         self.network = network
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Descriptor"), AnalyzerState.Invalid)
 
@@ -177,12 +187,14 @@ class DescriptorAnalyzer(BaseAnalyzer, QObject):
 
 class AddressAnalyzer(BaseAnalyzer, QObject):
     def __init__(self, network: bdk.Network, parent: QObject | None) -> None:
+        """Initialize instance."""
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
 
         self.network = network
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
+        """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Address"), AnalyzerState.Invalid)
 
@@ -202,11 +214,13 @@ class AddressAnalyzer(BaseAnalyzer, QObject):
 
 class AmountAnalyzer(QObject):
     def __init__(self, parent: QObject | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.max_amount = 0
         self.min_amount = 0
 
     def analyze(self, input: float) -> AnalyzerMessage:  # type: ignore
+        """Analyze."""
         if input < self.min_amount:
             return AnalyzerMessage(self.tr("Amount too small"), AnalyzerState.Invalid)
         if input > self.max_amount:

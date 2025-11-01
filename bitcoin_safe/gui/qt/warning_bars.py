@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, List, Set, Tuple
 
 import numpy as np
 from PyQt6.QtGui import QColor
@@ -47,12 +47,13 @@ logger = logging.getLogger(__name__)
 
 class LinkingWarningBar(NotificationBar):
     def __init__(self, signals_min: SignalsMin) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=True,
         )
-        self.category_dict: Dict[str, Set[str]] = {}
+        self.category_dict: dict[str, set[str]] = {}
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
@@ -66,21 +67,24 @@ class LinkingWarningBar(NotificationBar):
 
     def set_category_dict(
         self,
-        category_dict: Dict[str, Set[str]],
+        category_dict: dict[str, set[str]],
     ):
+        """Set category dict."""
         self.category_dict = category_dict
         self.setVisible(len(self.category_dict) > 1)
         self.updateUi()
 
     @classmethod
-    def format_category_and_wallet_ids(cls, category: str, wallet_ids: Set[str]):
+    def format_category_and_wallet_ids(cls, category: str, wallet_ids: set[str]):
+        """Format category and wallet ids."""
         return cls.tr("{category} (in wallet {wallet_ids})").format(
             category=html_f(category, bf=True),
             wallet_ids=", ".join([html_f(wallet_id, bf=True) for wallet_id in wallet_ids]),
         )
 
     @classmethod
-    def get_warning_text(cls, category_dict: Dict[str, Set[str]]) -> str:
+    def get_warning_text(cls, category_dict: dict[str, set[str]]) -> str:
+        """Get warning text."""
         s = ",<br>and ".join(
             [
                 cls.format_category_and_wallet_ids(category, wallet_ids)
@@ -92,19 +96,21 @@ class LinkingWarningBar(NotificationBar):
         ).format(categories=s)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         self.icon_label.setText(self.get_warning_text(self.category_dict))
 
 
 class PoisoningWarningBar(NotificationBar):
     def __init__(self, signals_min: SignalsMin) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=True,
         )
         self.signals_min = signals_min
-        self.poisonous_matches: List[Tuple[str, str, FuzzyMatch]] = []
+        self.poisonous_matches: list[tuple[str, str, FuzzyMatch]] = []
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
@@ -115,25 +121,30 @@ class PoisoningWarningBar(NotificationBar):
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
 
-    def set_poisonous_matches(self, poisonous_matches: List[Tuple[str, str, FuzzyMatch]]):
+    def set_poisonous_matches(self, poisonous_matches: list[tuple[str, str, FuzzyMatch]]):
+        """Set poisonous matches."""
         self.poisonous_matches = poisonous_matches
         self.setVisible(bool(self.poisonous_matches))
         self.updateUi()
 
     @classmethod
-    def get_warning_text(cls, poisonous_matches: List[Tuple[str, str, FuzzyMatch]]) -> str:
+    def get_warning_text(cls, poisonous_matches: list[tuple[str, str, FuzzyMatch]]) -> str:
+        """Get warning text."""
 
         def add_match(a: str, r: str, bool_array: np.ndarray):
+            """Add match."""
             if (i := a.find(r)) is not None:
                 bool_array[i : i + len(r)] += 1
 
         def underline(a: str, bool_array: np.ndarray) -> str:
+            """Underline."""
             new_s = ""
-            for char, b in zip(a, list(bool_array)):
+            for char, b in zip(a, list(bool_array), strict=False):
                 new_s += f"<u>{char}</u>" if b else char
             return new_s
 
-        def underline_text(a1: str, a2: str, match: FuzzyMatch) -> Tuple[str, str]:
+        def underline_text(a1: str, a2: str, match: FuzzyMatch) -> tuple[str, str]:
+            """Underline text."""
             bool1 = np.zeros(len(a1))
             bool2 = np.zeros(len(a2))
 
@@ -147,9 +158,13 @@ class PoisoningWarningBar(NotificationBar):
 
         s = "<br>".join([f"{a1} != {a2}" for a1, a2 in formatted_addresses])
         return cls.tr(
-            "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  <br>{addresses}.<br> Double-check all transaction details carefully!"
+            "Warning! This transaction involves deceptively similar addresses. "
+            "It may be an address poisoning attack. "
+            "Similar addresses are  <br>{addresses}.<br> "
+            "Double-check all transaction details carefully!"
         ).format(addresses=s)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         self.icon_label.setText(self.get_warning_text(self.poisonous_matches))

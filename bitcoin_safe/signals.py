@@ -26,25 +26,31 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
+from __future__ import annotations
+
 import enum
 import logging
 import threading
 from collections import defaultdict
+from collections.abc import Callable, Iterable
 from enum import Enum
 from typing import (
+    TYPE_CHECKING,
     Any,
-    Callable,
-    DefaultDict,
-    Dict,
     Generic,
-    Iterable,
-    List,
-    Optional,
-    Set,
-    Tuple,
     TypeVar,
     cast,
 )
+
+if TYPE_CHECKING:
+    # Import the actual class only for typing to avoid import cycles / runtime deps
+    from .gui.qt.qt_wallet import (
+        QTWallet,
+    )
+    from .gui.qt.util import (
+        Message,
+    )
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
@@ -53,7 +59,8 @@ from PyQt6.QtCore import pyqtSignal
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.pythonbdk_types import OutPoint
 
-from .typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -83,25 +90,29 @@ class UpdateFilter:
         self,
         outpoints: Iterable[OutPoint] | None = None,
         addresses: Iterable[str] | None = None,
-        categories: Iterable[Optional[str]] | None = None,
+        categories: Iterable[str | None] | None = None,
         txids: Iterable[str] | None = None,
         refresh_all=False,
         reason: UpdateFilterReason = UpdateFilterReason.Unknown,
     ) -> None:
-        self.outpoints: Set[OutPoint] = set(outpoints) if outpoints else set()
-        self.addresses: Set[str] = set(addresses) if addresses else set()
+        """Initialize instance."""
+        self.outpoints: set[OutPoint] = set(outpoints) if outpoints else set()
+        self.addresses: set[str] = set(addresses) if addresses else set()
         self.categories = set(categories) if categories else set()
         self.txids = set(txids) if txids else set()
         self.refresh_all = refresh_all
         self.reason = reason
 
-    def __key__(self) -> Tuple:
+    def __key__(self) -> tuple:
+        """Key."""
         return tuple(self.__dict__.items())
 
     def __str__(self) -> str:
+        """Return string representation."""
         return str(self.__key__())
 
     def __hash__(self) -> int:
+        """Return hash value."""
         return hash(str(self))
 
 
@@ -109,17 +120,20 @@ T = TypeVar("T")
 
 
 class SignalFunction(Generic[T]):
-    def __init__(self, name: Optional[str] = None) -> None:
+    def __init__(self, name: str | None = None) -> None:
+        """Initialize instance."""
         self.name = name
-        self.slots: Dict[str, Callable[[], T]] = {}
+        self.slots: dict[str, Callable[[], T]] = {}
         self.lock = threading.Lock()
 
     def connect(self, slot: Callable[[], T], slot_name: str | None = None) -> None:
+        """Connect."""
         with self.lock:
             key = slot_name if slot_name and (slot_name not in self.slots) else str(slot)
             self.slots[key] = slot
 
     def disconnect(self, slot: Callable[[], T]) -> None:
+        """Disconnect."""
         with self.lock:
             keys, values = list(self.slots.keys()), list(self.slots.values())
             if slot in values:
@@ -128,19 +142,22 @@ class SignalFunction(Generic[T]):
             else:
                 logger.debug(f"Tried to disconnect {slot}. But it is not in {values}. Skipping.")
 
-    def __call__(self, *args, **kwargs) -> Dict[str, T]:
+    def __call__(self, *args, **kwargs) -> dict[str, T]:
+        """Invoke instance as a function."""
         return self.emit(*args, **kwargs)
 
-    def emit(self, *args, slot_name=None, **kwargs) -> Dict[str, T]:
+    def emit(self, *args, slot_name=None, **kwargs) -> dict[str, T]:
+        """Emit."""
         allow_list = [slot_name] if isinstance(slot_name, str) else slot_name
 
         responses = {}
         if not self.slots:
             logger.debug(
-                f"SignalFunction {self.name if self.name else ''}.emit() was called, but no listeners {self.slots} are listening."
+                f"SignalFunction {self.name if self.name else ''}.emit() was called, "
+                f"but no listeners {self.slots} are listening."
             )
 
-        delete_slots: List[Callable[[], Any]] = []
+        delete_slots: list[Callable[[], Any]] = []
         with self.lock:
             for key, slot in self.slots.items():
                 if allow_list and key not in allow_list:
@@ -154,7 +171,9 @@ class SignalFunction(Generic[T]):
                 except Exception as e:
                     logger.debug(f"{self.__class__.__name__}: {e}")
                     logger.warning(
-                        f"{slot} with key {key} caused an exception. {slot} with key {key} could not be called, perhaps because the object doesnt exisst anymore. The slot will be deleted."
+                        f"{slot} with key {key} caused an exception. {slot} with key {key} could "
+                        f"not be called, perhaps because the object doesnt exisst anymore. "
+                        "The slot will be deleted."
                     )
                     delete_slots.append(slot)
                     continue
@@ -170,58 +189,64 @@ class SignalFunction(Generic[T]):
 
 class SingularSignalFunction(Generic[T]):
     def __init__(self, name: str | None = None) -> None:
+        """Initialize instance."""
         self.signal_f = SignalFunction[T](name=name)
 
     def connect(self, slot: Callable[[], T], slot_name=None) -> None:
+        """Connect."""
         if not self.signal_f.slots:
             self.signal_f.connect(slot, slot_name=slot_name)
         else:
             raise Exception("Not allowed to add a second listener to this signal.")
 
     def disconnect(self, slot: Callable[[], T]) -> None:
+        """Disconnect."""
         if not self.signal_f.slots:
             return
         else:
             self.signal_f.disconnect(slot)
 
     def emit(self, *args, **kwargs) -> T | None:
+        """Emit."""
         responses = self.signal_f.emit(*args, **kwargs)
         if not responses:
             return None
         return list(responses.values())[0]
 
     def __call__(self, *args, **kwargs) -> T | None:
+        """Invoke instance as a function."""
         return self.emit(*args, **kwargs)
 
 
 class SignalsMin(NostrSignalsMin):
-    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
-    currency_switch = cast(TypedPyQtSignalNo, pyqtSignal())
+    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    currency_switch: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
 
 class WalletSignals(SignalsMin):
-    updated = cast(TypedPyQtSignal[UpdateFilter], pyqtSignal(UpdateFilter))
-    completions_updated = cast(TypedPyQtSignalNo, pyqtSignal())
+    updated: TypedPyQtSignal[UpdateFilter] = cast(Any, pyqtSignal(UpdateFilter))
+    completions_updated: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
-    show_address = cast(TypedPyQtSignal[str, str], pyqtSignal(str, str))  # address, wallet_id
-    show_utxo = cast(TypedPyQtSignal[OutPoint], pyqtSignal(object))
+    show_address: TypedPyQtSignal[str, str] = cast(Any, pyqtSignal(str, str))  # address, wallet_id
+    show_utxo: TypedPyQtSignal[OutPoint] = cast(Any, pyqtSignal(object))
 
-    export_bip329_labels = cast(TypedPyQtSignalNo, pyqtSignal())
-    export_labels = cast(TypedPyQtSignalNo, pyqtSignal())
-    import_labels = cast(TypedPyQtSignalNo, pyqtSignal())
-    import_bip329_labels = cast(TypedPyQtSignalNo, pyqtSignal())
-    import_electrum_wallet_labels = cast(TypedPyQtSignalNo, pyqtSignal())
+    export_bip329_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    export_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    import_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    import_bip329_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    import_electrum_wallet_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
-    finished_psbt_creation = cast(TypedPyQtSignalNo, pyqtSignal())
+    finished_psbt_creation: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
         self.get_category_infos = SingularSignalFunction[list[CategoryInfo]](name="get_category_infos")
 
 
 class Signals(SignalsMin):
-    """The idea here is to define events that might need to trigger updates of
-    the UI or other events  (careful of circular loops)
+    """The idea here is to define events that might need to trigger updates of the UI or
+    other events  (careful of circular loops)
 
     State what happended, NOT the intention:
 
@@ -237,31 +262,34 @@ class Signals(SignalsMin):
     I immediately break the rule however for pyqtSignal, which is a function call
     """
 
-    open_file_path = cast(TypedPyQtSignal[str], pyqtSignal(str))
-    open_tx_like = cast(TypedPyQtSignal[Any], pyqtSignal(object))
-    event_wallet_tab_closed = cast(TypedPyQtSignalNo, pyqtSignal())
-    event_wallet_tab_added = cast(TypedPyQtSignalNo, pyqtSignal())
+    open_file_path: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    open_tx_like: TypedPyQtSignal[Any] = cast(Any, pyqtSignal(object))
+    event_wallet_tab_closed: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    event_wallet_tab_added: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
-    chain_data_changed = cast(TypedPyQtSignal[str], pyqtSignal(str))  # the string is the reason
-    notification: "TypedPyQtSignal[Message]" = pyqtSignal(object)  # type: ignore # should be a Message instance
+    chain_data_changed: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # the string is the reason
+    notification: TypedPyQtSignal[Message] = cast(Any, pyqtSignal(object))
 
-    show_network_settings = cast(TypedPyQtSignalNo, pyqtSignal())
-    open_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))  # str= filepath
-    add_qt_wallet: "TypedPyQtSignal[QTWallet, str | None, str | None]" = pyqtSignal(object, object, object)  # type: ignore # object = qt_wallet, file_path, password
-    close_qt_wallet = cast(TypedPyQtSignal[str], pyqtSignal(str))  # str = wallet_id
-    signal_set_tab_properties = cast(
-        TypedPyQtSignal[object, str, str, str], pyqtSignal(object, str, str, str)
+    show_network_settings: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    open_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # str= filepath
+    add_qt_wallet: TypedPyQtSignal[QTWallet, str | None, str | None] = cast(
+        Any, pyqtSignal(object, object, object)
+    )  # object = qt_wallet, file_path, password
+    close_qt_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # str = wallet_id
+    signal_set_tab_properties: TypedPyQtSignal[object, str, str, str] = cast(
+        Any, pyqtSignal(object, str, str, str)
     )  # tab:QWidget, wallet_id, icon: icon_name, tooltip: str | None
 
-    request_manual_sync = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_broadcast_tx = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
-    apply_txs_to_wallets = cast(TypedPyQtSignal[List[bdk.Transaction]], pyqtSignal(object))
-    signal_close_tabs_with_txids = cast(TypedPyQtSignal[list], pyqtSignal(list))
+    request_manual_sync: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    apply_txs_to_wallets: TypedPyQtSignal[list[bdk.Transaction]] = cast(Any, pyqtSignal(object))
+    signal_close_tabs_with_txids: TypedPyQtSignal[list[str]] = cast(Any, pyqtSignal(list))
 
     # this is for non-wallet bound objects like UitxViewer
-    any_wallet_updated = cast(TypedPyQtSignal[UpdateFilter], pyqtSignal(UpdateFilter))
+    any_wallet_updated: TypedPyQtSignal[UpdateFilter] = cast(Any, pyqtSignal(UpdateFilter))
 
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
         self.get_network = SingularSignalFunction[bdk.Network](name="get_network")
         self.get_mempool_url = SingularSignalFunction[str](name="get_mempool_url")
@@ -269,7 +297,8 @@ class Signals(SignalsMin):
 
 class WalletFunctions:
     def __init__(self, signals: Signals) -> None:
+        """Initialize instance."""
         self.signals = signals
         self.get_wallets = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
         self.get_qt_wallets = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
-        self.wallet_signals: DefaultDict[str, WalletSignals] = defaultdict(WalletSignals)
+        self.wallet_signals: defaultdict[str, WalletSignals] = defaultdict(WalletSignals)

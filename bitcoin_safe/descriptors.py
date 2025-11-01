@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import Sequence
+from collections.abc import Sequence
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport
@@ -52,16 +54,17 @@ logger = logging.getLogger(__name__)
 
 
 def get_default_address_type(is_multisig) -> AddressType:
+    """Get default address type."""
     return AddressTypes.p2wsh if is_multisig else AddressTypes.p2wpkh
 
 
 def get_address_bip32_path(descriptor_str: str, kind: bdk.KeychainKind, index: int):
-
+    """Get address bip32 path."""
     hwi_descriptor = parse_descriptor(descriptor_str)
     pubkey_providers = get_all_pubkey_providers(hwi_descriptor)
 
-    if not len((pubkey_providers)) > 1:
-        logger.warning(f"Multiple pubkey_providers present. Choosing 1. one")
+    if not len(pubkey_providers) > 1:
+        logger.warning("Multiple pubkey_providers present. Choosing 1. one")
 
     spkp = SimplePubKeyProvider.from_hwi(pubkey_provider=pubkey_providers[0])
 
@@ -74,8 +77,8 @@ def descriptor_from_keystores(
     address_type: AddressType,
     network: bdk.Network,
 ) -> bdk.Descriptor:
-
     # sanity checks
+    """Descriptor from keystores."""
     assert threshold <= len(spk_providers)
     is_multisig = len(spk_providers) > 1
     assert address_type.is_multisig == is_multisig
@@ -98,6 +101,7 @@ def from_multisig_wallet_export(
     multisig_wallet_export: ConverterMultisigWalletExport,
     network: bdk.Network,
 ) -> bdk.Descriptor:
+    """From multisig wallet export."""
     matching_address_type: AddressType | None = None
     for address_type in get_all_address_types():
         if address_type.short_name == multisig_wallet_export.address_type_short_name:
@@ -126,10 +130,12 @@ def from_multisig_wallet_export(
 
 
 def is_legacy(a: AddressType):  # P2PKH
+    """Is legacy."""
     return a is AddressTypes.p2pkh
 
 
 def is_segwit_v0(a: AddressType):  # Any v0 segwit flavor
+    """Is segwit v0."""
     return a in (
         AddressTypes.p2sh_p2wpkh,
         AddressTypes.p2wpkh,
@@ -139,10 +145,12 @@ def is_segwit_v0(a: AddressType):  # Any v0 segwit flavor
 
 
 def is_taproot(a: AddressType):  # P2TR (v1)
+    """Is taproot."""
     return a is AddressTypes.p2tr
 
 
 def get_recovery_point(address_type: AddressType, network: bdk.Network) -> bdk.RecoveryPoint:
+    """Get recovery point."""
     if is_legacy(address_type):
         return bdk.RecoveryPoint.GENESIS_BLOCK
     elif is_segwit_v0(address_type):
@@ -153,10 +161,8 @@ def get_recovery_point(address_type: AddressType, network: bdk.Network) -> bdk.R
 
 
 def min_blockheight(address_type: AddressType, network: bdk.Network) -> int:
-    """
-    Returns the minimum Bitcoin blockheight at which this address type
-    became (or becomes) usable on mainnet.
-    """
+    """Returns the minimum Bitcoin blockheight at which this address type became (or
+    becomes) usable on mainnet."""
 
     # Mainnet
     if network == bdk.Network.BITCOIN:

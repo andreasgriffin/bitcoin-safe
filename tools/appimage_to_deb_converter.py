@@ -29,8 +29,8 @@ import os
 import shutil
 import subprocess
 import tempfile
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 
 class Appimage2debConverter:
@@ -49,6 +49,7 @@ class Appimage2debConverter:
         desktop_icon_name="",
         desktop_categories="Utility",
     ):
+        """Initialize instance."""
         self.appimage = Path(appimage).resolve()
         if not self.appimage.is_file():
             raise FileNotFoundError(f"AppImage file '{self.appimage}' not found.")
@@ -83,12 +84,14 @@ class Appimage2debConverter:
         return 1530212462
 
     def _normalized_env(self) -> dict[str, str]:
+        """Normalized env."""
         env = os.environ.copy()
         env.setdefault("TZ", "UTC")
         env["SOURCE_DATE_EPOCH"] = str(self._source_date_epoch)
         return env
 
     def _touch_all(self, paths: Iterable[Path]) -> None:
+        """Touch all."""
         for path in paths:
             try:
                 os.utime(path, ns=(self._source_date_epoch * 1_000_000_000,) * 2, follow_symlinks=False)
@@ -99,6 +102,7 @@ class Appimage2debConverter:
 
     def _extract_appimage(self, extract_dir: Path) -> Path:
         # Ensure the AppImage is executable.
+        """Extract appimage."""
         if not os.access(str(self.appimage), os.X_OK):
             self.appimage.chmod(0o755)
         # Extract the AppImage contents using its built-in extractor.
@@ -127,6 +131,7 @@ class Appimage2debConverter:
 
     def _create_deb_structure(self, package_root: Path, extracted_folder: Path) -> None:
         # Create required directories for the Debian package.
+        """Create deb structure."""
         debian_dir = package_root / "DEBIAN"
         target_dir = package_root / "opt" / self.package_name
         debian_dir.mkdir(parents=True, exist_ok=True)
@@ -136,6 +141,7 @@ class Appimage2debConverter:
 
     def _create_control_file(self, debian_dir: Path) -> None:
         # Build the control file content line by line.
+        """Create control file."""
         lines = [
             f"Package: {self.package_name}",
             f"Version: {self.version}",
@@ -151,10 +157,8 @@ class Appimage2debConverter:
         (debian_dir / "control").write_text(control_content)
 
     def _create_preinst_script(self, debian_dir: Path) -> None:
-        """
-        Creates a pre-installation script that purges /opt/{package_name},
-        but never fails (errors are ignored).
-        """
+        """Creates a pre-installation script that purges /opt/{package_name}, but never
+        fails (errors are ignored)."""
         preinst_path = debian_dir / "preinst"
         preinst_content = f"""\
 #!/bin/sh
@@ -169,6 +173,7 @@ exit 0
 
     def _create_desktop_file(self, package_root: Path) -> None:
         # Create the directory for desktop entries.
+        """Create desktop file."""
         applications_dir = package_root / "usr" / "share" / "applications"
         applications_dir.mkdir(parents=True, exist_ok=True)
         desktop_file_path = applications_dir / f"{self.package_name}.desktop"
@@ -196,6 +201,7 @@ exit 0
         desktop_file_path.write_text(desktop_content)
 
     def _build_deb(self, package_root: Path) -> None:
+        """Build deb."""
         result = subprocess.run(
             [
                 "dpkg-deb",
@@ -222,6 +228,7 @@ exit 0
         self._touch_all(entries)
 
     def convert(self) -> None:
+        """Convert."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
             print("Extracting AppImage...")

@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, List, Set, Tuple
 
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -39,14 +39,16 @@ logger = logging.getLogger(__name__)
 
 
 class CpfpTools:
-    def __init__(self, wallets: List[Wallet]) -> None:
+    def __init__(self, wallets: list[Wallet]) -> None:
+        """Initialize instance."""
         self.wallets = wallets
 
     def get_unconfirmed_ancestors(
         self,
-        txids: Set[str],
-        known_ancestors: Dict[str, TransactionDetails],
-    ) -> Dict[str, TransactionDetails]:
+        txids: set[str],
+        known_ancestors: dict[str, TransactionDetails],
+    ) -> dict[str, TransactionDetails]:
+        """Get unconfirmed ancestors."""
         for txid in txids:
             # already processed?
             if txid in known_ancestors:
@@ -79,7 +81,8 @@ class CpfpTools:
         unconfirmed_ancestors_fee_info: FeeInfo,
         new_tx_vsize: int,
         target_total_unconfirmed_fee_rate: float,
-    ) -> Tuple[FeeInfo, FeeInfo]:
+    ) -> tuple[FeeInfo, FeeInfo]:
+        """Get fee info of new tx."""
         new_tx_fee_info_wrong_fee = FeeInfo.from_fee_rate_and_vsize(
             fee_rate=unconfirmed_ancestors_fee_info.fee_rate(),
             vsize=new_tx_vsize,

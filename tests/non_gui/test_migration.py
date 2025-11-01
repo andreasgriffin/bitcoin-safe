@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 from pathlib import Path
 
@@ -40,6 +41,7 @@ from bitcoin_safe.wallet import Wallet
 
 @pytest.fixture
 def config() -> UserConfig:
+    """Config."""
     config = UserConfig()
     config.network = bdk.Network.REGTEST
 
@@ -47,6 +49,7 @@ def config() -> UserConfig:
 
 
 def test_011(config: UserConfig):
+    """Test 011."""
     file_path = "tests/data/0.1.1.wallet"
 
     password = None
@@ -59,6 +62,7 @@ def test_011(config: UserConfig):
 
 
 def test_config010():
+    """Test config010."""
     file_path = "tests/data/config_0.1.0.conf"
 
     config = UserConfig.from_file(file_path=Path(file_path))
@@ -68,6 +72,7 @@ def test_config010():
 
 
 def test_config_0_1_6_testnet3_electrum():
+    """Test config 0 1 6 testnet3 electrum."""
     file_path = "tests/data/0.1.6_testnet.conf"
 
     config = UserConfig.from_file(file_path=Path(file_path))
@@ -81,6 +86,7 @@ def test_config_0_1_6_testnet3_electrum():
 
 
 def test_config_0_1_6_testnet4_electrum():
+    """Test config 0 1 6 testnet4 electrum."""
     file_path = "tests/data/config_0.1.6_testnet4_electrum.conf"
 
     config = UserConfig.from_file(file_path=Path(file_path))
@@ -95,6 +101,7 @@ def test_config_0_1_6_testnet4_electrum():
 
 
 def test_config_0_1_6_testnet4_proxy_electrum():
+    """Test config 0 1 6 testnet4 proxy electrum."""
     file_path = "tests/data/config_0.1.6_testnet4_proxy_electrum.conf"
 
     config = UserConfig.from_file(file_path=Path(file_path))
@@ -109,6 +116,7 @@ def test_config_0_1_6_testnet4_proxy_electrum():
 
 
 def test_config_0_1_6_rpc():
+    """Test config 0 1 6 rpc."""
     file_path = "tests/data/config_0.1.6_rpc.conf"
 
     config = UserConfig.from_file(file_path=Path(file_path))

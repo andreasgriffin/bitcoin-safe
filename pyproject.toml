@@ -1,6 +1,4 @@
-[tool.black]
-line-length = 110
-
+ 
 
 [tool.poetry]
 name = "bitcoin-safe"
@@ -95,6 +93,34 @@ markers = [
 
 
 
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+src = ["bitcoin_safe"]
+
+[tool.ruff.lint]
+# E+F are defaults; include I for isort-equivalent import sorting and a few handy extras.
+select = ["E", "F", "I", "B", "UP"] 
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+# Optionally tune first/third party detection:
+known-first-party = ["bitcoin_safe"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["ALL"]
+"tools/**/*" = ["ALL"]
+
+
+[tool.ruff.format]
+# Ruff formatter is Black-compatible; keep defaults or tweak here.
+
+
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+

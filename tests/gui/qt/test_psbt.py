@@ -26,11 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
 from datetime import datetime
-from typing import List
 
 import pytest
 from PyQt6.QtTest import QTest
@@ -54,11 +54,10 @@ def test_psbt_warning_poision_mainnet(
     test_config_main_chain: UserConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
+    """Test psbt warning poision mainnet."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
@@ -67,8 +66,8 @@ def test_psbt_warning_poision_mainnet(
 
         shutter.save(main_window)
 
-        def do_tx(tx, expected_fragments: List[str] = []):
-
+        def do_tx(tx, expected_fragments: list[str] = []):
+            """Do tx."""
             main_window.open_tx_like_in_tab(tx)
             shutter.save(main_window)
 
@@ -139,11 +138,10 @@ def test_psbt_warning_poision(
     test_config: UserConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
+    """Test psbt warning poision."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -153,7 +151,7 @@ def test_psbt_warning_poision(
         shutter.save(main_window)
 
         def do_psbt():
-
+            """Do psbt."""
             org_ADDRESS_SIMILARITY_THRESHOLD = AddressComparer.ADDRESS_SIMILARITY_THRESHOLD
             AddressComparer.ADDRESS_SIMILARITY_THRESHOLD = 32_000
 

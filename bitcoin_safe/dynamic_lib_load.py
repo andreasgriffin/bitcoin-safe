@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import os
@@ -38,14 +39,15 @@ logger = logging.getLogger(__name__)
 
 
 def set_os_env_ssl_certs():
+    """Set os env ssl certs."""
     os.environ["SSL_CERT_FILE"] = certifi.where()
 
 
 def ensure_pyzbar_works() -> None:
     # Get the platform-specific path to the binary library
+    """Ensure pyzbar works."""
     logger.info(f"Platform: {platform.system()}")
     if platform.system() == "Windows":
-
         # Determine the base path:
         if hasattr(sys, "_MEIPASS"):
             # Running as a PyInstaller bundle; _MEIPASS is the temporary folder
@@ -59,18 +61,18 @@ def ensure_pyzbar_works() -> None:
 
         # Set the PYZBAR_LIBRARY environment variable for pyzbar to load the DLL
         os.environ["PYZBAR_LIBRARY"] = os.path.abspath(libzbar_dll_path)
-        logger.debug(f'set PYZBAR_LIBRARY={os.environ["PYZBAR_LIBRARY"]}')
+        logger.debug(f"set PYZBAR_LIBRARY={os.environ['PYZBAR_LIBRARY']}")
 
         try:
             from pyzbar import pyzbar
 
-            pyzbar.__name__
-            logger.info(f"pyzbar successfully loaded ")
+            pyzbar.__name__  # noqa: B018
+            logger.info("pyzbar successfully loaded ")
         except (
             Exception
         ) as e:  #  Do not restrict it to FileNotFoundError, because it can cause other exceptions
             logger.debug(str(e))
-            logger.warning(f"pyzbar could not be loaded ")
+            logger.warning("pyzbar could not be loaded ")
     elif platform.system() == "Darwin":
         # Compute the absolute path of the current file
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -82,18 +84,18 @@ def ensure_pyzbar_works() -> None:
         # Set the environment variable
         os.environ["PYZBAR_LIBRARY"] = os.path.abspath(libzbar_path)
 
-        logger.debug(f'set PYZBAR_LIBRARY={os.environ["PYZBAR_LIBRARY"]}')
+        logger.debug(f"set PYZBAR_LIBRARY={os.environ['PYZBAR_LIBRARY']}")
 
     elif platform.system() == "Linux":
         # On Linux it seems to find the lib
         pass
     else:
-        logger.warning(f"Unknown OS")
+        logger.warning("Unknown OS")
 
     # check pyzbar no matter what
     try:
         from pyzbar import pyzbar
 
-        logger.info(f"pyzbar could be loaded successfully")
-    except:
-        logger.warning(f"failed to load pyzbar")
+        logger.info("pyzbar could be loaded successfully")
+    except Exception:
+        logger.warning("failed to load pyzbar")

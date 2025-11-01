@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
@@ -55,9 +56,12 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
+from bitcoin_safe.signals import WalletFunctions
 
 from ...descriptors import AddressType, get_default_address_type
-from ...signals import TypedPyQtSignalNo, WalletFunctions
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 
@@ -65,17 +69,18 @@ logger = logging.getLogger(__name__)
 
 
 class DescriptorUI(QWidget):
-    signal_qtwallet_apply_setting_changes = pyqtSignal()
-    signal_qtwallet_cancel_setting_changes = pyqtSignal()
-    signal_qtwallet_cancel_wallet_creation = pyqtSignal()
+    signal_qtwallet_apply_setting_changes: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_qtwallet_cancel_setting_changes: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_qtwallet_cancel_wallet_creation: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
         protowallet: ProtoWallet,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
-        wallet: Optional[Wallet] = None,
+        wallet: Wallet | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.signal_tracker = SignalTracker()
         self._layout = QVBoxLayout(self)
@@ -111,9 +116,11 @@ class DescriptorUI(QWidget):
         wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def get_editable_protowallet(self):
+        """Get editable protowallet."""
         return self.protowallet
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.label_signers.setText(self.tr("Required Signers"))
         self.label_gap.textLabel.setText(self.tr("Scan Addresses ahead"))
         self.label_gap.set_icon_as_help(
@@ -127,10 +134,12 @@ class DescriptorUI(QWidget):
         self.edit_descriptor.updateUi()
 
     def set_protowallet(self, protowallet: ProtoWallet) -> None:
+        """Set protowallet."""
         self.protowallet = protowallet
         self.set_all_ui_from_protowallet()
 
     def on_wallet_ui_changes(self) -> None:
+        """On wallet ui changes."""
         logger.debug("on_wallet_ui_changes")
         try:
             self.set_protowallet_from_ui()
@@ -144,14 +153,17 @@ class DescriptorUI(QWidget):
             self._set_keystore_tabs()
 
     def on_spin_threshold_changed(self, new_value: int) -> None:
+        """On spin threshold changed."""
         self.on_wallet_ui_changes()
 
     def on_spin_signer_changed(self, new_value: int) -> None:
+        """On spin signer changed."""
         self.repopulate_comboBox_address_type(new_value > 1)
 
         self.on_wallet_ui_changes()
 
     def set_protowallet_from_descriptor_str(self, descriptor: str) -> None:
+        """Set protowallet from descriptor str."""
         self.protowallet = ProtoWallet.from_descriptor(
             self.protowallet.id,
             descriptor,
@@ -159,6 +171,7 @@ class DescriptorUI(QWidget):
         )
 
     def _set_keystore_tabs(self) -> None:
+        """Set keystore tabs."""
         self.keystore_uis._set_keystore_tabs()
 
         self.spin_req.setMinimum(1)
@@ -167,6 +180,7 @@ class DescriptorUI(QWidget):
         self.spin_signers.setMaximum(10)
 
     def set_wallet_ui_from_protowallet(self) -> None:
+        """Set wallet ui from protowallet."""
         with BlockChangesSignals([self]):
             logger.debug(f"{self.__class__.__name__} set_wallet_ui_from_protowallet")
             self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
@@ -180,20 +194,19 @@ class DescriptorUI(QWidget):
             self.spin_signers.setValue(len(self.protowallet.keystores))
 
             if self.spin_req.value() < self.spin_signers.value():
-
                 labels_of_recovery_signers = [
                     f'"{keystore_ui.label}"' for keystore_ui in self.keystore_uis.getAllTabData().values()
                 ][self.spin_req.value() :]
                 self.spin_req.setToolTip(
                     f"In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n"
-                    f'In case of loss of 1 of the devices, you can recover your funds using\n {" or ".join(labels_of_recovery_signers)} and send the funds to a new wallet.'
+                    f"In case of loss of 1 of the devices, you can recover your funds using\n {' or '.join(labels_of_recovery_signers)} and send the funds to a new wallet."
                 )
             if self.spin_req.value() == self.spin_signers.value() != 1:
                 self.spin_req.setToolTip(
-                    f"Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer any benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5"
+                    "Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer any benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5"
                 )
             if self.spin_req.value() == self.spin_signers.value() == 1:
-                self.spin_req.setToolTip(f"A single signing device can sign outgoing transactions.")
+                self.spin_req.setToolTip("A single signing device can sign outgoing transactions.")
 
             self.spin_gap.setValue(self.protowallet.gap)
 
@@ -211,6 +224,7 @@ class DescriptorUI(QWidget):
         self.keystore_uis.set_keystore_ui_from_protowallet()
 
     def set_protowallet_from_ui(self) -> None:
+        """Set protowallet from ui."""
         logger.debug("set_protowallet_from_keystore_ui")
 
         # these wallet settings must come first
@@ -223,10 +237,12 @@ class DescriptorUI(QWidget):
         self.keystore_uis.set_protowallet_from_keystore_ui()
 
     def set_combo_box_address_type_from_protowallet(self) -> None:
+        """Set combo box address type from protowallet."""
         address_types = get_address_types(self.protowallet.is_multisig())
         self.comboBox_address_type.setCurrentIndex(address_types.index(self.protowallet.address_type))
 
     def get_address_type_from_ui(self) -> AddressType:
+        """Get address type from ui."""
         address_types = get_address_types(self.protowallet.is_multisig())
 
         # sanity check
@@ -241,13 +257,16 @@ class DescriptorUI(QWidget):
 
         return self.comboBox_address_type.currentData()
 
-    def get_m_of_n_from_ui(self) -> Tuple[int, int]:
+    def get_m_of_n_from_ui(self) -> tuple[int, int]:
+        """Get m of n from ui."""
         return (self.spin_req.value(), self.spin_signers.value())
 
     def get_gap_from_ui(self) -> int:
+        """Get gap from ui."""
         return self.spin_gap.value()
 
     def set_ui_descriptor(self) -> None:
+        """Set ui descriptor."""
         logger.debug(f"{self.__class__.__name__} set_ui_descriptor")
         # check if the descriptor actually CAN be calculated to a reasonable degree
         try:
@@ -262,6 +281,7 @@ class DescriptorUI(QWidget):
         self.edit_descriptor.edit.format_and_apply_validator()
 
     def disable_fields(self) -> None:
+        """Disable fields."""
         self.comboBox_address_type.setEnabled(not self.no_edit_mode)
         self.label_address_type.setHidden(False)
         self.spin_signers.setHidden(self.no_edit_mode)
@@ -281,6 +301,7 @@ class DescriptorUI(QWidget):
             self.spin_signers.setDisabled(True)
 
     def repopulate_comboBox_address_type(self, is_multisig: bool) -> None:
+        """Repopulate comboBox address type."""
         with BlockChangesSignals([self]):
             # Fetch the new address types
             address_types = get_address_types(is_multisig)
@@ -293,7 +314,6 @@ class DescriptorUI(QWidget):
 
             # Check if the new list is different from the current items
             if address_type_names != current_names:
-
                 # Clear and update the combo box
                 self.comboBox_address_type.clear()
                 for address_type in address_types:
@@ -304,6 +324,7 @@ class DescriptorUI(QWidget):
                     self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
 
     def create_wallet_type_and_descriptor(self, loop_in_thread: LoopInThread) -> None:
+        """Create wallet type and descriptor."""
         box_wallet_type_and_descriptor = QWidget(self)
         box_wallet_type_and_descriptor_layout = QHBoxLayout(box_wallet_type_and_descriptor)
 
@@ -377,7 +398,7 @@ class DescriptorUI(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         self.horizontalLayout_4 = QVBoxLayout(self.groupBox_wallet_descriptor)
-        language_switch = cast(TypedPyQtSignalNo, self.wallet_functions.signals.language_switch)
+        language_switch: TypedPyQtSignalNo = cast(Any, self.wallet_functions.signals.language_switch)
         self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
             wallet_functions=self.wallet_functions,
@@ -397,13 +418,14 @@ class DescriptorUI(QWidget):
 
     def on_descriptor_change(self, user_input: str) -> None:
         # try converting it to a descriptor
+        """On descriptor change."""
         data = self._input_to_data(s=user_input)
         if not data:
             logger.debug(f"{user_input} could not be decoded into data")
             return
         corrected_descriptor = self.edit_descriptor._data_to_descriptor(data)
         if not corrected_descriptor:
-            logger.debug(f"data could not be decoded into a descriptor")
+            logger.debug("data could not be decoded into a descriptor")
             return
 
         if corrected_descriptor != user_input:
@@ -439,7 +461,7 @@ class DescriptorUI(QWidget):
             logger.info(f"Descriptor changed: {str(old_descriptor)[:10]=}  -->  {str(user_input)[:10]=}")
             if not question_dialog(
                 text=self.tr(
-                    f"Fill signer information based on the new descriptor?",
+                    "Fill signer information based on the new descriptor?",
                 ),
                 title=self.tr("New descriptor entered"),
                 true_button=QMessageBox.StandardButton.Ok,
@@ -460,6 +482,7 @@ class DescriptorUI(QWidget):
             return
 
     def _input_to_data(self, s: str) -> Data | None:
+        """Input to data."""
         s = s.strip(" \n")
         try:
             return Data.from_str(s, network=self.protowallet.network)
@@ -475,22 +498,23 @@ class DescriptorUI(QWidget):
         return None
 
     def create_button_bar(self) -> QDialogButtonBox:
-
         # Create buttons and layout
+        """Create button bar."""
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Apply | QDialogButtonBox.StandardButton.Discard
         )
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Apply):
-            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes)
+            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes.emit)
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes)
+            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes.emit)
         if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation)
+            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation.emit)
 
         self._layout.addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
         return self.button_box
 
     def close(self):
+        """Close."""
         self.edit_descriptor.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

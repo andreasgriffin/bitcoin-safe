@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 
 from PyQt6.QtCore import Qt
@@ -46,6 +48,7 @@ logger = logging.getLogger(__name__)
 
 class LoadingWalletTab(QWidget):
     def __init__(self, tabs: SidebarTree, name: str, focus=True) -> None:
+        """Initialize instance."""
         super().__init__(tabs)
         self.tabs = tabs
         self.name = name
@@ -69,6 +72,7 @@ class LoadingWalletTab(QWidget):
         self._layout.addItem(spacerBottom)
 
     def __enter__(self) -> None:
+        """Enter context manager."""
         self.tabs.root.addChildNode(
             SidebarNode(
                 icon=svg_tools.get_QIcon("status_waiting.svg"),
@@ -81,5 +85,6 @@ class LoadingWalletTab(QWidget):
         QApplication.processEvents()
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        """Exit context manager."""
         if node := self.tabs.root.findNodeByWidget(self):
             node.removeNode()

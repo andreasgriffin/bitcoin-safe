@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 def test_no_error_logging(caplog: LogCaptureFixture):
+    """Test no error logging."""
     with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
         mock_compose_email.return_value = "Mocked Function"
 
@@ -53,6 +55,7 @@ def test_no_error_logging(caplog: LogCaptureFixture):
 
 
 def test_exception_logging(caplog: LogCaptureFixture):
+    """Test exception logging."""
     with patch("bitcoin_safe.logging_handlers.OpenLogHandler.emit") as mock_OpenLogHandler_emit:
         mock_OpenLogHandler_emit.return_value = "Mocked OpenLogHandler.emit"
         with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:

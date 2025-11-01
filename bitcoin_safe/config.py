@@ -26,12 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import json
 import logging
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import appdirs
 import bdkpython as bdk
@@ -80,21 +82,23 @@ class UserConfig(BaseSaveableClass):
     }
 
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
         self.network_configs = NetworkConfigs()
         self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET4
-        self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
-        self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
+        self.last_wallet_files: dict[str, list[str]] = {}  # network:[file_path0]
+        self.opened_txlike: dict[str, list[str]] = {}  # network:[serializedtx, serialized psbt]
         self.is_maximized = False
-        self.recently_open_wallets: Dict[bdk.Network, UniqueDeque[str]] = {
+        self.recently_open_wallets: dict[bdk.Network, UniqueDeque[str]] = {
             network: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network
         }
         self.language_code: str = DEFAULT_LANG_CODE
         self.currency: str = "USD"
-        self.rates: Dict[str, Dict[str, Any]] = {}
+        self.rates: dict[str, dict[str, Any]] = {}
         self.last_tab_title: str = ""
 
     def clean_recently_open_wallet(self):
+        """Clean recently open wallet."""
         this_deque = self.recently_open_wallets[self.network]
         # clean deleted paths
         for deque_item in list(this_deque):
@@ -102,15 +106,18 @@ class UserConfig(BaseSaveableClass):
                 this_deque.remove(deque_item)
 
     def add_recently_open_wallet(self, file_path: str) -> None:
+        """Add recently open wallet."""
         self.clean_recently_open_wallet()
         self.recently_open_wallets[self.network].append(file_path)
 
     @property
     def network_config(self) -> NetworkConfig:
+        """Network config."""
         return self.network_configs.configs[self.network.name]
 
     @property
     def wallet_dir(self) -> str:
+        """Wallet dir."""
         return os.path.join(self.config_dir, self.network.name)
 
     def get(self, key: str, default=None) -> Any:
@@ -120,7 +127,8 @@ class UserConfig(BaseSaveableClass):
         else:
             return default
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d.update(self.__dict__.copy())
 
@@ -133,7 +141,8 @@ class UserConfig(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "UserConfig":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> UserConfig:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         dct["recently_open_wallets"] = {
             bdk.Network._member_map_[k]: UniqueDeque(v, maxlen=RECENT_WALLET_MAXLEN)
@@ -157,7 +166,8 @@ class UserConfig(BaseSaveableClass):
         return instance
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.1.0"):
             network_config_testnet_3: NetworkConfig = dct["network_config"]
             dct["network_configs"] = {network.name: NetworkConfig(network=network) for network in bdk.Network}
@@ -256,12 +266,14 @@ class UserConfig(BaseSaveableClass):
 
     @classmethod
     def exists(cls, password=None, file_path=None) -> bool:
+        """Exists."""
         if file_path is None:
             file_path = cls.config_file
         return os.path.isfile(file_path)
 
     @classmethod
-    def from_file(cls, password: str | None = None, file_path: Path | None = None) -> "UserConfig":
+    def from_file(cls, password: str | None = None, file_path: Path | None = None) -> UserConfig:
+        """From file."""
         if file_path is None:
             file_path = cls.config_file
         if os.path.isfile(file_path):
@@ -270,4 +282,5 @@ class UserConfig(BaseSaveableClass):
             return UserConfig()
 
     def save(self) -> None:  # type: ignore
+        """Save."""
         super().save(self.config_file)

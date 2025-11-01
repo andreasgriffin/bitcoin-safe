@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QCheckBox, QGroupBox, QVBoxLayout, QWidget
@@ -33,6 +34,7 @@ from PyQt6.QtWidgets import QApplication, QCheckBox, QGroupBox, QVBoxLayout, QWi
 
 class ControlledGroupbox(QWidget):
     def __init__(self, checkbox_text="Enable GroupBox", groupbox_text="", enabled=True, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self._layout = QVBoxLayout(self)

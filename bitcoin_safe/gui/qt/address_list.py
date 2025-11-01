@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 # Original Version from:
 #
 # Electrum - lightweight Bitcoin client
@@ -51,12 +50,13 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from __future__ import annotations
 
 import enum
 import logging
 from enum import IntEnum
 from functools import partial
-from typing import Any, Dict, List, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -92,7 +92,6 @@ from ...labels import LabelSnapshot, LabelSnapshotReason
 from ...network_config import BlockchainType
 from ...rpc import send_rpc_command
 from ...signals import (
-    TypedPyQtSignal,
     UpdateFilter,
     UpdateFilterReason,
     WalletFunctions,
@@ -120,11 +119,16 @@ from .util import (
     sort_id_to_icon,
 )
 
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
+
+
 logger = logging.getLogger(__name__)
 
 
 class ImportLabelMenu(Menu):
     def __init__(self, wallet_signals: WalletSignals) -> None:
+        """Initialize instance."""
         super().__init__()
         self.wallet_signals = wallet_signals
 
@@ -147,6 +151,7 @@ class ImportLabelMenu(Menu):
         self.updateUi()
 
     def import_nostr_labels(self):
+        """Import nostr labels."""
         Message(
             translate(
                 "import",
@@ -155,6 +160,7 @@ class ImportLabelMenu(Menu):
         )
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setTitle(self.tr("Import labels and categories"))
         self.action_import.setText(self.tr("Full (Bitcoin Safe)"))
         self.action_bip329_import.setText(self.tr("Exchange format (BIP329)"))
@@ -164,6 +170,7 @@ class ImportLabelMenu(Menu):
 
 class ExportLabelMenu(Menu):
     def __init__(self, wallet_signals: WalletSignals) -> None:
+        """Initialize instance."""
         super().__init__()
         self.wallet_signals = wallet_signals
 
@@ -176,6 +183,7 @@ class ExportLabelMenu(Menu):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setTitle(self.tr("Export labels and categories"))
         self.action_export_full.setText(self.tr("Full (Bitcoin Safe)"))
         self.action_bip329.setText(self.tr("Exchange format (BIP329)"))
@@ -183,17 +191,20 @@ class ExportLabelMenu(Menu):
 
 class LabelSnapshotMenu(Menu):
     def __init__(
-        self, wallets: Dict[str, Wallet], wallet_functions: WalletFunctions, parent: QWidget | None = None
+        self, wallets: dict[str, Wallet], wallet_functions: WalletFunctions, parent: QWidget | None = None
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.wallet_functions = wallet_functions
         self.wallets = wallets
         self.aboutToShow.connect(self._populate_snapshot_menu)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setTitle(self.tr("Restore labels and categories snapshot"))
 
     def _populate_snapshot_menu(self) -> None:
+        """Populate snapshot menu."""
         self.clear()
 
         if not self.wallets:
@@ -206,7 +217,8 @@ class LabelSnapshotMenu(Menu):
             target_menu = self.add_menu(wallet.id) if multiple_wallets else self
             self._fill_snapshot_menu_for_wallet(target_menu, wallet)
 
-    def _fill_snapshot_menu_for_wallet(self, menu: "Menu", wallet: Wallet) -> None:
+    def _fill_snapshot_menu_for_wallet(self, menu: Menu, wallet: Wallet) -> None:
+        """Fill snapshot menu for wallet."""
         snapshots = wallet.labels.get_snapshots()
         if snapshots:
             for snapshot in reversed(snapshots):
@@ -218,12 +230,14 @@ class LabelSnapshotMenu(Menu):
             placeholder.setEnabled(False)
 
     def _snapshot_reason_text(self, reason: LabelSnapshotReason) -> str:
+        """Snapshot reason text."""
         if reason == LabelSnapshotReason.AUTOMATIC:
             return self.tr("Automatic snapshot")
         if reason == LabelSnapshotReason.RESTORE:
             return self.tr("State before restore")
 
     def _format_snapshot_label(self, snapshot: LabelSnapshot) -> str:
+        """Format snapshot label."""
         timestamp_text = snapshot.created_at.strftime("%Y-%m-%d %H:%M:%S")
         reason_text = self._snapshot_reason_text(snapshot.reason)
         if reason_text:
@@ -237,6 +251,7 @@ class LabelSnapshotMenu(Menu):
         return timestamp_text
 
     def _restore_wallet_snapshot(self, wallet: Wallet, snapshot: LabelSnapshot) -> None:
+        """Restore wallet snapshot."""
         changed_items = wallet.labels.restore_snapshot(snapshot)
         if not changed_items:
             return
@@ -262,6 +277,7 @@ class AddressUsageStateFilter(IntEnum):
     FUNDED_OR_UNUSED = 4
 
     def ui_text(self) -> str:
+        """Ui text."""
         return {
             self.ALL: translate("address_list", "All status"),
             self.UNUSED: translate("address_list", "Unused"),
@@ -277,6 +293,7 @@ class AddressTypeFilter(IntEnum):
     CHANGE = 2
 
     def ui_text(self) -> str:
+        """Ui text."""
         return {
             self.ALL: translate("address_list", "All types"),
             self.RECEIVING: translate("address_list", "Receiving"),
@@ -285,7 +302,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class AddressList(MyTreeView[str]):
-    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
+    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
 
     class Columns(MyTreeView.BaseColumnsEnum):
         NUM_TXS = enum.auto()
@@ -319,7 +336,7 @@ class AddressList(MyTreeView[str]):
 
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
-    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {
+    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {
         Columns.ADDRESS: 150,
         Columns.COIN_BALANCE: 120,
         Columns.FIAT_BALANCE: 110,
@@ -330,11 +347,12 @@ class AddressList(MyTreeView[str]):
         fx: FX,
         config: UserConfig,
         wallet_functions: WalletFunctions,
-        wallets: List[Wallet] | None = None,
-        hidden_columns: List[int] | None = None,
-        selected_ids: List[str] | None = None,
+        wallets: list[Wallet] | None = None,
+        hidden_columns: list[int] | None = None,
+        selected_ids: list[str] | None = None,
         _scroll_position=0,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             config=config,
             signals=wallet_functions.signals,
@@ -349,7 +367,7 @@ class AddressList(MyTreeView[str]):
         )
         self.fx = fx
         self.wallet_functions = wallet_functions
-        self.wallets: Dict[str, Wallet] = {}
+        self.wallets: dict[str, Wallet] = {}
         self._signal_tracker_wallet_signals = SignalTracker()
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -379,7 +397,8 @@ class AddressList(MyTreeView[str]):
         # signals
         self.fx.signal_data_updated.connect(self.on_update_fx_rates)
 
-    def _set_wallets(self, wallets: List[Wallet] | None):
+    def _set_wallets(self, wallets: list[Wallet] | None):
+        """Set wallets."""
         self._signal_tracker_wallet_signals.disconnect_all()
 
         self.wallets.clear()
@@ -390,22 +409,27 @@ class AddressList(MyTreeView[str]):
                 continue
             self._signal_tracker_wallet_signals.connect(wallet_signals.updated, self.update_with_filter)
 
-    def set_wallets(self, wallets: List[Wallet] | None):
+    def set_wallets(self, wallets: list[Wallet] | None):
+        """Set wallets."""
         self._set_wallets(wallets=wallets)
         self.update_content()
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         return d
 
-    def get_drop_rules(self) -> List[DropRule]:
-
+    def get_drop_rules(self) -> list[DropRule]:
         # ─── “drag_tag” JSON only ON items ─────────────────────────────────
+        """Get drop rules."""
+
         def mime_pred_tag(md: QMimeData) -> bool:
+            """Mime pred tag."""
             d = self.get_json_mime_data(md)
             return bool(d and d.get("type") == "drag_tag" and isinstance(d.get("tag"), (list, str)))
 
         def handler_tag(view: QTreeView, e: QDropEvent, source_idx: QModelIndex) -> None:
+            """Handler tag."""
             md = e.mimeData()
             if not md:
                 e.ignore()
@@ -444,6 +468,7 @@ class AddressList(MyTreeView[str]):
         ]
 
     def get_wallet(self, row: int) -> None | Wallet:
+        """Get wallet."""
         item = self._source_model.item(row, self.Columns.WALLET_ID)
         if not item:
             return None
@@ -453,6 +478,7 @@ class AddressList(MyTreeView[str]):
         return self.wallets.get(wallet_id)
 
     def on_double_click(self, source_idx: QModelIndex) -> None:
+        """On double click."""
         addr = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
         if not addr or not (wallet := self.get_wallet(source_idx.row())):
             return
@@ -467,6 +493,7 @@ class AddressList(MyTreeView[str]):
         force_new=False,
         category: str | None = None,
     ) -> bdk.AddressInfo:
+        """Get address."""
         if force_new:
             address_info = wallet.get_address(force_new=force_new)
             address = str(address_info.address)
@@ -490,6 +517,7 @@ class AddressList(MyTreeView[str]):
         return address_info
 
     def set_filter_change(self, state: int) -> None:
+        """Set filter change."""
         if state == self.current_change_filter:
             return
 
@@ -498,6 +526,7 @@ class AddressList(MyTreeView[str]):
         self.filter()
 
     def set_filter_used(self, state: int) -> None:
+        """Set filter used."""
         if state == self.current_used_filter:
             return
         self.current_used_filter = AddressUsageStateFilter(state)
@@ -505,6 +534,7 @@ class AddressList(MyTreeView[str]):
         self.filter()
 
     def set_filter_category(self, category_info: CategoryInfo | None) -> None:
+        """Set filter category."""
         if (category_info is None and self.current_category_filter is None) or (
             category_info and category_info.category == self.current_category_filter
         ):
@@ -514,6 +544,7 @@ class AddressList(MyTreeView[str]):
         self.filter()
 
     def update_base_hidden_rows(self):
+        """Update base hidden rows."""
         self.base_hidden_rows.clear()
 
         hidden_rows_type = set()
@@ -555,6 +586,7 @@ class AddressList(MyTreeView[str]):
         self.base_hidden_rows.update(hidden_rows_category)
 
     def on_update_fx_rates(self):
+        """On update fx rates."""
         addresses_with_balance = []
 
         model = self._source_model
@@ -571,6 +603,7 @@ class AddressList(MyTreeView[str]):
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         if update_filter.refresh_all:
             return self.update_content()
         logger.debug(f"{self.__class__.__name__}  update_with_filter")
@@ -615,7 +648,8 @@ class AddressList(MyTreeView[str]):
         logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
-    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+        """Get headers."""
         currency_symbol = self.fx.get_currency_symbol()
         return {
             self.Columns.NUM_TXS: header_item(self.tr("Tx"), tooltip=self.tr("Number of transactions")),
@@ -630,6 +664,7 @@ class AddressList(MyTreeView[str]):
         }
 
     def update_content(self) -> None:
+        """Update content."""
         if self.maybe_defer_update():
             return
         logger.debug(f"{self.__class__.__name__} update")
@@ -646,6 +681,7 @@ class AddressList(MyTreeView[str]):
         super().update_content()
 
     def append_address(self, wallet: Wallet, address: str) -> None:
+        """Append address."""
         labels = [""] * len(self.Columns)
         labels[self.Columns.ADDRESS] = address
         item = [QStandardItem(e) for e in labels]
@@ -680,7 +716,7 @@ class AddressList(MyTreeView[str]):
                 MyItemDataRole.ROLE_SORT_ORDER,
             )
             item[self.Columns.TYPE].setToolTip(
-                f"""{address_info_min.address_path()[1]}. {self.tr("change address") if address_info_min.address_path()[0] else   self.tr('receiving address')}"""
+                f"""{address_info_min.address_path()[1]}. {self.tr("change address") if address_info_min.address_path()[0] else self.tr("receiving address")}"""
             )
         # add item
         count = self._source_model.rowCount()
@@ -688,6 +724,7 @@ class AddressList(MyTreeView[str]):
         self.refresh_row(address, count)
 
     def refresh_row(self, key: str, row: int) -> None:
+        """Refresh row."""
         assert row is not None
         address = key
         wallet = self.get_wallet(row)
@@ -750,6 +787,7 @@ class AddressList(MyTreeView[str]):
         #     self.header().resizeSection(self.Columns.ADDRESS, calculated_width)
 
     def create_menu(self, position: QPoint) -> Menu:
+        """Create menu."""
         menu = Menu()
         # is_multisig = isinstance(wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.ADDRESS)
@@ -800,8 +838,9 @@ class AddressList(MyTreeView[str]):
 
         return menu
 
-    def recreate_export_import_menu(self, menu: QMenu, position: int | None = None) -> List[QMenu]:
+    def recreate_export_import_menu(self, menu: QMenu, position: int | None = None) -> list[QMenu]:
         # 1) Remove any old export/import sub‑menus
+        """Recreate export import menu."""
         for action in list(menu.actions()):
             sub = action.menu()
             if isinstance(sub, (ExportLabelMenu, ImportLabelMenu)):
@@ -834,7 +873,8 @@ class AddressList(MyTreeView[str]):
 
         return new_menus
 
-    def _add_category_menu(self, menu: Menu, addresses: List[str]):
+    def _add_category_menu(self, menu: Menu, addresses: list[str]):
+        """Add category menu."""
         category_menu = menu.add_menu(self.tr("Set category"))
 
         categories = sum([wallet.labels.categories for wallet in self.wallets.values()], [])
@@ -851,11 +891,13 @@ class AddressList(MyTreeView[str]):
         return menu
 
     def get_edit_key_from_coordinate(self, row, col) -> Any:
+        """Get edit key from coordinate."""
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=MyItemDataRole.ROLE_KEY)
 
     def on_edited(self, source_idx: QModelIndex, edit_key: str, text: str) -> None:
+        """On edited."""
         wallet = self.get_wallet(source_idx.row())
         if not wallet:
             return
@@ -878,6 +920,7 @@ class AddressList(MyTreeView[str]):
             )
 
     def close(self) -> bool:
+        """Close."""
         self.setParent(None)
         self._signal_tracker_wallet_signals.disconnect_all()
         return super().close()
@@ -897,9 +940,10 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         category_core: CategoryCore | None = None,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(address_list, config, toolbar_is_visible=True, parent=parent)
         self.default_export_csv_filename = (
-            f"category_export_{','.join([wallet_id for wallet_id in  address_list.wallets.keys()])}.csv"
+            f"category_export_{','.join([wallet_id for wallet_id in address_list.wallets.keys()])}.csv"
         )
         self.category_core = category_core
         self.address_list: AddressList = address_list
@@ -929,21 +973,25 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.category_combobox.currentIndexChanged.connect(self.on_change_category_menu)
 
     def set_category_core(self, category_core: CategoryCore | None):
+        """Set category core."""
         self.category_core = category_core
         self.category_combobox.set_category_core(category_core=category_core)
         self._menu_import_export = self.address_list.recreate_export_import_menu(self.menu)
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["address_list"] = self.address_list
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "AddressListWithToolbar":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> AddressListWithToolbar:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
     def on_create_address(self, wallet_id: str | None = None):
+        """On create address."""
         if not self.category_core:
             return
         category = self.category_combobox.currentText()
@@ -958,6 +1006,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.address_list.get_address(force_new=True, category=category, wallet=wallet)
 
     def on_change_category_menu(self, index: int):
+        """On change category menu."""
         if index < 0:
             return
         data = self.category_combobox.itemData(index)
@@ -966,6 +1015,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             self.set_visibilities()
 
     def set_visibilities(self):
+        """Set visibilities."""
         if not self.category_core:
             return
 
@@ -974,9 +1024,11 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         )
 
     def update_with_filter(self, update_filter: UpdateFilter):
+        """Update with filter."""
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
 
         self.set_visibilities()
@@ -1000,6 +1052,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             self.balance_label.setToolTip(balance.format_long(self.config.network))
 
     def _mine_to_selected_addresses(self) -> None:
+        """Mine to selected addresses."""
         selected = self.address_list.selected_in_column(self.address_list.Columns.ADDRESS)
         if not selected:
             return
@@ -1019,6 +1072,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.address_list.signals.chain_data_changed.emit(f"Mined to addresses {addresses}")
 
     def create_toolbar_with_menu(self, title) -> None:
+        """Create toolbar with menu."""
         super().create_toolbar_with_menu(title=title)
 
         font = QFont()
@@ -1045,7 +1099,6 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             and self.config.network_config.server_type == BlockchainType.RPC
             and self.config.network != bdk.Network.BITCOIN
         ):
-
             b = QPushButton(self.tr("Generate to selected adddresses"))
             b.clicked.connect(self._mine_to_selected_addresses)
             self.toolbar.insertWidget(self.toolbar.count() - 2, b)
@@ -1059,7 +1112,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.toolbar.insertWidget(2, self.category_combobox)
 
     def create_toolbar_buttons(self) -> QHBoxLayout:
-
+        """Create toolbar buttons."""
         hbox = QHBoxLayout()
         buttons = [self.change_button, self.used_button]
         for b in buttons:
@@ -1069,9 +1122,11 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         return hbox
 
     def on_hide_toolbar(self) -> None:
+        """On hide toolbar."""
         self.update()
 
     def show_toolbar(self, is_visible: bool, config=None) -> None:
+        """Show toolbar."""
         super().show_toolbar(is_visible=is_visible, config=config)
         for b in self.toolbar_buttons:
             b.setVisible(is_visible)

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 # Original Version from:
 #
@@ -51,14 +52,14 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import enum
 import logging
 import os
 import tempfile
+from collections.abc import Iterable
 from enum import IntEnum
 from functools import partial
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -69,6 +70,7 @@ from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
+from typing_extensions import Self
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
 from bitcoin_safe.fx import FX
@@ -79,8 +81,10 @@ from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.tx import short_tx_id
-from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
@@ -117,6 +121,7 @@ class AddressUsageStateFilter(IntEnum):
     FUNDED_OR_UNUSED = 4
 
     def ui_text(self) -> str:
+        """Ui text."""
         return {
             self.ALL: translate("hist_list", "All status"),
             self.UNUSED: translate("hist_list", "Unused"),
@@ -132,6 +137,7 @@ class AddressTypeFilter(IntEnum):
     CHANGE = 2
 
     def ui_text(self) -> str:
+        """Ui text."""
         return {
             self.ALL: translate("hist_list", "All types"),
             self.RECEIVING: translate("hist_list", "Receiving"),
@@ -145,7 +151,7 @@ class HistList(MyTreeView[str]):
         **BaseSaveableClass.known_classes,
     }
 
-    signal_tag_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
+    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -177,7 +183,7 @@ class HistList(MyTreeView[str]):
         Columns.BALANCE: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
     }
 
-    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
+    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
 
     def __init__(
         self,
@@ -185,12 +191,13 @@ class HistList(MyTreeView[str]):
         config: UserConfig,
         wallet_functions: WalletFunctions,
         mempool_manager: MempoolManager,
-        wallets: List[Wallet] | None = None,
-        address_domain: List[str] | None = None,
-        hidden_columns: List[int] | None = None,
-        selected_ids: List[str] | None = None,
+        wallets: list[Wallet] | None = None,
+        address_domain: list[str] | None = None,
+        hidden_columns: list[int] | None = None,
+        selected_ids: list[str] | None = None,
         _scroll_position=0,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             config=config,
             stretch_column=HistList.Columns.LABEL,
@@ -244,7 +251,8 @@ class HistList(MyTreeView[str]):
         self.setModel(self.proxy)
         self.set_wallets(self.wallets)
 
-    def set_wallets(self, wallets: List[Wallet]):
+    def set_wallets(self, wallets: list[Wallet]):
+        """Set wallets."""
         self._signal_tracker_wallet_signals.disconnect_all()
         self.wallets = wallets
 
@@ -255,17 +263,20 @@ class HistList(MyTreeView[str]):
 
         self.update_content()
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["address_domain"] = self.address_domain
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "MyTreeView":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Self:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
-    def get_file_data(self, txid: str) -> Optional[Data]:
+    def get_file_data(self, txid: str) -> Data | None:
+        """Get file data."""
         for wallet in get_wallets(self.wallet_functions):
             txdetails = wallet.get_tx(txid)
             if txdetails:
@@ -273,8 +284,9 @@ class HistList(MyTreeView[str]):
         return None
 
     def drag_keys_to_file_paths(
-        self, drag_keys: Iterable[str], save_directory: Optional[str] = None
-    ) -> List[str]:
+        self, drag_keys: Iterable[str], save_directory: str | None = None
+    ) -> list[str]:
+        """Drag keys to file paths."""
         file_urls = []
 
         # Iterate through indexes to fetch serialized data using drag keys
@@ -290,7 +302,7 @@ class HistList(MyTreeView[str]):
             else:
                 # Create a temporary file
                 file_descriptor, file_path = tempfile.mkstemp(
-                    suffix=f".tx",
+                    suffix=".tx",
                     prefix=f"{key} ",
                 )
 
@@ -302,6 +314,7 @@ class HistList(MyTreeView[str]):
         return file_urls
 
     def _acceptable_mime_data(self, mime_data: QMimeData) -> bool:
+        """Acceptable mime data."""
         if mime_data and self.get_json_mime_data(mime_data) is not None:
             return True
         if mime_data and mime_data.hasUrls():
@@ -309,6 +322,7 @@ class HistList(MyTreeView[str]):
         return False
 
     def on_double_click(self, source_idx: QModelIndex) -> None:
+        """On double click."""
         txid = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
         wallet = self.get_wallet(txid=txid)
         if not wallet:
@@ -319,12 +333,14 @@ class HistList(MyTreeView[str]):
         self.signals.open_tx_like.emit(tx_details)
 
     def toggle_change(self, state: int) -> None:
+        """Toggle change."""
         if state == self.show_change:
             return
         self.show_change = AddressTypeFilter(state)
         self.update_content()
 
     def toggle_used(self, state: int) -> None:
+        """Toggle used."""
         if state == self.show_used:
             return
         self.show_used = AddressUsageStateFilter(state)
@@ -332,16 +348,19 @@ class HistList(MyTreeView[str]):
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         if update_filter.refresh_all:
             return self.update_content()
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
-        def categories_intersect(model: MyStandardItemModel, row) -> Set:
+        def categories_intersect(model: MyStandardItemModel, row) -> set:
+            """Categories intersect."""
             return set(model.data(model.index(row, self.Columns.CATEGORIES))).intersection(
                 set(update_filter.categories)
             )
 
-        def tx_involves_address(txid) -> Set[str]:
+        def tx_involves_address(txid) -> set[str]:
+            """Tx involves address."""
             wallet = self.get_wallet(txid=txid)
             if not wallet:
                 return set()
@@ -374,7 +393,8 @@ class HistList(MyTreeView[str]):
 
         self._after_update_content()
 
-    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+        """Get headers."""
         return {
             self.Columns.WALLET_ID: header_item(self.tr("Wallet")),
             self.Columns.STATUS: header_item(self.tr("Status")),
@@ -387,7 +407,7 @@ class HistList(MyTreeView[str]):
 
     def _init_row(
         self, wallet: Wallet, tx: TransactionDetails, status_sort_index: int, old_balance: int
-    ) -> Tuple[List[QStandardItem], int]:
+    ) -> tuple[list[QStandardItem], int]:
         """
 
         Returns:
@@ -440,6 +460,7 @@ class HistList(MyTreeView[str]):
         return items, amount
 
     def update_content(self) -> None:
+        """Update content."""
         if self.maybe_defer_update():
             return
 
@@ -451,8 +472,7 @@ class HistList(MyTreeView[str]):
         num_shown = 0
         self.balance = 0
         for wallet in self.wallets:
-
-            txid_domain: Optional[Set[str]] = None
+            txid_domain: set[str] | None = None
             if self.address_domain:
                 txid_domain = set()
                 for address in self.address_domain:
@@ -477,6 +497,7 @@ class HistList(MyTreeView[str]):
         self._after_update_content()
 
     def refresh_row(self, key: str, row: int) -> None:
+        """Refresh row."""
         assert row is not None
         wallet = self.get_wallet(txid=key)
         if not wallet:
@@ -536,6 +557,7 @@ class HistList(MyTreeView[str]):
         item[self.Columns.CATEGORIES].setBackground(category_color(category))
 
     def create_menu(self, position: QPoint) -> Menu:
+        """Create menu."""
         menu = Menu()
         # is_multisig = isinstance(self.wallet, Multisig_Wallet)
         selected = self.selected_in_column(self.Columns.TXID)
@@ -633,7 +655,7 @@ class HistList(MyTreeView[str]):
                 menu.addSeparator()
 
                 if tx_status.is_local():
-                    action_remove_local_tx = menu.add_action(
+                    menu.add_action(
                         self.tr("Remove"),
                         partial(self.remove_local_tx, txid, wallet),
                     )
@@ -645,6 +667,7 @@ class HistList(MyTreeView[str]):
         return menu
 
     def remove_local_tx(self, txid: str, wallet: Wallet):
+        """Remove local tx."""
         wallet.apply_evicted_txs([txid])
 
         self.wallet_functions.wallet_signals[wallet.id].updated.emit(
@@ -652,12 +675,14 @@ class HistList(MyTreeView[str]):
         )
 
     def get_wallet(self, txid: str) -> Wallet | None:
+        """Get wallet."""
         for wallet in self.wallets:
-            if tx_detail := wallet.get_tx(txid=txid):
+            if wallet.get_tx(txid=txid):
                 return wallet
         return None
 
     def cpfp_tx(self, tx_details: TransactionDetails) -> None:
+        """Cpfp tx."""
         wallet = self.get_wallet(txid=tx_details.txid)
         if not wallet:
             return
@@ -668,6 +693,7 @@ class HistList(MyTreeView[str]):
         tx_details: TransactionDetails,
         tx_status: TxStatus,
     ) -> None:
+        """Rbf tx."""
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -686,6 +712,7 @@ class HistList(MyTreeView[str]):
         tx_details: TransactionDetails,
         tx_status: TxStatus,
     ) -> None:
+        """Edit tx."""
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -700,6 +727,7 @@ class HistList(MyTreeView[str]):
         )
 
     def cancel_tx(self, tx_details: TransactionDetails) -> None:
+        """Cancel tx."""
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -734,6 +762,7 @@ class HistList(MyTreeView[str]):
     def export_raw_transactions(
         self, selected_items: Iterable[QStandardItem], folder: str | None = None
     ) -> None:
+        """Export raw transactions."""
         if not folder:
             folder = QFileDialog.getExistingDirectory(None, "Select Folder")
             if not folder:
@@ -747,11 +776,13 @@ class HistList(MyTreeView[str]):
         logger.info(f"Saved {len(file_paths)} {self.proxy.drag_key} saved to {folder}")
 
     def get_edit_key_from_coordinate(self, row: int, col: int) -> Any:
+        """Get edit key from coordinate."""
         if col != self.Columns.LABEL:
             return None
         return self.get_role_data_from_coordinate(row, self.key_column, role=MyItemDataRole.ROLE_KEY)
 
     def on_edited(self, source_idx: QModelIndex, edit_key: str, text: str) -> None:
+        """On edited."""
         txid = edit_key
 
         wallet = self.get_wallet(txid=txid)
@@ -773,6 +804,7 @@ class HistList(MyTreeView[str]):
         )
 
     def close(self) -> bool:
+        """Close."""
         self.setParent(None)
         self._signal_tracker_wallet_signals.disconnect_all()
         return super().close()
@@ -780,6 +812,7 @@ class HistList(MyTreeView[str]):
 
 class RefreshButton(QPushButton):
     def __init__(self, parent=None, height=20) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setText("")
         # Use the standard pixmap for the button icon
@@ -787,11 +820,12 @@ class RefreshButton(QPushButton):
         self.set_icon_allow_refresh()
 
     def set_icon_allow_refresh(self) -> None:
+        """Set icon allow refresh."""
         icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.setIcon(icon)
 
     def set_icon_is_syncing(self) -> None:
-
+        """Set icon is syncing."""
         icon = svg_tools.get_QIcon("status_waiting.svg")
         self.setIcon(icon)
 
@@ -803,9 +837,10 @@ class HistListWithToolbar(TreeViewWithToolbar):
         HistList.__name__: HistList,
     }
 
-    signal_export_pdf_statement = cast(TypedPyQtSignal[str], pyqtSignal(str))  #  wallet_id
+    signal_export_pdf_statement: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  #  wallet_id
 
     def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(hist_list, config, parent=parent)
         self.default_export_csv_filename = "history_export.csv"
         self.hist_list = hist_list
@@ -824,22 +859,27 @@ class HistListWithToolbar(TreeViewWithToolbar):
             self.hist_list.wallet_functions.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
 
     def _on_sync_button_clicked(self):
+        """On sync button clicked."""
         self.hist_list.signals.request_manual_sync.emit()
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["hist_list"] = self.hist_list
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "TreeViewWithToolbar":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Self:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
     def update_with_filter(self, update_filter: UpdateFilter):
+        """Update with filter."""
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         if self.balance_label:
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
@@ -847,6 +887,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.action_export_pdf_statement.setText(self.tr("&Generate PDF balance Statement"))
 
     def create_toolbar_with_menu(self, title) -> None:
+        """Create toolbar with menu."""
         super().create_toolbar_with_menu(title=title)
 
         self.action_export_pdf_statement = self.menu.add_action(
@@ -859,10 +900,12 @@ class HistListWithToolbar(TreeViewWithToolbar):
             self.balance_label.setFont(font)
 
     def _do_export_pdf_statement(self):
+        """Do export pdf statement."""
         for wallet in self.hist_list.wallets:
             self.signal_export_pdf_statement.emit(wallet.id)
 
     def on_hide_toolbar(self) -> None:
+        """On hide toolbar."""
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.update()

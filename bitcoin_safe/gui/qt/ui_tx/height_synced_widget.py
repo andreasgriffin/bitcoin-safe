@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 from PyQt6.QtCore import QEvent, QObject, Qt
 from PyQt6.QtWidgets import (
@@ -47,21 +47,17 @@ logger = logging.getLogger(__name__)
 
 class HeightSyncedWidget(QWidget):
     def __init__(self, sync_on_resize=False, parent=None) -> None:
-        """
-        A QWidget whose minimum height will be kept in sync
-        with any registered peer widgets.
-        """
+        """A QWidget whose minimum height will be kept in sync with any registered peer
+        widgets."""
         super().__init__(parent)
         self.sync_on_resize = sync_on_resize
-        self._peers: List[HeightSyncedWidget] = []
+        self._peers: list[HeightSyncedWidget] = []
         # always watch for size-hint changes or resizes on ourselves
         self.installEventFilter(self)
 
-    def syncWith(self, *widgets: "HeightSyncedWidget") -> None:
-        """
-        Register one or more other HeightSyncedWidget instances
-        to keep height in lock-step with.
-        """
+    def syncWith(self, *widgets: HeightSyncedWidget) -> None:
+        """Register one or more other HeightSyncedWidget instances to keep height in
+        lock-step with."""
         for w in widgets:
             if w is not self and w not in self._peers:
                 self._peers.append(w)
@@ -73,10 +69,8 @@ class HeightSyncedWidget(QWidget):
         self.syncHeights()
 
     def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
-        """
-        Whenever *we* or *any* peer gets a new size hint or is resized,
-        recalculate the max height and apply it.
-        """
+        """Whenever *we* or *any* peer gets a new size hint or is resized, recalculate
+        the max height and apply it."""
         if not a1:
             return super().eventFilter(a0, a1)
         et = a1.type()
@@ -91,6 +85,7 @@ class HeightSyncedWidget(QWidget):
 
     def syncHeights(self) -> None:
         # include ourselves + all peers
+        """SyncHeights."""
         group = [self] + self._peers
         # compute the max preferred height
         max_h = max(w.sizeHint().height() for w in group)
@@ -104,6 +99,7 @@ class HeightSyncedWidget(QWidget):
 if __name__ == "__main__":
 
     def make_header(text, peers=None, button=False):
+        """Make header."""
         hdr = HeightSyncedWidget()
         lay = QHBoxLayout(hdr)
         lay.setContentsMargins(5, 2, 5, 2)
@@ -114,6 +110,7 @@ if __name__ == "__main__":
         return hdr
 
     def main():
+        """Main."""
         app = QApplication([])
 
         # 1) create the two headers, linking them together

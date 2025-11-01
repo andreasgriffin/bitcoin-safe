@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import os
 import platform
@@ -63,7 +64,8 @@ header = """#
 
 
 def check_header(file_path):
-    with open(file_path, "r") as file:
+    """Check header."""
+    with open(file_path) as file:
         content = file.read()
         if not content.startswith(header):
             print(content)
@@ -72,6 +74,7 @@ def check_header(file_path):
 
 
 def add_header(file_path, required_header):
+    """Add header."""
     with open(file_path, "r+") as file:
         content = file.read()
         if not content.startswith(required_header):
@@ -85,6 +88,7 @@ def add_header(file_path, required_header):
 
 
 def find_python_files():
+    """Find python files."""
     excluded_dirs = [".venv", "build", "coding_tests"]  # Directories to exclude
     # Walk through all directories and files in the current directory
     for root, dirs, files in os.walk("."):
@@ -96,7 +100,6 @@ def find_python_files():
 
 
 if __name__ == "__main__":
-
     success = True
     if platform.system() != "Windows":
         for file_path in sys.argv[1:]:

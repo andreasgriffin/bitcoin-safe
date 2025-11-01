@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -36,16 +37,19 @@ from PyQt6.QtWidgets import QPushButton, QWidget
 from bitcoin_safe.gui.qt.util import set_translucent, svg_tools, to_color_name
 
 logger = logging.getLogger(__name__)
+SMALL_ICON_SIZE = QSize(16, 16)
+DEFAULT_ICON_SIZE = QSize(16, 16)
 
 
 class FlatSquareButton(QPushButton):
     def __init__(
         self,
         qicon: QIcon,
-        size=QSize(24, 24),
+        size=DEFAULT_ICON_SIZE,
         parent: QWidget | None = None,
         hover_icon: QIcon | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self._default_icon = qicon
         self._hover_icon = hover_icon
@@ -56,30 +60,36 @@ class FlatSquareButton(QPushButton):
         self._set_current_icon(qicon)
 
     def setIcon(self, icon: QIcon) -> None:
+        """SetIcon."""
         self._default_icon = icon
         self._set_current_icon(icon)
 
     def _set_current_icon(self, icon: QIcon) -> None:
+        """Set current icon."""
         super().setIcon(icon)
 
     def enterEvent(self, event: QEnterEvent | None) -> None:
+        """EnterEvent."""
         if self._hover_icon is not None and self.isEnabled():
             self._set_current_icon(self._hover_icon)
         super().enterEvent(event)
 
     def leaveEvent(self, a0: QEvent | None) -> None:
+        """LeaveEvent."""
         if self._hover_icon is not None:
             self._set_current_icon(self._default_icon)
         super().leaveEvent(a0)
 
     def changeEvent(self, e: QEvent | None) -> None:
+        """ChangeEvent."""
         if e and e.type() == QEvent.Type.EnabledChange and not self.isEnabled():
             self._set_current_icon(self._default_icon)
         super().changeEvent(e)
 
 
 class CloseButton(FlatSquareButton):
-    def __init__(self, size=QSize(16, 16), parent: QWidget | None = None) -> None:
+    def __init__(self, size=SMALL_ICON_SIZE, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         default_icon = svg_tools.get_QIcon(
             "close.svg",
             auto_theme=False,

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -82,8 +83,7 @@ logger = logging.getLogger(__name__)
 
 
 def enter_text(text: str, widget: QWidget) -> None:
-    """
-    Simulates key-by-key text entry into a specified PyQt widget.
+    """Simulates key-by-key text entry into a specified PyQt widget.
 
     :param text: The string of text to be entered into the widget.
     :param widget: The PyQt widget where the text will be entered.
@@ -104,12 +104,11 @@ def test_wizard(
     wallet_name="test_tutorial_wallet_setup",
     amount=int(1e6),
 ) -> None:  # bitcoin_core: Path,
-    logger.debug(f"start test_tutorial_wallet_setup")
+    """Test wizard."""
+    logger.debug("start test_tutorial_wallet_setup")
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
@@ -122,6 +121,7 @@ def test_wizard(
         w = main_window.welcome_screen.pushButton_singlesig
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            """On wallet id dialog."""
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -136,6 +136,7 @@ def test_wizard(
         wizard: Wizard = qt_protowallet.wizard
 
         def page1() -> None:
+            """Page1."""
             shutter.save(main_window)
             step: BuyHardware = wizard.tab_generators[TutorialStep.buy]
             assert step.buttonbox_buttons[0].isVisible()
@@ -144,6 +145,7 @@ def test_wizard(
         page1()
 
         def page_sticker() -> None:
+            """Page sticker."""
             shutter.save(main_window)
             step: StickerTheHardware = wizard.tab_generators[TutorialStep.sticker]
             assert step.buttonbox_buttons[0].isVisible()
@@ -152,6 +154,7 @@ def test_wizard(
         page_sticker()
 
         def page_generate() -> None:
+            """Page generate."""
             shutter.save(main_window)
             step: GenerateSeed = wizard.tab_generators[TutorialStep.generate]
             assert step.buttonbox_buttons[0].isVisible()
@@ -160,11 +163,13 @@ def test_wizard(
         page_generate()
 
         def page_import() -> None:
+            """Page import."""
             shutter.save(main_window)
             step: ImportXpubs = wizard.tab_generators[TutorialStep.import_xpub]
 
             # check that you cannot go further without import xpub
             def wrong_entry(dialog: QMessageBox) -> None:
+                """Wrong entry."""
                 shutter.save(dialog)
 
                 assert dialog.text() == "Please import the complete data for Signer 1!"
@@ -211,6 +216,7 @@ def test_wizard(
 
                 # check that you cannot go further without import xpub
                 def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                    """Wrong entry xpub try to proceed."""
                     shutter.save(dialog)
                     assert dialog.text() == error_message
                     dialog.button(QMessageBox.StandardButton.Ok).click()
@@ -234,9 +240,9 @@ def test_wizard(
             assert "{ background-color: #ff6c54; }" in edit.styleSheet()
 
             with patch("bitcoin_safe.gui.qt.main.Message") as mock_message:
-
                 # check that you cannot go further without import xpub
                 def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                    """Wrong entry xpub try to proceed."""
                     shutter.save(dialog)
                     assert dialog.text() == error_message
                     dialog.button(QMessageBox.StandardButton.Ok).click()
@@ -294,6 +300,7 @@ def test_wizard(
             "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
             def page_backup() -> None:
+                """Page backup."""
                 shutter.save(main_window)
                 step: BackupSeed = wizard.tab_generators[TutorialStep.backup_seed]
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
@@ -309,6 +316,7 @@ def test_wizard(
             page_backup()
 
             def switch_language() -> None:
+                """Switch language."""
                 main_window.language_chooser.switchLanguage("zh_CN")
                 shutter.save(main_window)
                 main_window.language_chooser.switchLanguage("en_US")
@@ -317,6 +325,7 @@ def test_wizard(
             switch_language()
 
             def page_receive() -> None:
+                """Page receive."""
                 shutter.save(main_window)
                 step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
@@ -334,11 +343,7 @@ def test_wizard(
                     repeat_clicking_until_message_box_called=True,
                 )
                 assert str(called_args_message_box) == str(
-                    (
-                        "Balance = {amount}".format(
-                            amount=Satoshis(amount, network=test_config.network).str_with_unit()
-                        ),
-                    )
+                    (f"Balance = {Satoshis(amount, network=test_config.network).str_with_unit()}",)
                 )
                 assert not step.check_button.isVisible()
                 assert step.next_button.isVisible()
@@ -349,6 +354,7 @@ def test_wizard(
             page_receive()
 
             def page_send() -> None:
+                """Page send."""
                 shutter.save(main_window)
                 step: SendTest = wizard.tab_generators[TutorialStep.send]
                 assert step.refs.floating_button_box.isVisible()
@@ -383,6 +389,7 @@ def test_wizard(
             page_send()
 
             def page_sign() -> None:
+                """Page sign."""
                 shutter.save(main_window)
                 viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(viewer, UITx_Viewer)
@@ -417,6 +424,7 @@ def test_wizard(
             page_sign()
 
             def page10() -> None:
+                """Page10."""
                 shutter.save(main_window)
 
                 step: DistributeSeeds = wizard.tab_generators[TutorialStep.distribute]
@@ -428,6 +436,7 @@ def test_wizard(
             page10()
 
             def page11() -> None:
+                """Page11."""
                 shutter.save(main_window)
 
                 step: LabelBackup = wizard.tab_generators[TutorialStep.sync]
@@ -442,6 +451,7 @@ def test_wizard(
         del wizard
 
         def check_address_balances():
+            """Check address balances."""
             wallet = qt_wallet.wallet
 
             # check that spent utxos do not count into the address balance
@@ -457,6 +467,7 @@ def test_wizard(
         check_address_balances()
 
         def check_utxo_list():
+            """Check utxo list."""
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             qt_wallet.uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
             QCoreApplication.processEvents()
@@ -495,6 +506,7 @@ def test_wizard(
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
+            """Check that it is in recent wallets."""
             assert any(
                 [
                     (wallet_name in name)

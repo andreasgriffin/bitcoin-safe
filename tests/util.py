@@ -26,27 +26,32 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Callable, List, cast
+from collections.abc import Callable
+from typing import cast, Any
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
-from bitcoin_safe.signals import TypedPyQtSignalNo
+from typing import Any, TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
 class MySignalclass(QObject):
-    signal = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
 
 def chained_one_time_signal_connections(
-    signals: List[pyqtBoundSignal], fs: List[Callable[..., bool]], disconnect_only_if_f_true=True
+    signals: list[pyqtBoundSignal], fs: list[Callable[..., bool]], disconnect_only_if_f_true=True
 ):
     "If after the i. f is called, it connects the i+1. signal"
 
@@ -54,6 +59,7 @@ def chained_one_time_signal_connections(
     f, remaining_fs = fs[0], fs[1:]
 
     def f_wrapper(*args, **kwargs):
+        """F wrapper."""
         res = f(*args, **kwargs)
         if disconnect_only_if_f_true and not res:
             # reconnect
@@ -68,6 +74,7 @@ def chained_one_time_signal_connections(
 def make_psbt(
     bdk_wallet: bdk.Wallet, network: bdk.Network, destination_address: str, amount=100_000_000, fee_rate=1
 ):
+    """Make psbt."""
     txbuilder = bdk.TxBuilder()
 
     txbuilder = txbuilder.add_recipient(
@@ -85,7 +92,10 @@ def make_psbt(
 
 
 def wait_for_tx(wallet: Wallet, txid: str):
+    """Wait for tx."""
+
     async def wait_for_tx():
+        """Wait for tx."""
         while not wallet.get_tx(txid):
             await asyncio.sleep(1)
             wallet.trigger_sync()
@@ -96,8 +106,10 @@ def wait_for_tx(wallet: Wallet, txid: str):
 
 
 def wait_for_funds(wallet: Wallet):
+    """Wait for funds."""
 
     async def wait_for_funds():
+        """Wait for funds."""
         while wallet.get_balance().total == 0:
             wallet.trigger_sync()
             await wallet.update()

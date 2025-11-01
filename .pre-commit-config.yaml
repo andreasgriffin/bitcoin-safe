@@ -13,29 +13,23 @@ repos:
         language: system
         files: ^tools/resources/linux-bitcoin-safe\.desktop$
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2  # Use the specified version of isort
-    hooks:
-      - id: isort
-        args:
-          - --profile=black  # Set the import order style (change 'google' to your preferred style)          
-  - repo: https://github.com/myint/autoflake
-    rev: v2.3.1  # Use the latest version of autoflake
-    hooks:
-      - id: autoflake
-        args:
-          - --expand-star-imports
-          - --remove-all-unused-imports
-          - --remove-unused-variables
-          - --in-place
-          - --exclude=__init__.py
-          - --remove-duplicate-keys 
-  - repo: https://github.com/ambv/black
-    rev: 25.1.0
-    hooks:
-    - id: black
-      language_version: python3.12
+  # - repo: https://github.com/asmeurer/removestar
+  #   rev: "1.5.2"
+  #   hooks:
+  #     - id: removestar
+  #       args: [-i] # See docs for all args (-i edits file in-place)
+  #       exclude: ^(bitcoin_safe/stubs)
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.1  
+    hooks:
+      # Lint + auto-fix (includes import sorting, unused imports, etc.)
+      - id: ruff-format
+      - id: ruff-check
+        args: [--fix, --exit-non-zero-on-fix]
+        # If you don't want to run on notebooks, uncomment:
+        # types_or: [python, pyi]
+      # Formatter (Black-compatible)
 
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -70,6 +64,7 @@ repos:
           - pyqt6 
 
 
+
   - repo: local
     hooks:
       - id: pyright
@@ -79,28 +74,22 @@ repos:
         types: [python]
         pass_filenames: false
 
-
-
-
   - repo: local
     hooks:
       - id: update-poetry-version
         name: Update Poetry Version
-        entry: python .update_version.py  
+        entry: python .update_version.py
         language: python
         always_run: true
         files: pyproject.toml
         additional_dependencies:
           - tomlkit
-
-  - repo: local
-    hooks:
-      - id: update-poetry-version
-        name: Update Poetry Version
+          
+      - id: optional-precommit-checks
+        name: Optional Precommit Checks
         entry: python .optional_precommit_checks.py
         language: python
         always_run: true
-        
 
 
 

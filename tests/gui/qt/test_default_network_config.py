@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -56,11 +57,10 @@ def test_default_network_config_works(
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "bacon.wallet",
 ) -> None:
+    """Test default network config works."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
@@ -87,6 +87,7 @@ def test_default_network_config_works(
             "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
             def sync():
+                """Sync."""
                 with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=50000):
                     qt_wallet.sync()
 
@@ -114,6 +115,7 @@ def test_default_network_config_works(
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
+            """Check that it is in recent wallets."""
             assert any(
                 [
                     (wallet_file in name)

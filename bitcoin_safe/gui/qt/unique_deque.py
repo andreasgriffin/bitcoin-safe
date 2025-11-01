@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from collections import deque
@@ -43,6 +44,7 @@ class UniqueDeque(
 ):
     def append(self, value: _T) -> None:
         # If the item is already in the deque, remove it
+        """Append."""
         while value in self:
             self.remove(value)
         # Append the new item (deque automatically handles maxlen overflow)

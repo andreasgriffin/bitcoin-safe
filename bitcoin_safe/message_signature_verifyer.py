@@ -25,7 +25,6 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 """Utilities for verifying Bitcoin signed messages.
 
 This module implements verification of messages signed by Bitcoin private keys
@@ -54,7 +53,6 @@ from __future__ import annotations
 import base64
 import binascii
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
 
 from Crypto.Hash import RIPEMD160, SHA256
 from ecdsa import BadSignatureError, SECP256k1, VerifyingKey, util
@@ -106,9 +104,9 @@ class MessageVerificationResult:
     """
 
     match: bool
-    warnings: List[str]
+    warnings: list[str]
     normalized_message: str
-    error: Optional[str] = None
+    error: str | None = None
 
 
 @dataclass(frozen=True)
@@ -124,13 +122,13 @@ class _NetworkParams:
 class MessageSignatureVerifyer:
     """Verify Bitcoin signed messages produced by hardware wallets.
 
-    This class focuses on *message* signatures (not transaction signatures).
-    It supports common Bitcoin networks (mainnet, testnet, regtest) and the
-    standard address types that can represent keys used to sign messages.
+    This class focuses on *message* signatures (not transaction signatures). It supports common Bitcoin
+    networks (mainnet, testnet, regtest) and the standard address types that can represent keys used to sign
+    messages.
     """
 
     # Supported networks and their address encoding parameters.
-    NETWORKS: Tuple[_NetworkParams, ...] = (
+    NETWORKS: tuple[_NetworkParams, ...] = (
         _NetworkParams("mainnet", 0x00, 0x05, "bc"),
         _NetworkParams("testnet", 0x6F, 0xC4, "tb"),
         _NetworkParams("regtest", 0x6F, 0xC4, "bcrt"),
@@ -159,8 +157,8 @@ class MessageSignatureVerifyer:
             Structured result including warnings and any error message.
         """
 
-        warnings: List[str] = []
-        error: Optional[str] = None
+        warnings: list[str] = []
+        error: str | None = None
 
         try:
             # First attempt: verify with the message exactly as provided.
@@ -178,7 +176,8 @@ class MessageSignatureVerifyer:
                     warnings.append(
                         translate(
                             "signatures",
-                            "Message had surrounding whitespace. Verification succeeded after trimming the message.",
+                            "Message had surrounding whitespace. "
+                            "Verification succeeded after trimming the message.",
                         )
                     )
                     return MessageVerificationResult(True, warnings, stripped_message)
@@ -190,7 +189,8 @@ class MessageSignatureVerifyer:
         return MessageVerificationResult(False, warnings, normalized, error)
 
     def _verify_once(self, address: str, message: str, signature: str) -> bool:
-        """Single-pass verification of ``message`` against ``signature`` and ``address``.
+        """Single-pass verification of ``message`` against ``signature`` and
+        ``address``.
 
         Steps:
           1. Hash the message with Bitcoin's message magic and double-SHA256.
@@ -239,9 +239,8 @@ class MessageSignatureVerifyer:
     def _encode_varint(value: int) -> bytes:
         """Encode an integer using Bitcoin's *compact size* (varint) format.
 
-        This is used by the Bitcoin Signed Message format to prefix the
-        message length. We mirror the encoding rules from the protocol
-        (1, 3, 5, or 9 bytes depending on magnitude).
+        This is used by the Bitcoin Signed Message format to prefix the message length. We mirror the encoding
+        rules from the protocol (1, 3, 5, or 9 bytes depending on magnitude).
         """
         if value < 0xFD:
             return value.to_bytes(1, "little")
@@ -255,9 +254,8 @@ class MessageSignatureVerifyer:
     def _message_magic(cls, message: bytes) -> bytes:
         """Prefix message with Bitcoin's standard magic header and length.
 
-        The exact prefix and varint-encoded length ensure wallets sign a
-        *domain-separated* message, so signatures cannot be transplanted to
-        transactions and vice versa.
+        The exact prefix and varint-encoded length ensure wallets sign a *domain-separated* message, so
+        signatures cannot be transplanted to transactions and vice versa.
         """
         return b"\x18Bitcoin Signed Message:\n" + cls._encode_varint(len(message)) + message
 
@@ -265,13 +263,13 @@ class MessageSignatureVerifyer:
     def _hash_message(cls, message: bytes) -> bytes:
         """Compute the double-SHA256 of :func:`_message_magic` applied to ``message``.
 
-        Double hashing matches Bitcoin Core's historical behavior and prevents
-        length-extension quirks that could affect single-SHA256 constructions.
+        Double hashing matches Bitcoin Core's historical behavior and prevents length-extension quirks that
+        could affect single-SHA256 constructions.
         """
         return sha256(sha256(cls._message_magic(message)))
 
     @staticmethod
-    def _decode_signature(signature: str) -> Tuple[int, bool, bytes]:
+    def _decode_signature(signature: str) -> tuple[int, bool, bytes]:
         """Decode a Base64 compact signature and return ``(rec_id, compressed, sig)``.
 
         The first byte (27..34) encodes recovery id (0..3) plus 4 if the public
@@ -333,7 +331,8 @@ class MessageSignatureVerifyer:
 
     @staticmethod
     def _ensure_signature_matches(verifying_key: VerifyingKey, sig_string: bytes, digest: bytes) -> None:
-        """Check that ``sig_string`` is a valid signature for ``digest`` under ``verifying_key``.
+        """Check that ``sig_string`` is a valid signature for ``digest`` under
+        ``verifying_key``.
 
         Public-key recovery is not a proof on its own: always verify the signature
         explicitly to catch malformed or ambiguous recoveries.
@@ -405,7 +404,7 @@ class MessageSignatureVerifyer:
         compressed_signature: bool,
         pubkey_hash: bytes,
         compressed_pubkey_hash: bytes,
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """Try to match a Base58Check address (P2PKH or P2SH nested SegWit).
 
         Returns
@@ -452,13 +451,12 @@ class MessageSignatureVerifyer:
         address: str,
         compressed_signature: bool,
         compressed_pubkey_hash: bytes,
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """Try to match a Bech32 address (native P2WPKH).
 
-        Only witness version 0 with 20-byte program (P2WPKH) is supported here.
-        Other versions (e.g., v1 for Taproot) are explicitly rejected to avoid
-        falsely claiming verification against an address type this verifier does
-        not support.
+        Only witness version 0 with 20-byte program (P2WPKH) is supported here. Other versions (e.g., v1 for
+        Taproot) are explicitly rejected to avoid falsely claiming verification against an address type this
+        verifier does not support.
         """
         _, hrp, _ = _bech32.bech32_decode(address)
         if hrp is None:
@@ -492,7 +490,7 @@ class MessageSignatureVerifyer:
     def _to_base58_address(prefix: int, payload: bytes) -> str:
         """Helper to encode a Base58Check address from ``prefix`` and ``payload``.
 
-        This is provided for completeness and potential diagnostics; the
-        verifier does not call it during the verification flow.
+        This is provided for completeness and potential diagnostics; the verifier does not call it during the
+        verification flow.
         """
         return _base58.encode_check(bytes([prefix]) + payload)

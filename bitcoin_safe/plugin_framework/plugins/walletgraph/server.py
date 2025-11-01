@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 class WalletGraphServer(PluginServer):
     def __init__(self, wallet_id: str, network: bdk.Network, wallet_functions: WalletFunctions) -> None:
+        """Initialize instance."""
         super().__init__()
         self.wallet_id = wallet_id
         self.network = network
@@ -48,12 +49,15 @@ class WalletGraphServer(PluginServer):
         self.wallet_signals = wallet_functions.wallet_signals[wallet_id]
 
     def get_wallet(self) -> Wallet | None:
+        """Get wallet."""
         return get_wallet(self.wallet_id, self._wallet_functions)
 
     def start(self) -> None:
         # A local server that only exposes helper methods does not need to be started.
+        """Start."""
         logger.debug("WalletGraphServer.start() called")
 
     def stop(self) -> None:
         # A local server that only exposes helper methods does not need to be stopped.
+        """Stop."""
         logger.debug("WalletGraphServer.stop() called")

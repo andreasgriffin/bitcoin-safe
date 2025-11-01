@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import tomlkit
 
 from bitcoin_safe import __version__
@@ -33,7 +35,8 @@ from bitcoin_safe import __version__
 
 def update_poetry_version(file_path, new_version):
     # Read the pyproject.toml file
-    with open(file_path, "r") as file:
+    """Update poetry version."""
+    with open(file_path) as file:
         data = tomlkit.load(file)
 
     # Update the version under tool.poetry

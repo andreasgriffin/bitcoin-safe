@@ -393,13 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>Acheter {number} de signataires matériels
-                           </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>Acheter {number} signataires matériels                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe prend en charge tous les principaux signataires matériels : &lt;a href="{url}"&gt;Voir la liste complète&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -758,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>Remplir les informations du signataire selon le nouveau descripteur ?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>Entrée corrigée</translation>
 		</message>
@@ -926,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>Taux approximatif</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>Le taux de frais ne peut pas être connu exactement, car la taille finale de la transaction est inconnue.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2078,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>Ce portefeuille est encore en cours de synchronisation et celle-ci devra recommencer depuis le début si vous le fermez. Voulez-vous garder le portefeuille ouvert ?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>Essayer de se connecter à : {ip}</translation>
 		</message>
@@ -2105,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>Synchronisation du portefeuille</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>Les portefeuilles sont encore en cours de synchronisation et celle-ci devra recommencer depuis le début si vous fermez l’application. Voulez-vous le masquer dans la barre d’état système à la place ?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2771,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>Recevoir  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>Rafraîchir tous les caches avant la synchronisation.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4903,8 +4930,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>Le descripteur de portefeuille (Code QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; vous permet de créer un portefeuille en lecture seule pour voir votre solde. Pour dépenser, vous avez besoin des {number} mots secrets (Graine).</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>Le descripteur du portefeuille (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; vous permet de créer un portefeuille en lecture seule pour voir votre solde. Pour dépenser à partir de celui-ci, vous avez besoin des {number} mots secrets (Seed).</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5236,6 +5263,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>UTXO confirmé</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

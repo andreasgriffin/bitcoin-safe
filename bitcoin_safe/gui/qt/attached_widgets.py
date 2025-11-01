@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from collections import deque
-from typing import Type
 
 from PyQt6.QtWidgets import QWidget
 
@@ -37,11 +37,12 @@ logger = logging.getLogger(__name__)
 
 
 class AttachedWidgets(deque):
-    def remove_all_of_type(self, cls: Type[QWidget]) -> None:
+    def remove_all_of_type(self, cls: type[QWidget]) -> None:
+        """Remove all of type."""
         for widget in list(self):
             if isinstance(widget, cls):
                 widget.close()
                 try:
                     self.remove(widget)
-                except:
+                except Exception:
                     pass

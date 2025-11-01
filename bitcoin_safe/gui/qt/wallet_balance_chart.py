@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import datetime
 import logging
@@ -33,8 +34,9 @@ import math
 import platform
 import random
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Set, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -64,14 +66,16 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.util import monotone_increasing_timestamps
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
-Point = Tuple[float, float]
+Point = tuple[float, float]
 
 
 def find_nearest_point(
@@ -79,13 +83,12 @@ def find_nearest_point(
     reference: Point,
     width: float,
     height: float,
-) -> Tuple[Optional[Point], Optional[int], Optional[float]]:
-    """
-    Find the closest point to `reference` after linearly mapping all
-    points (and reference) into a [0…width]×[0…height] rectangle.
+) -> tuple[Point | None, int | None, float | None]:
+    """Find the closest point to `reference` after linearly mapping all points (and
+    reference) into a [0…width]×[0…height] rectangle.
 
-    Returns (nearest_point, distance) where distance is the Euclidean
-    pixel‐distance on that rectangle, or (None, None) if points is empty.
+    Returns (nearest_point, distance) where distance is the Euclidean pixel‐distance on that rectangle, or
+    (None, None) if points is empty.
     """
     if not points:
         return None, None, None
@@ -117,7 +120,7 @@ def find_nearest_point(
 
 
 class TrackingChartView(QChartView):
-    signal_click = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    signal_click: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
     def __init__(
         self,
@@ -126,9 +129,10 @@ class TrackingChartView(QChartView):
         highlight_series: QScatterSeries,
         network: bdk.Network,
         highlight_radius=150,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
         show_tooltip=False,
     ) -> None:
+        """Initialize instance."""
         super().__init__(chart, parent)
         self.setMouseTracking(True)
         self.setRenderHint(QPainter.RenderHint.Antialiasing, True)
@@ -140,9 +144,11 @@ class TrackingChartView(QChartView):
         self.show_tooltip = show_tooltip
 
     def to_float(self, v: float | QDateTime) -> float:
+        """To float."""
         return v.toSecsSinceEpoch() if isinstance(v, QDateTime) else v
 
-    def get_highlight_point(self, ref_data: Point) -> None | Tuple[Point, int, float]:
+    def get_highlight_point(self, ref_data: Point) -> None | tuple[Point, int, float]:
+        """Get highlight point."""
         chart = self.chart()
         if not chart:
             return None
@@ -170,7 +176,8 @@ class TrackingChartView(QChartView):
 
         return nearest_xy, index, distance
 
-    def mouseMoveEvent(self, event: Optional[QMouseEvent]) -> None:
+    def mouseMoveEvent(self, event: QMouseEvent | None) -> None:
+        """MouseMoveEvent."""
         chart = self.chart()
         if not chart or not event:
             return
@@ -201,12 +208,13 @@ class TrackingChartView(QChartView):
                 color_formatting=None
             )
             QToolTip.showText(
-                event.globalPosition().toPoint(), f"{ value_str} on {date_str}", self, self.rect()
+                event.globalPosition().toPoint(), f"{value_str} on {date_str}", self, self.rect()
             )
 
         super().mouseMoveEvent(event)
 
-    def mousePressEvent(self, event: Optional[QMouseEvent]) -> None:
+    def mousePressEvent(self, event: QMouseEvent | None) -> None:
+        """MousePressEvent."""
         if not event:
             return
         if not (chart := self.chart()):
@@ -246,6 +254,7 @@ class BalanceChart(QWidget):
         parent: QWidget | None = None,
         show_time_up_to_now=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.project_until_now = show_time_up_to_now
         self.signal_tracker = SignalTracker()
@@ -282,7 +291,7 @@ class BalanceChart(QWidget):
         # Adding series to the chart
         self.chart.addSeries(self.line_series)
         self.chart.addSeries(self.highlight_series)
-        self.points: List[ChartPoint] = []
+        self.points: list[ChartPoint] = []
 
         # Layout
         self._layout = QVBoxLayout()
@@ -343,6 +352,7 @@ class BalanceChart(QWidget):
         self.setLayout(self._layout)
 
     def set_value_axis_label_format(self, max_value: float) -> None:
+        """Set value axis label format."""
         if max_value != 0:
             # Determine the number of digits before the decimal
             import math
@@ -364,13 +374,15 @@ class BalanceChart(QWidget):
             font.setPixelSize(8)
             self.value_axis.setLabelsFont(font)
 
-    def set_time_axis_label_format(self, x_values: List[float]) -> None:
+    def set_time_axis_label_format(self, x_values: list[float]) -> None:
+        """Set time axis label format."""
         if np.max(x_values) - np.min(x_values) < 24 * 60 * 60:
             self.datetime_axis.setFormat("HH:mm")
         else:
             self.datetime_axis.setFormat("d MMM")
 
-    def update_chart(self, points: List[ChartPoint]) -> None:
+    def update_chart(self, points: list[ChartPoint]) -> None:
+        """Update chart."""
         self.points = points
         if len(points) == 0:
             return
@@ -414,9 +426,10 @@ class BalanceChart(QWidget):
             if (max_timestamp - min_timestamp) > 10
             else self.default_buffer_time_in_sec
         )
-        min_x, max_x = QDateTime.fromSecsSinceEpoch(
-            int(min_timestamp - buffer_time)
-        ), QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time))
+        min_x, max_x = (
+            QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)),
+            QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)),
+        )
         self.datetime_axis.setRange(min_x, max_x)
 
         buffer_factor = 0.1
@@ -429,6 +442,7 @@ class BalanceChart(QWidget):
         self.line_series.setPen(pen)
 
     def close(self) -> bool:
+        """Close."""
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setParent(None)
@@ -436,7 +450,7 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    signal_click_transaction = cast(TypedPyQtSignal[TransactionDetails], pyqtSignal(TransactionDetails))
+    signal_click_transaction: TypedPyQtSignal[TransactionDetails] = cast(Any, pyqtSignal(TransactionDetails))
 
     def __init__(
         self,
@@ -445,6 +459,7 @@ class WalletBalanceChart(BalanceChart):
         highlight_radius=30,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             network=wallet.network, y_axis_text="", parent=parent, highlight_radius=highlight_radius
         )
@@ -458,7 +473,8 @@ class WalletBalanceChart(BalanceChart):
         self.signal_tracker.connect(self.wallet_signals.updated, self.update_balances)
         self.signal_tracker.connect(self.wallet_signals.language_switch, self.updateUi)
 
-    def highlight_txids(self, txids: Set[str]):
+    def highlight_txids(self, txids: set[str]):
+        """Highlight txids."""
         self.highlight_series.clear()
         for p in self.points:
             if p.id in txids:
@@ -467,12 +483,14 @@ class WalletBalanceChart(BalanceChart):
                 )
 
     def on_signal_click(self, index: int):
+        """On signal click."""
         tx_index = max(0, index - 1)
         if tx_index >= len(self.transactions):
             tx_index = len(self.transactions) - 1
         self.signal_click_transaction.emit(self.transactions[tx_index])
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
 
         # self.datetime_axis.setTitleText(self.tr("Date"))
@@ -480,6 +498,7 @@ class WalletBalanceChart(BalanceChart):
         self.chart.update()
 
     def update_balances(self, update_filter: UpdateFilter) -> None:
+        """Update balances."""
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
@@ -495,7 +514,7 @@ class WalletBalanceChart(BalanceChart):
 
         # Calculate balance
         balance = 0
-        balance_data: List[ChartPoint] = []
+        balance_data: list[ChartPoint] = []
         self.transactions = self.wallet.sorted_delta_list_transactions()
         time_values = monotone_increasing_timestamps(
             [
@@ -506,7 +525,7 @@ class WalletBalanceChart(BalanceChart):
                 for transaction_details in self.transactions
             ]
         )
-        for time_value, transaction_details in zip(time_values, self.transactions):
+        for time_value, transaction_details in zip(time_values, self.transactions, strict=False):
             balance += transaction_details.received - transaction_details.sent
             balance_data.append(
                 ChartPoint(x=time_value.timestamp(), y=balance / 1e8, id=transaction_details.txid)
@@ -518,9 +537,10 @@ class WalletBalanceChart(BalanceChart):
 
 class TransactionSimulator(QMainWindow):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
 
-        self.transactions: List[Tuple[float, float]] = [
+        self.transactions: list[tuple[float, float]] = [
             (1625692800, 0.1),  # July 8, 2021
             (1626111600, -0.03),  # July 13, 2021
             (1626520000, 0.15),  # July 18, 2021
@@ -543,8 +563,9 @@ class TransactionSimulator(QMainWindow):
 
     def update_chart(self) -> None:
         # Calculate balance
+        """Update chart."""
         balance: float = 0
-        balance_data: List[ChartPoint] = []
+        balance_data: list[ChartPoint] = []
         for i, (timestamp, amount) in enumerate(self.transactions):
             balance += amount
             balance_data.append(ChartPoint(x=timestamp, y=balance, id=f"{i}"))
@@ -554,6 +575,7 @@ class TransactionSimulator(QMainWindow):
 
     def add_transaction(self) -> None:
         # Simulating a new transaction (current timestamp, random amount)
+        """Add transaction."""
         new_transaction = (
             int(
                 (

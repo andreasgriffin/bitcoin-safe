@@ -6,5 +6,10 @@
   "include": ["bitcoin_safe"],
   "exclude": ["build", "dist", ".venv"],
   "reportMissingImports": true,
-  "pythonVersion": "3.10"
+  "pythonVersion": "3.10",
+  "stubPath": "bitcoin_safe/stubs",
+  "ignore": [
+    "bitcoin_safe/stubs/typestubs.pyi",
+    "bitcoin_safe/stubs/typestubs.py"
+  ],
 }

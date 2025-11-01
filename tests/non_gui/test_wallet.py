@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import asyncio
 import logging
@@ -51,7 +52,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
     protowallet = create_multisig_protowallet(
         threshold=2,
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         wallet_id="some id",
         network=test_config.network,
     )
@@ -129,7 +130,7 @@ def test_protowallet_import_export_descriptor(test_config: UserConfig):
     protowallet = create_multisig_protowallet(
         threshold=2,
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         wallet_id="some id",
         network=test_config.network,
     )
@@ -153,7 +154,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
 
     keystores = create_test_seed_keystores(
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -170,7 +171,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
     protowallet = create_multisig_protowallet(
         threshold=2,
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         wallet_id=wallet_id,
         network=test_config.network,
     )
@@ -189,13 +190,14 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
 
 
 def test_is_multisig(test_config: UserConfig):
+    """Test is multisig."""
     wallet_id = "some id"
     descriptor = "wpkh([5aa39a43/84'/1'/0']tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#xaf9qzlf"
     network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=1,
-        key_origins=[f"m/84h/1h/0h" for i in range(5)],
+        key_origins=["m/84h/1h/0h" for i in range(5)],
         network=test_config.network,
     )
     # roll keystores
@@ -212,13 +214,14 @@ def test_is_multisig(test_config: UserConfig):
 
 
 def test_is_multisig2(test_config: UserConfig):
+    """Test is multisig2."""
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
     network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -241,7 +244,7 @@ def test_dump(test_config: UserConfig):
 
     keystores = create_test_seed_keystores(
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -263,13 +266,14 @@ def test_dump(test_config: UserConfig):
 
 
 def test_correct_addresses(test_config: UserConfig):
+    """Test correct addresses."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
     network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=1,
-        key_origins=[f"m/84h/1h/0h" for i in range(5)],
+        key_origins=["m/84h/1h/0h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -293,6 +297,7 @@ def test_correct_addresses(test_config: UserConfig):
 
 
 def test_inconsistent_key_origins(test_config: UserConfig):
+    """Test inconsistent key origins."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
     network = test_config.network
@@ -300,7 +305,7 @@ def test_inconsistent_key_origins(test_config: UserConfig):
     # wrong derivation path
     keystores = create_test_seed_keystores(
         signers=1,
-        key_origins=[f"m/24h/1h/0h" for i in range(5)],
+        key_origins=["m/24h/1h/0h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -315,6 +320,7 @@ def test_inconsistent_key_origins(test_config: UserConfig):
 
 
 def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
+    """Test inconsistent seed with descriptor."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
     network = test_config.network
@@ -322,7 +328,7 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
     # wrong derivation path
     keystores = create_test_seed_keystores(
         signers=2,
-        key_origins=[f"m/84h/1h/0h" for i in range(5)],
+        key_origins=["m/84h/1h/0h" for i in range(5)],
         network=test_config.network,
     )[1:]
 
@@ -337,13 +343,14 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
 
 
 def test_mixed_keystores_is_consistent(test_config: UserConfig):
+    """Test mixed keystores is consistent."""
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
     network = test_config.network
 
     keystores = create_test_seed_keystores(
         signers=5,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         network=test_config.network,
     )
 
@@ -377,11 +384,12 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
     assert wallet.derives_identical_addresses(restored_wallet)
 
     assert len(wallet.keystores) == len(restored_wallet.keystores)
-    for org_keystore, restored_keystore in zip(wallet.keystores, restored_wallet.keystores):
+    for org_keystore, restored_keystore in zip(wallet.keystores, restored_wallet.keystores, strict=False):
         assert org_keystore.is_equal(restored_keystore)
 
 
 def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
+    """Test bacon wallet tx are fetched."""
     wallet_id = "bacon wallet"
     expected_descriptor = "wpkh([9a6a2580/84h/0h/0h]xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K/<0;1>/*)#fkxd7j3k"
 

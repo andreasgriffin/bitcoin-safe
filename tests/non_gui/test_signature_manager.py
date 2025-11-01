@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 import logging
 import tempfile
 from pathlib import Path
@@ -36,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 def test_download_manifest_and_verify() -> None:
+    """Test download manifest and verify."""
     manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -53,6 +55,7 @@ def test_download_manifest_and_verify() -> None:
 
 
 def test_download_manifest_and_verify_wrong_signature() -> None:
+    """Test download manifest and verify wrong signature."""
     manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -64,7 +67,7 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
         assert sig_filename == Path(tempdir) / "sparrow-1.8.4-manifest.txt.asc"
 
-        with open(sig_filename, "r") as file:
+        with open(sig_filename) as file:
             right_rig_content = file.read()
 
         assert manager.is_signature_file_available(manifest_file)

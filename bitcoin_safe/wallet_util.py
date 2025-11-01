@@ -50,6 +50,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import enum
 import logging
 from dataclasses import dataclass
@@ -61,6 +63,7 @@ logger = logging.getLogger(__name__)
 
 
 def signer_name(threshold: int, i: int) -> str:
+    """Signer name."""
     i += 1
     if i <= threshold:
         return translate("d", "Signer {i}").format(i=i)
@@ -84,18 +87,20 @@ class WalletDifference:
 
 @dataclass
 class WalletDifferences(list[WalletDifference]):
-
     def has_impact_on_addresses(self) -> bool:
+        """Has impact on addresses."""
         worst = self.worst()
         if not worst:
             return False
         return worst.type == WalletDifferenceType.ImpactOnAddresses
 
     def worst(self) -> WalletDifference | None:
+        """Worst."""
         if not self:
             return None
 
         def key(d: WalletDifference):
+            """Key."""
             return d.type.value
 
         return sorted(self, key=key, reverse=True)[0]

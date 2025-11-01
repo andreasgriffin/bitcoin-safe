@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -37,12 +38,12 @@ from tests.util import make_psbt
 from ..setup_fulcrum import Faucet
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 def test_compare_software_signer_to_bdk(
     faucet: Faucet,
 ):
+    """Test compare software signer to bdk."""
     wallet = faucet.bdk_wallet
 
     psbt = make_psbt(

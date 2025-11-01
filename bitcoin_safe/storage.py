@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import enum
 import json
@@ -37,8 +38,9 @@ import secrets
 from abc import abstractmethod
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
+from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Optional, Type, Union
+from typing import Any, TypeVar
 
 import bdkpython as bdk
 from bitcoin_safe_lib.util import time_logger
@@ -46,21 +48,27 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from typing_extensions import Self
 
 from .util import fast_version
+
+T = TypeVar("T")
 
 logger = logging.getLogger(__name__)
 
 
 def varnames(method: Callable) -> Iterable[str]:
+    """Varnames."""
     return method.__code__.co_varnames[: method.__code__.co_argcount]
 
 
-def filtered_dict(d: Dict, allowed_keys: Iterable[str]) -> Dict:
+def filtered_dict(d: dict, allowed_keys: Iterable[str]) -> dict:
+    """Filtered dict."""
     return {k: v for k, v in d.items() if k in allowed_keys}
 
 
-def filtered_for_init(d: Dict, cls: Type) -> Dict:
+def filtered_for_init(d: dict, cls: type[T]) -> dict:
+    """Filtered for init."""
     return filtered_dict(d, varnames(cls.__init__))
 
 
@@ -77,6 +85,7 @@ class Encrypt:
         return b64e(kdf.derive(password))
 
     def password_encrypt(self, message: bytes, password: str, iterations: int = 100_000) -> bytes:
+        """Password encrypt."""
         salt = secrets.token_bytes(16)
         key = self._derive_key(password.encode(), salt, iterations)
         return b64e(
@@ -89,6 +98,7 @@ class Encrypt:
         )
 
     def password_decrypt(self, token: bytes, password: str) -> bytes:
+        """Password decrypt."""
         decoded = b64d(token)
         salt, iter, token = decoded[:16], decoded[16:20], b64e(decoded[20:])
         iterations = int.from_bytes(iter, "big")
@@ -100,9 +110,11 @@ class Encrypt:
 
 class Storage:
     def __init__(self) -> None:
+        """Initialize instance."""
         self.encrypt = Encrypt()
 
-    def save(self, message: str, filename: str, password: Optional[str] = None) -> None:
+    def save(self, message: str, filename: str, password: str | None = None) -> None:
+        """Save."""
         token = self.encrypt.password_encrypt(message.encode(), password) if password else message.encode()
 
         with open(filename, "wb") as f:
@@ -110,6 +122,7 @@ class Storage:
 
     @classmethod
     def has_password(cls, filename: str) -> bool:
+        """Has password."""
         with open(filename, "rb") as f:
             token = f.read()
 
@@ -118,7 +131,8 @@ class Storage:
 
         return True
 
-    def load(self, filename: str, password: Optional[str] = None) -> str:
+    def load(self, filename: str, password: str | None = None) -> str:
+        """Load."""
         with open(filename, "rb") as f:
             token = f.read()
 
@@ -133,7 +147,10 @@ class Storage:
 class ClassSerializer:
     @classmethod
     def general_deserializer(cls, known_classes, class_kwargs) -> Callable:
-        def deserializer(dct: Dict) -> Dict:
+        """General deserializer."""
+
+        def deserializer(dct: dict) -> dict:
+            """Deserializer."""
             cls_string = dct.get("__class__")  # e.g. KeyStore
             if cls_string:
                 if cls_string in known_classes:
@@ -149,7 +166,8 @@ class ClassSerializer:
                 else:
                     dct.clear()
                     logger.error(
-                        f"""{cls_string} not in known_classes {known_classes}. The {cls_string} data will be dropped."""
+                        f"{cls_string} not in known_classes {known_classes}. "
+                        f"The {cls_string} data will be dropped."
                     )
                     logger.debug(
                         f"""{cls_string} not in known_classes {known_classes}."""
@@ -177,6 +195,7 @@ class ClassSerializer:
 
     @classmethod
     def general_serializer(cls, obj):
+        """General serializer."""
         if isinstance(obj, enum.Enum):
             return {"__enum__": True, "name": obj.__class__.__name__, "value": obj.name}
         if isinstance(obj, BaseSaveableClass):
@@ -186,12 +205,12 @@ class ClassSerializer:
 
 
 class BaseSaveableClass:
-    known_classes: Dict[str, Any] = {"Network": bdk.Network}
+    known_classes: dict[str, Any] = {"Network": bdk.Network}
     VERSION = "0.0.0"
     _version_from_dump: str | None = None
 
     @abstractmethod
-    def dump(self) -> Dict:
+    def dump(self) -> dict:
         "Returns the dict"
         d = {}
         d["__class__"] = self.__class__.__name__
@@ -199,7 +218,8 @@ class BaseSaveableClass:
         return d
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]):
+    def from_dump_migration(cls, dct: dict[str, Any]):
+        """From dump migration."""
         cls._version_from_dump = dct["VERSION"]
 
         # now the version is newest, so it can be deleted from the dict
@@ -208,12 +228,13 @@ class BaseSaveableClass:
         return dct
 
     @classmethod
-    def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
+    def from_dump_downgrade_migration(cls, dct: dict[str, Any]):
         "this class can be overwritten in child classes"
         return dct
 
     @classmethod
-    def _from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
+    def _from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
+        """From dump."""
         assert dct.get("__class__") == cls.__name__
         del dct["__class__"]
 
@@ -228,14 +249,16 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None) -> Self:
+        """From dump."""
         raise NotImplementedError()
 
-    def clone(self, class_kwargs: Dict | None = None):
+    def clone(self, class_kwargs: dict | None = None) -> Self:
+        """Clone."""
         return self.from_dump(self.dump(), class_kwargs=class_kwargs)
 
     @time_logger
-    def save(self, filename: Union[Path, str], password: Optional[str] = None):
+    def save(self, filename: Path | str, password: str | None = None):
         "Saves the json dumps to a file"
         directory = os.path.dirname(str(filename))
         # Create the directories
@@ -262,7 +285,7 @@ class BaseSaveableClass:
         )
 
     @staticmethod
-    def _flatten_known_classes(known_classes: Dict[str, Any]) -> Dict[str, Any]:
+    def _flatten_known_classes(known_classes: dict[str, Any]) -> dict[str, Any]:
         "Recursively extends the dict to includes all known_classes of known_classes"
         known_classes = known_classes.copy()
         for known_class in list(known_classes.values()):
@@ -271,19 +294,22 @@ class BaseSaveableClass:
         return known_classes
 
     @classmethod
-    def get_known_classes(cls) -> Dict[str, Any]:
+    def get_known_classes(cls) -> dict[str, Any]:
         "Gets a flattened list of known classes that a json deserializer needs to interpet all objects"
         return BaseSaveableClass._flatten_known_classes({cls.__name__: cls})
 
     @classmethod
     @time_logger
-    def _from_file(cls, filename: str, password: Optional[str] = None, class_kwargs: Dict | None = None):
-        """Loads the class from a file. This offers the option of add class_kwargs args
+    def _from_file(cls, filename: str, password: str | None = None, class_kwargs: dict | None = None):
+        """Loads the class from a file. This offers the option of add class_kwargs args.
 
         Args:
             filename (str): _description_
             password (Optional[str], optional): _description_. Defaults to None.
-            class_kwargs (_type_, optional):  example:  class_kwargs= {'Wallet':{'config':config}}. Defaults to None.
+            class_kwargs (_type_, optional):
+                example:
+                    class_kwargs= {'Wallet':{'config':config}}.
+                Defaults to None.
 
         Returns:
             _type_: _description_
@@ -307,11 +333,13 @@ class BaseSaveableClass:
 
 class SaveAllClass(BaseSaveableClass):
     def dump(self):
+        """Dump."""
         d = super().dump()
         d.update(self.__dict__.copy())
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))

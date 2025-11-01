@@ -26,16 +26,19 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, Generic, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget
 
 from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -44,35 +47,42 @@ T2 = TypeVar("T2")
 
 
 class DataTabWidget(HistTabWidget, Generic[T]):
-    signal_on_tab_change = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_on_tab_change: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(self, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
-        self._tab_data: Dict[QWidget, T] = {}
+        self._tab_data: dict[QWidget, T] = {}
         self.currentChanged.connect(self.signal_on_tab_change.emit)
 
     def setTabData(self, widget: QWidget, data: T) -> None:
+        """SetTabData."""
         self._tab_data[widget] = data
 
     def tabData(self, index: int) -> T | None:
+        """TabData."""
         tab = self.widget(index)
         if not tab:
             return None
         return self._tab_data.get(tab)
 
     def get_data_for_tab(self, tab: QWidget) -> T:
+        """Get data for tab."""
         return self._tab_data[tab]
 
     def getCurrentTabData(self) -> T | None:
+        """GetCurrentTabData."""
         current_widget = self.currentWidget()
         if not current_widget:
             return None
         return self._tab_data[current_widget]
 
-    def getAllTabData(self) -> Dict[QWidget, T]:
+    def getAllTabData(self) -> dict[QWidget, T]:
+        """GetAllTabData."""
         return self._tab_data
 
     def clearTabData(self) -> None:
+        """ClearTabData."""
         self._tab_data.clear()
 
     def clear(self) -> None:
@@ -83,6 +93,7 @@ class DataTabWidget(HistTabWidget, Generic[T]):
     def addTab(  # type: ignore[override]
         self, widget: QWidget, icon: QIcon | None = None, description: str = "", data: T | None = None
     ) -> int:  # type: ignore[override]
+        """AddTab."""
         if icon:
             index = super().addTab(widget, icon, description)
         else:
@@ -96,6 +107,7 @@ class DataTabWidget(HistTabWidget, Generic[T]):
     def insertTab(  # type: ignore[override]
         self, index: int, widget: QWidget, data: T, icon: QIcon | None = None, description: str = ""
     ) -> int:  # type: ignore[override]
+        """InsertTab."""
         if icon:
             new_index = super().insertTab(index, widget, icon, description)
         else:
@@ -115,8 +127,9 @@ class DataTabWidget(HistTabWidget, Generic[T]):
         position: int | None = None,
         focus: bool = False,
     ):
+        """Add tab."""
         if position is None:
-            index = self.addTab(tab, icon, description, data=data)
+            self.addTab(tab, icon, description, data=data)
             if focus:
                 self.setCurrentIndex(self.count() - 1)
         else:
@@ -125,6 +138,7 @@ class DataTabWidget(HistTabWidget, Generic[T]):
                 self.setCurrentIndex(position)
 
     def removeTab(self, index: int) -> None:
+        """RemoveTab."""
         widget = self.widget(index)
         if widget in self._tab_data:
             del self._tab_data[widget]
@@ -152,6 +166,7 @@ if __name__ == "__main__":
 
     # Connect tab change signal to a function to display current tab data
     def show_current_tab_data(index) -> None:
+        """Show current tab data."""
         data = tab_widget.getCurrentTabData()
         tab_widget.setToolTip(f"Data for current tab: {data}")
 

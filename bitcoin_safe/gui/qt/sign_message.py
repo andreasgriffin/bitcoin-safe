@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-import typing
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
@@ -43,16 +43,18 @@ from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
-from ...signals import SignalsMin, TypedPyQtSignal
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+from ...signals import SignalsMin
 from .util import Message
 
 logger = logging.getLogger(__name__)
 
 
 class SignMessage(QWidget):
-    signal_signed_message = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_signed_message: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
 
     def __init__(
         self,
@@ -61,9 +63,10 @@ class SignMessage(QWidget):
         signals_min: SignalsMin,
         close_all_video_widgets: TypedPyQtSignalNo,
         loop_in_thread: LoopInThread | None,
-        parent: typing.Optional["QWidget"],
+        parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.network = network
         self.close_all_video_widgets = close_all_video_widgets
@@ -111,6 +114,7 @@ class SignMessage(QWidget):
         self.grid_layout.addWidget(self.sign_qr_button, 1, 3)
 
     def get_data(self) -> Data:
+        """Get data."""
         return Data(
             SignMessageRequest(msg=self.sign_edit.text(), subpath=self.bip32_path, addr_fmt=""),
             data_type=DataType.SignMessageRequest,
@@ -118,6 +122,7 @@ class SignMessage(QWidget):
         )
 
     def dialog_open_qr_scanner(self) -> None:
+        """Dialog open qr scanner."""
         self._qr_scanner = SimpleQrScanner(
             network=self.network,
             close_all_video_widgets=self.close_all_video_widgets,
@@ -126,12 +131,15 @@ class SignMessage(QWidget):
         self._qr_scanner.signal_raw_content.connect(self.on_raw_content)
 
     def on_raw_content(self, o: object):
+        """On raw content."""
         self.signal_signed_message.emit(str(o))
 
     def on_show_export_widget(self):
+        """On show export widget."""
         self.sign_qr_button.set_data(self.get_data())
 
     def on_sign_usb_message_button(self):
+        """On sign usb message button."""
         msg = self.sign_edit.text()
         if len(msg) < 2:
             Message(self.tr("Message too short."))

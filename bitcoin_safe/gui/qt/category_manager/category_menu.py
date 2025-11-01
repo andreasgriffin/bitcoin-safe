@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from PyQt6.QtCore import QSignalBlocker
@@ -46,10 +46,10 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryComboBox(QComboBox):
-
     ADD_CATEGORY_DATA = object()
 
     def __init__(self, category_core: CategoryCore | None = None, parent=None):
+        """Initialize instance."""
         super().__init__(parent=parent)
         self._last_valid_index = -1
         self.signnal_tracker = SignalTracker()
@@ -62,6 +62,7 @@ class CategoryComboBox(QComboBox):
         # signals
 
     def set_category_core(self, category_core: CategoryCore | None):
+        """Set category core."""
         self.signnal_tracker.disconnect_all()
         self.category_core = category_core
 
@@ -69,8 +70,9 @@ class CategoryComboBox(QComboBox):
             self.signnal_tracker.connect(self.category_core.wallet_signals.updated, self.on_wallet_updated)
         self.update_content()
 
-    def _get_category_infos(self) -> List[CategoryInfo]:
-        d: List[CategoryInfo] = []
+    def _get_category_infos(self) -> list[CategoryInfo]:
+        """Get category infos."""
+        d: list[CategoryInfo] = []
         for i in range(self.count()):
             data = self.itemData(i)
             if isinstance(data, CategoryInfo):
@@ -78,6 +80,7 @@ class CategoryComboBox(QComboBox):
         return d
 
     def on_wallet_updated(self, update_filter: UpdateFilter):
+        """On wallet updated."""
         if not self.category_core:
             return
         my_categories = [info.category for info in self._get_category_infos()]
@@ -86,7 +89,7 @@ class CategoryComboBox(QComboBox):
         if len(my_categories) != len(wallet_categories) or any(
             [
                 my_category != wallet_category
-                for my_category, wallet_category in zip(my_categories, wallet_categories)
+                for my_category, wallet_category in zip(my_categories, wallet_categories, strict=False)
             ]
         ):
             self.update_content()
@@ -110,6 +113,7 @@ class CategoryComboBox(QComboBox):
             self.addItem(plus_icon, self.tr("Add category"), self.ADD_CATEGORY_DATA)
 
     def _on_activated(self, index: int):
+        """On activated."""
         data = self.itemData(index)
         if data is self.ADD_CATEGORY_DATA:
             # user clicked “Add category”
@@ -122,6 +126,7 @@ class CategoryComboBox(QComboBox):
             # (optionally emit your own signal here)
 
     def _on_add_category(self):
+        """On add category."""
         if not self.category_core:
             return
         category = prompt_new_category(self)
@@ -139,8 +144,8 @@ class CategoryComboBox(QComboBox):
         )
 
     def select_item(self, category: str):
-
         # find and select the newly created one
+        """Select item."""
         for i in range(self.count()):
             if self.itemText(i) == category:
                 super().setCurrentIndex(i)

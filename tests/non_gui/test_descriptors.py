@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -40,7 +41,7 @@ import logging
 
 
 def test_from_multisig_wallet_export():
-
+    """Test from multisig wallet export."""
     s = """# Keystone Multisig setup file (created on 0439f926)
 #
 Name: MultiSig
@@ -68,7 +69,7 @@ Derivation: m/48'/0'/0'/2'
 
 
 def test_from_multisig_wallet_export_incompatible():
-
+    """Test from multisig wallet export incompatible."""
     s = """# Coldcard Multisig setup file (created by Sparrow)
 #
 Name: jhdfgre

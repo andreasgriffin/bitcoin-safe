@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import asyncio
 import datetime
@@ -33,7 +34,7 @@ import enum
 import logging
 from dataclasses import dataclass
 from math import ceil
-from typing import Any, Dict, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import aiohttp
 import numpy as np
@@ -45,7 +46,9 @@ from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 
 from .network_utils import ProxyInfo
-from .signals import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -135,6 +138,7 @@ mempoolFeeColors = [
 
 
 def fee_to_color(fee, colors=mempoolFeeColors) -> str:
+    """Fee to color."""
     if fee == 0:
         # for 0 just use the same color as 1
         fee = 1
@@ -144,9 +148,8 @@ def fee_to_color(fee, colors=mempoolFeeColors) -> str:
     return colors[indizes[-1]]
 
 
-async def fetch_from_url(
-    url: str, proxies: Dict[str, str] | None = None, is_json: bool = True
-) -> Optional[Any]:
+async def fetch_from_url(url: str, proxies: dict[str, str] | None = None, is_json: bool = True) -> Any | None:
+    """Fetch from url."""
     logger.debug(f"fetch_from_url session.get({url}, timeout=10)")
 
     # Configure a 10-second total timeout
@@ -201,14 +204,14 @@ class BlockInfo:
 
 
 class MempoolManager(QObject):
-
-    signal_data_updated = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_data_updated: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
         network_config: NetworkConfig,
         signals_min: SignalsMin,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.signals_min = signals_min
         self.loop_in_thread = LoopInThread()
@@ -219,18 +222,21 @@ class MempoolManager(QObject):
         logger.debug(f"initialized {self.__class__.__name__}")
 
     def block_info(self, block_index: int, decimal_precision=1) -> BlockInfo:
+        """Block info."""
         min_fee, max_fee = self.fee_rates_min_max(block_index)
         median_fee = self.median_block_fee_rate(block_index, decimal_precision=decimal_precision)
         return BlockInfo(
             max_fee=max_fee, min_fee=min_fee, median_fee=median_fee, block_type=BlockType.mempool
         )
 
-    def fee_rates_min_max(self, block_index: int) -> Tuple[int, float]:
+    def fee_rates_min_max(self, block_index: int) -> tuple[int, float]:
+        """Fee rates min max."""
         block_index = min(block_index, len(self.data.mempool_blocks) - 1)
         fee_rates = self.data.mempool_blocks[block_index]["feeRange"]
         return min(fee_rates), max(fee_rates)
 
     def median_block_fee_rate(self, block_index: int, decimal_precision=1) -> float:
+        """Median block fee rate."""
         block_index = min(block_index, len(self.data.mempool_blocks) - 1)
         # mempool returns media fee of 0, even though the minimum feein feeRange is 1
         median = round(self.data.mempool_blocks[block_index]["medianFee"], decimal_precision)
@@ -243,19 +249,23 @@ class MempoolManager(QObject):
         return median
 
     def num_mempool_blocks(self) -> int:
+        """Num mempool blocks."""
         vBytes_per_block = 1e6
         return ceil(self.data.mempool_dict["vsize"] / vBytes_per_block)
 
-    def get_prio_fee_rates(self) -> Dict[TxPrio, float]:
+    def get_prio_fee_rates(self) -> dict[TxPrio, float]:
+        """Get prio fee rates."""
         return {
             prio: self.data.recommended[key]
             for prio, key in zip(
                 [TxPrio.high, TxPrio.medium, TxPrio.low],
                 ["fastestFee", "halfHourFee", "hourFee"],
+                strict=False,
             )
         }
 
     def get_min_relay_fee_rate(self) -> float:
+        """Get min relay fee rate."""
         return self.data.recommended["minimumFee"]
 
     def max_reasonable_fee_rate(self) -> float:
@@ -268,19 +278,23 @@ class MempoolManager(QObject):
         return average_fee_rate * (1 + slack)
 
     def close(self):
+        """Close."""
         self.loop_in_thread.stop()
         logger.debug(f"{self.__class__.__name__} close")
 
     def set_data_from_mempoolspace(self, force=False) -> None:
+        """Set data from mempoolspace."""
         if not force and datetime.datetime.now() - self.time_of_data < datetime.timedelta(minutes=9):
             logger.debug(
-                f"Do not fetch data from {self.network_config.mempool_url} because data is only {datetime.datetime.now()- self.time_of_data  } old."
+                f"Do not fetch data from {self.network_config.mempool_url} "
+                f"because data is only {datetime.datetime.now() - self.time_of_data} old."
             )
             return None
 
         self._task_set_data = self.loop_in_thread.run_background(self._set_data_from_mempoolspace())
 
     async def _set_data_from_mempoolspace(self) -> None:
+        """Set data from mempoolspace."""
         self.time_of_data = datetime.datetime.now()
 
         urls = [
@@ -316,6 +330,7 @@ class MempoolManager(QObject):
             self.signal_data_updated.emit()
 
     def fetch_block_tip_height(self) -> int:
+        """Fetch block tip height."""
         response = self.loop_in_thread.run_foreground(
             fetch_from_url(
                 f"{self.network_config.mempool_url}api/blocks/tip/height",
@@ -329,6 +344,7 @@ class MempoolManager(QObject):
         return response if response else 0
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:
+        """Fee rate to projected block index."""
         available_blocks = len(self.data.mempool_blocks)
         for i in range(available_blocks):
             v_min, v_max = self.fee_rates_min_max(i)

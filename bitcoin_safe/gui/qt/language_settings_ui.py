@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 from PyQt6.QtWidgets import QComboBox, QFormLayout, QLabel, QWidget
 
@@ -58,15 +60,18 @@ BITCOIN_CURRENCY_CODES: Sequence[str] = (
 
 
 def _format_currency_label(code_upper: str, symbol: str, name: str) -> str:
+    """Format currency label."""
     display_symbol = symbol or code_upper
     return f"{code_upper} - {display_symbol.ljust(4)} - {name}"
 
 
 def _available_codes(rates: dict[str, dict], codes: Iterable[str]) -> list[str]:
+    """Available codes."""
     return [code.lower() for code in codes if rates.get(code.lower())]
 
 
 def _add_currency_item(combo: QComboBox, fx: FX, code_lower: str) -> None:
+    """Add currency item."""
     data = fx.rates.get(code_lower)
     if not data:
         return
@@ -94,6 +99,7 @@ def populate_currency_combobox(
     *,
     selected_currency: str | None = None,
 ) -> None:
+    """Populate currency combobox."""
     combo.blockSignals(True)
     try:
         combo.clear()
@@ -144,6 +150,7 @@ def populate_currency_combobox(
                 _add_currency_item(combo, fx, code)
 
         def _find_index(currency: str) -> int:
+            """Find index."""
             currency_lower = currency.lower()
             for index in range(combo.count()):
                 data = combo.itemData(index)
@@ -171,6 +178,7 @@ def create_currency_combobox(
     selected_currency: str | None = None,
     parent: QWidget | None = None,
 ) -> QComboBox:
+    """Create currency combobox."""
     combo = QComboBox(parent)
     populate_currency_combobox(combo, fx, selected_currency=selected_currency)
     return combo
@@ -178,6 +186,7 @@ def create_currency_combobox(
 
 class InterfaceSettingsUi(QWidget):
     def __init__(self, fx: FX, language_chooser: LanguageChooser, config: UserConfig, parent=None):
+        """Initialize instance."""
         super().__init__(parent)
         self.fx = fx
         self.config = config
@@ -210,19 +219,23 @@ class InterfaceSettingsUi(QWidget):
         self.currency_combo.currentIndexChanged.connect(self._on_currency_changed)
 
     def data_updated(self):
+        """Data updated."""
         current_data = self.currency_combo.currentData()
         selected = current_data if isinstance(current_data, str) else self.config.currency
         populate_currency_combobox(self.currency_combo, self.fx, selected_currency=selected)
 
     def _on_currency_changed(self, idx: int):
+        """On currency changed."""
         currency = self.currency_combo.currentData()
         if not currency:
             return
         self.language_chooser.set_currency(currency)
 
     def _on_language_changed(self, idx: int):
+        """On language changed."""
         self.language_chooser.switchLanguage(self.language_combo.itemData(idx))
 
     def updateUi(self):
+        """UpdateUi."""
         self.label_language.setText("Language")
         self.label_currency.setText("Currency")

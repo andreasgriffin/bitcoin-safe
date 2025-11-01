@@ -26,11 +26,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import datetime
 import logging
 import os
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any
 
 import bdkpython as bdk
 import numpy as np
@@ -59,21 +61,17 @@ class NumberedPageCanvas(Canvas):
     """
 
     def __init__(self, *args, **kwargs):
-        """Constructor"""
+        """Constructor."""
         super().__init__(*args, **kwargs)
         self.pages = []
 
     def showPage(self):
-        """
-        On a page break, add information to the list
-        """
+        """On a page break, add information to the list."""
         self.pages.append(dict(self.__dict__))
         self._startPage()  # type: ignore
 
     def save(self):
-        """
-        Add the page number to each page (page x of y)
-        """
+        """Add the page number to each page (page x of y)"""
         page_count = len(self.pages)
 
         for page in self.pages:
@@ -84,9 +82,7 @@ class NumberedPageCanvas(Canvas):
         super().save()
 
     def draw_page_number(self, page_count):
-        """
-        Draw "Page X of Y" in bottom-right corner.
-        """
+        """Draw "Page X of Y" in bottom-right corner."""
         # Format the text
         page_label = f"{self._pageNumber}/{page_count}"  # type: ignore
 
@@ -108,23 +104,25 @@ class NumberedPageCanvas(Canvas):
 
 
 class PdfStatement(BasePDF):
-
     def __init__(self, network: bdk.Network, lang_code: str) -> None:
+        """Initialize instance."""
         super().__init__(lang_code=lang_code)
         self.network = network
 
     @property
     def TEXT_24_WORDS(self):
+        """TEXT 24 WORDS."""
         return translate("pdf", "12 or 24", no_translate=self.no_translate)
 
     def create_balance_table(
         self,
         table: np.ndarray,
-        widths: List[int],
-        header: List[str],
-        styles: List[ParagraphStyle] | None = None,
-        header_styles: List[ParagraphStyle] | None = None,
+        widths: list[int],
+        header: list[str],
+        styles: list[ParagraphStyle] | None = None,
+        header_styles: list[ParagraphStyle] | None = None,
     ) -> Table:
+        """Create balance table."""
         if not styles:
             styles = [self.style_paragraph for i in range(table.shape[1])]
         else:
@@ -136,9 +134,12 @@ class PdfStatement(BasePDF):
             header_styles = (header_styles + styles)[: len(styles)]
 
         # Convert numpy array to a list of lists for ReportLab compatibility
-        data = [[Paragraph(entry, style=style) for entry, style in zip(row, styles)] for row in table]
+        data = [
+            [Paragraph(entry, style=style) for entry, style in zip(row, styles, strict=False)]
+            for row in table
+        ]
         data.insert(
-            0, [Paragraph(entry, style=style) for entry, style in zip(header, header_styles)]
+            0, [Paragraph(entry, style=style) for entry, style in zip(header, header_styles, strict=False)]
         )  # Insert the header at the beginning of the data list
 
         # Create the table
@@ -163,8 +164,9 @@ class PdfStatement(BasePDF):
         return t
 
     @staticmethod
-    def create_invisible_table(columns: List[Any], col_widths: List[int]) -> Table:
+    def create_invisible_table(columns: list[Any], col_widths: list[int]) -> Table:
         # Validate input and create data for the table
+        """Create invisible table."""
         max_rows = max([len(col) for col in columns])
         data = []
         for i in range(max_rows):
@@ -191,10 +193,11 @@ class PdfStatement(BasePDF):
         return table
 
     def add_page_break(self) -> None:
+        """Add page break."""
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _address_table(self, address_info: List[Tuple[str, str, str]], total_amount: str) -> None:
-
+    def _address_table(self, address_info: list[tuple[str, str, str]], total_amount: str) -> None:
+        """Address table."""
         self.elements.append(
             self.create_balance_table(
                 table=np.array(address_info + [(translate("pdf", "Total"), "", total_amount)]),
@@ -213,6 +216,7 @@ class PdfStatement(BasePDF):
         wallet_descriptor_string: str,
         threshold: int,
     ) -> None:
+        """Descriptor part."""
         qr_image = pilimage_to_reportlab(
             QRGenerator.create_qr_PILimage(wallet_descriptor_string), width=200, height=200
         )
@@ -220,7 +224,9 @@ class PdfStatement(BasePDF):
             desc_str = Paragraph(
                 translate(
                     "pdf",
-                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.",
+                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows "
+                    "you to create a watch-only wallet to see your balance. "
+                    "To spent from it you need {threshold} Seeds and the wallet descriptor.",
                     no_translate=self.no_translate,
                 ).format(threshold=threshold, wallet_descriptor_string=wallet_descriptor_string),
                 self.style_paragraph,
@@ -229,7 +235,9 @@ class PdfStatement(BasePDF):
             desc_str = Paragraph(
                 translate(
                     "pdf",
-                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).",
+                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/>"
+                    " allows you to create a watch-only wallet to see your balance. "
+                    "To spent from it you need the secret {number} words (Seed).",
                     no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS, wallet_descriptor_string=wallet_descriptor_string),
                 self.style_paragraph,
@@ -240,12 +248,13 @@ class PdfStatement(BasePDF):
         self,
         title: str,
         wallet_descriptor_string: str,
-        address_info: List[Tuple[str, str, str]],
+        address_info: list[tuple[str, str, str]],
         threshold: int,
         total_amount: str,
         max_tip: int,
         label_sync_nsec: str | None = None,
     ) -> None:
+        """Create pdf."""
         self.elements.append(Paragraph(title, style=self.style_heading))
 
         localized_date = QLocale().toString(QDateTime(datetime.datetime.now()))
@@ -255,11 +264,11 @@ class PdfStatement(BasePDF):
                 translate("pdf", "Created at {date} with", no_translate=self.no_translate).format(
                     date=localized_date
                 )
-                + f" Bitcoin Safe: {white_space*2} www.bitcoin-safe.org",
+                + f" Bitcoin Safe: {white_space * 2} www.bitcoin-safe.org",
                 self.style_paragraph,
             )
         )
-        self.elements.append(Paragraph(f"", self.style_paragraph))
+        self.elements.append(Paragraph("", self.style_paragraph))
 
         self._descriptor_part(wallet_descriptor_string, threshold)
 
@@ -271,7 +280,8 @@ class PdfStatement(BasePDF):
                 Paragraph(
                     translate(
                         "pdf",
-                        "On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.",
+                        "On rescanning this wallet, scan to at least address index "
+                        "{max_tip} to discover all funded addresses.",
                         no_translate=self.no_translate,
                     ).format(max_tip=max_tip),
                     self.style_paragraph,
@@ -291,9 +301,10 @@ class PdfStatement(BasePDF):
 
 
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
+    """Make and open pdf statement."""
     info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
 
-    addresses_and_balances: List[Tuple[str, str, int]] = []  # category, address, amount
+    addresses_and_balances: list[tuple[str, str, int]] = []  # category, address, amount
     total_amount = 0
     for address in wallet.get_addresses():
         balance = wallet.get_addr_balance(address).total

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -38,9 +39,11 @@ logger = logging.getLogger(__name__)
 
 class HTMLDelegate:
     def __init__(self) -> None:
+        """Initialize instance."""
         pass
 
     def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        """Paint."""
         if not painter:
             return
         model = index.model()
@@ -81,6 +84,7 @@ class HTMLDelegate:
         painter.restore()
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
+        """SizeHint."""
         model = index.model()
         if not model:
             return QSize()
@@ -94,4 +98,5 @@ class HTMLDelegate:
 
     def show_tooltip(self, evt: QHelpEvent) -> bool:
         # QToolTip.showText(evt.globalPosition(), ', '.join(self.categories))
+        """Show tooltip."""
         return True

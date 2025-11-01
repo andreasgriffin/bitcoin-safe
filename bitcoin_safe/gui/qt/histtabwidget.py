@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import Optional
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -46,14 +46,15 @@ logger = logging.getLogger(__name__)
 
 
 class HistTabWidget(QTabWidget):
-    """Stores the closing activation history of the tabs and upon close, activates the last active one.
+    """Stores the closing activation history of the tabs and upon close, activates the
+    last active one.
 
     Args:
         QTabWidget: Inherits from QTabWidget.
-
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
+        """Initialize instance."""
         super().__init__(
             parent,
         )
@@ -70,7 +71,8 @@ class HistTabWidget(QTabWidget):
             self._tab_history.append(index)
 
     def remove_tab_from_history(self, index: int) -> None:
-        """Handles the tab close request, updating history and setting the last active tab.
+        """Handles the tab close request, updating history and setting the last active
+        tab.
 
         Args:
             index (int): The index of the tab that is being closed.
@@ -80,13 +82,15 @@ class HistTabWidget(QTabWidget):
             self._tab_history = UniqueDeque([i for i in self._tab_history if i != index])
         self._tab_history = UniqueDeque([i - 1 if i > index else i for i in self._tab_history])
 
-    def get_last_active_tab(self) -> Optional[QWidget]:
+    def get_last_active_tab(self) -> QWidget | None:
+        """Get last active tab."""
         index = self.get_last_active_tab_index()
         if index >= 0:
             return self.widget(index)
         return None
 
     def get_last_active_tab_index(self) -> int:
+        """Get last active tab index."""
         if len(self._tab_history) >= 2:
             return self._tab_history[-2]
         elif len(self._tab_history) >= 1:
@@ -94,22 +98,26 @@ class HistTabWidget(QTabWidget):
         return self.currentIndex()
 
     def jump_to_tab(self, widget: QWidget) -> None:
+        """Jump to tab."""
         index = self.indexOf(widget)
         if index >= 0:
             self.setCurrentIndex(index)
 
     def jump_to_last_active_tab(self) -> None:
-        """Sets the current tab to the last active one from history or to the first tab if history is empty."""
+        """Sets the current tab to the last active one from history or to the first tab
+        if history is empty."""
         index = self.get_last_active_tab_index()
         if index >= 0:
             self.setCurrentIndex(index)
 
     def remove_tab(self, widget: QWidget) -> None:
+        """Remove tab."""
         index = self.indexOf(widget)
         if index >= 0:
             self.removeTab(index)
 
     def removeTab(self, index: int) -> None:
+        """RemoveTab."""
         self.remove_tab_from_history(index)
         return super().removeTab(index)
 
@@ -118,11 +126,13 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self):
+            """Initialize instance."""
             super().__init__()
             self.tab_widget = HistTabWidget()
             self.tab_widget.setTabsClosable(True)
 
             def remove(index):
+                """Remove."""
                 self.tab_widget.jump_to_last_active_tab()
                 self.tab_widget.removeTab(index)
 

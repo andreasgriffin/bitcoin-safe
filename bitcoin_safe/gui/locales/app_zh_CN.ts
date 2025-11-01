@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>购买 {number} 硬件签名器                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe 支持所有主要硬件签名器：&lt;a href="{url}"&gt;查看完整列表&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>购买 {number} 个硬件签名器                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe 支持所有主要的硬件签名器：&lt;a href="{url}"&gt;查看完整列表&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>是否根据新的描述符填写签名者信息？</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>输入已修正</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>大致费率</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>无法精确知道手续费率，因为交易的最终大小未知。</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2078,6 +2089,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>此钱包仍在同步中，如果关闭，将需要从头开始同步。是否保持钱包打开？</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>尝试连接到：{ip}</translation>
 		</message>
@@ -2105,6 +2122,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>钱包同步中</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>钱包仍在同步中，如果关闭应用程序，将需要从头开始同步。是否改为隐藏到托盘？</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2776,6 +2799,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>接收</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>在同步前刷新所有缓存。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4905,8 +4933,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>钱包描述符（QR码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;允许您创建仅查看余额的观察钱包。要从中花费，您需要{number}个单词（Seed）的秘密。</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>钱包描述符（二维码） &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; 允许您创建仅查看钱包以查看余额。要从中支出，您需要 {number} 个秘密词（种子）。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5238,6 +5266,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>已确认的 UTXO</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

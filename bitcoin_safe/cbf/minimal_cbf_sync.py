@@ -25,21 +25,21 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 """Minimal script to sync a descriptor using BDK compact block filters."""
 
 import argparse
 import asyncio
 import tempfile
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List, cast
+from typing import cast
 
 import bdkpython as bdk
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse args."""
     parser = argparse.ArgumentParser(
         description="Sync a descriptor using BDK compact block filters.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -99,6 +99,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def parse_peer(peer: str) -> bdk.Peer:
+    """Parse peer."""
     host, _, port_str = peer.partition(":")
     if not port_str:
         raise ValueError(f"Peer '{peer}' must be in the form host:port")
@@ -118,8 +119,9 @@ def parse_peer(peer: str) -> bdk.Peer:
     return bdk.Peer(address=ipv4, port=port, v2_transport=False)
 
 
-def build_peers(peer_strings: Iterable[str]) -> List[bdk.Peer]:
-    peers: List[bdk.Peer] = []
+def build_peers(peer_strings: Iterable[str]) -> list[bdk.Peer]:
+    """Build peers."""
+    peers: list[bdk.Peer] = []
     for peer_str in peer_strings:
         try:
             peers.append(parse_peer(peer_str))
@@ -129,7 +131,10 @@ def build_peers(peer_strings: Iterable[str]) -> List[bdk.Peer]:
 
 
 async def stream_client_messages(client: bdk.CbfClient) -> None:
+    """Stream client messages."""
+
     async def log_stream(prefix: str, getter):
+        """Log stream."""
         while True:
             try:
                 item = await getter()
@@ -154,6 +159,7 @@ async def stream_client_messages(client: bdk.CbfClient) -> None:
 
 
 async def run_sync(args: argparse.Namespace) -> None:
+    """Run sync."""
     network = bdk.Network[args.network.upper()]
 
     data_dir = Path(args.data_dir) if args.data_dir else Path(tempfile.mkdtemp())
@@ -226,6 +232,7 @@ async def run_sync(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Main."""
     args = parse_args()
     try:
         asyncio.run(run_sync(args))

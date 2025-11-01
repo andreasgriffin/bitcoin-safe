@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 
 import bdkpython as bdk
@@ -17,11 +19,11 @@ if __name__ == "__main__":
 
     class DemoApp(QMainWindow):
         def __init__(self):
+            """Initialize instance."""
             super().__init__()
 
             if os.path.exists("network_configs.json"):
-                with open("network_configs.json", "r") as file:
-                    network_configs = NetworkConfigs.from_file("network_configs.json")
+                network_configs = NetworkConfigs.from_file("network_configs.json")
             else:
                 network_configs = NetworkConfigs()
 
@@ -38,6 +40,7 @@ if __name__ == "__main__":
             self.network_settings_ui.signal_cancel.connect(self.close)
 
         def save_and_close(self, network: bdk.Network):
+            """Save and close."""
             self.network_settings_ui.network_configs.save("network_configs.json")
             self.close()
 

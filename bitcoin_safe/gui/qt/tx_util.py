@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import serialized_to_hex
@@ -42,12 +42,13 @@ logger = logging.getLogger(__name__)
 
 
 def advance_tip_to_address_info(
-    address_info: AddressInfoMin, wallet: Wallet, wallet_signals: WalletSignals
-) -> List[bdk.AddressInfo]:
-    revealed_address_infos: List[bdk.AddressInfo] = []
-    if address_info.index > wallet.get_tip(is_change=address_info.is_change()):
+    address_info: AddressInfoMin, wallet: Wallet, wallet_signals: WalletSignals, min_advance: int = 1
+) -> list[bdk.AddressInfo]:
+    """Advance tip to address info."""
+    revealed_address_infos: list[bdk.AddressInfo] = []
+    if address_info.index > (current_tip := wallet.get_tip(is_change=address_info.is_change())):
         revealed_address_infos += wallet.advance_tip_if_necessary(
-            is_change=address_info.is_change(), target=address_info.index
+            is_change=address_info.is_change(), target=max(address_info.index, current_tip + min_advance)
         )
         wallet_signals.updated.emit(
             UpdateFilter(
@@ -59,9 +60,10 @@ def advance_tip_to_address_info(
 
 
 def advance_tip_for_addresses(
-    addresses: List[str], wallet_functions: WalletFunctions
-) -> List[bdk.AddressInfo]:
-    address_infos: List[bdk.AddressInfo] = []
+    addresses: list[str], wallet_functions: WalletFunctions
+) -> list[bdk.AddressInfo]:
+    """Advance tip for addresses."""
+    address_infos: list[bdk.AddressInfo] = []
     for address in addresses:
         if not address:
             continue
@@ -78,5 +80,5 @@ def advance_tip_for_addresses(
 
 
 def are_txs_identical(tx1: bdk.Transaction, tx2: bdk.Transaction) -> bool:
-
+    """Are txs identical."""
     return serialized_to_hex(tx1.serialize()) == serialized_to_hex(tx2.serialize())

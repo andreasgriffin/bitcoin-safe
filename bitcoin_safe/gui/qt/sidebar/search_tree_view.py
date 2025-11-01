@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
-from typing import Callable, List, Optional
+from collections.abc import Callable
 
 from PyQt6.QtCore import QItemSelectionModel, QModelIndex, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -66,12 +67,14 @@ logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------
 class SearchHTMLDelegate(QStyledItemDelegate):
     def __init__(self, parent: QWidget) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self._parent = parent
         # cache: html → (QTextDocument, width)
         self._doc_cache: dict[str, tuple[QTextDocument, int]] = {}
 
     def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
+        """Paint."""
         if not painter:
             return
 
@@ -134,6 +137,7 @@ class SearchHTMLDelegate(QStyledItemDelegate):
         painter.restore()
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
+        """SizeHint."""
         org = super().sizeHint(option, index)
         text = index.data(Qt.ItemDataRole.DisplayRole) or ""
 
@@ -144,9 +148,8 @@ class SearchHTMLDelegate(QStyledItemDelegate):
         return QSize(width + 4, org.height())
 
     def _get_doc_and_width(self, html: str, font: QFont) -> tuple[QTextDocument, int]:
-        """
-        Returns a cached (doc, width) for this HTML; creates and caches it on first use.
-        """
+        """Returns a cached (doc, width) for this HTML; creates and caches it on first
+        use."""
         entry = self._doc_cache.get(html)
         if entry is None:
             doc = QTextDocument()
@@ -158,6 +161,7 @@ class SearchHTMLDelegate(QStyledItemDelegate):
         return entry
 
     def parent(self) -> QWidget:
+        """Parent."""
         return self._parent
 
 
@@ -165,25 +169,28 @@ class ResultItem:
     def __init__(
         self,
         text: str,
-        parent: Optional["ResultItem"] = None,
+        parent: ResultItem | None = None,
         icon: QIcon | None = None,
         obj=None,
         obj_key: str | None = None,
     ) -> None:
+        """Initialize instance."""
         self.text = text
         self.icon = icon
         self.obj = obj
         self.obj_key = obj_key
-        self.children: List["ResultItem"] = []
+        self.children: list[ResultItem] = []
         self.set_parent(parent)
 
-    def set_parent(self, parent: Optional["ResultItem"] = None) -> None:
+    def set_parent(self, parent: ResultItem | None = None) -> None:
+        """Set parent."""
         self.parent = parent
         if self.parent and self not in self.parent.children:
             self.parent.children.append(self)
 
 
 def format_result_text(full_text: str, search_text: str) -> str:
+    """Format result text."""
     return full_text.replace(search_text, f"<span style='background-color: #ADD8E6;'>{search_text}</span>")
 
 
@@ -191,6 +198,7 @@ def format_result_text(full_text: str, search_text: str) -> str:
 # Demo search (replace as needed)
 # ----------------------------
 def demo_do_search(search_text: str) -> ResultItem:
+    """Demo do search."""
     root = ResultItem("")
     s = (search_text or "").strip()
     if not s:
@@ -201,14 +209,15 @@ def demo_do_search(search_text: str) -> ResultItem:
     utxo = ResultItem("utxo", parent=wallet)
     history = ResultItem("history", parent=wallet)
 
-    for l in [addresses, utxo, history]:
+    for result_lists in [addresses, utxo, history]:
         for txt in ["aaaa", "bbbb"]:
             text = txt + s + txt
-            ResultItem(format_result_text(full_text=text, search_text=search_text), parent=l)
+            ResultItem(format_result_text(full_text=text, search_text=search_text), parent=result_lists)
     return root
 
 
 def demo_on_click(item: ResultItem) -> None:
+    """Demo on click."""
     print("Item Clicked:", item.text)
 
 
@@ -217,17 +226,20 @@ def demo_on_click(item: ResultItem) -> None:
 # --------------------------------
 class CustomItem(QStandardItem):
     def __init__(self, *args) -> None:
+        """Initialize instance."""
         super().__init__(*args)
-        self.result_item: Optional[ResultItem] = None
+        self.result_item: ResultItem | None = None
 
 
 class CustomItemModel(QStandardItemModel):
     def invisibleRootItem(self) -> CustomItem | None:
+        """InvisibleRootItem."""
         return super().invisibleRootItem()  # type: ignore
 
 
 class CustomTreeView(QTreeView):
     def __init__(self, parent=None, on_click=None, on_double_click=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.on_click = on_click
         self.on_double_click = on_double_click
@@ -264,6 +276,7 @@ class CustomTreeView(QTreeView):
 
     # add this method to CustomTreeView
     def _toggle_parent_on_single_click(self, index: QModelIndex) -> None:
+        """Toggle parent on single click."""
         if not index.isValid():
             return
         model = self.model()
@@ -277,6 +290,7 @@ class CustomTreeView(QTreeView):
                 self.expand(index)
 
     def _apply_sidebar_like_style(self) -> None:
+        """Apply sidebar like style."""
         pal = self.palette()
         hl = pal.color(QPalette.ColorRole.Highlight)
         hltxt = pal.color(QPalette.ColorRole.HighlightedText)
@@ -313,16 +327,19 @@ class CustomTreeView(QTreeView):
             """
         )
 
-    def setModel(self, model: Optional[CustomItemModel]) -> None:  # type: ignore[override]
+    def setModel(self, model: CustomItemModel | None) -> None:  # type: ignore[override]
+        """SetModel."""
         self._source_model = model
         super().setModel(model)
 
     def model(self) -> CustomItemModel:
+        """Model."""
         if self._source_model:
             return self._source_model
         raise Exception("model not set")
 
     def set_data(self, data: ResultItem) -> None:
+        """Set data."""
         self.model().clear()
         self._populate_model(data)
         self.expandAll()
@@ -330,7 +347,10 @@ class CustomTreeView(QTreeView):
         self._apply_sidebar_like_style()
 
     def _populate_model(self, result_item: ResultItem, model_parent: CustomItem | None = None) -> None:
+        """Populate model."""
+
         def add_child(child: ResultItem) -> CustomItem:
+            """Add child."""
             model_item = CustomItem()
             model_item.setText(child.text)
             if child.icon:
@@ -341,14 +361,13 @@ class CustomTreeView(QTreeView):
                 model_parent.appendRow(model_item)
             return model_item
 
-        model_parent = (
-            self.model().invisibleRootItem() if model_parent is None else add_child(result_item)
-        )  # type: ignore[assignment]
+        model_parent = self.model().invisibleRootItem() if model_parent is None else add_child(result_item)  # type: ignore[assignment]
 
         for child in result_item.children:
             self._populate_model(child, model_parent=model_parent)
 
     def handle_item_clicked(self, index: QModelIndex) -> None:
+        """Handle item clicked."""
         if self.on_click and index.isValid():
             item = self.model().itemFromIndex(index)
             if not item or not isinstance(item, CustomItem):
@@ -356,6 +375,7 @@ class CustomTreeView(QTreeView):
             self.on_click(item.result_item)
 
     def handle_item_double_clicked(self, index: QModelIndex) -> None:
+        """Handle item double clicked."""
         if self.on_double_click and index.isValid():
             item = self.model().itemFromIndex(index)
             if not item or not isinstance(item, CustomItem):
@@ -375,10 +395,11 @@ class SearchTreeView(QWidget):
     def __init__(
         self,
         do_search: Callable[[str], ResultItem],
-        parent: Optional[QWidget] = None,
-        on_click: Optional[Callable[[ResultItem], None]] = None,
+        parent: QWidget | None = None,
+        on_click: Callable[[ResultItem], None] | None = None,
         search_box_on_bottom=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.do_search = do_search
         self.on_click = on_click
@@ -425,17 +446,21 @@ class SearchTreeView(QWidget):
 
     # ---- Public helpers ----
     def isSearchActive(self) -> bool:
+        """IsSearchActive."""
         return self._is_active
 
     def lineEdit(self) -> QLineEdit:
+        """LineEdit."""
         return self.search_field
 
     # ---- Internal behaviors ----
     def _on_double_click(self, result_item: ResultItem) -> None:
         # Nothing special by default; keep as hook
+        """On double click."""
         pass
 
     def _on_text_changed(self, text: str) -> None:
+        """On text changed."""
         s = (text or "").strip()
         self._set_search_active(bool(s))
 
@@ -446,6 +471,7 @@ class SearchTreeView(QWidget):
         self.tree_view.setVisible(self._is_active)
 
     def _set_search_active(self, value: bool) -> None:
+        """Set search active."""
         if self._is_active == value:
             return
         self._is_active = value
@@ -453,6 +479,7 @@ class SearchTreeView(QWidget):
 
     # ---- F3 navigation in the results view ----
     def on_search_next(self):
+        """On search next."""
         if not self.tree_view.isVisible():
             return
         model = self.tree_view.model()
@@ -474,6 +501,7 @@ class SearchTreeView(QWidget):
             self.tree_view.handle_item_clicked(next_index)
 
     def on_search_previous(self):
+        """On search previous."""
         if not self.tree_view.isVisible():
             return
         model = self.tree_view.model()
@@ -501,9 +529,11 @@ class SearchTreeView(QWidget):
             self.tree_view.handle_item_clicked(prev_index)
 
     def clear_search(self):
+        """Clear search."""
         self.search_field.clear()
 
     def updateUi(self):
+        """UpdateUi."""
         self.search_field.setPlaceholderText(self.tr("Type to search..."))
 
 
@@ -511,6 +541,7 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self) -> None:
+            """Initialize instance."""
             super().__init__()
 
             self.central_widget = QWidget()

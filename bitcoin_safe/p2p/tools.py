@@ -26,8 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import List, Tuple
 
 import bdkpython as bdk
 
@@ -36,7 +37,8 @@ from bitcoin_safe.pythonbdk_types import TxOut, robust_address_str_from_txout
 logger = logging.getLogger(__name__)
 
 
-def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: List[str]) -> bool:
+def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: list[str]) -> bool:
+    """Address match."""
     for output in tx.output():
         address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
         if address in address_filter:
@@ -44,9 +46,10 @@ def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: Lis
     return False
 
 
-def outpoint_match(tx: bdk.Transaction, outpoint_filter: List[str]) -> bool:
+def outpoint_match(tx: bdk.Transaction, outpoint_filter: list[str]) -> bool:
+    """Outpoint match."""
     for inp in tx.input():
-        outpoint = f"{inp.previous_output.txid }:{inp.previous_output.vout}"
+        outpoint = f"{inp.previous_output.txid}:{inp.previous_output.vout}"
         if outpoint in outpoint_filter:
             return True
     return False
@@ -54,14 +57,15 @@ def outpoint_match(tx: bdk.Transaction, outpoint_filter: List[str]) -> bool:
 
 def output_addresses_values(
     transaction: bdk.Transaction, network: bdk.Network
-) -> List[Tuple[str, int | None]]:
+) -> list[tuple[str, int | None]]:
     # print(f'Getting output addresses for txid {transaction.txid}')
-    columns: List[Tuple[str, int | None]] = []
+    """Output addresses values."""
+    columns: list[tuple[str, int | None]] = []
     for output in transaction.output():
         try:
             add = "" if output.value == 0 else str(bdk.Address.from_script(output.script_pubkey, network))
             value = output.value.to_sat()
-        except:
+        except Exception:
             add = ""
             value = None
         columns.append((add, value))
@@ -69,6 +73,7 @@ def output_addresses_values(
 
 
 def transaction_table(tx: bdk.Transaction, network: bdk.Network, op_return_limit: int | None = None):
+    """Transaction table."""
     try:
         from prettytable import PrettyTable
 
@@ -77,7 +82,7 @@ def transaction_table(tx: bdk.Transaction, network: bdk.Network, op_return_limit
         if not inp_objs:
             input_column = ["<coinbase>"]
         else:
-            input_column = [f"{inp.previous_output.txid }:{inp.previous_output.vout}" for inp in inp_objs]
+            input_column = [f"{inp.previous_output.txid}:{inp.previous_output.vout}" for inp in inp_objs]
 
         # --- Outputs: address, amount, and op_return payload if any ---
         output_addrs = []
@@ -117,6 +122,7 @@ def transaction_table(tx: bdk.Transaction, network: bdk.Network, op_return_limit
         max_rows = max(len(input_column), len(output_addrs), len(output_vals), len(op_returns))
 
         def stretch(col):
+            """Stretch."""
             return list(col) + [""] * (max_rows - len(col))
 
         # build table

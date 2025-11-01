@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import Dict, Optional, Tuple
 
 from bitcoin_qr_tools.gui.qr_widgets import EnlargableImageWidgetWithButton
 from PyQt6.QtCore import Qt
@@ -55,6 +56,7 @@ class ScreenshotsTutorial(QWidget):
         group: str = "tutorial",
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
 
         self._layout = QVBoxLayout(self)
@@ -71,11 +73,13 @@ class ScreenshotsTutorial(QWidget):
         self._layout.addWidget(self.sync_tab)
 
     def add_image_tab(
-        self, image_path: str, tab_title: str, size_hint: Tuple[int, int]
-    ) -> Optional[Tuple[EnlargableImageWidgetWithButton, QWidget]]:
+        self, image_path: str, tab_title: str, size_hint: tuple[int, int]
+    ) -> tuple[EnlargableImageWidgetWithButton, QWidget] | None:
+        """Add image tab."""
         if not Path(screenshot_path(image_path)).exists():
             logger.warning(
-                f"{self.__class__.__name__}:  {screenshot_path(image_path)} doesnt exist. Cannot load the image tab"
+                f"{self.__class__.__name__}:  {screenshot_path(image_path)} doesnt exist. "
+                "Cannot load the image tab"
             )
             return None
         tab = QWidget()
@@ -87,9 +91,11 @@ class ScreenshotsTutorial(QWidget):
         return image_widget, tab
 
     def set_title(self, text: str) -> None:
+        """Set title."""
         self.title.setText(text)
 
-    def keyPressEvent(self, a0: Optional[QKeyEvent]) -> None:
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        """KeyPressEvent."""
         if not a0:
             return super().keyPressEvent(a0)
 
@@ -102,6 +108,7 @@ class ScreenshotsTutorial(QWidget):
 
 class SeedWarningBar(NotificationBar):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -112,16 +119,18 @@ class SeedWarningBar(NotificationBar):
 
         self.optionalButton.setVisible(False)
 
-    def setText(self, value: Optional[str]):
+    def setText(self, value: str | None):
+        """SetText."""
         self.icon_label.setText(value if value else "")
 
 
 class ScreenshotsGenerateSeed(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(group, parent)
 
-        self.image_widgets: Dict[str, EnlargableImageWidgetWithButton] = {}
-        self.tabs: Dict[str, QWidget] = {}
+        self.image_widgets: dict[str, EnlargableImageWidgetWithButton] = {}
+        self.tabs: dict[str, QWidget] = {}
 
         self.never_label = SeedWarningBar()
         self._layout.insertWidget(1, self.never_label)
@@ -137,9 +146,11 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.set_title(
             self.tr(
-                "Generate {number} secret seed words on each hardware signer and write them on the recovery sheet"
+                "Generate {number} secret seed words on each hardware signer "
+                "and write them on the recovery sheet"
             ).format(number=TEXT_24_WORDS)
         )
         self.never_label.updateUi()
@@ -157,6 +168,7 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
 
 class ScreenshotsExportXpub(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(group, parent)
 
         for hardware_signer in self.enabled_hardware_signers:
@@ -167,6 +179,7 @@ class ScreenshotsExportXpub(ScreenshotsTutorial):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.set_title(self.tr("How-to export the wallet information from the hardware signer"))
 
 
@@ -177,6 +190,7 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
         group: str = "tutorial",
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(group, parent)
 
         for hardware_signer in self.enabled_hardware_signers:
@@ -188,9 +202,11 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.set_title(
             self.tr(
-                "Compare the {number} words on the backup paper to the hardware signer.\nIf you make a mistake here, your money is lost!"
+                "Compare the {number} words on the backup paper to the hardware signer.\n"
+                "If you make a mistake here, your money is lost!"
             ).format(number=TEXT_24_WORDS)
         )
 
@@ -201,6 +217,7 @@ class ScreenshotsRegisterMultisig(ScreenshotsTutorial):
         group: str = "tutorial",
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             group,
             parent,
@@ -216,4 +233,5 @@ class ScreenshotsRegisterMultisig(ScreenshotsTutorial):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.set_title(self.tr("Import the multisig information in the hardware signer"))

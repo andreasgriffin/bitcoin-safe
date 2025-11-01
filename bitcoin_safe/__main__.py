@@ -6,22 +6,22 @@ from bitcoin_safe.logging_setup import setup_logging
 
 setup_logging()
 
-from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works, set_os_env_ssl_certs
+from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works, set_os_env_ssl_certs  # noqa: E402
 
 set_os_env_ssl_certs()
 ensure_pyzbar_works()
 
 
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication  # noqa: E402
 
-from bitcoin_safe.compatibility import check_compatibility
-from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette
-from bitcoin_safe.gui.qt.main import MainWindow
-from bitcoin_safe.gui.qt.util import custom_exception_handler
+from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
+from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette  # noqa: E402
+from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
+from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
-
+    """Parse args."""
     parser = argparse.ArgumentParser(description="Bitcoin Safe")
     parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
     parser.add_argument(
@@ -39,6 +39,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Main."""
     args = parse_args()
 
     sys.excepthook = custom_exception_handler

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
@@ -47,10 +48,12 @@ logger = logging.getLogger(__name__)
 
 class DateTimePicker(QWidget):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
         self.initUI()
 
     def initUI(self) -> None:
+        """InitUI."""
         self.dateTimeEdit = QDateTimeEdit(self)
         self.dateTimeEdit.setCalendarPopup(True)
 
@@ -63,6 +66,7 @@ class DateTimePicker(QWidget):
 
     def print_time(self) -> None:
         # Convert QDateTime to Python datetime object
+        """Print time."""
         local_datetime = self.get_datetime()
 
         # Assuming the local_datetime is naive (no timezone information),
@@ -71,11 +75,13 @@ class DateTimePicker(QWidget):
         print("UTC Time:", utc_datetime)
 
     def get_datetime(self) -> datetime:
+        """Get datetime."""
         return self.dateTimeEdit.dateTime().toPyDateTime()
 
 
 class CheckBoxGroupBox(QWidget):
     def __init__(self, enabled=True) -> None:
+        """Initialize instance."""
         super().__init__()
         # Create the checkbox
         self.checkbox = QCheckBox()
@@ -96,11 +102,13 @@ class CheckBoxGroupBox(QWidget):
 
     def toggleGroupBox(self, state: Qt.CheckState) -> None:
         # Enable or disable the group box based on the checkbox state
+        """ToggleGroupBox."""
         self.groupBox.setEnabled(state == Qt.CheckState.Checked)
 
 
 class nLocktimePicker(CheckBoxGroupBox):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__()
 
         self.checkbox.setText("Set nLockTime")

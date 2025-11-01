@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 import os
 import subprocess
@@ -40,6 +42,7 @@ logger = logging.getLogger(__name__)
 
 def is_gnome_dark_mode() -> bool:
     # Check if running on Linux with a GNOME desktop
+    """Is gnome dark mode."""
     if sys.platform.startswith("linux"):
         desktop = os.environ.get("XDG_CURRENT_DESKTOP", "")
         logger.debug(f"XDG_CURRENT_DESKTOP is {desktop}")
@@ -62,6 +65,7 @@ def is_gnome_dark_mode() -> bool:
 
 
 def set_dark_palette(app: QApplication):
+    """Set dark palette."""
     dark_palette = QPalette()
     dark_palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
     dark_palette.setColor(QPalette.ColorRole.WindowText, QColor(255, 255, 255))

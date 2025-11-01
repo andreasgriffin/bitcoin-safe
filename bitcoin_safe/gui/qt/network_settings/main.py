@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -80,21 +81,20 @@ from bitcoin_safe.network_config import (
 )
 from bitcoin_safe.network_utils import (
     ProxyInfo,
-    ensure_scheme,
     get_electrum_server_version,
-    get_host_and_port,
 )
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.typestubs import TypedPyQtSignal
 
-from ....signals import TypedPyQtSignalNo
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from ..icon_label import IconLabel
 
 logger = logging.getLogger(__name__)
 
 
-def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
+def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
+    """Test mempool space server."""
     timeout = 10 if proxies else 2
     try:
         response = requests.get(f"{url}/api/blocks/tip/height", timeout=timeout, proxies=proxies)
@@ -104,7 +104,8 @@ def test_mempool_space_server(url: str, proxies: Dict | None) -> bool:
         return False
 
 
-def test_connection(network_config: NetworkConfig) -> Optional[str]:
+def test_connection(network_config: NetworkConfig) -> str | None:
+    """Test connection."""
     proxy_info = ProxyInfo.parse(network_config.proxy_url) if network_config.proxy_url else None
     timeout = 10 if proxy_info else 2
 
@@ -112,7 +113,7 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
         try:
             host, port = get_host_and_port(network_config.electrum_url)
             if host is None or port is None:
-                logger.warning(f"No host or port given")
+                logger.warning("No host or port given")
                 return None
             return get_electrum_server_version(
                 host=host,
@@ -168,16 +169,17 @@ def test_connection(network_config: NetworkConfig) -> Optional[str]:
 
 
 class NetworkSettingsUI(QWidget):
-    signal_apply_and_shutdown = cast(TypedPyQtSignal[bdk.Network], pyqtSignal(bdk.Network))
-    signal_cancel = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = cast(Any, pyqtSignal(bdk.Network))
+    signal_cancel: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
         network: bdk.Network,
         network_configs: NetworkConfigs,
-        signals: Optional[Signals],
+        signals: Signals | None,
         parent=None,
     ):
+        """Initialize instance."""
         super().__init__(parent)
         self.signals = signals
         self.network_configs = network_configs
@@ -416,22 +418,27 @@ class NetworkSettingsUI(QWidget):
         self.updateUi()
 
     def showEvent(self, a0: QShowEvent | None) -> None:
+        """ShowEvent."""
         super().showEvent(a0)
         self.update_ui_from_config()
 
     def update_ui_from_config(self):
+        """Update ui from config."""
         self.set_ui(self.network_configs.configs[self.original_network.name])
 
     def on_p2p_type_combobox_Changed(self):
+        """On p2p type combobox Changed."""
         enabled = self.p2p_typeComboBox.currentData() == P2pListenerType.inital
 
         self.p2p_inital_url_edit.setVisible(enabled)
         self.p2p_listener_inital_label.setVisible(enabled)
 
     def on_button_mempool_clicked(self):
+        """On button mempool clicked."""
         return webopen(self.edit_mempool_url.text())
 
     def updateUi(self):
+        """UpdateUi."""
         self.setWindowTitle(self.tr("Network Settings"))
         self.groupbox_connection.setTitle(self.tr("Blockchain data source"))
         self.button_mempool.setToolTip(self.tr("Click to open the mempool url"))
@@ -474,7 +481,8 @@ class NetworkSettingsUI(QWidget):
         self.p2p_inital_url_edit.setPlaceholderText(self.tr("host:port"))
         self.p2p_listener_inital_label.setText(
             self.tr(
-                "The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively."
+                "The inital node is used to listen and also discover other bitcoin nodes. "
+                "It is not used exclusively."
             )
         )
         self.on_p2p_type_combobox_Changed()
@@ -485,7 +493,10 @@ class NetworkSettingsUI(QWidget):
         self.cbf_connection_label.textLabel.setText(self.tr("Number of p2p connections:"))
 
     def on_electrum_url_editing_finished(self):
+        """On electrum url editing finished."""
+
         def get_use_ssl(url: str):
+            """Get use ssl."""
             for electrum_config in get_electrum_configs(self.network).values():
                 if url.strip() == electrum_config.url.strip():
                     return electrum_config.use_ssl
@@ -498,10 +509,12 @@ class NetworkSettingsUI(QWidget):
         self.electrum_use_ssl = use_ssl
 
     def on_proxy_url_changed(self):
+        """On proxy url changed."""
         is_proxy = bool(self.proxy_url_edit.text().strip())
         self.proxy_warning_label.setHidden(not is_proxy)
 
-    def _test_connection(self, network_config: NetworkConfig) -> Tuple[str | None, bool]:
+    def _test_connection(self, network_config: NetworkConfig) -> tuple[str | None, bool]:
+        """Test connection."""
         server_connection = test_connection(network_config=network_config)
 
         mempool_server = test_mempool_space_server(
@@ -517,7 +530,10 @@ class NetworkSettingsUI(QWidget):
     def _format_test_responses(
         self, network_config: NetworkConfig, server_connection: str | None, mempool_server: bool
     ) -> str:
+        """Format test responses."""
+
         def format_status(response):
+            """Format status."""
             return "Success" if response else "Failed"
 
         response = self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
@@ -557,12 +573,14 @@ class NetworkSettingsUI(QWidget):
         return response
 
     def test_connection(self):
+        """Test connection."""
         new_network_config = self.get_network_settings_from_ui()
         server_connection, mempool_server = self._test_connection(network_config=new_network_config)
 
         Message(self._format_test_responses(new_network_config, server_connection, mempool_server))
 
     def set_server_type_comboBox(self, new_index: int):
+        """Set server type comboBox."""
         if self.server_type_comboBox.itemText(new_index) == BlockchainType.to_text(
             BlockchainType.CompactBlockFilter
         ):
@@ -575,12 +593,14 @@ class NetworkSettingsUI(QWidget):
             self.stackedWidget.setCurrentWidget(self.rpcTab)
 
     def on_network_change(self, new_index: int):
+        """On network change."""
         new_network: bdk.Network = self.network_combobox.itemData(new_index)
 
         self._edits_set_network(new_network)
         self.set_ui(self.network_configs.configs[new_network.name])
 
     def _edits_set_network(self, network: bdk.Network):
+        """Edits set network."""
         self.electrum_url_edit.set_network(network)
         self.esplora_url_edit.set_network(network)
         self.rpc_ip_address_edit.set_network(network)
@@ -597,6 +617,7 @@ class NetworkSettingsUI(QWidget):
         self.server_type_comboBox.setCurrentText(prev_text)
 
     def add_to_completer_memory(self):
+        """Add to completer memory."""
         self.electrum_url_edit.add_current_to_memory()
         self.esplora_url_edit.add_current_to_memory()
         self.rpc_ip_address_edit.add_current_to_memory()
@@ -606,6 +627,7 @@ class NetworkSettingsUI(QWidget):
         self.proxy_url_edit.add_current_to_memory()
 
     def on_apply_click(self):
+        """On apply click."""
         new_network_config = self.get_network_settings_from_ui()
         server_connection, mempool_server = self._test_connection(network_config=new_network_config)
 
@@ -628,12 +650,14 @@ class NetworkSettingsUI(QWidget):
         self.signal_apply_and_shutdown.emit(new_network)
 
     def on_cancel_click(self):
+        """On cancel click."""
         self.update_ui_from_config()
         self.signal_cancel.emit()
 
     # Override keyPressEvent method
     def keyPressEvent(self, a0: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
+        """KeyPressEvent."""
         if a0 and a0.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.on_cancel_click()
@@ -682,56 +706,69 @@ class NetworkSettingsUI(QWidget):
     # Properties for all user entries
     @property
     def network(self) -> bdk.Network:
+        """Network."""
         return self.network_combobox.currentData()
 
     @network.setter
     def network(self, value: bdk.Network):
+        """Network."""
         self.network_combobox.setCurrentText(value.name)
 
     @property
     def server_type(self) -> BlockchainType:
+        """Server type."""
         return BlockchainType.from_text(self.server_type_comboBox.currentText())
 
     @server_type.setter
     def server_type(self, server_type: BlockchainType):
+        """Server type."""
         self.server_type_comboBox.setCurrentText(BlockchainType.to_text(server_type))
 
     @property
     def electrum_url(self) -> str:
+        """Electrum url."""
         text = self.electrum_url_edit.text().strip()
         return remove_scheme(text)
 
     @electrum_url.setter
     def electrum_url(self, url: str):
+        """Electrum url."""
         self.electrum_url_edit.setText(url if url else "")
 
     @property
     def electrum_use_ssl(self) -> bool:
+        """Electrum use ssl."""
         return self.electrum_use_ssl_checkbox.isChecked()
 
     @electrum_use_ssl.setter
     def electrum_use_ssl(self, value: bool):
+        """Electrum use ssl."""
         self.electrum_use_ssl_checkbox.setChecked(value)
 
     @property
     def esplora_url(self) -> str:
+        """Esplora url."""
         url = self.esplora_url_edit.text().strip()
         return ensure_scheme(url)
 
     @esplora_url.setter
     def esplora_url(self, url: str):
+        """Esplora url."""
         self.esplora_url_edit.setText(url if url else "")
 
     @property
     def rpc_ip(self) -> str:
+        """Rpc ip."""
         return self.rpc_ip_address_edit.text()
 
     @rpc_ip.setter
     def rpc_ip(self, ip: str):
+        """Rpc ip."""
         self.rpc_ip_address_edit.setText(ip if ip else "")
 
     @property
     def cbf_connections(self) -> int:
+        """Cbf connections."""
         try:
             return int(self.cbf_connections_edit.value())
         except Exception as e:
@@ -740,10 +777,12 @@ class NetworkSettingsUI(QWidget):
 
     @cbf_connections.setter
     def cbf_connections(self, value: int):
+        """Cbf connections."""
         self.cbf_connections_edit.setValue(value)
 
     @property
     def rpc_port(self) -> int:
+        """Rpc port."""
         try:
             return int(self.rpc_port_edit.text())
         except Exception as e:
@@ -752,26 +791,32 @@ class NetworkSettingsUI(QWidget):
 
     @rpc_port.setter
     def rpc_port(self, port: int):
+        """Rpc port."""
         self.rpc_port_edit.setText(str(port))
 
     @property
     def rpc_username(self) -> str:
+        """Rpc username."""
         return self.rpc_username_edit.text().strip()
 
     @rpc_username.setter
     def rpc_username(self, username: str):
+        """Rpc username."""
         self.rpc_username_edit.setText(username if username else "")
 
     @property
     def rpc_password(self) -> str:
+        """Rpc password."""
         return self.rpc_password_edit.text()
 
     @rpc_password.setter
     def rpc_password(self, password: str):
+        """Rpc password."""
         self.rpc_password_edit.setText(password if password else "")
 
     @property
     def mempool_url(self) -> str:
+        """Mempool url."""
         url = self.edit_mempool_url.text().strip()
         url = url if url.endswith("/") else f"{url}/"
         url = url.replace("api/", "") if url.endswith("api/") else url
@@ -779,20 +824,24 @@ class NetworkSettingsUI(QWidget):
 
     @mempool_url.setter
     def mempool_url(self, value: str):
+        """Mempool url."""
         self.edit_mempool_url.setText(value)
 
     @property
     def proxy_url(self) -> str | None:
+        """Proxy url."""
         text = self.proxy_url_edit.text().strip()
         return text if text else None
 
     @proxy_url.setter
     def proxy_url(self, url: str | None):
+        """Proxy url."""
         self.proxy_url_edit.setText(url if url else "")
         self.on_proxy_url_changed()
 
     @property
     def p2p_inital_url(self) -> str | None:
+        """P2p inital url."""
         text = self.p2p_inital_url_edit.text().strip()
         if not text:
             return None
@@ -808,14 +857,17 @@ class NetworkSettingsUI(QWidget):
 
     @p2p_inital_url.setter
     def p2p_inital_url(self, url: str | None):
+        """P2p inital url."""
         self.p2p_inital_url_edit.setText(url if url else "")
 
     @property
     def p2p_listener_type(self) -> P2pListenerType:
+        """P2p listener type."""
         return self.p2p_typeComboBox.currentData()
 
     @p2p_listener_type.setter
     def p2p_listener_type(self, state: P2pListenerType):
+        """P2p listener type."""
         index = self.p2p_typeComboBox.findData(state)
         if index >= 0:
             self.p2p_typeComboBox.setCurrentIndex(index)
@@ -824,10 +876,12 @@ class NetworkSettingsUI(QWidget):
     def discovered_peers(self) -> Peers:
         # dummy because this is not supposed to be set in the UI, but present in NetworkConfig
         # removing this dummy results in an error during setting the ui
+        """Discovered peers."""
         return Peers()
 
     @discovered_peers.setter
     def discovered_peers(self, peer: Peers):
         # dummy because this is not supposed to be set in the UI, but present in NetworkConfig
         # removing this dummy results in an error during setting the ui
+        """Discovered peers."""
         pass

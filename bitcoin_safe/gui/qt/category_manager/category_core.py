@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import (
@@ -50,7 +50,8 @@ from ....signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 logger = logging.getLogger(__name__)
 
 
-def move_items(lst: list[str], from_indices: List[int], to_idx: int) -> None:
+def move_items(lst: list[str], from_indices: list[int], to_idx: int) -> None:
+    """Move items."""
     if not from_indices:
         return
 
@@ -68,10 +69,9 @@ def move_items(lst: list[str], from_indices: List[int], to_idx: int) -> None:
 
 
 def prompt_new_category(parent: QWidget | None = None) -> str | None:
-    """
-    Show a modal input dialog titled “Add Category”.
-    Returns the trimmed category name if OK was clicked and non-empty,
-    otherwise returns None.
+    """Show a modal input dialog titled “Add Category”.
+
+    Returns the trimmed category name if OK was clicked and non-empty, otherwise returns None.
     """
     text, ok = QInputDialog.getText(
         parent, translate("category", "Add Category"), translate("category", "Category name:")
@@ -83,8 +83,8 @@ def prompt_new_category(parent: QWidget | None = None) -> str | None:
 
 
 def prompt_rename_category(old_name: str, parent: QWidget | None = None) -> str | None:
-    """
-    Show a modal dialog titled “Rename Category” with a prefilled line edit.
+    """Show a modal dialog titled “Rename Category” with a prefilled line edit.
+
     Returns the new trimmed name if OK was clicked and non-empty, otherwise returns None.
     """
     dialog = QDialog(parent)
@@ -115,8 +115,9 @@ def prompt_rename_category(old_name: str, parent: QWidget | None = None) -> str 
 
 
 def prompt_merge_category(categories: list[str], parent: QWidget | None = None) -> str | None:
-    """
-    Show a modal dialog titled “Merge Categories” with a combo box to select a category.
+    """Show a modal dialog titled “Merge Categories” with a combo box to select a
+    category.
+
     Returns the selected category if OK was clicked, otherwise returns None.
     """
     dialog = QDialog(parent)
@@ -148,6 +149,7 @@ class CategoryCore(QObject):
         wallet: Wallet,
         wallet_functions: WalletFunctions,
     ):
+        """Initialize instance."""
         super().__init__()
         self.wallet = wallet
         self.wallet_functions = wallet_functions
@@ -155,19 +157,23 @@ class CategoryCore(QObject):
         self.signals = wallet_functions.signals
 
     @classmethod
-    def get_default_categories(cls) -> List[str]:
+    def get_default_categories(cls) -> list[str]:
+        """Get default categories."""
         return [translate("category", "Default")]
 
     def add_default_categories(self) -> None:
+        """Add default categories."""
         for category in self.get_default_categories():
             self.add(category)
 
     def add(self, category: str):
+        """Add."""
         if category in self.wallet.labels.categories:
             return
         self.wallet.labels.add_category(category)
 
-    def move_categories(self, categories: List[str], to_idx: int):
+    def move_categories(self, categories: list[str], to_idx: int):
+        """Move categories."""
         from_indices = [
             self.wallet.labels.categories.index(category)
             for category in categories

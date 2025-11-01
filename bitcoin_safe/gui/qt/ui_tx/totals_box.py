@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -46,6 +47,7 @@ class CurrencySection(QWidget):
     def __init__(
         self, network: bdk.Network, fx: FX, mark_fiat_red_when_exceeding: float | None = None
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.fx = fx
         self.mark_fiat_red_when_exceeding = mark_fiat_red_when_exceeding
@@ -78,6 +80,7 @@ class CurrencySection(QWidget):
         )
 
     def set_amount(self, amount: int | None):
+        """Set amount."""
         l1 = self.l1
         l2 = self.l2
         l1_currency = self.l1_currency
@@ -114,6 +117,7 @@ class TotalsBox(HeightSyncedWidget):
         network: bdk.Network,
         fx: FX,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.fx = fx
         self.network = network
@@ -151,6 +155,7 @@ class TotalsBox(HeightSyncedWidget):
         self.setLayout(self._layout)
 
     def set_amount(self, amount: int | None, alignment=Qt.Edge.RightEdge):
+        """Set amount."""
         if alignment == Qt.Edge.LeftEdge:
             c = self.c1
         elif alignment == Qt.Edge.RightEdge:

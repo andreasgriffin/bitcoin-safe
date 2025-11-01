@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -67,11 +68,10 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
     wallet_file: str = "0.2.0.wallet",
     amount: int = int(1e6),
 ) -> None:
+    """Test open wallet and address is consistent and destruction ok."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -96,6 +96,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         assert wallet_address == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
 
         def check_open_address_dialog():
+            """Check open address dialog."""
             prev_count = len(main_window.attached_widgets)
             main_window.show_address(wallet_address, qt_wallet.wallet.id)
             d = get_widget_top_level(address_dialog.AddressDialog, qtbot)
@@ -111,11 +112,13 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         check_open_address_dialog()
 
         def check_empty():
+            """Check empty."""
             assert qt_wallet.wallet.get_balance().total == 0
 
         check_empty()
 
         def open_tx() -> UITx_Viewer:
+            """Open tx."""
             tx = "0200000000010130e2288abc2259145cbd255a0cc94fe7226d26130b216100a9d631d7f31a5b090100000000fdffffff024894f31c01000000225120a450dee7d2d0f14d720b359f23660fed35c031de2d54e8fb0db8bd9f6b1ee35829ee250000000000220020b7f7e21184e2bacaa6346674bd9f619eb7619f316864d8c82564fde6735e7a3c0247304402203b76bd679a0f6ec4846a791247a5551771db6147a92f42e76ec4c079d3caf60502204f1bed609ee20c271faae2042c1d2727923650aea9439df78da45384e5979f1d01210370a2b7a566702a384ceb8e9f9f4c9ae8a4b4904b832c4de2cf19f3289285e20300000000"
             main_window.signals.open_tx_like.emit(tx)
             QApplication.processEvents()
@@ -126,6 +129,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             raise Exception("no UITx_Viewer found")
 
         def save_tx_to_local(tx_tab: UITx_Viewer):
+            """Save tx to local."""
             assert tx_tab.button_save_local_tx.isVisible()
             tx_tab.save_local_tx()
             QApplication.processEvents()
@@ -142,6 +146,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                     child.removeNode()
 
         def open_and_save_tx():
+            """Open and save tx."""
             tx_tab = open_tx()
             save_tx_to_local(tx_tab)
 
@@ -163,6 +168,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
+            """Check that it is in recent wallets."""
             assert any(
                 [
                     (wallet_file in name)

@@ -26,10 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 import os
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
@@ -45,6 +47,7 @@ logger = logging.getLogger(__name__)
 
 class PDFLabels(BasePDF):
     def __init__(self, lang_code: str) -> None:
+        """Initialize instance."""
         super().__init__(lang_code)
 
         self.style_label = ParagraphStyle(
@@ -67,9 +70,10 @@ class PDFLabels(BasePDF):
             spaceBefore=0,
             spaceAfter=0,
         )
-        self.elements: List[Any] = []
+        self.elements: list[Any] = []
 
-    def add_labels(self, wallet_id: str, label_pairs: List[Tuple[str, str]]) -> None:
+    def add_labels(self, wallet_id: str, label_pairs: list[tuple[str, str]]) -> None:
+        """Add labels."""
         heading = Paragraph(
             translate(
                 "pdf",
@@ -83,11 +87,11 @@ class PDFLabels(BasePDF):
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" Bitcoin Safe: {white_space*5} www.bitcoin-safe.org",
+                + f" Bitcoin Safe: {white_space * 5} www.bitcoin-safe.org",
                 self.style_paragraph,
             )
         )
-        self.elements.append(Paragraph(f"", self.style_paragraph))
+        self.elements.append(Paragraph("", self.style_paragraph))
 
         instruction_text = translate(
             "pdf",
@@ -115,11 +119,11 @@ class PDFLabels(BasePDF):
         columns = 1
         col_widths = [label_width] * columns
 
-        rows: List[List[Any]] = []
+        rows: list[list[Any]] = []
         for i in range(0, len(label_pairs), columns):
-            row: List[Any] = []
-            for label, device_name in label_pairs[i : i + columns]:
-                cell_flowables: List[Any] = [
+            row: list[Any] = []
+            for label, _device_name in label_pairs[i : i + columns]:
+                cell_flowables: list[Any] = [
                     Paragraph(
                         f"{label}",
                         self.style_label,
@@ -157,7 +161,8 @@ class PDFLabels(BasePDF):
         self.elements.append(table)
 
 
-def make_and_open_labels_pdf(wallet_id: str, label_pairs: List[Tuple[str, str]], lang_code: str) -> None:
+def make_and_open_labels_pdf(wallet_id: str, label_pairs: list[tuple[str, str]], lang_code: str) -> None:
+    """Make and open labels pdf."""
     pdf_labels = PDFLabels(lang_code=lang_code)
     pdf_labels.add_labels(wallet_id=wallet_id, label_pairs=label_pairs)
 

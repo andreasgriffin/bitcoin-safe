@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import json
 import time
 
@@ -41,8 +43,8 @@ from .utils import create_multisig_protowallet
 def test_chained_label_timestamp_updates() -> None:
     """Chain several label operations and assert timestamp semantics.
 
-    The test follows the flow of automatically assigned timestamps, manual
-    updates and label imports to ensure the timestamp logic works as intended.
+    The test follows the flow of automatically assigned timestamps, manual updates and label imports to ensure
+    the timestamp logic works as intended.
     """
 
     protowallet = create_multisig_protowallet(

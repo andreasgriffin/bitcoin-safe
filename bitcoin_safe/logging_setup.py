@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import logging.config
@@ -46,6 +47,7 @@ from bitcoin_safe.logging_handlers import (
 
 
 def get_config_dir() -> Path:
+    """Get config dir."""
     app_name = "bitcoin_safe"
     config_dir = Path(appdirs.user_config_dir(app_name))
     config_dir.mkdir(parents=True, exist_ok=True)
@@ -53,12 +55,13 @@ def get_config_dir() -> Path:
 
 
 def get_log_file() -> Path:
+    """Get log file."""
     return get_config_dir() / "bitcoin_safe.log"
 
 
 def setup_logging() -> None:
-
     # Configuring formatters
+    """Setup logging."""
     relative_path_formatter = RelativePathFormatter(
         fmt="%(asctime)s - %(levelname)s - [%(threadName)s] - %(name)s - %(message)s"
     )
@@ -95,11 +98,13 @@ def setup_logging() -> None:
 
     # Set the function to handle uncaught exceptions
     def handle_uncaught_exception(exc_type, exc_value, exc_traceback) -> None:
+        """Handle uncaught exception."""
         logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = handle_uncaught_exception
 
     def qt_message_handler(msg_type, context, message):
+        """Qt message handler."""
         if msg_type == QtMsgType.QtDebugMsg:
             logger.debug(message)
         elif msg_type == QtMsgType.QtInfoMsg:
@@ -116,7 +121,7 @@ def setup_logging() -> None:
     # Install the message handler as early as possible
     qInstallMessageHandler(qt_message_handler)
 
-    logger.info(f"========================= Starting Bitcoin Safe ========================")
+    logger.info("========================= Starting Bitcoin Safe ========================")
     logger.info(f"Version: {__version__}")
     logger.info(f"Python version: {sys.version}. On platform: {describe_os_version()}")
     # logger.info(f"Logging to file: {str(logger.handlers[-1].filename)}")
@@ -124,4 +129,5 @@ def setup_logging() -> None:
 
 
 def describe_os_version() -> str:
+    """Describe os version."""
     return platform.platform()

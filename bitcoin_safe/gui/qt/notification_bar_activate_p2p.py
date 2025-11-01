@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt6.QtWidgets import QPushButton
 
@@ -44,9 +45,11 @@ logger = logging.getLogger(__name__)
 
 
 def get_p2p_tooltip_text() -> str:
+    """Get p2p tooltip text."""
     return translate(
         "p2p",
-        "Passively listen to the bitcoin p2p traffic (just like a bitcoin node), \nto detect newly broadcasted transactions immediately."
+        "Passively listen to the bitcoin p2p traffic (just like a bitcoin node), \n"
+        "to detect newly broadcasted transactions immediately."
         "\nThis does not reveal anything about your wallet."
         "\nClick here to learn more.",
     )
@@ -60,6 +63,7 @@ class NotificationBarP2P(NotificationBar):
         network_config: NetworkConfig,
         signals_min: SignalsMin,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -71,7 +75,7 @@ class NotificationBarP2P(NotificationBar):
         self.signals_min = signals_min
         self.optionalButton.setHidden(False)
         # color = adjust_bg_color_for_darkmode(QColor("#7ad19f"))
-        self.set_icon(svg_tools.get_QIcon(f"node.svg"))
+        self.set_icon(svg_tools.get_QIcon("node.svg"))
 
         self.learn_more_button = IconLabel()
         self._layout.insertWidget(1, self.learn_more_button)
@@ -84,6 +88,7 @@ class NotificationBarP2P(NotificationBar):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         self.enable_button.setText(self.tr("Enable"))
         self.optionalButton.setText(self.tr("Open Network Settings"))

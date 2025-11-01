@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
@@ -50,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 def short_tx_id(txid: str | bdk.Txid) -> str:
+    """Short tx id."""
     if isinstance(txid, bdk.Txid):
         txid = str(txid)
     return f"{txid[:4]}...{txid[-4:]}"
@@ -66,11 +69,21 @@ def calc_minimum_rbf_fee_info(
     see https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki
 
 
-    1. The original transactions signal replaceability explicitly or through inheritance as described in the above Summary section.
-    2. The replacement transaction may only include an unconfirmed input if that input was included in one of the original transactions. (An unconfirmed input spends an output from a currently-unconfirmed transaction.)
-    3. The replacement transaction pays an absolute fee of at least the sum paid by the original transactions.
-    4. The replacement transaction must also pay for its own bandwidth at or above the rate set by the node's minimum relay fee setting. For example, if the minimum relay fee is 1 satoshi/byte and the replacement transaction is 500 bytes total, then the replacement must pay a fee at least 500 satoshis higher than the sum of the originals.
-    5. The number of original transactions to be replaced and their descendant transactions which will be evicted from the mempool must not exceed a total of 100 transactions.
+    1. The original transactions signal replaceability explicitly or through
+            inheritance as described in the above Summary section.
+    2. The replacement transaction may only include an unconfirmed input if
+            that input was included in one of the original transactions.
+            (An unconfirmed input spends an output from a currently-unconfirmed transaction.)
+    3. The replacement transaction pays an absolute fee of at least the
+            sum paid by the original transactions.
+    4. The replacement transaction must also pay for its own bandwidth at or
+            above the rate set by the node's minimum relay fee setting.
+            For example, if the minimum relay fee is 1 satoshi/byte and the
+            replacement transaction is 500 bytes total, then the replacement
+            must pay a fee at least 500 satoshis higher than the sum of the originals.
+    5. The number of original transactions to be replaced and their descendant
+            transactions which will be evicted from the mempool must not
+            exceed a total of 100 transactions.
 
 
     """
@@ -101,19 +114,20 @@ class TxUiInfos(BaseSaveableClass):
     }
 
     # {outpoint_string:utxo} It is Ok if outpoint_string:None
-    utxo_dict: Dict[OutPoint, PythonUtxo] = field(default_factory=dict)
+    utxo_dict: dict[OutPoint, PythonUtxo] = field(default_factory=dict)
     fee_rate: float | None = None
     opportunistic_merge_utxos = True
     spend_all_utxos = False
-    main_wallet_id: Optional[str] = None
+    main_wallet_id: str | None = None
 
-    recipients: List[Recipient] = field(default_factory=list)
+    recipients: list[Recipient] = field(default_factory=list)
     hide_UTXO_selection: bool | None = None
     recipient_read_only: bool = False
     utxos_read_only: bool = False
     replace_tx: bdk.Transaction | None = None
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["fee_rate"] = self.fee_rate
         d["recipients"] = [asdict(r) for r in self.recipients]
@@ -124,7 +138,8 @@ class TxUiInfos(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         if replace_tx := dct.get("replace_tx"):
@@ -137,12 +152,15 @@ class TxUiInfos(BaseSaveableClass):
         return cls(**filtered_for_init(dct, cls))
 
     def add_recipient(self, recipient: Recipient):
+        """Add recipient."""
         self.recipients.append(recipient)
 
     def set_fee_rate(self, fee_rate: float):
+        """Set fee rate."""
         self.fee_rate = fee_rate
 
-    def fill_utxo_dict_from_utxos(self, utxos: List[PythonUtxo]):
+    def fill_utxo_dict_from_utxos(self, utxos: list[PythonUtxo]):
+        """Fill utxo dict from utxos."""
         for utxo in utxos:
             self.utxo_dict[OutPoint.from_bdk(utxo.outpoint)] = utxo
 
@@ -152,12 +170,13 @@ class TxBuilderInfos:
 
     def __init__(
         self,
-        recipients: List[Recipient],
+        recipients: list[Recipient],
         utxos_for_input: UtxosForInputs,
         psbt: bdk.Psbt,
-        recipient_category: Optional[str] = None,
-        fee_rate: Optional[float] = None,
+        recipient_category: str | None = None,
+        fee_rate: float | None = None,
     ):
+        """Initialize instance."""
         self.fee_rate = fee_rate
         self.recipients = recipients
 
@@ -166,14 +185,17 @@ class TxBuilderInfos:
         self.recipient_category = recipient_category
 
     def add_recipient(self, recipient: Recipient):
+        """Add recipient."""
         self.recipients.append(recipient)
 
     def set_fee_rate(self, fee_rate: float):
+        """Set fee rate."""
         self.fee_rate = fee_rate
 
 
-def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> Dict[str, Any]:
+def transaction_to_dict(tx: bdk.Transaction, network: bdk.Network) -> dict[str, Any]:
     # Serialize inputs
+    """Transaction to dict."""
     inputs = []
     for inp in tx.input():
         inputs.append(

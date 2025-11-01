@@ -26,12 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 from PyQt6.QtWidgets import QScrollArea, QWidget
 
 
 class InvisibleScrollArea(QScrollArea):
     def __init__(self, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.setObjectName(f"{id(self)}")

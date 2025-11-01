@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import tempfile
@@ -47,6 +48,7 @@ class TestConfig(UserConfig):
 
 @pytest.fixture()
 def test_config(fulcrum: str) -> TestConfig:
+    """Test config."""
     config = TestConfig()
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
     config.network = bdk.Network.REGTEST
@@ -59,6 +61,7 @@ def test_config(fulcrum: str) -> TestConfig:
 
 @pytest.fixture(scope="session")
 def test_config_session(fulcrum: str) -> TestConfig:
+    """Test config session."""
     config = TestConfig()
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
     config.network = bdk.Network.REGTEST
@@ -71,6 +74,7 @@ def test_config_session(fulcrum: str) -> TestConfig:
 
 @pytest.fixture()
 def test_config_main_chain() -> TestConfig:
+    """Test config main chain."""
     config = TestConfig()
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
 

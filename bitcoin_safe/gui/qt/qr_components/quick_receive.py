@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -52,7 +53,9 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ..util import to_color_name
 
@@ -61,6 +64,7 @@ logger = logging.getLogger(__name__)
 
 class TitledComponent(QWidget):
     def __init__(self, title, hex_color: str, border_color: str | None = None, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self._layout = QVBoxLayout(self)
         self._layout.setSpacing(3)
@@ -90,7 +94,7 @@ class TitledComponent(QWidget):
             f"""
                 #{self.objectName()} {{
                     background-color: {hex_color};
-                    border: {'none' if border_color is None else f'2px dashed {border_color}'};
+                    border: {"none" if border_color is None else f"2px dashed {border_color}"};
                     border-radius: 10px;
                 }}
                 """
@@ -98,7 +102,7 @@ class TitledComponent(QWidget):
 
 
 class ReceiveGroup(TitledComponent):
-    signal_set_address_as_used = cast(TypedPyQtSignal[AddressInfoMin], pyqtSignal(AddressInfoMin))
+    signal_set_address_as_used: TypedPyQtSignal[AddressInfoMin] = cast(Any, pyqtSignal(AddressInfoMin))
 
     def __init__(
         self,
@@ -109,6 +113,7 @@ class ReceiveGroup(TitledComponent):
         width=170,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(title=category, hex_color=hex_color, parent=parent)
         self.address_info = address_info
         self.setFixedWidth(width)
@@ -159,22 +164,26 @@ class ReceiveGroup(TitledComponent):
 
     @property
     def address(self) -> str:
+        """Address."""
         return self.address_info.address
 
     @property
     def category(self) -> str:
+        """Category."""
         return self.title.text()
 
     def updateUi(self):
+        """UpdateUi."""
         self.force_new_button.setToolTip(self.tr("Get next address"))
         self.copy_button.setToolTip(self.tr("Copy address to clipboard"))
         self.qr_button.setToolTip(self.tr("Magnify QR code"))
 
 
 class AddCategoryButton(TitledComponent):
-    clicked: TypedPyQtSignalNo = cast(TypedPyQtSignalNo, pyqtSignal())
+    clicked: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(self, width=170, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(
             title="",
             hex_color=to_color_name(QPalette.ColorRole.Midlight),
@@ -201,6 +210,7 @@ class AddCategoryButton(TitledComponent):
         self._content_layout.addSpacing(24)
 
         def add_label(size: int):
+            """Add label."""
             label = QLabel(self._content_widget)
 
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -229,17 +239,20 @@ class AddCategoryButton(TitledComponent):
         self.updateUi()
 
     def sizeHint(self):
+        """SizeHint."""
         hint = super().sizeHint()
         hint.setWidth(self._width)
         return hint
 
     def updateUi(self) -> None:
         # self.title.setText(self.tr("Add New Category"))
+        """UpdateUi."""
         self.caption_label.setText(self.tr("Add new category"))
         self.caption_label_sub.setText(self.tr("KYC Exchange, Private, ..."))
         self.setToolTip(self.tr("Add new category"))
 
-    def mouseReleaseEvent(self, a0: Optional[QMouseEvent]) -> None:
+    def mouseReleaseEvent(self, a0: QMouseEvent | None) -> None:
+        """MouseReleaseEvent."""
         if not a0:
             return
         pos = a0.position().toPoint() if hasattr(a0, "position") else a0.pos()
@@ -249,7 +262,8 @@ class AddCategoryButton(TitledComponent):
             return
         super().mouseReleaseEvent(a0)
 
-    def keyPressEvent(self, a0: Optional[QKeyEvent]) -> None:
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        """KeyPressEvent."""
         if not a0:
             return
         if a0.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter, Qt.Key.Key_Space) and self.isEnabled():
@@ -260,10 +274,11 @@ class AddCategoryButton(TitledComponent):
 
 
 class QuickReceive(QWidget):
-    signal_manage_categories_requested = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_add_category_requested = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_manage_categories_requested: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_add_category_requested: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(self, title="Quick Receive", parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.signal_tracker = SignalTracker()
 
@@ -322,27 +337,31 @@ class QuickReceive(QWidget):
         main_layout.addWidget(self.scroll_area)
 
         # Group Box Management
-        self.group_boxes: List[ReceiveGroup] = []
+        self.group_boxes: list[ReceiveGroup] = []
         self.add_category_button = AddCategoryButton(parent=self.content_widget)
         self.add_category_button.clicked.connect(self.signal_add_category_requested.emit)
         self._insert_before_trailing_spacer(self.add_category_button)
 
     def add_box(self, receive_group: ReceiveGroup) -> None:
+        """Add box."""
         self.group_boxes.append(receive_group)
         self._insert_before_widget(receive_group, self.add_category_button)
 
     def remove_box(self, group_box: ReceiveGroup) -> None:
+        """Remove box."""
         self.content_widget_layout.removeWidget(group_box)
         group_box.setHidden(True)
         group_box.close()
         group_box.setParent(None)  # type: ignore[call-overload]
 
     def remove_last_box(self) -> None:
+        """Remove last box."""
         if self.group_boxes:
             group_box = self.group_boxes.pop()
             self.remove_box(group_box)
 
     def clear_boxes(self) -> None:
+        """Clear boxes."""
         while self.group_boxes:
             self.remove_last_box()
 
@@ -354,6 +373,7 @@ class QuickReceive(QWidget):
         self.add_category_button.setEnabled(enabled)
 
     def close(self) -> bool:
+        """Close."""
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
 
@@ -362,12 +382,14 @@ class QuickReceive(QWidget):
         return super().close()
 
     def _insert_before_trailing_spacer(self, widget: QWidget) -> None:
+        """Insert before trailing spacer."""
         index = self.content_widget_layout.count()
         if self._trailing_spacer is not None:
             index -= 1
         self.content_widget_layout.insertWidget(index, widget)
 
     def _insert_before_widget(self, widget: QWidget, before_widget: QWidget) -> None:
+        """Insert before widget."""
         index = self.content_widget_layout.indexOf(before_widget)
         if index == -1:
             self._insert_before_trailing_spacer(widget)
@@ -375,6 +397,7 @@ class QuickReceive(QWidget):
         self.content_widget_layout.insertWidget(index, widget)
 
     def updateUi(self):
+        """UpdateUi."""
         self.label_title.setText(self.tr("Quick Receive"))
         self.manage_categories_button.setText(self.tr("Manage Categories"))
         self.manage_categories_button.setToolTip(self.tr("Open the category manager"))

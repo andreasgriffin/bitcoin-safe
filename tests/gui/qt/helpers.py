@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import gc
 import inspect
 import json
@@ -34,11 +36,12 @@ import os
 import platform
 import re
 import shutil
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Any, Callable, Generator, List, Optional, Type, TypeVar, Union
+from typing import Any, TypeVar, Union
 from unittest.mock import patch
 
 import objgraph
@@ -72,10 +75,8 @@ from ...setup_fulcrum import Faucet
 logger = logging.getLogger(__name__)
 
 
-def get_current_test_name() -> Optional[str]:
-    """
-    Traverse the call stack and return the name of the current test function.
-    """
+def get_current_test_name() -> str | None:
+    """Traverse the call stack and return the name of the current test function."""
     stack = inspect.stack()
     for frame_info in stack:
         function_name = frame_info.function
@@ -112,10 +113,12 @@ T = TypeVar("T", bound=QWidget)  # This constrains T to be a subclass of QWidget
 
 class Shutter:
     def __init__(self, qtbot: QtBot, name: str) -> None:
+        """Initialize instance."""
         self.qtbot = qtbot
         self.name = name
 
     def save(self, widget: QWidget, delay: float = 0.2) -> None:
+        """Save."""
         QApplication.processEvents()
         sleep(delay)
         QApplication.processEvents()
@@ -123,18 +126,21 @@ class Shutter:
 
     @staticmethod
     def directory(name: str) -> Path:
-        """Saves a screenshot of the given main window using qtbot to the 'screenshots' directory with a timestamp."""
+        """Saves a screenshot of the given main window using qtbot to the 'screenshots'
+        directory with a timestamp."""
         # Ensure the 'screenshots' directory exists
         screenshots_dir = Path("tests") / "output" / f"screenshots_{name}"
         screenshots_dir.mkdir(exist_ok=True, parents=True)
         return screenshots_dir
 
     def used_directory(self) -> Path:
+        """Used directory."""
         return Shutter.directory(self.name)
 
     @staticmethod
     def save_screenshot(widget: QMainWindow, qtbot: QtBot, name: str) -> Path:
-        """Saves a screenshot of the given main window using qtbot to the 'screenshots' directory with a timestamp."""
+        """Saves a screenshot of the given main window using qtbot to the 'screenshots'
+        directory with a timestamp."""
         # Ensure the 'screenshots' directory exists
         screenshots_dir = Shutter.directory(name)
 
@@ -150,6 +156,7 @@ class Shutter:
         return final_filepath
 
     def create_symlink(self, test_config: UserConfig) -> None:
+        """Create symlink."""
         screenshots_dir = Shutter.directory(self.name)
         link_name = screenshots_dir / "config_dir"
 
@@ -166,6 +173,7 @@ class Shutter:
 def fund_wallet(
     qtbot: QtBot, faucet: Faucet, qt_wallet: QTWallet, amount: int, address: str | None = None
 ) -> str:
+    """Fund wallet."""
     address = address if address else str(qt_wallet.wallet.get_address().address)
     faucet.send(address, amount=amount)
     counter = 0
@@ -181,7 +189,7 @@ def fund_wallet(
 
 
 def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:
-
+    """Sign tx."""
     assert not viewer.button_next.isVisible()
     assert viewer.button_send.isVisible()
     assert not viewer.button_send.isEnabled()
@@ -215,8 +223,8 @@ def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWa
 
 
 def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:
-
     # send it away now
+    """Broadcast tx."""
     shutter.save(viewer)
 
     with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
@@ -225,9 +233,9 @@ def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet:
         shutter.save(viewer)
 
 
-def _get_widget_top_level(cls: Type[T], title: str | None = None) -> Optional[T]:
-    """
-    Find the top-level widget of the specified class and title among the active widgets.
+def _get_widget_top_level(cls: type[T], title: str | None = None) -> T | None:
+    """Find the top-level widget of the specified class and title among the active
+    widgets.
 
     Args:
     cls (QWidget): The class type to look for.
@@ -252,10 +260,10 @@ def _get_widget_top_level(cls: Type[T], title: str | None = None) -> Optional[T]
 
 
 def get_widget_top_level(
-    cls: Type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10000
-) -> Optional[T]:
-    """
-    Find the top-level widget of the specified class and title among the active widgets.
+    cls: type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10000
+) -> T | None:
+    """Find the top-level widget of the specified class and title among the active
+    widgets.
 
     Args:
     cls (QWidget): The class type to look for.
@@ -270,17 +278,19 @@ def get_widget_top_level(
 
 
 def do_modal_click(
-    click_pushbutton: Union[Callable, QWidget, QAction],
+    click_pushbutton: Callable | QWidget | QAction,
     on_open: Callable[[T], None],
     qtbot: QtBot,
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
-    cls: Type[T] = Union[QMessageBox, QWidget],
+    cls: type[T] = Union[QMessageBox, QWidget],
     timeout=5000,
     timer_delay=500,
 ) -> None:
+    """Do modal click."""
     dialog_was_opened = False
 
     def click() -> None:
+        """Click."""
         QApplication.processEvents()
         print("\nwaiting for is_dialog_open")
 
@@ -313,7 +323,8 @@ def get_called_args_message_box(
     patch_str: str,
     click_pushbutton: QPushButton,
     repeat_clicking_until_message_box_called=False,
-) -> List[Any]:
+) -> list[Any]:
+    """Get called args message box."""
     with patch(patch_str) as mock_message:
         while not mock_message.called:
             click_pushbutton.click()
@@ -328,8 +339,9 @@ def get_called_args_message_box(
 
 def simulate_user_response(
     main_window: QMainWindow, qtbot: QtBot, button_type: QMessageBox.StandardButton
-) -> Optional[bool]:
+) -> bool | None:
     # You have to find the dialog window among the active widgets
+    """Simulate user response."""
     for widget in QApplication.topLevelWidgets():
         if isinstance(widget, QMessageBox):
             # Simulate clicking 'Yes'
@@ -339,9 +351,8 @@ def simulate_user_response(
     return None
 
 
-def type_text_in_edit(text: str, edit: Union[QLineEdit, QTextEdit]) -> None:
-    """
-    Simulate typing text into a QLineEdit or QTextEdit widget.
+def type_text_in_edit(text: str, edit: QLineEdit | QTextEdit) -> None:
+    """Simulate typing text into a QLineEdit or QTextEdit widget.
 
     :param text: The text to type into the edit widget.
     :param edit: The QLineEdit or QTextEdit widget where the text will be typed.
@@ -365,14 +376,12 @@ def save_wallet(
     wallet_name: str,
     save_button: QPushButton,
 ) -> Path:
-
+    """Save wallet."""
     wallet_file = Path(test_config.config_dir) / f"{wallet_name}.wallet"
     with patch.object(
         QFileDialog, "getSaveFileName", return_value=(str(wallet_file), "All Files (*)")
     ) as mock_open:
-
         with patch.object(PasswordCreation, "get_password", return_value="") as mock_password:
-
             save_button.click()
 
             QApplication.processEvents()
@@ -385,9 +394,11 @@ def save_wallet(
 def close_wallet(
     shutter: Shutter, test_config: UserConfig, wallet_name: str, qtbot: QtBot, main_window: MainWindow
 ) -> None:
-
     # check that you cannot go further without import xpub
+    """Close wallet."""
+
     def password_creation(dialog: QMessageBox) -> None:
+        """Password creation."""
         shutter.save(dialog)
         for button in dialog.buttons():
             if button.text() == "Close":
@@ -402,6 +413,7 @@ def close_wallet(
 
 def clean_and_shorten(input_string, max_filename_len=50):
     # Remove characters problematic for filenames
+    """Clean and shorten."""
     cleaned_string = re.sub(r'[\/:*?"<>|]', "", input_string)
 
     # Truncate the string to a maximum of 30 characters
@@ -419,11 +431,12 @@ class CheckedDeletionContext:
         graph_directory: Path | None = None,
         list_references=None,
     ):
+        """Initialize instance."""
         self.graph_directory = graph_directory
         self.caplog = caplog
         self.qtbot = qtbot
         self.d = list_references
-        self.check_for_destruction: List[QtCore.QObject] = [
+        self.check_for_destruction: list[QtCore.QObject] = [
             qt_wallet,
             # qt_wallet.address_list,
             # qt_wallet.address_list_with_toolbar,
@@ -435,6 +448,7 @@ class CheckedDeletionContext:
 
     @classmethod
     def serialize_referrers(cls, obj: Any):
+        """Serialize referrers."""
         referrers = gc.get_referrers(obj)
 
         # Simplify referrers to a list of strings or simple dicts
@@ -454,18 +468,21 @@ class CheckedDeletionContext:
 
     @classmethod
     def save_single_referrers_to_json(cls, obj: Any, path: Path):
+        """Save single referrers to json."""
         filename = str(path / f"{cls.__name__}_{clean_and_shorten(str(obj))}.json")
         simplified_data = cls.serialize_referrers(obj)
         with open(filename, "w") as f:
             json.dump(simplified_data, f, indent=4)
 
     @classmethod
-    def save_referrers_to_json(cls, objects: List[Any], path: Path):
+    def save_referrers_to_json(cls, objects: list[Any], path: Path):
+        """Save referrers to json."""
         for o in objects:
             cls.save_single_referrers_to_json(o, path=path)
 
     @classmethod
-    def show_backrefs(cls, objects: List[Any], path: Path):
+    def show_backrefs(cls, objects: list[Any], path: Path):
+        """Show backrefs."""
         for o in objects:
             objgraph.show_backrefs(
                 [o],
@@ -477,10 +494,11 @@ class CheckedDeletionContext:
             )
 
     def __enter__(self):
+        """Enter context manager."""
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-
+        """Exit context manager."""
         with self.qtbot.waitSignals([q.destroyed for q in self.check_for_destruction], timeout=1000):
             if self.graph_directory:
                 self.show_backrefs(self.check_for_destruction, self.graph_directory)

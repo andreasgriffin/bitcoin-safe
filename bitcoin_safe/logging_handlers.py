@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import os
@@ -43,15 +44,14 @@ from .simple_mailer import compose_email
 
 
 def remove_absolute_paths(line: str) -> str:
-    """
-    Replaces absolute paths in a traceback line with relative ones,
-    based on the current script's execution path.
-    """
+    """Replaces absolute paths in a traceback line with relative ones, based on the
+    current script's execution path."""
     current_path = os.getcwd() + os.sep
     return line.replace(current_path, "")
 
 
 def get_system_info_as_text() -> str:
+    """Get system info as text."""
     distro_name = "Unknown"
     distro_version = ""
 
@@ -60,7 +60,7 @@ def get_system_info_as_text() -> str:
             os_release_info = platform.freedesktop_os_release()
             distro_name = os_release_info.get("NAME", "Unknown")
             distro_version = os_release_info.get("VERSION", "")
-        except:
+        except Exception:
             pass
 
     body = "\n\nSystem Info:\n"
@@ -72,6 +72,7 @@ def get_system_info_as_text() -> str:
 
 
 def text_error_report(error_report: str, file_path: Path | None = None) -> str:
+    """Text error report."""
     email = "andreasgriffin@proton.me"
     subject = f"Error report - Bitcoin Safe Version: {__version__}"
     body = ""
@@ -82,9 +83,7 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     body += f"{subject}\n\n"
     body += f"""Error:
             {error_report}
-            """.replace(
-        "    ", ""
-    )
+            """.replace("    ", "")
 
     # Write additional system info if needed
     body += get_system_info_as_text()
@@ -92,19 +91,19 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
 
 
 def mail_error_repot(error_report: str) -> None:
+    """Mail error repot."""
     email = "andreasgriffin@proton.me"
     subject = f"Error report - Bitcoin Safe Version: {__version__}"
     body = f"""Error:
             {error_report}
-            """.replace(
-        "    ", ""
-    )
+            """.replace("    ", "")
 
     body += get_system_info_as_text()
     return compose_email(email, subject, body)
 
 
 def mail_feedback() -> None:
+    """Mail feedback."""
     email = "andreasgriffin@proton.me"
     subject = f"Feedback - Bitcoin Safe Version: {__version__}"
     body = ""
@@ -117,9 +116,11 @@ class RelativePathFormatter(logging.Formatter):
     def formatException(
         self, ei: tuple[type[BaseException], BaseException, TracebackType | None] | tuple[None, None, None]
     ) -> str:
+        """FormatException."""
         return remove_absolute_paths(super().formatException(ei))
 
     def format(self, record) -> str:
+        """Format."""
         if record.exc_info:
             record.exc_text = self.formatException(record.exc_info)
         return super().format(record)
@@ -127,11 +128,15 @@ class RelativePathFormatter(logging.Formatter):
 
 class MailHandler(logging.Handler):
     def __init__(self, level=logging.NOTSET, must_include_exc_info=True) -> None:
+        """Initialize instance."""
         super().__init__(level)
         self.must_include_exc_info = must_include_exc_info
 
     def emit(self, record) -> None:
-        """'args', 'asctime', 'created', 'exc_info', 'exc_text', 'filename', 'funcName', 'getMessage', 'levelname', 'levelno', 'lineno', 'message', 'module', 'msecs', 'msg', 'name', 'pathname', 'process', 'processName', 'relativeCreated', 'stack_info', 'thread', 'threadName"""
+        """'args', 'asctime', 'created', 'exc_info', 'exc_text', 'filename', 'funcName',
+        'getMessage', 'levelname', 'levelno', 'lineno', 'message', 'module', 'msecs',
+        'msg', 'name', 'pathname', 'process', 'processName', 'relativeCreated',
+        'stack_info', 'thread', 'threadName."""
 
         if (self.must_include_exc_info and record.exc_info) or not self.must_include_exc_info:
             exc_type, exc_value, exc_traceback = record.exc_info  # type: ignore
@@ -142,11 +147,12 @@ class MailHandler(logging.Handler):
 
 class OpenLogHandler(logging.Handler):
     def __init__(self, file_path: Path, level=logging.CRITICAL) -> None:
+        """Initialize instance."""
         super().__init__(level)
         self.file_path = file_path
 
     def emit(self, record) -> None:
-
+        """Emit."""
         message = text_error_report(str(self.format(record)), file_path=self.file_path)
 
         # Create a temporary file with a message to the user

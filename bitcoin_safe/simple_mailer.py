@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import urllib.parse
-from typing import List
 
 from bitcoin_safe_lib.util_os import open_mailto_link, webopen
 
@@ -37,9 +37,10 @@ logger = logging.getLogger(__name__)
 
 
 def compose_email(
-    email: str, subject: str, body: str, attachment_filenames: List[str] | None = None, run_in_background=True
+    email: str, subject: str, body: str, attachment_filenames: list[str] | None = None, run_in_background=True
 ) -> None:
     # Encode the subject and body to ensure spaces and special characters are handled correctly
+    """Compose email."""
     subject_encoded = urllib.parse.quote(subject)
     body_encoded = urllib.parse.quote(body)
     mailto_link = f"mailto:{email}?subject={subject_encoded}&body={body_encoded}"

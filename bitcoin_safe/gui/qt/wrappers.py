@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
+from collections.abc import Callable
 from functools import partial
-from typing import Any, Callable, Optional
+from typing import Any
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction, QIcon
@@ -39,9 +41,10 @@ class Menu(QMenu):
     def add_action(
         self,
         text="",
-        slot: Optional[Callable[[], Any] | pyqtBoundSignal] = None,
+        slot: Callable[[], Any] | pyqtBoundSignal | None = None,
         icon: QIcon | None = None,
     ) -> QAction:
+        """Add action."""
         action = QAction(text=text, parent=self)
         if slot:
             if callable(slot):
@@ -57,7 +60,8 @@ class Menu(QMenu):
             action.setIcon(icon)
         return action
 
-    def add_menu(self, text="") -> "Menu":
+    def add_menu(self, text="") -> Menu:
+        """Add menu."""
         menu = Menu(text, self)
         self.addMenu(menu)
         return menu
@@ -65,6 +69,7 @@ class Menu(QMenu):
 
 class MenuBar(QMenuBar):
     def add_menu(self, text="") -> Menu:
+        """Add menu."""
         menu = Menu(text, self)
         self.addMenu(menu)
         return menu

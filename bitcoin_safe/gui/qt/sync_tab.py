@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import bdkpython as bdk
 import nostr_sdk
@@ -61,6 +62,7 @@ logger = logging.getLogger(__name__)
 
 class BackupNsecNotificationBar(NotificationBar):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="Save",
@@ -80,13 +82,14 @@ class BackupNsecNotificationBar(NotificationBar):
         self.add_styled_widget(self.import_button)
 
     def on_optional_button(self):
+        """On optional button."""
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
             default_filename=shorten_filename(
                 filename_clean(f"Sync key {self.wallet_id}", file_extension=".txt"), max_total_length=20
             ),
-            window_title=f"Save Label backup key",
+            window_title="Save Label backup key",
         )
 
         if not filename:
@@ -100,16 +103,19 @@ class BackupNsecNotificationBar(NotificationBar):
             )
         return filename
 
-    def setText(self, value: Optional[str]):
+    def setText(self, value: str | None):
+        """SetText."""
         self.icon_label.textLabel.setText(value if value else "")
 
     def set_nsec(self, nsec: str, wallet_id: str) -> None:
+        """Set nsec."""
         self.nsec = nsec
         self.wallet_id = wallet_id
         self.setText(self.tr("Please backup your sync key.").format(nsec=nsec))
         self.setHidden(False)
 
     def updateUi(self):
+        """UpdateUi."""
         self.import_button.setText(self.tr("Restore labels"))
         self.optionalButton.setText(self.tr("Save sync key"))
 
@@ -119,13 +125,14 @@ class SyncTab(ControlledGroupbox):
         self,
         network: bdk.Network,
         signals: Signals,
-        nostr_sync_dump: Dict,
+        nostr_sync_dump: dict,
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
         parent=None,
         **kwargs,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, enabled=enabled)
         self.signals = signals
         self.network = network
@@ -140,9 +147,9 @@ class SyncTab(ControlledGroupbox):
             if nostr_sync
             else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=parent)
         )
-        assert (
-            self.nostr_sync.network == network
-        ), f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
+        assert self.nostr_sync.network == network, (
+            f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
+        )
 
         self.groupbox_layout.addWidget(self.nostr_sync.ui)
 
@@ -163,9 +170,11 @@ class SyncTab(ControlledGroupbox):
         self.checkbox.stateChanged.connect(self.on_checkbox_state_changed)
 
     def set_wallet_id(self, wallet_id: str):
+        """Set wallet id."""
         self.backup_nsec_notificationbar.wallet_id = wallet_id
 
     def on_checkbox_state_changed(self, value) -> None:
+        """On checkbox state changed."""
         self.on_enable(self.enabled())
 
         if not self.checkbox.isChecked():
@@ -175,42 +184,57 @@ class SyncTab(ControlledGroupbox):
             wallet_id=self.backup_nsec_notificationbar.wallet_id,
         )
 
-        logger.info(
-            f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
+        self.publish_key()
+
+    def publish_key(self):
+        # just in case the relay lost the publish key message. I republish here
+        """Publish key."""
+        my_key = short_key(
+            self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()
         )
+        chat_key = short_key(
+            self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()
+        )
+        logger.info(f"Publish my key {my_key} in protocol chat {chat_key}")
         self.nostr_sync.publish_my_key_in_protocol(force=True)
 
     def import_nsec(self):
+        """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
 
     @staticmethod
     def get_icon_basename(enabled: bool) -> str:
+        """Get icon basename."""
         return "bi--cloud.svg" if enabled else "bi--cloud-slash.svg"
 
     @classmethod
     def get_checkbox_text(cls):
+        """Get checkbox text."""
         return cls.tr("Label backup and encrypted syncing to trusted devices")
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.checkbox.setText(self.get_checkbox_text())
         self.checkbox_auto_open_psbts.setText(self.tr("Open received Transactions and PSBTs"))
         self.backup_nsec_notificationbar.updateUi()
 
     def unsubscribe_all(self) -> None:
+        """Unsubscribe all."""
         if self.enabled():
             self.nostr_sync.unsubscribe()
 
     def finish_init_after_signal_connection(self) -> None:
+        """Finish init after signal connection."""
         if self.enabled():
             self.on_enable(self.enabled())
 
     def subscribe(self) -> None:
+        """Subscribe."""
         self.nostr_sync.subscribe()
 
     def on_dm(self, dm: ChatDM) -> None:
-        """
-        Catches DataType.PSBT, DataType.Tx and opens them in a tab
-        It also notifies of
+        """Catches DataType.PSBT, DataType.Tx and opens them in a tab It also notifies
+        of.
 
         Args:
             dm (ChatDM): _description_
@@ -244,15 +268,17 @@ class SyncTab(ControlledGroupbox):
                 ).emit_with(self.signals.notification)
 
     def enabled(self) -> bool:
+        """Enabled."""
         return self.checkbox.isChecked()
 
     @classmethod
     def generate_hash_hex(
         cls,
         address_type: AddressType,
-        xpubs: List[str],
+        xpubs: list[str],
         network: bdk.Network,
     ) -> str:
+        """Generate hash hex."""
         default_key_origin = address_type.key_origin(network)
 
         total_string = default_key_origin + "".join(sorted(xpubs))
@@ -265,7 +291,8 @@ class SyncTab(ControlledGroupbox):
         network: bdk.Network,
         signals: Signals,
         parent: QObject | None = None,
-    ) -> "SyncTab":
+    ) -> SyncTab:
+        """From descriptor new device keys."""
         descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
         xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
 
@@ -279,7 +306,8 @@ class SyncTab(ControlledGroupbox):
 
         device_keys = nostr_sdk.Keys.generate()
         logger.info(
-            f"Generated a new nostr keypair with public key {short_key(device_keys.public_key().to_bech32())} and saving to wallet"
+            f"Generated a new nostr keypair with public key "
+            f"{short_key(device_keys.public_key().to_bech32())} and saving to wallet"
         )
         nostr_sync = NostrSync.from_keys(
             network=network,
@@ -294,7 +322,8 @@ class SyncTab(ControlledGroupbox):
             nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals, parent=parent
         )
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         return {
             "auto_open_psbts": self.checkbox_auto_open_psbts.isChecked(),
             "enabled": self.checkbox.isChecked(),
@@ -302,20 +331,24 @@ class SyncTab(ControlledGroupbox):
         }
 
     @classmethod
-    def from_dump(cls, sync_tab_dump: Dict, network: bdk.Network, signals: Signals) -> "SyncTab":
+    def from_dump(cls, sync_tab_dump: dict, network: bdk.Network, signals: Signals) -> SyncTab:
+        """From dump."""
         return cls(**filtered_for_init(sync_tab_dump, cls), network=network, signals=signals)
 
     def open_file_object(self, file_object: FileObject) -> None:
+        """Open file object."""
         if not file_object or not file_object.data:
             return
         self.signals.open_tx_like.emit(file_object.data.data)
 
     def on_enable(self, enable: bool) -> None:
+        """On enable."""
         if enable:
             self.subscribe()
         else:
             self.nostr_sync.unsubscribe()
 
     def close(self) -> bool:
+        """Close."""
         self.nostr_sync.close()
         return super().close()

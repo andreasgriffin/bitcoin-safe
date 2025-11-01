@@ -32,7 +32,7 @@ import datetime
 import logging
 from dataclasses import dataclass, field
 from functools import partial
-from typing import List, Optional, Protocol, Tuple
+from typing import Protocol
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -61,6 +61,7 @@ ENABLE_WALLET_GRAPH_TOOLTIPS = False
 
 
 def elide_text(text: str, max_length: int) -> str:
+    """Elide text."""
     if max_length <= 0 or len(text) <= max_length:
         return text
     if max_length == 1:
@@ -69,10 +70,13 @@ def elide_text(text: str, max_length: int) -> str:
 
 
 class Highlightable(Protocol):
-    def set_highlighted(self, highlighted: bool) -> None: ...
+    def set_highlighted(self, highlighted: bool) -> None:
+        """Set highlighted."""
+        ...
 
 
 def _apply_connection_highlight(connection: QGraphicsPathItem, original_pen: QPen, highlighted: bool) -> None:
+    """Apply connection highlight."""
     if highlighted:
         boosted_pen = QPen(original_pen)
         new_width = max(original_pen.widthF() * 1.6, original_pen.widthF() + 1.0)
@@ -104,6 +108,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         value_label_color: QColor | ColorSchemeItem | None = ColorScheme.DEFAULT,
         value_label_offset: float | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(-radius, -radius, radius * 2, radius * 2)
         self.creating_txid = creating_txid
         self._spending_txid = spending_txid
@@ -123,10 +128,12 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         self._tooltip_text: str | None = None
 
     def set_highlight_target(self, target: Highlightable | None) -> None:
+        """Set highlight target."""
         self._highlight_target = target
         self.value_label.set_highlight_target(target)
 
     def mousePressEvent(self, event) -> None:
+        """MousePressEvent."""
         if not event:
             return
         if event.button() == Qt.MouseButton.LeftButton:
@@ -158,6 +165,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         text: str,
         color: QColor | ColorSchemeItem | None = None,
     ) -> UtxoLabelItem | None:
+        """Append label line."""
         if not text:
             return None
         self.value_label.append_line(text, color=color)
@@ -167,22 +175,26 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         return self.value_label
 
     def set_composite_tooltip(self, tooltip: str) -> None:
+        """Set composite tooltip."""
         self._tooltip_text = tooltip
         if ENABLE_WALLET_GRAPH_TOOLTIPS:
             self.setToolTip(tooltip)
             self.value_label.setToolTip(tooltip)
 
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
+        """HoverEnterEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(True)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event) -> None:  # type: ignore[override]
+        """HoverLeaveEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(False)
         super().hoverLeaveEvent(event)
 
     def _center_view_on_transaction(self, txid: str | None) -> None:
+        """Center view on transaction."""
         if not txid:
             return
         scene = self.scene()
@@ -196,6 +208,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
 
     @staticmethod
     def _radius_for_value(value: int, max_value: int, min_radius: float, max_radius: float) -> float:
+        """Radius for value."""
         if max_value <= 0:
             return min_radius
         ratio = value / max_value
@@ -203,6 +216,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
 
     @staticmethod
     def _color_for_utxo(utxo: PythonUtxo, wallet: Wallet | None, wallet_signals: WalletSignals) -> QColor:
+        """Color for utxo."""
         if not wallet:
             return ColorScheme.Purple.as_color()
         color = AddressEdit.color_address(utxo.address, wallet, wallet_signals)
@@ -231,7 +245,8 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         vertical_spacing: float,
         index: int,
         horizontal_offset: float | None = None,
-    ) -> "UtxoEllipseItem":
+    ) -> UtxoEllipseItem:
+        """Create output."""
         radius = cls._radius_for_value(python_utxo.value, max_utxo_value, min_radius, max_radius)
         label_text = Satoshis(python_utxo.value, network).str_with_unit(color_formatting=None)
         ellipse = cls(
@@ -302,7 +317,8 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         min_radius: float,
         index: int,
         horizontal_offset: float | None = None,
-    ) -> "UtxoEllipseItem":
+    ) -> UtxoEllipseItem:
+        """Create input placeholder."""
         creating_txid = outpoint_str.split(":", 1)[0] if outpoint_str else ""
         label_text = translate("WalletGraphClient", "External input") if not python_utxo else outpoint_str
         offset = -min_radius - 20
@@ -341,16 +357,18 @@ class GraphUtxoCircle:
     ellipse: UtxoEllipseItem
     default_opacity: float = field(init=False)
     default_z_value: float = field(init=False)
-    incoming_connections: List[Tuple[QGraphicsPathItem, QPen]] = field(default_factory=list)
-    outgoing_connections: List[Tuple[QGraphicsPathItem, QPen]] = field(default_factory=list)
+    incoming_connections: list[tuple[QGraphicsPathItem, QPen]] = field(default_factory=list)
+    outgoing_connections: list[tuple[QGraphicsPathItem, QPen]] = field(default_factory=list)
     _is_highlighted: bool = field(default=False, init=False)
 
     def __post_init__(self) -> None:
+        """Post init."""
         self.default_opacity = self.ellipse.opacity()
         self.default_z_value = self.ellipse.zValue()
         self.ellipse.set_highlight_target(self)
 
     def add_connection(self, connection: QGraphicsPathItem, incoming: bool) -> None:
+        """Add connection."""
         original_pen = QPen(connection.pen())
         if incoming:
             self.incoming_connections.append((connection, original_pen))
@@ -358,11 +376,13 @@ class GraphUtxoCircle:
             self.outgoing_connections.append((connection, original_pen))
 
     def update_default_opacity(self, opacity: float) -> None:
+        """Update default opacity."""
         self.default_opacity = opacity
         if not self._is_highlighted:
             self.ellipse.setOpacity(opacity)
 
     def set_highlighted(self, highlighted: bool) -> None:
+        """Set highlighted."""
         if highlighted == self._is_highlighted:
             return
         self._is_highlighted = highlighted
@@ -383,15 +403,16 @@ class GraphTransactionNode:
     default_pen: QPen = field(init=False)
     default_brush: QBrush = field(init=False)
     default_z_value: float = field(init=False)
-    incoming_connections: List[Tuple[QGraphicsPathItem, QPen, GraphUtxoCircle | None]] = field(
+    incoming_connections: list[tuple[QGraphicsPathItem, QPen, GraphUtxoCircle | None]] = field(
         default_factory=list
     )
-    outgoing_connections: List[Tuple[QGraphicsPathItem, QPen, GraphUtxoCircle | None]] = field(
+    outgoing_connections: list[tuple[QGraphicsPathItem, QPen, GraphUtxoCircle | None]] = field(
         default_factory=list
     )
     _is_highlighted: bool = field(default=False, init=False)
 
     def __post_init__(self) -> None:
+        """Post init."""
         self.default_pen = QPen(self.item.pen())
         self.default_brush = QBrush(self.item.brush())
         self.default_z_value = self.item.zValue()
@@ -404,6 +425,7 @@ class GraphTransactionNode:
         circle: GraphUtxoCircle | None,
         incoming: bool,
     ) -> None:
+        """Add connection."""
         original_pen = QPen(connection.pen())
         record = (connection, original_pen, circle)
         if incoming:
@@ -412,6 +434,7 @@ class GraphTransactionNode:
             self.outgoing_connections.append(record)
 
     def set_highlighted(self, highlighted: bool) -> None:
+        """Set highlighted."""
         if highlighted == self._is_highlighted:
             return
         self._is_highlighted = highlighted
@@ -453,6 +476,7 @@ class GraphLabelItem(QGraphicsTextItem):
         color: QColor | ColorSchemeItem | None = None,
         parent: QGraphicsItem | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(text, parent)
         self._signal_id = signal_id
         self._transaction_signal = transaction_signal
@@ -464,7 +488,8 @@ class GraphLabelItem(QGraphicsTextItem):
         self._apply_color(color)
         self._update_position()
 
-    def mousePressEvent(self, event: Optional[QGraphicsSceneMouseEvent]) -> None:
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent | None) -> None:
+        """MousePressEvent."""
         if not event:
             return super().mousePressEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:
@@ -474,19 +499,23 @@ class GraphLabelItem(QGraphicsTextItem):
         super().mousePressEvent(event)
 
     def set_highlight_target(self, target: Highlightable | None) -> None:
+        """Set highlight target."""
         self._highlight_target = target
 
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
+        """HoverEnterEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(True)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event) -> None:  # type: ignore[override]
+        """HoverLeaveEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(False)
         super().hoverLeaveEvent(event)
 
     def _apply_color(self, color: QColor | ColorSchemeItem | None) -> None:
+        """Apply color."""
         if isinstance(color, ColorSchemeItem):
             self.setDefaultTextColor(color.as_color())
         elif isinstance(color, QColor):
@@ -495,6 +524,7 @@ class GraphLabelItem(QGraphicsTextItem):
             self.setDefaultTextColor(ColorScheme.DEFAULT.as_color())
 
     def _configure_alignment(self) -> None:
+        """Configure alignment."""
         document = self.document()
         if not document:
             return
@@ -507,11 +537,13 @@ class GraphLabelItem(QGraphicsTextItem):
         self.setDocument(document)
 
     def _update_position(self) -> None:
+        """Update position."""
         rect = self.boundingRect()
         self.setPos(-rect.width() / 2, self._vertical_offset)
 
     @property
     def bottom_y(self) -> float:
+        """Bottom y."""
         rect = self.boundingRect()
         return self.pos().y() + rect.height()
 
@@ -528,6 +560,7 @@ class TransactionLabelItem(GraphLabelItem):
         color: QColor | ColorSchemeItem | None = None,
         parent: QGraphicsItem | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             txid,
             text,
@@ -548,6 +581,7 @@ class UtxoLabelItem(GraphLabelItem):
         color: QColor | ColorSchemeItem | None = None,
         parent: QGraphicsItem | None = None,
     ) -> None:
+        """Initialize instance."""
         self.creating_txid = creating_txid
         super().__init__(
             creating_txid,
@@ -563,6 +597,7 @@ class UtxoLabelItem(GraphLabelItem):
         text: str,
         color: QColor | ColorSchemeItem | None = None,
     ) -> None:
+        """Append line."""
         if not text:
             return
 
@@ -616,6 +651,7 @@ class TransactionItem(QGraphicsRectItem):
         label_color: QColor | ColorSchemeItem | None = ColorScheme.DEFAULT,
         show_txid=False,
     ) -> None:
+        """Initialize instance."""
         super().__init__(-width / 2, -height / 2, width, height)
         self.txid = detail.txid
         self.detail = detail
@@ -656,9 +692,11 @@ class TransactionItem(QGraphicsRectItem):
             self.label_item.setToolTip(label_tooltip)
 
     def set_highlight_target(self, target: Highlightable | None) -> None:
+        """Set highlight target."""
         self._highlight_target = target
 
     def apply_color(self, color_item: ColorSchemeItem) -> None:
+        """Apply color."""
         border_color = color_item.as_color()
         fill_color = color_item.as_color(background=True)
         fill_color.setAlphaF(0.25)
@@ -668,7 +706,8 @@ class TransactionItem(QGraphicsRectItem):
         self.setPen(pen)
         self.setBrush(fill_color)
 
-    def mousePressEvent(self, event: Optional[QGraphicsSceneMouseEvent]) -> None:
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent | None) -> None:
+        """MousePressEvent."""
         if not event:
             return super().mousePressEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:
@@ -678,13 +717,13 @@ class TransactionItem(QGraphicsRectItem):
         super().mousePressEvent(event)
 
     def contextMenuEvent(self, event) -> None:  # type: ignore[override]
+        """ContextMenuEvent."""
         if not event:
             return super().contextMenuEvent(event)
 
         menu = QMenu()
         jump_menu = menu.addMenu(translate("WalletGraphClient", "Jump to Input"))
         if jump_menu:
-
             inputs = list(self.detail.inputs.items()) if self.detail.inputs else []
             view = self._graph_view()
             has_jump_action = False
@@ -714,17 +753,20 @@ class TransactionItem(QGraphicsRectItem):
         event.accept()
 
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
+        """HoverEnterEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(True)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event) -> None:  # type: ignore[override]
+        """HoverLeaveEvent."""
         if self._highlight_target:
             self._highlight_target.set_highlighted(False)
         super().hoverLeaveEvent(event)
 
     @staticmethod
     def _transaction_input_color(wallet: Wallet | None, detail: FullTxDetail) -> ColorSchemeItem | None:
+        """Transaction input color."""
         if not wallet:
             return None
 
@@ -739,6 +781,7 @@ class TransactionItem(QGraphicsRectItem):
         return None
 
     def _graph_view(self):
+        """Graph view."""
         scene = self.scene()
         if not scene:
             return None
@@ -748,13 +791,15 @@ class TransactionItem(QGraphicsRectItem):
         return None
 
     @staticmethod
-    def _split_outpoint(outpoint: str) -> Tuple[str, str]:
+    def _split_outpoint(outpoint: str) -> tuple[str, str]:
+        """Split outpoint."""
         if ":" not in outpoint:
             return outpoint, ""
         txid, vout = outpoint.split(":", 1)
         return txid, vout
 
     def _format_input_label(self, txid: str, vout: str, python_utxo: PythonUtxo | None) -> str:
+        """Format input label."""
         short_id = short_tx_id(txid) if txid else translate("WalletGraphClient", "Unknown")
         base = f"{short_id}:{vout}" if vout else short_id
         if python_utxo and python_utxo.address:
@@ -762,6 +807,7 @@ class TransactionItem(QGraphicsRectItem):
         return base
 
     def _handle_jump_to_input(self, txid: str) -> None:
+        """Handle jump to input."""
         view = self._graph_view()
         if not view:
             if txid:
@@ -776,6 +822,7 @@ class TransactionItem(QGraphicsRectItem):
 
     @staticmethod
     def _view_has_transaction(view, txid: str) -> bool:
+        """View has transaction."""
         has_method = getattr(view, "has_transaction", None)
         if callable(has_method):
             try:
@@ -787,7 +834,8 @@ class TransactionItem(QGraphicsRectItem):
     @staticmethod
     def _resolve_label_value(
         wallet: Wallet | None, detail: FullTxDetail, label_max_chars: int
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
+        """Resolve label value."""
         label_value = ""
         if wallet:
             try:
@@ -801,6 +849,7 @@ class TransactionItem(QGraphicsRectItem):
 
     @staticmethod
     def _transaction_tooltip(detail: FullTxDetail, timestamp: datetime.datetime, network: bdk.Network) -> str:
+        """Transaction tooltip."""
         abbreviated = short_tx_id(detail.txid)
         sent = Satoshis(detail.tx.sent, network).str_with_unit(color_formatting=None)
         received = Satoshis(detail.tx.received, network).str_with_unit(color_formatting=None)

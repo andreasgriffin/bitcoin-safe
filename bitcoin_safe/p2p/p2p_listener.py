@@ -32,14 +32,16 @@ import asyncio
 import logging
 import random
 import time
-from typing import List, Optional, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .p2p_client import Inventory, InventoryType, P2PClient, Peer, Peers
 from .peer_discovery import PeerDiscovery
@@ -50,11 +52,10 @@ T = TypeVar("T", bound=list)
 
 
 class P2pListener(QObject):
-
-    signal_tx = cast(TypedPyQtSignal[bdk.Transaction], pyqtSignal(bdk.Transaction))
-    signal_block = cast(TypedPyQtSignal[str], pyqtSignal(str))
-    signal_break_current_connection = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_disconnected_to = cast(TypedPyQtSignal[Peer], pyqtSignal(Peer))
+    signal_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    signal_block: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_break_current_connection: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_disconnected_to: TypedPyQtSignal[Peer] = cast(Any, pyqtSignal(Peer))
 
     def __init__(
         self,
@@ -62,15 +63,16 @@ class P2pListener(QObject):
         debug=False,
         fetch_txs=True,
         timeout: int = 200,
-        discovered_peers: Peers | List[Peer] | None = None,
+        discovered_peers: Peers | list[Peer] | None = None,
         parent: QObject | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.fetch_txs = fetch_txs
         self.client = P2PClient(network=network, debug=debug, timeout=timeout, parent=self)
         self.loop_in_thread = LoopInThread()
-        self.address_filter: List[str] | None = None
-        self.outpoint_filter: List[str] | None = None
+        self.address_filter: list[str] | None = None
+        self.outpoint_filter: list[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network)
 
         self.discovered_peers = discovered_peers if discovered_peers else Peers()
@@ -83,13 +85,16 @@ class P2pListener(QObject):
         self.client.signal_tx.connect(self.on_tx)
         self.signal_break_current_connection.connect(self._on_break_current_connection)
 
-    def set_address_filter(self, address_filter: List[str] | None):
+    def set_address_filter(self, address_filter: list[str] | None):
+        """Set address filter."""
         self.address_filter = address_filter
 
-    def set_outpoint_filter(self, outpoint_filter: List[str] | None):
+    def set_outpoint_filter(self, outpoint_filter: list[str] | None):
+        """Set outpoint filter."""
         self.outpoint_filter = outpoint_filter
 
     def on_tx(self, tx: bdk.Transaction):
+        """On tx."""
         if (self.address_filter is not None) and address_match(
             tx=tx, network=self.client.network, address_filter=self.address_filter
         ):
@@ -103,9 +108,8 @@ class P2pListener(QObject):
         self,
         weight_getaddr: float = 0.7,
         weight_dns: float = 0.3,
-    ) -> Optional[Peer]:
-        """
-        Pick a random peer according to two relative weights.
+    ) -> Peer | None:
+        """Pick a random peer according to two relative weights.
 
         Parameters
         ----------
@@ -151,11 +155,10 @@ class P2pListener(QObject):
 
     async def _start(
         self,
-        proxy_info: Optional[ProxyInfo],
+        proxy_info: ProxyInfo | None,
         initial_peer: Peer | None = None,
     ) -> None:
-        """
-        Keep the client *always* connected to **some** Bitcoin peer.
+        """Keep the client *always* connected to **some** Bitcoin peer.
 
         Parameters
         ----------
@@ -228,15 +231,18 @@ class P2pListener(QObject):
 
     def start(
         self,
-        proxy_info: Optional[ProxyInfo],
+        proxy_info: ProxyInfo | None,
         initial_peer: Peer | None = None,
     ):
+        """Start."""
         self.loop_in_thread.run_background(self._start(initial_peer=initial_peer, proxy_info=proxy_info))
 
     def stop(self):
+        """Stop."""
         self.loop_in_thread.stop()
 
     def do_fetch_txs(self, inventory: Inventory):
+        """Do fetch txs."""
         tx_inventory = Inventory()
         for item in inventory:
             if item.type in [InventoryType.MSG_TX, InventoryType.MSG_WITNESS_TX]:
@@ -244,6 +250,7 @@ class P2pListener(QObject):
         self.loop_in_thread.run_background(self.client.getdata(tx_inventory))
 
     def handle_block_msg(self, inventory: Inventory):
+        """Handle block msg."""
         for item in inventory:
             if item.type in [
                 InventoryType.MSG_BLOCK,
@@ -255,6 +262,7 @@ class P2pListener(QObject):
                 self.signal_block.emit(block_hash)
 
     def on_inv(self, inventory: Inventory):
+        """On inv."""
         if self.fetch_txs:
             self.do_fetch_txs(inventory=inventory)
         self.handle_block_msg(inventory=inventory)
@@ -265,15 +273,17 @@ class P2pListener(QObject):
             self.discovered_peers.remove(peer)
 
     def on_received_peers(self, peers: Peers):
+        """On received peers."""
         self.add_peers(peers=peers)
 
     def add_peers(self, peers: Peers):
         # by restricting the new peers, we restrict how fast the discovered_peers can be eclipsed
+        """Add peers."""
         maximum_new_peers = 300
         # restricting the total is necessary to restrict memory
         maximum_total_peers = 1000
 
-        new_peers: List[Peer] = []
+        new_peers: list[Peer] = []
         for peer in peers:
             if peer not in self.discovered_peers:
                 new_peers.append(peer)
@@ -283,18 +293,20 @@ class P2pListener(QObject):
             self.discovered_peers + new_peers, max_len=maximum_total_peers
         )
         logger.debug(
-            f"Added {len(new_peers)=} peers to discovered_peers and shrunk the size to {len(self.discovered_peers)=}"
+            f"Added {len(new_peers)=} peers to discovered_peers and "
+            f"shrunk the size to {len(self.discovered_peers)=}"
         )
 
     @staticmethod
-    def _shuffle_and_restrict(l: T, max_len: int) -> T:
-        random.shuffle(l)
-        del l[max_len:]
-        return l
+    def _shuffle_and_restrict(some_list: T, max_len: int) -> T:
+        """Shuffle and restrict."""
+        random.shuffle(some_list)
+        del some_list[max_len:]
+        return some_list
 
     def _on_break_current_connection(self) -> None:
-        """
-        Slot invoked when `signal_break_current_connection` fires.
+        """Slot invoked when `signal_break_current_connection` fires.
+
         We can’t `await` inside a Qt slot, so we schedule the coroutine.
         """
         if not self.client.is_running():  # already closed

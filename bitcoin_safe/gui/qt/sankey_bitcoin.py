@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import platform
-from typing import Dict, List, Optional
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -62,21 +62,23 @@ logger = logging.getLogger(__name__)
 
 class SankeyBitcoin(SankeyWidget):
     def __init__(self, network: bdk.Network, wallet_functions: WalletFunctions):
+        """Initialize instance."""
         super().__init__()
         self.wallet_functions = wallet_functions
         self.signals = wallet_functions.signals
         self.network = network
         self.tx: bdk.Transaction | None = None
         self.fee_info: FeeInfo | None = None
-        self.txouts: List[TxOut] = []
-        self.addresses: List[str] = []
-        self.txo_dict: Dict[str, PythonUtxo] = {}
+        self.txouts: list[TxOut] = []
+        self.addresses: list[str] = []
+        self.txo_dict: dict[str, PythonUtxo] = {}
         self.signal_tracker = SignalTracker()
 
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.refresh)
         self.signal_tracker.connect(self.signal_on_label_click, self.on_label_click)
 
     def refresh(self, update_filter: UpdateFilter):
+        """Refresh."""
         if not self.tx:
             return
 
@@ -99,14 +101,16 @@ class SankeyBitcoin(SankeyWidget):
         self.set_tx(self.tx, fee_info=self.fee_info, txo_dict=self.txo_dict)
 
     @property
-    def outpoints(self) -> List[OutPoint]:
+    def outpoints(self) -> list[OutPoint]:
+        """Outpoints."""
         if not self.tx:
             return []
         txid = self.tx.compute_txid()
         return [OutPoint(txid=txid, vout=vout) for vout in range(len(self.tx.output()))]
 
     @property
-    def input_outpoints(self) -> List[OutPoint]:
+    def input_outpoints(self) -> list[OutPoint]:
+        """Input outpoints."""
         if not self.tx:
             return []
         return [OutPoint.from_bdk(inp.previous_output) for inp in self.tx.input()]
@@ -115,8 +119,10 @@ class SankeyBitcoin(SankeyWidget):
         self,
         tx: bdk.Transaction,
         fee_info: FeeInfo | None = None,
-        txo_dict: Dict[str, PythonUtxo] | None = None,
+        txo_dict: dict[str, PythonUtxo] | None = None,
     ) -> bool:
+        """Set tx."""
+
         def get_label_and_tooltip(
             value: int | None,
             label: str | None,
@@ -125,6 +131,7 @@ class SankeyBitcoin(SankeyWidget):
             connect_right=False,
             connect_left=False,
         ):
+            """Get label and tooltip."""
             display_label = ""
             tooltip = ""
 
@@ -157,13 +164,13 @@ class SankeyBitcoin(SankeyWidget):
         self.addresses = []
         wallets = get_wallets(self.wallet_functions)
 
-        labels: Dict[FlowIndex, str] = {}
-        tooltips: Dict[FlowIndex, str] = {}
-        colors: Dict[FlowIndex, QColor] = {}
+        labels: dict[FlowIndex, str] = {}
+        tooltips: dict[FlowIndex, str] = {}
+        colors: dict[FlowIndex, QColor] = {}
 
         # output
         self.txouts = [TxOut.from_bdk(txout) for txout in tx.output()]
-        out_flows: List[int] = [txout.value.to_sat() for txout in self.txouts]
+        out_flows: list[int] = [txout.value.to_sat() for txout in self.txouts]
         for vout, txout in enumerate(self.txouts):
             flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=vout)
             address = robust_address_str_from_txout(txout, network=self.network)
@@ -198,7 +205,7 @@ class SankeyBitcoin(SankeyWidget):
         }
 
         # input
-        in_flows: List[int | None] = []
+        in_flows: list[int | None] = []
         prev_outpoints = get_prev_outpoints(tx)
         for vout, outpoint in enumerate(prev_outpoints):
             outpoint_str = str(outpoint)
@@ -259,7 +266,8 @@ class SankeyBitcoin(SankeyWidget):
                         break
 
             elif num_unknown_inputs > 1:
-                # if there is fee info, but the inputs are unknown I can make the unknown inputs half transparent
+                # if there is fee info, but the inputs are unknown
+                # I can make the unknown inputs half transparent
                 # to indicate an unknown amount
                 remaining_missing_inflows = missing_inflows
                 remaining_unknown_inputs = num_unknown_inputs
@@ -275,7 +283,8 @@ class SankeyBitcoin(SankeyWidget):
 
                 if sum(out_flows) + fee_info.fee_amount != sum(v for v in in_flows if v is not None):
                     logger.warning(
-                        f"Error in sankey bitcoin widget.  There should be enough info to construct a partial diagram."
+                        "Error in sankey bitcoin widget.  "
+                        "There should be enough info to construct a partial diagram."
                     )
                     return False
 
@@ -305,7 +314,8 @@ class SankeyBitcoin(SankeyWidget):
         )
         return True
 
-    def get_address_color(self, address: str, wallets: List[Wallet]) -> QColor | None:
+    def get_address_color(self, address: str, wallets: list[Wallet]) -> QColor | None:
+        """Get address color."""
         wallet = get_wallet_of_address(address=address, wallet_functions=self.wallet_functions)
         if not wallet:
             return None
@@ -317,7 +327,8 @@ class SankeyBitcoin(SankeyWidget):
             return None
         return color
 
-    def get_python_txo(self, outpoint: str, wallets: List[Wallet] | None = None) -> Optional[PythonUtxo]:
+    def get_python_txo(self, outpoint: str, wallets: list[Wallet] | None = None) -> PythonUtxo | None:
+        """Get python txo."""
         wallets = wallets if wallets else get_wallets(self.wallet_functions)
         for wallet in wallets:
             txo = wallet.get_python_txo(outpoint)
@@ -326,6 +337,7 @@ class SankeyBitcoin(SankeyWidget):
         return None
 
     def on_label_click(self, flow_index: FlowIndex):
+        """On label click."""
         if not self.tx:
             return
         if flow_index.flow_type == FlowType.OutFlow:
@@ -352,6 +364,7 @@ class SankeyBitcoin(SankeyWidget):
             )
 
     def close(self):
+        """Close."""
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)

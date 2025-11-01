@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import enum
 import logging
-from typing import Any, Dict, List, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.util import time_logger
@@ -52,7 +53,9 @@ from bitcoin_safe.gui.qt.my_treeview import (
 )
 from bitcoin_safe.gui.qt.util import category_color, create_color_circle
 from bitcoin_safe.storage import BaseSaveableClass
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 from ....signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 
@@ -66,7 +69,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         MyTreeView.__name__: MyTreeView,
     }
 
-    signal_addresses_dropped = cast(TypedPyQtSignal[AddressDragInfo], pyqtSignal(AddressDragInfo))
+    signal_addresses_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
 
     class Columns(MyTreeView.BaseColumnsEnum):
         ADDRESS_COUNT = enum.auto()
@@ -91,7 +94,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         Columns.UTXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths: Dict[MyTreeView.BaseColumnsEnum, int] = {}
+    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {}
     stretch_column = Columns.CATEGORY
     key_column = Columns.CATEGORY
 
@@ -102,8 +105,8 @@ class CategoryList(MyTreeView[CategoryInfo]):
         category_core: CategoryCore | None = None,
         sort_column: int | None = Columns.CATEGORY,
         sort_order: Qt.SortOrder | None = Qt.SortOrder.AscendingOrder,
-        hidden_columns: List[int] | None = None,
-        selected_ids: List[str] | None = None,
+        hidden_columns: list[int] | None = None,
+        selected_ids: list[str] | None = None,
         _scroll_position=0,
     ):
         """_summary_
@@ -154,10 +157,12 @@ class CategoryList(MyTreeView[CategoryInfo]):
         self.signals.any_wallet_updated.connect(self.update_with_filter)
 
     def set_category_core(self, category_core: CategoryCore | None):
+        """Set category core."""
         self.category_core = category_core
         self.update_content()
 
-    def get_headers(self) -> Dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+        """Get headers."""
         return {
             self.Columns.ADDRESS_COUNT: header_item(self.tr("Addresses")),
             self.Columns.UTXO_COUNT: header_item(
@@ -176,6 +181,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
@@ -204,6 +210,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         self._after_update_content()
 
     def update_content(self):
+        """Update content."""
         if not self.category_core:
             return
         if self.maybe_defer_update():
@@ -236,6 +243,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         super().update_content()
 
     def refresh_row(self, key: Any, row: int):
+        """Refresh row."""
         if not self.category_core:
             return
         if not isinstance(key, CategoryInfo):
@@ -276,18 +284,22 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
         items[self.Columns.CATEGORY].setIcon(create_color_circle(color, size=18))
 
-    def get_selected_category_infos(self) -> List[CategoryInfo]:
+    def get_selected_category_infos(self) -> list[CategoryInfo]:
+        """Get selected category infos."""
         items = self.selected_in_column(self.key_column)
         return [x.data(MyItemDataRole.ROLE_KEY) for x in items]
 
-    def get_drop_rules(self) -> List[DropRule]:
-
+    def get_drop_rules(self) -> list[DropRule]:
         # ─── JSON “drag_addresses” only on items ────────────────────────────
+        """Get drop rules."""
+
         def mime_pred_json_addresses(md: QMimeData) -> bool:
+            """Mime pred json addresses."""
             data = self.get_json_mime_data(md)
             return bool(data and data.get("type") == "drag_addresses")
 
         def handler_json_addresses(tree_view: QTreeView, e: QDropEvent, idx: QModelIndex) -> None:
+            """Handler json addresses."""
             e.acceptProposedAction()
             md = e.mimeData()
             if not md:
@@ -309,10 +321,12 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
         # ───   JSON “drag_tag Reorder ────────────────────────────
         def mime_pred_json_tag(md: QMimeData) -> bool:
+            """Mime pred json tag."""
             data = self.get_json_mime_data(md)
             return bool(data and data.get("type") == "drag_tag")
 
         def handler_json_tag(view: QTreeView, e: QDropEvent, source_idx: QModelIndex) -> None:
+            """Handler json tag."""
             if not self.category_core:
                 return
             e.acceptProposedAction()
@@ -355,7 +369,8 @@ class CategoryList(MyTreeView[CategoryInfo]):
             ),
         ]
 
-    def get_selected_values(self) -> List[int]:
+    def get_selected_values(self) -> list[int]:
+        """Get selected values."""
         items = self.selected_in_column(self.Columns.UTXO_BALANCE)
         return [x.data(MyItemDataRole.ROLE_CLIPBOARD_DATA) for x in items]
 
@@ -370,6 +385,7 @@ class CategoryListWithToolbar(TreeViewWithToolbar):
     def __init__(
         self, category_list: CategoryList, config: UserConfig, parent: QWidget | None = None
     ) -> None:
+        """Initialize instance."""
         super().__init__(category_list, config, parent=parent)
         self.utxo_list = category_list
         self.set_category_core(category_core=category_list.category_core)
@@ -378,16 +394,20 @@ class CategoryListWithToolbar(TreeViewWithToolbar):
         self.utxo_list.signals.any_wallet_updated.connect(self.update_with_filter)
 
     def create_toolbar_with_menu(self, title: str):
+        """Create toolbar with menu."""
         super().create_toolbar_with_menu(title=title)
         self.search_edit.setVisible(False)
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         self.updateUi()
 
     def updateUi(self):
+        """UpdateUi."""
         super().updateUi()
 
     def set_category_core(self, category_core: CategoryCore | None):
+        """Set category core."""
         self.utxo_list.set_category_core(category_core=category_core)
         self.category_core = category_core
         self.default_export_csv_filename = f"category_export_{self.utxo_list.category_core.wallet.id if self.utxo_list.category_core else ''}.csv"

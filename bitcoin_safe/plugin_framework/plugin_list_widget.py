@@ -26,11 +26,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
+from collections.abc import Sequence
 from functools import partial
-from typing import Optional, Protocol, Sequence, cast, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
@@ -46,7 +48,9 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -61,13 +65,16 @@ class PluginProtocol(Protocol):
     enabled: bool
     node: SidebarNode
 
-    def get_widget(self) -> QWidget: ...
+    def get_widget(self) -> QWidget:
+        """Get widget."""
+        ...
 
 
 class PluginWidget(QWidget):
     def __init__(
-        self, plugin: PluginProtocol, icon_size: tuple[int, int] = (40, 40), parent: Optional[QWidget] = None
+        self, plugin: PluginProtocol, icon_size: tuple[int, int] = (40, 40), parent: QWidget | None = None
     ):
+        """Initialize instance."""
         super().__init__(parent)
         self.plugin = plugin
 
@@ -119,12 +126,11 @@ class PluginWidget(QWidget):
         self.updateUi()
 
     def _on_toggled(self, plugin: PluginProtocol, enabled: bool) -> None:
+        """On toggled."""
         plugin.signal_set_enabled.emit(enabled)
 
     def updateUi(self) -> None:
-        """
-        Refreshes the checkbox to match the plugin's current enabled state.
-        """
+        """Refreshes the checkbox to match the plugin's current enabled state."""
         self.enable_checkbox.setChecked(self.plugin.enabled)
 
 
@@ -132,8 +138,9 @@ class PluginListWidget(QWidget):
     def __init__(
         self,
         icon_size: tuple[int, int] = (40, 40),
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ):
+        """Initialize instance."""
         super().__init__(parent)
         self.icon_size = icon_size
         self.plugins_widgets: list[PluginWidget] = []
@@ -159,8 +166,8 @@ class PluginListWidget(QWidget):
         self,
         plugins: Sequence[PluginProtocol],
     ):
-
         # Create a PluginWidget for each plugin
+        """Set plugins."""
         for plugin in plugins:
             pw = PluginWidget(plugin, self.icon_size, self)
             self.plugins_widgets.append(pw)
@@ -172,18 +179,17 @@ class PluginListWidget(QWidget):
         self.v_layout.addStretch()
 
     def updateUi(self) -> None:
-        """
-        Call this whenever plugin states may have changed externally.
-        """
+        """Call this whenever plugin states may have changed externally."""
         for plugin_widget in self.plugins_widgets:
             plugin_widget.updateUi()
 
 
 # Example usage with a dummy plugin implementation
 class DummyPlugin(QObject):
-    signal_set_enabled = cast(TypedPyQtSignal[bool], pyqtSignal(bool))
+    signal_set_enabled: TypedPyQtSignal[bool] = cast(Any, pyqtSignal(bool))
 
     def __init__(self, title, icon, description, provider):
+        """Initialize instance."""
         super().__init__()
         self.title = title
         self.icon = icon
@@ -194,6 +200,7 @@ class DummyPlugin(QObject):
         self.node = SidebarNode(title="", data=self, widget=None)
 
     def get_widget(self) -> QWidget:
+        """Get widget."""
         return self._widget
 
 

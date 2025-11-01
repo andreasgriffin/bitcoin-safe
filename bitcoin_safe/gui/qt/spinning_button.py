@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QRectF, QSize, QTimer
 from PyQt6.QtGui import QIcon, QPainter, QPaintEvent
@@ -35,7 +37,9 @@ from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .util import get_icon_path
 
@@ -45,11 +49,12 @@ class SpinningButton(QPushButton):
         self,
         text: str,
         enable_signal: TypedPyQtSignalNo | None = None,
-        enabled_icon=QIcon(),
+        enabled_icon: QIcon | None = None,
         spinning_svg_path=None,
         parent=None,
         timeout=20,
     ) -> None:
+        """Initialize instance."""
         super().__init__(text, parent)
         if spinning_svg_path is None:
             spinning_svg_path = get_icon_path("loader-icon.svg")
@@ -60,7 +65,7 @@ class SpinningButton(QPushButton):
         self.timeout_timer = QTimer(self)
         self.padding = 3
         self.timeout = timeout
-        self.enabled_icon = enabled_icon
+        self.enabled_icon = enabled_icon if enabled_icon else QIcon()
         self.setIcon(self.enabled_icon)
 
         self.clicked.connect(self.on_clicked)
@@ -71,6 +76,7 @@ class SpinningButton(QPushButton):
         self.timeout_timer.timeout.connect(self.enable_button)
 
     def on_clicked(self) -> None:
+        """On clicked."""
         if not self.isEnabled():
             return
         self.setIcon(QIcon())
@@ -80,25 +86,30 @@ class SpinningButton(QPushButton):
             self.timeout_timer.start(self.timeout * 1000)
 
     def enable_button(self, *args, **kwargs) -> None:
+        """Enable button."""
         self.stop_spin()
         self.setIcon(self.enabled_icon)
         self.setEnabled(True)
         self.timeout_timer.stop()
 
     def set_enable_signal(self, enable_signal: TypedPyQtSignal | TypedPyQtSignalNo) -> None:
+        """Set enable signal."""
         if enable_signal:
             enable_signal.connect(self.enable_button)
 
     def start_spin(self) -> None:
         # Timer to update rotation
+        """Start spin."""
         self.timer.timeout.connect(self.rotate_svg)
         if ENABLE_TIMERS:
             self.timer.start(100)  # Update rotation every 100 ms
 
     def stop_spin(self) -> None:
+        """Stop spin."""
         self.timer.stop()
 
     def setIconSize(self, size: QSize) -> None:
+        """SetIconSize."""
         if isinstance(size, QSize):
             self._icon_size = size
         else:
@@ -106,13 +117,16 @@ class SpinningButton(QPushButton):
         self.update()  # Redraw the button
 
     def iconSize(self) -> QSize:
+        """IconSize."""
         return self._icon_size
 
     def rotate_svg(self) -> None:
+        """Rotate svg."""
         self.rotation_angle = (self.rotation_angle + 10) % 360
         self.update()  # Trigger repaint
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
+        """PaintEvent."""
         super().paintEvent(a0)
 
         if self.timer.isActive():
@@ -144,6 +158,7 @@ class SpinningButton(QPushButton):
 
     def sizeHint(self) -> QSize:
         # Get the default size hint from the superclass
+        """SizeHint."""
         default_size_hint = super().sizeHint()
 
         # Add icon width and padding to the width
@@ -159,7 +174,8 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self) -> None:
-            super(MainWindow, self).__init__()
+            """Initialize instance."""
+            super().__init__()
 
             # Replace 'path/to/your.svg' with the path to your SVG file
             self.button = SpinningButton("Button Text", spinning_svg_path=get_icon_path("loader-icon.svg"))

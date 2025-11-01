@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
@@ -52,15 +53,14 @@ logger = logging.getLogger(__name__)
 
 
 class SearchSidebarTree(QWidget):
-    """
-    Layout inside the SidebarTree's left column:
-        [ SearchTreeView (search field + results) ]
-        [ Sidebar scroll area (hidden when searching) ]
+    """Layout inside the SidebarTree's left column: [ SearchTreeView (search field +
+    results) ] [ Sidebar scroll area (hidden when searching) ]
 
     The right content stack of SidebarTree remains untouched.
     """
 
     def __init__(self, sidebar_tree: SidebarTree, search_view: SearchTreeView, parent: QWidget | None = None):
+        """Initialize instance."""
         super().__init__(parent)
         self.sidebar_tree = sidebar_tree
         self.search_view = search_view
@@ -76,6 +76,7 @@ class SearchSidebarTree(QWidget):
 
         # Toggle only the left list visibility (the search field stays)
         def _toggle_left_list(active: bool) -> None:
+            """Toggle left list."""
             self.sidebar_tree.scroll_area.setVisible(not active)
 
         self.search_view.searchActiveChanged.connect(_toggle_left_list)
@@ -102,6 +103,7 @@ if __name__ == "__main__":
     sidebar.root.addChildNode(root)
 
     def mk_page(title: str) -> QWidget:
+        """Mk page."""
         w = QWidget()
         vl = QVBoxLayout(w)
         lbl = QLabel(f"<h1>{title}</h1>")
@@ -110,6 +112,7 @@ if __name__ == "__main__":
         return w
 
     def add_wallet(name: str):
+        """Add wallet."""
         wallet = SidebarNode[str](title=name, data=name, icon=QIcon.fromTheme("wallet"))
         for cat in ["History", "Send", "Receive", "Descriptor", "Tools & Services"]:
             page_title = f"{name} - {cat}"

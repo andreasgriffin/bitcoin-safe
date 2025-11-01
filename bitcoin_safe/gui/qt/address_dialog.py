@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-import typing
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
@@ -55,7 +55,9 @@ from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import set_no_margins, svg_tools
 from bitcoin_safe.mempool_manager import MempoolManager
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...descriptors import get_address_bip32_path
 from ...signals import SignalsMin, WalletFunctions
@@ -77,8 +79,9 @@ class AddressDetailsAdvanced(QWidget):
         close_all_video_widgets: TypedPyQtSignalNo,
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread | None,
-        parent: typing.Optional["QWidget"],
+        parent: QWidget | None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
 
@@ -126,6 +129,7 @@ class AddressDetailsAdvanced(QWidget):
         self.sign_message.signal_signed_message.connect(self.on_signed_message)
 
     def on_signed_message(self, signed_message: str, title="Signed Message"):
+        """On signed message."""
         self.sign_message.close()
         do_copy(signed_message, title=title)
         show_textedit_message(text=signed_message, label_description="", title=title)
@@ -140,8 +144,9 @@ class AddressValidateTab(QWidget):
         address_index: int,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
-        parent: typing.Optional["QWidget"],
+        parent: QWidget | None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
 
@@ -161,15 +166,17 @@ class QRAddress(QRCodeWidgetSVG):
     def __init__(
         self,
     ) -> None:
+        """Initialize instance."""
         super().__init__(clickable=False)
         self.setMaximumSize(150, 150)
 
     def set_address(self, bdk_address: bdk.Address):
+        """Set address."""
         self.set_data_list([bdk_address.to_qr_uri()])
 
 
 class AddressDialog(QWidget):
-    aboutToClose = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))
+    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -182,6 +189,7 @@ class AddressDialog(QWidget):
         loop_in_thread: LoopInThread | None,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle(self.tr("Address"))
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
@@ -291,12 +299,14 @@ class AddressDialog(QWidget):
         self.shortcut_close2.activated.connect(self.close)
 
     def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        """KeyPressEvent."""
         if a0 and a0.key() == Qt.Key.Key_Escape:
             self.close()
 
         super().keyPressEvent(a0)
 
     def setupUi(self) -> None:
+        """SetupUi."""
         self.recipient_box.updateUi()
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.recipient_box), self.tr("Address"))
         self.recipient_tabs.setTabText(self.recipient_tabs.indexOf(self.tab_advanced), self.tr("Advanced"))
@@ -304,5 +314,6 @@ class AddressDialog(QWidget):
         self.close_button.setText(self.tr("Close"))
 
     def closeEvent(self, a0: QCloseEvent | None):
+        """CloseEvent."""
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
         super().closeEvent(a0)

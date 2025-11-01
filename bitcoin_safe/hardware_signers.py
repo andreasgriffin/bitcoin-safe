@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import List, Union
 
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 
@@ -49,7 +49,8 @@ class DescriptorExportTypes:
     text = DescriptorExportType("text", "Text")
 
     @classmethod
-    def as_list(cls) -> List[DescriptorExportType]:
+    def as_list(cls) -> list[DescriptorExportType]:
+        """As list."""
         return [
             export_type
             for name, export_type in cls.__dict__.items()
@@ -64,7 +65,8 @@ class DescriptorQrExportTypes:
     text = QrExportTypes.text
 
     @classmethod
-    def as_list(cls) -> List[QrExportType]:
+    def as_list(cls) -> list[QrExportType]:
+        """As list."""
         return [
             export_type for name, export_type in cls.__dict__.items() if isinstance(export_type, QrExportType)
         ]
@@ -75,7 +77,8 @@ class SignMessageRequestQrExportTypes:
     text = QrExportType("text_sign_message_request", "Text")
 
     @classmethod
-    def as_list(cls) -> List[QrExportType]:
+    def as_list(cls) -> list[QrExportType]:
+        """As list."""
         return [
             export_type for name, export_type in cls.__dict__.items() if isinstance(export_type, QrExportType)
         ]
@@ -86,27 +89,32 @@ class HardwareSigner:
     name: str
     display_name: str
     usb_preferred: bool
-    qr_types: List[QrExportType]
-    descriptor_export_types: List[DescriptorExportType]
+    qr_types: list[QrExportType]
+    descriptor_export_types: list[DescriptorExportType]
 
     @property
     def generate_seed_png(self):
+        """Generate seed png."""
         return f"{self.name}-generate-seed.png"
 
     @property
     def wallet_export_png(self):
+        """Wallet export png."""
         return f"{self.name}-wallet-export.png"
 
     @property
     def view_seed_png(self):
+        """View seed png."""
         return f"{self.name}-view-seed.png"
 
     @property
     def register_multisig_decriptor_png(self):
+        """Register multisig decriptor png."""
         return f"{self.name}-register-multisig-decriptor.png"
 
     @property
     def icon_name(self):
+        """Icon name."""
         return f"{self.name}-icon.svg"
 
 
@@ -206,7 +214,8 @@ class HardwareSigners:
     )
 
     @classmethod
-    def as_list(cls) -> List[HardwareSigner]:
+    def as_list(cls) -> list[HardwareSigner]:
+        """As list."""
         return [
             hardware_signer
             for name, hardware_signer in cls.__dict__.items()
@@ -215,8 +224,9 @@ class HardwareSigners:
 
     @classmethod
     def filtered_by(
-        cls, allowed_types: Union[List[QrExportType], List[DescriptorExportType]]
-    ) -> List[HardwareSigner]:
+        cls, allowed_types: list[QrExportType] | list[DescriptorExportType]
+    ) -> list[HardwareSigner]:
+        """Filtered by."""
         allowed_names = set([qr_type.name for qr_type in allowed_types])
         if not allowed_types:
             return []

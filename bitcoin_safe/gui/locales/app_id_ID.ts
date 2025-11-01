@@ -393,13 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>Beli {number} penanda tangan perangkat keras                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe mendukung semua penanda tangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
-                           </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -758,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>Isi informasi penandatangan berdasarkan deskriptor baru?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>Input dikoreksi</translation>
 		</message>
@@ -926,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>Tarif perkiraan</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>Tarif biaya tidak dapat diketahui secara pasti karena ukuran akhir transaksi belum diketahui.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2078,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>Dompet ini masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutupnya. Apakah Anda ingin tetap membuka dompet?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>Coba hubungkan ke: {ip}</translation>
 		</message>
@@ -2105,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>Dompet sedang sinkronisasi</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>Dompet masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutup aplikasi. Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2771,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>Terima</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>Segarkan semua cache sebelum sinkronisasi.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4903,8 +4930,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>Deskriptor dompet (Kode QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; memungkinkan Anda membuat dompet watch-only untuk melihat saldo Anda. Untuk membelanjakannya, Anda memerlukan {number} kata rahasia (Seed).</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>Deskriptor dompet (Kode QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; memungkinkan Anda membuat dompet hanya-tonton untuk melihat saldo Anda. Untuk membelanjakannya, Anda memerlukan {number} kata rahasia (Seed).</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5236,6 +5263,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>UTXO terkonfirmasi</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

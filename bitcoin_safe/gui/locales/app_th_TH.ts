@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>ซื้อ {number} ผู้ลงนามฮาร์ดแวร์                                                  </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>ซื้ออุปกรณ์ลงนามฮาร์ดแวร์ {number}                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe รองรับอุปกรณ์ลงนามฮาร์ดแวร์หลักทั้งหมด: &lt;a href="{url}"&gt;ดูรายการทั้งหมด&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>กรอกข้อมูลผู้ลงนามตามตัวบรรยายใหม่หรือไม่?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>แก้ไขข้อมูลที่ป้อนแล้ว</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>อัตราโดยประมาณ</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>ไม่สามารถทราบอัตราค่าธรรมเนียมได้อย่างแน่นอน เนื่องจากขนาดสุดท้ายของธุรกรรมยังไม่ทราบ</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2077,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>กระเป๋านี้ยังอยู่ระหว่างการซิงค์ และการซิงค์จะต้องเริ่มใหม่หากคุณปิดมัน ต้องการให้เปิดกระเป๋าไว้หรือไม่?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>ลองเชื่อมต่อไปที่: {ip}</translation>
 		</message>
@@ -2104,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>กำลังซิงค์กระเป๋าเงิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>กระเป๋าทั้งหมดยังอยู่ระหว่างการซิงค์ และการซิงค์จะต้องเริ่มใหม่หากคุณปิดแอป ต้องการซ่อนไว้ที่ถาดระบบแทนหรือไม่?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2770,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>รับ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>รีเฟรชแคชทั้งหมดก่อนการซิงค์</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4896,8 +4924,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>ตัวบ่งชี้กระเป๋าเงิน (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ช่วยให้คุณสร้างกระเป๋าเงินดูเท่านั้นเพื่อดูยอดเงินของคุณ ในการใช้จ่ายจากกระเป๋าเงินนี้คุณต้องการคำลับ {number} คำ (เมล็ดพันธุ์)  </translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>ตัวบรรยายกระเป๋าเงิน (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ช่วยให้คุณสร้างกระเป๋าแบบดูอย่างเดียวเพื่อดูยอดเงินของคุณได้ หากต้องการใช้จ่ายจากกระเป๋านี้คุณต้องใช้ {number} คำลับ (Seed)</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5229,6 +5257,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>UTXO ที่ยืนยันแล้ว</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

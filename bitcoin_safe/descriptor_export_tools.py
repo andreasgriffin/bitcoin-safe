@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import os
-from typing import Optional
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport
@@ -44,6 +44,7 @@ logger = logging.getLogger(__name__)
 
 
 def shorten_filename(filename: str, max_total_length: int):
+    """Shorten filename."""
     name, ext = os.path.splitext(filename)
     max_name_length = max_total_length - len(ext)
     if max_name_length < 0:
@@ -54,14 +55,15 @@ def shorten_filename(filename: str, max_total_length: int):
 
 
 class DescriptorExportTools:
-
     @classmethod
     def _get_coldcard_str(cls, wallet_id: str, multipath_descriptor: bdk.Descriptor) -> str:
-        return f"""# Coldcard descriptor export of wallet: {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}
-{ multipath_descriptor.to_single_descriptors()[0] }"""
+        """Get coldcard str."""
+        return f"""# Coldcard descriptor export of wallet: {filename_clean(wallet_id, file_extension="", replace_spaces_by="_")}
+{multipath_descriptor.to_single_descriptors()[0]}"""
 
     @staticmethod
     def _get_passport_str(wallet_id: str, descriptor_str: str, hardware_signer_name="") -> str:
+        """Get passport str."""
         infos = DescriptorInfo.from_str(descriptor_str)
         signer_infos = [
             SignerInfo(
@@ -81,19 +83,22 @@ class DescriptorExportTools:
 
     @classmethod
     def _get_coldcard_str_legacy(cls, wallet_id: str, descriptor_str: str, network: bdk.Network) -> str:
+        """Get coldcard str legacy."""
         return cls._get_passport_str(
             wallet_id=wallet_id, descriptor_str=descriptor_str, hardware_signer_name="Coldcard"
         )
 
     @classmethod
     def _get_specter_diy_str(cls, wallet_id: str, descriptor_str: str) -> str:
+        """Get specter diy str."""
         simplified_descriptor = (
             descriptor_str.split("#")[0].replace("/<0;1>/*", "").replace("0/*", "").replace("1/*", "")
         )
-        return f"addwallet {filename_clean( wallet_id, file_extension='', replace_spaces_by='_')}&{simplified_descriptor}"
+        return f"addwallet {filename_clean(wallet_id, file_extension='', replace_spaces_by='_')}&{simplified_descriptor}"
 
     @classmethod
-    def _export_wallet(cls, wallet_id: str, s: str, descripor_type: DescriptorExportType) -> Optional[str]:
+    def _export_wallet(cls, wallet_id: str, s: str, descripor_type: DescriptorExportType) -> str | None:
+        """Export wallet."""
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
@@ -117,6 +122,7 @@ class DescriptorExportTools:
         network: bdk.Network,
         descriptor_export_type: DescriptorExportType,
     ) -> str:
+        """Get export str."""
         if descriptor_export_type.name == DescriptorExportTypes.text.name:
             return str(multipath_descriptor)
         elif descriptor_export_type.name == DescriptorExportTypes.coldcard.name:
@@ -139,6 +145,7 @@ class DescriptorExportTools:
         network: bdk.Network,
         descripor_type: DescriptorExportType,
     ):
+        """Export."""
         if descripor_type.name not in [t.name for t in DescriptorExportTypes.as_list()]:
             logger.error(f"Cannot export the descriptor for {descripor_type}")
             return

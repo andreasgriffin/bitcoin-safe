@@ -26,11 +26,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 from .setup_fulcrum import Faucet
 
 
 def test_faucet(faucet: Faucet):
+    """Test faucet."""
     faucet.mine()
     balance = faucet.bdk_wallet.balance()
 

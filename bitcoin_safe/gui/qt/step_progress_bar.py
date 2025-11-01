@@ -26,13 +26,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
 from math import ceil
-from typing import Callable, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
@@ -63,7 +65,9 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.util import create_button_box
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 from .util import set_margins, svg_tools
 
@@ -71,6 +75,7 @@ logger = logging.getLogger(__name__)
 
 
 def height_of_str(text, widget: QWidget, max_width: float) -> float:
+    """Height of str."""
     font_metrics = QFontMetrics(widget.font())
     rect = font_metrics.boundingRect(QRect(0, 0, int(max_width * 0.95), 1000), Qt.TextFlag.TextWordWrap, text)
     return rect.height() * 1.2
@@ -78,7 +83,7 @@ def height_of_str(text, widget: QWidget, max_width: float) -> float:
 
 class StepProgressBar(QWidget):
     # Define a new signal that emits the number of the index clicked
-    signal_index_clicked = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    signal_index_clicked: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
     def __init__(
         self,
@@ -88,14 +93,15 @@ class StepProgressBar(QWidget):
         mark_current_index_as_completed=False,
         clickable=True,
         use_checkmark_icon=True,
-        circle_sizes: List[int] | None = None,
+        circle_sizes: list[int] | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.current_index = current_index
         self.clickable = clickable
-        self.enumeration_alphabet: Optional[List[str]] = None
+        self.enumeration_alphabet: list[str] | None = None
         self.cursor_set = False
-        self.labels = [f"Step {i+1}" for i in range(number_of_steps)]  # Default labels
+        self.labels = [f"Step {i + 1}" for i in range(number_of_steps)]  # Default labels
         self.set_circle_sizes(circle_sizes)
         self.tube_width = 4
         self.padding = 0
@@ -113,7 +119,8 @@ class StepProgressBar(QWidget):
         self.tooltips = [""] * number_of_steps  # Initialize tooltips as empty strings
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
-    def set_circle_sizes(self, circle_sizes: List[int] | None = None) -> None:
+    def set_circle_sizes(self, circle_sizes: list[int] | None = None) -> None:
+        """Set circle sizes."""
         self.radius = max(circle_sizes) if circle_sizes else 20
         self.circle_sizes = (
             circle_sizes if circle_sizes else [self.radius for i in range(self.number_of_steps)]
@@ -121,14 +128,17 @@ class StepProgressBar(QWidget):
         if len(self.circle_sizes) < self.number_of_steps:
             self.circle_sizes = self.circle_sizes * ceil(self.number_of_steps / len(self.circle_sizes))
 
-    def set_enumeration_alphabet(self, enumeration_alphabet: Optional[List[str]]) -> None:
+    def set_enumeration_alphabet(self, enumeration_alphabet: list[str] | None) -> None:
+        """Set enumeration alphabet."""
         self.enumeration_alphabet = enumeration_alphabet
 
     def set_current_index(self, index: int) -> None:
+        """Set current index."""
         self.current_index = index
         self.update()  # Redraw the widget
 
     def recalculate_max_height(self) -> None:
+        """Recalculate max height."""
         max_width = self.width() / (self.number_of_steps + 1)
         self.max_label_height = 0
         for label in self.labels:
@@ -136,14 +146,17 @@ class StepProgressBar(QWidget):
         self.updateGeometry()  # Notify the layout system that the widget's size hint has changed
 
     def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        """ResizeEvent."""
         self.recalculate_max_height()
         super().resizeEvent(a0)
 
     @property
     def number_of_steps(self) -> int:
+        """Number of steps."""
         return len(self.labels)
 
-    def set_labels(self, labels: List[str]) -> None:
+    def set_labels(self, labels: list[str]) -> None:
+        """Set labels."""
         self.labels = labels
         self.set_circle_sizes()
         self.tooltips = [""] * self.number_of_steps
@@ -152,12 +165,14 @@ class StepProgressBar(QWidget):
         self.update()
 
     def sizeHint(self) -> QSize:
+        """SizeHint."""
         total_height = int(
             self.radius * 2 + max(self.max_label_height, 20) + self.label_distance + self.padding * 2
         )
         return QSize(self.width(), total_height)
 
     def mousePressEvent(self, a0: QMouseEvent | None) -> None:
+        """MousePressEvent."""
         if not a0:
             super().mousePressEvent(a0)
             return
@@ -171,6 +186,7 @@ class StepProgressBar(QWidget):
         super().mousePressEvent(a0)
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
+        """PaintEvent."""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -178,7 +194,6 @@ class StepProgressBar(QWidget):
         completed_color = QColor("#7FBA00")
         current_color = QColor("#0078D4")
         inactive_color = QColor("#BFBFBF")
-        text_color = QColor("#505050")
         bubble_color = QColor("#FFFFFF")
 
         QPen(current_color, self.tube_width)
@@ -255,6 +270,7 @@ class StepProgressBar(QWidget):
         painter.end()
 
     def format_step(self, i: int) -> str:
+        """Format step."""
         return (
             str(i + 1)
             if self.enumeration_alphabet is None
@@ -262,9 +278,11 @@ class StepProgressBar(QWidget):
         )
 
     def _step_width(self) -> float:
+        """Step width."""
         return self.width() / (self.number_of_steps + 1)
 
     def _label_rect(self, i: int) -> QRectF:
+        """Label rect."""
         circle_y = self.radius + self.tube_width  # Position circles near the top
         step_width = self._step_width()
         return QRectF(
@@ -275,6 +293,7 @@ class StepProgressBar(QWidget):
         )
 
     def _ellipse_rect(self, i: int) -> QRectF:
+        """Ellipse rect."""
         circle_y = self.radius + self.tube_width  # Position circles near the top
         step_width = self._step_width()
         return QRectF(
@@ -285,21 +304,26 @@ class StepProgressBar(QWidget):
         )
 
     def set_mark_current_step_as_completed(self, value: bool) -> None:
+        """Set mark current step as completed."""
         self.mark_current_index_as_completed = value
         self.update()
 
-    def set_step_tooltips(self, tooltips: List[str]) -> None:
+    def set_step_tooltips(self, tooltips: list[str]) -> None:
+        """Set step tooltips."""
         self.tooltips = tooltips + ["" for i in range(len(tooltips), self.number_of_steps)]
 
     def enterEvent(self, event: QEvent | None) -> None:
+        """EnterEvent."""
         self.setMouseTracking(True)  # Enable mouse tracking to receive mouse move events
 
     def leaveEvent(self, a0: QEvent | None) -> None:
+        """LeaveEvent."""
         self.setMouseTracking(False)  # Disable mouse tracking when the mouse leaves the widget
         QToolTip.hideText()  # Hide tooltip when the cursor is not above a step
         self.restore_cursor()
 
     def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
+        """MouseMoveEvent."""
         if not a0:
             super().mouseMoveEvent(a0)
             return
@@ -320,11 +344,13 @@ class StepProgressBar(QWidget):
         super().mouseMoveEvent(a0)
 
     def restore_cursor(self) -> None:
+        """Restore cursor."""
         if self.clickable and self.cursor_set:
             self.cursor_set = False
             QApplication.restoreOverrideCursor()  # Restore to default cursor
 
     def set_cursor(self) -> None:
+        """Set cursor."""
         if self.clickable and not self.cursor_set:
             self.cursor_set = True
             QApplication.setOverrideCursor(Qt.CursorShape.PointingHandCursor)
@@ -332,6 +358,7 @@ class StepProgressBar(QWidget):
 
 class HorizontalIndicator(QWidget):
     def __init__(self, number_of_steps: int, current_index: int, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.number_of_steps = number_of_steps
         self.current_index = current_index
@@ -345,14 +372,17 @@ class HorizontalIndicator(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
     def set_number_of_steps(self, number_of_steps: int) -> None:
+        """Set number of steps."""
         self.number_of_steps = number_of_steps
         self.update()
 
     def set_current_index(self, index: int) -> None:
+        """Set current index."""
         self.current_index = index
         self.update()  # Repaint the widget with the new step indicator
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
+        """PaintEvent."""
         super().paintEvent(a0)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -391,17 +421,20 @@ class HorizontalIndicator(QWidget):
 
 class AutoResizingStackedWidget(QWidget):
     def __init__(self, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self._layout = QVBoxLayout(self)
         self.setLayout(self._layout)  # Explicitly setting the layout
         self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self.widgets: List[QWidget] = []
+        self.widgets: list[QWidget] = []
         self._currentIndex = -1
 
     def addWidget(self, widget: QWidget) -> None:
+        """AddWidget."""
         self.insertWidget(len(self.widgets), widget)
 
     def insertWidget(self, index, widget: QWidget) -> None:
+        """InsertWidget."""
         if index < 0 or index > len(self.widgets):
             raise IndexError("Index out of bounds")
         widget.setVisible(False)
@@ -411,6 +444,7 @@ class AutoResizingStackedWidget(QWidget):
             self.setCurrentIndex(0)
 
     def setCurrentIndex(self, index: int) -> None:
+        """SetCurrentIndex."""
         if 0 <= index < len(self.widgets):
             if self._currentIndex != -1:
                 if 0 <= self._currentIndex < len(self.widgets):
@@ -420,40 +454,46 @@ class AutoResizingStackedWidget(QWidget):
             self._currentIndex = index
 
     def currentIndex(self) -> int:
+        """CurrentIndex."""
         return self._currentIndex
 
     def count(self) -> int:
+        """Count."""
         return len(self.widgets)
 
     def removeWidget(self, widget: QWidget) -> None:
+        """RemoveWidget."""
         if widget in self.widgets:
             self.widgets.remove(widget)
             widget.setParent(None)  # type: ignore[call-overload]
             if self._currentIndex >= len(self.widgets):
                 self.setCurrentIndex(len(self.widgets) - 1)
 
-    def widget(self, index: int) -> Optional[QWidget]:
+    def widget(self, index: int) -> QWidget | None:
+        """Widget."""
         if 0 <= index < len(self.widgets):
             return self.widgets[index]
         return None
 
-    def currentWidget(self) -> Optional[QWidget]:
+    def currentWidget(self) -> QWidget | None:
+        """CurrentWidget."""
         if self._currentIndex != -1:
             return self.widgets[self._currentIndex]
         return None
 
     def indexOf(self, widget: QWidget) -> int:
+        """IndexOf."""
         return self.widgets.index(widget) if widget in self.widgets else -1
 
 
 class StepProgressContainer(QWidget):
-    signal_set_current_widget = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
-    signal_widget_focus = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
-    signal_widget_unfocus = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
+    signal_set_current_widget: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    signal_widget_focus: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    signal_widget_unfocus: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
 
     def __init__(
         self,
-        step_labels: List[str],
+        step_labels: list[str],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
         current_index: int = 0,
@@ -461,10 +501,11 @@ class StepProgressContainer(QWidget):
         clickable=True,
         use_checkmark_icon=True,
         parent=None,
-        sub_indices: List[int] | None = None,
+        sub_indices: list[int] | None = None,
         use_resizing_stacked_widget=True,
         hide_steps_if_only_1=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             parent=parent,
         )
@@ -482,7 +523,7 @@ class StepProgressContainer(QWidget):
             ),
         )
         self.horizontal_indicator = HorizontalIndicator(len(step_labels), current_index)
-        self.stacked_widget: Union[AutoResizingStackedWidget, QStackedWidget] = (
+        self.stacked_widget: AutoResizingStackedWidget | QStackedWidget = (
             AutoResizingStackedWidget() if use_resizing_stacked_widget else QStackedWidget()
         )
         self.collapsible_current_active = collapsible_current_active
@@ -507,7 +548,8 @@ class StepProgressContainer(QWidget):
 
         self.step_bar.signal_index_clicked.connect(self.on_click)
 
-    def set_labels(self, labels: List[str]) -> None:
+    def set_labels(self, labels: list[str]) -> None:
+        """Set labels."""
         self.step_bar.set_labels(labels=labels)
         self.horizontal_indicator.set_number_of_steps(len(labels))
 
@@ -516,11 +558,12 @@ class StepProgressContainer(QWidget):
             widget = self.stacked_widget.widget(0)
             if widget:
                 self.stacked_widget.removeWidget(widget)
-        for i in range(len(labels) - self.stacked_widget.count()):
+        for _i in range(len(labels) - self.stacked_widget.count()):
             custom_widget = QWidget()
             self.stacked_widget.addWidget(custom_widget)
 
-    def set_sub_indices(self, sub_indices: List[int] | None = None) -> None:
+    def set_sub_indices(self, sub_indices: list[int] | None = None) -> None:
+        """Set sub indices."""
         self.step_bar.set_circle_sizes(
             None
             if sub_indices is None
@@ -528,15 +571,19 @@ class StepProgressContainer(QWidget):
         )
 
     def current_index(self) -> int:
+        """Current index."""
         return self.step_bar.current_index
 
     def current_highlighted_index(self) -> int:
+        """Current highlighted index."""
         return self.stacked_widget.currentIndex()
 
     def count(self) -> int:
+        """Count."""
         return self.step_bar.number_of_steps
 
     def on_click(self, index: int) -> None:
+        """On click."""
         if not self.clickable:
             return
 
@@ -556,6 +603,7 @@ class StepProgressContainer(QWidget):
         self.set_focus(index)
 
     def set_focus(self, index: int) -> None:
+        """Set focus."""
         old_index = self.stacked_widget.currentIndex()
 
         if old_index == index:
@@ -570,10 +618,12 @@ class StepProgressContainer(QWidget):
             self.signal_widget_focus.emit(widget_focus)
 
     def set_stacked_widget_visible(self, is_visible: bool) -> None:
+        """Set stacked widget visible."""
         self.horizontal_indicator.setVisible(is_visible)
         self.stacked_widget.setVisible(is_visible)
 
     def set_current_index(self, index: int) -> None:
+        """Set current index."""
         old_index = self.current_index()
 
         if old_index == index:
@@ -593,6 +643,7 @@ class StepProgressContainer(QWidget):
             self.signal_set_current_widget.emit(new_widget)
 
     def clear_widgets(self) -> None:
+        """Clear widgets."""
         while self.stacked_widget.count():
             widget = self.stacked_widget.widget(0)
             if widget:
@@ -626,6 +677,7 @@ class StepProgressContainer(QWidget):
             self.signal_widget_focus.emit(widget)
 
     def close(self) -> bool:
+        """Close."""
         self.clear_widgets()
         return super().close()
 
@@ -634,7 +686,7 @@ class StepProgressContainer(QWidget):
 class VisibilityOption:
     widget: QWidget
     on_focus_set_visible: bool
-    on_unfocus_set_visible: Optional[bool] = None
+    on_unfocus_set_visible: bool | None = None
 
 
 class TutorialWidget(QWidget):
@@ -645,13 +697,14 @@ class TutorialWidget(QWidget):
         button_box: QDialogButtonBox,
         buttonbox_always_visible=False,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.widget = widget
         self.container = container
         self.button_box = button_box
-        self.visibility_options: List[VisibilityOption] = []
+        self.visibility_options: list[VisibilityOption] = []
         self.buttonbox_always_visible = buttonbox_always_visible
-        self.callback_on_set_current_widget: Optional[Callable] = None
+        self.callback_on_set_current_widget: Callable | None = None
 
         self._layout = QVBoxLayout(self)
 
@@ -673,6 +726,7 @@ class TutorialWidget(QWidget):
 
     def set_widget(self, widget: QWidget) -> None:
         # Check if there is at least one widget in the layout
+        """Set widget."""
         if self._layout.count() > 0:
             # Take the first item (widget) from the layout
             item = self._layout.takeAt(0)
@@ -686,21 +740,24 @@ class TutorialWidget(QWidget):
         self._layout.insertWidget(0, widget)
 
     def on_widget_unfocus(self, widget: QWidget) -> None:
+        """On widget unfocus."""
         if self != widget:
             return
-        logger.debug(f"on_widget_unfocus ")
+        logger.debug("on_widget_unfocus ")
         logger.debug(f"unset visibility of {self.visibility_options}")
         for visibility_option in self.visibility_options:
             if visibility_option.on_unfocus_set_visible is not None:
                 visibility_option.widget.setVisible(visibility_option.on_unfocus_set_visible)
                 logger.debug(
-                    f"Setting {visibility_option.widget.__class__.__name__}.setVisible({visibility_option.on_unfocus_set_visible})"
+                    f"Setting {visibility_option.widget.__class__.__name__}."
+                    "setVisible({visibility_option.on_unfocus_set_visible})"
                 )
 
     def on_widget_focus(self, widget: QWidget) -> None:
+        """On widget focus."""
         if self != widget:
             return
-        logger.debug(f"on_widget_focus ")
+        logger.debug("on_widget_focus ")
         active_eq_visible = (
             self.container.step_bar.current_index == self.container.stacked_widget.currentIndex()
         )
@@ -710,19 +767,23 @@ class TutorialWidget(QWidget):
         for visibility_option in self.visibility_options:
             visibility_option.widget.setVisible(visibility_option.on_focus_set_visible)
             logger.debug(
-                f"Setting {visibility_option.widget.__class__.__name__}.setVisible({visibility_option.on_focus_set_visible})"
+                f"Setting {visibility_option.widget.__class__.__name__}."
+                f"setVisible({visibility_option.on_focus_set_visible})"
             )
 
     def on_set_current_widget(self, widget: QWidget) -> None:
+        """On set current widget."""
         if self != widget:
             return
 
-        # the callbacks should only be in on_set_current_widget, but not in on_widget_focus (when i click on it)
+        # the callbacks should only be in on_set_current_widget,
+        # but not in on_widget_focus (when i click on it)
         if self.callback_on_set_current_widget:
             logger.debug(f"on_set_current_widget: doing callback: {self.callback_on_set_current_widget}")
             self.callback_on_set_current_widget()
 
     def synchronize_visiblity(self, visibility_option: VisibilityOption) -> None:
+        """Synchronize visiblity."""
         existing_widgets = [t.widget for t in self.visibility_options]
         if visibility_option.widget in existing_widgets:
             # handle the case that I set the visibility before
@@ -732,13 +793,14 @@ class TutorialWidget(QWidget):
             self.visibility_options.append(visibility_option)
 
     def set_callback(self, callback: Callable) -> None:
+        """Set callback."""
         self.callback_on_set_current_widget = callback
 
 
 class StepProgressContainerWithButtons(StepProgressContainer):
     def __init__(
         self,
-        step_labels: List[str],
+        step_labels: list[str],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
         current_index: int = 0,
@@ -746,9 +808,10 @@ class StepProgressContainerWithButtons(StepProgressContainer):
         clickable=True,
         use_checkmark_icon=True,
         parent=None,
-        sub_indices: List[int] | None = None,
+        sub_indices: list[int] | None = None,
         use_resizing_stacked_widget=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             signals_min=signals_min,
             step_labels=step_labels,
@@ -766,6 +829,7 @@ class StepProgressContainerWithButtons(StepProgressContainer):
             super().set_custom_widget(i, self.create_tutorial_widget())
 
     def set_custom_widget(self, index: int, widget: QWidget) -> None:
+        """Set custom widget."""
         tutorial_widget = self.stacked_widget.widget(index)
         if not isinstance(tutorial_widget, TutorialWidget):
             logger.error(f"{tutorial_widget} doesnt have the type TutorialWidget")
@@ -779,18 +843,21 @@ class StepProgressContainerWithButtons(StepProgressContainer):
             self.signal_widget_focus.emit(tutorial_widget)
 
     def go_to_next_index(self) -> None:
+        """Go to next index."""
         if self.current_index() + 1 < self.count():
             self.set_current_index(self.current_index() + 1)
         else:
             self.step_bar.set_mark_current_step_as_completed(True)
 
     def go_to_previous_index(self) -> None:
+        """Go to previous index."""
         self.step_bar.set_mark_current_step_as_completed(False)
 
         if self.current_index() - 1 >= 0:
             self.set_current_index(self.current_index() - 1)
 
     def create_tutorial_widget(self) -> TutorialWidget:
+        """Create tutorial widget."""
         widget = QWidget()
         QVBoxLayout(widget)
 
@@ -807,6 +874,7 @@ if __name__ == "__main__":
 
     class DemoApp(QWidget):
         def __init__(self) -> None:
+            """Initialize instance."""
             super().__init__()
             loop_in_thread = LoopInThread()
 
@@ -822,7 +890,9 @@ if __name__ == "__main__":
 
             self.step_progress_container.step_bar.set_step_tooltips(
                 [
-                    "<font color='red'>This is an important step.</font><br><br><u>Payment information is required.</u><br><br><b>Confirm your submission.</b>",
+                    "<font color='red'>This is an important step.</font>"
+                    "<br><br><u>Payment information is required.</u><br>"
+                    "<br><b>Confirm your submission.</b>",
                     "<i>Remember to check your details.</i>",
                     "<u>Payment information is required.</u>",
                     "<b>Confirm your submission.</b>",
@@ -840,6 +910,7 @@ if __name__ == "__main__":
             self.init_ui()
 
         def init_ui(self) -> None:
+            """Init ui."""
             self._layout = QVBoxLayout(self)
 
             # Buttons to navigate through steps
@@ -861,10 +932,12 @@ if __name__ == "__main__":
             self._layout.addWidget(self.toggle_completion_button)
 
         def toggle_step_completion(self) -> None:
+            """Toggle step completion."""
             current_value = self.step_progress_container.step_bar.mark_current_index_as_completed
             self.step_progress_container.step_bar.set_mark_current_step_as_completed(not current_value)
 
         def next_index(self) -> None:
+            """Next index."""
             if (
                 self.step_progress_container.step_bar.current_index
                 < self.step_progress_container.step_bar.number_of_steps
@@ -874,6 +947,7 @@ if __name__ == "__main__":
                 )
 
         def prev_index(self) -> None:
+            """Prev index."""
             if self.step_progress_container.step_bar.current_index > 0:
                 self.step_progress_container.set_current_index(
                     self.step_progress_container.step_bar.current_index - 1

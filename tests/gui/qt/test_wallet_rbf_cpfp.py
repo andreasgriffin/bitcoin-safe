@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import inspect
 import logging
 from datetime import datetime
@@ -70,6 +72,7 @@ def test_rbf_cpfp_flow(
     wallet_name: str = "test_rbf_cpfp_flow",
     amount: int = int(1e6),
 ) -> None:
+    """Test rbf cpfp flow."""
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
@@ -83,6 +86,7 @@ def test_rbf_cpfp_flow(
         button = main_window.welcome_screen.pushButton_custom_wallet
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            """On wallet id dialog."""
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
@@ -115,6 +119,7 @@ def test_rbf_cpfp_flow(
         def create_transaction_to_self(
             qt_wallet: QTWallet, addr: str, amount: int
         ) -> tuple[UITx_Viewer, str]:
+            """Create transaction to self."""
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
             box.address = addr
@@ -128,6 +133,7 @@ def test_rbf_cpfp_flow(
             return viewer, viewer.txid()
 
         def create_RBF_transaction(viewer: UITx_Viewer, qt_wallet: QTWallet) -> tuple[UITx_Viewer, str]:
+            """Create RBF transaction."""
             shutter.save(main_window)
             with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
                 viewer.button_rbf.click()
@@ -157,6 +163,7 @@ def test_rbf_cpfp_flow(
             return viewer_rbf, txid_rbf
 
         def create_CPFP_transaction(viewer_rbf: UITx_Viewer, qt_wallet: QTWallet) -> tuple[UITx_Viewer, str]:
+            """Create CPFP transaction."""
             with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
                 viewer_rbf.button_cpfp_tx.click()
             shutter.save(main_window)

@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import bdkpython as bdk
 from bitcoin_usb.address_types import AddressTypes
 
@@ -40,6 +42,7 @@ from bitcoin_safe.wallet import (
 
 
 def test_is_local_and_in_mempool():
+    """Test is local and in mempool."""
     unconfirmed_local = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN)
     assert is_local(unconfirmed_local)
     assert not is_in_mempool(unconfirmed_local)
@@ -61,6 +64,7 @@ def test_is_local_and_in_mempool():
 
 def test_txstatus_states():
     # Confirmed transaction
+    """Test txstatus states."""
     confirmed_cp = bdk.ChainPosition.CONFIRMED(
         confirmation_block_time=bdk.ConfirmationBlockTime(
             block_id=bdk.BlockId(height=5, hash="00" * 32),
@@ -101,11 +105,13 @@ def test_txstatus_states():
 
 
 def test_filename_clean():
+    """Test filename clean."""
     result = filename_clean("inv@lid name", replace_spaces_by="_")
     assert result == "invlid_name.wallet"
 
 
 def test_protowallet_keystore_management():
+    """Test protowallet keystore management."""
     pw = ProtoWallet(
         wallet_id="w",
         threshold=1,

@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>{number} हार्डवेयर साइनर खरीदें                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनरों का समर्थन करता है: &lt;a href="{url}"&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>{number} हार्डवेयर साइनर खरीदें                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनर का समर्थन करता है: &lt;a href="{url}"&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>क्या नए डेस्क्रिप्टर के आधार पर साइनर जानकारी भरनी है?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>इनपुट सुधारा गया</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>अनुमानित दर</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>शुल्क दर को ठीक-ठीक नहीं जाना जा सकता, क्योंकि लेनदेन का अंतिम आकार अज्ञात है।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2077,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>यह वॉलेट अभी भी सिंक हो रहा है, और यदि आप इसे बंद करते हैं तो सिंकिंग को शुरू से शुरू करना होगा। क्या आप वॉलेट को खुला रखना चाहते हैं?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>इससे कनेक्ट करने का प्रयास करें: {ip}</translation>
 		</message>
@@ -2104,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>वॉलेट सिंक हो रहा है</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>वॉलेट्स अभी भी सिंक हो रहे हैं, और यदि आप ऐप बंद करते हैं तो सिंकिंग को शुरू से शुरू करना होगा। क्या आप इसे ट्रे में छिपाना चाहते हैं?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2773,6 +2796,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>प्राप्त करें</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>सिंकिंग से पहले सभी कैश को रीफ़्रेश करें।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4899,8 +4927,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>वॉलेट डिस्क्रिप्टर (QR कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको अपने बैलेंस को देखने के लिए वॉच-ओनली वॉलेट बनाने की अनुमति देता है। इससे खर्च करने के लिए आपको {number} शब्दों (सीड) का रहस्य चाहिए। </translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>वॉलेट डेस्क्रिप्टर (QR कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको केवल-बैलेंस देखने वाला वॉलेट बनाने की अनुमति देता है। इससे खर्च करने के लिए आपको {number} गुप्त शब्दों (सीड) की आवश्यकता होती है।</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5232,6 +5260,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>पुष्ट UTXO</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

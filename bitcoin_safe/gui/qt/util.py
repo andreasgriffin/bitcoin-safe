@@ -26,24 +26,20 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import enum
 import logging
 import platform
 import sys
 import traceback
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from functools import partial
 from typing import (
+    TYPE_CHECKING,
     Any,
-    Callable,
-    Iterable,
-    List,
     Literal,
-    Mapping,
-    Optional,
-    Tuple,
-    Union,
 )
 from urllib.parse import urlparse
 
@@ -93,7 +89,9 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import resource_path
 
 logger = logging.getLogger(__name__)
@@ -126,7 +124,7 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 )
 
 
-TX_ICONS: List[str] = [
+TX_ICONS: list[str] = [
     "clock0.svg",
     "clock1.svg",
     "clock2.svg",
@@ -142,6 +140,7 @@ ELECTRUM_SERVER_DELAY_BLOCK = 2000
 
 
 def get_icon_path(icon_basename: str) -> str:
+    """Get icon path."""
     return resource_path("gui", "icons", icon_basename)
 
 
@@ -149,6 +148,7 @@ svg_tools = SvgTools(get_icon_path=get_icon_path, theme_file=get_icon_path("them
 
 
 def get_hardware_signer_path(signer_basename: str) -> str:
+    """Get hardware signer path."""
     return resource_path("gui", "icons", "hardware_signers", signer_basename)
 
 
@@ -158,6 +158,7 @@ svg_tools_hardware_signer = SvgTools(
 
 
 def get_generated_hardware_signer_path(signer_basename: str) -> str:
+    """Get generated hardware signer path."""
     return resource_path("gui", "icons", "hardware_signers", "generated", signer_basename)
 
 
@@ -168,13 +169,17 @@ svg_tools_generated_hardware_signer = SvgTools(
 
 def block_explorer_URL(
     mempool_url: str, kind: Literal["tx", "addr", "block", "mempool"], item: str | int
-) -> Optional[str]:
-    explorer_url, explorer_dict = mempool_url, {
-        "tx": "tx/",
-        "addr": "address/",
-        "block": "block/",
-        "mempool": "mempool-block/",
-    }
+) -> str | None:
+    """Block explorer URL."""
+    explorer_url, explorer_dict = (
+        mempool_url,
+        {
+            "tx": "tx/",
+            "addr": "address/",
+            "block": "block/",
+            "mempool": "mempool-block/",
+        },
+    )
     kind_str = explorer_dict.get(kind)
     if kind_str is None:
         return None
@@ -189,6 +194,7 @@ class QtWalletBase(QWidget):
 
 
 def sort_id_to_icon(sort_id: int) -> str:
+    """Sort id to icon."""
     if sort_id < 0:
         return "offline_tx.svg"
     if sort_id > len(TX_ICONS) - 1:
@@ -198,12 +204,13 @@ def sort_id_to_icon(sort_id: int) -> str:
 
 
 def open_website(url: str):
+    """Open website."""
     QDesktopServices.openUrl(QUrl(url))
 
 
 def proportional_fit_into_max(x, y, x_max, y_max):
-    """
-    Scales (x, y) proportionally to fit within (x_max, y_max) while maintaining aspect ratio.
+    """Scales (x, y) proportionally to fit within (x_max, y_max) while maintaining
+    aspect ratio.
 
     :param x: Original width
     :param y: Original height
@@ -225,7 +232,8 @@ def proportional_fit_into_max(x, y, x_max, y_max):
     return new_x, new_y
 
 
-def qresize(qsize: QSize, max_sizes: Tuple[int, int]):
+def qresize(qsize: QSize, max_sizes: tuple[int, int]):
+    """Qresize."""
     x, y = proportional_fit_into_max(qsize.width(), qsize.height(), *max_sizes)
     return QSize(int(x), int(y))
 
@@ -233,6 +241,7 @@ def qresize(qsize: QSize, max_sizes: Tuple[int, int]):
 def center_in_widget(
     widgets: Iterable[QWidget], parent: QWidget, direction="h", alignment=Qt.AlignmentFlag.AlignCenter
 ):
+    """Center in widget."""
     outer_layout = QHBoxLayout(parent) if direction == "h" else QVBoxLayout(parent)
     outer_layout.setAlignment(alignment)
     for widget in widgets:
@@ -241,7 +250,10 @@ def center_in_widget(
     return outer_layout
 
 
-def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) -> QPushButton:
+def generate_help_button(help_widget: QWidget, title: str | None = None) -> QPushButton:
+    """Generate help button."""
+    if title is None:
+        title = translate("help", "Help")
     # add the help buttonbox
     button_help = QPushButton()
     button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -249,6 +261,7 @@ def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) 
     button_help.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
 
     def show_screenshot_tutorial():
+        """Show screenshot tutorial."""
         help_widget.setWindowTitle(title)
         help_widget.show()
 
@@ -257,15 +270,12 @@ def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) 
 
 
 class AspectRatioSvgWidget(QWidget):
-    """
-    A drop-in widget that displays an SVG while always preserving its aspect
-    ratio.  You can optionally dictate the size-hint’s width or height and the
-    other dimension will be computed from the SVG’s intrinsic aspect ratio.
+    """A drop-in widget that displays an SVG while always preserving its aspect ratio.
+    You can optionally dictate the size-hint’s width or height and the other dimension
+    will be computed from the SVG’s intrinsic aspect ratio.
 
-        widget = AspectRatioSvgWidget(
-            svg_content=raw_svg,
-            size_hint_width=128          # height is auto-calculated
-        )
+    widget = AspectRatioSvgWidget(     svg_content=raw_svg,     size_hint_width=128          # height is auto-
+    calculated )
     """
 
     def __init__(
@@ -275,6 +285,7 @@ class AspectRatioSvgWidget(QWidget):
         size_hint_height: int | None = None,
         parent=None,
     ):
+        """Initialize instance."""
         super().__init__(parent)
 
         # Store caller-desired hint(s); they may be refined once the SVG loads
@@ -305,10 +316,10 @@ class AspectRatioSvgWidget(QWidget):
     # -------------------------------------------------------------- Qt stuff
 
     def sizeHint(self) -> QSize:
-        """
-        Return the preferred size according to caller input and/or the SVG’s
-        own aspect ratio.  Falls back to the renderer’s default size when no
-        hints were supplied.
+        """Return the preferred size according to caller input and/or the SVG’s own
+        aspect ratio.
+
+        Falls back to the renderer’s default size when no hints were supplied.
         """
         if not self._renderer.isValid():
             # No valid SVG yet – rely on any caller hints or give a stub size
@@ -339,6 +350,7 @@ class AspectRatioSvgWidget(QWidget):
             return self._renderer.defaultSize()
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
+        """PaintEvent."""
         painter = QPainter(self)
         if not self._renderer.isValid():
             return
@@ -360,18 +372,19 @@ class AspectRatioSvgWidget(QWidget):
 
 
 def add_centered_icons(
-    paths: List[str],
+    paths: list[str],
     parent_layout: QBoxLayout,
     direction="h",
     alignment: Qt.AlignmentFlag = Qt.AlignmentFlag.AlignCenter,
-    max_sizes: Iterable[Tuple[int, int]] = [],
-) -> List[AspectRatioSvgWidget]:
+    max_sizes: Iterable[tuple[int, int]] = [],
+) -> list[AspectRatioSvgWidget]:
+    """Add centered icons."""
     max_sizes = max_sizes if max_sizes else [(60, 80) for path in paths]
     if len(paths) > 1 and len(max_sizes) == 1:  # type: ignore
         max_sizes = max_sizes * len(paths)  # type: ignore
 
-    svg_widgets: List[AspectRatioSvgWidget] = []
-    for max_size, path in zip(max_sizes, paths):
+    svg_widgets: list[AspectRatioSvgWidget] = []
+    for max_size, path in zip(max_sizes, paths, strict=False):
         widget = AspectRatioSvgWidget(
             svg_content=svg_tools.get_svg_content(path),
         )
@@ -396,6 +409,7 @@ def add_to_buttonbox(
     button=None,
 ):
     # Create a custom QPushButton with an icon
+    """Add to buttonbox."""
     button = button if button else QPushButton(text)
     if isinstance(icon_name, QIcon):
         button.setIcon(icon_name)
@@ -418,7 +432,8 @@ class MessageType(enum.Enum):
     Critical = enum.auto()
 
     @classmethod
-    def from_analyzer_state(cls, analyzer_state: AnalyzerState) -> "MessageType":
+    def from_analyzer_state(cls, analyzer_state: AnalyzerState) -> MessageType:
+        """From analyzer state."""
         return list(MessageType)[int(analyzer_state) - 1]
 
 
@@ -428,13 +443,13 @@ class Message:
         msg: str,
         parent: QWidget | None = None,
         title: str | None = None,
-        icon: Union[QIcon, QPixmap, QMessageBox.Icon] | None = None,
+        icon: QIcon | QPixmap | QMessageBox.Icon | None = None,
         msecs=None,
         type: MessageType = MessageType.Info,
         no_show=False,
         **kwargs,
     ) -> None:
-
+        """Initialize instance."""
         self.msg = msg
         self.parent = parent
         self.title = title
@@ -448,8 +463,9 @@ class Message:
 
     @staticmethod
     def system_tray_icon(
-        icon: Optional[Union[QIcon, QPixmap, QMessageBox.Icon, QSystemTrayIcon.MessageIcon]],
-    ) -> Union[QIcon, QSystemTrayIcon.MessageIcon]:
+        icon: QIcon | QPixmap | QMessageBox.Icon | QSystemTrayIcon.MessageIcon | None,
+    ) -> QIcon | QSystemTrayIcon.MessageIcon:
+        """System tray icon."""
         if isinstance(icon, QIcon):
             return icon
 
@@ -459,7 +475,7 @@ class Message:
         if isinstance(icon, QPixmap):
             return QIcon(icon)
 
-        if type(icon) == QMessageBox.Icon:
+        if type(icon) is QMessageBox.Icon:
             if icon == QMessageBox.Icon.Information:
                 return QSystemTrayIcon.MessageIcon.Information
             if icon == QMessageBox.Icon.Warning:
@@ -469,7 +485,8 @@ class Message:
 
         return QSystemTrayIcon.MessageIcon.NoIcon
 
-    def get_icon_and_title(self) -> Tuple[Union[QIcon, QPixmap, QMessageBox.Icon], str]:
+    def get_icon_and_title(self) -> tuple[QIcon | QPixmap | QMessageBox.Icon, str]:
+        """Get icon and title."""
         icon = QMessageBox.Icon.Information
         title = "Information"
         if self.type in [MessageType.Warning]:
@@ -487,9 +504,11 @@ class Message:
         return return_icon, title
 
     def show(self) -> None:
+        """Show."""
         self.create().exec()
 
     def create(self) -> QMessageBox:
+        """Create."""
         if self.type == MessageType.Info:
             logger.info(str(self.__dict__))
         elif self.type == MessageType.Warning:
@@ -512,6 +531,7 @@ class Message:
         yes_button: QMessageBox.StandardButton = QMessageBox.StandardButton.Ok,
         no_button: QMessageBox.StandardButton = QMessageBox.StandardButton.Cancel,
     ) -> bool:
+        """Ask."""
         msg_box = self.create()
         msg_box.setStandardButtons(yes_button | no_button)
         ret = msg_box.exec()
@@ -523,13 +543,14 @@ class Message:
             return False
         return False
 
-    def emit_with(self, notification_signal: "TypedPyQtSignal[Message]"):
+    def emit_with(self, notification_signal: TypedPyQtSignal[Message]):
+        """Emit with."""
         logger.debug(str(self.__dict__))
         return notification_signal.emit(self)
 
     def msg_box(
         self,
-        icon: Union[QIcon, QPixmap, QMessageBox.Icon],
+        icon: QIcon | QPixmap | QMessageBox.Icon,
         parent,
         title: str,
         text: str,
@@ -540,6 +561,7 @@ class Message:
         checkbox=None,
     ) -> QMessageBox:
         # parent = parent or self.top_level_window()
+        """Msg box."""
         return custom_message_box(
             icon=icon,
             parent=parent,
@@ -553,8 +575,8 @@ class Message:
 
 
 def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
-    """Custom exception handler to catch unhandled exceptions and display an
-    error message box."""
+    """Custom exception handler to catch unhandled exceptions and display an error
+    message box."""
     title = "Error"
     try:
         # Format the traceback for the email
@@ -579,6 +601,7 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
 
 
 def caught_exception_message(e: Exception, title=None, exc_info=None) -> Message:
+    """Caught exception message."""
     exception_msg = str(e).replace("\\", "")
     exception_text = f"{e.__class__}: {exception_msg}"
 
@@ -591,7 +614,7 @@ def caught_exception_message(e: Exception, title=None, exc_info=None) -> Message
 
 def custom_message_box(
     *,
-    icon: Union[QIcon, QPixmap, QMessageBox.Icon],
+    icon: QIcon | QPixmap | QMessageBox.Icon,
     parent,
     title: str,
     text: str,
@@ -600,7 +623,7 @@ def custom_message_box(
     rich_text=False,
     checkbox=None,
 ) -> QMessageBox:
-
+    """Custom message box."""
     if not isinstance(icon, (QIcon, QPixmap, QMessageBox.Icon)):
         raise ValueError(f"{icon} is not a valid type")
 
@@ -637,10 +660,11 @@ def custom_message_box(
 
 
 class WindowModalDialog(QDialog):
-    """Handy wrapper; window modal dialogs are better for our multi-window
-    daemon model as other wallet windows can still be accessed."""
+    """Handy wrapper; window modal dialogs are better for our multi-window daemon model
+    as other wallet windows can still be accessed."""
 
     def __init__(self, parent, title=None):
+        """Initialize instance."""
         QDialog.__init__(self, parent)
         self.setWindowModality(Qt.WindowModality.WindowModal)
         if title:
@@ -650,12 +674,12 @@ class WindowModalDialog(QDialog):
 class BlockingWaitingDialog(WindowModalDialog):
     """Shows a waiting dialog whilst running a task.
 
-    Should be called from the GUI thread. The GUI thread will be blocked
-    while the task is running; the point of the dialog is to provide
-    feedback to the user regarding what is going on.
+    Should be called from the GUI thread. The GUI thread will be blocked while the task is running; the point
+    of the dialog is to provide feedback to the user regarding what is going on.
     """
 
     def __init__(self, parent: QWidget, message: str, task: Callable[[], Any]):
+        """Initialize instance."""
         assert parent
         WindowModalDialog.__init__(self, parent, self.tr("Please wait"))
         self.message_label = QLabel(message)
@@ -676,7 +700,10 @@ class BlockingWaitingDialog(WindowModalDialog):
 
 
 def one_time_signal_connection(signal: TypedPyQtSignalNo | TypedPyQtSignal, f: Callable):
+    """One time signal connection."""
+
     def f_wrapper(*args, **kwargs):
+        """F wrapper."""
         signal.disconnect(f_wrapper)
         return f(*args, **kwargs)
 
@@ -685,10 +712,11 @@ def one_time_signal_connection(signal: TypedPyQtSignalNo | TypedPyQtSignal, f: C
 
 def create_button_box(
     callback_ok, callback_cancel, ok_text=None, cancel_text=None
-) -> Tuple[QDialogButtonBox, List[QPushButton]]:
+) -> tuple[QDialogButtonBox, list[QPushButton]]:
     # Create the QDialogButtonBox instance
+    """Create button box."""
     button_box = QDialogButtonBox()
-    buttons: List[QPushButton] = []
+    buttons: list[QPushButton] = []
 
     # Add an 'Ok' button
     if ok_text is None:
@@ -723,18 +751,22 @@ def create_button_box(
 
 class ColorSchemeItem:
     def __init__(self, fg_color, bg_color):
+        """Initialize instance."""
         self.colors = (fg_color, bg_color)
 
     @register_cache(always_keep=True)
     def _get_color(self, background):
+        """Get color."""
         return self.colors[(int(background) + int(ColorScheme.dark_scheme)) % 2]
 
     def as_stylesheet(self, background=False):
+        """As stylesheet."""
         css_prefix = "background-" if background else ""
         color = self._get_color(background)
-        return "QWidget {{ {}color:{}; }}".format(css_prefix, color)
+        return f"QWidget {{ {css_prefix}color:{color}; }}"
 
     def as_color(self, background=False):
+        """As color."""
         color = self._get_color(background)
         return QColor(color)
 
@@ -754,6 +786,7 @@ class ColorScheme:
 
     @staticmethod
     def has_dark_background(widget: QWidget):
+        """Has dark background."""
         background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
         rgb = background_color.getRgb()[0:3]
         brightness = sum(c for c in rgb if c)
@@ -761,24 +794,29 @@ class ColorScheme:
 
     @staticmethod
     def update_from_widget(widget, force_dark=False):
+        """Update from widget."""
         ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
 
 
 def screenshot_path(basename: str):
+    """Screenshot path."""
     return resource_path("gui", "screenshots", basename)
 
 
 def char_width_in_lineedit() -> int:
+    """Char width in lineedit."""
     char_width = QFontMetrics(QLineEdit().font()).averageCharWidth()
     # 'averageCharWidth' seems to underestimate on Windows, hence 'max()'
     return max(9, char_width)
 
 
 def font_height() -> int:
+    """Font height."""
     return QFontMetrics(QLabel().font()).height()
 
 
 def clipboard_contains_address(network: bdk.Network) -> bool:
+    """Clipboard contains address."""
     clipboard = QApplication.clipboard()
     if not clipboard:
         return False
@@ -786,6 +824,7 @@ def clipboard_contains_address(network: bdk.Network) -> bool:
 
 
 def do_copy(text: str, *, title: str | None = None) -> None:
+    """Do copy."""
     clipboard = QApplication.clipboard()
     if not clipboard:
         show_tooltip_after_delay("Clipboard not available")
@@ -800,6 +839,7 @@ def do_copy(text: str, *, title: str | None = None) -> None:
 
 
 def show_tooltip_after_delay(message):
+    """Show tooltip after delay."""
     timer = QTimer()
     if not ENABLE_TIMERS:
         return
@@ -809,6 +849,7 @@ def show_tooltip_after_delay(message):
 
 def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
     # Convert QIcon to QPixmap
+    """Qicon to pil."""
     pixmap = qicon.pixmap(size, size)  # specify the size you want
 
     # Convert QPixmap to QImage
@@ -831,7 +872,8 @@ def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
 
 def save_file_dialog(
     name_filters=None, default_suffix=None, default_filename=None, window_title="Save File"
-) -> Optional[str]:
+) -> str | None:
+    """Save file dialog."""
     file_dialog = QFileDialog()
     file_dialog.setWindowTitle(window_title)
     if default_suffix:
@@ -854,7 +896,7 @@ def save_file_dialog(
 
 
 def remove_scheme(url):
-    """Check if "://" is in the URL and split it"""
+    """Check if "://" is in the URL and split it."""
     if "://" in url:
         parts = url.split("://", 1)  # Split only at the first occurrence
         return parts[1]  # Return the part after the "://"
@@ -863,15 +905,15 @@ def remove_scheme(url):
 
 
 def ensure_scheme(url, default_scheme="https://"):
-    """Check if "://" is in the URL and split it"""
+    """Check if "://" is in the URL and split it."""
     if "://" in url:
         return url  # Return the original URL if   scheme is found
     else:
         return f"{default_scheme}{url}"
 
 
-def get_host_and_port(url) -> Tuple[str | None, int | None]:
-
+def get_host_and_port(url) -> tuple[str | None, int | None]:
+    """Get host and port."""
     parsed_url = urlparse(ensure_scheme(url))
 
     # Extract the hostname and port
@@ -879,6 +921,7 @@ def get_host_and_port(url) -> Tuple[str | None, int | None]:
 
 
 def delayed_execution(f, parent, delay=10):
+    """Delayed execution."""
     if not ENABLE_TIMERS:
         f()
         return
@@ -908,9 +951,9 @@ def svg_widget_hardware_signer(
     max_height=200,
     size_hint_width: int | None = None,
     size_hint_height: int | None = None,
-    replace_tuples: List[Tuple[str, str]] | None = None,
+    replace_tuples: list[tuple[str, str]] | None = None,
 ) -> AspectRatioSvgWidget:
-
+    """Svg widget hardware signer."""
     base_hardware_signers = [
         {
             "svg_basename": ("coldcard-sticker.svg"),
@@ -946,7 +989,8 @@ def svg_widget_hardware_signer(
     return widget
 
 
-def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
+def create_tool_button(parent: QWidget) -> tuple[QToolButton, Menu]:
+    """Create tool button."""
     button = QToolButton()
     button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
     menu = Menu(parent)
@@ -958,14 +1002,17 @@ def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
 def adjust_bg_color_for_darkmode(
     color: QColor,
 ) -> QColor:
+    """Adjust bg color for darkmode."""
     return adjust_brightness(color, -0.4) if is_dark_mode() else color
 
 
 def rescale(value: float, old_min: float, old_max: float, new_min: float, new_max: float):
+    """Rescale."""
     return (value - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
 
 
 def hash_color(text: str) -> QColor:
+    """Hash color."""
     hash_value = int(hash_string(text), 16) & 0xFFFFFF
     r = (hash_value & 0xFF0000) >> 16
     g = (hash_value & 0x00FF00) >> 8
@@ -979,10 +1026,12 @@ def hash_color(text: str) -> QColor:
 
 
 def category_color(text: str) -> QColor:
+    """Category color."""
     return adjust_bg_color_for_darkmode(hash_color(text))
 
 
 def create_color_circle(color: QColor, size=24, margin=1):
+    """Create color circle."""
     pixmap = QPixmap(size, size)
     pixmap.fill(Qt.GlobalColor.transparent)  # use a transparent background
     painter = QPainter(pixmap)
@@ -996,8 +1045,7 @@ def create_color_circle(color: QColor, size=24, margin=1):
 
 
 def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
-    """
-    Linearly interpolate between two QColors.
+    """Linearly interpolate between two QColors.
 
     Args:
         c1: First QColor.
@@ -1019,13 +1067,12 @@ def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
 
 
 def set_no_margins(layout: QLayout) -> None:
+    """Set no margins."""
     layout.setContentsMargins(0, 0, 0, 0)
 
 
 def set_translucent(widget: QWidget):
-    """
-    — make backgrounds transparent —
-    """
+    """— make backgrounds transparent —"""
     widget.setObjectName(f"widget{id(widget)}")
     widget.setAutoFillBackground(False)
     widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -1039,12 +1086,11 @@ def set_translucent(widget: QWidget):
 
 
 def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int]) -> None:
-    """
-    Set one or more margins on a QLayout, each to its own value.
+    """Set one or more margins on a QLayout, each to its own value.
 
-    :param layout:  the layout whose contents-margins you want to adjust
-    :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge}
-                    to the new margin (in pixels) for that edge
+    :param layout: the layout whose contents-margins you want to adjust
+    :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge} to the new margin (in pixels)
+        for that edge
     """
     cm = layout.contentsMargins()
     left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
@@ -1066,6 +1112,7 @@ def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int]) -> None:
 
 class HLine(QFrame):
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
 
         # Let QSS paint the background
@@ -1105,10 +1152,12 @@ class ButtonInfo:
 
     @property
     def icon(self) -> QIcon:
+        """Icon."""
         return svg_tools.get_QIcon(self.icon_name)
 
 
 def button_info(name: ButtonInfoType) -> ButtonInfo:
+    """Button info."""
     if name == ButtonInfoType.edit:
         return ButtonInfo(
             text=translate("util", "Edit"),
@@ -1154,4 +1203,5 @@ def button_info(name: ButtonInfoType) -> ButtonInfo:
 
 
 def to_color_name(color: str | QPalette.ColorRole) -> str:
+    """To color name."""
     return QApplication.palette().color(color).name() if isinstance(color, QPalette.ColorRole) else color

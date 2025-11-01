@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import base64
-from typing import Tuple, Union
 
 from ecdsa import SECP256k1, SigningKey, VerifyingKey, util
 from hwilib import _bech32
@@ -36,7 +36,8 @@ from hwilib import _bech32
 from bitcoin_safe.message_signature_verifyer import MessageSignatureVerifyer, hash160
 
 
-def _create_message_signature(message: str, privkey_hex: str, compressed: bool) -> Tuple[str, bytes]:
+def _create_message_signature(message: str, privkey_hex: str, compressed: bool) -> tuple[str, bytes]:
+    """Create message signature."""
     message_bytes = message.encode("utf-8")
     digest = MessageSignatureVerifyer._hash_message(message_bytes)
     signing_key = SigningKey.from_string(bytes.fromhex(privkey_hex), curve=SECP256k1)
@@ -58,6 +59,7 @@ def _create_message_signature(message: str, privkey_hex: str, compressed: bool) 
 
 
 def test_verify_message_p2pkh() -> None:
+    """Test verify message p2pkh."""
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "1" * 64
     message = "Hardware wallet verification"
@@ -75,6 +77,7 @@ def test_verify_message_p2pkh() -> None:
 
 
 def test_verify_message_p2wpkh_and_nested() -> None:
+    """Test verify message p2wpkh and nested."""
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "2" * 64
     message = "SegWit verification"
@@ -92,6 +95,7 @@ def test_verify_message_p2wpkh_and_nested() -> None:
 
 
 def test_verify_message_trims_whitespace() -> None:
+    """Test verify message trims whitespace."""
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "3" * 64
     message = "Trim me"
@@ -112,6 +116,7 @@ def test_verify_message_trims_whitespace() -> None:
 
 
 def test_verify_message_invalid_signature() -> None:
+    """Test verify message invalid signature."""
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "4" * 64
     message = "Invalid signature"
@@ -133,6 +138,7 @@ def test_verify_message_invalid_signature() -> None:
 
 
 def _b64_to_bytes(sig_b64: str) -> bytearray:
+    """B64 to bytes."""
     try:
         raw = base64.b64decode(sig_b64)
     except Exception as e:
@@ -142,13 +148,14 @@ def _b64_to_bytes(sig_b64: str) -> bytearray:
     return bytearray(raw)
 
 
-def _bytes_to_b64(raw: Union[bytes, bytearray]) -> str:
+def _bytes_to_b64(raw: bytes | bytearray) -> str:
+    """Bytes to b64."""
     return base64.b64encode(bytes(raw)).decode("ascii")
 
 
 def invalidate_header(signature_b64: str) -> str:
-    """
-    Corrupt only the header (recovery byte) of a 65-byte recoverable signature.
+    """Corrupt only the header (recovery byte) of a 65-byte recoverable signature.
+
     This will typically prevent public-key recovery (and therefore verification).
     """
     sig = _b64_to_bytes(signature_b64)
@@ -161,8 +168,8 @@ def invalidate_header(signature_b64: str) -> str:
 
 
 def invalidate_r(signature_b64: str) -> str:
-    """
-    Corrupt the R component of the signature (bytes 1..32).
+    """Corrupt the R component of the signature (bytes 1..32).
+
     This keeps header untouched but makes the signature invalid for verification.
     """
     sig = _b64_to_bytes(signature_b64)
@@ -174,8 +181,8 @@ def invalidate_r(signature_b64: str) -> str:
 
 
 def invalidate_s(signature_b64: str) -> str:
-    """
-    Corrupt the S component of the signature (bytes 33..64).
+    """Corrupt the S component of the signature (bytes 33..64).
+
     This keeps header and R untouched but makes the signature invalid for verification.
     """
     sig = _b64_to_bytes(signature_b64)
@@ -187,7 +194,10 @@ def invalidate_s(signature_b64: str) -> str:
 
 
 def test_static():
+    """Test static."""
+
     def check_all(verifyer: MessageSignatureVerifyer, address, message, signature):
+        """Check all."""
         result = verifyer.verify_message(address, message, signature)
         assert result.match
 

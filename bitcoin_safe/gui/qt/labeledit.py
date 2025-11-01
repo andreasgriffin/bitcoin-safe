@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Callable, List, Optional, Set, cast
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, cast
 
 from PyQt6 import QtGui
 from PyQt6.QtCore import QEvent, QObject, QStringListModel, Qt, pyqtSignal
@@ -54,18 +56,20 @@ from bitcoin_safe.wallet import (
     get_wallets,
 )
 
-from ...signals import TypedPyQtSignalNo
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
 
 class LabelLineEdit(QLineEdit):
-    signal_enterPressed = cast(TypedPyQtSignalNo, pyqtSignal())  # Signal for Enter key
-    signal_textEditedAndFocusLost = cast(
-        TypedPyQtSignalNo, pyqtSignal()
+    signal_enterPressed: TypedPyQtSignalNo = cast(Any, pyqtSignal())  # Signal for Enter key
+    signal_textEditedAndFocusLost: TypedPyQtSignalNo = cast(
+        Any, pyqtSignal()
     )  # Signal for text edited and focus lost
 
     def __init__(self, parent=None):
+        """Initialize instance."""
         super().__init__(parent)
         self.originalText = ""
         self.textChangedSinceFocus = False
@@ -81,14 +85,17 @@ class LabelLineEdit(QLineEdit):
         # signals
         self.textChanged.connect(self.onTextChanged)  # Connect the textChanged signal
 
-    def set_completer_list(self, strings: List[str]):
+    def set_completer_list(self, strings: list[str]):
+        """Set completer list."""
         self._model.setStringList(strings)
         self._completer.setModel(self._model)
 
     def onTextChanged(self):
+        """OnTextChanged."""
         self.textChangedSinceFocus = True  # Set flag when text changes
 
-    def eventFilter(self, a0: Optional[QObject], a1: Optional[QEvent]) -> bool:
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
+        """EventFilter."""
         if not a1:
             return False
         if a0 == self:
@@ -102,6 +109,7 @@ class LabelLineEdit(QLineEdit):
         return super().eventFilter(a0, a1)
 
     def keyPressEvent(self, a0: QKeyEvent | None):
+        """KeyPressEvent."""
         if not a0:
             super().keyPressEvent(a0)
             return
@@ -124,6 +132,7 @@ class LabelAndCategoryEdit(QWidget):
         parent=None,
         dismiss_label_on_focus_loss=False,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.label_edit = LabelLineEdit(parent=self)
         self.category_edit = QLineEdit(parent=self)
@@ -151,9 +160,11 @@ class LabelAndCategoryEdit(QWidget):
             self.label_edit.signal_textEditedAndFocusLost.connect(self.on_signal_textEditedAndFocusLost)
 
     def on_signal_textEditedAndFocusLost(self):
+        """On signal textEditedAndFocusLost."""
         return self.label_edit.setText(self.label_edit.originalText)
 
     def _format_category_edit(self) -> None:
+        """Format category edit."""
         palette = QtGui.QPalette()
         background_color = None
 
@@ -167,10 +178,12 @@ class LabelAndCategoryEdit(QWidget):
         self.category_edit.update()
 
     def set(self, label: str, category: str):
+        """Set."""
         self.set_label(label)
         self.set_category(category)
 
     def set_category(self, category: str):
+        """Set category."""
         self.category_edit.setText(category)
         self._format_category_edit()
 
@@ -178,6 +191,7 @@ class LabelAndCategoryEdit(QWidget):
         self,
         label: str,
     ):
+        """Set label."""
         self.label_edit.setText(label)
         self.label_edit.originalText = label
 
@@ -185,19 +199,23 @@ class LabelAndCategoryEdit(QWidget):
         self,
         text: str,
     ):
+        """Set placeholder."""
         self.label_edit.setPlaceholderText(text)
 
     def set_category_visible(self, value: bool):
-
+        """Set category visible."""
         self.category_edit.setVisible(value)
 
     def category(self) -> str:
+        """Category."""
         return self.category_edit.text()
 
     def label(self) -> str:
+        """Label."""
         return self.label_edit.text().strip()
 
     def set_label_readonly(self, value: bool):
+        """Set label readonly."""
         self.label_edit.setReadOnly(value)
 
 
@@ -210,6 +228,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         parent=None,
         dismiss_label_on_focus_loss=False,
     ) -> None:
+        """Initialize instance."""
         self.get_label_ref = get_label_ref
         super().__init__(parent=parent, dismiss_label_on_focus_loss=dismiss_label_on_focus_loss)
         self.wallet_functions = wallet_functions
@@ -219,9 +238,8 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         self.label_edit.signal_textEditedAndFocusLost.connect(self.on_label_edited)
         self.wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
 
-    def get_wallets_to_store_label(self, ref: str) -> Set[Wallet]:
-        """
-        Will return wallets where it occurs in ANY transaction
+    def get_wallets_to_store_label(self, ref: str) -> set[Wallet]:
+        """Will return wallets where it occurs in ANY transaction.
 
         The address doesnt have to belong to any wallet, but might be a recipient
         """
@@ -251,6 +269,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         return result
 
     def on_label_edited(self) -> None:
+        """On label edited."""
         if self.label_type not in [LabelType.addr, LabelType.tx]:
             return
         ref = self.get_label_ref()
@@ -294,6 +313,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
                 self.wallet_functions.wallet_signals[wallet.id].updated.emit(update_filter)
 
     def autofill_category(self, update_filter: UpdateFilter | None = None):
+        """Autofill category."""
         ref = self.get_label_ref()
         if update_filter and not (
             (ref in update_filter.addresses or ref in update_filter.txids)
@@ -316,6 +336,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
             self.set_category("")
 
     def autofill_label(self, update_filter: UpdateFilter | None = None, overwrite_existing=False):
+        """Autofill label."""
         ref = self.get_label_ref()
         if update_filter and not (
             (ref in update_filter.addresses or ref in update_filter.txids) or update_filter.refresh_all
@@ -355,13 +376,16 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
             self.label_edit.set_completer_list([completer_label] if completer_label else [])
 
     def autofill_label_and_category(self, update_filter: UpdateFilter | None = None):
+        """Autofill label and category."""
         self.autofill_label(update_filter)
         self.autofill_category(update_filter)
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         pass
 
 

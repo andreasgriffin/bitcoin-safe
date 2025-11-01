@@ -26,12 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import asyncio
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Union
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -49,11 +49,12 @@ logger = logging.getLogger(__name__)
 class Client:
     def __init__(
         self,
-        client: Union[bdk.ElectrumClient, bdk.EsploraClient, CbfSync],
+        client: bdk.ElectrumClient | bdk.EsploraClient | CbfSync,
         electrum_config: ElectrumConfig | None,
         proxy_info: ProxyInfo | None,
         loop_in_thread: LoopInThread,
     ) -> None:
+        """Initialize instance."""
         self.client = client
         self.proxy_info = proxy_info
         self.electrum_config = electrum_config
@@ -72,12 +73,15 @@ class Client:
 
     @property
     def sync_status(self) -> SyncStatus:
+        """Sync status."""
         return self._sync_status
 
     def _set_sync_status(self, status: SyncStatus) -> None:
+        """Set sync status."""
         self._sync_status = status
 
     def handle_log_warning(self, warning: bdk.Warning):
+        """Handle log warning."""
         if isinstance(warning, (bdk.Warning.NEED_CONNECTIONS, bdk.Warning.COULD_NOT_CONNECT)):
             self.status_msg = translate("Client", "Connecting to nodes")
         else:
@@ -86,6 +90,7 @@ class Client:
             self._set_sync_status(SyncStatus.error)
 
     def should_update_progress(self):
+        """Should update progress."""
         if isinstance(self.client, CbfSync):
             # kyoto update is the only reliable way to know it is fully synced.
             # any warning or info message dies not reflect the sync status
@@ -98,18 +103,21 @@ class Client:
         return True
 
     def handle_log_info(self, info: bdk.Info):
+        """Handle log info."""
         if isinstance(info, bdk.Info.PROGRESS):
             self.progress = info.filters_downloaded_percent / 100
             self.status_msg = translate("Client", "Chain height {height}").format(height=info.chain_height)
 
     @property
     def passed_time(self):
+        """Passed time."""
         return datetime.now() - self.start_time
 
     @property
     def remaining_time(
         self,
     ):
+        """Remaining time."""
         if self.progress == 0:
             return self.passed_time
         return timedelta(
@@ -118,6 +126,7 @@ class Client:
 
     @property
     def progress_info(self):
+        """Progress info."""
         return ProgressInfo(
             progress=self.progress,
             passed_time=self.passed_time,
@@ -126,23 +135,27 @@ class Client:
         )
 
     def on_update(self, update_info: UpdateInfo) -> None:
+        """On update."""
         self.progress = 1
         self.status_msg = ""
         self._set_sync_status(SyncStatus.synced)
 
     def queue_update(self, update_info: UpdateInfo) -> None:
+        """Queue update."""
         self._update_queue.put_nowait(update_info)
         self.on_update(update_info)
 
     def needs_progress_bar(
         self,
     ) -> bool:
+        """Needs progress bar."""
         return isinstance(self.client, CbfSync)
 
     @classmethod
     def from_electrum(
         cls, url: str, use_ssl: bool, proxy_info: ProxyInfo | None, loop_in_thread: LoopInThread
-    ) -> "Client":
+    ) -> Client:
+        """From electrum."""
         url = clean_electrum_url(url, use_ssl)
         client = bdk.ElectrumClient(
             url=url,
@@ -156,7 +169,8 @@ class Client:
         )
 
     @classmethod
-    def from_esplora(cls, url: str, proxy_info: ProxyInfo | None, loop_in_thread: LoopInThread) -> "Client":
+    def from_esplora(cls, url: str, proxy_info: ProxyInfo | None, loop_in_thread: LoopInThread) -> Client:
+        """From esplora."""
         client = bdk.EsploraClient(url=url, proxy=(proxy_info.get_url_no_h() if proxy_info else None))
         return cls(client=client, electrum_config=None, proxy_info=proxy_info, loop_in_thread=loop_in_thread)
 
@@ -173,6 +187,7 @@ class Client:
         loop_in_thread: LoopInThread,
         is_new_wallet=False,
     ):
+        """From cbf."""
         peers: set[Peer] = set()
 
         if initial_peer:
@@ -198,6 +213,7 @@ class Client:
         return cls(client=client, proxy_info=proxy_info, electrum_config=None, loop_in_thread=loop_in_thread)
 
     def broadcast(self, tx: bdk.Transaction):
+        """Broadcast."""
         if isinstance(self.client, bdk.ElectrumClient):
             return self.client.transaction_broadcast(tx)
         elif isinstance(self.client, bdk.EsploraClient):
@@ -209,6 +225,7 @@ class Client:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
 
     def full_scan(self, full_request: bdk.FullScanRequest, stop_gap: int) -> None:
+        """Full scan."""
         if isinstance(self.client, bdk.ElectrumClient):
             self.start_time = datetime.now()
             self.progress = 0
@@ -242,6 +259,7 @@ class Client:
             raise ValueError("Unknown blockchain client type.")
 
     def sync(self, request: bdk.SyncRequest) -> None:
+        """Sync."""
         if isinstance(self.client, bdk.ElectrumClient):
             self.start_time = datetime.now()
             self.progress = 0
@@ -268,6 +286,8 @@ class Client:
             update_info = UpdateInfo(update, UpdateInfo.UpdateType.full_sync)
             self.queue_update(update_info)
             return None
+        elif isinstance(self.client, CbfSync):
+            return None
         else:
             raise ValueError("Unknown blockchain client type.")
 
@@ -282,22 +302,25 @@ class Client:
             self.queue_update(update_info)
 
     async def update(self) -> UpdateInfo | None:
+        """Update."""
         return await self._update_queue.get()
 
     async def next_info(self) -> bdk.Info | None:
+        """Next info."""
         if isinstance(self.client, CbfSync):
             return await self.client.next_info()
         await asyncio.get_running_loop().create_future()  # waits until cancelled
         return None
 
     async def next_warning(self) -> bdk.Warning | None:
+        """Next warning."""
         if isinstance(self.client, CbfSync):
             return await self.client.next_warning()
         await asyncio.get_running_loop().create_future()  # waits until cancelled
         return None
 
     def close(self):
-
+        """Close."""
         if isinstance(self.client, bdk.ElectrumClient):
             pass
         elif isinstance(self.client, bdk.EsploraClient):

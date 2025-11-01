@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List, Optional
 
 import bdkpython as bdk
 from bitcoin_usb.software_signer import derive
@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Network.REGTEST) -> KeyStore:
+    """Create keystore."""
     mnemonic = str(bdk.Mnemonic.from_string(seed_str))
     key_origin = key_origin
     xpub, fingerprint = derive(mnemonic, key_origin, network)
@@ -58,9 +59,10 @@ def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Netw
 
 
 def create_test_seed_keystores(
-    signers: int, key_origins: List[str], network=bdk.Network.REGTEST, test_seed_offset=0
-) -> List[KeyStore]:
-    keystores: List[KeyStore] = []
+    signers: int, key_origins: list[str], network=bdk.Network.REGTEST, test_seed_offset=0
+) -> list[KeyStore]:
+    """Create test seed keystores."""
+    keystores: list[KeyStore] = []
     for i, seed_str in enumerate(test_seeds[test_seed_offset : test_seed_offset + signers]):
         keystores.append(
             create_keystore(seed_str=seed_str, key_origin=key_origins[i], label=f"{i}", network=network)
@@ -69,10 +71,10 @@ def create_test_seed_keystores(
 
 
 def create_multisig_protowallet(
-    threshold: int, signers: int, key_origins: List[str], wallet_id="some id", network=bdk.Network.REGTEST
+    threshold: int, signers: int, key_origins: list[str], wallet_id="some id", network=bdk.Network.REGTEST
 ) -> ProtoWallet:
-
-    keystores: List[Optional[KeyStore]] = create_test_seed_keystores(signers, key_origins, network)  # type: ignore
+    """Create multisig protowallet."""
+    keystores: list[KeyStore | None] = create_test_seed_keystores(signers, key_origins, network)  # type: ignore
 
     return ProtoWallet(
         threshold=threshold,

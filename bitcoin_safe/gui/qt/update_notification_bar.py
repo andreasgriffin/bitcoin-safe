@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import os
@@ -33,19 +34,19 @@ import platform
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
-from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
+from bitcoin_safe.gui.qt.downloader import Downloader, DownloadWorker
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.signals import SignalsMin
 
 from ... import __version__
 from ...html_utils import html_f
-from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...signature_manager import (
     Asset,
     GitHubAssetDownloader,
@@ -55,11 +56,14 @@ from ...signature_manager import (
 from ...util import fast_version
 from .util import Message, MessageType, set_margins
 
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
+
 logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar):
-    signal_on_success = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_on_success: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     key = KnownGPGKeys.andreasgriffin
 
@@ -67,9 +71,10 @@ class UpdateNotificationBar(NotificationBar):
         self,
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
-        proxies: Dict | None,
+        proxies: dict | None,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         self.proxies = proxies
         super().__init__(
             text="",
@@ -84,7 +89,7 @@ class UpdateNotificationBar(NotificationBar):
         self.optionalButton.setIcon(refresh_icon)
 
         self.verifyer = SignatureVerifyer(list_of_known_keys=[self.key], proxies=self.proxies)
-        self.assets: List[Asset] = []
+        self.assets: list[Asset] = []
         self.setVisible(False)
 
         self.download_container = QWidget()
@@ -103,7 +108,8 @@ class UpdateNotificationBar(NotificationBar):
         self.refresh()
         self.signals_min.language_switch.connect(self.refresh)
 
-    def get_asset_tag(self) -> Optional[str]:
+    def get_asset_tag(self) -> str | None:
+        """Get asset tag."""
         if self.assets:
             tag = self.assets[-1].tag
             return tag
@@ -111,12 +117,14 @@ class UpdateNotificationBar(NotificationBar):
             return None
 
     def is_new_version_available(self) -> bool:
+        """Is new version available."""
         tag = self.get_asset_tag()
         if not tag:
             return False
         return fast_version(tag) > fast_version(__version__)
 
     def refresh(self) -> None:
+        """Refresh."""
         self.optionalButton.setText(self.tr("Check for Update"))
 
         # clear layout
@@ -148,7 +156,8 @@ class UpdateNotificationBar(NotificationBar):
             self.icon_label.setText(self.tr("No update found"))
             self.optionalButton.setVisible(True)
 
-    def on_download_finished(self, download_thread: DownloadThread) -> None:
+    def on_download_finished(self, download_thread: DownloadWorker) -> None:
+        """On download finished."""
         sig_file_path = self.verifyer.get_signature_from_web(download_thread.filename)
         if not sig_file_path:
             Message(self.tr("Could not verify the download. Please try again later."))
@@ -178,6 +187,7 @@ class UpdateNotificationBar(NotificationBar):
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:
         # convert destination to destination with filename
+        """Move and overwrite."""
         if destination.is_dir():
             destination = destination / source.name
 
@@ -188,10 +198,12 @@ class UpdateNotificationBar(NotificationBar):
 
     @staticmethod
     def get_download_folder() -> Path:
+        """Get download folder."""
         return Path.home() / "Downloads"
 
-    def get_filtered_assets(self, assets: List[Asset]) -> List[Asset]:
-        filtered_assets: List[Asset] = []
+    def get_filtered_assets(self, assets: list[Asset]) -> list[Asset]:
+        """Get filtered assets."""
+        filtered_assets: list[Asset] = []
         for asset in assets:
             if platform.system() == "Windows" and not any(
                 [asset.name.endswith(ending) for ending in ["exe", "msi"]]
@@ -217,20 +229,26 @@ class UpdateNotificationBar(NotificationBar):
         return filtered_assets
 
     def check(self) -> None:
+        """Check."""
+
         async def do() -> Any:
+            """Do."""
             return GitHubAssetDownloader(self.key.repository, proxies=self.proxies).get_assets_latest()
 
         def on_done(result) -> None:
+            """On done."""
             pass
 
-        def on_success(assets: List[Asset]) -> None:
+        def on_success(assets: list[Asset]) -> None:
             # filter the assets, by recognized and for the platform
 
+            """On success."""
             self.assets = self.get_filtered_assets(assets)
             self.refresh()
             self.signal_on_success.emit()
 
         def on_error(packed_error_info) -> None:
+            """On error."""
             logger.error(f"error in fetching update info {packed_error_info}")
 
         self.loop_in_thread.run_task(
@@ -243,5 +261,6 @@ class UpdateNotificationBar(NotificationBar):
         )
 
     def check_and_make_visible(self) -> None:
+        """Check and make visible."""
         self.check()
         self.setVisible(True)
