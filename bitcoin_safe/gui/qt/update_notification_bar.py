@@ -36,7 +36,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
-from packaging import version
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
@@ -53,6 +52,7 @@ from ...signature_manager import (
     KnownGPGKeys,
     SignatureVerifyer,
 )
+from ...util import fast_version
 from .util import Message, MessageType, set_margins
 
 logger = logging.getLogger(__name__)
@@ -114,7 +114,7 @@ class UpdateNotificationBar(NotificationBar):
         tag = self.get_asset_tag()
         if not tag:
             return False
-        return version.parse(tag) > version.parse(__version__)
+        return fast_version(tag) > fast_version(__version__)
 
     def refresh(self) -> None:
         self.optionalButton.setText(self.tr("Check for Update"))

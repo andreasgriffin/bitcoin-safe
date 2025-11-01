@@ -27,26 +27,38 @@
 # SOFTWARE.
 
 
+import asyncio
 import datetime
 import json
 import logging
 import os
 import shutil
+from concurrent.futures import Future
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
-from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import time_logger
-from packaging import version
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
-    QApplication,
     QFileDialog,
     QGridLayout,
     QHBoxLayout,
@@ -59,6 +71,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.category_info import CategoryInfo
+from bitcoin_safe.client import ProgressInfo, UpdateInfo
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
@@ -81,11 +94,13 @@ from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.pythonbdk_types import (
     Balance,
+    BlockchainType,
     TransactionDetails,
     python_utxo_balance,
 )
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+from bitcoin_safe.util import filename_clean
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
@@ -93,12 +108,12 @@ from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
 from ...mempool_manager import MempoolManager
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
+from ...util import fast_version
 from ...wallet import (
     LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
     Wallet,
-    filename_clean,
     get_wallets,
 )
 from .address_list import AddressList, AddressListWithToolbar
@@ -110,6 +125,9 @@ from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
 
 logger = logging.getLogger(__name__)
+
+
+T = TypeVar("T")
 
 
 MINIMUM_INTERVAL_SYNC_REGULARLY = (
@@ -216,8 +234,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     }
 
     signal_settext_balance_label = cast(TypedPyQtSignal[str], pyqtSignal(str))
-    signal_on_change_sync_status = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))  # SyncStatus
+    signal_progress_info = cast(TypedPyQtSignal[ProgressInfo], pyqtSignal(ProgressInfo))
     signal_show_manage_categories = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_client_log_info = cast(TypedPyQtSignal[bdk.Info], pyqtSignal(bdk.Info))
+    signal_client_log_warning = cast(TypedPyQtSignal[bdk.Warning], pyqtSignal(bdk.Warning))
+    signal_client_log_str = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_wallet_update = cast(TypedPyQtSignal[UpdateInfo], pyqtSignal(UpdateInfo))
 
     def __init__(
         self,
@@ -251,6 +273,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.plugins_menu = QMenu()
         self._file_path = file_path
         self.sync_status: SyncStatus = SyncStatus.unknown
+        self._client_bridge_tasks: list[Future[Any]] = []
+        self.progress_update_timer = QTimer()
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
         self.notified_tx_ids = set(notified_tx_ids if notified_tx_ids else [])
@@ -309,7 +333,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.plugin_manager_widget.set_plugins(plugins=self.plugin_manager.clients)
 
         self.create_status_bar(self, self.outer_layout)
-        self.update_status_visualization(self.sync_status)
+        self.set_sync_status(self.sync_status)
 
         self.updateUi()
         self.quick_receive.update_content(UpdateFilter(refresh_all=True))
@@ -317,7 +341,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         #### connect signals
         # only signals, not member of [wallet_signals, wallet_signals] have to be tracked,
         # all others I can connect automatically
-        self.signal_tracker.connect(self.signal_on_change_sync_status, self.update_status_visualization)
         self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
         self.wallet_signals.updated.connect(self.signals.any_wallet_updated)
         self.wallet_signals.updated.connect(self.on_updated)
@@ -334,7 +357,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.quick_receive.signal_manage_categories_requested.connect(self.signal_show_manage_categories)
         self.quick_receive.signal_add_category_requested.connect(self.category_manager.add_category)
         self.signal_tracker.connect(self.signal_show_manage_categories, self.category_manager.show)
+        self.signal_tracker.connect(self.signal_client_log_info, self._handle_client_log_info)
+        self.signal_tracker.connect(self.signal_client_log_warning, self._handle_client_log_warning)
+        self.signal_tracker.connect(self.signal_client_log_str, self._handle_client_log_str)
+        self.signal_tracker.connect(self.signal_wallet_update, self._handle_client_update)
 
+        self._start_progress_update_timer()
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
         # since a Wallet can now have txs before syncing
@@ -369,7 +397,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             filename=file_path,
             password=password,
             class_kwargs={
-                Wallet.__name__: {"config": config},
+                Wallet.__name__: {
+                    "config": config,
+                },
                 QTWallet.__name__: {
                     "config": config,
                     "signals": signals,
@@ -448,7 +478,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             del d["wallet"]["data_dump"]
             dct = d
 
-        if (qt_wallet_version) and version.parse(qt_wallet_version) < version.parse("0.3.0"):
+        if (qt_wallet_version) and fast_version(qt_wallet_version) < fast_version("0.3.0"):
             # new plugin_manager
             if dct.get("sync_tab") and not dct.get("plugin_manager"):
                 sync_tab = dct["sync_tab"]
@@ -469,7 +499,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     @classmethod
     def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
-        if version.parse(str(dct.get("VERSION", 0))) >= version.parse("0.2.0") > version.parse(cls.VERSION):
+        if fast_version(str(dct.get("VERSION", 0))) >= fast_version("0.2.0") > fast_version(cls.VERSION):
             # downgrade bdk 1.x related stuff
             if sync_tab := dct.get("sync_tab"):
                 if nostr_sync_dump := sync_tab.get("nostr_sync_dump"):
@@ -559,6 +589,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         logger.info(f"Retry timer: Try syncing wallet {self.wallet.id}")
         self.sync()
 
+    def _start_progress_update_timer(self, interval_seconds=1) -> None:
+        if self.progress_update_timer.isActive():
+            return
+        self.progress_update_timer.setInterval(interval_seconds * 1000)
+
+        self.progress_update_timer.timeout.connect(self._on_progress_update_timer)
+        if ENABLE_TIMERS:
+            self.progress_update_timer.start()
+
+    def _on_progress_update_timer(self):
+        if not self.wallet.client:
+            return
+        self.signal_progress_info.emit(self.wallet.client.progress_info)
+
     def _start_sync_retry_timer(self, delay_retry_sync=30) -> None:
         if self.timer_sync_retry.isActive():
             return
@@ -574,9 +618,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def get_keystore_labels(self) -> List[str]:
         return [keystore.label for keystore in self.wallet.keystores]
 
+    def _default_file_name(self, id: str | None = None) -> str:
+        return filename_clean(id if id else self.wallet.id)
+
     @property
     def file_path(self) -> str:
-        return self._file_path if self._file_path else filename_clean(self.wallet.id)
+        return self._file_path if self._file_path else self._default_file_name()
 
     @file_path.setter
     def file_path(self, value: Optional[str]) -> None:
@@ -685,20 +732,36 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         return file_path
 
-    def move_wallet_file(self, new_file_path) -> Optional[str]:
-        if os.path.exists(new_file_path):
+    def change_wallet_id(self, new_id: str) -> Optional[Path]:
+        self.wallet.id
+        old_file_path = self.file_path
+
+        if not os.path.exists(self.config.wallet_dir):
+            os.makedirs(self.config.wallet_dir, exist_ok=True)
+
+        new_file_path = Path(self.config.wallet_dir) / self._default_file_name(id=new_id)
+        if new_file_path.exists():
             Message(
                 self.tr("Cannot move the wallet file, because {file_path} exists").format(
                     file_path=new_file_path
                 )
             )
             return None
-        shutil.move(self.file_path, new_file_path)
-        self.remove_lockfile(Path(self.file_path))
-        old_file_path = self.file_path
-        self.file_path = new_file_path
-        self.get_wallet_lockfile(Path(self.file_path))
-        logger.info(f"Saved {old_file_path} under new name {self.file_path}")
+
+        # in the wallet
+        self.wallet.set_wallet_id(new_id)
+        # tab text
+        self.tabs.setTitle(new_id)
+
+        # move wallet
+        shutil.move(old_file_path, new_file_path)
+        self.remove_lockfile(Path(old_file_path))
+
+        # set the new file_path
+        self.file_path = str(new_file_path)
+
+        self.get_wallet_lockfile(new_file_path)
+        logger.info(f"Saved {old_file_path} under new name {new_file_path}")
         return new_file_path
 
     @classmethod
@@ -979,7 +1042,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         def on_error(packed_error_info) -> None:
             self.wallet_signals.finished_psbt_creation.emit()
 
-        self.loop_in_thread.run_task(
+        self.wallet.loop_in_thread.run_task(
             do(),
             on_done=on_done,
             on_success=on_success,
@@ -1009,35 +1072,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def create_status_bar(self, tab: QWidget, outer_layout) -> None:
         pass
-
-    def update_status_visualization(self, sync_status: SyncStatus) -> None:
-        if not self.wallet:
-            return
-
-        icon_text = ""
-        tooltip = ""
-        if sync_status == SyncStatus.syncing:
-            icon_text = "status_waiting.svg"
-            self.history_list_with_toolbar.sync_button.set_icon_is_syncing()
-            tooltip = self.tr("Syncing with {server}").format(
-                server=self.config.network_config.description_short()
-            )
-        elif self.wallet.get_height() and sync_status in [SyncStatus.synced]:
-            using_proxy = self.config.network_config.proxy_url
-            icon_text = ("status_connected_proxy.svg") if using_proxy else ("status_connected.svg")
-            tooltip = self.config.network_config.description_short()
-            tooltip = self.tr("Connected to {server}").format(
-                server=self.config.network_config.description_short()
-            )
-            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
-        else:
-            icon_text = "status_disconnected.svg"
-            tooltip = self.tr("Disconnected from {server}").format(
-                server=self.config.network_config.description_short()
-            )
-            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
-
-        self.signals.signal_set_tab_properties.emit(self, self.wallet.id, icon_text, tooltip)
 
     def create_list_tab(
         self,
@@ -1097,6 +1131,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_list_with_toolbar.hist_list.signal_selection_changed.connect(
             self.on_hist_list_selection_changed
         )
+        self.signal_tracker.connect(
+            self.signal_progress_info, history_list_with_toolbar.cbf_progress_bar._set_progress_info
+        )
         history_list_with_toolbar.signal_export_pdf_statement.connect(self.export_pdf_statement)
 
         list_widget = self.create_list_tab(history_list_with_toolbar, tabs)
@@ -1153,17 +1190,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             title="",
         )
         tabs.insertChildNode(
-            2,
+            0,
             hist_node,
         )
 
         # set initial sizes so that top starts at its minimum
-        splitter.setSizes([1, 10])
         splitter.setStretchFactor(0, 0)  # index 0 = top
         splitter.setStretchFactor(1, 1)  # index 1 = bottom
-        splitter.setSizes(
-            [self.quick_receive.minimumHeight(), self.height() - self.quick_receive.minimumHeight()]
-        )
+        splitter.setSizes([240, 10])
         return (
             tab,
             history_list_with_toolbar.hist_list,
@@ -1251,14 +1285,49 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             address_list_with_toolbar,
         )
 
-    def set_sync_status(self, new: SyncStatus) -> None:
-        self.sync_status = new
-        logger.info(f"{self.wallet.id} set_sync_status {new}")
-        self.signal_on_change_sync_status.emit(new)
-        QApplication.processEvents()
+    def set_sync_status(self, sync_status: SyncStatus) -> None:
+        if sync_status == self.sync_status:
+            return
 
-    async def _sync(self) -> Any:
-        self.wallet.sync()
+        self.sync_status = sync_status
+        logger.info(f"{self.wallet.id} set_sync_status {sync_status}")
+
+        icon_text = ""
+        tooltip = ""
+        if sync_status == SyncStatus.syncing:
+            icon_text = "status_waiting.svg"
+            self.history_list_with_toolbar.sync_button.set_icon_is_syncing()
+            tooltip = self.tr("Syncing with {server}").format(
+                server=self.config.network_config.description_short()
+            )
+
+        elif self.wallet.get_height() and sync_status in [SyncStatus.synced]:
+            using_proxy = self.config.network_config.proxy_url
+            icon_text = ("status_connected_proxy.svg") if using_proxy else ("status_connected.svg")
+            tooltip = self.config.network_config.description_short()
+            tooltip = self.tr("Connected to {server}").format(
+                server=self.config.network_config.description_short()
+            )
+            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
+        else:
+            icon_text = "status_disconnected.svg"
+            tooltip = self.tr("Disconnected from {server}").format(
+                server=self.config.network_config.description_short()
+            )
+            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
+
+        self.signals.signal_set_tab_properties.emit(self, self.wallet.id, icon_text, tooltip)
+
+    async def _trigger_sync(self) -> Any:
+        self.init_blockchain()
+        if self.wallet.client:
+            self.set_sync_status(SyncStatus.syncing)
+            self.signal_progress_info.emit(self.wallet.client.progress_info)
+        self.wallet.trigger_sync()
+        if self.wallet.client:
+            self.signal_progress_info.emit(self.wallet.client.progress_info)
+            self.set_sync_status(self.wallet.client.sync_status)
+        return None
 
     def _sync_on_done(self, result) -> None:
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
@@ -1277,22 +1346,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # custom_exception_handler(*packed_error_info)
 
     def _sync_on_success(self, result) -> None:
-        self.set_sync_status(SyncStatus.synced)
         logger.info(f"success syncing wallet '{self.wallet.id}'")
-
-        logger.info(self.tr("start updating lists"))
-        new_chain_height = self.wallet.get_height_no_cache()
-        # self.wallet.clear_cache()
-        self.refresh_caches_and_ui_lists(
-            force_ui_refresh=False,
-            chain_height_advanced=new_chain_height != self._last_sync_chain_height,
-        )
-        # self.update_tabs()
-        logger.info(self.tr("finished updating lists"))
-        self._last_sync_chain_height = new_chain_height
-
-        self.fx.update_if_needed()
-        self.signal_after_sync.emit(self.sync_status)
 
     def sync(self) -> None:
         if self.sync_status == SyncStatus.syncing:
@@ -1317,18 +1371,151 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # self.refresh_caches_and_ui_lists(enable_threading=False, force_ui_refresh=False, clear_cache=False)
 
         logger.info(f"Start syncing wallet {self.wallet.id}")
-        self.set_sync_status(SyncStatus.syncing)
 
         self._last_syncing_start = datetime.datetime.now()
 
-        self.loop_in_thread.run_task(
-            self._sync(),
+        if self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
+            # must be started from the main thread for cbf node!!!
+            self.init_blockchain()
+
+        self.wallet.loop_in_thread.run_task(
+            self._trigger_sync(),
             on_done=self._sync_on_done,
             on_success=self._sync_on_success,
             on_error=self._sync_on_error,
             key=f"{id(self)}sync",
             multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
         )
+
+    def _handle_client_log_info(self, info: bdk.Info):
+        if not self.wallet.client:
+            return
+        self.wallet.client.handle_log_info(info)
+
+        if self.wallet.client.should_update_progress():
+            self.signal_progress_info.emit(self.wallet.client.progress_info)
+            self.set_sync_status(SyncStatus.syncing)
+
+    def _handle_client_log_warning(self, warning: bdk.Warning):
+        if not self.wallet.client:
+            return
+        self.wallet.client.handle_log_warning(warning)
+        if self.wallet.client.should_update_progress():
+            self.signal_progress_info.emit(self.wallet.client.progress_info)
+            self.set_sync_status(SyncStatus.syncing)
+
+    def _handle_client_log_str(self, message: str):
+        logger.info(message)
+
+    def _handle_client_update(self, update_info: UpdateInfo):
+        if not self.wallet.client:
+            return
+        self.signal_progress_info.emit(self.wallet.client.progress_info)
+        self.set_sync_status(self.wallet.client.sync_status)
+        self.on_update(update_info)
+
+    def _cancel_client_tasks(self) -> None:
+        for task in self._client_bridge_tasks:
+            if task and not task.done():
+                task.cancel()
+        self._client_bridge_tasks.clear()
+
+    def _start_bridges(self) -> None:
+        if not self.wallet.client:
+            return
+        self._add_bridge_tasks(self.wallet.update, self.signal_wallet_update, self.wallet.loop_in_thread)
+        self._add_bridge_tasks(
+            self.wallet.client.next_log, self.signal_client_log_str, self.wallet.loop_in_thread
+        )
+        self._add_bridge_tasks(
+            self.wallet.client.next_info, self.signal_client_log_info, self.wallet.loop_in_thread
+        )
+        self._add_bridge_tasks(
+            self.wallet.client.next_warning, self.signal_client_log_warning, self.wallet.loop_in_thread
+        )
+
+    def _add_bridge_tasks(
+        self,
+        coro: Callable[[], Coroutine[Any, Any, T | None]],
+        signal: TypedPyQtSignal[T],
+        loop: LoopInThread,
+    ) -> None:
+        self._client_bridge_tasks.append(loop.run_background(self._convert_to_signal(coro, signal)))
+
+    async def _convert_to_signal(
+        self,
+        coro: Callable[[], Coroutine[Any, Any, T | None]],
+        signal: TypedPyQtSignal[T],
+    ) -> None:
+        try:
+            while True:
+                # logger.info(f"{self.__class__.__name__}  wait for {coro=}  {self.wallet.client._update_queue.qsize()}")
+                result = await coro()
+                if result is None:
+                    continue
+                signal.emit(result)
+        except asyncio.CancelledError:
+            logger.debug("Cancelled bridge for %s", coro)
+        except Exception:
+            logger.exception("Error while bridging coroutine %s", coro)
+
+    def init_blockchain(self):
+        client = self.wallet.init_blockchain()
+        if not client:
+            return
+
+        self._cancel_client_tasks()
+        self.set_sync_status(client.sync_status)
+        self._start_bridges()
+
+    def is_in_cbf_ibd(self) -> bool:
+        return (
+            (self.wallet.bdkwallet.latest_checkpoint().height == 0)
+            and (self.config.network_config.server_type == BlockchainType.CompactBlockFilter)
+            and self.sync_status in [SyncStatus.syncing, SyncStatus.unknown]
+        )
+
+    def on_update(self, update_info: UpdateInfo):
+        logger.info(self.tr("start updating lists"))
+        new_chain_height = self.wallet.get_height_no_cache()
+        # self.wallet.clear_cache()
+        self.refresh_caches_and_ui_lists(
+            force_ui_refresh=False,
+            chain_height_advanced=new_chain_height != self._last_sync_chain_height,
+        )
+        # self.update_tabs()
+        logger.info(self.tr("finished updating lists"))
+        self._last_sync_chain_height = new_chain_height
+
+        self.fx.update_if_needed()
+        self.save()
+        self.signal_after_sync.emit(self.sync_status)
+
+        # after the caches are refreshed i can check fast if
+        # the last used address is more than gap distand from the tip
+        if (
+            update_info.update_type == UpdateInfo.UpdateType.full_sync
+            and self.wallet._more_than_gap_revealed_addresses()
+        ):
+            # update_info.update_type==UpdateInfo.UpdateType.full_sync prevents infinite loops
+            # because _sync_revealed_spks will emit a update every time (even though there are no new txs)
+            self.loop_in_thread.run_task(
+                self._sync_revealed_spks(),
+                on_done=self._sync_on_done,
+                on_success=self._sync_on_success,
+                on_error=self._sync_on_error,
+                key=f"{id(self)}sync",
+                multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
+            )
+
+    async def _sync_revealed_spks(self):
+        "Syncs all revealed skps"
+        if not self.wallet.client:
+            return
+        self.wallet.client.sync(self.wallet.bdkwallet.start_sync_with_revealed_spks().build())
+        self.signal_progress_info.emit(self.wallet.client.progress_info)
+        self.set_sync_status(self.wallet.client.sync_status)
+        return None
 
     def get_editable_protowallet(self) -> ProtoWallet:
         return self.wallet.as_protowallet()
@@ -1448,7 +1635,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             UpdateFilter(refresh_all=True, reason=UpdateFilterReason.TransactionChange)
         )
 
-        self._rows_after_hist_list_update = [tx.compute_txid() for tx in txs]
+        self._rows_after_hist_list_update = [str(tx.compute_txid()) for tx in txs]
 
         self.history_list.select_rows(
             self._rows_after_hist_list_update,

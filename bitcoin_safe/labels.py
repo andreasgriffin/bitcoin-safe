@@ -38,7 +38,6 @@ from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from packaging import version
 
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.util import (
@@ -48,6 +47,7 @@ from bitcoin_safe.util import (
 )
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
@@ -186,10 +186,10 @@ class Label(SaveAllClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             if "flat_data" in dct:
                 #
                 dct["timestamp"] = dct["timestamp"] if dct["timestamp"] else datetime.now().timestamp()
@@ -447,15 +447,15 @@ class Labels(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             if "data" in dct:
                 #
                 dct["flat_data"] = list(dct["data"].values())
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             if "flat_data" in dct:
                 #
                 del dct["flat_data"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.4"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.4"):
             if "data" in dct:
                 #
                 dct["data"] = {

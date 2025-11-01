@@ -144,7 +144,7 @@ class TxTools:
             return False
 
         if not wallet:
-            tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
+            tx_details, wallet = get_tx_details(txid=str(tx.compute_txid()), signals=signals)
             if not wallet:
                 return False
 

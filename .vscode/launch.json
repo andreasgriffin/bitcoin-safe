@@ -10,6 +10,7 @@
       "args": [
         // "--profile",  
       ],
+      "preLaunchTask": "Poetry Install",
       // "justMyCode": false
     },
     {
@@ -105,7 +106,17 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Poetry Install",
-    }, {
+    }, 
+    {
+      "name": "cbf",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe.cbf",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Poetry Install",
+    }, 
+    {
       "name": "Translation update",
       "type": "python",
       "request": "launch",

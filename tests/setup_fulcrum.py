@@ -253,21 +253,21 @@ class Faucet:
 
         self.descriptor = bdk.Descriptor.new_bip84(
             secret_key=bdk.DescriptorSecretKey(self.network, self.mnemonic, ""),
-            keychain=bdk.KeychainKind.EXTERNAL,
+            keychain_kind=bdk.KeychainKind.EXTERNAL,
             network=self.network,
         )
         self.change_descriptor = bdk.Descriptor.new_bip84(
             secret_key=bdk.DescriptorSecretKey(self.network, self.mnemonic, ""),
-            keychain=bdk.KeychainKind.INTERNAL,
+            keychain_kind=bdk.KeychainKind.INTERNAL,
             network=self.network,
         )
 
-        self.connection = bdk.Connection.new_in_memory()
+        self.connection = bdk.Persister.new_in_memory()
         self.bdk_wallet = bdk.Wallet(
             descriptor=self.descriptor,
             change_descriptor=self.change_descriptor,
             network=self.network,
-            connection=self.connection,
+            persister=self.connection,
         )
         self.initial_mine()
 

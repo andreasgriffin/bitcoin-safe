@@ -125,7 +125,7 @@ class AbstractSignatureImporter(QObject):
                     self.signal_final_tx_received.emit(finalized_tx)
                     return
 
-                logger.debug(f"psbt updated {psbt2.extract_tx().compute_txid()[:4]=}")
+                logger.debug(f"psbt updated {str(psbt2.extract_tx().compute_txid())[:4]=}")
                 self.signal_signature_added.emit(psbt2)
 
             elif data.data_type == DataType.Tx:

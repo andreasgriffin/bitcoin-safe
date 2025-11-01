@@ -267,7 +267,7 @@ class QuickReceive(QWidget):
         super().__init__(parent)
         self.signal_tracker = SignalTracker()
 
-        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
 
         # Horizontal Layout for Scroll Area content
 

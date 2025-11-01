@@ -41,11 +41,13 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Optional, Type, Union
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util import time_logger
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from packaging import version
+
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -215,10 +217,10 @@ class BaseSaveableClass:
         assert dct.get("__class__") == cls.__name__
         del dct["__class__"]
 
-        if version.parse(cls.VERSION) < version.parse(str(dct.get("VERSION", 0))):
+        if fast_version(cls.VERSION) < fast_version(str(dct.get("VERSION", 0))):
             dct = cls.from_dump_downgrade_migration(dct)
 
-        if version.parse(cls.VERSION) > version.parse(str(dct.get("VERSION", 0))):
+        if fast_version(cls.VERSION) > fast_version(str(dct.get("VERSION", 0))):
             dct = cls.from_dump_migration(dct)
 
         if "VERSION" in dct:
@@ -232,6 +234,7 @@ class BaseSaveableClass:
     def clone(self, class_kwargs: Dict | None = None):
         return self.from_dump(self.dump(), class_kwargs=class_kwargs)
 
+    @time_logger
     def save(self, filename: Union[Path, str], password: Optional[str] = None):
         "Saves the json dumps to a file"
         directory = os.path.dirname(str(filename))
@@ -241,7 +244,7 @@ class BaseSaveableClass:
 
         storage = Storage()
         storage.save(
-            self.dumps(indent=None if password else 4),
+            self.dumps(),
             str(filename),
             password=password,
         )
@@ -273,6 +276,7 @@ class BaseSaveableClass:
         return BaseSaveableClass._flatten_known_classes({cls.__name__: cls})
 
     @classmethod
+    @time_logger
     def _from_file(cls, filename: str, password: Optional[str] = None, class_kwargs: Dict | None = None):
         """Loads the class from a file. This offers the option of add class_kwargs args
 

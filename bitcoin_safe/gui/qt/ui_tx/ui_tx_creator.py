@@ -862,7 +862,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 assert (
                     txinfos.replace_tx
                 ), f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
-                replace_txid = txinfos.replace_tx.compute_txid()
+                replace_txid = str(txinfos.replace_tx.compute_txid())
                 replace_tx_details, wallet = get_tx_details(txid=replace_txid, signals=self.signals)
                 if not replace_tx_details:
                     logger.error(f"Could not get tx_details of {replace_txid=} for rbf")
@@ -902,7 +902,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
         if txinfos.spend_all_utxos:
             utxos = list(self.get_tx_ui_infos().utxo_dict.values())
-            parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+            parent_txids = set(utxo.outpoint.txid_str for utxo in utxos)
 
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
@@ -929,8 +929,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if tx_ui_infos.utxo_dict:
             # first select the correct categories
             if self.wallet:
-                for utxo in tx_ui_infos.utxo_dict.keys():
-                    categories = categories.union(self.wallet.get_categories_for_txid(utxo.txid))
+                for outpoint in tx_ui_infos.utxo_dict.keys():
+                    categories = categories.union(self.wallet.get_categories_for_txid(outpoint.txid_str))
 
         if categories:
             self.category_list.select_rows(
