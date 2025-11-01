@@ -73,14 +73,16 @@ py-spy = "^0.4.1"
 
 
 [tool.poetry.group.build_mac.dependencies]
-altgraph =  "0.17.4"  
-macholib =  "1.16.3" 
-pyinstaller-hooks-contrib =  ">=2024.11" 
+altgraph =  "0.17.4"
+macholib =  "1.16.3"
+pyinstaller-hooks-contrib =  ">=2024.11"
+hatchling = "1.26.3"
 
 [tool.poetry.group.build_wine.dependencies]
 altgraph="0.17.4"
 pefile="2023.2.7" # needed for  ensure-signed-file-integrity
 pyinstaller-hooks-contrib=">=2024.11" # necessary to discover all submodules like jaraco
+hatchling="1.26.3"
 
 
 
