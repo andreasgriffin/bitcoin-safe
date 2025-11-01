@@ -125,32 +125,49 @@ def from_multisig_wallet_export(
     )
 
 
-def min_blockheight(address_type: AddressType) -> int:
+def min_blockheight(address_type: AddressType, network: bdk.Network) -> int:
     """
     Returns the minimum Bitcoin blockheight at which this address type
     became (or becomes) usable on mainnet.
     """
-    # SegWit (BIP141) activation block
-    BIP141_ACTIVATION = 481_824
-    # Taproot (BIP342) activation block
-    BIP342_ACTIVATION = 709_632
 
-    # Legacy (pre-SegWit) always available
-    if address_type is AddressTypes.p2pkh:
+    def is_legacy(a):  # P2PKH
+        return a is AddressTypes.p2pkh
+
+    def is_segwit_v0(a):  # Any v0 segwit flavor
+        return a in (
+            AddressTypes.p2sh_p2wpkh,
+            AddressTypes.p2wpkh,
+            AddressTypes.p2sh_p2wsh,
+            AddressTypes.p2wsh,
+        )
+
+    def is_taproot(a):  # P2TR (v1)
+        return a is AddressTypes.p2tr
+
+    # Mainnet
+    if network == bdk.Network.BITCOIN:
+        BIP141_ACTIVATION = 481_824  # SegWit v0
+        BIP342_ACTIVATION = 709_632  # Taproot (v1, with BIP341/342)
+        if is_legacy(address_type):
+            return 0
+        if is_segwit_v0(address_type):
+            return BIP141_ACTIVATION
+        if is_taproot(address_type):
+            return BIP342_ACTIVATION
         return 0
 
-    # All flavors of SegWit (nested or native), including P2WSH multisig
-    if address_type in (
-        AddressTypes.p2sh_p2wpkh,
-        AddressTypes.p2wpkh,
-        AddressTypes.p2sh_p2wsh,
-        AddressTypes.p2wsh,
-    ):
-        return BIP141_ACTIVATION
-
-    # Taproot
-    if address_type is AddressTypes.p2tr:
-        return BIP342_ACTIVATION
+    # Testnet3 (bdk.Network.TESTNET)
+    if network == bdk.Network.TESTNET:
+        BIP141_TESTNET = 834_624  # SegWit v0 activation on testnet3
+        BIP342_TESTNET = 2_011_968  # Taproot activation on testnet3
+        if is_legacy(address_type):
+            return 0
+        if is_segwit_v0(address_type):
+            return BIP141_TESTNET
+        if is_taproot(address_type):
+            return BIP342_TESTNET
+        return 0
 
     # Fallback
     return 0

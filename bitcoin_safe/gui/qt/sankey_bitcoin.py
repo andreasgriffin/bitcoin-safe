@@ -162,7 +162,7 @@ class SankeyBitcoin(SankeyWidget):
 
         # output
         self.txouts = [TxOut.from_bdk(txout) for txout in tx.output()]
-        out_flows: List[int] = [txout.value for txout in self.txouts]
+        out_flows: List[int] = [txout.value.to_sat() for txout in self.txouts]
         for vout, txout in enumerate(self.txouts):
             flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=vout)
             address = robust_address_str_from_txout(txout, network=self.network)
@@ -179,7 +179,7 @@ class SankeyBitcoin(SankeyWidget):
 
             outpoint = self.txo_dict.get(str(OutPoint(txid=self.tx.compute_txid(), vout=vout)))
             labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
-                value=txout.value,
+                value=txout.value.to_sat(),
                 label=label,
                 address=address,
                 count=len(self.txouts),
@@ -345,7 +345,7 @@ class SankeyBitcoin(SankeyWidget):
                 return
             outpoint = outpoints[flow_index.i]
             self.signals.open_tx_like.emit(
-                PackagedTxLike(tx_like=outpoint.txid, focus_ui_elements=UiElements.diagram)
+                PackagedTxLike(tx_like=outpoint.txid_str, focus_ui_elements=UiElements.diagram)
             )
 
     def close(self):

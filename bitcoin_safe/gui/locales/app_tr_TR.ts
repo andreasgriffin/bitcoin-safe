@@ -403,6 +403,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Geçen süre: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Tamamlandı {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -544,6 +556,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>Mesajınızı buraya yazın...</translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Düğümlere bağlanılıyor</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Düğümler keşfediliyor</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Filtreler senkronize edildi</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Başlıklar senkronize edildi</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Yeni zincir yüksekliği {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Filtre başlıkları senkronize edildi</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>Senkronize ediliyor</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>İşlemler senkronize edildi</translation>
 		</message>
 	</context>
 	<context>
@@ -1799,6 +1853,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>Yine de kapat</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>Cüzdanı kapat</translation>
 		</message>
@@ -1849,6 +1908,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Don't scan</source>
+			<translation>Taramayın</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
 			<translation>Donanım imzalayıcılar için &amp;Tanımlayıcı Dışa Aktar</translation>
 		</message>
@@ -1866,6 +1930,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>&amp;metinden</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Tepsiye gizle</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>Açık tut</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1989,6 +2063,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>Göster/Gizle</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>Durum: Bağlandı</translation>
 		</message>
@@ -2041,6 +2120,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>Cüzdan zaten açık</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>Cüzdan senkronize ediliyor</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>Cüzdanlar hâlâ senkronize ediliyor</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>Bu cüzdan daha önce hiç kullanıldı mı?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, scan for transactions</source>
+			<translation>Evet, işlemleri tara</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2183,8 +2282,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Daha fazla bağlantı gizliliği artırır ancak senkronizasyon hızını azaltır.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Ağ Ayarları</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p bağlantı sayısı:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2516,6 +2625,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>Etkinleştir/Devre dışı bırak</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2658,6 +2774,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>Eklentiler</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Devam et</translation>
 		</message>
@@ -2690,11 +2811,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>{number} Etiket başarıyla güncellendi</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>Senkronizasyon &amp;&amp; Sohbet</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3297,6 +3413,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>* Etiketlerinizi ve coin kategorilerinizi bulutta yedekleyin.&lt;br&gt;- Etiketlerinizi ve coin kategorilerinizi birden fazla bilgisayar arasında senkronize edin. {synclink}&lt;br&gt;- Nerede olursanız olun, başkalarıyla iş birliği içinde bir işlemi imzalayın. {videolink}&lt;br&gt;- Her şey her zaman şifrelenmiştir (daha fazla bilgi için {protocol_link})</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>İş birliği Videosu</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>Etiket yedeği ve güvenilir cihazlara şifreli senkronizasyon</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>Alınan İşlemleri ve PSBT’leri aç</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>{name}, {author} tarafından açılıyor</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>Senkronizasyon &amp; Sohbet</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>Senkronizasyon Videosu</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>protokol</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3544,6 +3707,11 @@ txid:outpoint</source>
 		<message>
 			<source>Reduce future fees by merging UTXOs below {rate}</source>
 			<translation>Gelecekteki ücretleri {rate} altındaki UTXO’ları birleştirerek azaltın</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>Soldaki listeden bir veya daha fazla UTXO seçin veya yukarıdaki “Belirli UTXO’ları seç” seçeneğinin işaretini kaldırarak Bitcoin-Safe’in işleminiz için en uygun coinleri seçmesine izin verin.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -3842,6 +4010,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Bakiye ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>Adres</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>Fonlama işlemini ortala</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>Harcanan işlemi ortala</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>Oluşturulmakta olan işlemi açmak için tıklayın.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Cüzdan grafiği dışa aktarılamadı: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>Tarih</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>Zaman çizelgesini keşfetmek için sürükleyin. Bir işlem, txid veya UTXO’ya tıklayın ya da sağ tıklayın; seçenekleri görmek için.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>Grafiği dışa aktar…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>Cüzdan grafiğini dışa aktar</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>Harici girdi</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>Ücret</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>Tam txid</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>Girdiye atla</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>Etiket</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>Atlanacak hedef yok</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>Bilinen girdi yok</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>Gösterilecek işlem yok.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>Alındı</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>Cüzdan grafiğini yeniden çiz.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Yenile</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>Gönderildi</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>Harcanan</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>Durum: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>İşlem</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Bilinmeyen</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>Bilinmeyen ücret</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>Harcanmamış</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>Değer</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>Cüzdan işlemlerinizin zaman içinde UTXO’ları nasıl oluşturup harcadığını görselleştirin.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>Cüzdan Grafiği</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>Cüzdan grafiği {path} konumuna dışa aktarıldı</translation>
 		</message>
 	</context>
 	<context>
@@ -4386,6 +4716,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Compact Block Filter’lar, tüm blok zinciri bilgilerini özel ve hızlı bir şekilde almanın bir yoludur. Cüzdan, doğrudan birden fazla bitcoin düğümüne bağlanacak ve onlardan blok özetlerini (Compact Block Filters) indirecektir.&lt;br&gt;Aşağıdaki ‘Bitcoin Ağı izleme’ bölümünde bir başlangıç eş belirttiyseniz, bu tercih edilen düğüm olarak kullanılacaktır.</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
+			<source>Experimental Compact Block Filter support!!!&lt;br&gt;Use with caution.&lt;br&gt;&lt;br&gt;</source>
+			<translation>Deneysel Compact Block Filter desteği!!!&lt;br&gt;Dikkatli kullanın.&lt;br&gt;&lt;br&gt;</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>bitcoind’i "bitcoind -chain=regtest" ile çalıştırın</translation>
 		</message>
@@ -4419,11 +4759,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>Ücretsiz test coinleri için bir {faucet} vardır.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>Bu bitcoin ağına bağlanmanın özel ve hızlı bir yoludur.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

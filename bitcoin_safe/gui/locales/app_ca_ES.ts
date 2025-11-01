@@ -403,6 +403,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Temps transcorregut: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Acabat {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -544,6 +556,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>Escriu el teu missatge aquí...</translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Connectant-se als nodes</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Descobrint nodes</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Filtres sincronitzats</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Capçaleres sincronitzades</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Nova alçada de cadena {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Capçaleres de filtres sincronitzades</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>Sincronitzant</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>Transaccions sincronitzades</translation>
 		</message>
 	</context>
 	<context>
@@ -1799,6 +1853,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>Tanca igualment</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>Tancar cartera</translation>
 		</message>
@@ -1849,6 +1908,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Don't scan</source>
+			<translation>No escannejar</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
 			<translation>Exporta &amp;descriptor per a signadors de maquinari</translation>
 		</message>
@@ -1866,6 +1930,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Des de &amp;text</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Amaga a la safata</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>Mantenir obert</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1989,6 +2063,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>Mostra/Amaga</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>Estat: Connectat</translation>
 		</message>
@@ -2041,6 +2120,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>Cartera ja oberta</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>Sincronització del moneder</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>Els moneders encara s’estan sincronitzant</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>Aquest moneder s’ha utilitzat abans?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, scan for transactions</source>
+			<translation>Sí, escanejar operacions</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2183,8 +2282,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Més connexions augmenten la privadesa però redueixen la velocitat de sincronització.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Configuració de xarxa</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>Nombre de connexions p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2516,6 +2625,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>Activar/Desactivar</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2658,6 +2774,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Continua</translation>
 		</message>
@@ -2690,11 +2811,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>S'han actualitzat correctament {number} etiquetes</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>Sync &amp;&amp; Xat</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3297,6 +3413,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>- Fes còpia de seguretat de les teves etiquetes i categories de monedes al núvol.&lt;br&gt;- Sincronitza les teves etiquetes i categories de monedes entre diversos ordinadors. {synclink}&lt;br&gt;- Signa una operació en col·laboració amb altres, estiguis on estiguis al món. {videolink}&lt;br&gt;- Tot està sempre xifrat (aprèn més sobre el {protocol_link})</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>Vídeo de Col·laboració</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>Còpia de seguretat d'etiquetes i sincronització xifrada amb dispositius de confiança</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>Obre transaccions i PSBTs rebuts</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>Obrint {name} de {author}</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>Sync &amp; Xat</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>Vídeo de Sincronització</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>protocol</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3337,7 +3500,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>Instal·lar les regles d’udev</translation>
+			<translation>Instal·la les regles udev</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3547,6 +3710,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>Selecciona un o més UTXO de la llista de l’esquerra, o desmarca “Seleccionar UTXO específics” a sobre per deixar que Bitcoin‑Safe esculli les millors monedes per a la teva transacció.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>Les entrades {inputs} entren en conflicte amb aquests txids confirmats {txids}.</translation>
 		</message>
@@ -3645,7 +3813,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>No s’han trobat dispositius USB. Pot ser degut a la manca de regles d’udev.</translation>
+			<translation>Cap dispositiu USB trobat. Pot ser degut a la manca de regles udev.</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3842,6 +4010,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Saldo ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>Adreça</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>Centra la transacció de finançament</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>Centra la transacció de despesa</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>Fes clic per obrir la transacció que s’està creant.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>No s’ha pogut exportar el gràfic del moneder: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>Data</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>Arrossega per explorar la línia del temps. Fes clic o clic dret sobre una transacció, txid o UTXO per veure les opcions.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>Exporta el gràfic…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>Exporta el gràfic del moneder</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>Entrada externa</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>Comissió</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>Txid complet</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>Salta a l’entrada</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>Etiqueta</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>No hi ha destinacions de salt disponibles</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>No hi ha entrades conegudes</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>No hi ha transaccions per mostrar.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>Rebut</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>Redibuixa el gràfic del moneder.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Actualitza</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>Enviat</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>Gastat</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>Estat: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>Transacció</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Desconegut</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>Comissió desconeguda</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>No gastat</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>Valor</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>Visualitza com les teves transaccions del moneder creen i gasten UTXOs al llarg del temps.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>Gràfic del Moneder</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>Gràfic del moneder exportat a {path}</translation>
 		</message>
 	</context>
 	<context>
@@ -4386,6 +4716,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Els Compact Block Filters són una manera privada i ràpida d’obtenir tota la informació de la cadena de blocs. El moneder es connectarà directament a diversos nodes bitcoin i descarregarà els resums de blocs (Compact Block Filters) d’aquests.&lt;br&gt;Si especifiques un node inicial a la secció ‘Monitoratge de la Xarxa Bitcoin’ de més avall, s’utilitzarà com a node preferit.</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
+			<source>Experimental Compact Block Filter support!!!&lt;br&gt;Use with caution.&lt;br&gt;&lt;br&gt;</source>
+			<translation>Suport experimental per als Compact Block Filters!!!&lt;br&gt;Utilitza-ho amb precaució.&lt;br&gt;&lt;br&gt;</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>Executa bitcoind amb "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4419,11 +4759,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>Hi ha un {faucet} de monedes de prova gratuïtes.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>Aquesta és una manera privada i ràpida de connectar-se a la xarxa bitcoin.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

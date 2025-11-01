@@ -26,15 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import bdkpython as bdk
 from bitcoin_usb.address_types import AddressTypes
 
+from bitcoin_safe.util import filename_clean
 from bitcoin_safe.wallet import (
     LOCAL_TX_LAST_SEEN,
     ProtoWallet,
     TxStatus,
-    filename_clean,
     is_in_mempool,
     is_local,
 )

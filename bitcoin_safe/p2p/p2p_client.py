@@ -505,7 +505,7 @@ class P2PClient(QObject):
             logger.debug("Writer not initialised – cannot request data")
             return
 
-        # Upgrade legacy INV types to their witness equivalents where applicable.
+        # Prefer witness types when requesting tx/block data.
         upgraded = Inventory()
         for item in inventory:
             if item.type == InventoryType.MSG_TX:
@@ -804,7 +804,7 @@ class P2PClient(QObject):
         self.signal_getblocks.emit(p)  # rare to receive; raw
 
     async def _handle_tx(self, p: bytes) -> None:
-        self.signal_tx.emit(bdk.Transaction(list(p)))
+        self.signal_tx.emit(bdk.Transaction(p))
 
     async def _handle_block(self, p: bytes) -> None:
         blk_hash = double_sha256(p[:80])[::-1].hex()

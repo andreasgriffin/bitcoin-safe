@@ -59,7 +59,9 @@ export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
 export POETRY_VIRTUALENVS_CREATE=false
 $WINE_PYTHON -m poetry config virtualenvs.create false
 move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
-$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction
+$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
+  || $WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
+  || { echo "poetry install failed twice"; exit 1; }
 move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 

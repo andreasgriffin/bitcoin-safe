@@ -402,6 +402,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>เวลาที่ผ่านไป: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - เสร็จสิ้น {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -543,6 +555,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>พิมพ์ข้อความของคุณที่นี่...  </translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>กำลังเชื่อมต่อกับโหนด</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>กำลังค้นหาโหนด</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>ซิงค์ตัวกรองแล้ว</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>ซิงค์ส่วนหัวแล้ว</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>ความสูงของเชนใหม่ {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>ซิงค์ส่วนหัวของตัวกรองแล้ว</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>กำลังซิงค์</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>ซิงค์ธุรกรรมแล้ว</translation>
 		</message>
 	</context>
 	<context>
@@ -1798,6 +1852,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>ปิดอยู่ดี</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>ปิดกระเป๋าเงิน  </translation>
 		</message>
@@ -1848,6 +1907,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Don't scan</source>
+			<translation>ไม่สแกน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
 			<translation>ส่งออก &amp;Descriptor สำหรับผู้ลงนามฮาร์ดแวร์  </translation>
 		</message>
@@ -1865,6 +1929,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>จาก &amp;ข้อความ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>ซ่อนลงถาดระบบ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>คงเปิดไว้</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1988,6 +2062,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>แสดง/ซ่อน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>สถานะ: เชื่อมต่อแล้ว</translation>
 		</message>
@@ -2040,6 +2119,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>กระเป๋าเงินเปิดอยู่แล้ว  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>กำลังซิงค์กระเป๋าเงิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>กระเป๋าเงินยังคงกำลังซิงค์</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>กระเป๋าเงินนี้เคยถูกใช้มาก่อนหรือไม่?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, scan for transactions</source>
+			<translation>ใช่ สแกนเพื่อดูธุรกรรม</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2182,8 +2281,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>การเชื่อมต่อมากขึ้นช่วยเพิ่มความเป็นส่วนตัว แต่ลดความเร็วในการซิงค์</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>การตั้งค่าเครือข่าย  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>จำนวนการเชื่อมต่อ p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2515,6 +2624,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>เปิด/ปิด</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2657,6 +2773,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>ปลั๊กอิน</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>ดำเนินการต่อ</translation>
 		</message>
@@ -2689,11 +2810,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>อัปเดตป้ายกำกับสำเร็จ {number} ป้าย  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>Sync &amp;&amp; Chat  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3295,6 +3411,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>- สำรองฉลากและหมวดหมู่เหรียญของคุณไว้ในคลาวด์&lt;br&gt;- ซิงค์ฉลากและหมวดหมู่เหรียญของคุณระหว่างคอมพิวเตอร์หลายเครื่อง {synclink}&lt;br&gt;- ลงชื่อในธุรกรรมร่วมกับผู้อื่น ไม่ว่าคุณจะอยู่ที่ใดในโลก {videolink}&lt;br&gt;- ทุกอย่างถูกเข้ารหัสเสมอ (เรียนรู้เพิ่มเติมเกี่ยวกับ {protocol_link})</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>วิดีโอความร่วมมือ</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>ป้ายกำกับการสำรองข้อมูลและการซิงค์ที่เข้ารหัสไปยังอุปกรณ์ที่เชื่อถือได้  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>เปิดธุรกรรมที่ได้รับและ PSBTs  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>กำลังเปิด {name} จาก {author}  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>Sync &amp; Chat  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>วิดีโอการซิงค์</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>โปรโตคอล</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3542,6 +3705,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>เลือก UTXO หนึ่งรายการหรือมากกว่านั้นจากรายการด้านซ้าย หรือยกเลิก “เลือก UTXO เฉพาะ” ด้านบนเพื่อให้ Bitcoin‑Safe เลือกเหรียญที่ดีที่สุดสำหรับธุรกรรมของคุณ</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>อินพุต {inputs} ขัดแย้งกับ txids ที่ยืนยันแล้ว {txids}  </translation>
 		</message>
@@ -3640,7 +3808,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>ไม่พบอุปกรณ์ USB อาจเกิดจากไม่มีกฎ udev.</translation>
+			<translation>ไม่พบอุปกรณ์ USB อาจเป็นเพราะไม่มีการติดตั้งกฎ udev</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3837,6 +4005,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>ยอดเงิน ({unit})  </translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>ที่อยู่  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>จัดกึ่งกลางธุรกรรมการระดมทุน</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>จัดกึ่งกลางธุรกรรมการใช้จ่าย</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>คลิกเพื่อเปิดธุรกรรมที่กำลังถูกสร้าง</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ไม่สามารถส่งออกกราฟของกระเป๋าเงินได้: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>วันที่</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>ลากเพื่อสำรวจเส้นเวลา คลิกหรือคลิกขวาที่ธุรกรรม txid หรือ UTXO เพื่อดูตัวเลือก</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>ส่งออกกราฟ…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>ส่งออกกราฟกระเป๋าเงิน</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>อินพุตภายนอก</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>ค่าธรรมเนียม  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>Txid แบบเต็ม</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>ข้ามไปยังอินพุต</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>ป้ายกำกับ  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>ไม่มีเป้าหมายให้ข้าม</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>ไม่มีอินพุตที่รู้จัก</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>ไม่มีธุรกรรมให้แสดง</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>ได้รับ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>วาดกราฟกระเป๋าเงินใหม่</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>รีเฟรช</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>ส่งแล้ว</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>ใช้จ่ายแล้ว</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>สถานะ: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>ธุรกรรม  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>ไม่ทราบ  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>ค่าธรรมเนียมที่ไม่ทราบ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>ยังไม่ได้ใช้</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>ดูภาพรวมว่าธุรกรรมในกระเป๋าเงินของคุณสร้างและใช้ UTXO อย่างไรตามช่วงเวลา</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>กราฟกระเป๋าเงิน</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>ส่งออกกราฟกระเป๋าเงินไปยัง {path} แล้ว</translation>
 		</message>
 	</context>
 	<context>
@@ -4381,6 +4711,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Compact Block Filter เป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนด bitcoin หลายตัวและดาวน์โหลดสรุปบล็อกจากพวกเขา (Compact Block Filters)&lt;br&gt;หากคุณระบุ peer เริ่มต้นในส่วน ‘การตรวจสอบเครือข่าย Bitcoin’ ด้านล่าง ระบบจะใช้โหนดนั้นเป็นโหนดหลัก</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
+			<source>Experimental Compact Block Filter support!!!&lt;br&gt;Use with caution.&lt;br&gt;&lt;br&gt;</source>
+			<translation>รองรับ Compact Block Filter แบบทดลอง!!!&lt;br&gt;โปรดใช้ด้วยความระมัดระวัง&lt;br&gt;&lt;br&gt;</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>เรียกใช้ bitcoind ของคุณด้วย "bitcoind -chain=regtest"  </translation>
 		</message>
@@ -4414,11 +4754,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>มี {faucet} สำหรับรับเหรียญทดสอบฟรี.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>นี่คือวิธีที่เป็นส่วนตัวและรวดเร็วในการเชื่อมต่อกับเครือข่าย bitcoin  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>

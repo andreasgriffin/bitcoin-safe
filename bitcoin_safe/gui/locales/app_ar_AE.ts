@@ -402,6 +402,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>الوقت المنقضي: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - اكتمل {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -543,6 +555,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>اكتب رسالتك هنا...  </translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>جارٍ الاتصال بالعُقد</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>جارٍ اكتشاف العُقد</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>تمت مزامنة عوامل التصفية</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>تمت مزامنة الرؤوس</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>ارتفاع السلسلة الجديد {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>تمت مزامنة رؤوس عوامل التصفية</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>جارٍ المزامنة</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>تمت مزامنة المعاملات</translation>
 		</message>
 	</context>
 	<context>
@@ -1798,6 +1852,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>إغلاق على أي حال</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>إغلاق المحفظة</translation>
 		</message>
@@ -1848,6 +1907,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Don't scan</source>
+			<translation>لا تمسح</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
 			<translation>تصدير &amp;الوصف للموقعين بالأجهزة  </translation>
 		</message>
@@ -1865,6 +1929,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>من &amp;نص</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>إخفاء إلى علبة النظام</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>ابقِ مفتوحاً</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1988,6 +2062,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>إظهار/إخفاء</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>الحالة: متصل</translation>
 		</message>
@@ -2040,6 +2119,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>المحفظة مفتوحة بالفعل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>مزامنة المحفظة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>المحافظ لا تزال تُزامن</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>هل تم استخدام هذه المحفظة من قبل؟</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, scan for transactions</source>
+			<translation>نعم، امسح المعاملات</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2185,8 +2284,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>المزيد من الاتصالات يزيد الخصوصية لكنه يقلل سرعة المزامنة.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>إعدادات الشبكة</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>عدد اتصالات p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2518,6 +2627,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>تفعيل/تعطيل</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2660,6 +2776,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>الإضافات</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>المتابعة</translation>
 		</message>
@@ -2692,11 +2813,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>تم تحديث {number} من العلامات بنجاح  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>المزامنة &amp;&amp; الدردشة  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3298,6 +3414,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>- احتفظ بنسخة احتياطية من التسميات وفئات العملات في السحابة.&lt;br&gt;- مزامنة تسمياتك وفئات العملات بين عدة أجهزة كمبيوتر. {synclink}&lt;br&gt;- وقع مع الآخرين معاملة بالتعاون، أينما كنت في العالم. {videolink}&lt;br&gt;- كل شيء مشفَّر دائماً (تعرف أكثر على {protocol_link})</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>فيديو التعاون</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>نسخة احتياطية للتسميات ومزامنة مشفرة إلى الأجهزة الموثوقة  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>فتح المعاملات و PSBTs المستلمة  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>فتح {name} من {author}</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>المزامنة &amp; الدردشة  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>فيديو المزامنة</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>البروتوكول</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3338,7 +3501,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>ثبّت قواعد udev</translation>
+			<translation>تثبيت قواعد udev</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3545,6 +3708,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>اختر واحداً أو أكثر من UTXO من القائمة على اليسار، أو قم بإلغاء تحديد “اختر UTXOs محددة” أعلاه لتمكين Bitcoin‑Safe من اختيار أفضل العملات لمعاملتك.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>تتعارض المدخلات {inputs} مع txids المؤكدة {txids}.</translation>
 		</message>
@@ -3643,7 +3811,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>لم يتم العثور على أي أجهزة USB. قد يكون ذلك بسبب عدم وجود قواعد udev.</translation>
+			<translation>لم يتم العثور على أجهزة USB. قد يكون ذلك بسبب غياب قواعد udev.</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3840,6 +4008,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>الرصيد ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>عنوان</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>تموضع معاملة التمويل في المنتصف</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>تموضع معاملة الإنفاق في المنتصف</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>انقر لفتح المعاملة التي تُنشأ.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>التاريخ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>اسحب لاستكشاف المخطط الزمني. انقر أو انقر بزر الماوس الأيمن على معاملة أو txid أو UTXO لرؤية الخيارات.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>تصدير الرسم البياني…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>تصدير الرسم البياني للمحفظة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>إدخال خارجي</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>رسوم</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>Txid الكامل</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>انتقل إلى الإدخال</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>ملصق</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>لا توجد أهداف انتقال متاحة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>لا توجد مدخلات معروفة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>لا توجد معاملات لعرضها.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>تم الاستلام</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>أعد رسم الرسم البياني للمحفظة.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>تحديث</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>تم الإرسال</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>تم الإنفاق</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>الحالة: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>معاملة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>مجهول</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>رسوم غير معروفة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>غير منفقة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>القيمة</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>تصوّر كيف تُنشئ معاملات محفظتك وتُنفق UTXO مع مرور الوقت.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>رسم المحفظة البياني</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>تم تصدير الرسم البياني للمحفظة إلى {path}</translation>
 		</message>
 	</context>
 	<context>
@@ -4384,6 +4714,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>فلاتر الكتل المدمجة هي طريقة خاصة وسريعة للحصول على جميع معلومات البلوكشين. ستتصل المحفظة مباشرة بعدة عقد Bitcoin وتنزّل منها ملخصات الكتل (Compact Block Filters).&lt;br&gt;إذا حددت نظيرًا أوليًا في قسم "مراقبة شبكة Bitcoin" أدناه، فسيُستخدم كعقدة مفضلة.</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
+			<source>Experimental Compact Block Filter support!!!&lt;br&gt;Use with caution.&lt;br&gt;&lt;br&gt;</source>
+			<translation>دعم تجريبي لفلاتر الكتل المدمجة!!!&lt;br&gt;استخدمها بحذر.&lt;br&gt;&lt;br&gt;</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>قم بتشغيل bitcoind الخاص بك باستخدام "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4417,11 +4757,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>هذه طريقة خاصة وسريعة للاتصال بشبكة البيتكوين.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

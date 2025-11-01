@@ -34,15 +34,15 @@ from typing import Any, Dict, List
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-from packaging import version
 
 from bitcoin_safe.mempool_data import MempoolData
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.pythonbdk_types import BlockchainType, IpAddress
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
-from .html_utils import link
+from .html_utils import html_f, link
 from .i18n import translate
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -137,10 +137,6 @@ def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
 
 
 def get_default_rpc_hosts(network: bdk.Network) -> Dict[str, str]:
-    return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
-
-
-def get_default_cbf_hosts(network: bdk.Network) -> Dict[str, str]:
     return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
 
 
@@ -244,15 +240,26 @@ def get_testnet_faucet(network: bdk.Network) -> str | None:
 
 def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
     if server_type == BlockchainType.CompactBlockFilter:
-        d = {
-            bdk.Network.BITCOIN: translate(
-                "net_conf", "This is a private and fast way to connect to the bitcoin network."
+        cbf_warning = html_f(
+            translate(
+                "net_conf",
+                "Experimental Compact Block Filter support!!!<br>Use with caution.<br><br>",
             ),
-            bdk.Network.REGTEST: "",
-            bdk.Network.TESTNET: "",
-            bdk.Network.TESTNET4: "",
-            bdk.Network.SIGNET: "",
+            bf=True,
+            color="red",
+        )
+        cbf_default_description = cbf_warning + translate(
+            "net_conf",
+            "Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.<br>If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.",
+        )
+        d = {
+            bdk.Network.BITCOIN: cbf_default_description,
+            bdk.Network.REGTEST: cbf_default_description,
+            bdk.Network.TESTNET: cbf_default_description,
+            bdk.Network.TESTNET4: cbf_default_description,
+            bdk.Network.SIGNET: cbf_default_description,
         }
+
         return d[network]
     elif server_type == BlockchainType.Electrum:
         d = {
@@ -398,6 +405,12 @@ class Peer:
             host = f"[{host}]"
         return f"{host}:{port}"
 
+    def to_bdk(self, v2_transport=False) -> bdk.Peer | None:
+        try:
+            return bdk.Peer(address=IpAddress.from_host(self.host), port=self.port, v2_transport=v2_transport)
+        except:
+            return None
+
 
 class Peers(list[Peer]):
     pass
@@ -453,6 +466,8 @@ class NetworkConfig(BaseSaveableClass):
         self.discovered_peers: Peers | List[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
+        self.cbf_connections: int = 2
+
     def description_short(self):
         server_name = ""
         if self.server_type == BlockchainType.Electrum:
@@ -480,6 +495,13 @@ class NetworkConfig(BaseSaveableClass):
 
         return d
 
+    def get_p2p_initial_peer(self) -> Peer | None:
+        return (
+            Peer.parse(self.p2p_inital_url, network=self.network)
+            if self.p2p_inital_url and self.p2p_listener_type == P2pListenerType.inital
+            else None
+        )
+
     @classmethod
     def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfig":
         super()._from_dump(dct, class_kwargs=class_kwargs)
@@ -497,13 +519,13 @@ class NetworkConfig(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             dct["_network"] = dct["network"]
             del dct["network"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             dct["network"] = dct["_network"]
             del dct["_network"]
-        if version.parse(str(dct["VERSION"])) < version.parse("0.1.0"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.1.0"):
             # handle proxy
             if "proxy_url" not in dct:
                 dct["proxy_url"] = None
@@ -513,14 +535,14 @@ class NetworkConfig(BaseSaveableClass):
                 # blank out the fields.  let the user choose themself.
                 dct["server_type"] = BlockchainType.Electrum
                 dct["electrum_url"] = ""
-        if version.parse(str(dct["VERSION"])) < version.parse("0.2.2"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.2"):
             # existing users might have had set the network settings paranoid
             # and would not like to have P2pListenerType enabled
             # Therefore I deactivate it for migrations
             # New users who are paranoid, can deactivate p2p_listener_type
             # together when they set an electrum server
             dct["p2p_listener_type"] = P2pListenerType.deactive
-        if version.parse(str(dct["VERSION"])) < version.parse("0.2.3"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.3"):
             dct["mempool_data"] = res if (res := dct.get("mempool_data")) else None
 
         return super().from_dump_migration(dct=dct)
@@ -548,9 +570,9 @@ class NetworkConfigs(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.0"):
             if bdk.Network.TESTNET4.name not in dct["configs"]:
                 dct["configs"][bdk.Network.TESTNET4.name] = NetworkConfig(network=bdk.Network.TESTNET4)
 

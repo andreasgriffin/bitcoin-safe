@@ -402,6 +402,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>ကုန်လွန်ချိန်: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - ပြီးစီး {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -543,6 +555,48 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>ဤနေရာတွင် စာသားရိုက်ထည့်ပါ...  </translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Node များနှင့် ချိတ်ဆက်နေပါသည်</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Discovering nodes</source>
+			<translation>Node များကို ရှာဖွေနေသည်</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Filters synced</source>
+			<translation>Filter များ စင့်ခ်ပြီး</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Headers synced</source>
+			<translation>Header များ စင့်ခ်ပြီး</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>New chain height {height}</source>
+			<translation>Chain အမြင့်အသစ် {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Synced the filter headers</source>
+			<translation>Filter Header များ စင့်ခ်ပြီး</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing</source>
+			<translation>စင့်ခ်နေသည်</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Transactions synced</source>
+			<translation>Transaction များ စင့်ခ်ပြီး</translation>
 		</message>
 	</context>
 	<context>
@@ -1798,6 +1852,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>မည်သို့ပင်ဖြစ်စေ ပိတ်မည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>ပိုက်ဆံအိတ်ပိတ်ပါ  </translation>
 		</message>
@@ -1848,6 +1907,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Don't scan</source>
+			<translation>မစကင်ပါနှင့်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Export &amp;Descriptor for hardware signers</source>
 			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများအတွက် &amp;Descriptor ထုတ်ပို့ပါ  </translation>
 		</message>
@@ -1865,6 +1929,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>စာသားမှ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Hide to tray</source>
+			<translation>Tray သို့ ဖျောက်ထားမည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>ဖွင့်ထားပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1988,6 +2062,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>ပြ/ဖျောက်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>အခြေအနေ: ချိတ်ဆက်ပြီး</translation>
 		</message>
@@ -2040,6 +2119,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>ပိုက်ဆံအိတ်ကို သင်တင်ဆက်နေပါသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>ပိုက်ဆံအိတ်များ သို့မဟုတ် လည်းကောင်း ဆက်လက်တင်ဆက်နေဆဲဖြစ်သည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>ဤပိုက်ဆံအိတ်ကို ယခင်က အသုံးပြုခဲ့ဖူးပါသလား?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, scan for transactions</source>
+			<translation>ဟုတ်ကဲ့၊ လုပ်ငန်းဆောင်တာများကို စကင်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2182,8 +2281,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>ချိတ်ဆက်မှု ပိုများလေ ကိုယ်ရေးကိုယ်တာ လုံခြုံရေး ပိုတိုးပေမည်၊ သို့ရာတွင် စင့်ခ် မြန်နှုန်း လျော့ကျပါသည်။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>ကွန်ယက်ဆက်တင်များ  </translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p ချိတ်ဆက်မှု အရေအတွက်:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2515,6 +2624,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>ဖွင့်/ပိတ်</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2657,6 +2773,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>ပလပ်အင်များ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>ဆက်လုပ်ရန်</translation>
 		</message>
@@ -2689,11 +2810,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>{number} တံဆိပ်များအားအောင်မြင်စွာအသစ်တင်ပါ  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3295,6 +3411,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>* သင်၏အမှတ်အသားများနှင့် ကွဲပြားသော ကွက်တမ်းအမျိုးအစားများကို မိုဃ်းတိမ်တွင် မိတ္တူကူးထားပါ။&lt;br&gt;- သင်၏အမှတ်အသားများနှင့် ကွက်တမ်းအမျိုးအစားများကို ကွန်ပျူတာအများအပြားအကြားတွင် တစ်ပြိုင်တည်းချိန်ညှိပါ။ {synclink}&lt;br&gt;- သင် ဘယ်နေရာမှာရှိနေပါစေ၊ အခြားသူများနှင့် ပူးပေါင်း၍ ငွေလွှဲလုပ်ငန်းကို လက်မှတ်ရေးထိုးပါ။ {videolink}&lt;br&gt;- အရာအားလုံးသည် အမြဲတမ်း သော့ခတ်ထားပါသည် ({protocol_link} အကြောင်း ပိုမိုလေ့လာရန်)</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>ပူးပေါင်းလုပ်ငန်း ဗီဒီယို</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>လက်ခံရရှိသောငွေလွှဲများနှင့် PSBT များဖွင့်ပါ  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>{name} ကို {author} မှဖွင့်ပါ  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>Sync &amp; Chat  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>ချိန်ညှိမှု ဗီဒီယို</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>ပရိုတိုကော</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3335,7 +3498,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>udev စည်းမျဉ်းများကို ထည့်သွင်းပါ</translation>
+			<translation>udev စည်းမျဉ်းများ ထည့်သွင်းပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3542,6 +3705,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>ဘယ်ဘက်ရှိစာရင်းမှ UTXO တစ်ခု သို့မဟုတ် တစ်ထပ်ထပ်ရွေးပါ၊ သို့မဟုတ် “အထူးသဖြင့် UTXO များကို ရွေးပါ” ကို အထက်တွင် ဖယ်ရှားပြီး Bitcoin-Safe သို့ သင့်လုပ်ငန်းအတွက် အကောင်းဆုံး ကွက်တမ်းများကို ရွေးခွင့်ပြုပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>{inputs} ဝင်ငွေသည်ဤအတည်ပြုထားသော txids {txids} များနှင့်အတူထိစပ်နေသည်။  </translation>
 		</message>
@@ -3640,7 +3808,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB ကိရိယာများ မတွေ့ပါ။ udev စည်းမျဉ်းများ မရှိသည့်အတွက် ဖြစ်နိုင်ပါသည်။</translation>
+			<translation>USB စက်ပစ္စည်း မတွေ့ပါ။ udev စည်းမျဉ်းများ မရှိခြင်းကြောင့် ဖြစ်နိုင်ပါသည်။</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3837,6 +4005,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>လက်ကျန်ငွေ ({unit})  </translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>လိပ်စာ  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>ငွေကြေးထည့်သွင်းမှုလုပ်ငန်းကို အလယ်တည်ဆောက်ပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>အသုံးစရိတ်လုပ်ငန်းကို အလယ်တည်ဆောက်ပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>ဖန်တီးနေသော လုပ်ငန်းကို ဖွင့်ရန် နှိပ်ပါ။</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ်ကို ထုတ်ယူ၍ မရပါ: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>နေ့စွဲ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>အချိန်လိုင်းကို ရှာဖွေရန် ဆွဲပါ။ လုပ်ငန်း၊ txid သို့မဟုတ် UTXO ကို နှိပ်ပါ သို့မဟုတ် ညာဘက်နှိပ်ပါ၊ ရွေးချယ်မှုများကို ကြည့်ပါ။</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>ဂရပ်ဖ် ထုတ်ယူပါ…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ် ထုတ်ယူပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>အပြင်မှ ထည့်သွင်းမှု</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>အခကြေးငွေ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>ပြည့်စုံသော txid</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>အင်ပတ်သို့ ခုန်ပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>တံဆိပ်  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>ခုန်သွားရန် နည်းလမ်းမရှိပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>သိရှိသော အင်ပတ် မရှိပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>ပြသရန် လုပ်ငန်း မရှိပါ။</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>လက်ခံပြီး</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ်ကို ပြန်လည်ဆွဲပါ။</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>ပြန်လည်အသစ်လုပ်ပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>ပေးပို့ပြီး</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>အသုံးပြုပြီး</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>အခြေအနေ: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>ငွေလွှဲ  </translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>မသိ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>မသိရသော ကောက်ခံခ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>အသုံးမပြုရသေးပါ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>တန်ဖိုး</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>သင့်ပိုက်ဆံအိတ်လုပ်ငန်းများက UTXO များကို အချိန်အလိုက် ဘယ်လိုဖန်တီးပြီး အသုံးပြုသလဲဆိုတာ မြင်နိုင်ပါသည်။</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ်</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ်ကို {path} သို့ ထုတ်ယူပြီးပါပြီ</translation>
 		</message>
 	</context>
 	<context>
@@ -4381,6 +4711,16 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Compact Block Filter သည် blockchain အချက်အလက်အားလုံးကို လျှို့ဝှက်ပြီး မြန်ဆန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ ပိုက်ဆံအိတ်သည် bitcoin node များစွာသို့ တိုက်ရိုက်ချိတ်ဆက်ပြီး အဲဒီနေရာမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်ဆွဲပါမည်။&lt;br&gt;‘Bitcoin Network Monitoring’ အခန်းတွင် အစပိုင်း peer တစ်ဦးကို သတ်မှတ်ထားပါက ၎င်းကို အကြိုက်ဆုံး node အဖြစ် အသုံးပြုမည်။</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
+			<source>Experimental Compact Block Filter support!!!&lt;br&gt;Use with caution.&lt;br&gt;&lt;br&gt;</source>
+			<translation>စမ်းသပ်သုံး Compact Block Filter အထောက်အပံ့!!!&lt;br&gt;သတိဖြင့် အသုံးပြုပါ။&lt;br&gt;&lt;br&gt;</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>"bitcoind -chain=regtest" ဖြင့် သင့် bitcoind ကို စတင်ပါ။</translation>
 		</message>
@@ -4414,11 +4754,6 @@ It is best to use your own server, such as {link}.</source>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
 			<translation>စမ်းသပ်ကြေးများကို အခမဲ့ရနိုင်တဲ့ {faucet} တစ်ခုရှိပါတယ်။</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>ဤသည်သည် bitcoin ကွန်ယက်နှင့်ပတ်သက်သောပုဂ္ဂလိကနှင့်မြန်ဆန်သောဆက်သွယ်မှုပုံစံဖြစ်သည်။  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>

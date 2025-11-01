@@ -445,7 +445,7 @@ class UITx_Viewer(UITx_Base):
             fee_amount = self.data.data.fee()
 
         if fee_amount is not None:
-            outputs = sum(txout.value for txout in self.extract_tx().output())
+            outputs = sum(txout.value.to_sat() for txout in self.extract_tx().output())
             return outputs + fee_amount
 
         return None
@@ -587,7 +587,7 @@ class UITx_Viewer(UITx_Base):
         self, fee_rate: float | None = None, target_total_unconfirmed_fee_rate: float | None = None
     ) -> None:
         tx = self.extract_tx()
-        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=str(tx.compute_txid()), signals=self.signals)
         if not wallet or not tx_details:
             return
         TxTools.cpfp_tx(
@@ -606,7 +606,7 @@ class UITx_Viewer(UITx_Base):
             txinfos.fee_rate = new_fee_rate
 
         txid = tx.compute_txid()
-        tx_details, wallet = get_tx_details(txid=txid, signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=str(txid), signals=self.signals)
 
         if not wallet and txinfos.main_wallet_id:
             wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
@@ -747,7 +747,7 @@ class UITx_Viewer(UITx_Base):
             self.signals.signal_set_tab_properties.emit(self, title, icon_text, tooltip)
 
     def txid(self) -> str:
-        return self.extract_tx().compute_txid()
+        return str(self.extract_tx().compute_txid())
 
     def _get_height(self) -> int | None:
         for wallet in get_wallets(self.signals):
@@ -797,10 +797,10 @@ class UITx_Viewer(UITx_Base):
         if not self.client:
             self._set_blockchain()
 
-        logger.debug(f"broadcasting tx {tx.compute_txid()[:4]=}")
+        logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
         success = self._broadcast(tx)
         if success:
-            logger.info(f"Successfully broadcasted tx {tx.compute_txid()[:4]=}")
+            logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
@@ -1127,7 +1127,7 @@ class UITx_Viewer(UITx_Base):
         wallets = get_wallets(self.signals)
         # try via tx details
         for wallet_ in wallets:
-            txdetails = wallet_.get_tx(tx.compute_txid())
+            txdetails = wallet_.get_tx(str(tx.compute_txid()))
             if txdetails and txdetails.fee:
                 return FeeInfo(
                     fee_amount=txdetails.fee,
@@ -1151,7 +1151,7 @@ class UITx_Viewer(UITx_Base):
                 return None
             total_input_value += python_txo.value
 
-        total_output_value = sum(txout.value for txout in tx.output())
+        total_output_value = sum(txout.value.to_sat() for txout in tx.output())
         fee_amount = total_input_value - total_output_value
         return FeeInfo(
             fee_amount=fee_amount,
@@ -1174,13 +1174,13 @@ class UITx_Viewer(UITx_Base):
         chain_position: bdk.ChainPosition | None = None,
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.compute_txid())
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
         if fee_info is None or fee_info.any_is_estimated():
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
         if chain_position is None or isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
-            chain_position = self.get_chain_position(tx.compute_txid())
+            chain_position = self.get_chain_position(str(tx.compute_txid()))
         self.chain_position = chain_position
 
         tx_status = self.get_tx_status(chain_position=chain_position)
@@ -1210,7 +1210,7 @@ class UITx_Viewer(UITx_Base):
         self.recipients.recipients = [
             Recipient(
                 address=robust_address_str_from_txout(output, self.network),
-                amount=output.value,
+                amount=output.value.to_sat(),
             )
             for output in outputs
         ]
@@ -1336,7 +1336,7 @@ class UITx_Viewer(UITx_Base):
 
         self.data = Data.from_psbt(psbt, network=self.network)
         tx = psbt.extract_tx()
-        txid = tx.compute_txid()
+        txid = str(tx.compute_txid())
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(txid)
         tx_status = self.get_tx_status(chain_position=None)
         # do not use calc_fee_info here, because calc_fee_info is for final tx only.
@@ -1363,7 +1363,7 @@ class UITx_Viewer(UITx_Base):
         self.recipients.recipients = [
             Recipient(
                 address=robust_address_str_from_txout(output, self.network),
-                amount=output.value,
+                amount=output.value.to_sat(),
             )
             for output in outputs
         ]
@@ -1392,7 +1392,7 @@ class UITx_Viewer(UITx_Base):
     def handle_cpfp(
         self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None
     ) -> None:
-        parent_txids = set(txin.previous_output.txid for txin in tx.input())
+        parent_txids = set(str(txin.previous_output.txid) for txin in tx.input())
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
             this_fee_info=this_fee_info,
