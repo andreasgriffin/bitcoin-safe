@@ -110,7 +110,10 @@ info "Using Poetry to install local project dependencies"
 # Optionally ensure Poetry does not create its own .venv:
 poetry config virtualenvs.create false
 # ...But we are already inside a venv, so Poetry *should* install into this environment:
-poetry install --with main,build_mac
+# run once; if it fails, run again; if that fails, exit 1
+poetry install --with main,build_mac \
+  || poetry install --with main,build_mac \
+  || { echo "poetry install failed twice"; exit 1; }
 
 # or, if you prefer an in-project .venv:
 # poetry config virtualenvs.in-project true
@@ -136,7 +139,7 @@ export ARCHFLAGS="-arch $arch"
 
 info "Building PyInstaller"
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="306d4d92580fea7be7ff2c89ba112cdc6f73fac1" # ~ v6.13.0
+PYINSTALLER_COMMIT="7f2ae63f703ae27955722eac4891678b546d513a" # ~ v6.16.0
 
 (
     if [ -f "$CACHEDIR/pyinstaller/PyInstaller/bootloader/Darwin-64bit/runw" ]; then

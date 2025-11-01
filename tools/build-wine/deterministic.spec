@@ -27,7 +27,7 @@ packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs
 
 binaries = []
 # Workaround for "Retro Look":
-binaries += [b for b in collect_dynamic_libs('PyQt6') if 'qwindowsvista' in b[0]]
+binaries += [b for b in collect_dynamic_libs('PyQt6') if 'windows' in b[0]]
 for package_with_dlls in packages_with_dlls:
     binaries += collect_dynamic_libs(package_with_dlls)
 # add libusb, etc:

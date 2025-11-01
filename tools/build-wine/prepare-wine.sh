@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="306d4d92580fea7be7ff2c89ba112cdc6f73fac1" # ~ v6.13.0
+PYINSTALLER_COMMIT="7f2ae63f703ae27955722eac4891678b546d513a" # ~ v6.16.0
 
 PYTHON_VERSION=3.12.3
 
@@ -59,7 +59,9 @@ export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
 export POETRY_VIRTUALENVS_CREATE=false
 $WINE_PYTHON -m poetry config virtualenvs.create false
 move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
-$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction
+$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
+  || $WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
+  || { echo "poetry install failed twice"; exit 1; }
 move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
 
 
