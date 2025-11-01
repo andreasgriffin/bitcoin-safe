@@ -2937,14 +2937,14 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pyinstaller-hooks-contrib"
-version = "2024.11"
+version = "2025.9"
 description = "Community maintained hooks for PyInstaller"
 optional = false
 python-versions = ">=3.8"
 groups = ["build-mac", "build-wine"]
 files = [
-    {file = "pyinstaller_hooks_contrib-2024.11-py3-none-any.whl", hash = "sha256:2781d121a1ee961152ba7287a262c65a1078da30c9ef7621cb8c819326884fd5"},
-    {file = "pyinstaller_hooks_contrib-2024.11.tar.gz", hash = "sha256:84399af6b4b902030958063df25f657abbff249d0f329c5344928355c9833ab4"},
+    {file = "pyinstaller_hooks_contrib-2025.9-py3-none-any.whl", hash = "sha256:ccbfaa49399ef6b18486a165810155e5a8d4c59b41f20dc5da81af7482aaf038"},
+    {file = "pyinstaller_hooks_contrib-2025.9.tar.gz", hash = "sha256:56e972bdaad4e9af767ed47d132362d162112260cbe488c9da7fee01f228a5a6"},
 ]
 
 [package.dependencies]
@@ -4213,4 +4213,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "de1fb1d83ea7081b37299734f4755906d54d919377ebac7d1f417f82ab4e8856"
+content-hash = "43b471189502545fbf040ca53e8edec35efc4d664eca25f23763a79168cc84ca"
