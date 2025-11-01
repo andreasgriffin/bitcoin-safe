@@ -37,8 +37,8 @@ hwi = ">=2.3.1"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
 cbor2 = "^5.6.0"
-pyqt6 = "^6.6.1"
-pyqt6-charts = "^6.6.0"
+pyqt6 = "^6.10"
+pyqt6-charts = "^6.10"
 pgpy = "^0.6.0"
 python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
@@ -73,14 +73,16 @@ py-spy = "^0.4.1"
 
 
 [tool.poetry.group.build_mac.dependencies]
-altgraph =  "0.17.4"  
-macholib =  "1.16.3" 
-pyinstaller-hooks-contrib =  "2024.11" 
+altgraph =  "0.17.4"
+macholib =  "1.16.3"
+pyinstaller-hooks-contrib =  ">=2024.11"
+hatchling = "1.26.3"        # dependency of pyinstaller
 
 [tool.poetry.group.build_wine.dependencies]
 altgraph="0.17.4"
-pefile="2023.2.7" # needed for  ensure-signed-file-integrity
-pyinstaller-hooks-contrib="2024.11" # necessary to discover all submodules like jaraco
+pefile="2023.2.7"           # needed for  ensure-signed-file-integrity
+pyinstaller-hooks-contrib=">=2024.11" # necessary to discover all submodules like jaraco
+hatchling="1.26.3"          # dependency of pyinstaller
 
 
 
