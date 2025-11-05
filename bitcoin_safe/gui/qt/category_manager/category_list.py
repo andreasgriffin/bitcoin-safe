@@ -54,7 +54,7 @@ from bitcoin_safe.gui.qt.util import category_color, create_color_circle
 from bitcoin_safe.storage import BaseSaveableClass
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
-from ....signals import Signals, UpdateFilter, UpdateFilterReason
+from ....signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
     def __init__(
         self,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         category_core: CategoryCore | None = None,
         sort_column: int | None = Columns.CATEGORY,
         sort_order: Qt.SortOrder | None = Qt.SortOrder.AscendingOrder,
@@ -120,7 +120,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
             stretch_column=self.stretch_column,
             column_widths=self.column_widths,
             editable_columns=[],
-            signals=signals,
+            signals=wallet_functions.signals,
             sort_column=sort_column if sort_column is not None else None,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
             hidden_columns=hidden_columns,
@@ -128,7 +128,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
             _scroll_position=_scroll_position,
         )
         self.category_core = category_core
-        self.signals = signals
+        self.wallet_functions = wallet_functions
 
         self.setTextElideMode(Qt.TextElideMode.ElideRight)
         self._source_model = MyStandardItemModel(

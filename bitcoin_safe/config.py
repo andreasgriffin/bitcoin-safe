@@ -35,8 +35,6 @@ from typing import Any, Dict, List
 
 import appdirs
 import bdkpython as bdk
-from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
-from packaging import version
 from PyQt6.QtCore import QCoreApplication
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
@@ -51,6 +49,7 @@ from .network_config import (
     get_esplora_urls,
 )
 from .storage import BaseSaveableClass
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +85,6 @@ class UserConfig(BaseSaveableClass):
         self.network: bdk.Network = bdk.Network.BITCOIN if DEFAULT_MAINNET else bdk.Network.TESTNET4
         self.last_wallet_files: Dict[str, List[str]] = {}  # network:[file_path0]
         self.opened_txlike: Dict[str, List[str]] = {}  # network:[serializedtx, serialized psbt]
-        self.data_dir = appdirs.user_data_dir(self.app_name)
         self.is_maximized = False
         self.recently_open_wallets: Dict[bdk.Network, UniqueDeque[str]] = {
             network: UniqueDeque(maxlen=RECENT_WALLET_MAXLEN) for network in bdk.Network
@@ -127,7 +125,6 @@ class UserConfig(BaseSaveableClass):
         d.update(self.__dict__.copy())
 
         # for better portability between computers we make this relative to the home folder
-        d["data_dir"] = str(path_to_rel_home_path(self.data_dir))
         d["rates"] = self.rates
 
         d["recently_open_wallets"] = {
@@ -147,7 +144,6 @@ class UserConfig(BaseSaveableClass):
             if k in bdk.Network._member_map_
         }
         # for better portability between computers the saved string is relative to the home folder
-        dct["data_dir"] = rel_home_path_to_abs_path(dct["data_dir"])
         # dct["config_dir"] = rel_home_path_to_abs_path(dct["config_dir"])
         # dct["config_file"] = rel_home_path_to_abs_path(dct["config_file"])
 
@@ -162,30 +158,30 @@ class UserConfig(BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.0"):
             network_config_testnet_3: NetworkConfig = dct["network_config"]
             dct["network_configs"] = {network.name: NetworkConfig(network=network) for network in bdk.Network}
             dct["network_configs"][network_config_testnet_3.network.name] = network_config_testnet_3
             dct["network"] = network_config_testnet_3.network
             del dct["network_config"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.1"):
             if "enable_opportunistic_merging_fee_rate" in dct:
                 del dct["enable_opportunistic_merging_fee_rate"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.2"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.2"):
             if "network_configs" in dct:
                 del dct["network_configs"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.3"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.3"):
             if "recently_open_wallets" in dct:
                 del dct["recently_open_wallets"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.4"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.4"):
             if "recently_open_wallets" in dct:
                 del dct["recently_open_wallets"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.1.6"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.1.6"):
             if "config_dir" in dct:
                 del dct["config_dir"]
             if "config_file" in dct:
                 del dct["config_file"]
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.2.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.2.0"):
             # handle testnet4
             if "recently_open_wallets" in dct:
                 dct["recently_open_wallets"][bdk.Network.TESTNET4.name] = []
@@ -215,7 +211,7 @@ class UserConfig(BaseSaveableClass):
                     network_config_testnet_4.server_type = network_config_testnet_3.server_type
                     network_config_testnet_4.proxy_url = network_config_testnet_3.proxy_url
 
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.2.2"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.2.2"):
             old_path = (
                 cls.config_dir.parent
                 / QCoreApplication.organizationName()
@@ -235,7 +231,7 @@ class UserConfig(BaseSaveableClass):
 
         # old versions
         if config := dct.get("network_config"):
-            if version.parse(str(config["VERSION"])) < version.parse("0.1.0"):
+            if fast_version(str(config["VERSION"])) < fast_version("0.1.0"):
                 if "cbf_server_type" in config:
                     del config["cbf_server_type"]  # removed  (and removed type)
 
@@ -246,12 +242,12 @@ class UserConfig(BaseSaveableClass):
             and isinstance(configs, dict)
         ):
             for config in configs.values():
-                if version.parse(str(config["VERSION"])) <= version.parse("0.1.1"):
+                if fast_version(str(config["VERSION"])) <= fast_version("0.1.1"):
                     if "cbf_server_type" in config:
                         del config["cbf_server_type"]  # removed  (and removed type)
 
                 # downgrade: if NetworkConfig.VERSION is doesnt support p2p_listener_type
-                if version.parse(NetworkConfig.VERSION) < version.parse("0.2.0"):
+                if fast_version(NetworkConfig.VERSION) < fast_version("0.2.0"):
                     if "p2p_listener_type" in config:
                         del config["p2p_listener_type"]  # can contain future type P2pListenerType
 

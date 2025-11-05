@@ -42,7 +42,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtCore import QLocale, QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QCheckBox,
     QDialogButtonBox,
@@ -74,16 +74,17 @@ from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
+from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import Wallet
 from bitcoin_safe.wallet_util import signer_name
 
 from ...pdf_labels import make_and_open_labels_pdf
 from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
-from ...pythonbdk_types import Recipient
-from ...signals import TypedPyQtSignalNo
+from ...pythonbdk_types import PythonUtxo, Recipient
+from ...signals import Signals, TypedPyQtSignalNo
 from ...tx import TxUiInfos
+from .cbf_progress_bar import CBFProgressBar
 from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
@@ -177,7 +178,7 @@ class FloatingButtonBar(QDialogButtonBox):
 
     def _catch_tx(self, tx: bdk.Transaction) -> None:
         self.set_status(self.TxSendStatus.finalized)
-        logger.info(f"tx {tx.compute_txid()[:4]=} is assumed to be the send test")
+        logger.info(f"tx {str(tx.compute_txid())[:4]=} is assumed to be the send test")
 
     def create_tx(self) -> None:
         # before do _create_tx, setup a 1 time connection
@@ -515,7 +516,7 @@ class StickerTheHardware(BaseTab):
         make_and_open_labels_pdf(
             wallet_id=protowallet.id,
             label_pairs=label_pairs,
-            lang_code=self.refs.qtwalletbase.signals.get_current_lang_code() or DEFAULT_LANG_CODE,
+            lang_code=QLocale().name() or DEFAULT_LANG_CODE,
         )
 
     def updateUi(self) -> None:
@@ -839,7 +840,7 @@ class BackupSeed(BaseTab):
             return
         make_and_open_pdf(
             self.refs.qt_wallet.wallet,
-            lang_code=self.refs.qtwalletbase.signals.get_current_lang_code() or DEFAULT_LANG_CODE,
+            lang_code=QLocale().name() or DEFAULT_LANG_CODE,
         )
 
     def create(self) -> TutorialWidget:
@@ -906,9 +907,12 @@ class BackupSeed(BaseTab):
 
 class ReceiveTest(BaseTab):
 
-    def _on_sync_done(self, sync_status) -> None:
+    def _on_sync_done(self, sync_status: SyncStatus) -> None:
+        self.check_wallet_for_utxos()
+
+    def check_wallet_for_utxos(self) -> List[PythonUtxo]:
         if not self.refs.qt_wallet:
-            return
+            return []
         utxos = self.refs.qt_wallet.wallet.get_all_utxos(include_not_mine=False)
         self.check_button.setHidden(bool(utxos))
         self.next_button.setHidden(not bool(utxos))
@@ -918,12 +922,17 @@ class ReceiveTest(BaseTab):
                     amount=Satoshis(utxos[0].txout.value, self.refs.qt_wallet.wallet.network).str_with_unit()
                 )
             )
+        return utxos
 
     def _start_sync(
         self,
     ) -> None:
         if not self.refs.qt_wallet:
             Message(self.tr("No wallet setup yet"), type=MessageType.Error)
+            return
+
+        # before I do a sync, I should check if the tx is alreasy there.
+        if self.check_wallet_for_utxos():
             return
 
         self.check_button.set_enable_signal(self.refs.qtwalletbase.signal_after_sync)
@@ -938,7 +947,14 @@ class ReceiveTest(BaseTab):
         widget_layout.setSpacing(20)
         self.quick_receive: Optional[BitcoinQuickReceive] = None
 
+        left_widget_layout = QVBoxLayout()
+        set_no_margins(left_widget_layout)
+        widget_layout.addLayout(left_widget_layout)
+
+        self.cbf_progress_bar: CBFProgressBar | None = None
+
         if self.refs.qt_wallet:
+
             self.quick_receive = BitcoinQuickReceive(
                 wallet_signals=self.refs.qt_wallet.wallet_signals,
                 wallet=self.refs.qt_wallet.wallet,
@@ -953,15 +969,22 @@ class ReceiveTest(BaseTab):
             )
             self.quick_receive.set_manage_categories_enabled(True)
             self.quick_receive.setMaximumWidth(300)
-            widget_layout.addWidget(self.quick_receive)
+            left_widget_layout.addWidget(self.quick_receive)
+
+            self.cbf_progress_bar = CBFProgressBar(config=self.refs.qt_wallet.config, parent=widget)
+            left_widget_layout.addWidget(self.cbf_progress_bar)
+            self.signal_tracker.connect(
+                self.refs.qt_wallet.signal_progress_info, self.cbf_progress_bar._set_progress_info
+            )
+
         else:
             add_centered_icons(["ic--baseline-call-received.svg"], widget_layout, max_sizes=[(50, 80)])
             if (_layout_item := widget_layout.itemAt(0)) and (_widget := _layout_item.widget()):
                 _widget.setMaximumWidth(150)
 
         right_widget = QWidget()
-        right_widget.setContentsMargins(0, 0, 0, 0)
         right_widget_layout = QVBoxLayout(right_widget)
+        set_no_margins(right_widget_layout)
         widget_layout.addWidget(right_widget)
 
         self.label_receive_description = QLabel(widget)
@@ -1057,7 +1080,7 @@ class RegisterMultisig(BaseTab):
                 wallet=self.refs.qt_wallet.wallet if self.refs.qt_wallet else None,
                 loop_in_thread=self.loop_in_thread,
                 parent=widget,
-                signals=self.refs.qt_wallet.signals if self.refs.qt_wallet else None,
+                wallet_functions=self.refs.qt_wallet.wallet_functions if self.refs.qt_wallet else None,
                 wallet_name=self.refs.qt_wallet.wallet.id if self.refs.qt_wallet else "Multisig",
             )
             self.hardware_signer_tabs.addTab(
@@ -1552,7 +1575,7 @@ class Wizard(WizardBase):
 
         self.qtwalletbase.signals.language_switch.connect(self.updateUi)
         if self.qt_wallet:
-            self.qtwalletbase.signals.wallet_signals[self.qt_wallet.wallet.id].updated.connect(
+            self.qtwalletbase.wallet_functions.wallet_signals[self.qt_wallet.wallet.id].updated.connect(
                 self.on_utxo_update
             )
 

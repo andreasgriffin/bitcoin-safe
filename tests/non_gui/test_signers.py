@@ -175,7 +175,7 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
 
         return bdk.Descriptor.new_bip84(
             secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-            keychain=bdk.KeychainKind.EXTERNAL,
+            keychain_kind=bdk.KeychainKind.EXTERNAL,
             network=network,
         )
 
@@ -237,12 +237,12 @@ def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST)
     secret_key = bdk.DescriptorSecretKey(network, mnemonic, "")
     descriptor = bdk.Descriptor.new_bip84(
         secret_key=secret_key,
-        keychain=bdk.KeychainKind.EXTERNAL,
+        keychain_kind=bdk.KeychainKind.EXTERNAL,
         network=network,
     )
     change_descriptor = bdk.Descriptor.new_bip84(
         secret_key=secret_key,
-        keychain=bdk.KeychainKind.INTERNAL,
+        keychain_kind=bdk.KeychainKind.INTERNAL,
         network=network,
     )
     logger.debug(f"descriptor = {descriptor}")
@@ -251,7 +251,7 @@ def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST)
         descriptor=descriptor,
         change_descriptor=change_descriptor,
         network=network,
-        connection=bdk.Connection.new_in_memory(),
+        persister=bdk.Persister.new_in_memory(),
     )
     logger.debug(f"wallet = {wallet}")
 
@@ -319,7 +319,7 @@ def test_signer_recognizes_finalized_tx_received(
         signer.handle_data_input(
             original_psbt=bdk.Psbt(psbt_1_sig_2_of_3),
             data=Data.from_tx(
-                bdk.Transaction(list(hex_to_serialized(fully_signed_tx))), network=bdk.Network.REGTEST
+                bdk.Transaction(hex_to_serialized(fully_signed_tx)), network=bdk.Network.REGTEST
             ),
         )
 

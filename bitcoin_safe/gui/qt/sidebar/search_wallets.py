@@ -35,7 +35,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.html_utils import html_f
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletFunctions
 
 from .search_tree_view import ResultItem, SearchTreeView, format_result_text
 
@@ -46,18 +46,18 @@ logger = logging.getLogger(__name__)
 
 
 class SearchWallets(SearchTreeView):
-    def __init__(self, signals: Signals, parent=None, search_box_on_bottom=True) -> None:
+    def __init__(self, wallet_functions: WalletFunctions, parent=None, search_box_on_bottom=True) -> None:
         super().__init__(
             self.do_search,
             parent=parent,
             on_click=self.search_result_on_click,
             search_box_on_bottom=search_box_on_bottom,
         )
-        self.signals = signals
+        self.wallet_functions = wallet_functions
 
         self.updateUi()
 
-        self.signals.language_switch.connect(self.updateUi)
+        self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self):
         super().updateUi()
@@ -83,7 +83,7 @@ class SearchWallets(SearchTreeView):
 
         search_text = search_text.strip()
         root = ResultItem("")
-        qt_wallets: List[QTWallet] = list(self.signals.get_qt_wallets.emit().values())
+        qt_wallets: List[QTWallet] = list(self.wallet_functions.get_qt_wallets.emit().values())
         for qt_wallet in qt_wallets:
             wallet_item = ResultItem(
                 html_f(qt_wallet.wallet.id, bf=True), icon=qt_wallet.tabs.icon, obj=qt_wallet

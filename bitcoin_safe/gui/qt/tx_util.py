@@ -35,21 +35,21 @@ from bitcoin_safe_lib.tx_util import serialized_to_hex
 
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
-from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
 from ...wallet import Wallet, get_wallet_of_address
 
 logger = logging.getLogger(__name__)
 
 
 def advance_tip_to_address_info(
-    address_info: AddressInfoMin, wallet: Wallet, signals: Signals
+    address_info: AddressInfoMin, wallet: Wallet, wallet_signals: WalletSignals
 ) -> List[bdk.AddressInfo]:
     revealed_address_infos: List[bdk.AddressInfo] = []
     if address_info.index > wallet.get_tip(is_change=address_info.is_change()):
         revealed_address_infos += wallet.advance_tip_if_necessary(
             is_change=address_info.is_change(), target=address_info.index
         )
-        signals.wallet_signals[wallet.id].updated.emit(
+        wallet_signals.updated.emit(
             UpdateFilter(
                 addresses=set([str(address_info.address) for address_info in revealed_address_infos]),
                 reason=UpdateFilterReason.NewAddressRevealed,
@@ -58,17 +58,21 @@ def advance_tip_to_address_info(
     return revealed_address_infos
 
 
-def advance_tip_for_addresses(addresses: List[str], signals: Signals) -> List[bdk.AddressInfo]:
+def advance_tip_for_addresses(
+    addresses: List[str], wallet_functions: WalletFunctions
+) -> List[bdk.AddressInfo]:
     address_infos: List[bdk.AddressInfo] = []
     for address in addresses:
         if not address:
             continue
-        wallet = get_wallet_of_address(address, signals)
+        wallet = get_wallet_of_address(address, wallet_functions)
         if not wallet:
             continue
         if address_info := wallet.is_my_address_with_peek(address):
             address_infos += advance_tip_to_address_info(
-                address_info=address_info, wallet=wallet, signals=signals
+                address_info=address_info,
+                wallet=wallet,
+                wallet_signals=wallet_functions.wallet_signals[wallet.id],
             )
     return address_infos
 

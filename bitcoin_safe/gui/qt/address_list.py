@@ -92,10 +92,10 @@ from ...labels import LabelSnapshot, LabelSnapshotReason
 from ...network_config import BlockchainType
 from ...rpc import send_rpc_command
 from ...signals import (
-    Signals,
     TypedPyQtSignal,
     UpdateFilter,
     UpdateFilterReason,
+    WalletFunctions,
     WalletSignals,
 )
 from ...wallet import TxStatus, Wallet
@@ -182,9 +182,11 @@ class ExportLabelMenu(Menu):
 
 
 class LabelSnapshotMenu(Menu):
-    def __init__(self, wallets: Dict[str, Wallet], signals: Signals, parent: QWidget | None = None) -> None:
+    def __init__(
+        self, wallets: Dict[str, Wallet], wallet_functions: WalletFunctions, parent: QWidget | None = None
+    ) -> None:
         super().__init__(parent)
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.wallets = wallets
         self.aboutToShow.connect(self._populate_snapshot_menu)
 
@@ -239,7 +241,7 @@ class LabelSnapshotMenu(Menu):
         if not changed_items:
             return
 
-        wallet_signals = self.signals.wallet_signals.get(wallet.id)
+        wallet_signals = self.wallet_functions.wallet_signals.get(wallet.id)
         if wallet_signals:
             wallet_signals.updated.emit(
                 changed_items.to_update_filter(reason=UpdateFilterReason.RestoredSnapshot)
@@ -327,7 +329,7 @@ class AddressList(MyTreeView[str]):
         self,
         fx: FX,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         wallets: List[Wallet] | None = None,
         hidden_columns: List[int] | None = None,
         selected_ids: List[str] | None = None,
@@ -335,7 +337,7 @@ class AddressList(MyTreeView[str]):
     ) -> None:
         super().__init__(
             config=config,
-            signals=signals,
+            signals=wallet_functions.signals,
             stretch_column=self.stretch_column,
             column_widths=self.column_widths,
             editable_columns=[AddressList.Columns.LABEL],
@@ -346,6 +348,7 @@ class AddressList(MyTreeView[str]):
             _scroll_position=_scroll_position,
         )
         self.fx = fx
+        self.wallet_functions = wallet_functions
         self.wallets: Dict[str, Wallet] = {}
         self._signal_tracker_wallet_signals = SignalTracker()
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
@@ -382,7 +385,7 @@ class AddressList(MyTreeView[str]):
         self.wallets.clear()
         self.wallets.update({wallet.id: wallet for wallet in wallets} if wallets else {})
         for wallet_id in self.wallets.keys():
-            wallet_signals = self.signals.wallet_signals.get(wallet_id)
+            wallet_signals = self.wallet_functions.wallet_signals.get(wallet_id)
             if not wallet_signals:
                 continue
             self._signal_tracker_wallet_signals.connect(wallet_signals.updated, self.update_with_filter)
@@ -453,7 +456,7 @@ class AddressList(MyTreeView[str]):
         addr = self.get_role_data_for_current_item(col=self.key_column, role=MyItemDataRole.ROLE_KEY)
         if not addr or not (wallet := self.get_wallet(source_idx.row())):
             return
-        wallet_signals = self.signals.wallet_signals.get(wallet.id)
+        wallet_signals = self.wallet_functions.wallet_signals.get(wallet.id)
         if not wallet_signals:
             return
         wallet_signals.show_address.emit(addr, wallet.id)
@@ -469,7 +472,7 @@ class AddressList(MyTreeView[str]):
             address = str(address_info.address)
             wallet.labels.set_addr_category(address, category, timestamp="now")
 
-            if wallet_signals := self.signals.wallet_signals.get(wallet.id):
+            if wallet_signals := self.wallet_functions.wallet_signals.get(wallet.id):
                 wallet_signals.updated.emit(
                     UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.NewAddressRevealed)
                 )
@@ -477,8 +480,8 @@ class AddressList(MyTreeView[str]):
             address_info = wallet.get_unused_category_address(category)
             address = str(address_info.address)
 
-            if self.signals:
-                self.signals.wallet_signals[wallet.id].updated.emit(
+            if self.wallet_functions:
+                self.wallet_functions.wallet_signals[wallet.id].updated.emit(
                     UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.GetUnusedCategoryAddress)
                 )
 
@@ -759,7 +762,7 @@ class AddressList(MyTreeView[str]):
             addr = addrs[0]
 
             wallet = self.get_wallet(selected_items[0].index().row())
-            if wallet and (wallet_signals := self.signals.wallet_signals.get(wallet.id)):
+            if wallet and (wallet_signals := self.wallet_functions.wallet_signals.get(wallet.id)):
                 menu.add_action(
                     self.tr("Details"), partial(wallet_signals.show_address.emit, addr, wallet.id)
                 )
@@ -807,7 +810,7 @@ class AddressList(MyTreeView[str]):
         # 2) Build the fresh list of sub‑menus
         new_menus: list[QMenu] = []
         for wallet_id in self.wallets.keys():
-            wallet_signals = self.signals.wallet_signals.get(wallet_id)
+            wallet_signals = self.wallet_functions.wallet_signals.get(wallet_id)
             if not wallet_signals:
                 continue
             export_menu = ExportLabelMenu(wallet_signals=wallet_signals)
@@ -864,7 +867,7 @@ class AddressList(MyTreeView[str]):
             categories += [category]
             wallet.labels.set_addr_category(edit_key, category, timestamp="now")
 
-        if wallet_signals := self.signals.wallet_signals.get(wallet.id):
+        if wallet_signals := self.wallet_functions.wallet_signals.get(wallet.id):
             wallet_signals.updated.emit(
                 UpdateFilter(
                     addresses=[edit_key],
@@ -1031,7 +1034,9 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self._menu_import_export = self.address_list.recreate_export_import_menu(self.menu)
 
         self.snapshot_menu = LabelSnapshotMenu(
-            self.address_list.wallets, signals=self.address_list.signals, parent=self.menu
+            self.address_list.wallets,
+            wallet_functions=self.address_list.wallet_functions,
+            parent=self.menu,
         )
         self.menu.addMenu(self.snapshot_menu)
 

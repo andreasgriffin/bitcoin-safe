@@ -50,7 +50,7 @@ from bitcoin_safe.pythonbdk_types import OutPoint, Recipient, TransactionDetails
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....signals import Signals
+from ....signals import WalletFunctions
 from ....wallet import TxStatus, Wallet, get_wallet_of_address, get_wallets, is_local
 from ..my_treeview import SearchableTab
 
@@ -62,7 +62,7 @@ class UITx_Base(SearchableTab):
         self,
         fx: FX,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         mempool_manager: MempoolManager,
         parent=None,
         **kwargs,
@@ -71,7 +71,8 @@ class UITx_Base(SearchableTab):
         self.fx = fx
         self.signal_tracker = SignalTracker()
         self.loop_in_thread = LoopInThread()
-        self.signals = signals
+        self.wallet_functions = wallet_functions
+        self.signals = wallet_functions.signals
         self.mempool_manager = mempool_manager
         self.config = config
 
@@ -91,7 +92,7 @@ class UITx_Base(SearchableTab):
 
     def _get_robust_height(self) -> int:
         "Tries to geth the height from any wallet.  If none are open then tries mempool"
-        for wallet in get_wallets(self.signals):
+        for wallet in get_wallets(self.wallet_functions):
             height = wallet.get_height()
             logger.debug(f"_get_robust_height {height=} from wallet {wallet.id}")
             return height
@@ -124,7 +125,7 @@ class UITx_Base(SearchableTab):
     def get_unconfirmed_ancestors(
         self, txids: Set[str], wallets: List[Wallet] | None = None
     ) -> Dict[str, TransactionDetails]:
-        wallets = wallets if wallets else get_wallets(self.signals)
+        wallets = wallets if wallets else get_wallets(self.wallet_functions)
 
         cpfp_tools = CpfpTools(wallets=wallets)
         return cpfp_tools.get_unconfirmed_ancestors(txids=txids, known_ancestors={})
@@ -158,7 +159,9 @@ class UITx_Base(SearchableTab):
             if not recipient.address:
                 continue
 
-            this_wallet = wallet if wallet else get_wallet_of_address(recipient.address, self.signals)
+            this_wallet = (
+                wallet if wallet else get_wallet_of_address(recipient.address, self.wallet_functions)
+            )
             if not this_wallet:
                 continue
 
@@ -173,7 +176,7 @@ class UITx_Base(SearchableTab):
 
     def set_category_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
         # warn if multiple categories are combined
-        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
+        wallets: List[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
 
         category_dict: Dict[str, Set[str]] = defaultdict(set[str])
         for wallet in wallets:

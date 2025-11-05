@@ -402,6 +402,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>बीता समय: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - पूर्ण {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -543,6 +555,28 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>यहाँ अपना संदेश टाइप करें...  </translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Chain height {height}</source>
+			<translation>चेन ऊँचाई {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>नोड्स से कनेक्ट हो रहा है</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Electrum</source>
+			<translation>Electrum के माध्यम से सिंक हो रहा है</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Esplora</source>
+			<translation>Esplora के माध्यम से सिंक हो रहा है</translation>
 		</message>
 	</context>
 	<context>
@@ -1145,8 +1179,8 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Remove on restart</source>
-			<translation>रीस्टार्ट पर हटाएँ</translation>
+			<source>Remove</source>
+			<translation>हटाएं</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1798,6 +1832,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>फिर भी बंद करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>वॉलेट बंद करें</translation>
 		</message>
@@ -1868,6 +1907,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hide to tray</source>
+			<translation>ट्रे में छिपाएँ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>खुला रखें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>बिटकॉइन p2p नेटवर्क की निगरानी</translation>
 		</message>
@@ -1885,6 +1934,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
 			<translation>कोई वॉलेट नहीं खुला है। कृपया इस लेन-देन को संपादित करने के लिए प्रेषक वॉलेट खोलें।  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No, quick scan</source>
+			<translation>नहीं, त्वरित स्कैन</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1988,6 +2042,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>दिखाएँ/छिपाएँ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>स्थिति: कनेक्टेड</translation>
 		</message>
@@ -2040,6 +2099,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>वॉलेट पहले से खुला है</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>वॉलेट सिंक हो रहा है</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>वॉलेट अभी भी सिंक हो रहे हैं</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>क्या इस वॉलेट का उपयोग पहले कभी हुआ है?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, full scan for transactions</source>
+			<translation>हाँ, लेनदेन के लिए पूर्ण स्कैन</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2185,8 +2264,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>अधिक कनेक्शन गोपनीयता बढ़ाते हैं, लेकिन सिंकिंग गति घटाते हैं।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>नेटवर्क सेटिंग्स</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p कनेक्शनों की संख्या:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2518,6 +2607,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>सक्षम/अक्षम करें</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2660,6 +2756,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>प्लगइन्स</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>आगे बढ़ें</translation>
 		</message>
@@ -2692,11 +2793,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>सफलतापूर्वक {number} लेबल अपडेट किए गए  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>सिंक &amp;&amp; चैट  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3298,6 +3394,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>- अपने लेबल और कॉइन श्रेणियों को क्लाउड में बैकअप करें।&lt;br&gt;- अपनी लेबल और कॉइन श्रेणियों को कई कंप्यूटरों के बीच सिंक्रनाइज़ करें। {synclink}&lt;br&gt;- दुनिया में जहाँ भी आप हों, दूसरों के साथ मिलकर एक लेनदेन पर हस्ताक्षर करें। {videolink}&lt;br&gt;- सब कुछ हमेशा एन्क्रिप्टेड रहता है (और जानें {protocol_link} के बारे में)</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>सहयोग वीडियो</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>विश्वसनीय उपकरणों में लेबल बैकअप और एन्क्रिप्टेड सिंकिंग  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>प्राप्त लेन-देन और PSBTs खोलें  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>{author} से {name} खोलना</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>सिंक &amp; चैट  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>सिंक्रनाइज़ेशन वीडियो</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>प्रोटोकॉल</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3338,7 +3481,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>udev नियम स्थापित करें</translation>
+			<translation>udev नियम इंस्टॉल करें</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3545,6 +3688,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>बाएँ सूची से एक या एक से अधिक UTXO चुनें, या “विशिष्ट UTXO चुनें” ऊपर का चयन हटा दें ताकि Bitcoin‑Safe आपकी लेनदेन के लिए सबसे अच्छे कॉइन चुन सके।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>इनपुट्स {inputs} इन पुष्ट txids {txids} के साथ संघर्ष करते हैं।</translation>
 		</message>
@@ -3643,7 +3791,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>कोई USB डिवाइस नहीं मिला। यह udev नियमों के गायब होने के कारण हो सकता है।</translation>
+			<translation>कोई USB उपकरण नहीं मिला। यह udev नियमों की कमी के कारण हो सकता है।</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3840,6 +3988,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>बैलेंस ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>पता</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>फंडिंग लेनदेन केंद्रित करें</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>खर्च लेनदेन केंद्रित करें</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>बनाई जा रही लेनदेन खोलने के लिए क्लिक करें।</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>वॉलेट ग्राफ़ निर्यात नहीं हो सका: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>तारीख</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>टाइमलाइन का पता लगाने के लिए खींचें। किसी लेनदेन, txid या UTXO पर क्लिक करें या राइट-क्लिक करें विकल्प देखने के लिए।</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>ग्राफ़ निर्यात करें…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>वॉलेट ग्राफ़ निर्यात करें</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>बाहरी इनपुट</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>शुल्क</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>पूरा txid</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>इनपुट पर जाएँ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>लेबल</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>कोई जंप लक्ष्य उपलब्ध नहीं</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>कोई ज्ञात इनपुट नहीं</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>प्रदर्शित करने के लिए कोई लेनदेन नहीं।</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>प्राप्त</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>वॉलेट ग्राफ़ को पुनः आरेखित करें।</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>रिफ्रेश करें</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>भेजा गया</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>खर्च किया गया</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>स्थिति: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>लेन-देन</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>अज्ञात</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>अज्ञात शुल्क</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>अखर्चित</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>मान</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>यह देखें कि आपका वॉलेट समय के साथ UTXO कैसे बनाता और खर्च करता है।</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>वॉलेट ग्राफ़</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>वॉलेट ग्राफ़ {path} पर निर्यात किया गया</translation>
 		</message>
 	</context>
 	<context>
@@ -4384,6 +4694,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>कॉम्पैक्ट ब्लॉक फ़िल्टर ब्लॉकचेन की सभी जानकारी प्राप्त करने का एक निजी और तेज़ तरीका है। वॉलेट सीधे कई बिटकॉइन नोड्स से जुड़ेगा और उनसे ब्लॉक सारांश (Compact Block Filters) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे 'Bitcoin नेटवर्क मॉनिटरिंग' अनुभाग में एक प्रारंभिक पीयर निर्दिष्ट करते हैं, तो इसका उपयोग पसंदीदा नोड के रूप में किया जाएगा।</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>"bitcoind -chain=regtest" के साथ अपना bitcoind चलाएं</translation>
 		</message>
@@ -4420,11 +4735,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>You can connect your own Bitcoin node, such as {link}.</source>
 			<translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
 		</message>
@@ -4440,6 +4750,11 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
+		<name>network_config</name>
+		<message>
+			<source>{cbf_connections} bitcoin nodes via {server_type}</source>
+			<translation>{cbf_connections} बिटकॉइन नोड {server_type} के माध्यम से</translation>
+		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>

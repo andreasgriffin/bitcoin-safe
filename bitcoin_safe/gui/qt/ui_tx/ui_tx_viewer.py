@@ -86,7 +86,12 @@ from ....pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_txout,
 )
-from ....signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
+from ....signals import (
+    TypedPyQtSignalNo,
+    UpdateFilter,
+    UpdateFilterReason,
+    WalletFunctions,
+)
 from ....signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -168,7 +173,7 @@ class UITx_Viewer(UITx_Base):
     def __init__(
         self,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fx: FX,
         widget_utxo_with_toolbar: UtxoListWithToolbar,
         network: bdk.Network,
@@ -184,7 +189,7 @@ class UITx_Viewer(UITx_Base):
             fx=fx,
             parent=parent,
             config=config,
-            signals=signals,
+            wallet_functions=wallet_functions,
             mempool_manager=mempool_manager,
         )
         self.focus_ui_element = focus_ui_element
@@ -214,7 +219,7 @@ class UITx_Viewer(UITx_Base):
         container_label_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         self.label_label = QLabel("")
         self.label_line_edit = WalletLabelAndCategoryEdit(
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             get_label_ref=self.txid,
             label_type=LabelType.tx,
             parent=self,
@@ -257,7 +262,9 @@ class UITx_Viewer(UITx_Base):
         self.splitter.addWidget(self.column_inputs)
 
         # outputs
-        self.column_recipients = ColumnRecipients(fx=fx, signals=self.signals, allow_edit=False)
+        self.column_recipients = ColumnRecipients(
+            fx=fx, wallet_functions=self.wallet_functions, allow_edit=False
+        )
         set_margins(
             self.column_recipients._layout,
             {
@@ -270,7 +277,7 @@ class UITx_Viewer(UITx_Base):
         self.header_button_group = ToggleButtonGroup(self)
 
         # sankey
-        self.column_sankey = ColumnSankey(fx=self.fx, signals=self.signals, parent=self)
+        self.column_sankey = ColumnSankey(wallet_functions=self.wallet_functions, fx=self.fx, parent=self)
         set_margins(
             self.column_sankey._layout,
             {
@@ -281,7 +288,7 @@ class UITx_Viewer(UITx_Base):
 
         # fee_rate
         self.column_fee = ColumnFee(
-            signals=signals,
+            wallet_functions=self.wallet_functions,
             mempool_manager=self.mempool_manager,
             fx=fx,
             fee_info=fee_info,
@@ -321,7 +328,7 @@ class UITx_Viewer(UITx_Base):
             signals_min=self.signals,
             loop_in_thread=self.loop_in_thread,
             parent=self,
-            sync_client=get_syncclients(signals=self.signals),
+            sync_client=get_syncclients(wallet_functions=self.wallet_functions),
         )
         self._layout.addWidget(self.export_data_simple)
 
@@ -445,7 +452,7 @@ class UITx_Viewer(UITx_Base):
             fee_amount = self.data.data.fee()
 
         if fee_amount is not None:
-            outputs = sum(txout.value for txout in self.extract_tx().output())
+            outputs = sum(txout.value.to_sat() for txout in self.extract_tx().output())
             return outputs + fee_amount
 
         return None
@@ -587,29 +594,31 @@ class UITx_Viewer(UITx_Base):
         self, fee_rate: float | None = None, target_total_unconfirmed_fee_rate: float | None = None
     ) -> None:
         tx = self.extract_tx()
-        tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=self.signals)
+        tx_details, wallet = get_tx_details(
+            txid=str(tx.compute_txid()), wallet_functions=self.wallet_functions
+        )
         if not wallet or not tx_details:
             return
         TxTools.cpfp_tx(
             tx_details=tx_details,
             wallet=wallet,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             fee_rate=fee_rate,
             target_total_unconfirmed_fee_rate=target_total_unconfirmed_fee_rate,
         )
 
     def _infos_for_edit_or_rbf(self, new_fee_rate: float | None = None):
         tx = self.extract_tx()
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
         txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 
         txid = tx.compute_txid()
-        tx_details, wallet = get_tx_details(txid=txid, signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=str(txid), wallet_functions=self.wallet_functions)
 
         if not wallet and txinfos.main_wallet_id:
-            wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
+            wallet = self.wallet_functions.get_wallets().get(txinfos.main_wallet_id)
         return txid, wallet, tx_details, txinfos
 
     def edit(self, new_fee_rate: float | None = None) -> None:
@@ -629,13 +638,18 @@ class UITx_Viewer(UITx_Base):
                 type=MessageType.Error,
             )
         else:
-            TxTools.edit_tx(replace_tx=tx_details, txinfos=txinfos, tx_status=tx_status, signals=self.signals)
+            TxTools.edit_tx(
+                replace_tx=tx_details,
+                txinfos=txinfos,
+                tx_status=tx_status,
+                wallet_functions=self.wallet_functions,
+            )
 
     def rbf(self, new_fee_rate: float | None = None) -> None:
         txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
 
         if not wallet and txinfos.main_wallet_id:
-            wallet = self.signals.get_wallets().get(txinfos.main_wallet_id)
+            wallet = self.wallet_functions.get_wallets().get(txinfos.main_wallet_id)
 
         if not wallet:
             Message(
@@ -653,7 +667,10 @@ class UITx_Viewer(UITx_Base):
 
         tx_status = TxStatus.from_wallet(txid=txid, wallet=wallet)
         TxTools.rbf_tx(
-            replace_tx=tx_details.transaction, txinfos=txinfos, tx_status=tx_status, signals=self.signals
+            replace_tx=tx_details.transaction,
+            txinfos=txinfos,
+            tx_status=tx_status,
+            wallet_functions=self.wallet_functions,
         )
 
     def showEvent(self, a0: QShowEvent | None) -> None:
@@ -747,10 +764,10 @@ class UITx_Viewer(UITx_Base):
             self.signals.signal_set_tab_properties.emit(self, title, icon_text, tooltip)
 
     def txid(self) -> str:
-        return self.extract_tx().compute_txid()
+        return str(self.extract_tx().compute_txid())
 
     def _get_height(self) -> int | None:
-        for wallet in get_wallets(self.signals):
+        for wallet in get_wallets(self.wallet_functions):
             return wallet.get_height()
         return None
 
@@ -781,7 +798,7 @@ class UITx_Viewer(UITx_Base):
         return False
 
     def _set_blockchain(self):
-        for wallet in get_wallets(self.signals):
+        for wallet in get_wallets(self.wallet_functions):
             if wallet.client:
                 self.client = wallet.client
                 logger.error(f"Using {self.client} from wallet {wallet.id}")
@@ -797,10 +814,10 @@ class UITx_Viewer(UITx_Base):
         if not self.client:
             self._set_blockchain()
 
-        logger.debug(f"broadcasting tx {tx.compute_txid()[:4]=}")
+        logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
         success = self._broadcast(tx)
         if success:
-            logger.info(f"Successfully broadcasted tx {tx.compute_txid()[:4]=}")
+            logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
@@ -814,7 +831,7 @@ class UITx_Viewer(UITx_Base):
 
         outpoint_dict = {
             outpoint_str: (python_utxo, wallet)
-            for wallet in get_wallets(self.signals)
+            for wallet in get_wallets(self.wallet_functions)
             for outpoint_str, python_utxo in wallet.get_all_txos_dict().items()
         }
 
@@ -895,7 +912,7 @@ class UITx_Viewer(UITx_Base):
 
         wallet_inputs = self.get_wallet_inputs(simple_psbt)
 
-        wallets: List[Wallet] = get_wallets(self.signals)
+        wallets: List[Wallet] = get_wallets(self.wallet_functions)
 
         for wallet_id, inputs in wallet_inputs.items():
             if not inputs:
@@ -990,7 +1007,7 @@ class UITx_Viewer(UITx_Base):
             signature_importer_dict=signature_importers,
             psbt=self.data.data,
             network=self.network,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             loop_in_thread=self.loop_in_thread,
         )
 
@@ -1049,7 +1066,7 @@ class UITx_Viewer(UITx_Base):
             self.set_psbt(import_psbt)
 
     def is_in_mempool(self, txid: str) -> bool:
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
         for wallet in wallets:
             if wallet.is_in_mempool(txid):
                 return True
@@ -1085,7 +1102,7 @@ class UITx_Viewer(UITx_Base):
 
     def set_poisoning_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
         # warn if multiple categories are combined
-        wallets: List[Wallet] = list(self.signals.get_wallets.emit().values())
+        wallets: List[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
 
         all_addresses = set(recipient_addresses)
         for wallet in wallets:
@@ -1124,10 +1141,10 @@ class UITx_Viewer(UITx_Base):
 
     def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
         "This only should be done for tx, not psbt, since the PSBT.extract_tx size is too low"
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
         # try via tx details
         for wallet_ in wallets:
-            txdetails = wallet_.get_tx(tx.compute_txid())
+            txdetails = wallet_.get_tx(str(tx.compute_txid()))
             if txdetails and txdetails.fee:
                 return FeeInfo(
                     fee_amount=txdetails.fee,
@@ -1151,7 +1168,7 @@ class UITx_Viewer(UITx_Base):
                 return None
             total_input_value += python_txo.value
 
-        total_output_value = sum(txout.value for txout in tx.output())
+        total_output_value = sum(txout.value.to_sat() for txout in tx.output())
         fee_amount = total_input_value - total_output_value
         return FeeInfo(
             fee_amount=fee_amount,
@@ -1161,7 +1178,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def get_chain_position(self, txid: str) -> bdk.ChainPosition | None:
-        for wallet in get_wallets(self.signals):
+        for wallet in get_wallets(self.wallet_functions):
             tx_details = wallet.get_tx(txid)
             if tx_details:
                 return tx_details.chain_position
@@ -1174,18 +1191,18 @@ class UITx_Viewer(UITx_Base):
         chain_position: bdk.ChainPosition | None = None,
     ) -> None:
         self.data = Data.from_tx(tx, network=self.network)
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(tx.compute_txid())
+        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
         if fee_info is None or fee_info.any_is_estimated():
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
         if chain_position is None or isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
-            chain_position = self.get_chain_position(tx.compute_txid())
+            chain_position = self.get_chain_position(str(tx.compute_txid()))
         self.chain_position = chain_position
 
         tx_status = self.get_tx_status(chain_position=chain_position)
 
-        tx_details, _wallet = get_tx_details(txid=self.txid(), signals=self.signals)
+        tx_details, _wallet = get_tx_details(txid=self.txid(), wallet_functions=self.wallet_functions)
 
         self.column_fee.fee_group.set_fee_infos(
             fee_info=fee_info,
@@ -1204,13 +1221,13 @@ class UITx_Viewer(UITx_Base):
                 robust_address_str_from_txout(o, network=self.network, on_error_return_hex=False)
                 for o in outputs
             ],
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
         )
 
         self.recipients.recipients = [
             Recipient(
                 address=robust_address_str_from_txout(output, self.network),
-                amount=output.value,
+                amount=output.value.to_sat(),
             )
             for output in outputs
         ]
@@ -1218,7 +1235,9 @@ class UITx_Viewer(UITx_Base):
         self.set_psbt_already_broadcasted_bar()
         self.set_tab_properties(chain_position=chain_position)
         self.update_all_totals()
-        self.export_data_simple.set_data(data=self.data, sync_client=get_syncclients(signals=self.signals))
+        self.export_data_simple.set_data(
+            data=self.data, sync_client=get_syncclients(wallet_functions=self.wallet_functions)
+        )
 
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
@@ -1233,7 +1252,7 @@ class UITx_Viewer(UITx_Base):
 
     def _get_python_txos(self):
         txo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
-        for wallet_ in get_wallets(self.signals):
+        for wallet_ in get_wallets(self.wallet_functions):
             txo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
         return txo_dict
 
@@ -1299,7 +1318,7 @@ class UITx_Viewer(UITx_Base):
         self.tx_singning_steps_container.setVisible(is_psbt)
 
         tx_status = self.get_tx_status(chain_position=chain_position)
-        tx_details, wallet = get_tx_details(txid=self.txid(), signals=self.signals)
+        tx_details, wallet = get_tx_details(txid=self.txid(), wallet_functions=self.wallet_functions)
 
         show_send = bool(tx_status.can_do_initial_broadcast() and self.data.data_type == DataType.Tx)
         logger.debug(
@@ -1314,7 +1333,9 @@ class UITx_Viewer(UITx_Base):
         self.button_rbf.setVisible(
             bool(tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status))
         )
-        self.button_cpfp_tx.setVisible(TxTools.can_cpfp(tx_status=tx_status, signals=self.signals))
+        self.button_cpfp_tx.setVisible(
+            TxTools.can_cpfp(tx_status=tx_status, wallet_functions=self.wallet_functions)
+        )
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
@@ -1336,7 +1357,7 @@ class UITx_Viewer(UITx_Base):
 
         self.data = Data.from_psbt(psbt, network=self.network)
         tx = psbt.extract_tx()
-        txid = tx.compute_txid()
+        txid = str(tx.compute_txid())
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(txid)
         tx_status = self.get_tx_status(chain_position=None)
         # do not use calc_fee_info here, because calc_fee_info is for final tx only.
@@ -1357,13 +1378,13 @@ class UITx_Viewer(UITx_Base):
                 robust_address_str_from_txout(o, network=self.network, on_error_return_hex=False)
                 for o in outputs
             ],
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
         )
 
         self.recipients.recipients = [
             Recipient(
                 address=robust_address_str_from_txout(output, self.network),
-                amount=output.value,
+                amount=output.value.to_sat(),
             )
             for output in outputs
         ]
@@ -1386,13 +1407,13 @@ class UITx_Viewer(UITx_Base):
         self.signal_updated_content.emit(self.data)
 
     def set_psbt_already_broadcasted_bar(self):
-        tx, wallet = get_tx_details(self.txid(), signals=self.signals)
+        tx, wallet = get_tx_details(self.txid(), wallet_functions=self.wallet_functions)
         self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
 
     def handle_cpfp(
         self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None
     ) -> None:
-        parent_txids = set(txin.previous_output.txid for txin in tx.input())
+        parent_txids = set(str(txin.previous_output.txid) for txin in tx.input())
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
             this_fee_info=this_fee_info,

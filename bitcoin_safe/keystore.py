@@ -38,7 +38,6 @@ from bitcoin_usb.address_types import (
     ConstDerivationPaths,
     SimplePubKeyProvider,
 )
-from packaging import version
 
 from bitcoin_safe.wallet_util import (
     WalletDifference,
@@ -47,6 +46,7 @@ from bitcoin_safe.wallet_util import (
 )
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class KeyStoreImporterType(SaveAllClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
         return super().from_dump_migration(dct=dct)
@@ -209,13 +209,23 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             logger.debug(f"{cls.__name__}: {e}")
             return False
 
+    @staticmethod
+    def network_consistent(pub: bdk.DescriptorPublicKey, network: bdk.Network) -> bool:
+        if network == bdk.Network.BITCOIN:
+            return "network: Main" in pub.__repr__()
+        else:
+            return "network: Test" in pub.__repr__()
+
     @classmethod
     def is_xpub_valid(cls, xpub: str, network: bdk.Network) -> bool:
         if not AddressTypes.p2pkh.bdk_descriptor:
             return False
         try:
+            descriptor_public_key = bdk.DescriptorPublicKey.from_string(xpub)
+            assert cls.network_consistent(descriptor_public_key, network), "Wrong network"
+
             AddressTypes.p2pkh.bdk_descriptor(
-                bdk.DescriptorPublicKey.from_string(xpub),
+                descriptor_public_key,
                 "0" * 8,
                 bdk.KeychainKind.EXTERNAL,
                 network,
@@ -249,12 +259,12 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             if "derivation_path" in dct:
                 dct["key_origin"] = dct["derivation_path"]
                 del dct["derivation_path"]
 
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             if "derivation_path" in dct:
                 dct["network"] = bdk.Network.REGTEST
 

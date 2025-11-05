@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import asyncio
 import logging
 
 import bdkpython as bdk
@@ -399,7 +400,8 @@ def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
     assert not wallet.is_multisig()
 
     assert wallet.get_addresses()[0] == "bc1qyngkwkslw5ng4v7m42s8t9j6zldmhyvrnnn9k5"
-    wallet.sync()
+    wallet.trigger_sync()
+    asyncio.run(wallet.update())
 
     tx_list = wallet.sorted_delta_list_transactions()
     assert len(tx_list) >= 28

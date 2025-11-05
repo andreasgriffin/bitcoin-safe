@@ -52,10 +52,9 @@ from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
-from ...signals import Signals
+from ...signals import WalletFunctions
 from .util import Message, MessageType, generate_help_button
 
 logger = logging.getLogger(__name__)
@@ -65,10 +64,10 @@ class USBValidateAddressWidget(QWidget):
     def __init__(
         self,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
     ) -> None:
         super().__init__()
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.network = network
         self.descriptor: Optional[bdk.Descriptor] = None
         self.expected_address = ""
@@ -82,7 +81,9 @@ class USBValidateAddressWidget(QWidget):
         self.label_expected_address = QLabel()
         self._layout.addWidget(self.label_expected_address)
 
-        self.edit_address = AddressEdit(network=network, allow_edit=False, parent=self, signals=self.signals)
+        self.edit_address = AddressEdit(
+            network=network, allow_edit=False, parent=self, wallet_functions=self.wallet_functions
+        )
         self._layout.addWidget(self.edit_address)
 
         # Create buttons and layout
@@ -102,7 +103,7 @@ class USBValidateAddressWidget(QWidget):
         self.button_box.addButton(self.button_validate_address, QDialogButtonBox.ButtonRole.AcceptRole)
 
         self.updateUi()
-        self.signals.language_switch.connect(self.updateUi)
+        self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
         self.button_validate_address.setText(self.tr("Validate address"))
@@ -146,11 +147,15 @@ class USBValidateAddressWidget(QWidget):
 class USBRegisterMultisigWidget(USBValidateAddressWidget):
     signal_end_hwi_blocker = cast(TypedPyQtSignalNo, pyqtSignal())
 
-    def __init__(self, network: bdk.Network, signals: Signals) -> None:
+    def __init__(
+        self,
+        network: bdk.Network,
+        wallet_functions: WalletFunctions,
+    ) -> None:
         screenshots = ScreenshotsRegisterMultisig()
         self.button_help = generate_help_button(screenshots, title="Help")
 
-        super().__init__(network, signals)
+        super().__init__(network, wallet_functions=wallet_functions)
 
         self.button_box.addButton(self.button_help, QDialogButtonBox.ButtonRole.HelpRole)
 

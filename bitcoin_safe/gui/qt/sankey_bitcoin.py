@@ -49,7 +49,7 @@ from bitcoin_safe.pythonbdk_types import (
     get_prev_outpoints,
     robust_address_str_from_txout,
 )
-from bitcoin_safe.signals import Signals, UpdateFilter
+from bitcoin_safe.signals import UpdateFilter, WalletFunctions
 from bitcoin_safe.wallet import (
     Wallet,
     get_label_from_any_wallet,
@@ -61,9 +61,10 @@ logger = logging.getLogger(__name__)
 
 
 class SankeyBitcoin(SankeyWidget):
-    def __init__(self, network: bdk.Network, signals: Signals):
+    def __init__(self, network: bdk.Network, wallet_functions: WalletFunctions):
         super().__init__()
-        self.signals = signals
+        self.wallet_functions = wallet_functions
+        self.signals = wallet_functions.signals
         self.network = network
         self.tx: bdk.Transaction | None = None
         self.fee_info: FeeInfo | None = None
@@ -154,7 +155,7 @@ class SankeyBitcoin(SankeyWidget):
         self.tx = tx
         self.txo_dict = txo_dict if txo_dict else {}
         self.addresses = []
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
 
         labels: Dict[FlowIndex, str] = {}
         tooltips: Dict[FlowIndex, str] = {}
@@ -162,7 +163,7 @@ class SankeyBitcoin(SankeyWidget):
 
         # output
         self.txouts = [TxOut.from_bdk(txout) for txout in tx.output()]
-        out_flows: List[int] = [txout.value for txout in self.txouts]
+        out_flows: List[int] = [txout.value.to_sat() for txout in self.txouts]
         for vout, txout in enumerate(self.txouts):
             flow_index = FlowIndex(flow_type=FlowType.OutFlow, i=vout)
             address = robust_address_str_from_txout(txout, network=self.network)
@@ -171,7 +172,7 @@ class SankeyBitcoin(SankeyWidget):
             label = get_label_from_any_wallet(
                 label_type=LabelType.addr,
                 ref=address,
-                signals=self.signals,
+                wallet_functions=self.wallet_functions,
                 wallets=wallets,
                 autofill_from_txs=False,
             )
@@ -179,7 +180,7 @@ class SankeyBitcoin(SankeyWidget):
 
             outpoint = self.txo_dict.get(str(OutPoint(txid=self.tx.compute_txid(), vout=vout)))
             labels[flow_index], tooltips[flow_index] = get_label_and_tooltip(
-                value=txout.value,
+                value=txout.value.to_sat(),
                 label=label,
                 address=address,
                 count=len(self.txouts),
@@ -189,7 +190,7 @@ class SankeyBitcoin(SankeyWidget):
             if color:
                 colors[flow_index] = color
 
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
         outpoint_dict = {
             outpoint_str: (python_utxo, wallet)
             for wallet in wallets
@@ -215,7 +216,7 @@ class SankeyBitcoin(SankeyWidget):
                 label = get_label_from_any_wallet(
                     label_type=LabelType.addr,
                     ref=address,
-                    signals=self.signals,
+                    wallet_functions=self.wallet_functions,
                     wallets=wallets,
                     autofill_from_txs=False,
                 )
@@ -305,17 +306,19 @@ class SankeyBitcoin(SankeyWidget):
         return True
 
     def get_address_color(self, address: str, wallets: List[Wallet]) -> QColor | None:
-        wallet = get_wallet_of_address(address=address, signals=self.signals)
+        wallet = get_wallet_of_address(address=address, wallet_functions=self.wallet_functions)
         if not wallet:
             return None
-        color = AddressEdit.color_address(address, wallet, signals=self.signals)
+        color = AddressEdit.color_address(
+            address, wallet, wallet_signals=self.wallet_functions.wallet_signals[wallet.id]
+        )
         if not color:
             logger.error("This should not happen, since wallet should only be found if the address is mine.")
             return None
         return color
 
     def get_python_txo(self, outpoint: str, wallets: List[Wallet] | None = None) -> Optional[PythonUtxo]:
-        wallets = wallets if wallets else get_wallets(self.signals)
+        wallets = wallets if wallets else get_wallets(self.wallet_functions)
         for wallet in wallets:
             txo = wallet.get_python_txo(outpoint)
             if txo:
@@ -345,7 +348,7 @@ class SankeyBitcoin(SankeyWidget):
                 return
             outpoint = outpoints[flow_index.i]
             self.signals.open_tx_like.emit(
-                PackagedTxLike(tx_like=outpoint.txid, focus_ui_elements=UiElements.diagram)
+                PackagedTxLike(tx_like=outpoint.txid_str, focus_ui_elements=UiElements.diagram)
             )
 
     def close(self):

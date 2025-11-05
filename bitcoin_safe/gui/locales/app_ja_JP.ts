@@ -402,6 +402,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>経過時間: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - 完了 {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -543,6 +555,28 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Type your message here...</source>
 			<translation>ここにメッセージを入力してください...  </translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Chain height {height}</source>
+			<translation>チェーンの高さ {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>ノードに接続中</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Electrum</source>
+			<translation>Electrum 経由で同期中</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Esplora</source>
+			<translation>Esplora 経由で同期中</translation>
 		</message>
 	</context>
 	<context>
@@ -1145,8 +1179,8 @@ the sending value {sent}</source>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Remove on restart</source>
-			<translation>再起動時に削除</translation>
+			<source>Remove</source>
+			<translation>削除</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1798,6 +1832,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>このまま閉じる</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>タブ {name} を閉じる</translation>
 		</message>
@@ -1868,6 +1907,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hide to tray</source>
+			<translation>トレイに隠す</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>開いたままにする</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>p2p bitcoin ネットワークを監視</translation>
 		</message>
@@ -1885,6 +1934,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
 			<translation>ウォレットが開かれていません。この取引を編集するために送信者のウォレットを開いてください。  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No, quick scan</source>
+			<translation>いいえ、クイックスキャン</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1988,6 +2042,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>表示/非表示</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>ステータス: 接続済み</translation>
 		</message>
@@ -2040,6 +2099,26 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet already open</source>
 			<translation>ウォレットはすでに開かれています</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>ウォレット同期中</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>ウォレットはまだ同期中</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>このウォレットはこれまでに使用されたことがありますか？</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, full scan for transactions</source>
+			<translation>はい、取引のフルスキャン</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2185,8 +2264,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>接続が多いほどプライバシーは向上しますが、同期速度は低下します。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>SSLを有効にする</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>p2p 接続数:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2518,6 +2607,13 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>有効化／無効化</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2660,6 +2756,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>プラグイン</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>続行</translation>
 		</message>
@@ -2692,11 +2793,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>正常に{number}のラベルを更新しました  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>同期 &amp;&amp; チャット  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3298,6 +3394,53 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>- ラベルとコインカテゴリをクラウドにバックアップしてください。&lt;br&gt;- 複数のコンピュータ間でラベルとコインカテゴリを同期してください。 {synclink}&lt;br&gt;- 世界中どこにいても、他の人と共同でトランザクションに署名してください。 {videolink}&lt;br&gt;- すべては常に暗号化されています（{protocol_link}について詳しく知る）</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>コラボレーションビデオ</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>受信したトランザクションと PSBTs を開く  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>{author}からの{name}を開く</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>同期とチャット</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>同期ビデオ</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>プロトコル</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}  </translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3338,7 +3481,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>udev ルールをインストール</translation>
+			<translation>udevルールをインストール</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -3545,6 +3688,11 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>左のリストから1つまたは複数のUTXOを選択するか、上部の「特定のUTXOを選択」のチェックをオフにして、Bitcoin‑Safe に最適なコインを選ばせてください。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>入力{inputs}はこれらの確認されたトランザクションID{txids}と競合します。</translation>
 		</message>
@@ -3643,7 +3791,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB デバイスが見つかりません。udev ルールが不足している可能性があります。</translation>
+			<translation>USBデバイスが見つかりません。udevルールが欠如している可能性があります。</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3840,6 +3988,168 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>残高 ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>アドレス</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>資金提供トランザクションを中央に配置</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>支出トランザクションを中央に配置</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>作成中のトランザクションを開くにはクリックしてください。</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ウォレットグラフをエクスポートできませんでした：{error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>日付</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>タイムラインをドラッグして探索します。トランザクション、txid、またはUTXOをクリックまたは右クリックしてオプションを表示します。</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>グラフをエクスポート…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>ウォレットグラフをエクスポート</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>外部入力</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>手数料</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>完全なtxid</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>入力へジャンプ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>ラベル</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>ジャンプ先がありません</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>既知の入力がありません</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>表示するトランザクションがありません。</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>受信済み</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>ウォレットグラフを再描画します。</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>更新</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>送信済み</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>使用済み</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>ステータス: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>トランザクション</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>不明</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>不明な手数料</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>未使用</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>値</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>ウォレットのトランザクションが時間の経過とともにUTXOをどのように作成し使用しているかを可視化します。</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>ウォレットグラフ</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>ウォレットグラフが {path} にエクスポートされました</translation>
 		</message>
 	</context>
 	<context>
@@ -4384,6 +4694,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Compact Block Filterは、すべてのブロックチェーン情報をプライベートかつ高速に取得する方法です。ウォレットは複数のビットコインノードに直接接続し、そこからブロック概要（Compact Block Filters）をダウンロードします。&lt;br&gt;下の「Bitcoinネットワーク監視」セクションで初期ピアを指定した場合、それが優先ノードとして使用されます。</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>"bitcoind -chain=regtest"でbitcoindを実行してください</translation>
 		</message>
@@ -4420,11 +4735,6 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>これはビットコインネットワークに接続するためのプライベートかつ高速な方法です。</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>You can connect your own Bitcoin node, such as {link}.</source>
 			<translation>{link}など、独自のBitcoinノードに接続できます。</translation>
 		</message>
@@ -4440,6 +4750,11 @@ It is best to use your own server, such as {link}.</source>
 		</message>
 	</context>
 	<context>
+		<name>network_config</name>
+		<message>
+			<source>{cbf_connections} bitcoin nodes via {server_type}</source>
+			<translation>{cbf_connections} 個のビットコインノード（{server_type} 経由）</translation>
+		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>

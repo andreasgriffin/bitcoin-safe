@@ -558,7 +558,6 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
 
     def __init__(
         self,
-        *,
         config: UserConfig,
         signals: Signals,
         parent: Optional[QWidget] = None,

@@ -57,7 +57,7 @@ from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
 
 from ...descriptors import AddressType, get_default_address_type
-from ...signals import Signals, TypedPyQtSignalNo
+from ...signals import TypedPyQtSignalNo, WalletFunctions
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 
@@ -72,7 +72,7 @@ class DescriptorUI(QWidget):
     def __init__(
         self,
         protowallet: ProtoWallet,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         wallet: Optional[Wallet] = None,
     ) -> None:
@@ -82,7 +82,7 @@ class DescriptorUI(QWidget):
         # if we are in the wallet setp process, then wallet = None
         self.protowallet = protowallet
         self.wallet = wallet
-        self.signals = signals
+        self.wallet_functions = wallet_functions
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
@@ -95,7 +95,7 @@ class DescriptorUI(QWidget):
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=self.get_editable_protowallet,
             get_address_type=self.get_address_type_from_ui,
-            signals_min=signals,
+            signals_min=wallet_functions.signals,
             slow_hwi_listing=True,
         )
         self._layout.addWidget(self.keystore_uis)
@@ -108,7 +108,7 @@ class DescriptorUI(QWidget):
 
         self.box_button_bar = self.create_button_bar()
         self.updateUi()
-        signals.language_switch.connect(self.updateUi)
+        wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def get_editable_protowallet(self):
         return self.protowallet
@@ -377,10 +377,10 @@ class DescriptorUI(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         self.horizontalLayout_4 = QVBoxLayout(self.groupBox_wallet_descriptor)
-        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
+        language_switch = cast(TypedPyQtSignalNo, self.wallet_functions.signals.language_switch)
         self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             wallet=self.wallet,
             signal_update=language_switch,
             loop_in_thread=loop_in_thread,

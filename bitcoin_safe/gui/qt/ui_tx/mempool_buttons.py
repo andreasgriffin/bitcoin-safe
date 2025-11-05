@@ -59,7 +59,7 @@ from ....mempool_manager import (
     fee_to_color,
     mempoolFeeColors,
 )
-from ....signals import Signals, TypedPyQtSignal
+from ....signals import TypedPyQtSignal, WalletFunctions
 from ....util import required_precision
 from ..invisible_scroll_area import InvisibleScrollArea
 from ..util import (
@@ -537,7 +537,7 @@ class MempoolButtons(VerticalButtonGroup):
         mempool_manager: MempoolManager,
         decimal_precision: int,
         tx_status: TxStatus,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fee_rate: float = 1,
         max_button_count=4,
         parent=None,
@@ -552,7 +552,7 @@ class MempoolButtons(VerticalButtonGroup):
         )
         self.tx_status = tx_status
         self.mempool_manager = mempool_manager
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.can_rbf_safely = False
 
         self.info_past_days = BetweenBlockInfoBox()
@@ -742,7 +742,7 @@ class MempoolButtons(VerticalButtonGroup):
                 button.rbf_icon.setVisible((button.index < block_index) and self.can_rbf_safely)
                 button.cpfp_icon.setVisible(
                     (button.index < block_index)
-                    and TxTools.can_cpfp(tx_status=self.tx_status, signals=self.signals)
+                    and TxTools.can_cpfp(tx_status=self.tx_status, wallet_functions=self.wallet_functions)
                 )
                 button.label_fee_range.setVisible(button.index == block_index)
             elif self.tx_status.confirmation_status == TxConfirmationStatus.CONFIRMED:

@@ -198,10 +198,6 @@ class SignalsMin(NostrSignalsMin):
     close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
     currency_switch = cast(TypedPyQtSignalNo, pyqtSignal())
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.get_current_lang_code = SingularSignalFunction[str](name="get_lang_code")
-
 
 class WalletSignals(SignalsMin):
     updated = cast(TypedPyQtSignal[UpdateFilter], pyqtSignal(UpdateFilter))
@@ -267,9 +263,13 @@ class Signals(SignalsMin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.get_wallets = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
-        self.get_qt_wallets = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
         self.get_network = SingularSignalFunction[bdk.Network](name="get_network")
         self.get_mempool_url = SingularSignalFunction[str](name="get_mempool_url")
 
+
+class WalletFunctions:
+    def __init__(self, signals: Signals) -> None:
+        self.signals = signals
+        self.get_wallets = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
+        self.get_qt_wallets = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
         self.wallet_signals: DefaultDict[str, WalletSignals] = defaultdict(WalletSignals)

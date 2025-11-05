@@ -259,3 +259,22 @@ def test_sorted_keystores_orders_by_xpub():
     )[0]
     ordered = sorted_keystores([ks2, ks1])
     assert [k.xpub for k in ordered] == sorted([ks1.xpub, ks2.xpub])
+
+
+def test_network_consistent():
+    bacon_xpub = "xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K"
+    assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(bacon_xpub), bdk.Network.BITCOIN)
+    assert not KeyStore.network_consistent(
+        bdk.DescriptorPublicKey.from_string(bacon_xpub), bdk.Network.TESTNET4
+    )
+
+    testnet_tpub = "tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD"
+    assert KeyStore.network_consistent(
+        bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.TESTNET4
+    )
+    assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.REGTEST)
+    assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.TESTNET)
+    assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.SIGNET)
+    assert not KeyStore.network_consistent(
+        bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.BITCOIN
+    )

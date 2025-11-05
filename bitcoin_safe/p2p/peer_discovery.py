@@ -28,109 +28,172 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import random
 import socket
-from typing import Set
+from ipaddress import ip_address
+from typing import Any, Dict, List, Sequence, Set
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.util import time_logger
 
 from .p2p_client import Peer
 
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_REQUIRED_SERVICE_FLAGS = (1 << 0) | (1 << 3)
+CBF_REQUIRED_SERVICE_FLAGS = DEFAULT_REQUIRED_SERVICE_FLAGS | (1 << 6)
+
+# Mapping of networks to their DNS seeds and default port
+DNS_SEEDS: Dict[bdk.Network, Dict[str, Any]] = {
+    bdk.Network.BITCOIN: {
+        "hosts": [
+            "seed.bitcoin.sipa.be",  # Pieter Wuille
+            "dnsseed.bluematt.me",  # Matt Corallo
+            "dnsseed.bitcoin.dashjr-list-of-p2p-nodes.us",  # Luke Dashjr
+            "seed.bitcoin.jonasschnelli.ch",  # Jonas Schnelli
+            "seed.btc.petertodd.net",  # Peter Todd
+            "seed.bitcoin.sprovoost.nl",  # Sjors Provoost
+            "dnsseed.emzy.de",  # Stephan Oeste
+            "seed.bitcoin.wiz.biz",  # Jason Maurice
+            "seed.mainnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
+            "127.0.0.1",  # Local fallback
+        ],
+        "port": 8333,
+    },
+    bdk.Network.TESTNET: {
+        "hosts": [
+            "testnet-seed.bitcoin.jonasschnelli.ch",  # Jonas Schnelli
+            "seed.tbtc.petertodd.net",  # Peter Todd
+            "seed.testnet.bitcoin.sprovoost.nl",  # Sjors Provoost
+            "testnet-seed.bluematt.me",  # Matt Corallo
+            "seed.testnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
+            "127.0.0.1",  # Local fallback
+        ],
+        "port": 18333,
+    },
+    bdk.Network.SIGNET: {
+        "hosts": [
+            "seed.signet.bitcoin.sprovoost.nl",  # Sjors Provoost
+            "seed.signet.achownodes.xyz",
+            "v7ajjeirttkbnt32wpy3c6w3emwnfr3fkla7hpxcfokr3ysd3kqtzmqd.onion:38333",
+            "127.0.0.1",  # Local fallback
+        ],
+        "port": 38333,
+    },
+    bdk.Network.REGTEST: {
+        # Regtest only ever uses localhost
+        "hosts": ["127.0.0.1"],
+        "port": 18444,
+    },
+    bdk.Network.TESTNET4: {
+        "hosts": [
+            "seed.testnet4.bitcoin.sprovoost.nl",  # Sjors Provoost
+            "seed.testnet4.wiz.biz",  # Jason Maurice
+            "127.0.0.1",  # Local fallback
+        ],
+        "port": 48333,  # Testnet-4’s default port
+    },
+}
+
+
 class PeerDiscovery:
     def __init__(self, network: bdk.Network, timeout: int = 200) -> None:
         self.network = network
         self.timeout = timeout
+        self._loop_in_thread = LoopInThread()
 
-    def get_bitcoin_peers(self, maximum: int | None = None) -> Set[Peer]:
-        """
-        Discover peers for various Bitcoin networks using multiple DNS seeds.
+    def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
+        if required_services is None:
+            return host
 
-        Supports:
-        - Mainnet (bdk.Network.BITCOIN)
-        - Testnet (bdk.Network.TESTNET)
-        - Signet (bdk.Network.SIGNET)
-        - Regtest (bdk.Network.REGTEST; no DNS seeds - localhost only)
-        - Testnet4
-        """
-        # Mapping of networks to their DNS seeds and default port
-        seeds = {
-            bdk.Network.BITCOIN: {
-                "hosts": [
-                    "seed.bitcoin.sipa.be",  # Pieter Wuille
-                    "dnsseed.bluematt.me",  # Matt Corallo
-                    "dnsseed.bitcoin.dashjr-list-of-p2p-nodes.us",  # Luke Dashjr
-                    "seed.bitcoin.jonasschnelli.ch",  # Jonas Schnelli
-                    "seed.btc.petertodd.net",  # Peter Todd
-                    "seed.bitcoin.sprovoost.nl",  # Sjors Provoost
-                    "dnsseed.emzy.de",  # Stephan Oeste
-                    "seed.bitcoin.wiz.biz",  # Jason Maurice
-                    "seed.mainnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
-                    "127.0.0.1",  # Local fallback
-                ],
-                "port": 8333,
-            },
-            bdk.Network.TESTNET: {
-                "hosts": [
-                    "testnet-seed.bitcoin.jonasschnelli.ch",  # Jonas Schnelli
-                    "seed.tbtc.petertodd.net",  # Peter Todd
-                    "seed.testnet.bitcoin.sprovoost.nl",  # Sjors Provoost
-                    "testnet-seed.bluematt.me",  # Matt Corallo
-                    "seed.testnet.achownodes.xyz",  # Ava Chow, only supports x1, x5, x9, x49, x809, x849, xd, x400, x404, x408, x448, xc08, xc48, x40c
-                    "127.0.0.1",  # Local fallback
-                ],
-                "port": 18333,
-            },
-            bdk.Network.SIGNET: {
-                "hosts": [
-                    "seed.signet.bitcoin.sprovoost.nl",  # Sjors Provoost
-                    "seed.signet.achownodes.xyz",
-                    "v7ajjeirttkbnt32wpy3c6w3emwnfr3fkla7hpxcfokr3ysd3kqtzmqd.onion:38333",
-                    "127.0.0.1",  # Local fallback
-                ],
-                "port": 38333,
-            },
-            bdk.Network.REGTEST: {
-                # Regtest only ever uses localhost
-                "hosts": ["127.0.0.1"],
-                "port": 18444,
-            },
-            bdk.Network.TESTNET4: {
-                "hosts": [
-                    "seed.testnet4.bitcoin.sprovoost.nl",  # Sjors Provoost
-                    "seed.testnet4.wiz.biz",  # Jason Maurice
-                    "127.0.0.1",  # Local fallback
-                ],
-                "port": 48333,  # Testnet-4’s default port
-            },
-        }
+        if host in {"localhost"}:
+            return host
 
-        # Determine which seeds to use; fallback testnet3 if TESTNET4 not supported
-        info = seeds[self.network]
+        try:
+            ip_address(host)
+            return host
+        except ValueError:
+            pass
 
-        peers: Set[Peer] = set()
-        hosts = info["hosts"].copy()  # type: ignore
-        random.shuffle(hosts)
-        for host in hosts:
-            try:
-                addrinfos = socket.getaddrinfo(host, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
-                random.shuffle(addrinfos)
-                for ai in addrinfos:
-                    ip = ai[4][0]
-                    peers.add(Peer(ip, info["port"]))  # type: ignore
-                    if maximum is not None and len(peers) >= maximum:
-                        logger.debug(f"Contacted DNS {host} seed for bitcoin peers and got {peers=}")
-                        return peers
-            except:
-                continue
+        if host.endswith(".onion") or host.endswith(".i2p"):
+            return host
+
+        service_hex = format(required_services, "x")
+        service_host = f"x{service_hex}.{host}"
+        return service_host
+
+    async def _resolve_dns_seed(
+        self,
+        candidate_seed: str,
+        seed_port: int,
+    ) -> List[Peer]:
+        loop = asyncio.get_running_loop()
+
+        try:
+            addrinfos = await loop.run_in_executor(
+                None, socket.getaddrinfo, candidate_seed, None, socket.AF_UNSPEC, socket.SOCK_STREAM
+            )
+        except Exception:
+            return []
+
+        if not addrinfos:
+            return []
+
+        random.shuffle(addrinfos)
+        peers: List[Peer] = []
+        for ai in addrinfos:
+            sockaddr = ai[4]
+            ip = sockaddr[0]
+            port = sockaddr[1] or seed_port
+            peers.append(Peer(ip, port))  # type: ignore[arg-type]
 
         return peers
 
-    def get_bitcoin_peer(self) -> None | Peer:
-        peers = self.get_bitcoin_peers(maximum=1)
+    async def _get_bitcoin_peers_async(self, lower_bound, required_services):
+        dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
+        random.shuffle(dns_seeds)
+
+        effective_required_services = (
+            DEFAULT_REQUIRED_SERVICE_FLAGS if required_services is None else required_services
+        )
+
+        async def resolve(seed_host: str) -> list[Peer]:
+            seed_info = Peer.parse(seed_host, self.network)
+            candidate_seed = self._seed_with_service_bits(
+                seed_info.host,
+                effective_required_services if effective_required_services else None,
+            )
+            return await self._resolve_dns_seed(candidate_seed, seed_info.port)
+
+        def enough(results: Sequence[list[Peer]]) -> bool:
+            if lower_bound is None:
+                return False
+            unique_peers = {peer for batch in results for peer in batch}
+            return len(unique_peers) >= lower_bound
+
+        batches = await self._loop_in_thread.gather(
+            [resolve(seed) for seed in dns_seeds],
+            early_finish_criteria_function=enough,
+        )
+
+        return {peer for batch in batches for peer in batch}
+
+    @time_logger
+    def get_bitcoin_peers(
+        self,
+        lower_bound: int | None = None,
+        required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS,
+    ) -> Set[Peer]:
+        return self._loop_in_thread.run_foreground(
+            self._get_bitcoin_peers_async(lower_bound=lower_bound, required_services=required_services)
+        )
+
+    def get_bitcoin_peer(self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS) -> None | Peer:
+        peers = self.get_bitcoin_peers(lower_bound=1, required_services=required_services)
         if not peers:
             return None
         return list(peers)[0]

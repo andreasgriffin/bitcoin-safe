@@ -6,7 +6,7 @@ line-length = 110
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "1.5.0"
+version = "1.6.0rc0"
 description = "A bitcoin savings wallet for the entire family."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0"
@@ -32,7 +32,7 @@ python = ">=3.10,<3.13"
 fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
-bdkpython ="^1.2.0"
+bdkpython ="^2.2.0"
 hwi = ">=2.3.1"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
@@ -44,13 +44,13 @@ python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 cryptography = "^45.0.2"
-bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", branch = "main" }
-bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", rev = "master" }  
-bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }  #  "^0.3.3"
-bitcoin-safe-lib = "^0.2.7"
+bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git",branch = "main" }
+bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "master" }
+bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }
+bitcoin-safe-lib  = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"
-pycryptodome = "^3.23.0"
+pycryptodome = "^3.23.0"  # for hash160, since it is not in default openssl
 
 
 

@@ -28,7 +28,6 @@
 
 
 import logging
-from time import sleep
 
 import pytest
 from bitcoin_usb.address_types import AddressTypes, DescriptorInfo, SimplePubKeyProvider
@@ -39,7 +38,7 @@ from bitcoin_safe.wallet import Wallet
 
 from ..non_gui.test_wallet import create_test_seed_keystores
 from ..setup_fulcrum import Faucet
-from ..util import make_psbt
+from ..util import make_psbt, wait_for_funds, wait_for_tx
 from .test_wallet_coin_select import TestWalletConfig
 
 logger = logging.getLogger(__name__)
@@ -94,9 +93,7 @@ def test_funded_seed_wallet(
         faucet.send(address, amount=test_wallet_config_seed.utxo_value_private)
 
     faucet.mine()
-    while wallet.get_balance().total == 0:
-        sleep(0.5)
-        wallet.sync()
+    wait_for_funds(wallet)
 
     return wallet
 
@@ -135,10 +132,7 @@ def test_ema_fee_rate_weights_recent_heavier(
         # otherwise the order might be random and ema is random
         faucet.mine()
 
-        while not wallet.get_tx(tx.compute_txid()):
-            sleep(1)
-            wallet.sync()
-            wallet.clear_cache()
+        wait_for_tx(wallet, str(tx.compute_txid()))
 
     # incoming txs have no fee rate (rpc doesnt seem to fill the fee field)
     assert round(wallet.get_ema_fee_rate(), 1) == MIN_RELAY_FEE

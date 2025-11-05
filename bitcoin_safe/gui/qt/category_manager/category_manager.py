@@ -64,7 +64,7 @@ class CategoryManager(QWidget):
         self.category_list = CategoryList(
             config=config,
             category_core=category_core,
-            signals=category_core.signals,
+            wallet_functions=category_core.wallet_functions,
             hidden_columns=(
                 [
                     CategoryList.Columns.COLOR,

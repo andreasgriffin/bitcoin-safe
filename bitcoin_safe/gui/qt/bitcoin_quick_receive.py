@@ -63,7 +63,6 @@ class BitcoinQuickReceive(
         self._forced_update = False
 
         # fixed height
-        self.setFixedHeight(220)
         self.label_title.setVisible(False)
 
         # signals

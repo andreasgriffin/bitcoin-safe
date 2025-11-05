@@ -39,7 +39,7 @@ from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignedUI, SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import get_syncclients
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.signer import (
     AbstractSignatureImporter,
     SignatureImporterClipboard,
@@ -95,7 +95,7 @@ class TxSigningSteps(StepProgressContainer):
         signature_importer_dict: Dict[str, List[AbstractSignatureImporter]],
         psbt: bdk.Psbt,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         parent: QWidget | None = None,
     ) -> None:
@@ -109,13 +109,13 @@ class TxSigningSteps(StepProgressContainer):
             step_labels=step_labels,
             parent=parent,
             use_resizing_stacked_widget=False,
-            signals_min=signals,
+            signals_min=wallet_functions.signals,
             loop_in_thread=loop_in_thread,
         )
 
         self.psbt = psbt
         self.network = network
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.signature_importer_dict = signature_importer_dict
 
         first_non_signed_index = None
@@ -194,7 +194,7 @@ class TxSigningSteps(StepProgressContainer):
                 signals_min=self.signals_min,
                 loop_in_thread=self.loop_in_thread,
                 signature_importers=signature_importers,
-                sync_client=get_syncclients(signals=self.signals),
+                sync_client=get_syncclients(wallet_functions=self.wallet_functions),
             )
 
 

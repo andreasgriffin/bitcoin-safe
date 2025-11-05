@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import enum
 import logging
 from abc import abstractmethod
 from typing import List, Tuple, cast
@@ -36,24 +35,17 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
+from bitcoin_safe.client import SyncStatus
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...config import UserConfig
-from ...signals import Signals
+from ...signals import WalletFunctions
 from ...wallet import ProtoWallet
 from .sidebar.sidebar_tree import SidebarNode
 
 logger = logging.getLogger(__name__)
-
-
-class SyncStatus(enum.Enum):
-    unknown = enum.auto()
-    unsynced = enum.auto()
-    syncing = enum.auto()
-    synced = enum.auto()
-    error = enum.auto()
 
 
 class WrapperQWidget(QWidget):
@@ -69,7 +61,7 @@ class QtWalletBase(WrapperQWidget):
     def __init__(
         self,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         tutorial_index: int | None = None,
         parent=None,
         **kwargs,
@@ -79,7 +71,8 @@ class QtWalletBase(WrapperQWidget):
         self.loop_in_thread = LoopInThread()
 
         self.config = config
-        self.signals = signals
+        self.wallet_functions = wallet_functions
+        self.signals = wallet_functions.signals
         self.tutorial_index = tutorial_index
 
         self.outer_layout = QVBoxLayout(self)

@@ -402,7 +402,8 @@ def test_wizard(
 
                 with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
                     with qtbot.waitSignal(
-                        main_window.signals.wallet_signals[qt_wallet.wallet.id].updated, timeout=10000
+                        main_window.wallet_functions.wallet_signals[qt_wallet.wallet.id].updated,
+                        timeout=10000,
                     ):  # Timeout after 10 seconds
                         viewer.button_send.click()
                     qtbot.wait(10000)

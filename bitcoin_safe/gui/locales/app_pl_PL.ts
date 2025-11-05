@@ -403,6 +403,18 @@
 		</message>
 	</context>
 	<context>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>Past time: {passed_time}</source>
+			<translation>Czas, który upłynął: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}% - Finished {remaining_time}</source>
+			<translation>{percent}% - Zakończono {remaining_time}</translation>
+		</message>
+	</context>
+	<context>
 		<name>CPFPIcon</name>
 		<message>
 			<source>CPFP with this fee rate</source>
@@ -546,6 +558,28 @@ mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić
 		<message>
 			<source>Type your message here...</source>
 			<translation>Wpisz tutaj swoją wiadomość...</translation>
+		</message>
+	</context>
+	<context>
+		<name>Client</name>
+		<message>
+			<source>Chain height {height}</source>
+			<translation>Wysokość łańcucha {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Connecting to nodes</source>
+			<translation>Łączenie z węzłami</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Electrum</source>
+			<translation>Synchronizowanie przez Electrum</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Syncing via Esplora</source>
+			<translation>Synchronizowanie przez Esplora</translation>
 		</message>
 	</context>
 	<context>
@@ -1158,8 +1192,8 @@ wysyłanej kwoty {sent}</translation>
 		</message>
 		<name>HistList</name>
 		<message>
-			<source>Remove on restart</source>
-			<translation>Usuń przy ponownym uruchomieniu</translation>
+			<source>Remove</source>
+			<translation>Usuń</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1813,6 +1847,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Close anyway</source>
+			<translation>Zamknij mimo to</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close wallet</source>
 			<translation>Zamknij portfel</translation>
 		</message>
@@ -1883,6 +1922,16 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hide to tray</source>
+			<translation>Ukryj w zasobniku systemowym</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Keep open</source>
+			<translation>Pozostaw otwarte</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>Monitorowanie sieci bitcoin p2p</translation>
 		</message>
@@ -1900,6 +1949,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
 			<translation>Brak otwartego portfela. Otwórz portfel nadawcy, aby edytować tę transakcję.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No, quick scan</source>
+			<translation>Nie, szybkie skanowanie</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2003,6 +2057,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Show/Hide</source>
+			<translation>Pokaż/Ukryj</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Status: Connected</source>
 			<translation>Status: Połączono</translation>
 		</message>
@@ -2055,6 +2114,26 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Wallet already open</source>
 			<translation>Portfel już otwarty</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallet syncing</source>
+			<translation>Portfel synchronizuje się</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets still syncing</source>
+			<translation>Portfele nadal się synchronizują</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Was this wallet ever used before?</source>
+			<translation>Czy ten portfel był wcześniej używany?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Yes, full scan for transactions</source>
+			<translation>Tak, pełne skanowanie transakcji</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2200,8 +2279,18 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>More connections increase privacy but reduce syncing speed.</source>
+			<translation>Więcej połączeń zwiększa prywatność, ale zmniejsza szybkość synchronizacji.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Network Settings</source>
 			<translation>Ustawienia sieci</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Number of p2p connections:</source>
+			<translation>Liczba połączeń p2p:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2536,6 +2625,13 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		</message>
 	</context>
 	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Enable/Disable</source>
+			<translation>Włącz/Wyłącz</translation>
+		</message>
+	</context>
+	<context>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
@@ -2679,6 +2775,11 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugins</source>
+			<translation>Wtyczki</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Proceed</source>
 			<translation>Kontynuuj</translation>
 		</message>
@@ -2711,11 +2812,6 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		<message>
 			<source>Successfully updated {number} Labels</source>
 			<translation>Pomyślnie zaktualizowano {number} etykiet</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync &amp;&amp; Chat</source>
-			<translation>Sync &amp;&amp; Chat</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3322,6 +3418,53 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		</message>
 	</context>
 	<context>
+		<name>SyncClient</name>
+		<message>
+			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+			<translation>* Wykonaj kopię zapasową swoich etykiet i kategorii monet w chmurze.&lt;br&gt;- Synchronizuj etykiety i kategorie monet między wieloma komputerami. {synclink}&lt;br&gt;- Podpisz transakcję wspólnie z innymi, niezależnie od tego, gdzie jesteś na świecie. {videolink}&lt;br&gt;- Wszystko jest zawsze szyfrowane (dowiedz się więcej o {protocol_link})</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Collaboration Video</source>
+			<translation>Wideo współpracy</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Label backup and encrypted syncing to trusted devices</source>
+			<translation>Kopia zapasowa etykiet i szyfrowana synchronizacja z zaufanymi urządzeniami</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Open received Transactions and PSBTs</source>
+			<translation>Otwórz otrzymane transakcje i PSBT</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Opening {name} from {author}</source>
+			<translation>Otwieranie {name} od {author}</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Sync &amp; Chat</source>
+			<translation>Sync &amp; Chat</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>Synchronization Video</source>
+			<translation>Wideo synchronizacji</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>protocol</source>
+			<translation>protokół</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>{author}: {description}</source>
+			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
@@ -3581,6 +3724,11 @@ txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
+			<translation>Wybierz jeden lub więcej UTXO z listy po lewej stronie albo odznacz „Wybierz konkretne UTXO” powyżej, aby pozwolić Bitcoin-Safe wybrać najlepsze monety do twojej transakcji.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
 			<translation>Wejścia {inputs} kolidują z tymi potwierdzonymi txidami {txids}.</translation>
 		</message>
@@ -3680,7 +3828,7 @@ Możesz też rozgłosić przez {url}</translation>
 		<name>USBGui</name>
 		<message>
 			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Nie znaleziono urządzeń USB. Może to wynikać z braku reguł udev.</translation>
+			<translation>Nie znaleziono żadnych urządzeń USB. Może to wynikać z braku reguł udev.</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -3877,6 +4025,168 @@ Możesz też rozgłosić przez {url}</translation>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Saldo ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Address</source>
+			<translation>Adres</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center funding transaction</source>
+			<translation>Wyśrodkuj transakcję finansowania</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Center spending transaction</source>
+			<translation>Wyśrodkuj transakcję wydatku</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Click to open the creating transaction.</source>
+			<translation>Kliknij, aby otworzyć tworzoną transakcję.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Nie udało się wyeksportować wykresu portfela: {error}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Date</source>
+			<translation>Data</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+			<translation>Przeciągnij, aby przeglądać oś czasu. Kliknij lub kliknij prawym przyciskiem myszy transakcję, txid lub UTXO, aby zobaczyć opcje.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export graph…</source>
+			<translation>Eksportuj wykres…</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Export wallet graph</source>
+			<translation>Eksportuj wykres portfela</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>External input</source>
+			<translation>Zewnętrzne wejście</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Fee</source>
+			<translation>Opłata</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Full txid</source>
+			<translation>Pełny txid</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Jump to Input</source>
+			<translation>Przejdź do wejścia</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Label</source>
+			<translation>Etykieta</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No jump targets available</source>
+			<translation>Brak dostępnych miejsc docelowych</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No known inputs</source>
+			<translation>Brak znanych wejść</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>No transactions to display.</source>
+			<translation>Brak transakcji do wyświetlenia.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Received</source>
+			<translation>Otrzymano</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Redraw the wallet graph.</source>
+			<translation>Przerysuj wykres portfela.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Odśwież</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Sent</source>
+			<translation>Wysłano</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Spent</source>
+			<translation>Wydano</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Status: {status}</source>
+			<translation>Status: {status}</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Transaction</source>
+			<translation>Transakcja</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>UTXO</source>
+			<translation>UTXO</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Nieznany</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unknown fee</source>
+			<translation>Nieznana opłata</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Unspent</source>
+			<translation>Niewydane</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Value</source>
+			<translation>Wartość</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+			<translation>Zobrazuj, w jaki sposób transakcje twojego portfela tworzą i wydają UTXO w czasie.</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet Graph</source>
+			<translation>Wykres portfela</translation>
+		</message>
+		<name>WalletGraphClient</name>
+		<message>
+			<source>Wallet graph exported to {path}</source>
+			<translation>Wykres portfela wyeksportowany do {path}</translation>
 		</message>
 	</context>
 	<context>
@@ -4424,6 +4734,11 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		</message>
 		<name>net_conf</name>
 		<message>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
+			<translation>Kompaktowe filtry bloków (Compact Block Filters) to prywatny i szybki sposób na uzyskanie wszystkich informacji o łańcuchu bloków. Portfel połączy się bezpośrednio z kilkoma węzłami bitcoina i pobierze z nich podsumowania bloków (Compact Block Filters).&lt;br&gt;Jeśli określisz w sekcji „Monitorowanie sieci Bitcoin” poniżej węzeł początkowy, zostanie on użyty jako preferowany.</translation>
+		</message>
+		<name>net_conf</name>
+		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
 			<translation>Uruchom bitcoind z "bitcoind -chain=regtest"</translation>
 		</message>
@@ -4461,11 +4776,6 @@ Najlepiej używać własnego serwera, np. {link}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>This is a private and fast way to connect to the bitcoin network.</source>
-			<translation>To prywatny i szybki sposób łączenia z siecią Bitcoin.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>You can connect your own Bitcoin node, such as {link}.</source>
 			<translation>Możesz podłączyć własny węzeł Bitcoin, np. {link}.</translation>
 		</message>
@@ -4481,6 +4791,11 @@ Najlepiej używać własnego serwera, np. {link}.</translation>
 		</message>
 	</context>
 	<context>
+		<name>network_config</name>
+		<message>
+			<source>{cbf_connections} bitcoin nodes via {server_type}</source>
+			<translation>{cbf_connections} węzłów bitcoina przez {server_type}</translation>
+		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>
