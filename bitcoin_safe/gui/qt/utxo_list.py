@@ -74,7 +74,7 @@ from bitcoin_safe.tx import short_tx_id
 from ...config import UserConfig
 from ...i18n import translate
 from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
-from ...signals import Signals, UpdateFilter, UpdateFilterReason
+from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 from ...wallet import TxStatus, Wallet, get_wallets
 from .my_treeview import (
     MyItemDataRole,
@@ -155,7 +155,7 @@ class UTXOList(MyTreeView[OutPoint]):
     def __init__(
         self,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fx: FX,
         outpoints: List[OutPoint] | None = None,
         txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] | None = None,
@@ -169,7 +169,7 @@ class UTXOList(MyTreeView[OutPoint]):
 
         Args:
             config (UserConfig): _description_
-            signals (Signals): _description_
+        signals (WalletFunctions): _description_
             outpoints (List[OutPoint]): _description_
             hidden_columns (_type_, optional): _description_. Defaults to None.
             txout_dict (Dict[str, bdk.TxOut], optional): Can be used to augment the list with infos, if the utxo is not from the own wallet. Defaults to None.
@@ -179,7 +179,7 @@ class UTXOList(MyTreeView[OutPoint]):
             stretch_column=self.stretch_column,
             column_widths=self.column_widths,
             editable_columns=[],
-            signals=signals,
+            signals=wallet_functions.signals,
             sort_column=sort_column if sort_column is not None else UTXOList.Columns.ADDRESS,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
             hidden_columns=hidden_columns,
@@ -188,7 +188,7 @@ class UTXOList(MyTreeView[OutPoint]):
         )
         self.fx = fx
         self.outpoints = outpoints if outpoints else []
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.txout_dict: Union[Dict[str, bdk.TxOut], Dict[str, TxOut]] = txout_dict if txout_dict else {}
         self._pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: Dict[str, Wallet] = {}  # outpoint --> wallet
@@ -215,7 +215,7 @@ class UTXOList(MyTreeView[OutPoint]):
         self.update_content()
 
         # signals
-        signals.any_wallet_updated.connect(self.update_with_filter)
+        wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
         self.fx.signal_data_updated.connect(self.on_update_fx_rates)
 
     def dump(self) -> Dict[str, Any]:
@@ -266,7 +266,7 @@ class UTXOList(MyTreeView[OutPoint]):
                     partial(self.signals.open_tx_like.emit, outpoints[0].txid),
                 )
 
-            txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid)
+            txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid_str)
             if txid_URL:
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
@@ -290,7 +290,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 menu.add_action(
                     translate("utxo_list", "Open Address Details"),
                     partial(
-                        self.signals.wallet_signals[wallet_ids[0]].show_address.emit,
+                        self.wallet_functions.wallet_signals[wallet_ids[0]].show_address.emit,
                         addresses[0],
                         wallet_ids[0],
                     ),
@@ -326,7 +326,7 @@ class UTXOList(MyTreeView[OutPoint]):
         else:
             txout = self.txout_dict.get(str(outpoint))
             if txout:
-                satoshis = Satoshis(txout.value, self.config.network)
+                satoshis = Satoshis(txout.value.to_sat(), self.config.network)
                 address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
@@ -395,7 +395,7 @@ class UTXOList(MyTreeView[OutPoint]):
 
         self._wallet_dict = {}  # outpoint_str:Wallet
         self._pythonutxo_dict = {}  # outpoint_str:PythonUTXO
-        for wallet_ in get_wallets(self.signals):
+        for wallet_ in get_wallets(self.wallet_functions):
             txos_dict = wallet_.get_all_txos_dict(include_not_mine=True)
             self._pythonutxo_dict.update(txos_dict)
             self._wallet_dict.update({outpoint_str: wallet_ for outpoint_str in txos_dict.keys()})
@@ -447,7 +447,7 @@ class UTXOList(MyTreeView[OutPoint]):
         outpoint = OutPoint.from_bdk(key)
         wallet, python_utxo, address, satoshis = self.get_wallet_address_satoshis(outpoint)
 
-        txdetails = wallet.get_tx(outpoint.txid) if wallet else None
+        txdetails = wallet.get_tx(outpoint.txid_str) if wallet else None
         status = TxStatus.from_wallet(txdetails.txid, wallet) if txdetails and wallet else None
         sort_id = status.sort_id() if status else -1
 
@@ -475,7 +475,7 @@ class UTXOList(MyTreeView[OutPoint]):
             wallet_id = wallet.id if wallet and address and wallet.is_my_address(address) else ""
             items[self.Columns.WALLET_ID].setText(wallet_id)
             items[self.Columns.WALLET_ID].setData(wallet_id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-            txid = outpoint.txid
+            txid = outpoint.txid_str
 
             category = wallet.labels.get_category(address) if wallet and address else ""
 
@@ -519,11 +519,11 @@ class UTXOList(MyTreeView[OutPoint]):
 
     def on_double_click(self, source_idx: QModelIndex):
         outpoint = source_idx.sibling(source_idx.row(), self.Columns.OUTPOINT).data(MyItemDataRole.ROLE_KEY)
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
         for wallet in wallets:
             python_utxo = wallet.get_python_txo(str(outpoint))
             if python_utxo:
-                self.signals.wallet_signals[wallet.id].show_utxo.emit(outpoint)
+                self.wallet_functions.wallet_signals[wallet.id].show_utxo.emit(outpoint)
 
     def set_filter_categories(self, categories: Set[str] | None) -> None:
         if categories == self.current_categories_filter:

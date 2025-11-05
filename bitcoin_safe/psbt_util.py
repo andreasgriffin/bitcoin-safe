@@ -441,7 +441,7 @@ class SimpleInput:
         prev_out = OutPoint.from_bdk(self.txin.previous_output)
         output = self.non_witness_utxo.get("output", [])[prev_out.vout]
         non_witness_utxo_prev_out = TxOut(
-            value=output["value"], script_pubkey=hex_to_script(output["script_pubkey"])
+            value=bdk.Amount.from_sat(output["value"]), script_pubkey=hex_to_script(output["script_pubkey"])
         )
         return {str(prev_out): non_witness_utxo_prev_out}
 
@@ -478,7 +478,7 @@ class SimpleOutput:
         return instance
 
     def to_txout(self) -> TxOut:
-        return TxOut(value=self.value, script_pubkey=hex_to_script(self.script_pubkey))
+        return TxOut(value=bdk.Amount.from_sat(self.value), script_pubkey=hex_to_script(self.script_pubkey))
 
 
 @dataclass
@@ -489,7 +489,7 @@ class SimplePSBT:
 
     @classmethod
     def from_psbt(cls, psbt: bdk.Psbt) -> "SimplePSBT":
-        instance = cls(txid=psbt.extract_tx().compute_txid())
+        instance = cls(txid=str(psbt.extract_tx().compute_txid()))
         psbt_json = json.loads(psbt.json_serialize())
         instance.inputs = [
             SimpleInput.from_input(input_data, txin)
@@ -549,7 +549,7 @@ class SimplePSBT:
             PythonUtxo(
                 address=robust_address_str_from_txout(txout, network=network),
                 txout=txout,
-                outpoint=OutPoint(vout=vout, txid=self.txid),
+                outpoint=OutPoint(vout=vout, txid=bdk.Txid.from_string(self.txid)),
             )
             for vout, txout in enumerate(txout_dict.values())
         ]

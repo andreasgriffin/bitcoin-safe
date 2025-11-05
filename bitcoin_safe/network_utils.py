@@ -35,7 +35,12 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlparse
 
-import socks  # Requires PySocks or similar package.
+import bdkpython as bdk
+import socks
+
+from bitcoin_safe.pythonbdk_types import (
+    IpAddress,  # Requires PySocks or similar package.
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +72,11 @@ class ProxyInfo:
             proxy_url = f"{cls.scheme}://{proxy_url}"  # Default to SOCKS5 with remote DNS
         parsed_proxy = urlparse(proxy_url)
         return cls(host=parsed_proxy.hostname, port=parsed_proxy.port, scheme=parsed_proxy.scheme)
+
+    def to_bdk(self) -> bdk.Socks5Proxy:
+        assert self.host, "No host set"
+        assert self.port, "No port set"
+        return bdk.Socks5Proxy(address=IpAddress.from_host(self.host), port=self.port)
 
 
 def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:

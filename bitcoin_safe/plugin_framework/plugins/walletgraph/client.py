@@ -85,7 +85,7 @@ class WalletGraphClient(PluginClient):
         self.wallet_id: str | None = None
         self._wallet_signal_connected = False
 
-        self.graph_view = WalletGraphView(signals=signals, network=network)
+        self.graph_view = WalletGraphView(network=network)
 
         self.refresh_button = QPushButton()
         self.refresh_button.clicked.connect(self.refresh_graph)
@@ -167,32 +167,25 @@ class WalletGraphClient(PluginClient):
             self.export_button.setEnabled(False)
             return
 
-        self.graph_view.render_graph(wallet=wallet, full_tx_details=full_tx_details)
+        self.graph_view.render_graph(
+            wallet=wallet, full_tx_details=full_tx_details, wallet_signals=self.server.wallet_signals
+        )
         self.export_button.setEnabled(bool(full_tx_details))
 
     def _on_transaction_clicked(self, txid: str) -> None:
         self.signals.open_tx_like.emit(PackagedTxLike(tx_like=txid, focus_ui_elements=UiElements.diagram))
 
     def _connect_wallet_signal(self) -> None:
-        if self._wallet_signal_connected or not self.wallet_id:
+        if not self.server or self._wallet_signal_connected or not self.wallet_id:
             return
-        wallet_signal = self.signals.wallet_signals.get(self.wallet_id)
-        if not wallet_signal:
-            logger.warning("Wallet signal not found for wallet %s", self.wallet_id)
-            return
-        wallet_signal.updated.connect(self.on_wallet_updated)
+        self.server.wallet_signals.updated.connect(self.on_wallet_updated)
         self._wallet_signal_connected = True
 
     def _disconnect_wallet_signal(self) -> None:
-        if not self._wallet_signal_connected or not self.wallet_id:
-            return
-        wallet_signal = self.signals.wallet_signals.get(self.wallet_id)
-        if not wallet_signal:
-            logger.warning("Wallet signal not found for wallet %s", self.wallet_id)
-            self._wallet_signal_connected = False
+        if not self.server or not self._wallet_signal_connected or not self.wallet_id:
             return
         try:
-            wallet_signal.updated.disconnect(self.on_wallet_updated)
+            self.server.wallet_signals.updated.disconnect(self.on_wallet_updated)
         except TypeError:
             pass
         self._wallet_signal_connected = False
@@ -364,11 +357,15 @@ class WalletGraphClient(PluginClient):
         return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
     def _create_utxo_node(self, graph: ET.Element, utxo: PythonUtxo) -> None:
+        if not self.server:
+            return
         node_id = str(utxo.outpoint)
         node = ET.SubElement(graph, "node", id=node_id)
         status = "spent" if utxo.is_spent_by_txid else "unspent"
         wallet = self.graph_view.current_wallet
-        color = UtxoEllipseItem._color_for_utxo(utxo, wallet=wallet, signals=self.signals)
+        color = UtxoEllipseItem._color_for_utxo(
+            utxo, wallet=wallet, wallet_signals=self.server.wallet_signals
+        )
         is_mine = wallet.is_my_address(utxo.address) if wallet else False
         self._set_data(node, "d0", "utxo")
         self._set_data(node, "d2", node_id)

@@ -45,7 +45,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.wallet import Wallet
 
 from ....i18n import translate
-from ....signals import Signals, UpdateFilter, UpdateFilterReason
+from ....signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 
 logger = logging.getLogger(__name__)
 
@@ -146,12 +146,13 @@ class CategoryCore(QObject):
     def __init__(
         self,
         wallet: Wallet,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
     ):
         super().__init__()
         self.wallet = wallet
-        self.wallet_signals = signals.wallet_signals[wallet.id]
-        self.signals = signals
+        self.wallet_functions = wallet_functions
+        self.wallet_signals = wallet_functions.wallet_signals[wallet.id]
+        self.signals = wallet_functions.signals
 
     @classmethod
     def get_default_categories(cls) -> List[str]:

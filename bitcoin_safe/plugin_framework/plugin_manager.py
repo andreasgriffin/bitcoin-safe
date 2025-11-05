@@ -42,7 +42,7 @@ from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraphServer
-from bitcoin_safe.signals import Signals, T
+from bitcoin_safe.signals import T, WalletFunctions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
@@ -66,17 +66,16 @@ class PluginManager(BaseSaveableClass):
     def __init__(
         self,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         config: UserConfig,
         fx: FX,
         clients: List[PluginClient] | None = None,
         parent: QWidget | None = None,
-        **kwargs,
     ) -> None:
         super().__init__()
         self.network = network
         self.parent = parent
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.config = config
         self.fx = fx
         self.clients = [client for client in clients if isinstance(client, PluginClient)] if clients else []
@@ -110,7 +109,7 @@ class PluginManager(BaseSaveableClass):
                 if cls == SyncClient:
                     self._register_client(
                         SyncClient.from_descriptor(
-                            signals=self.signals,
+                            signals=self.wallet_functions.signals,
                             network=self.network,
                             multipath_descriptor=descriptor,
                         )
@@ -119,7 +118,7 @@ class PluginManager(BaseSaveableClass):
                     self._register_client(
                         WalletGraphClient(
                             network=self.network,
-                            signals=self.signals,
+                            signals=self.wallet_functions.signals,
                         )
                     )
 
@@ -130,7 +129,7 @@ class PluginManager(BaseSaveableClass):
     ):
         server = SyncServer(
             wallet_id=wallet_id,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             network=self.network,
         )
         client.save_connection_details(server=server)
@@ -158,7 +157,7 @@ class PluginManager(BaseSaveableClass):
         server = WalletGraphServer(
             wallet_id=wallet_id,
             network=self.network,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
         )
         client.save_connection_details(server=server)
 

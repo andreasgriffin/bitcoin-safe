@@ -33,6 +33,7 @@ import os
 from datetime import datetime, timedelta
 from functools import lru_cache, wraps
 from pathlib import Path
+from types import TracebackType
 from typing import (
     Any,
     Callable,
@@ -40,16 +41,27 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Optional,
     ParamSpec,
     Protocol,
     Tuple,
+    Type,
     TypeVar,
     Union,
 )
 
 import numpy as np
+from packaging.version import Version
+
+OptExcInfo = Tuple[Optional[Type[BaseException]], Optional[BaseException], Optional[TracebackType]]
+
 
 logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=None)
+def fast_version(s: str) -> Version:
+    return Version(s)
 
 
 def current_project_dir() -> Path:
@@ -191,6 +203,7 @@ def instance_lru_cache(
 
 class CacheManager:
     def __init__(self) -> None:
+        super().__init__()
         self._instance_cache: Dict[Callable, Any] = {}
         self._cached_instance_methods: List[Any] = []
         self._cached_instance_methods_always_keep: List[Any] = []
@@ -217,3 +230,17 @@ def required_precision(min_value: float, max_value: float, min_prec: int = 0, ma
     d = math.ceil(-math.log10(diff))
     # clamp to sensible bounds
     return max(min_prec, min(d, max_prec))
+
+
+def filename_clean(id: str, file_extension: str = ".wallet", replace_spaces_by=None) -> str:
+    import os
+    import string
+
+    def create_valid_filename(filename) -> str:
+        basename = os.path.basename(filename)
+        if replace_spaces_by is not None:
+            basename = basename.replace(" ", replace_spaces_by)
+        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        return "".join(c for c in basename if c in valid_chars) + file_extension
+
+    return create_valid_filename(id)

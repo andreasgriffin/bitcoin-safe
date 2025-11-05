@@ -57,7 +57,12 @@ from ....config import MIN_RELAY_FEE, UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
 from ....psbt_util import FeeInfo
 from ....pythonbdk_types import OutPoint, PythonUtxo, TransactionDetails, UtxosForInputs
-from ....signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
+from ....signals import (
+    TypedPyQtSignalNo,
+    UpdateFilter,
+    UpdateFilterReason,
+    WalletFunctions,
+)
 from ....tx import TxUiInfos, calc_minimum_rbf_fee_info
 from ....wallet import (
     ToolsTxUiInfo,
@@ -93,7 +98,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         mempool_manager: MempoolManager,
         fx: FX,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         category_core: CategoryCore | None = None,
         opportunistic_coin_select: bool = False,
         manual_coin_select: bool = False,
@@ -103,7 +108,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         parent=None,
     ) -> None:
         super().__init__(
-            config=config, fx=fx, signals=signals, mempool_manager=mempool_manager, parent=parent
+            config=config,
+            fx=fx,
+            wallet_functions=wallet_functions,
+            mempool_manager=mempool_manager,
+            parent=parent,
         )
         self.wallet: Wallet | None = category_core.wallet if category_core else None
         self._was_shown = False
@@ -117,7 +126,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.category_list = CategoryList(
                 config=self.config,
                 category_core=category_core,
-                signals=signals,
+                wallet_functions=self.wallet_functions,
                 hidden_columns=(
                     [
                         CategoryList.Columns.COLOR,
@@ -136,7 +145,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         else:
             self.utxo_list = UTXOList(
                 config=self.config,
-                signals=self.signals,
+                wallet_functions=self.wallet_functions,
                 outpoints=[],
                 fx=self.fx,
                 hidden_columns=(
@@ -178,14 +187,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         self.splitter.addWidget(self.column_inputs)
 
-        self.column_recipients = ColumnRecipients(fx=fx, signals=self.signals, parent=self)
+        self.column_recipients = ColumnRecipients(fx=fx, wallet_functions=self.wallet_functions, parent=self)
         self._cache_last_category: str | None = None
         self.recipients = self.column_recipients.recipients
 
         self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
 
         self.column_fee = ColumnFee(
-            signals=signals,
+            wallet_functions=self.wallet_functions,
             mempool_manager=mempool_manager,
             fx=fx,
             parent=self,
@@ -198,7 +207,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             "",
             enable_signal=(
                 _wallet_signal.finished_psbt_creation
-                if self.wallet and (_wallet_signal := self.signals.wallet_signals.get(self.wallet.id))
+                if self.wallet
+                and (_wallet_signal := self.wallet_functions.wallet_signals.get(self.wallet.id))
                 else None
             ),
             enabled_icon=svg_tools.get_QIcon("checkmark.svg"),
@@ -275,10 +285,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self._signal_tracker_wallet_signals.disconnect_all()
         self.category_list.set_category_core(category_core)
         self.wallet = category_core.wallet if category_core else None
-        if self.wallet and (_wallet_signals := self.signals.wallet_signals.get(self.wallet.id)):
+        if self.wallet and (_wallet_signals := self.wallet_functions.wallet_signals.get(self.wallet.id)):
             self._signal_tracker_wallet_signals.connect(_wallet_signals.updated, self.update_with_filter)
 
-        if self.wallet and (_wallet_signal := self.signals.wallet_signals.get(self.wallet.id)):
+        if self.wallet and (_wallet_signal := self.wallet_functions.wallet_signals.get(self.wallet.id)):
             self.button_ok.set_enable_signal(enable_signal=(_wallet_signal.finished_psbt_creation))
 
     def get_tx_status(self) -> TxStatus:
@@ -481,7 +491,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             tx_status=self.get_tx_status(),
         )
 
-        self.signals.wallet_signals[self.wallet.id].updated.emit(
+        self.wallet_functions.wallet_signals[self.wallet.id].updated.emit(
             UpdateFilter(addresses=assigned_addresses, reason=UpdateFilterReason.UnusedAddressesCategorySet)
         )
 
@@ -512,7 +522,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             Message(
                 self.tr("Please select an input category on the left, that fits the transaction recipients.")
             )
-            self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+            self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
             return
 
         tx_ui_infos = self.get_tx_ui_infos()
@@ -524,10 +534,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 ),
                 type=MessageType.Warning,
             )
-            self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+            self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
             return
 
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
 
         if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < MIN_RELAY_FEE:
             if question_dialog(
@@ -537,7 +547,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 true_button=self.tr("Change fee rate"),
                 false_button=self.tr("Keep fee rate"),
             ):
-                self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+                self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
                 return
 
         # warn if multiple categories are combined
@@ -553,7 +563,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self.tr("Do you want to continue, even though both coin categories become linkable?"),
                 title="Category Linking",
             ):
-                self.signals.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+                self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
                 return
 
         self.signal_create_tx.emit(tx_ui_infos)
@@ -690,7 +700,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             and fee_rate <= self.opportunistic_merging_threshold()
         )
 
-        wallets = [self.wallet] if use_categories else get_wallets(self.signals)
+        wallets = [self.wallet] if use_categories else get_wallets(self.wallet_functions)
 
         if use_categories:
             ToolsTxUiInfo.fill_utxo_dict_from_categories(
@@ -862,8 +872,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 assert (
                     txinfos.replace_tx
                 ), f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
-                replace_txid = txinfos.replace_tx.compute_txid()
-                replace_tx_details, wallet = get_tx_details(txid=replace_txid, signals=self.signals)
+                replace_txid = str(txinfos.replace_tx.compute_txid())
+                replace_tx_details, wallet = get_tx_details(
+                    txid=replace_txid, wallet_functions=self.wallet_functions
+                )
                 if not replace_tx_details:
                     logger.error(f"Could not get tx_details of {replace_txid=} for rbf")
                     return
@@ -902,7 +914,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
         if txinfos.spend_all_utxos:
             utxos = list(self.get_tx_ui_infos().utxo_dict.values())
-            parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+            parent_txids = set(utxo.outpoint.txid_str for utxo in utxos)
 
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
@@ -929,8 +941,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if tx_ui_infos.utxo_dict:
             # first select the correct categories
             if self.wallet:
-                for utxo in tx_ui_infos.utxo_dict.keys():
-                    categories = categories.union(self.wallet.get_categories_for_txid(utxo.txid))
+                for outpoint in tx_ui_infos.utxo_dict.keys():
+                    categories = categories.union(self.wallet.get_categories_for_txid(outpoint.txid_str))
 
         if categories:
             self.category_list.select_rows(

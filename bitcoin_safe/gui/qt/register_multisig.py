@@ -38,7 +38,7 @@ from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
 from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     def __init__(
         self,
-        signals: Signals | None,
+        wallet_functions: WalletFunctions | None,
         wallet: Wallet | None,
         loop_in_thread: LoopInThread,
         parent: QWidget | None = None,
@@ -55,14 +55,14 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     ) -> None:
         super().__init__(parent=parent)
         self.wallet = wallet
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
 
         ## help
         screenshots = ScreenshotsRegisterMultisig()
         self.add_help_button(screenshots)
 
-        if self.wallet and self.signals:
+        if self.wallet and self.wallet_functions:
             data = Data(
                 data=self.wallet.multipath_descriptor,
                 data_type=DataType.Descriptor,
@@ -72,7 +72,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             # qr
             self.export_qr_button = QrToolButton(
                 data=data,
-                signals_min=self.signals,
+                signals_min=self.wallet_functions.signals,
                 network=self.wallet.network,
                 loop_in_thread=loop_in_thread,
                 parent=self,
@@ -87,7 +87,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             address = addresses[index] if len(addresses) > index else ""
             self.usb_widget = USBRegisterMultisigWidget(
                 network=self.wallet.network,
-                signals=self.signals,
+                wallet_functions=self.wallet_functions,
             )
             self.usb_widget.set_descriptor(
                 keystores=self.wallet.keystores,

@@ -50,7 +50,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
@@ -198,7 +198,7 @@ class FeeGroup(QObject):
         mempool_manager: MempoolManager,
         fx: FX,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         tx_status: TxStatus,
         fee_info: FeeInfo | None = None,
         allow_edit=True,
@@ -236,7 +236,7 @@ class FeeGroup(QObject):
             max_button_count=1 if tx_status.is_confirmed() else 4,
             decimal_precision=decimal_precision,
             tx_status=tx_status,
-            signals=signals,
+            wallet_functions=wallet_functions,
         )
         self.groupBox_Fee_layout.addWidget(self.mempool_buttons, alignment=Qt.AlignmentFlag.AlignHCenter)
 
@@ -270,8 +270,8 @@ class FeeGroup(QObject):
         )
 
         self.spin_fee_rate = FeerateSpinBox(
-            signal_currency_changed=signals.currency_switch,
-            signal_language_switch=signals.language_switch,
+            signal_currency_changed=wallet_functions.signals.currency_switch,
+            signal_language_switch=wallet_functions.signals.language_switch,
         )
         self.spin_fee_rate.setReadOnly(not allow_edit)
         self.spin_fee_rate.setDecimals(decimal_precision)  # Set the number of decimal places
@@ -310,7 +310,7 @@ class FeeGroup(QObject):
         self.updateUi()
 
         # signals
-        signals.currency_switch.connect(self.on_currency_switch)
+        wallet_functions.signals.currency_switch.connect(self.on_currency_switch)
 
         self.mempool_buttons.signal_explorer_explorer_icon.connect(self._on_explorer_explorer_icon)
 

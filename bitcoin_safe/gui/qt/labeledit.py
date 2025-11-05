@@ -46,7 +46,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.util import category_color
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
+from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 from bitcoin_safe.wallet import (
     Wallet,
     get_label_from_any_wallet,
@@ -204,7 +204,7 @@ class LabelAndCategoryEdit(QWidget):
 class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
     def __init__(
         self,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         get_label_ref: Callable[[], str],
         label_type: LabelType,
         parent=None,
@@ -212,12 +212,12 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
     ) -> None:
         self.get_label_ref = get_label_ref
         super().__init__(parent=parent, dismiss_label_on_focus_loss=dismiss_label_on_focus_loss)
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.label_type = label_type
 
         self.label_edit.signal_enterPressed.connect(self.on_label_edited)
         self.label_edit.signal_textEditedAndFocusLost.connect(self.on_label_edited)
-        self.signals.any_wallet_updated.connect(self.update_with_filter)
+        self.wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
 
     def get_wallets_to_store_label(self, ref: str) -> Set[Wallet]:
         """
@@ -227,10 +227,10 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         """
 
         result = set()
-        if not self.signals:
+        if not self.wallet_functions:
             return set()
 
-        wallets = get_wallets(self.signals)
+        wallets = get_wallets(self.wallet_functions)
 
         if self.label_type in [LabelType.addr]:
             for wallet in wallets:
@@ -291,7 +291,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
                 if popup := completer.popup():
                     popup.hide()
             if update_filter:
-                self.signals.wallet_signals[wallet.id].updated.emit(update_filter)
+                self.wallet_functions.wallet_signals[wallet.id].updated.emit(update_filter)
 
     def autofill_category(self, update_filter: UpdateFilter | None = None):
         ref = self.get_label_ref()
@@ -306,7 +306,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
 
         wallet = None
         if self.label_type == LabelType.addr:
-            wallet = get_wallet_of_address(ref, self.signals)
+            wallet = get_wallet_of_address(ref, self.wallet_functions)
         if wallet:
             category = wallet.labels.get_category(ref)
             self.set_category_visible(True)
@@ -330,7 +330,10 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         label = get_label_from_any_wallet(
-            label_type=self.label_type, ref=ref, signals=self.signals, autofill_from_txs=False
+            label_type=self.label_type,
+            ref=ref,
+            wallet_functions=self.wallet_functions,
+            autofill_from_txs=False,
         )
         if self.label_type == LabelType.addr:
             self.set_placeholder(self.tr("Enter label for recipient address"))
@@ -345,7 +348,7 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
             completer_label = get_label_from_any_wallet(
                 label_type=self.label_type,
                 ref=ref,
-                signals=self.signals,
+                wallet_functions=self.wallet_functions,
                 autofill_from_txs=True,
                 autofill_from_addresses=True,
             )

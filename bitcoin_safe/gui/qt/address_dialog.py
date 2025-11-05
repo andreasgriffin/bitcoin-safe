@@ -58,7 +58,7 @@ from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...descriptors import get_address_bip32_path
-from ...signals import Signals, SignalsMin
+from ...signals import SignalsMin, WalletFunctions
 from ...wallet import Wallet
 from .hist_list import HistList
 from .util import do_copy
@@ -139,7 +139,7 @@ class AddressValidateTab(QWidget):
         kind: bdk.KeychainKind,
         address_index: int,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         parent: typing.Optional["QWidget"],
     ) -> None:
         super().__init__(parent)
@@ -147,7 +147,7 @@ class AddressValidateTab(QWidget):
 
         self._layout = QHBoxLayout(self)
 
-        edit_addr_descriptor = USBValidateAddressWidget(network=network, signals=signals)
+        edit_addr_descriptor = USBValidateAddressWidget(network=network, wallet_functions=wallet_functions)
         edit_addr_descriptor.set_descriptor(
             descriptor=wallet_descriptor,
             expected_address=str(bdk_address),
@@ -175,7 +175,7 @@ class AddressDialog(QWidget):
         self,
         fx,
         config: UserConfig,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         wallet: Wallet,
         address: str,
         mempool_manager: MempoolManager,
@@ -192,7 +192,7 @@ class AddressDialog(QWidget):
         self.fx = fx
         self.config = config
         self.wallet: Wallet = wallet
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.saved = True
 
         self.setMinimumWidth(700)
@@ -211,7 +211,7 @@ class AddressDialog(QWidget):
             network=wallet.network,
             allow_edit=False,
             parent=self,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             fx=fx,
             show_header_bar=False,
             groupbox_style=False,
@@ -230,12 +230,12 @@ class AddressDialog(QWidget):
             AddressDetailsAdvanced(
                 address_path_str=self.wallet.get_address_path_str(address),
                 parent=self,
-                close_all_video_widgets=self.signals.close_all_video_widgets,
+                close_all_video_widgets=self.wallet_functions.signals.close_all_video_widgets,
                 network=config.network,
                 wallet_descriptor=self.wallet.multipath_descriptor,
                 kind=address_info.keychain,
                 address_index=address_info.index,
-                signals_min=self.signals,
+                signals_min=self.wallet_functions.signals,
                 loop_in_thread=loop_in_thread,
             )
             if address_info
@@ -248,7 +248,7 @@ class AddressDialog(QWidget):
             AddressValidateTab(
                 bdk_address=self.bdk_address,
                 network=config.network,
-                signals=self.signals,
+                wallet_functions=self.wallet_functions,
                 wallet_descriptor=self.wallet.multipath_descriptor,
                 kind=address_info.keychain,
                 address_index=address_info.index,
@@ -267,7 +267,7 @@ class AddressDialog(QWidget):
         self.hist_list = HistList(
             fx=self.fx,
             config=self.config,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             mempool_manager=self.mempool_manager,
             wallets=[self.wallet],
             hidden_columns=[

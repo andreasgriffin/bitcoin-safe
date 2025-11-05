@@ -52,7 +52,7 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.util import ColorScheme, ColorSchemeItem
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import FullTxDetail, PythonUtxo
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletSignals
 from bitcoin_safe.tx import short_tx_id
 from bitcoin_safe.wallet import Wallet
 
@@ -202,14 +202,10 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         return min_radius + ratio * (max_radius - min_radius)
 
     @staticmethod
-    def _color_for_utxo(
-        utxo: PythonUtxo,
-        wallet: Wallet | None,
-        signals: Signals,
-    ) -> QColor:
+    def _color_for_utxo(utxo: PythonUtxo, wallet: Wallet | None, wallet_signals: WalletSignals) -> QColor:
         if not wallet:
             return ColorScheme.Purple.as_color()
-        color = AddressEdit.color_address(utxo.address, wallet, signals)
+        color = AddressEdit.color_address(utxo.address, wallet, wallet_signals)
         if color:
             return color
         return ColorScheme.Purple.as_color()
@@ -223,7 +219,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         transaction_signal: pyqtBoundSignal,
         network: bdk.Network,
         wallet: Wallet | None,
-        signals: Signals,
+        wallet_signals: WalletSignals,
         label_max_chars: int,
         max_utxo_value: int,
         min_radius: float,
@@ -247,7 +243,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
             value_label_color=ColorScheme.DEFAULT,
         )
 
-        color = cls._color_for_utxo(python_utxo, wallet, signals)
+        color = cls._color_for_utxo(python_utxo, wallet, wallet_signals)
         brush_color = QColor(color)
         alpha = 0.45 if python_utxo.is_spent_by_txid else 0.95
         brush_color.setAlphaF(alpha)

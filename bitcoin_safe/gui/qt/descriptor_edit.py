@@ -42,7 +42,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QLocale, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -55,6 +55,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.descriptors import from_multisig_wallet_export
+from bitcoin_safe.execute_config import DEFAULT_LANG_CODE
 from bitcoin_safe.gui.qt.analyzers import DescriptorAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
@@ -62,7 +63,7 @@ from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.util import Message, MessageType, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.signals import Signals, SignalsMin
+from bitcoin_safe.signals import SignalsMin, WalletFunctions
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
@@ -123,7 +124,7 @@ class DescriptorEdit(QWidget):
     def __init__(
         self,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         wallet: Optional[Wallet] = None,
         signal_update: TypedPyQtSignalNo | None = None,
@@ -133,8 +134,8 @@ class DescriptorEdit(QWidget):
             input_field=DescriptorInputField(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
-            signals_min=signals,
-            close_all_video_widgets=signals.close_all_video_widgets,
+            signals_min=wallet_functions,
+            close_all_video_widgets=wallet_functions.signals.close_all_video_widgets,
             parent=self,
         )
         self.loop_in_thread = loop_in_thread
@@ -147,7 +148,7 @@ class DescriptorEdit(QWidget):
         self._layout.addWidget(self.edit)
         self.signal_tracker = SignalTracker()
 
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.network = network
         self.wallet = wallet
 
@@ -235,7 +236,8 @@ class DescriptorEdit(QWidget):
             )
             return
 
-        make_and_open_pdf(self.wallet, lang_code=self.signals.get_current_lang_code.emit() or "en_US")
+        lang_code = QLocale().name() or DEFAULT_LANG_CODE
+        make_and_open_pdf(self.wallet, lang_code=lang_code)
 
     def on_input_field_textChanged(self):
         self.signal_descriptor_change.emit(self.edit.text())
@@ -299,7 +301,7 @@ class DescriptorEdit(QWidget):
         try:
             self._dialog = DescriptorExport(
                 descriptor=convert_to_multipath_descriptor(self.edit.text().strip(), self.network),
-                signals_min=self.signals,
+                signals_min=self.wallet_functions.signals,
                 parent=self,
                 network=self.network,
                 loop_in_thread=self.loop_in_thread,
@@ -340,7 +342,7 @@ class DescriptorEdit(QWidget):
             wallet=self.wallet,
             loop_in_thread=self.loop_in_thread,
             wallet_name=self.wallet.id,
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
         )
         self._hardware_signer_interaction.set_minimum_size_as_floating_window()
         self._hardware_signer_interaction.show()

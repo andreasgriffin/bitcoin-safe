@@ -39,7 +39,7 @@ from bitcoin_safe.tx import TxUiInfos, short_tx_id
 
 from ...psbt_util import FeeInfo
 from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
-from ...signals import Signals
+from ...signals import WalletFunctions
 from ...wallet import TxStatus, Wallet, get_tx_details, get_wallets
 from .util import Message
 
@@ -97,7 +97,11 @@ class TxTools:
 
     @classmethod
     def edit_tx(
-        cls, replace_tx: TransactionDetails | None, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals
+        cls,
+        replace_tx: TransactionDetails | None,
+        txinfos: TxUiInfos,
+        tx_status: TxStatus,
+        wallet_functions: WalletFunctions,
     ):
         if not cls.can_edit_safely(
             tx_status=tx_status,
@@ -111,10 +115,16 @@ class TxTools:
             txinfos.replace_tx = replace_tx.transaction
 
         txinfos.hide_UTXO_selection = False
-        signals.open_tx_like.emit(txinfos)
+        wallet_functions.signals.open_tx_like.emit(txinfos)
 
     @classmethod
-    def rbf_tx(cls, replace_tx: bdk.Transaction, txinfos: TxUiInfos, tx_status: TxStatus, signals: Signals):
+    def rbf_tx(
+        cls,
+        replace_tx: bdk.Transaction,
+        txinfos: TxUiInfos,
+        tx_status: TxStatus,
+        wallet_functions: WalletFunctions,
+    ):
         if not cls.can_rbf_safely(
             tx=replace_tx,
             tx_status=tx_status,
@@ -128,13 +138,13 @@ class TxTools:
             txinfos.replace_tx = replace_tx
 
         txinfos.hide_UTXO_selection = False
-        signals.open_tx_like.emit(txinfos)
+        wallet_functions.signals.open_tx_like.emit(txinfos)
 
     @classmethod
     def can_cpfp(
         cls,
         tx_status: TxStatus,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         wallet: Wallet | None = None,
     ) -> bool:
         tx = tx_status.tx
@@ -144,7 +154,9 @@ class TxTools:
             return False
 
         if not wallet:
-            tx_details, wallet = get_tx_details(txid=tx.compute_txid(), signals=signals)
+            tx_details, wallet = get_tx_details(
+                txid=str(tx.compute_txid()), wallet_functions=wallet_functions
+            )
             if not wallet:
                 return False
 
@@ -156,7 +168,7 @@ class TxTools:
         cls,
         tx_details: TransactionDetails,
         wallet: Wallet,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fee_rate: float | None = None,
         target_total_unconfirmed_fee_rate: float | None = None,
     ) -> None:
@@ -176,7 +188,7 @@ class TxTools:
             num_outputs=1,
         )
 
-        cpfp_tools = CpfpTools(wallets=get_wallets(signals))
+        cpfp_tools = CpfpTools(wallets=get_wallets(wallet_functions))
 
         if fee_rate is None:
             unconfirmed_ancestors = cpfp_tools.get_unconfirmed_ancestors(
@@ -227,4 +239,4 @@ class TxTools:
             )
         ]
         txinfos.main_wallet_id = wallet.id
-        signals.open_tx_like.emit(txinfos)
+        wallet_functions.signals.open_tx_like.emit(txinfos)

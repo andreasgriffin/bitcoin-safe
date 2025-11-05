@@ -59,7 +59,7 @@ from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSy
 from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
-from bitcoin_safe.wallet import filename_clean
+from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
 

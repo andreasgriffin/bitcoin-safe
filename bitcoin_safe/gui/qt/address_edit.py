@@ -44,7 +44,13 @@ from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
 
 from ...i18n import translate
-from ...signals import Signals, TypedPyQtSignal, UpdateFilter, UpdateFilterReason
+from ...signals import (
+    TypedPyQtSignal,
+    UpdateFilter,
+    UpdateFilterReason,
+    WalletFunctions,
+    WalletSignals,
+)
 from ...wallet import Wallet, get_wallet_of_address
 from .util import ColorScheme, block_explorer_URL, get_icon_path
 
@@ -58,22 +64,23 @@ class AddressEdit(ButtonEdit):
     def __init__(
         self,
         network: bdk.Network,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         text="",
         allow_edit: bool = True,
         button_vertical_align: Optional[QtCore.Qt.AlignmentFlag] = None,
         parent=None,
     ) -> None:
-        self.signals = signals
+        self.wallet_functions = wallet_functions
+        self.signals = wallet_functions.signals
         self.network = network
         self.allow_edit = allow_edit
-        language_switch = cast(TypedPyQtSignalNo, signals.language_switch)
+        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
         super().__init__(
             text=text,
             button_vertical_align=button_vertical_align,
             parent=parent,
-            signal_update=language_switch if signals else None,
-            close_all_video_widgets=signals.close_all_video_widgets,
+            signal_update=language_switch if wallet_functions else None,
+            close_all_video_widgets=self.signals.close_all_video_widgets,
         )
 
         self.setPlaceholderText(self.tr("Enter address here"))
@@ -143,14 +150,14 @@ class AddressEdit(ButtonEdit):
         super().updateUi()
 
         wallet = None
-        if self.signals:
-            wallet = get_wallet_of_address(self.address, self.signals)
+        if self.wallet_functions:
+            wallet = get_wallet_of_address(self.address, self.wallet_functions)
         self.format_address_field(wallet=wallet)
 
     def on_text_changed(self, *args):
         wallet = None
-        if self.signals:
-            wallet = get_wallet_of_address(self.address, self.signals)
+        if self.wallet_functions:
+            wallet = get_wallet_of_address(self.address, self.wallet_functions)
 
         self.format_address_field(wallet=wallet)
 
@@ -160,7 +167,9 @@ class AddressEdit(ButtonEdit):
         self.signal_text_change.emit(self.address)
 
     @classmethod
-    def color_address(cls, address: str, wallet: Wallet, signals: Signals) -> Optional[QtGui.QColor]:
+    def color_address(
+        cls, address: str, wallet: Wallet, wallet_signals: WalletSignals
+    ) -> Optional[QtGui.QColor]:
         def get_color(is_change: bool) -> QtGui.QColor:
             if is_change:
                 return ColorScheme.YELLOW.as_color(background=True)
@@ -174,7 +183,9 @@ class AddressEdit(ButtonEdit):
             if not address_info:
                 return None
 
-            advance_tip_to_address_info(address_info=address_info, wallet=wallet, signals=signals)
+            advance_tip_to_address_info(
+                address_info=address_info, wallet=wallet, wallet_signals=wallet_signals
+            )
             return get_color(is_change=address_info.is_change())
 
     def format_address_field(self, wallet: Optional[Wallet]) -> None:
@@ -183,7 +194,9 @@ class AddressEdit(ButtonEdit):
 
         background_color = None
         if wallet:
-            background_color = self.color_address(self.address, wallet, signals=self.signals)
+            background_color = self.color_address(
+                self.address, wallet, wallet_signals=self.wallet_functions.wallet_signals[wallet.id]
+            )
 
         if background_color:
             palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
@@ -208,8 +221,8 @@ class AddressEdit(ButtonEdit):
             old_category = wallet.labels.get_category(address)
             self.address = str(wallet.get_unused_category_address(category=old_category).address)
 
-            if self.signals:
-                self.signals.wallet_signals[wallet.id].updated.emit(
+            if self.wallet_functions:
+                self.wallet_functions.wallet_signals[wallet.id].updated.emit(
                     UpdateFilter(addresses=set([self.address]), reason=UpdateFilterReason.UserReplacedAddress)
                 )
 

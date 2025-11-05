@@ -58,7 +58,7 @@ from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
 from ....mempool_manager import MempoolManager
-from ....signals import Signals
+from ....signals import WalletFunctions
 from .recipients import Recipients
 
 logger = logging.getLogger(__name__)
@@ -185,7 +185,7 @@ class ColumnRecipients(BaseColumn):
 
     def __init__(
         self,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fx: FX,
         allow_edit=True,
         parent: QWidget | None = None,
@@ -201,7 +201,11 @@ class ColumnRecipients(BaseColumn):
         )
 
         self.recipients = Recipients(
-            signals, network=fx.config.network, allow_edit=allow_edit, fx=fx, header_widget=self.header_widget
+            wallet_functions=wallet_functions,
+            network=fx.config.network,
+            allow_edit=allow_edit,
+            fx=fx,
+            header_widget=self.header_widget,
         )
         self.insert_middle_widget(self.recipients)
         self.setMinimumWidth(250)
@@ -215,7 +219,7 @@ class ColumnSankey(BaseColumn):
 
     def __init__(
         self,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         fx: FX,
         parent: QWidget | None = None,
     ) -> None:
@@ -231,7 +235,7 @@ class ColumnSankey(BaseColumn):
 
         self.header_widget.set_icon("flows.svg")
 
-        self.sankey_bitcoin = SankeyBitcoin(network=fx.config.network, signals=signals)
+        self.sankey_bitcoin = SankeyBitcoin(network=fx.config.network, wallet_functions=wallet_functions)
         self.sankey_bitcoin.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self.button_export_svg = QPushButton()
@@ -259,7 +263,7 @@ class ColumnFee(BaseColumn):
         self,
         mempool_manager: MempoolManager,
         fx: FX,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         tx_status: TxStatus,
         enable_approximate_fee_label: bool = True,
         fee_info: FeeInfo | None = None,
@@ -281,7 +285,7 @@ class ColumnFee(BaseColumn):
         )
 
         self.fee_group = FeeGroup(
-            signals=signals,
+            wallet_functions=wallet_functions,
             mempool_manager=mempool_manager,
             fx=fx,
             config=fx.config,

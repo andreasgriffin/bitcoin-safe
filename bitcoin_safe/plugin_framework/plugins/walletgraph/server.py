@@ -33,21 +33,22 @@ import logging
 import bdkpython as bdk
 
 from bitcoin_safe.plugin_framework.plugin_server import PluginServer
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import Wallet, get_wallet
 
 logger = logging.getLogger(__name__)
 
 
 class WalletGraphServer(PluginServer):
-    def __init__(self, wallet_id: str, network: bdk.Network, signals: Signals) -> None:
+    def __init__(self, wallet_id: str, network: bdk.Network, wallet_functions: WalletFunctions) -> None:
         super().__init__()
         self.wallet_id = wallet_id
         self.network = network
-        self._signals = signals
+        self._wallet_functions = wallet_functions
+        self.wallet_signals = wallet_functions.wallet_signals[wallet_id]
 
     def get_wallet(self) -> Wallet | None:
-        return get_wallet(self.wallet_id, self._signals)
+        return get_wallet(self.wallet_id, self._wallet_functions)
 
     def start(self) -> None:
         # A local server that only exposes helper methods does not need to be started.

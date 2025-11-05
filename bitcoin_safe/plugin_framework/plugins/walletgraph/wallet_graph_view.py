@@ -48,7 +48,7 @@ from bitcoin_safe.plugin_framework.plugins.walletgraph.wallet_graph_items import
     UtxoEllipseItem,
 )
 from bitcoin_safe.pythonbdk_types import FullTxDetail
-from bitcoin_safe.signals import Signals
+from bitcoin_safe.signals import WalletSignals
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -61,9 +61,9 @@ class WalletGraphView(QGraphicsView):
     MIN_SCENE_WIDTH = 900.0
     AXIS_Y = 0.0
 
-    def __init__(self, signals: Signals, network: bdk.Network, parent: QWidget | None = None) -> None:
+    def __init__(self, network: bdk.Network, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.signals = signals
+        self.wallet_signals: WalletSignals | None = None
         self.network = network
 
         self._scene = QGraphicsScene(self)
@@ -107,7 +107,12 @@ class WalletGraphView(QGraphicsView):
         self.scale(factor, factor)
         event.accept()
 
-    def render_graph(self, wallet: Wallet, full_tx_details: Iterable[FullTxDetail]) -> None:
+    def render_graph(
+        self,
+        wallet: Wallet,
+        full_tx_details: Iterable[FullTxDetail],
+        wallet_signals: WalletSignals,
+    ) -> None:
         self.clear()
         details_list = list(full_tx_details)
         self._current_wallet = wallet
@@ -179,7 +184,7 @@ class WalletGraphView(QGraphicsView):
             self._scene.addLine(x_pos, self.AXIS_Y - 6, x_pos, self.AXIS_Y + 6, tick_pen)
 
             self._render_inputs(detail, tx_node)
-            self._render_outputs(detail, tx_node, max_utxo_value)
+            self._render_outputs(detail, tx_node, max_utxo_value, wallet_signals=wallet_signals)
 
         scene_rect = self._scene.itemsBoundingRect().adjusted(-150, -200, 150, 200)
         self._scene.setSceneRect(scene_rect)
@@ -250,7 +255,11 @@ class WalletGraphView(QGraphicsView):
             )
 
     def _render_outputs(
-        self, detail: FullTxDetail, tx_node: GraphTransactionNode, max_utxo_value: int
+        self,
+        detail: FullTxDetail,
+        tx_node: GraphTransactionNode,
+        max_utxo_value: int,
+        wallet_signals: WalletSignals,
     ) -> None:
         outputs = list(detail.outputs.items())
         if not outputs:
@@ -267,7 +276,6 @@ class WalletGraphView(QGraphicsView):
                 transaction_signal=self.transactionClicked,
                 network=self.network,
                 wallet=self._current_wallet,
-                signals=self.signals,
                 label_max_chars=UtxoEllipseItem.LABEL_MAX_CHARS,
                 max_utxo_value=max_utxo_value,
                 min_radius=UtxoEllipseItem.MIN_RADIUS,
@@ -278,6 +286,7 @@ class WalletGraphView(QGraphicsView):
                 output_gap=UtxoEllipseItem.OUTPUT_GAP,
                 vertical_spacing=UtxoEllipseItem.VERTICAL_SPACING,
                 index=index,
+                wallet_signals=wallet_signals,
             )
             self._scene.addItem(ellipse)
 

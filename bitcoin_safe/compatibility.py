@@ -29,9 +29,9 @@
 import logging
 import platform
 
-from packaging.version import parse as parse_version
-
 from bitcoin_safe.gui.qt.util import caught_exception_message
+
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -46,17 +46,17 @@ def check_compatibility():
     if not ver_str:
         logger.error(("Unable to determine macOS version"))
 
-    current_ver = parse_version(ver_str)
+    current_ver = fast_version(ver_str)
 
     # Detect CPU architecture
     arch = platform.machine().lower()  # "arm64" or "x86_64" typically
 
     # Define minimum required versions
-    required_ver = parse_version("13.0")  # this depends on the github runner
+    required_ver = fast_version("13.0")  # this depends on the github runner
     if arch == "arm64":
-        required_ver = parse_version("14.0")  # this depends on the github runner
+        required_ver = fast_version("14.0")  # this depends on the github runner
     elif arch == "x86_64":
-        required_ver = parse_version("13.0")  # this depends on the github runner
+        required_ver = fast_version("13.0")  # this depends on the github runner
     else:
         logger.error(RuntimeError(f"Unsupported architecture: {arch!r}"))
 

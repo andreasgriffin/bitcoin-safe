@@ -29,7 +29,11 @@
 
 import datetime
 import enum
+import ipaddress
 import logging
+import socket
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from functools import cached_property, lru_cache
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
@@ -37,10 +41,10 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
-from packaging import version
 from PyQt6.QtCore import QObject
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +56,60 @@ def is_address(a: str, network: bdk.Network) -> bool:
         logger.debug(str(e))
         return False
     return True
+
+
+class IpAddress(bdk.IpAddress):
+    _RESOLVE_TIMEOUT_SECONDS = 5.0
+
+    @staticmethod
+    def _resolve_domain(host: str, timeout: float) -> str:
+        def _resolve() -> str:
+            infos = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+            addresses: List[str] = []
+            for family, _, _, _, sockaddr in infos:
+                if family in (socket.AF_INET, socket.AF_INET6):
+                    addresses.append(str(sockaddr[0]))
+            if not addresses:
+                raise ValueError(f"Could not resolve domain {host!r} to an IP address")
+            return addresses[0]
+
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(_resolve)
+            try:
+                return future.result(timeout=timeout)
+            except FutureTimeoutError as exc:
+                raise TimeoutError(f"Timed out after {timeout} seconds resolving domain {host!r}") from exc
+
+    @classmethod
+    def from_host(cls, host: str):
+        try:
+            host_ip = ipaddress.ip_address(host)
+        except ValueError:
+            resolved_host = cls._resolve_domain(host, cls._RESOLVE_TIMEOUT_SECONDS)
+            host_ip = ipaddress.ip_address(resolved_host)
+        host = str(host_ip.exploded)
+
+        try:
+            a1, a2, a3, a4 = host.split(".")
+            return cls.from_ipv4(int(a1), int(a2), int(a3), int(a4))
+        except:
+            pass
+
+        try:
+            a1, a2, a3, a4, a5, a6, a7, a8 = host.split(":")
+            return cls.from_ipv6(
+                int(a1, 16),
+                int(a2, 16),
+                int(a3, 16),
+                int(a4, 16),
+                int(a5, 16),
+                int(a6, 16),
+                int(a7, 16),
+                int(a8, 16),
+            )
+        except:
+            pass
+        raise Exception(f"{host=} could not be converted to {cls}")
 
 
 @dataclass
@@ -68,10 +126,15 @@ class Recipient:
 class OutPoint(bdk.OutPoint):
 
     def __key__(self) -> tuple[str, int]:
-        return (self.txid, self.vout)
+        return (self.txid_str, self.vout)
+
+    @cached_property
+    def txid_str(self):
+        return str(self.txid)
 
     def __hash__(self) -> int:
         "Necessary for the caching"
+        # Attention: It has to reflect the content, not the id(self)
         try:
             return self._cached_hash
         except AttributeError:
@@ -79,9 +142,8 @@ class OutPoint(bdk.OutPoint):
             self._cached_hash: int = h
             return h
 
-    @lru_cache(maxsize=200_000)
     def __str__(self) -> str:  # type: ignore
-        return f"{self.txid}:{self.vout}"
+        return f"{self.txid_str}:{self.vout}"
 
     @lru_cache(maxsize=200_000)
     def __repr__(self) -> str:  # type: ignore
@@ -105,7 +167,7 @@ class OutPoint(bdk.OutPoint):
         if isinstance(outpoint_str, OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
-        return OutPoint(txid=txid, vout=int(vout))
+        return OutPoint(txid=bdk.Txid.from_string(txid), vout=int(vout))
 
 
 def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
@@ -128,19 +190,20 @@ class TxOut(bdk.TxOut):
 
     def __key__(self) -> tuple[str, int]:
         # use cached hex + value
-        return (self.spk_hex, self.value)
+        return (self.spk_hex, self.value.to_sat())
 
     def __hash__(self) -> int:
         # hash on bytes (fast) + value
+        # Attention: It has to reflect the content, not the id(self)
         try:
             return self._cached_hash
         except AttributeError:
-            h = hash((self.value, self.spk_bytes))
+            h = hash((self.value.to_sat(), self.spk_bytes))
             self._cached_hash: int = h
             return h
 
     def seralized_tuple(self) -> tuple[str, int]:
-        return (self.spk_hex, self.value)
+        return (self.spk_hex, self.value.to_sat())
 
     @lru_cache(maxsize=200_000)
     def __str__(self) -> str:  # type: ignore
@@ -151,7 +214,9 @@ class TxOut(bdk.TxOut):
         return f"{self.__class__.__name__}({self.__key__()})"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, TxOut) and (self.value == other.value and self.spk_bytes == other.spk_bytes)
+        return isinstance(other, TxOut) and (
+            self.value.to_sat() == other.value.to_sat() and self.spk_bytes == other.spk_bytes
+        )
 
     @classmethod
     def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
@@ -162,7 +227,9 @@ class TxOut(bdk.TxOut):
     @classmethod
     def from_seralized_tuple(cls, seralized_tuple: Tuple[str, int]) -> "TxOut":
         script_pubkey, value = seralized_tuple
-        return TxOut(script_pubkey=bdk.Script(list(hex_to_serialized(script_pubkey))), value=(value))
+        return TxOut(
+            script_pubkey=bdk.Script(hex_to_serialized(script_pubkey)), value=bdk.Amount.from_sat(value)
+        )
 
 
 @dataclass
@@ -194,13 +261,14 @@ class PythonUtxo(BaseSaveableClass):
         return cls(**filtered_for_init(dct, cls))
 
     def __hash__(self) -> int:
+        # Attention: It has to reflect the content, not the id(self)
         # Leverage Python’s tuple‐hashing;
         # this requires that OutPoint and TxOut themselves be hashable
         return hash((self.address, self.outpoint, self.txout, self.is_spent_by_txid))
 
     @cached_property
     def value(self):
-        return self.txout.value
+        return self.txout.value.to_sat()
 
 
 def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
@@ -228,8 +296,15 @@ class TransactionDetails:
     fee: int | None
     received: int
     sent: int
-    txid: str
     chain_position: bdk.ChainPosition
+
+    @cached_property
+    def bdk_txid(self):
+        return self.transaction.compute_txid()
+
+    @cached_property
+    def txid(self):
+        return str(self.bdk_txid)
 
     @cached_property
     def vsize(self):
@@ -273,15 +348,15 @@ class FullTxDetail:
         cls, tx: TransactionDetails, get_address_of_txout: Callable[[str, int, TxOut], str | None]
     ) -> "FullTxDetail":
         res = FullTxDetail(tx)
-        txid = tx.txid
+
         for vout, txout in enumerate(tx.transaction.output()):
             this_txout = TxOut.from_bdk(txout)
-            address = get_address_of_txout(txid, vout, this_txout)
+            address = get_address_of_txout(tx.txid, vout, this_txout)
             if not address:
                 if not tx.transaction.is_coinbase():
                     logger.error(f"Could not calculate the address of {this_txout}. This should not happen.")
                 continue
-            out_point = OutPoint(txid=txid, vout=vout)
+            out_point = OutPoint(txid=tx.bdk_txid, vout=vout)
             python_utxo = PythonUtxo(address=address, outpoint=out_point, txout=this_txout)
             python_utxo.is_spent_by_txid = None
             res.outputs[str(out_point)] = python_utxo
@@ -293,12 +368,13 @@ class FullTxDetail:
     ) -> None:
         for prev_outpoint in get_prev_outpoints(self.tx.transaction):
             prev_outpoint_str = str(prev_outpoint)
+            prevout_txid = prev_outpoint.txid_str
 
             # check if I have the prev_outpoint fulltxdetail
-            if prev_outpoint.txid not in lookup_dict_fulltxdetail:
+            if prevout_txid not in lookup_dict_fulltxdetail:
                 self.inputs[prev_outpoint_str] = None
                 continue
-            fulltxdetail = lookup_dict_fulltxdetail[prev_outpoint.txid]
+            fulltxdetail = lookup_dict_fulltxdetail[prevout_txid]
             if prev_outpoint_str not in fulltxdetail.outputs:
                 self.inputs[prev_outpoint_str] = None
                 continue
@@ -329,7 +405,7 @@ class AddressInfoMin(SaveAllClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
         return super().from_dump_migration(dct=dct)
@@ -342,6 +418,7 @@ class AddressInfoMin(SaveAllClass):
 
     def __hash__(self) -> int:
         "Necessary for the caching"
+        # Attention: It has to reflect the content, not the id(self)
         try:
             return self._cached_hash
         except AttributeError:
@@ -404,8 +481,10 @@ class BlockchainType(enum.Enum):
             raise ValueError()
 
     @classmethod
-    def active_types(cls) -> List["BlockchainType"]:
-        return [cls.Electrum, cls.Esplora]
+    def active_types(cls, network: bdk.Network) -> List["BlockchainType"]:
+        if network == bdk.Network.TESTNET:
+            return [cls.Electrum, cls.Esplora]
+        return [cls.CompactBlockFilter, cls.Electrum, cls.Esplora]
 
 
 class Balance(QObject, SaveAllClass):
@@ -466,7 +545,7 @@ class Balance(QObject, SaveAllClass):
 
     @classmethod
     def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
         return super().from_dump_migration(dct=dct)
@@ -478,7 +557,7 @@ def robust_address_str_from_script(
     try:
         return str(bdk.Address.from_script(script_pubkey, network))
     except Exception as e:
-        logger.debug(str(e))
+        logger.debug(e.__class__.__name__)
         if on_error_return_hex:
             return serialized_to_hex(script_pubkey.to_bytes())
         else:
@@ -499,5 +578,5 @@ if __name__ == "__main__":
         testdict[v] = v.__hash__()
         print(testdict[v])
 
-    test_hashing(OutPoint(txid="txid", vout=0))
+    test_hashing(OutPoint(txid=bdk.Txid.from_string("txid"), vout=0))
     test_hashing(AddressInfoMin("ssss", 4, bdk.KeychainKind.EXTERNAL))

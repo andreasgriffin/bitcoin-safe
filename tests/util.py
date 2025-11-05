@@ -27,6 +27,7 @@
 # SOFTWARE.
 
 
+import asyncio
 import logging
 from typing import Callable, List, cast
 
@@ -35,6 +36,7 @@ from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
 from bitcoin_safe.signals import TypedPyQtSignalNo
+from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -80,3 +82,26 @@ def make_psbt(
 
     psbt_for_signing = bdk.Psbt(psbt.serialize())
     return psbt_for_signing
+
+
+def wait_for_tx(wallet: Wallet, txid: str):
+    async def wait_for_tx():
+        while not wallet.get_tx(txid):
+            await asyncio.sleep(1)
+            wallet.trigger_sync()
+            await wallet.update()
+            wallet.clear_cache()
+
+    asyncio.run(wait_for_tx())
+
+
+def wait_for_funds(wallet: Wallet):
+
+    async def wait_for_funds():
+        while wallet.get_balance().total == 0:
+            wallet.trigger_sync()
+            await wallet.update()
+            if wallet.get_balance().total == 0:
+                await asyncio.sleep(0.5)
+
+    asyncio.run(wait_for_funds())

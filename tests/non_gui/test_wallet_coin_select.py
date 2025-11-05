@@ -30,7 +30,6 @@
 import logging
 import random
 from dataclasses import dataclass
-from time import sleep
 
 import bdkpython as bdk
 import numpy as np
@@ -44,6 +43,7 @@ from bitcoin_safe.tx import TxUiInfos, transaction_to_dict
 from bitcoin_safe.wallet import Wallet
 
 from ..setup_fulcrum import Faucet
+from ..util import wait_for_funds
 
 logger = logging.getLogger(__name__)
 
@@ -181,10 +181,8 @@ def test_funded_wallet(
         faucet.send(address, amount=test_wallet_config.utxo_value_kyc)
 
     faucet.mine()
-    while wallet.get_balance().total == 0:
-        sleep(0.5)
-        wallet.sync()
 
+    wait_for_funds(wallet)
     return wallet
 
 
@@ -321,7 +319,7 @@ def test_manual_coin_selection_1_max(
     # bdk gives random sorting, so i have to compare sorted lists
     # if utxo_value_private != utxo_value_kyc, this check will implicitly
     # also check if the correct coin categories were selected
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
 
     expected_output_values = sorted(
@@ -359,7 +357,7 @@ def test_manual_coin_selection_2_max(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -448,7 +446,7 @@ def test_category_coin_selection(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -523,7 +521,7 @@ def test_category_coin_selection_1_max(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -606,7 +604,7 @@ def test_category_coin_selection_2_max(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -694,7 +692,7 @@ def test_category_coin_selection_6_max(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -787,7 +785,7 @@ def test_category_coin_selection_opportunistic(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3
@@ -866,7 +864,7 @@ def test_category_coin_selection_opportunistic_different_seed(
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
     assert len(txinfos.utxo_dict) == test_wallet_config.num_private
     txinfos.fee_rate = 3

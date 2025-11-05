@@ -67,11 +67,11 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.typestubs import TypedPyQtSignal
+from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import get_wallet_of_address
 
 from ....pythonbdk_types import Recipient, is_address
-from ....signals import Signals, SignalsMin, UpdateFilter
+from ....signals import SignalsMin, UpdateFilter, WalletFunctions
 from ..currency_converter import CurrencyConverter
 from ..invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox, FiatSpinBox
@@ -83,14 +83,14 @@ class RecipientWidget(QWidget):
     def __init__(
         self,
         fx: FX | None,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         network: bdk.Network,
         allow_edit=True,
         allow_label_edit=True,
         parent=None,
     ) -> None:
         super().__init__(parent=parent)
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.fx = fx
         self.allow_edit = allow_edit
         self.allow_label_edit = allow_label_edit
@@ -103,10 +103,10 @@ class RecipientWidget(QWidget):
         # self.form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
         self.address_edit = AddressEdit(
-            network=network, allow_edit=allow_edit, parent=self, signals=self.signals
+            network=network, allow_edit=allow_edit, parent=self, wallet_functions=self.wallet_functions
         )
         self.label_line_edit = WalletLabelAndCategoryEdit(
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             get_label_ref=self._get_label_ref,
             label_type=LabelType.addr,
             parent=self,
@@ -114,7 +114,8 @@ class RecipientWidget(QWidget):
         )
 
         self.amount_layout = QHBoxLayout()
-        self.amount_spin_box = BTCSpinBox(network=network, signal_language_switch=self.signals.language_switch)  # type: ignore
+        language_switch = cast(TypedPyQtSignalNo, self.wallet_functions.signals.language_switch)
+        self.amount_spin_box = BTCSpinBox(network=network, signal_language_switch=language_switch)
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
         amount_analyzer.max_amount = int(21e6 * 1e8)
@@ -140,8 +141,8 @@ class RecipientWidget(QWidget):
         self.fiat_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         self.fiat_spin_box = FiatSpinBox(
             fx=fx,
-            signal_currency_changed=signals.currency_switch,
-            signal_language_switch=signals.language_switch,
+            signal_currency_changed=wallet_functions.signals.currency_switch,
+            signal_language_switch=wallet_functions.signals.language_switch,
         )
 
         self.fiat_layout.addWidget(self.fiat_spin_box)
@@ -167,10 +168,10 @@ class RecipientWidget(QWidget):
         # signals
         self.address_edit.signal_text_change.connect(self.on_address_change)
         self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
-        signals.any_wallet_updated.connect(self.update_with_filter)
+        wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
         self.amount_spin_box.valueChanged.connect(self.set_fiat_value)
-        self.signals.language_switch.connect(self.updateUi)
-        self.signals.currency_switch.connect(self.updateUi)
+        self.wallet_functions.signals.language_switch.connect(self.updateUi)
+        self.wallet_functions.signals.currency_switch.connect(self.updateUi)
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if not self.address:
@@ -354,7 +355,7 @@ class RecipientBox(QWidget):
     def __init__(
         self,
         fx: FX | None,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         network: bdk.Network,
         show_header_bar=True,
         allow_edit=True,
@@ -372,10 +373,12 @@ class RecipientBox(QWidget):
 
         set_margins(self._layout, {Qt.Edge.TopEdge: 0, Qt.Edge.LeftEdge: 0, Qt.Edge.RightEdge: 0})
         self.recipient_widget = RecipientWidget(
-            signals=signals, network=network, allow_edit=allow_edit, parent=self, fx=fx
+            wallet_functions=wallet_functions, network=network, allow_edit=allow_edit, parent=self, fx=fx
         )
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.notification_bar = NotificationBarRecipient(signals_min=signals, has_close_button=allow_edit)
+        self.notification_bar = NotificationBarRecipient(
+            signals_min=wallet_functions.signals, has_close_button=allow_edit
+        )
         self.notification_bar.setHidden(not show_header_bar)
         self._layout.addWidget(self.notification_bar)
         self._layout.addWidget(self.recipient_widget)
@@ -459,7 +462,7 @@ class RecipientBox(QWidget):
 
     def autofill_wallet_id(self, *args):
         wallet = get_wallet_of_address(
-            self.recipient_widget.address_edit.address, self.recipient_widget.signals
+            self.recipient_widget.address_edit.address, self.recipient_widget.wallet_functions
         )
         self.notification_bar.set_wallet_id(wallet.id if wallet else None)
 
@@ -472,14 +475,14 @@ class Recipients(QWidget):
 
     def __init__(
         self,
-        signals: Signals,
+        wallet_functions: WalletFunctions,
         network: bdk.Network,
         fx: FX | None,
         header_widget: HeaderWidget,
         allow_edit=True,
     ) -> None:
         super().__init__()
-        self.signals = signals
+        self.wallet_functions = wallet_functions
         self.fx = fx
         self.allow_edit = allow_edit
         self.network = network
@@ -504,7 +507,7 @@ class Recipients(QWidget):
         self.set_allow_edit(allow_edit)
 
         self.updateUi()
-        self.signals.language_switch.connect(self.updateUi)
+        self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def setup_header_widget(self):
         self.header_widget.set_icon("bi--recipients.svg")
@@ -665,7 +668,7 @@ class Recipients(QWidget):
         if not recipient:
             recipient = Recipient("", 0)
         recipient_box = RecipientBox(
-            signals=self.signals,
+            wallet_functions=self.wallet_functions,
             network=self.network,
             allow_edit=self.allow_edit,
             fx=self.fx,

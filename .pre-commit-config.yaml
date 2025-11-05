@@ -68,7 +68,6 @@ repos:
           - types-Pillow
           - types-reportlab
           - pyqt6 
-          - "bdkpython==1.2.0"
 
 
   - repo: local
