@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import gc
 import inspect
@@ -76,11 +77,10 @@ def test_custom_wallet_setup_custom_single_sig(
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig",
     amount: int = int(1e6),
 ) -> None:
+    """Test custom wallet setup custom single sig."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -93,6 +93,7 @@ def test_custom_wallet_setup_custom_single_sig(
         button = main_window.welcome_screen.pushButton_custom_wallet
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            """On wallet id dialog."""
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -106,6 +107,7 @@ def test_custom_wallet_setup_custom_single_sig(
         assert isinstance(qt_protowallet, QTProtoWallet)
 
         def test_block_change_signals() -> None:
+            """Test block change signals."""
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
@@ -114,6 +116,7 @@ def test_custom_wallet_setup_custom_single_sig(
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
 
         def check_consistent() -> None:
+            """Check consistent."""
             signers = qt_protowallet.wallet_descriptor_ui.spin_signers.value()
             qt_protowallet.wallet_descriptor_ui.spin_req.value()
 
@@ -135,6 +138,7 @@ def test_custom_wallet_setup_custom_single_sig(
                 ]
 
         def page1() -> None:
+            """Page1."""
             shutter.save(main_window)
 
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
@@ -152,6 +156,7 @@ def test_custom_wallet_setup_custom_single_sig(
         page1()
 
         def change_to_single_sig() -> None:
+            """Change to single sig."""
             assert qt_protowallet.protowallet.is_multisig()
             qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 1
@@ -168,6 +173,7 @@ def test_custom_wallet_setup_custom_single_sig(
         change_to_single_sig()
 
         def do_save_wallet() -> None:
+            """Do save wallet."""
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
@@ -181,7 +187,7 @@ def test_custom_wallet_setup_custom_single_sig(
             assert key.edit_fingerprint.text()
             assert (
                 key.edit_key_origin.text()
-                == f"m/84h/{0 if bdk.Network.REGTEST==bdk.Network.BITCOIN else 1}h/0h"
+                == f"m/84h/{0 if bdk.Network.REGTEST == bdk.Network.BITCOIN else 1}h/0h"
             )
 
             shutter.save(main_window)
@@ -206,7 +212,10 @@ def test_custom_wallet_setup_custom_single_sig(
             "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
             def export_wallet_descriptor() -> None:
+                """Export wallet descriptor."""
+
                 def on_dialog(dialog: DescriptorExport):
+                    """On dialog."""
                     shutter.save(dialog)
                     assert dialog.isVisible()
                     dialog.close()
@@ -220,6 +229,7 @@ def test_custom_wallet_setup_custom_single_sig(
             export_wallet_descriptor()
 
             def check_that_it_is_in_recent_wallets() -> None:
+                """Check that it is in recent wallets."""
                 assert any(
                     [
                         (wallet_name in name)
@@ -232,6 +242,7 @@ def test_custom_wallet_setup_custom_single_sig(
             check_that_it_is_in_recent_wallets()
 
             def switch_language() -> None:
+                """Switch language."""
                 main_window.language_chooser.switchLanguage("zh_CN")
                 shutter.save(main_window)
                 main_window.language_chooser.switchLanguage("en_US")
@@ -244,10 +255,12 @@ def test_custom_wallet_setup_custom_single_sig(
         wallet_name = qt_wallet.wallet.id
 
         def replace_descriptor() -> QTWallet:
+            """Replace descriptor."""
             descriptor = "wpkh([e53c8089/84'/1'/0']tpubDDg6DvnYDvUcRW3a5HeHoFCpKZYDm4qhKP7ccArDsSBSvBjc4d7AMdijAbekZ4c7NaP1zKWZ4qgHYzbQ6gv2Sge4MWWp96zhhAkjvge22FW/<0;1>/*)#uduv7uyw"
 
             def on_fill_question(dialog: QMessageBox) -> None:
                 # question 2
+                """On fill question."""
                 shutter.save(dialog)
                 assert "Fill" in dialog.text()
 
@@ -264,6 +277,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
             def on_proceed_question(dialog: QMessageBox) -> None:
                 # question 2
+                """On proceed question."""
                 shutter.save(dialog)
                 assert "Proceeding will potentially change all wallet addresses" in dialog.text()
 
@@ -274,7 +288,6 @@ def test_custom_wallet_setup_custom_single_sig(
                 button.click()
 
             with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
-
                 do_modal_click(
                     qt_wallet.wallet_descriptor_ui.button_box.button(
                         QDialogButtonBox.StandardButton.Apply

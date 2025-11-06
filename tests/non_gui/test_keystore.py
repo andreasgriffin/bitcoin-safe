@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -49,7 +50,7 @@ def test_dump(test_config: UserConfig):
 
     keystore = create_test_seed_keystores(
         signers=1,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         network=network,
     )[0]
 
@@ -58,6 +59,7 @@ def test_dump(test_config: UserConfig):
 
 
 def test_is_equal():
+    """Test is equal."""
     network = bdk.Network.REGTEST
 
     keystore = create_test_seed_keystores(
@@ -144,6 +146,7 @@ def test_is_equal():
 
 
 def test_get_differences_address_fields():
+    """Test get differences address fields."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
@@ -156,6 +159,7 @@ def test_get_differences_address_fields():
 
 
 def test_get_differences_metadata_fields():
+    """Test get differences metadata fields."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
@@ -168,11 +172,13 @@ def test_get_differences_metadata_fields():
 
 
 def test_is_seed_valid():
+    """Test is seed valid."""
     assert KeyStore.is_seed_valid(test_seeds[0])
     assert not KeyStore.is_seed_valid("not a valid seed")
 
 
 def test_is_xpub_valid():
+    """Test is xpub valid."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
@@ -181,6 +187,7 @@ def test_is_xpub_valid():
 
 
 def test_clone_creates_equal_object():
+    """Test clone creates equal object."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
@@ -190,6 +197,7 @@ def test_clone_creates_equal_object():
 
 
 def test_from_other_keystore_copies_attributes():
+    """Test from other keystore copies attributes."""
     ks1 = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
     ]
@@ -204,6 +212,7 @@ def test_from_other_keystore_copies_attributes():
 
 
 def test_is_identical_to_simple_pubkey_provider():
+    """Test is identical to simple pubkey provider."""
     ks = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[0]
     spk = SimplePubKeyProvider(ks.xpub, ks.fingerprint, ks.key_origin)
     assert ks.is_identical_to(spk)
@@ -212,6 +221,7 @@ def test_is_identical_to_simple_pubkey_provider():
 
 
 def test_from_signer_info_defaults():
+    """Test from signer info defaults."""
     base = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
     ]
@@ -227,6 +237,7 @@ def test_from_signer_info_defaults():
 
 
 def test_from_signer_info_overrides():
+    """Test from signer info overrides."""
     base = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
     ]
@@ -248,6 +259,7 @@ def test_from_signer_info_overrides():
 
 
 def test_sorted_keystores_orders_by_xpub():
+    """Test sorted keystores orders by xpub."""
     ks1 = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
     ]
@@ -262,6 +274,7 @@ def test_sorted_keystores_orders_by_xpub():
 
 
 def test_network_consistent():
+    """Test network consistent."""
     bacon_xpub = "xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K"
     assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(bacon_xpub), bdk.Network.BITCOIN)
     assert not KeyStore.network_consistent(

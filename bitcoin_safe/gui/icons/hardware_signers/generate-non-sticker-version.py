@@ -26,12 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import os
 
 
 def replace_text_in_file(file_path, replacements):
-    with open(file_path, "r", encoding="utf-8") as file:
+    """Replace text in file."""
+    with open(file_path, encoding="utf-8") as file:
         contents = file.read()
 
     # Perform all replacements specified in the replacements dictionary
@@ -42,6 +44,7 @@ def replace_text_in_file(file_path, replacements):
 
 
 def process_files(directory, output_path, replacements):
+    """Process files."""
     os.makedirs(output_path, exist_ok=True)
     # Loop through all files in the specified directory
     for filename in os.listdir(directory):

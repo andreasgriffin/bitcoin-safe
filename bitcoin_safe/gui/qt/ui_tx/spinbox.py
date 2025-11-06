@@ -26,7 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Optional, Tuple
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -45,12 +47,14 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 
 class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
-
     def get_style_sheet(self, ro: bool) -> str:
+        """Get style sheet."""
         self.setObjectName(f"{id(self)}")
 
         if ro:
@@ -80,6 +84,7 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
 
     def setReadOnly(self, r: bool):
         # first, tell the base class about it
+        """SetReadOnly."""
         super().setReadOnly(r)  # <<-- this flips the widget’s readOnly flag
         # then your other adjustments:
         super().setButtonSymbols(
@@ -96,8 +101,9 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
 
 class AnalyzerSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
-        self._smart_state: Optional[AmountAnalyzer] = None
+        self._smart_state: AmountAnalyzer | None = None
         self.valueChanged.connect(self.format_and_apply_validator)
         self.setObjectName(f"{id(self)}")
 
@@ -105,16 +111,19 @@ class AnalyzerSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         """Set a custom validator."""
         self._smart_state = smart_state
 
-    def analyzer(self) -> Optional[AmountAnalyzer]:
+    def analyzer(self) -> AmountAnalyzer | None:
+        """Analyzer."""
         return self._smart_state
 
     def format_as_error(self, value: bool) -> None:
+        """Format as error."""
         if value:
             self.setStyleSheet(f"#{self.objectName()} {{ background-color: #ff6c54; }}")
         else:
             self.setStyleSheet(self.get_style_sheet(self.isReadOnly()))
 
     def format_and_apply_validator(self) -> None:
+        """Format and apply validator."""
         analyzer = self.analyzer()
         if not analyzer:
             self.format_as_error(False)
@@ -137,6 +146,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         include_currrency_symbol=False,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.fx = fx
         self.include_currrency_symbol = include_currrency_symbol
@@ -153,6 +163,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         signal_language_switch.connect(self.update_currency)
 
     def setCurrencyCode(self, currency_code: str | None) -> None:
+        """SetCurrencyCode."""
         normalized = currency_code.upper() if currency_code else None
         if normalized == self._currency_code:
             return
@@ -160,6 +171,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self.update_currency()
 
     def _get_currency_code(self) -> str | None:
+        """Get currency code."""
         if self._currency_code:
             return self._currency_code
         if self.fx:
@@ -167,6 +179,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         return None
 
     def update_currency(self):
+        """Update currency."""
         if not self.fx:
             return
 
@@ -195,6 +208,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
                 super().setValue(new_fiat_value)
 
     def set_max(self, value: bool) -> None:
+        """Set max."""
         if value == self._is_max:
             return
         self.setDisabled(value)
@@ -202,14 +216,17 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self.setValue(super().value())
 
     def btc_value(self) -> int:
+        """Btc value."""
         return self._btc_amount
 
     def fiat_value(self) -> float | None:
+        """Fiat value."""
         if not self.fx:
             return None
         return self.fx.btc_to_fiat(self.btc_value(), currency=self._get_currency_code())
 
     def setBtcValue(self, btc_amount: int) -> None:
+        """SetBtcValue."""
         self._btc_amount = btc_amount
         if (
             self.fx
@@ -219,17 +236,21 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             self.setValue(fiat_value)
 
     def _set_btc_from_fiat(self, val: float):
+        """Set btc from fiat."""
         if self.fx:
             self._btc_amount = self.fx.fiat_to_btc(val, currency=self._get_currency_code()) or 0
 
     def setValue(self, val: float) -> None:
+        """SetValue."""
         self._set_btc_from_fiat(val)
         super().setValue(val)
 
     def value(self) -> float:
+        """Value."""
         return super().value()
 
     def textFromValue(self, fiat_value: float) -> str:  # type: ignore[override]
+        """TextFromValue."""
         if not self.fx:
             return ""
 
@@ -245,6 +266,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         return fiat_str
 
     def valueFromText(self, text: str | None) -> float:
+        """ValueFromText."""
         if self._is_max:
             return 0
         if not self.fx:
@@ -266,6 +288,7 @@ class BTCSpinBox(AnalyzerSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
 
     def __init__(self, network: bdk.Network, signal_language_switch: TypedPyQtSignalNo, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.network = network
         self._is_max = False
@@ -276,31 +299,38 @@ class BTCSpinBox(AnalyzerSpinBox):
         signal_language_switch.connect(self.on_language_switch)
 
     def on_language_switch(self):
+        """On language switch."""
         self.setValue(self.value())
 
     def setValue(self, val: float) -> None:
+        """SetValue."""
         super().setValue(val)
         self.format_and_apply_validator()
 
     def set_max(self, value: bool) -> None:
+        """Set max."""
         self.setDisabled(value)
         self._is_max = value
         self.setValue(super().value())
 
     def value(self) -> int:
+        """Value."""
         return round(super().value())
 
     def textFromValue(self, value: int) -> str:  # type: ignore[override]
+        """TextFromValue."""
         if self._is_max:
             return self.tr("Max ≈ {amount}").format(amount=str(Satoshis(value, self.network)))
         return str(Satoshis(value, self.network))
 
     def valueFromText(self, text: str | None) -> int:
+        """ValueFromText."""
         if self._is_max:
             return 0
         return Satoshis.from_btc_str(text if text else "0", self.network).value
 
-    def validate(self, input: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
+    def validate(self, input: str | None, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
+        """Validate."""
         if input is None:
             input = ""
         try:
@@ -313,6 +343,7 @@ class BTCSpinBox(AnalyzerSpinBox):
             return QtGui.QValidator.State.Invalid, input, pos
 
     def set_warning_maximum(self, value: int) -> None:
+        """Set warning maximum."""
         if not self._smart_state:
             return
         self._smart_state.max_amount = value
@@ -326,6 +357,7 @@ class FeerateSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         signal_language_switch: TypedPyQtSignalNo | pyqtBoundSignal,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         self.setSingleStep(1)
@@ -336,6 +368,7 @@ class FeerateSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         signal_language_switch.connect(self.on_language_switch)
 
     def on_language_switch(self):
+        """On language switch."""
         self.setLocale(QLocale())
         self.setValue(self.value())
 
@@ -371,6 +404,7 @@ if __name__ == "__main__":
         locale_combo.addItem(f"{loc.nativeLanguageName()} ({loc.name()})", loc)
 
     def switch_locale(idx):
+        """Switch locale."""
         loc = locale_combo.itemData(idx)
         QLocale.setDefault(loc)
 
@@ -390,6 +424,7 @@ if __name__ == "__main__":
         currency_combo.addItem(code, code)
 
     def switch_currency(idx):
+        """Switch currency."""
         new_code = currency_combo.itemData(idx)
         config.currency = new_code
         # let FX rebuild its locale/symbol internally

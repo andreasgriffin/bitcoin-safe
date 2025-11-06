@@ -26,36 +26,22 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-from typing import Any, Callable, Generic, Optional
+from collections.abc import Callable
+from typing import Any, Generic
 
 from PyQt6.QtCore import QMetaObject
 from typing_extensions import TypeVarTuple, Unpack
 
 Ts = TypeVarTuple("Ts")
 
-
 class TypedPyQtSignal(Generic[Unpack[Ts]]):
     "ONLY FOR Type hints!!!"
 
-    def connect(self, slot: "Callable[[Unpack[Ts]], Any]|TypedPyQtSignal[Unpack[Ts]]") -> QMetaObject.Connection:  # type: ignore
-        pass
+    def connect(
+        self, slot: Callable[[Unpack[Ts]], Any] | TypedPyQtSignal[Unpack[Ts]]
+    ) -> QMetaObject.Connection:  # type: ignore
+        ...
+    def emit(self, *args: Unpack[Ts]) -> None: ...
+    def disconnect(self, slot: Callable[[Unpack[Ts]], Any] | None = None) -> None: ...
 
-    def emit(self, *args: Unpack[Ts]) -> None:
-        pass
-
-    def disconnect(self, slot: Optional[Callable[[Unpack[Ts]], Any]] = None) -> None:
-        pass
-
-
-class TypedPyQtSignalNo:
-    "ONLY FOR Type hints!!!"
-
-    def connect(self, slot: "Callable[[], Any]|TypedPyQtSignalNo") -> QMetaObject.Connection:  # type: ignore
-        pass
-
-    def emit(self) -> None:
-        pass
-
-    def disconnect(self, slot: Optional[Callable[[], Any]] = None) -> None:
-        pass
+TypedPyQtSignalNo = TypedPyQtSignal[()]

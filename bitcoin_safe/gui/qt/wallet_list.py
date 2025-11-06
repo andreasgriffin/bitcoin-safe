@@ -26,12 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import Iterable, List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QPoint, QSize, Qt, pyqtSignal
@@ -52,13 +54,15 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.typestubs import TypedPyQtSignal
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
 class ButtonStyleDelegate(QStyledItemDelegate):
     def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index):
+        """Paint."""
         button_option = QStyleOptionButton()
         button_option.rect = option.rect.adjusted(0, 0, -1, -1)  # Adjust to fit within drawing bounds
         button_option.text = index.data(Qt.ItemDataRole.DisplayRole)
@@ -72,21 +76,27 @@ class ButtonStyleDelegate(QStyledItemDelegate):
         QApplication.style().drawControl(QStyle.ControlElement.CE_PushButton, button_option, painter)  # type: ignore
 
     def sizeHint(self, option: QStyleOptionViewItem, index) -> QSize:
-        default_height = max(25, QApplication.style().pixelMetric(QStyle.PixelMetric.PM_DialogButtonsButtonHeight))  # type: ignore
+        """SizeHint."""
+        default_height = max(
+            25,
+            (QApplication.style() or QStyle()).pixelMetric(QStyle.PixelMetric.PM_DialogButtonsButtonHeight),
+        )  # type: ignore
         return QSize(option.rect.width(), default_height)
 
 
 class ButtonList(QListWidget):
-    itemClicked: TypedPyQtSignal[QListWidgetItem] = pyqtSignal(QListWidgetItem)  # type: ignore
+    signal_clicked: TypedPyQtSignal[QListWidgetItem] = cast(Any, pyqtSignal(QListWidgetItem))
 
     def __init__(self, *args, **kwargs):
+        """Initialize instance."""
         super().__init__(*args, **kwargs)
         self.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )  # Disable horizontal scrollbar
         self.setItemDelegate(ButtonStyleDelegate())
 
-    def mousePressEvent(self, e: Optional[QMouseEvent]) -> None:
+    def mousePressEvent(self, e: QMouseEvent | None) -> None:
+        """MousePressEvent."""
         if not e:
             return
         if e.button() == Qt.MouseButton.LeftButton:
@@ -94,11 +104,12 @@ class ButtonList(QListWidget):
             item = self.itemAt(e.position().toPoint())
             if item:
                 item.setSelected(True)  # Manually set the item as selected
-                self.itemClicked.emit(item)  # Emit the custom signal
+                self.signal_clicked.emit(item)  # Emit the custom signal
         elif e.button() == Qt.MouseButton.RightButton:
             self.handleRightClick(e.position().toPoint())
 
     def mouseReleaseEvent(self, e: QMouseEvent | None) -> None:
+        """MouseReleaseEvent."""
         super().mouseReleaseEvent(e)
         if not e:
             return
@@ -106,6 +117,7 @@ class ButtonList(QListWidget):
             self.clearSelection()  # Deselect all items on release
 
     def handleRightClick(self, position: QPoint):
+        """HandleRightClick."""
         item = self.itemAt(position)
         if not item:
             return
@@ -117,18 +129,21 @@ class ButtonList(QListWidget):
         menu.exec(self.mapToGlobal(position))
 
     def openContainingFolder(self, filePath: str) -> None:
+        """OpenContainingFolder."""
         show_file_in_explorer(Path(filePath))
 
 
 class WalletList(ButtonList):
-    signal_file_path_clicked = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_file_path_clicked: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
 
     def __init__(self, hide_extension=True, *args, **kwargs):
+        """Initialize instance."""
         super().__init__(*args, **kwargs)
         self.hide_extension = hide_extension
-        self.itemClicked.connect(self.handleItemClick)
+        self.signal_clicked.connect(self.handleItemClick)
 
     def set_file_paths(self, file_paths: Iterable[str]):
+        """Set file paths."""
         self.clear()
         for file_path in reversed(list(file_paths)):
             name = Path(file_path).stem if self.hide_extension else Path(file_path).name
@@ -138,6 +153,7 @@ class WalletList(ButtonList):
 
     def handleItemClick(self, item: QListWidgetItem):
         # Get the full path from the tooltip of the item
+        """HandleItemClick."""
         full_path = item.toolTip()
         self.signal_file_path_clicked.emit(full_path)  # Emit the signal with the full path
 
@@ -146,9 +162,10 @@ class RecentlyOpenedWalletsGroup(QGroupBox):
     def __init__(
         self,
         signal_open_wallet: TypedPyQtSignal,
-        signal_recently_open_wallet_changed: TypedPyQtSignal[List[str]],
+        signal_recently_open_wallet_changed: TypedPyQtSignal[list[str]],
         hide_extension=True,
     ):
+        """Initialize instance."""
         super().__init__()
         self.signal_recently_open_wallet_changed = signal_recently_open_wallet_changed
         self.signal_open_wallet = signal_open_wallet
@@ -170,9 +187,11 @@ class RecentlyOpenedWalletsGroup(QGroupBox):
         self.wallet_list.signal_file_path_clicked.connect(self.signal_open_wallet)
 
     def set_visibility(self):
+        """Set visibility."""
         self.setHidden(self.wallet_list.count() == 0)
 
     def on_signal_recently_open_wallet_changed(self, file_paths: Iterable[str]):
+        """On signal recently open wallet changed."""
         self.set_visibility()
 
 
@@ -180,6 +199,7 @@ if __name__ == "__main__":
 
     class Demo(QWidget):
         def __init__(self) -> None:
+            """Initialize instance."""
             super().__init__()
             layout = QVBoxLayout(self)
             self.walletsWidget = WalletList()
@@ -197,14 +217,15 @@ if __name__ == "__main__":
             self.updateButton.clicked.connect(self.updateItems)
 
         def updateItems(self) -> None:
-
             # If you only want files and not directories, you can filter the list
+            """UpdateItems."""
             files = [f for f in os.listdir("..") if os.path.isfile(f)]
 
             # Populate list
             self.walletsWidget.set_file_paths(files)
 
     def main() -> None:
+        """Main."""
         app = QApplication([])
         demo = Demo()
         demo.resize(400, 300)

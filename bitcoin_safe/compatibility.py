@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 import platform
 
@@ -38,13 +40,14 @@ logger = logging.getLogger(__name__)
 
 def check_compatibility():
     # Only enforce on macOS
+    """Check compatibility."""
     if platform.system().lower() != "darwin":
         return
 
     # Get the macOS version string, e.g. "14.0.1" or "13.4.1"
     ver_str = platform.mac_ver()[0]
     if not ver_str:
-        logger.error(("Unable to determine macOS version"))
+        logger.error("Unable to determine macOS version")
 
     current_ver = fast_version(ver_str)
 

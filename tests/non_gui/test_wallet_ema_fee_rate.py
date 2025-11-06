@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -51,6 +52,7 @@ logger = logging.getLogger(__name__)
     ],
 )
 def test_wallet_config_seed(request) -> TestWalletConfig:
+    """Test wallet config seed."""
     return request.param
 
 
@@ -63,7 +65,7 @@ def test_funded_seed_wallet(
     test_wallet_config_seed: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
 ) -> Wallet:
-
+    """Test funded seed wallet."""
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -102,13 +104,13 @@ def test_ema_fee_rate_weights_recent_heavier(
     test_funded_seed_wallet: Wallet,
     faucet: Faucet,
 ) -> Wallet:
-    """
-    Test that the EMA fee rate for an incoming wallet is weighted more heavily towards recent transactions.
-    """
+    """Test that the EMA fee rate for an incoming wallet is weighted more heavily
+    towards recent transactions."""
 
     wallet = test_funded_seed_wallet
 
     def send_tx(fee_rate=100):
+        """Send tx."""
         psbt_for_signing = make_psbt(
             bdk_wallet=wallet.bdkwallet,
             network=wallet.network,
@@ -162,9 +164,8 @@ def test_ema_fee_rate_weights_recent_heavier(
 def test_address_balance(
     test_funded_seed_wallet: Wallet,
 ):
-    """
-    Test that the EMA fee rate for an incoming wallet is weighted more heavily towards recent transactions.
-    """
+    """Test that the EMA fee rate for an incoming wallet is weighted more heavily
+    towards recent transactions."""
 
     wallet = test_funded_seed_wallet
 

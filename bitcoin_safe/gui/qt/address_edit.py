@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -41,11 +42,12 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
 from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...i18n import translate
 from ...signals import (
-    TypedPyQtSignal,
     UpdateFilter,
     UpdateFilterReason,
     WalletFunctions,
@@ -55,11 +57,12 @@ from ...wallet import Wallet, get_wallet_of_address
 from .util import ColorScheme, block_explorer_URL, get_icon_path
 
 logger = logging.getLogger(__name__)
+MIN_ADVANCE_IF_PEEK_DISCOVERS_MINE = 20
 
 
 class AddressEdit(ButtonEdit):
-    signal_text_change = cast(TypedPyQtSignal[str], pyqtSignal(str))
-    signal_bip21_input = cast(TypedPyQtSignal[Data], pyqtSignal(Data))
+    signal_text_change: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_bip21_input: TypedPyQtSignal[Data] = cast(Any, pyqtSignal(Data))
 
     def __init__(
         self,
@@ -67,14 +70,15 @@ class AddressEdit(ButtonEdit):
         wallet_functions: WalletFunctions,
         text="",
         allow_edit: bool = True,
-        button_vertical_align: Optional[QtCore.Qt.AlignmentFlag] = None,
+        button_vertical_align: QtCore.Qt.AlignmentFlag | None = None,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         self.wallet_functions = wallet_functions
         self.signals = wallet_functions.signals
         self.network = network
         self.allow_edit = allow_edit
-        language_switch = cast(TypedPyQtSignalNo, self.signals.language_switch)
+        language_switch: TypedPyQtSignalNo = cast(Any, self.signals.language_switch)
         super().__init__(
             text=text,
             button_vertical_align=button_vertical_align,
@@ -104,12 +108,14 @@ class AddressEdit(ButtonEdit):
         self.input_field.textChanged.connect(self.on_text_changed)
 
     def _on_handle_input(self, data: Data) -> None:
+        """On handle input."""
         if data.data_type == DataType.Bip21:
             if data.data.get("address"):
                 self.setText(data.data.get("address"))
             self.signal_bip21_input.emit(data)
 
     def set_allow_edit(self, allow_edit: bool):
+        """Set allow edit."""
         self.allow_edit = allow_edit
 
         self.setReadOnly(not allow_edit)
@@ -122,6 +128,7 @@ class AddressEdit(ButtonEdit):
             self.mempool_button.setHidden(allow_edit)
 
     def _on_click(self) -> None:
+        """On click."""
         mempool_url = self.signals.get_mempool_url()
         if mempool_url is None:
             return
@@ -130,7 +137,7 @@ class AddressEdit(ButtonEdit):
             webopen(addr_URL)
 
     def _add_mempool_button(self) -> SquareButton:
-
+        """Add mempool button."""
         copy_button = self.add_button(
             get_icon_path("block-explorer.svg"),
             self._on_click,
@@ -140,13 +147,16 @@ class AddressEdit(ButtonEdit):
 
     @property
     def address(self) -> str:
+        """Address."""
         return self.text().strip()
 
     @address.setter
     def address(self, value: str) -> None:
+        """Address."""
         self.setText(value)
 
     def updateUi(self):
+        """UpdateUi."""
         super().updateUi()
 
         wallet = None
@@ -155,6 +165,7 @@ class AddressEdit(ButtonEdit):
         self.format_address_field(wallet=wallet)
 
     def on_text_changed(self, *args):
+        """On text changed."""
         wallet = None
         if self.wallet_functions:
             wallet = get_wallet_of_address(self.address, self.wallet_functions)
@@ -169,8 +180,11 @@ class AddressEdit(ButtonEdit):
     @classmethod
     def color_address(
         cls, address: str, wallet: Wallet, wallet_signals: WalletSignals
-    ) -> Optional[QtGui.QColor]:
+    ) -> QtGui.QColor | None:
+        """Color address."""
+
         def get_color(is_change: bool) -> QtGui.QColor:
+            """Get color."""
             if is_change:
                 return ColorScheme.YELLOW.as_color(background=True)
             else:
@@ -184,11 +198,15 @@ class AddressEdit(ButtonEdit):
                 return None
 
             advance_tip_to_address_info(
-                address_info=address_info, wallet=wallet, wallet_signals=wallet_signals
+                address_info=address_info,
+                wallet=wallet,
+                wallet_signals=wallet_signals,
+                min_advance=MIN_ADVANCE_IF_PEEK_DISCOVERS_MINE,
             )
             return get_color(is_change=address_info.is_change())
 
-    def format_address_field(self, wallet: Optional[Wallet]) -> None:
+    def format_address_field(self, wallet: Wallet | None) -> None:
+        """Format address field."""
         palette = QtGui.QPalette()
         background_color = None
 
@@ -209,6 +227,7 @@ class AddressEdit(ButtonEdit):
         # )
 
     def ask_to_replace_address(self, wallet: Wallet, address: str) -> None:
+        """Ask to replace address."""
         if question_dialog(
             text=translate(
                 "recipients",

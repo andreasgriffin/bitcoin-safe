@@ -26,11 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import csv
 import logging
 from pathlib import Path
-from typing import Any, List, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -67,7 +68,9 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import get_wallet_of_address
 
 from ....pythonbdk_types import Recipient, is_address
@@ -89,6 +92,7 @@ class RecipientWidget(QWidget):
         allow_label_edit=True,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.wallet_functions = wallet_functions
         self.fx = fx
@@ -114,7 +118,7 @@ class RecipientWidget(QWidget):
         )
 
         self.amount_layout = QHBoxLayout()
-        language_switch = cast(TypedPyQtSignalNo, self.wallet_functions.signals.language_switch)
+        language_switch: TypedPyQtSignalNo = cast(Any, self.wallet_functions.signals.language_switch)
         self.amount_spin_box = BTCSpinBox(network=network, signal_language_switch=language_switch)
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
@@ -174,6 +178,7 @@ class RecipientWidget(QWidget):
         self.wallet_functions.signals.currency_switch.connect(self.updateUi)
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         if not self.address:
             return
 
@@ -187,23 +192,28 @@ class RecipientWidget(QWidget):
         self.label_line_edit.autofill_label_and_category(update_filter=update_filter)
 
     def _get_label_ref(self):
+        """Get label ref."""
         return self.address_edit.address
 
     def on_address_change(self, value: str):
+        """On address change."""
         self.label_line_edit.updateUi()
         self.label_line_edit.autofill_label_and_category()
 
     def set_currency(self):
+        """Set currency."""
         if self.fx:
             currency_symbol = self.fx.get_currency_symbol()
             self.fiat_unit.setText(currency_symbol)
 
     def set_max(self, value: bool):
+        """Set max."""
         self.send_max_checkbox.setChecked(value)
         # update the amount_spin_box text
         self.updateUi()
 
     def set_allow_edit(self, allow_edit: bool):
+        """Set allow edit."""
         self.allow_edit = allow_edit
 
         self.send_max_checkbox.setVisible(allow_edit)
@@ -213,12 +223,15 @@ class RecipientWidget(QWidget):
         self.address_edit.set_allow_edit(allow_edit)
 
     def set_category(self, category: str):
+        """Set category."""
         self.label_line_edit.set_category(category if category else "")
 
     def set_category_visible(self, value: bool):
+        """Set category visible."""
         self.label_line_edit.set_category_visible(value)
 
     def set_fiat_value(self):
+        """Set fiat value."""
         self.fiat_label.setHidden(not self.fx)
         self.fiat_spin_box.setHidden(not self.fx)
         if not self.fx:
@@ -232,6 +245,7 @@ class RecipientWidget(QWidget):
         self.fiat_spin_box.setValue(fiat_value)
 
     def on_address_bip21_input(self, data: Data) -> None:
+        """On address bip21 input."""
         if data.data_type == DataType.Bip21:
             if data.data.get("address"):
                 self.address_edit.address = data.data.get("address")
@@ -241,6 +255,7 @@ class RecipientWidget(QWidget):
                 self.label_line_edit.set_label(data.data.get("label"))
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.address_label.setText(self.tr("Address"))
         self.label_txlabel.setText(self.tr("Label"))
         self.amount_label.setText(self.tr("Amount"))
@@ -259,52 +274,64 @@ class RecipientWidget(QWidget):
     def showEvent(self, a0) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
+        """ShowEvent."""
         self.updateUi()
 
     def on_send_max_button_click(self) -> None:
+        """On send max button click."""
         if not self.allow_edit:
             return
         self.updateUi()
 
     @property
     def address(self) -> str:
+        """Address."""
         return self.address_edit.address
 
     @address.setter
     def address(self, value: str) -> None:
+        """Address."""
         self.address_edit.address = value
 
     @property
     def category(self) -> str:
+        """Category."""
         return self.label_line_edit.category()
 
     @category.setter
     def category(self, value: str) -> None:
+        """Category."""
         self.label_line_edit.set_category(value)
 
     @property
     def label(self) -> str:
+        """Label."""
         return self.label_line_edit.label()
 
     @label.setter
     def label(self, value: str) -> None:
+        """Label."""
         self.label_line_edit.set_label(value)
 
     @property
     def amount(self) -> int:
+        """Amount."""
         return self.amount_spin_box.value()
 
     @amount.setter
     def amount(self, value: int) -> None:
+        """Amount."""
         self.amount_spin_box.setValue(value)
         self.set_fiat_value()
 
     @property
     def enabled(self) -> bool:
+        """Enabled."""
         return not self.address_edit.input_field.isReadOnly()
 
     @enabled.setter
     def enabled(self, state: bool) -> None:
+        """Enabled."""
         self.address_edit.setReadOnly(not state)
         self.label_line_edit.set_label_readonly(not state)
         self.amount_spin_box.setReadOnly(not state)
@@ -317,6 +344,7 @@ class NotificationBarRecipient(NotificationBar):
         signals_min: SignalsMin,
         has_close_button=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -325,7 +353,7 @@ class NotificationBarRecipient(NotificationBar):
         self.signals_min = signals_min
         self.wallet_id: str | None = None
 
-        self.set_icon(svg_tools.get_QIcon(f"bi--person-no-left-margin.svg"))
+        self.set_icon(svg_tools.get_QIcon("bi--person-no-left-margin.svg"))
 
         self.closeButton.setFlat(True)
 
@@ -333,6 +361,7 @@ class NotificationBarRecipient(NotificationBar):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         if self.wallet_id is None:
             self.icon_label.setText("")
@@ -342,15 +371,16 @@ class NotificationBarRecipient(NotificationBar):
             )
 
     def set_wallet_id(self, wallet_id: str | None):
+        """Set wallet id."""
         self.wallet_id = wallet_id
         self.updateUi()
 
 
 class RecipientBox(QWidget):
-    signal_close = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
-    signal_clicked_send_max_button = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
-    signal_address_text_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
-    signal_amount_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_close: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_address_text_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
 
     def __init__(
         self,
@@ -362,6 +392,7 @@ class RecipientBox(QWidget):
         groupbox_style=False,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.main_layout = QVBoxLayout(self)
         set_no_margins(self.main_layout)
@@ -395,72 +426,90 @@ class RecipientBox(QWidget):
         self.recipient_widget.address_edit.signal_text_change.connect(self.on_address_text_changed)
 
     def on_close(self):
+        """On close."""
         self.signal_close.emit(self.recipient_widget)
 
     def on_send_max_button(self):
+        """On send max button."""
         self.signal_clicked_send_max_button.emit(self.recipient_widget)
 
     def on_address_text_changed(self, text: str):
+        """On address text changed."""
         self.signal_address_text_changed.emit(self.recipient_widget)
         self.autofill_wallet_id()
 
     def on_amount_spin_box_changed(self):
+        """On amount spin box changed."""
         self.signal_amount_changed.emit(self.recipient_widget)
 
     def set_allow_edit(self, allow_edit: bool):
+        """Set allow edit."""
         self.recipient_widget.set_allow_edit(allow_edit)
         self.notification_bar.set_has_close_button(allow_edit)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.recipient_widget.updateUi()
         self.autofill_wallet_id()
 
     def showEvent(self, a0) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
+        """ShowEvent."""
         self.updateUi()
 
     @property
     def address(self) -> str:
+        """Address."""
         return self.recipient_widget.address
 
     @address.setter
     def address(self, value: str) -> None:
+        """Address."""
         self.recipient_widget.address = value
 
     @property
     def label(self) -> str:
+        """Label."""
         return self.recipient_widget.label
 
     @label.setter
     def label(self, value: str) -> None:
+        """Label."""
         self.recipient_widget.label = value
 
     @property
     def category(self) -> str:
+        """Category."""
         return self.recipient_widget.category
 
     @category.setter
     def category(self, value: str) -> None:
+        """Category."""
         self.recipient_widget.category = value
 
     @property
     def amount(self) -> int:
+        """Amount."""
         return self.recipient_widget.amount
 
     @amount.setter
     def amount(self, value: int) -> None:
+        """Amount."""
         self.recipient_widget.amount = value
 
     @property
     def enabled(self) -> bool:
+        """Enabled."""
         return not self.recipient_widget.enabled
 
     @enabled.setter
     def enabled(self, state: bool) -> None:
+        """Enabled."""
         self.recipient_widget.enabled = state
 
     def autofill_wallet_id(self, *args):
+        """Autofill wallet id."""
         wallet = get_wallet_of_address(
             self.recipient_widget.address_edit.address, self.recipient_widget.wallet_functions
         )
@@ -468,10 +517,10 @@ class RecipientBox(QWidget):
 
 
 class Recipients(QWidget):
-    signal_added_recipient = cast(TypedPyQtSignal[RecipientBox], pyqtSignal(RecipientBox))
-    signal_removed_recipient = cast(TypedPyQtSignal[RecipientBox], pyqtSignal(RecipientBox))
-    signal_clicked_send_max_button = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
-    signal_amount_changed = cast(TypedPyQtSignal[RecipientWidget], pyqtSignal(RecipientWidget))
+    signal_added_recipient: TypedPyQtSignal[RecipientBox] = cast(Any, pyqtSignal(RecipientBox))
+    signal_removed_recipient: TypedPyQtSignal[RecipientBox] = cast(Any, pyqtSignal(RecipientBox))
+    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
 
     def __init__(
         self,
@@ -481,6 +530,7 @@ class Recipients(QWidget):
         header_widget: HeaderWidget,
         allow_edit=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.wallet_functions = wallet_functions
         self.fx = fx
@@ -510,6 +560,7 @@ class Recipients(QWidget):
         self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def setup_header_widget(self):
+        """Setup header widget."""
         self.header_widget.set_icon("bi--recipients.svg")
         self.header_widget.label_title.setText(self.tr("Recipients"))
 
@@ -540,9 +591,11 @@ class Recipients(QWidget):
         self.header_widget.h_laylout.addWidget(self.toolbutton_csv)
 
     def update_recipient_title(self):
+        """Update recipient title."""
         self.header_widget.label_title.setText(self.tr("Recipients ({count})").format(count=self.count()))
 
     def set_allow_edit(self, allow_edit: bool):
+        """Set allow edit."""
         self.allow_edit = allow_edit
         self.action_export_csv_template.setVisible(allow_edit)
         self.action_import_csv.setVisible(allow_edit)
@@ -551,18 +604,20 @@ class Recipients(QWidget):
         for recipient_tab_widget in self.recipient_list.content_widget.findChildren(RecipientBox):
             recipient_tab_widget.set_allow_edit(allow_edit=allow_edit)
 
-    def as_list(self, recipients: List[Recipient], include_header=True) -> List[List[Any]]:
-        table: List[List[Any]] = []
+    def as_list(self, recipients: list[Recipient], include_header=True) -> list[list[Any]]:
+        """As list."""
+        table: list[list[Any]] = []
 
         if include_header:
             table.append(self._get_csv_header())
 
         for recipient in recipients:
-            row: List[Any] = [recipient.address, recipient.amount, recipient.label]
+            row: list[Any] = [recipient.address, recipient.amount, recipient.label]
             table.append(row)
         return table
 
-    def _get_csv_header(self) -> List[str]:
+    def _get_csv_header(self) -> list[str]:
+        """Get csv header."""
         return [
             self.tr("Address"),
             self.tr("Amount [{unit}]").format(unit=unit_sat_str(self.network)),
@@ -570,18 +625,20 @@ class Recipients(QWidget):
         ]
 
     def on_action_export_csv_template(self):
+        """On action export csv template."""
         self.export_csv([])
 
     def on_action_export_csv(self):
+        """On action export csv."""
         self.export_csv(self.recipients)
 
-    def export_csv(self, recipients: List[Recipient], file_path: str | Path | None = None) -> Path | None:
-
+    def export_csv(self, recipients: list[Recipient], file_path: str | Path | None = None) -> Path | None:
+        """Export csv."""
         if not file_path:
             file_path, _ = QFileDialog.getSaveFileName(
                 self,
                 self.tr("Export csv"),
-                f"recipients.csv",
+                "recipients.csv",
                 self.tr("All Files (*);;Wallet Files (*.csv)"),
             )
             if not file_path:
@@ -597,7 +654,7 @@ class Recipients(QWidget):
         return Path(file_path)
 
     def import_csv(self, file_path: str | None = None):
-
+        """Import csv."""
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
@@ -609,7 +666,7 @@ class Recipients(QWidget):
                 logger.info(self.tr("No file selected"))
                 return
 
-        with open(file_path, "r") as file:
+        with open(file_path) as file:
             reader = csv.reader(file)
             data = list(reader)
             header = data[0]
@@ -643,6 +700,7 @@ class Recipients(QWidget):
         self.recipients = [Recipient(address=row[0], amount=int(row[1]), label=row[2]) for row in rows]
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.add_recipient_button.setText(self.tr("Add Recipient"))
         if self.header_widget:
             self.header_widget.label_title.setText(self.tr("Recipients"))
@@ -656,6 +714,7 @@ class Recipients(QWidget):
 
     # insert before the button position
     def _insert_before_button(self, new_widget: QWidget) -> None:
+        """Insert before button."""
         index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
         if index >= 0:
             self.recipient_list_content_layout.insertWidget(index, new_widget)
@@ -665,6 +724,7 @@ class Recipients(QWidget):
             self._count += 1
 
     def add_recipient(self, recipient: Recipient | None = None) -> RecipientBox:
+        """Add recipient."""
         if not recipient:
             recipient = Recipient("", 0)
         recipient_box = RecipientBox(
@@ -690,12 +750,14 @@ class Recipients(QWidget):
         return recipient_box
 
     def ui_remove_recipient_widget(self, recipient_widget: RecipientWidget) -> None:
+        """Ui remove recipient widget."""
         self.remove_recipient_widget(recipient_widget)
 
         if not self.recipients:
             self.add_recipient()
 
     def remove_recipient_widget(self, recipient_widget: RecipientWidget) -> None:
+        """Remove recipient widget."""
         for widget in self.recipient_list.findChildren(RecipientBox):
             if widget.recipient_widget == recipient_widget:
                 self.recipient_list_content_layout.removeWidget(widget)
@@ -708,7 +770,8 @@ class Recipients(QWidget):
         self.update_recipient_title()
 
     @property
-    def recipients(self) -> List[Recipient]:
+    def recipients(self) -> list[Recipient]:
+        """Recipients."""
         return [
             Recipient(
                 recipient_box.address,
@@ -720,16 +783,19 @@ class Recipients(QWidget):
         ]
 
     @recipients.setter
-    def recipients(self, recipient_list: List[Recipient]) -> None:
+    def recipients(self, recipient_list: list[Recipient]) -> None:
         # remove all old ones
+        """Recipients."""
         for recipient_box in self.get_recipient_group_boxes():
             self.remove_recipient_widget(recipient_box.recipient_widget)
 
         for recipient in recipient_list:
             self.add_recipient(recipient)
 
-    def get_recipient_group_boxes(self) -> List[RecipientBox]:
+    def get_recipient_group_boxes(self) -> list[RecipientBox]:
+        """Get recipient group boxes."""
         return self.recipient_list.findChildren(RecipientBox)
 
     def count(self) -> int:
+        """Count."""
         return self._count

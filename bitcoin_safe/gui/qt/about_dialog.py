@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import sys
 
@@ -46,6 +47,7 @@ from bitcoin_safe.html_utils import link
 
 class LicenseDialog(QDialog):
     def __init__(self, parent=None):
+        """Initialize instance."""
         super().__init__(parent)
         self.setWindowTitle(self.tr("License Info"))
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
@@ -53,6 +55,7 @@ class LicenseDialog(QDialog):
         self.initUI()
 
     def initUI(self):
+        """InitUI."""
         layout = QVBoxLayout(self)
 
         # Create a QWidget to hold the content
@@ -124,9 +127,7 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</p>    
                     
-                       """.format(
-                link=link("https://www.gnu.org/licenses/gpl-3.0.html")
-            ),
+                       """.format(link=link("https://www.gnu.org/licenses/gpl-3.0.html")),
             self,
         )
         label.setOpenExternalLinks(True)  # Allows opening links

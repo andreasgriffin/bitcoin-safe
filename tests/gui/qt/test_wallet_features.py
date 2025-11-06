@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -82,11 +83,10 @@ def test_wallet_features_multisig(
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig2",
     amount: int = int(1e6),
 ) -> None:
+    """Test wallet features multisig."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -99,6 +99,7 @@ def test_wallet_features_multisig(
         button = main_window.welcome_screen.pushButton_custom_wallet
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            """On wallet id dialog."""
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -117,6 +118,7 @@ def test_wallet_features_multisig(
         assert isinstance(qt_protowallet, QTProtoWallet)
 
         def test_block_change_signals() -> None:
+            """Test block change signals."""
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
@@ -125,6 +127,7 @@ def test_wallet_features_multisig(
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
 
         def check_consistent() -> None:
+            """Check consistent."""
             assert isinstance(qt_protowallet, QTProtoWallet)
             signers = qt_protowallet.wallet_descriptor_ui.spin_signers.value()
             qt_protowallet.wallet_descriptor_ui.spin_req.value()
@@ -147,6 +150,7 @@ def test_wallet_features_multisig(
                 ]
 
         def page1() -> None:
+            """Page1."""
             shutter.save(main_window)
 
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
@@ -164,6 +168,7 @@ def test_wallet_features_multisig(
         page1()
 
         def set_simple_multisig() -> None:
+            """Set simple multisig."""
             assert qt_protowallet.protowallet.is_multisig()
             qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 1
@@ -180,6 +185,7 @@ def test_wallet_features_multisig(
         set_simple_multisig()
 
         def set_mnemonic(index: int) -> None:
+            """Set mnemonic."""
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[index]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
@@ -192,12 +198,13 @@ def test_wallet_features_multisig(
             assert key.edit_fingerprint.text()
             assert (
                 key.edit_key_origin.text()
-                == f"m/48h/{0 if bdk.Network.REGTEST==bdk.Network.BITCOIN else 1}h/0h/2h"
+                == f"m/48h/{0 if bdk.Network.REGTEST == bdk.Network.BITCOIN else 1}h/0h/2h"
             )
 
             shutter.save(main_window)
 
         def do_save_wallet() -> None:
+            """Do save wallet."""
             set_mnemonic(0)
             set_mnemonic(1)
 
@@ -236,7 +243,10 @@ def test_wallet_features_multisig(
             wallet_name = qt_wallet.wallet.id + " new"
 
             def menu_action_rename_wallet() -> None:
+                """Menu action rename wallet."""
+
                 def callback(dialog: WalletIdDialog) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.name_input.setText(wallet_name)
                     shutter.save(dialog)
@@ -249,9 +259,11 @@ def test_wallet_features_multisig(
             menu_action_rename_wallet()
 
             def menu_action_change_password() -> None:
+                """Menu action change password."""
                 with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
 
                     def callback(dialog: PasswordCreation) -> None:
+                        """Callback."""
                         shutter.save(dialog)
                         dialog.password_input1.setText("new password")
                         dialog.password_input2.setText("new password")
@@ -275,6 +287,7 @@ def test_wallet_features_multisig(
             menu_action_change_password()
 
             def menu_action_export_pdf() -> None:
+                """Menu action export pdf."""
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                     main_window.menu_action_export_pdf.trigger()
 
@@ -288,7 +301,10 @@ def test_wallet_features_multisig(
             menu_action_export_pdf()
 
             def menu_action_export_descriptor() -> None:
+                """Menu action export descriptor."""
+
                 def callback(dialog: DescriptorExport) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -299,7 +315,10 @@ def test_wallet_features_multisig(
             menu_action_export_descriptor()
 
             def menu_action_register_multisig() -> None:
+                """Menu action register multisig."""
+
                 def callback(dialog: RegisterMultisigInteractionWidget) -> None:
+                    """Callback."""
                     shutter.save(dialog)
 
                     with tempfile.TemporaryDirectory() as temp_dir:
@@ -377,7 +396,10 @@ def test_wallet_features_multisig(
             menu_action_register_multisig()
 
             def menu_action_open_hwi_manager() -> None:
+                """Menu action open hwi manager."""
+
                 def callback(dialog: ToolGui) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -391,7 +413,10 @@ def test_wallet_features_multisig(
             menu_action_open_hwi_manager()
 
             def menu_action_open_tx_from_str() -> None:
+                """Menu action open tx from str."""
+
                 def callback(dialog: ImportDialog) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -405,7 +430,10 @@ def test_wallet_features_multisig(
             menu_action_open_tx_from_str()
 
             def menu_action_load_tx_from_qr() -> None:
+                """Menu action load tx from qr."""
+
                 def callback(dialog: BitcoinVideoWidget) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -419,7 +447,10 @@ def test_wallet_features_multisig(
             menu_action_load_tx_from_qr()
 
             def menu_action_network_settings() -> None:
+                """Menu action network settings."""
+
                 def callback(dialog: Settings) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -433,6 +464,7 @@ def test_wallet_features_multisig(
             menu_action_network_settings()
 
             def menu_action_check_update() -> None:
+                """Menu action check update."""
                 main_window.menu_action_check_update.trigger()
                 shutter.save(main_window)
                 assert main_window.update_notification_bar.isVisible()
@@ -447,7 +479,10 @@ def test_wallet_features_multisig(
             menu_action_check_update()
 
             def menu_action_license() -> None:
+                """Menu action license."""
+
                 def callback(dialog: LicenseDialog) -> None:
+                    """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
@@ -461,6 +496,7 @@ def test_wallet_features_multisig(
             menu_action_license()
 
             def switch_languages() -> None:
+                """Switch languages."""
                 for lang in main_window.language_chooser.availableLanguages.keys():
                     main_window.language_chooser.switchLanguage(lang)
                     shutter.save(main_window)

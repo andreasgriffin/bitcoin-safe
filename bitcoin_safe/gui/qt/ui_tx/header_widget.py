@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import platform
@@ -39,11 +40,11 @@ logger = logging.getLogger(__name__)
 
 
 class HeaderWidget(HeightSyncedWidget):
-
     def __init__(
         self,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self._layout = QVBoxLayout(self)
@@ -64,5 +65,6 @@ class HeaderWidget(HeightSyncedWidget):
         self._layout.addWidget(HLine())
 
     def set_icon(self, icon_name: str):
+        """Set icon."""
         self.icon_name = icon_name
         self.icon.setPixmap(svg_tools.get_pixmap(icon_name, size=(16, 16)))

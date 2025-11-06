@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -36,6 +37,7 @@ from .setup_bitcoin_core import bitcoin_cli
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory
 def test_get_blockchain_info(bitcoin_core: Path):
     # Execute the command to get blockchain information
+    """Test get blockchain info."""
     result = bitcoin_cli("getblockchaininfo", bitcoin_core)
 
     # Parse the output as JSON
@@ -51,10 +53,12 @@ def mine_blocks(
     bitcoin_core: Path, n=1, address="bcrt1qdlxaahyrtx7g76c9l6szn4qn979ku4j6wx67vv5qvtf888y7lcpqdsnhxg"
 ):
     # Mine n blocks to the specified address
+    """Mine blocks."""
     result = bitcoin_cli(f"generatetoaddress {n} {address}", bitcoin_core)
     return result.strip()
 
 
 def test_mine_blocks(bitcoin_core: Path):
+    """Test mine blocks."""
     block_hashes = mine_blocks(bitcoin_core, 10)
     assert len(block_hashes) > 0

@@ -26,10 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from typing import Dict, List, Set
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -67,6 +67,7 @@ class UITx_Base(SearchableTab):
         parent=None,
         **kwargs,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, **kwargs)
         self.fx = fx
         self.signal_tracker = SignalTracker()
@@ -102,7 +103,7 @@ class UITx_Base(SearchableTab):
         return height
 
     @staticmethod
-    def get_category_dict_of_addresses(addresses: List[str], wallets: List[Wallet]) -> Dict[str, Set[str]]:
+    def get_category_dict_of_addresses(addresses: list[str], wallets: list[Wallet]) -> dict[str, set[str]]:
         """_summary_
 
         Args:
@@ -112,7 +113,7 @@ class UITx_Base(SearchableTab):
         Returns:
             Dict[str, Set[str]]: category : {wallet_id, ...}
         """
-        categories: Dict[str, Set[str]] = defaultdict(set[str])
+        categories: dict[str, set[str]] = defaultdict(set[str])
         for wallet in wallets:
             for address in addresses:
                 if not wallet.is_my_address(address):
@@ -123,8 +124,9 @@ class UITx_Base(SearchableTab):
         return categories
 
     def get_unconfirmed_ancestors(
-        self, txids: Set[str], wallets: List[Wallet] | None = None
-    ) -> Dict[str, TransactionDetails]:
+        self, txids: set[str], wallets: list[Wallet] | None = None
+    ) -> dict[str, TransactionDetails]:
+        """Get unconfirmed ancestors."""
         wallets = wallets if wallets else get_wallets(self.wallet_functions)
 
         cpfp_tools = CpfpTools(wallets=wallets)
@@ -132,11 +134,12 @@ class UITx_Base(SearchableTab):
 
     def set_fee_group_cpfp_label(
         self,
-        parent_txids: Set[str],
+        parent_txids: set[str],
         this_fee_info: FeeInfo,
         fee_group: FeeGroup,
         chain_position: bdk.ChainPosition | None,
     ) -> None:
+        """Set fee group cpfp label."""
         if chain_position and (chain_position.is_confirmed() or is_local(chain_position)):
             fee_group.set_cpfp_label(unconfirmed_ancestors=None, this_fee_info=this_fee_info)
             return
@@ -146,11 +149,13 @@ class UITx_Base(SearchableTab):
         fee_group.set_cpfp_label(unconfirmed_ancestors=unconfirmed_ancestors, this_fee_info=this_fee_info)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.high_fee_rate_warning_label.updateUi()
         self.high_fee_warning_label.updateUi()
         self.category_linking_warning_bar.updateUi()
 
-    def _get_total_non_change_output_amount(self, recipients: List[Recipient], wallet: Wallet | None = None):
+    def _get_total_non_change_output_amount(self, recipients: list[Recipient], wallet: Wallet | None = None):
+        """Get total non change output amount."""
         total_amount = 0
         change_amount = 0
         for recipient in recipients:
@@ -174,11 +179,12 @@ class UITx_Base(SearchableTab):
 
         return total_amount - change_amount
 
-    def set_category_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
+    def set_category_warning_bar(self, outpoints: list[OutPoint], recipient_addresses: list[str]):
         # warn if multiple categories are combined
-        wallets: List[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
+        """Set category warning bar."""
+        wallets: list[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
 
-        category_dict: Dict[str, Set[str]] = defaultdict(set[str])
+        category_dict: dict[str, set[str]] = defaultdict(set[str])
         for wallet in wallets:
             addresses = [
                 wallet.get_address_of_outpoint(outpoint) for outpoint in outpoints
@@ -193,15 +199,17 @@ class UITx_Base(SearchableTab):
 
     def _set_warning_bars(
         self,
-        outpoints: List[OutPoint],
-        recipient_addresses: List[str],
+        outpoints: list[OutPoint],
+        recipient_addresses: list[str],
         tx_status: TxStatus,
     ):
+        """Set warning bars."""
         self.set_category_warning_bar(outpoints=outpoints, recipient_addresses=recipient_addresses)
 
     def _update_high_fee_warning_label(
         self, recipients: Recipients, fee_info: FeeInfo | None, tx_status: TxStatus
     ):
+        """Update high fee warning label."""
         total_non_change_output_amount = self._get_total_non_change_output_amount(
             recipients=recipients.recipients
         )
@@ -210,11 +218,13 @@ class UITx_Base(SearchableTab):
             fee_info=fee_info,
             total_non_change_output_amount=total_non_change_output_amount,
             network=self.config.network,
-            # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
+            # if checked_max_amount, then the user might not notice a 0 output amount,
+            # and i better show a warning
             force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in recipients.recipients]),
             tx_status=tx_status,
         )
 
     def close(self) -> bool:
+        """Close."""
         self.loop_in_thread.stop()
         return super().close()

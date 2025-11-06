@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import (
@@ -52,7 +53,9 @@ from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 from ...signals import WalletFunctions
 from .util import Message, MessageType, generate_help_button
@@ -66,10 +69,11 @@ class USBValidateAddressWidget(QWidget):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.wallet_functions = wallet_functions
         self.network = network
-        self.descriptor: Optional[bdk.Descriptor] = None
+        self.descriptor: bdk.Descriptor | None = None
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
@@ -91,7 +95,7 @@ class USBValidateAddressWidget(QWidget):
         self._layout.addWidget(self.button_box)
         self._layout.setAlignment(self.button_box, Qt.AlignmentFlag.AlignCenter)
 
-        signal_end_hwi_blocker = cast(TypedPyQtSignalNo, self.usb_gui.signal_end_hwi_blocker)
+        signal_end_hwi_blocker: TypedPyQtSignalNo = cast(Any, self.usb_gui.signal_end_hwi_blocker)
         self.button_validate_address = SpinningButton(
             text="",
             enable_signal=signal_end_hwi_blocker,
@@ -106,6 +110,7 @@ class USBValidateAddressWidget(QWidget):
         self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.button_validate_address.setText(self.tr("Validate address"))
         self.label_expected_address.setText(self.tr("Validate receive address:"))
 
@@ -116,6 +121,7 @@ class USBValidateAddressWidget(QWidget):
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,
     ) -> None:
+        """Set descriptor."""
         self.descriptor = descriptor
         self.expected_address = expected_address
         self.kind = kind
@@ -127,6 +133,7 @@ class USBValidateAddressWidget(QWidget):
     def on_button_click(
         self,
     ) -> bool:
+        """On button click."""
         if not self.descriptor:
             logger.error("descriptor not set")
             return False
@@ -145,13 +152,14 @@ class USBValidateAddressWidget(QWidget):
 
 
 class USBRegisterMultisigWidget(USBValidateAddressWidget):
-    signal_end_hwi_blocker = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_end_hwi_blocker: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
     ) -> None:
+        """Initialize instance."""
         screenshots = ScreenshotsRegisterMultisig()
         self.button_help = generate_help_button(screenshots, title="Help")
 
@@ -172,10 +180,12 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
         self.usb_gui.signal_end_hwi_blocker.connect(self.signal_end_hwi_blocker)
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
+        """CloseEvent."""
         self.signal_end_hwi_blocker.emit()
         return super().closeEvent(a0)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         self.setWindowTitle(self.tr("Register Multisig wallet on hardware signer"))
         self.button_validate_address.setText(self.tr("Register Multisig"))
@@ -184,6 +194,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
     def on_button_click(
         self,
     ) -> bool:
+        """On button click."""
         result = super().on_button_click()
 
         if result:
@@ -197,12 +208,13 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
 
     def set_descriptor(  # type: ignore
         self,
-        keystores: List[KeyStore],
+        keystores: list[KeyStore],
         descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,
     ) -> None:
+        """Set descriptor."""
         super().set_descriptor(
             descriptor=descriptor, expected_address=expected_address, kind=kind, address_index=address_index
         )

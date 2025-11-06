@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import pytest
 
@@ -46,9 +47,7 @@ from .setup_fulcrum import Faucet, faucet, fulcrum  # type: ignore
 
 @pytest.fixture(autouse=True)
 def override_global_constant(monkeypatch):
-    """
-    Runs once, before any tests, and patches GLOBAL_CONSTANT
-    in mypackage.some_module for every test.
-    """
+    """Runs once, before any tests, and patches GLOBAL_CONSTANT in mypackage.some_module
+    for every test."""
     monkeypatch.setattr(custom_edits, "ENABLE_COMPLETERS", False, raising=True)
     # no yield needed if you don’t need teardown

@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
@@ -38,15 +40,19 @@ from bitcoin_safe.gui.qt.util import svg_tools
 
 from .util import set_no_margins
 
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
+
 logger = logging.getLogger(__name__)
 
 
 class ClickableLabel(QLabel):
     # define a new signal
-    clicked = pyqtSignal()
+    clicked: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
-    def mouseReleaseEvent(self, ev: Optional[QMouseEvent]) -> None:
+    def mouseReleaseEvent(self, ev: QMouseEvent | None) -> None:
         # only emit on left-click
+        """MouseReleaseEvent."""
         if ev and ev.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
         # pass on the event in case anything else is listening
@@ -60,13 +66,14 @@ class IconLabel(QWidget):
         parent=None,
         **kwargs,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent, **kwargs)
         self._layout = QHBoxLayout(self)
         set_no_margins(self._layout)
 
         # Icon Label
         self.icon_label = ClickableLabel()
-        self.icon_label.setVisible((False))
+        self.icon_label.setVisible(False)
         self.icon_label.clicked.connect(self.on_icon_click)
         self._layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignVCenter)
 
@@ -76,10 +83,12 @@ class IconLabel(QWidget):
         self.textLabel.setOpenExternalLinks(True)  # Enable opening links
         self._layout.addWidget(self.textLabel)
 
-    def setText(self, a0: Optional[str]) -> None:
+    def setText(self, a0: str | None) -> None:
+        """SetText."""
         self.textLabel.setText(a0)
 
-    def set_icon(self, icon: Optional[QIcon], sizes: Tuple[int | None, int | None] = (None, None)) -> None:
+    def set_icon(self, icon: QIcon | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
+        """Set icon."""
         self.icon_label.setVisible(bool(icon))
         if icon:
             # compute single-line text height (font metrics)
@@ -91,11 +100,13 @@ class IconLabel(QWidget):
             self.icon_label.setFixedSize(QSize(*pixmap_sizes))
 
     def on_icon_click(self):
+        """On icon click."""
         if not self.click_url:
             return
         webopen(self.click_url)
 
     def set_icon_as_help(self, tooltip: str | None, click_url: str | None = None):
+        """Set icon as help."""
         self.icon_label.setToolTip(tooltip)
         self.click_url = click_url
         if self.click_url:

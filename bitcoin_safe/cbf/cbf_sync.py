@@ -26,11 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import asyncio
 import logging
 from pathlib import Path
-from typing import List, Optional, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -56,14 +57,15 @@ class CbfSync:
         self,
         wallet_id: str,
         wallet: bdk.Wallet,
-        peers: List[bdk.Peer],
+        peers: list[bdk.Peer],
         data_dir: Path,
         proxy_info: ProxyInfo | None,
         cbf_connections: int,
         is_new_wallet=False,
         gap: int = 20,
     ):
-        self.client: Optional[bdk.CbfClient] = None
+        """Initialize instance."""
+        self.client: bdk.CbfClient | None = None
         self.loop_in_thread = LoopInThread()
         self._height: int = 0
         self.wallet_id = wallet_id
@@ -76,6 +78,7 @@ class CbfSync:
         self.is_new_wallet = is_new_wallet
 
     def _handle_log_info(self, info: bdk.Info):
+        """Handle log info."""
         if isinstance(info, bdk.Info.PROGRESS):
             self._height = info.chain_height
 
@@ -83,27 +86,33 @@ class CbfSync:
 
     def _handle_log_str(self, log: str):
         # there are a lot of logs and it can block the UI to log them all
+        """Handle log str."""
         if "Chain updated" in log:
             # this is so fast, that it can freeze the UI
             return
         logger.info(f"{self.wallet_id} - {log}")
 
     def _handle_log_warning(self, warning: bdk.Warning):
+        """Handle log warning."""
         logger.info(f"{self.wallet_id} - {warning}")
 
     def _handle_update(self, update: UpdateInfo):
+        """Handle update."""
         logger.info(f"{self.wallet_id} - {update}")
 
     def get_height(self) -> int:
+        """Get height."""
         return self._height
 
     async def attempt_restart_node(self):
+        """Attempt restart node."""
         if not self.node_running():
-            logger.info(f"CBF node was shutdown. Rebuilding")
+            logger.info("CBF node was shutdown. Rebuilding")
             await asyncio.sleep(1)
             self.build_node()
 
     async def next_info(self) -> bdk.Info | None:
+        """Next info."""
         if not self.client:
             logger.error("Client not available; cannot fetch info message.")
             return None
@@ -124,6 +133,7 @@ class CbfSync:
         return info
 
     async def next_warning(self) -> bdk.Warning | None:
+        """Next warning."""
         if not self.client:
             logger.error("Client not available; cannot fetch warning message.")
             return None
@@ -144,6 +154,7 @@ class CbfSync:
         return warning
 
     async def next_update_info(self) -> UpdateInfo | None:
+        """Next update info."""
         if not self.client:
             logger.error("Client not available; cannot fetch update.")
             return None
@@ -166,6 +177,7 @@ class CbfSync:
     def build_node(
         self,
     ):
+        """Build node."""
         derivation_index = max(
             self.gap,
             self.wallet.derivation_index(keychain=bdk.KeychainKind.EXTERNAL) or 0,
@@ -206,9 +218,10 @@ class CbfSync:
         self.client = components.client
         self.node = components.node
         self.node.run()
-        logger.info(f"Started node")
+        logger.info("Started node")
 
     def shutdown_node(self):
+        """Shutdown node."""
         if self.client:
             try:
                 self.client.shutdown()
@@ -216,10 +229,12 @@ class CbfSync:
                 logger.error(f"shutdown_node {e}")
 
     def node_running(self) -> bool:
+        """Node running."""
         if not self.client:
             return False
         return self.client.is_running()
 
     def close(self):
+        """Close."""
         self.shutdown_node()
         self.loop_in_thread.stop()

@@ -26,19 +26,19 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import enum
 import logging
 from dataclasses import dataclass
 
-from bitcoin_safe.pythonbdk_types import TransactionDetails
-
-logger = logging.getLogger(__name__)
-
-
 import bdkpython as bdk
 
+from bitcoin_safe.pythonbdk_types import TransactionDetails
+
 from ...tx import TxBuilderInfos, TxUiInfos
+
+logger = logging.getLogger(__name__)
 
 
 class UiElements(enum.Enum):

@@ -26,12 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from math import ceil
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_script
@@ -50,9 +52,8 @@ logger = logging.getLogger(__name__)
 VSIZE_OF_ZERO_FEE_TX = 200
 
 
-def parse_redeem_script(script_hex: str) -> Tuple[int, List[str]]:
-    """
-    Parses a redeem script to extract the threshold (m) and public keys.
+def parse_redeem_script(script_hex: str) -> tuple[int, list[str]]:
+    """Parses a redeem script to extract the threshold (m) and public keys.
 
     Parameters:
     - script_hex (str): The hexadecimal string of the redeem script.
@@ -74,9 +75,8 @@ def parse_redeem_script(script_hex: str) -> Tuple[int, List[str]]:
     return m, public_keys
 
 
-def parse_witness_script(script_hex: str) -> Tuple[int, List[str]]:
-    """
-    Parses a witness script to extract the threshold (m) and public keys.
+def parse_witness_script(script_hex: str) -> tuple[int, list[str]]:
+    """Parses a witness script to extract the threshold (m) and public keys.
 
     Parameters:
     - script_hex (str): The hexadecimal string of the witness script.
@@ -99,15 +99,15 @@ def parse_witness_script(script_hex: str) -> Tuple[int, List[str]]:
 
 
 def weight_to_vsize(weight) -> int:
+    """Weight to vsize."""
     return ceil(weight / 4)
 
 
 def estimate_tx_weight(
-    input_mn_tuples: List[Tuple[int, int]], num_outputs: int, include_signatures=True
+    input_mn_tuples: list[tuple[int, int]], num_outputs: int, include_signatures=True
 ) -> int:
-    """Estimate the weight of a SegWit transaction in weight units, including
-    support for multiple inputs with varying m-of-n multisignature
-    configurations.
+    """Estimate the weight of a SegWit transaction in weight units, including support
+    for multiple inputs with varying m-of-n multisignature configurations.
 
     Args:
     input_mn_tuples (list of tuples): A list where each tuple represents an input with (m, n) configuration.
@@ -166,15 +166,18 @@ def estimate_tx_weight(
 
 class FeeRate(bdk.FeeRate):
     @classmethod
-    def from_fee_rate(cls, fee_rate: bdk.FeeRate) -> "FeeRate":
+    def from_fee_rate(cls, fee_rate: bdk.FeeRate) -> FeeRate:
+        """From fee rate."""
         return cls.from_sat_per_kwu(fee_rate.to_sat_per_kwu())
 
     @classmethod
     def from_float_sats_vB(cls, fee_rate: float):
+        """From float sats vB."""
         sat_per_kwu = int(250 * fee_rate)
         return cls.from_sat_per_kwu(sat_per_kwu)
 
     def to_sats_per_vb(self) -> float:
+        """To sats per vb."""
         return self.to_sat_per_kwu() / 250
 
 
@@ -182,24 +185,29 @@ class FeeInfo:
     def __init__(
         self, fee_amount: int, vsize: int, fee_amount_is_estimated: bool, vsize_is_estimated: bool
     ) -> None:
+        """Initialize instance."""
         self.fee_amount = fee_amount
         self.vsize = vsize
         self.fee_amount_is_estimated = fee_amount_is_estimated
         self.vsize_is_estimated = vsize_is_estimated
 
     def fee_rate(self) -> float:
+        """Fee rate."""
         return self.fee_amount / self.vsize
 
     def fee_rate_is_estimated(self):
+        """Fee rate is estimated."""
         return self.any_is_estimated()
 
     def any_is_estimated(self):
+        """Any is estimated."""
         return self.vsize_is_estimated or self.fee_amount_is_estimated
 
     @classmethod
     def from_fee_rate(
         cls, fee_amount: int, fee_rate: float, fee_amount_is_estimated: bool, fee_rate_is_estimated: bool
-    ) -> "FeeInfo|None":
+    ) -> FeeInfo | None:
+        """From fee rate."""
         vsize = int(fee_amount / fee_rate) if fee_rate > 0 else VSIZE_OF_ZERO_FEE_TX
         return FeeInfo(
             fee_amount=fee_amount,
@@ -211,7 +219,8 @@ class FeeInfo:
     @classmethod
     def from_fee_rate_and_vsize(
         cls, vsize: int, fee_rate: float, fee_rate_is_estimated: bool, vsize_is_estimated: bool
-    ) -> "FeeInfo":
+    ) -> FeeInfo:
+        """From fee rate and vsize."""
         return FeeInfo(
             fee_amount=int(vsize * fee_rate),
             vsize=vsize,
@@ -220,7 +229,8 @@ class FeeInfo:
         )
 
     @classmethod
-    def from_txdetails(cls, tx_details: TransactionDetails) -> "FeeInfo|None":
+    def from_txdetails(cls, tx_details: TransactionDetails) -> FeeInfo | None:
+        """From txdetails."""
         fee = tx_details.fee
         if fee is None:
             # coinbase transaction have fee=None
@@ -230,9 +240,8 @@ class FeeInfo:
         return FeeInfo(fee, tx_details.vsize, vsize_is_estimated=False, fee_amount_is_estimated=False)
 
     @classmethod
-    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> "FeeInfo":
-        """Estimate the fee rate of a SegWit transaction from a serialized PSBT
-        JSON.
+    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> FeeInfo:
+        """Estimate the fee rate of a SegWit transaction from a serialized PSBT JSON.
 
         Args:
         psbt_json_str (str): The serialized PSBT JSON string.
@@ -250,8 +259,10 @@ class FeeInfo:
         input_mn_tuples = [(mn if mn else fallback_mn) for mn in full_input_mn_tuples]
 
         # Estimate the size of the transaction
-        # This part requires the transaction size estimation logic, which might need information about inputs and outputs
-        # For simplicity, let's assume you have a function estimate_tx_size(psbt_data) that can estimate the size
+        # This part requires the transaction size estimation logic,
+        # which might need information about inputs and outputs
+        # For simplicity, let's assume you have a function
+        # estimate_tx_size(psbt_data) that can estimate the size
         vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())))
 
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
@@ -260,10 +271,10 @@ class FeeInfo:
     def estimate_from_num_inputs(
         cls,
         fee_rate: float,
-        input_mn_tuples: List[Tuple[int, int]],
+        input_mn_tuples: list[tuple[int, int]],
         num_outputs: int,
         include_signatures=True,
-    ) -> "FeeInfo":
+    ) -> FeeInfo:
         "Estimation for segwit txs"
         vsize = weight_to_vsize(
             estimate_tx_weight(
@@ -274,7 +285,8 @@ class FeeInfo:
         )
         return FeeInfo(ceil(fee_rate * vsize), vsize, vsize_is_estimated=True, fee_amount_is_estimated=True)
 
-    def __add__(self, other: "FeeInfo") -> "FeeInfo":
+    def __add__(self, other: FeeInfo) -> FeeInfo:
+        """Add."""
         if isinstance(other, FeeInfo):
             return FeeInfo(
                 fee_amount=self.fee_amount + other.fee_amount,
@@ -284,7 +296,8 @@ class FeeInfo:
             )
 
     @classmethod
-    def combined_fee_info(cls, txs: Iterable[TransactionDetails]) -> "FeeInfo|None":
+    def combined_fee_info(cls, txs: Iterable[TransactionDetails]) -> FeeInfo | None:
+        """Combined fee info."""
         combined_info: FeeInfo | None = None
         if not txs:
             return combined_info
@@ -299,10 +312,11 @@ class PubKeyInfo:
     def __init__(
         self,
         fingerprint: str,
-        pubkey: Optional[str] = None,
-        derivation_path: Optional[str] = None,
+        pubkey: str | None = None,
+        derivation_path: str | None = None,
         label: str = "",
     ) -> None:
+        """Initialize instance."""
         self.fingerprint = SimplePubKeyProvider.format_fingerprint(fingerprint)
         self.pubkey = pubkey
         self.derivation_path = derivation_path
@@ -318,32 +332,33 @@ class PartialSig:
 @dataclass
 class SimpleInput:
     txin: bdk.TxIn
-    witness_script: Optional[str] = None
-    # partial_sigs example: {"0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": "304402202976966c2996b3c17005342eebb60133741286460b135020dcb4f2089629d851022044402ada00dc6acb4040f44099f537a138f4558cb10f874656d9d544a19b0f6e"}
+    witness_script: str | None = None
+    # partial_sigs example: {"0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": "304402202976966c2996b3c17005342eebb60133741286460b135020dcb4f2089629d851022044402ada00dc6acb4040f44099f537a138f4558cb10f874656d9d544a19b0f6e"}    # noqa: E501
     # {pubkey: signature}
-    partial_sigs: Dict[str, PartialSig] = field(default_factory=dict)
-    final_script_sig: Optional[str] = None
-    final_script_witness: Optional[str] = None
-    pubkeys: List[PubKeyInfo] = field(default_factory=list)
-    wallet_id: Optional[str] = None
-    m_of_n: Optional[Tuple[int, int]] = None
-    non_witness_utxo: Optional[Dict[str, Any]] = None
-    witness_utxo: Optional[Dict[str, Any]] = None
-    sighash_type: Optional[int] = None
-    redeem_script: Optional[str] = None
-    ripemd160_preimages: Dict[str, str] = field(default_factory=dict)
-    sha256_preimages: Dict[str, str] = field(default_factory=dict)
-    hash160_preimages: Dict[str, str] = field(default_factory=dict)
-    hash256_preimages: Dict[str, str] = field(default_factory=dict)
-    tap_key_sig: Optional[str] = None
-    tap_script_sigs: Dict[str, str] = field(default_factory=dict)
-    tap_scripts: List[Tuple[str, str, str]] = field(default_factory=list)
-    tap_key_origins: List[Tuple[str, Tuple[str, List[str]]]] = field(default_factory=list)
-    tap_internal_key: Optional[str] = None
-    tap_merkle_root: Optional[str] = None
+    partial_sigs: dict[str, PartialSig] = field(default_factory=dict)
+    final_script_sig: str | None = None
+    final_script_witness: str | None = None
+    pubkeys: list[PubKeyInfo] = field(default_factory=list)
+    wallet_id: str | None = None
+    m_of_n: tuple[int, int] | None = None
+    non_witness_utxo: dict[str, Any] | None = None
+    witness_utxo: dict[str, Any] | None = None
+    sighash_type: int | None = None
+    redeem_script: str | None = None
+    ripemd160_preimages: dict[str, str] = field(default_factory=dict)
+    sha256_preimages: dict[str, str] = field(default_factory=dict)
+    hash160_preimages: dict[str, str] = field(default_factory=dict)
+    hash256_preimages: dict[str, str] = field(default_factory=dict)
+    tap_key_sig: str | None = None
+    tap_script_sigs: dict[str, str] = field(default_factory=dict)
+    tap_scripts: list[tuple[str, str, str]] = field(default_factory=list)
+    tap_key_origins: list[tuple[str, tuple[str, list[str]]]] = field(default_factory=list)
+    tap_internal_key: str | None = None
+    tap_merkle_root: str | None = None
 
     @classmethod
-    def from_input(cls, input_data: Dict[str, Any], txin: bdk.TxIn) -> "SimpleInput":
+    def from_input(cls, input_data: dict[str, Any], txin: bdk.TxIn) -> SimpleInput:
+        """From input."""
         self = cls(
             txin,
             witness_script=input_data.get("witness_script"),
@@ -389,26 +404,32 @@ class SimpleInput:
         return self
 
     def is_fully_signed(self) -> bool:
-        # This heuristic assumes the presence of final_script_sig or final_script_witness indicates full signing
+        # This heuristic assumes the presence of final_script_sig or
+        # final_script_witness indicates full signing
+        """Is fully signed."""
         return bool(self.final_script_sig or self.final_script_witness)
 
     def signature_count(self) -> str:
         # Just return the count of partial signatures, as we can't determine the total required
+        """Signature count."""
         return str(len(self.partial_sigs))
 
-    def get_pub_keys_without_signature(self) -> List[PubKeyInfo]:
+    def get_pub_keys_without_signature(self) -> list[PubKeyInfo]:
         # If the input is fully signed, there are no pubkeys without a signature
+        """Get pub keys without signature."""
         if self.is_fully_signed():
             return []
         return [pubkey_info for pubkey_info in self.pubkeys if pubkey_info.pubkey not in self.partial_sigs]
 
-    def get_pub_keys_with_signature(self) -> List[PubKeyInfo]:
+    def get_pub_keys_with_signature(self) -> list[PubKeyInfo]:
         # If the input is fully signed, all pubkeys are considered to have a signature
+        """Get pub keys with signature."""
         if self.is_fully_signed():
             return self.pubkeys
         return [pubkey_info for pubkey_info in self.pubkeys if pubkey_info.pubkey in self.partial_sigs]
 
     def fingerprint_has_signature(self, fingerprint: str) -> bool:
+        """Fingerprint has signature."""
         if self.is_fully_signed():
             return True
         for pubkey_info in self.pubkeys:
@@ -416,13 +437,15 @@ class SimpleInput:
                 return True
         return False
 
-    def get_estimated_m_of_n(self) -> Tuple[int, int]:
+    def get_estimated_m_of_n(self) -> tuple[int, int]:
+        """Get estimated m of n."""
         mn = self._get_m_of_n()
         if mn:
             return mn
         return (len(self.pubkeys), len(self.pubkeys))
 
-    def _get_m_of_n(self) -> Optional[Tuple[int, int]]:
+    def _get_m_of_n(self) -> tuple[int, int] | None:
+        """Get m of n."""
         if self.m_of_n:
             return self.m_of_n
 
@@ -434,7 +457,7 @@ class SimpleInput:
             return (m, len(public_keys))
         return None
 
-    def get_prev_txouts(self) -> Dict[str, TxOut]:
+    def get_prev_txouts(self) -> dict[str, TxOut]:
         "Returns {str(outpoint): List[TxOut]}"
         if not self.non_witness_utxo:
             return {}
@@ -450,15 +473,16 @@ class SimpleInput:
 class SimpleOutput:
     value: int = 0
     script_pubkey: str = ""
-    witness_script: Optional[str] = None
-    redeem_script: Optional[str] = None
-    bip32_derivation: List[PubKeyInfo] = field(default_factory=list)
-    tap_internal_key: Optional[str] = None
-    tap_tree: Optional[str] = None
-    tap_key_origins: List[Tuple[str, List[str]]] = field(default_factory=list)
+    witness_script: str | None = None
+    redeem_script: str | None = None
+    bip32_derivation: list[PubKeyInfo] = field(default_factory=list)
+    tap_internal_key: str | None = None
+    tap_tree: str | None = None
+    tap_key_origins: list[tuple[str, list[str]]] = field(default_factory=list)
 
     @classmethod
-    def from_output(cls, output_data: Dict[str, Any], unsigned_tx: Dict[str, Any]) -> "SimpleOutput":
+    def from_output(cls, output_data: dict[str, Any], unsigned_tx: dict[str, Any]) -> SimpleOutput:
+        """From output."""
         instance = cls(
             value=unsigned_tx.get("value", 0),
             script_pubkey=unsigned_tx.get("script_pubkey", ""),
@@ -478,22 +502,24 @@ class SimpleOutput:
         return instance
 
     def to_txout(self) -> TxOut:
+        """To txout."""
         return TxOut(value=bdk.Amount.from_sat(self.value), script_pubkey=hex_to_script(self.script_pubkey))
 
 
 @dataclass
 class SimplePSBT:
     txid: str
-    inputs: List[SimpleInput] = field(default_factory=list)
-    outputs: List[SimpleOutput] = field(default_factory=list)
+    inputs: list[SimpleInput] = field(default_factory=list)
+    outputs: list[SimpleOutput] = field(default_factory=list)
 
     @classmethod
-    def from_psbt(cls, psbt: bdk.Psbt) -> "SimplePSBT":
+    def from_psbt(cls, psbt: bdk.Psbt) -> SimplePSBT:
+        """From psbt."""
         instance = cls(txid=str(psbt.extract_tx().compute_txid()))
         psbt_json = json.loads(psbt.json_serialize())
         instance.inputs = [
             SimpleInput.from_input(input_data, txin)
-            for input_data, txin in zip(psbt_json.get("inputs", []), psbt.extract_tx().input())
+            for input_data, txin in zip(psbt_json.get("inputs", []), psbt.extract_tx().input(), strict=False)
         ]
 
         outputs = psbt_json.get("outputs", [])
@@ -501,12 +527,11 @@ class SimplePSBT:
         assert len(outputs) == len(unsigned_tx_outputs)
         instance.outputs = [
             SimpleOutput.from_output(output_data, unsigned_tx_output)
-            for output_data, unsigned_tx_output in zip(outputs, unsigned_tx_outputs)
+            for output_data, unsigned_tx_output in zip(outputs, unsigned_tx_outputs, strict=False)
         ]
         return instance
 
-    def get_fingerprint_tuples(self) -> Tuple[List[PubKeyInfo], List[PubKeyInfo]]:
-
+    def get_fingerprint_tuples(self) -> tuple[list[PubKeyInfo], list[PubKeyInfo]]:
         # set of all fingerprints of all inputs
         # sorted_pubkeys = remove_duplicates_keep_order(
         #     sum(
@@ -515,6 +540,7 @@ class SimplePSBT:
         #     )
         # )
 
+        """Get fingerprint tuples."""
         pubkeys_not_fully_signed = remove_duplicates_keep_order(
             sum(
                 [simple_input.get_pub_keys_without_signature() for simple_input in self.inputs],
@@ -534,14 +560,15 @@ class SimplePSBT:
             pubkeys_not_fully_signed,
         )
 
-    def get_prev_txouts(self) -> Dict[str, TxOut]:
+    def get_prev_txouts(self) -> dict[str, TxOut]:
+        """Get prev txouts."""
         d = self.inputs[0].get_prev_txouts()
         for inp in self.inputs[1:]:
             d.update(inp.get_prev_txouts())
 
         return d
 
-    def outpoints_as_python_utxo_dict(self, network: bdk.Network) -> Dict[str, PythonUtxo]:
+    def outpoints_as_python_utxo_dict(self, network: bdk.Network) -> dict[str, PythonUtxo]:
         "Returns {str(outpoint) : python_utxo}  for all outpoints"
         txout_dict = self.get_prev_txouts()
 

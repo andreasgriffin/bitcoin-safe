@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -34,16 +35,21 @@ logger = logging.getLogger(__name__)
 
 class PluginServer:
     def __init__(self) -> None:
+        """Initialize instance."""
         self._enabled = False
 
     def is_enabled(self) -> bool:
+        """Is enabled."""
         return self._enabled
 
     def set_enabled(self, enabled: bool):
+        """Set enabled."""
         self._enabled = enabled
 
     def start(self):
+        """Start."""
         raise NotImplementedError()
 
     def stop(self):
+        """Stop."""
         raise NotImplementedError()

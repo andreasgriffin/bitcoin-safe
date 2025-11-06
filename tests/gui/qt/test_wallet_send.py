@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import inspect
 import logging
@@ -68,11 +69,10 @@ def test_wallet_send(
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
 ) -> None:
+    """Test wallet send."""
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(
-        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
-    )
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -101,13 +101,14 @@ def test_wallet_send(
             fund_wallet(qt_wallet=qt_wallet, amount=10000000, qtbot=qtbot, faucet=faucet)
 
             def import_recipients() -> None:
+                """Import recipients."""
                 qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
                 shutter.save(main_window)
                 qt_wallet.uitx_creator.recipients.add_recipient_button.click()
                 shutter.save(main_window)
 
                 test_file_path = "tests/data/recipients.csv"
-                with open(str(test_file_path), "r") as file:
+                with open(str(test_file_path)) as file:
                     test_file_content = file.read()
 
                 qt_wallet.uitx_creator.recipients.import_csv(test_file_path)
@@ -134,7 +135,7 @@ def test_wallet_send(
 
                     assert file_path.exists()
 
-                    with open(str(file_path), "r") as file:
+                    with open(str(file_path)) as file:
                         output_file_content = file.read()
 
                     assert test_file_content == output_file_content
@@ -142,6 +143,7 @@ def test_wallet_send(
             import_recipients()
 
             def create_signed_tx() -> None:
+                """Create signed tx."""
                 with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
                     qt_wallet.uitx_creator.button_ok.click()
                 shutter.save(main_window)
@@ -189,6 +191,7 @@ def test_wallet_send(
             create_signed_tx()
 
             def send_tx() -> None:
+                """Send tx."""
                 shutter.save(main_window)
 
                 ui_tx_viewer = main_window.tab_wallets.currentNode().data
@@ -245,6 +248,7 @@ def test_wallet_send(
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
+            """Check that it is in recent wallets."""
             assert any(
                 [
                     (wallet_file in name)

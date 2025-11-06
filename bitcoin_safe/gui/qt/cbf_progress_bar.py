@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from datetime import timedelta
 
@@ -40,8 +42,8 @@ logger = logging.getLogger(__name__)
 
 
 class CBFProgressBar(QProgressBar):
-
     def __init__(self, config: UserConfig, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.config = config
         self.setMinimumWidth(300)
@@ -49,8 +51,10 @@ class CBFProgressBar(QProgressBar):
         self.set_progressbar(progress=0, text="0%", tooltip="")
 
     def _set_progress_info(self, progress_info: ProgressInfo):
+        """Set progress info."""
 
         def format_timedelta(td: timedelta) -> str:
+            """Format timedelta."""
             total_seconds = int(td.total_seconds())
             hours, remainder = divmod(total_seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
@@ -74,18 +78,21 @@ class CBFProgressBar(QProgressBar):
         )
 
     def _set_visibility(self):
+        """Set visibility."""
         self.setVisible(
             (self.value() < 100)
             and (self.config.network_config.server_type == BlockchainType.CompactBlockFilter)
         )
 
     def set_progressbar_sync_status(self, sync_status: SyncStatus):
+        """Set progressbar sync status."""
         if sync_status in [SyncStatus.synced]:
             self.setValue(100)
 
         self._set_visibility()
 
     def set_progressbar(self, progress: int | None, text: str, tooltip: str):
+        """Set progressbar."""
         if progress is not None:
             self.setValue(progress)
         self._set_visibility()

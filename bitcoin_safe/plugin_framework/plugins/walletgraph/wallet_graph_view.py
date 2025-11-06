@@ -31,9 +31,10 @@ from __future__ import annotations
 import datetime
 import logging
 import time
-from typing import Dict, Iterable, List, Optional, Tuple
+from collections.abc import Iterable
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QPointF, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QWheelEvent
 from PyQt6.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsView, QWidget
@@ -62,9 +63,11 @@ class WalletGraphView(QGraphicsView):
     AXIS_Y = 0.0
 
     def __init__(self, network: bdk.Network, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.wallet_signals: WalletSignals | None = None
         self.network = network
+        self.is_drawing = False
 
         self._scene = QGraphicsScene(self)
         self.setScene(self._scene)
@@ -73,31 +76,36 @@ class WalletGraphView(QGraphicsView):
         self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
 
-        self._utxo_items: Dict[str, GraphUtxoCircle] = {}
-        self._transactions: Dict[str, GraphTransactionNode] = {}
-        self._tx_positions: Dict[str, float] = {}
+        self._utxo_items: dict[str, GraphUtxoCircle] = {}
+        self._transactions: dict[str, GraphTransactionNode] = {}
+        self._tx_positions: dict[str, float] = {}
         self._current_wallet: Wallet | None = None
-        self._current_details: List[FullTxDetail] = []
+        self._current_details: list[FullTxDetail] = []
 
     def clear(self) -> None:
-        self._scene.clear()
+        """Clear."""
         self._utxo_items.clear()
         self._transactions.clear()
         self._tx_positions.clear()
         self._current_wallet = None
         self._current_details = []
+        self._scene.clear()
+        logger.info("clear scene")
         self.resetTransform()
         self._scene.setSceneRect(-400, -200, 800, 400)
 
     @property
     def current_wallet(self) -> Wallet | None:
+        """Current wallet."""
         return self._current_wallet
 
     @property
-    def current_details(self) -> List[FullTxDetail]:
+    def current_details(self) -> list[FullTxDetail]:
+        """Current details."""
         return list(self._current_details)
 
-    def wheelEvent(self, event: Optional[QWheelEvent]) -> None:
+    def wheelEvent(self, event: QWheelEvent | None) -> None:
+        """WheelEvent."""
         if not event:
             return
         if event.angleDelta().y() > 0:
@@ -107,12 +115,15 @@ class WalletGraphView(QGraphicsView):
         self.scale(factor, factor)
         event.accept()
 
+    @time_logger
     def render_graph(
         self,
         wallet: Wallet,
         full_tx_details: Iterable[FullTxDetail],
         wallet_signals: WalletSignals,
     ) -> None:
+        """Render graph."""
+        self.is_drawing = True
         self.clear()
         details_list = list(full_tx_details)
         self._current_wallet = wallet
@@ -127,7 +138,7 @@ class WalletGraphView(QGraphicsView):
                 )
             return
 
-        timestamped: List[Tuple[FullTxDetail, float]] = []
+        timestamped: list[tuple[FullTxDetail, float]] = []
         fallback_base = time.time()
         for index, detail in enumerate(details_list):
             fallback = fallback_base + index
@@ -144,8 +155,8 @@ class WalletGraphView(QGraphicsView):
         scale = target_width / time_range if time_range else self.MIN_TX_SPACING
 
         self._tx_positions.clear()
-        positions: List[float] = []
-        for idx, (detail, timestamp) in enumerate(zip(sorted_details, times)):
+        positions: list[float] = []
+        for detail, timestamp in zip(sorted_details, times, strict=False):
             x_pos = (timestamp - min_time) * scale
             if positions:
                 x_pos = max(x_pos, positions[-1] + self.MIN_TX_SPACING)
@@ -160,7 +171,7 @@ class WalletGraphView(QGraphicsView):
         axis_pen.setStyle(Qt.PenStyle.DashLine)
         self._scene.addLine(axis_left, self.AXIS_Y, axis_right, self.AXIS_Y, axis_pen)
 
-        for detail, x_pos, timestamp in zip(sorted_details, positions, times):
+        for detail, x_pos, timestamp in zip(sorted_details, positions, times, strict=False):
             dt = datetime.datetime.fromtimestamp(timestamp)
             tx_item = TransactionItem(
                 detail,
@@ -189,8 +200,10 @@ class WalletGraphView(QGraphicsView):
         scene_rect = self._scene.itemsBoundingRect().adjusted(-150, -200, 150, 200)
         self._scene.setSceneRect(scene_rect)
         self.centerOn((scene_rect.left() + scene_rect.right()) / 2, self.AXIS_Y)
+        self.is_drawing = False
 
     def center_on_transaction(self, txid: str) -> bool:
+        """Center on transaction."""
         position = self._tx_positions.get(txid)
         if position is None:
             return False
@@ -198,12 +211,15 @@ class WalletGraphView(QGraphicsView):
         return True
 
     def has_transaction(self, txid: str) -> bool:
+        """Has transaction."""
         return txid in self._transactions
 
     def jump_to_transaction(self, txid: str) -> bool:
+        """Jump to transaction."""
         return self.center_on_transaction(txid)
 
     def _detail_timestamp(self, detail: FullTxDetail, fallback: float) -> float:
+        """Detail timestamp."""
         try:
             dt = detail.tx.get_datetime(fallback_timestamp=fallback)
         except ValueError:
@@ -211,16 +227,17 @@ class WalletGraphView(QGraphicsView):
         return dt.timestamp()
 
     def _max_output_value(self, details: Iterable[FullTxDetail]) -> int:
+        """Max output value."""
         values = [
             python_utxo.value for detail in details for python_utxo in detail.outputs.values() if python_utxo
         ]
         return max(values) if values else 0
 
     def _render_inputs(self, detail: FullTxDetail, tx_node: GraphTransactionNode) -> None:
+        """Render inputs."""
         inputs = list(detail.inputs.items())
         if not inputs:
             return
-        tx_item = tx_node.item
         for index, (outpoint_str, python_utxo) in enumerate(inputs):
             if python_utxo and outpoint_str in self._utxo_items:
                 circle = self._utxo_items[outpoint_str]
@@ -236,7 +253,7 @@ class WalletGraphView(QGraphicsView):
                 python_utxo,
                 transaction_signal=self.transactionClicked,
                 axis_y=self.AXIS_Y,
-                tx_item=tx_item,
+                tx_item=tx_node.item,
                 tx_width=TransactionItem.DEFAULT_WIDTH,
                 input_gap=UtxoEllipseItem.INPUT_GAP,
                 vertical_spacing=UtxoEllipseItem.VERTICAL_SPACING,
@@ -261,12 +278,8 @@ class WalletGraphView(QGraphicsView):
         max_utxo_value: int,
         wallet_signals: WalletSignals,
     ) -> None:
-        outputs = list(detail.outputs.items())
-        if not outputs:
-            return
-
-        tx_item = tx_node.item
-        for index, (outpoint_str, python_utxo) in enumerate(outputs):
+        """Render outputs."""
+        for index, (outpoint_str, python_utxo) in enumerate(detail.outputs.items()):
             if not python_utxo:
                 continue
             ellipse = UtxoEllipseItem.create_output(
@@ -280,7 +293,7 @@ class WalletGraphView(QGraphicsView):
                 max_utxo_value=max_utxo_value,
                 min_radius=UtxoEllipseItem.MIN_RADIUS,
                 max_radius=UtxoEllipseItem.MAX_RADIUS,
-                tx_item=tx_item,
+                tx_item=tx_node.item,
                 axis_y=self.AXIS_Y,
                 tx_width=TransactionItem.DEFAULT_WIDTH,
                 output_gap=UtxoEllipseItem.OUTPUT_GAP,
@@ -321,6 +334,7 @@ class WalletGraphView(QGraphicsView):
         circle: GraphUtxoCircle,
         utxo_is_input: bool,
     ) -> QGraphicsPathItem:
+        """Connect transaction and utxo."""
         if utxo_is_input and circle.utxo:
             circle.ellipse.setOpacity(0.45)
             circle.update_default_opacity(circle.ellipse.opacity())
@@ -345,6 +359,7 @@ class WalletGraphView(QGraphicsView):
         return connection
 
     def _connect_points(self, start: QPointF, end: QPointF, color: QColor) -> QGraphicsPathItem:
+        """Connect points."""
         path = QPainterPath(start)
         control_offset = (end.x() - start.x()) / 2
         control_point_1 = QPointF(start.x() + control_offset, start.y())

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import sys
@@ -45,12 +46,14 @@ logger = logging.getLogger(__name__)
 
 
 class ToggleButtonGroup(QWidget):
-    """A simple exclusive group of toggleable QAbstractButtons with a button-focused API."""
+    """A simple exclusive group of toggleable QAbstractButtons with a button-focused
+    API."""
 
     # Emit the button instance that was selected
     selectedChanged = pyqtSignal(QAbstractButton)
 
     def __init__(self, parent=None):
+        """Initialize instance."""
         super().__init__(parent)
 
         self._layout = QHBoxLayout(self)
@@ -63,16 +66,18 @@ class ToggleButtonGroup(QWidget):
         self._group.buttonClicked.connect(self.on_button_clicked)
 
     def on_button_clicked(self, button: QAbstractButton):
+        """On button clicked."""
         self.selectedChanged.emit(button)
 
     def addButton(self, btn: QAbstractButton):
+        """AddButton."""
         btn.setCheckable(True)
         self._layout.addWidget(btn)
         self._group.addButton(btn)
 
     def insertButton(self, position: int, btn: QAbstractButton):
-        """
-        Insert a new checkable QAbstractButton with `text` at layout `position`.
+        """Insert a new checkable QAbstractButton with `text` at layout `position`.
+
         Returns the created button instance.
         """
         btn.setCheckable(True)
@@ -97,11 +102,11 @@ class ToggleButtonGroup(QWidget):
 
     def buttons(self) -> list[QAbstractButton]:
         """Return list of all buttons in layout order."""
-        l: list[QAbstractButton] = []
+        buttons: list[QAbstractButton] = []
         for i in range(self._layout.count()):
             if (item := self._layout.itemAt(i)) and isinstance(button := item.widget(), QAbstractButton):
-                l.append(button)
-        return l
+                buttons.append(button)
+        return buttons
 
     def labels(self) -> list[str]:
         """Return list of button texts in layout order."""
@@ -158,6 +163,7 @@ if __name__ == "__main__":
 
     # Connect selection changes
     def on_selected(btn: QAbstractButton):
+        """On selected."""
         print("Selected button text:", btn.text())
         current_button = toggles.currentButton()
         if current_button is not None:

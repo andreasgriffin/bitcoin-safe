@@ -25,14 +25,13 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 """Ensure tracked desktop files have a trailing newline.
 
 This script is intended to be used from the pre-commit hook to guarantee
 that the AppImage desktop entry always ends with a newline, preventing
 non-deterministic rewrites by tooling such as ``appimagetool``.
 """
+
 from __future__ import annotations
 
 import sys
@@ -65,6 +64,7 @@ def ensure_newline(path: Path) -> bool:
 
 
 def main(argv: list[str]) -> int:
+    """Main."""
     if not argv:
         print("No files provided", file=sys.stderr)
         return 1

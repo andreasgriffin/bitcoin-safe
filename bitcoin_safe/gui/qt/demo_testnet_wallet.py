@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 import shutil
 from pathlib import Path
-from typing import List
 
 import bdkpython as bdk
 
@@ -40,16 +41,15 @@ from ...config import UserConfig
 logger = logging.getLogger(__name__)
 
 
-def copy_testnet_demo_wallet(config: UserConfig) -> List[Path]:
-    """
-    Adds a demo wallet if startet in testnet
-    """
-    demo_wallet_files: List[Path] = []
+def copy_testnet_demo_wallet(config: UserConfig) -> list[Path]:
+    """Adds a demo wallet if startet in testnet."""
+    demo_wallet_files: list[Path] = []
     if config.network == bdk.Network.BITCOIN:
         # NEVER do this on mainnet
         return []
 
     def copy_to_wallet_dir(name: str) -> Path | None:
+        """Copy to wallet dir."""
         assert config.network != bdk.Network.BITCOIN, "Forbidden! Cannot create demo wallets for mainnet"
         demo_wallet_file = Path(resource_path("gui", "demo_wallets", config.network.name, name))
         destination = Path(config.wallet_dir) / demo_wallet_file.name

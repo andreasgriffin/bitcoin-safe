@@ -393,13 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>Compra {number} signadors de maquinari                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe és compatible amb tots els principals signadors de maquinari: &lt;a href="{url}"&gt;Mostra la llista completa&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
-                           </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>Compra {number} signants de maquinari                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe admet tots els principals signants de maquinari: &lt;a href="{url}"&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -758,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>Omplir la informació del signant segons el nou descriptor?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>Entrada corregida</translation>
 		</message>
@@ -926,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>Taxa aproximada</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>La taxa de comissió no es pot conèixer exactament, ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2078,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>Aquesta cartera encara s’està sincronitzant i caldrà començar des de zero si la tanques. Vols mantenir la cartera oberta?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>Prova de connectar-te a: {ip}</translation>
 		</message>
@@ -2105,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>Sincronització del moneder</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>Les carteres encara s’estan sincronitzant i caldrà començar des de zero si tanques l’aplicació. Vols amagar-la a la safata?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2771,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>Rebre</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>Actualitza totes les memòries cau abans de sincronitzar.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4903,8 +4930,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de vigilància per veure el teu saldo.  Per gastar-ne necessites les {number} paraules secretes (Seed).</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de visualització per veure el teu saldo. Per gastar-ne, necessites les {number} paraules secretes (Seed).</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5236,6 +5263,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>UTXO confirmat</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

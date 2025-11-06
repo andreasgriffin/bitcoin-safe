@@ -26,13 +26,14 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 import logging
 import socket
 import ssl
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -52,49 +53,56 @@ class ProxyInfo:
     scheme: str = "socks5h"
 
     def get_socks_scheme(self) -> int:
+        """Get socks scheme."""
         if self.scheme == "socks4":
             return socks.SOCKS4
         return socks.SOCKS5
 
     def get_url(self):
+        """Get url."""
         return f"{self.scheme}://{self.host}:{self.port}"
 
     def get_url_no_h(self):
+        """Get url no h."""
         return f"{self.scheme[:-1] if self.scheme.endswith('h') else self.scheme}://{self.host}:{self.port}"
 
     def get_requests_proxy_dict(self):
+        """Get requests proxy dict."""
         return {"http": self.get_url(), "https": self.get_url()}
 
     @classmethod
     def parse(cls, proxy_url: str):
         # Prepend "socks5h://" if the proxy string does not contain a scheme
+        """Parse."""
         if "://" not in proxy_url:
             proxy_url = f"{cls.scheme}://{proxy_url}"  # Default to SOCKS5 with remote DNS
         parsed_proxy = urlparse(proxy_url)
         return cls(host=parsed_proxy.hostname, port=parsed_proxy.port, scheme=parsed_proxy.scheme)
 
     def to_bdk(self) -> bdk.Socks5Proxy:
+        """To bdk."""
         assert self.host, "No host set"
         assert self.port, "No port set"
         return bdk.Socks5Proxy(address=IpAddress.from_host(self.host), port=self.port)
 
 
 def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:
+    """Clean electrum url."""
     if electrum_use_ssl and not url.startswith("ssl://"):
         url = "ssl://" + url
     return url
 
 
 def ensure_scheme(url, default_scheme="https://"):
-    """Check if "://" is in the URL and split it"""
+    """Check if "://" is in the URL and split it."""
     if "://" in url:
         return url  # Return the original URL if   scheme is found
     else:
         return f"{default_scheme}{url}"
 
 
-def get_host_and_port(url) -> Tuple[str | None, int | None]:
-
+def get_host_and_port(url) -> tuple[str | None, int | None]:
+    """Get host and port."""
     parsed_url = urlparse(ensure_scheme(url))
 
     # Extract the hostname and port
@@ -104,13 +112,13 @@ def get_host_and_port(url) -> Tuple[str | None, int | None]:
 def send_request_to_electrum_server(
     host: str,
     port: int,
-    request: Dict[str, Any],
+    request: dict[str, Any],
     use_ssl: bool,
-    proxy_info: Optional[ProxyInfo],
+    proxy_info: ProxyInfo | None,
     timeout: int = 2,
-) -> Optional[Dict[str, Any]]:
-    """
-    Sends an arbitrary JSON-RPC request to the Electrum server and returns the decoded JSON response.
+) -> dict[str, Any] | None:
+    """Sends an arbitrary JSON-RPC request to the Electrum server and returns the
+    decoded JSON response.
 
     Args:
         host (str): The server hostname.
@@ -158,7 +166,7 @@ def send_request_to_electrum_server(
 
         # Read the response (assumes response fits in 4096 bytes and is newline terminated).
         response_data = ssock.recv(4096).decode()
-        response_json: Dict[str, Any] = json.loads(response_data.split("\n")[0])
+        response_json: dict[str, Any] = json.loads(response_data.split("\n")[0])
         return response_json
 
     except Exception as e:
@@ -184,11 +192,10 @@ def get_electrum_blockheight(
     host: str,
     port: int,
     use_ssl: bool,
-    proxy_info: Optional[ProxyInfo],
+    proxy_info: ProxyInfo | None,
     timeout: int = 2,
-) -> Optional[int]:
-    """
-    Retrieves the current blockchain height from an Electrum server.
+) -> int | None:
+    """Retrieves the current blockchain height from an Electrum server.
 
     Args:
         host (str): The server hostname.
@@ -200,7 +207,7 @@ def get_electrum_blockheight(
     Returns:
         Optional[int]: The blockchain height if available, else None.
     """
-    request: Dict[str, Any] = {"id": 0, "method": "blockchain.headers.subscribe", "params": []}
+    request: dict[str, Any] = {"id": 0, "method": "blockchain.headers.subscribe", "params": []}
     response = send_request_to_electrum_server(
         host=host, port=port, request=request, use_ssl=use_ssl, timeout=timeout, proxy_info=proxy_info
     )
@@ -216,11 +223,10 @@ def get_electrum_server_version(
     host: str,
     port: int,
     use_ssl: bool,
-    proxy_info: Optional[ProxyInfo],
+    proxy_info: ProxyInfo | None,
     timeout: int = 2,
-) -> Optional[str]:
-    """
-    Retrieves the server version from an Electrum server.
+) -> str | None:
+    """Retrieves the server version from an Electrum server.
 
     Args:
         host (str): The server hostname.
@@ -232,7 +238,7 @@ def get_electrum_server_version(
     Returns:
         Optional[str]: The server version string if available, else None.
     """
-    request: Dict[str, Any] = {"id": 1, "method": "server.version", "params": ["1.4", "1.4"]}
+    request: dict[str, Any] = {"id": 1, "method": "server.version", "params": ["1.4", "1.4"]}
     response = send_request_to_electrum_server(
         host=host, port=port, request=request, use_ssl=use_ssl, timeout=timeout, proxy_info=proxy_info
     )

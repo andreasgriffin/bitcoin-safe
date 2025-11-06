@@ -26,11 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import enum
 import logging
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, List
+from typing import Any
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -50,12 +51,14 @@ FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is high
 
 
 def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:
+    """Clean electrum url."""
     if electrum_use_ssl and not url.startswith("ssl://"):
         url = "ssl://" + url
     return url
 
 
-def get_mempool_url(network: bdk.Network) -> Dict[str, str]:
+def get_mempool_url(network: bdk.Network) -> dict[str, str]:
+    """Get mempool url."""
     d = {
         bdk.Network.BITCOIN: {
             "default": "https://mempool.space/",
@@ -93,7 +96,8 @@ class ElectrumConfig:
     use_ssl: bool
 
 
-def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
+def get_electrum_configs(network: bdk.Network) -> dict[str, ElectrumConfig]:
+    """Get electrum configs."""
     d = {
         bdk.Network.BITCOIN: {
             # "default": ElectrumConfig("mempool.space:50002", True),
@@ -126,6 +130,7 @@ def get_electrum_configs(network: bdk.Network) -> Dict[str, ElectrumConfig]:
 
 
 def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
+    """Get default electrum use ssl."""
     d = {
         bdk.Network.BITCOIN: False,
         bdk.Network.REGTEST: False,
@@ -136,11 +141,13 @@ def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
     return d[network]
 
 
-def get_default_rpc_hosts(network: bdk.Network) -> Dict[str, str]:
+def get_default_rpc_hosts(network: bdk.Network) -> dict[str, str]:
+    """Get default rpc hosts."""
     return {"default": "127.0.0.1", "umbrel": "umbrel.local"}
 
 
 def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
+    """Get default port."""
     if server_type == BlockchainType.CompactBlockFilter:
         d = {
             bdk.Network.BITCOIN: 8333,
@@ -180,7 +187,8 @@ def get_default_port(network: bdk.Network, server_type: BlockchainType) -> int:
     raise ValueError(f"Could not get port for {network, server_type}")
 
 
-def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
+def get_esplora_urls(network: bdk.Network) -> dict[str, str]:
+    """Get esplora urls."""
     d = {
         bdk.Network.BITCOIN: {
             "default": "https://blockstream.info/api/",
@@ -207,29 +215,32 @@ def get_esplora_urls(network: bdk.Network) -> Dict[str, str]:
     return d[network]
 
 
-def get_default_p2p_node_urls(network: bdk.Network) -> Dict[str, str]:
+def get_default_p2p_node_urls(network: bdk.Network) -> dict[str, str]:
+    """Get default p2p node urls."""
+    port = get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)
     d = {
         bdk.Network.BITCOIN: {
-            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
-            "umbrel": f"umbrel.local:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "default": f"127.0.0.1:{port}",
+            "umbrel": f"umbrel.local:{port}",
         },
         bdk.Network.REGTEST: {
-            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "default": f"127.0.0.1:{port}",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "default": f"127.0.0.1:{port}",
         },
         bdk.Network.TESTNET4: {
-            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "default": f"127.0.0.1:{port}",
         },
         bdk.Network.SIGNET: {
-            "default": f"127.0.0.1:{get_default_port(network=network, server_type=BlockchainType.CompactBlockFilter)}",
+            "default": f"127.0.0.1:{port}",
         },
     }
     return d[network]
 
 
 def get_testnet_faucet(network: bdk.Network) -> str | None:
+    """Get testnet faucet."""
     d = {
         bdk.Network.TESTNET: "https://bitcoinfaucet.uo1.net/",
         bdk.Network.TESTNET4: "https://faucet.testnet4.dev/",
@@ -239,10 +250,15 @@ def get_testnet_faucet(network: bdk.Network) -> str | None:
 
 
 def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
+    """Get description."""
     if server_type == BlockchainType.CompactBlockFilter:
         cbf_default_description = translate(
             "net_conf",
-            "Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.<br>If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.",
+            "Compact Block Filters are a private and fast way to get all blockchain information. "
+            "The wallet will connect directly to multiple bitcoin nodes and download "
+            "block summaries (Compact Block Filters) from them.<br>"
+            "If you specify an inital peer in the 'Bitcoin Network monitoring' section below, "
+            "this will be used as a preferred node.",
         )
         d = {
             bdk.Network.BITCOIN: cbf_default_description,
@@ -265,7 +281,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.REGTEST: (
                 translate(
                     "net_conf",
-                    "You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}",
+                    "You can setup {electrum} with an electrum server on {server} "
+                    "and a block explorer on {explorer}",
                 ).format(
                     electrum=link("https://nigiri.vulpem.com/", "nigiri"),
                     server=link("http://localhost:50000", "localhost:50000"),
@@ -284,7 +301,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.TESTNET4: (
                 translate(
                     "net_conf",
-                    "A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.",
+                    "A good option is  {electrum_testnet4} and as "
+                    "block explorer {explorer_testnet4}. There is a {faucet} for free test coins.",
                 ).format(
                     electrum_testnet4=link(get_electrum_configs(bdk.Network.TESTNET4)["mempool.space"].url),
                     explorer_testnet4=link(get_mempool_url(bdk.Network.TESTNET4)["mempool.space"]),
@@ -293,7 +311,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             ),
             bdk.Network.SIGNET: translate(
                 "net_conf",
-                "Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.",
+                "Signet choose {electrum} and a block explorer on {mempool_url}. "
+                "There is a {faucet} for free test coins.",
             ).format(
                 electrum=link(get_electrum_configs(bdk.Network.SIGNET)["mempool.space"].url),
                 mempool_url=link(get_mempool_url(bdk.Network.SIGNET)["mempool.space"]),
@@ -313,7 +332,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.REGTEST: (
                 translate(
                     "net_conf",
-                    "You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}",
+                    "You can setup {setup} with an esplora server on {server} "
+                    "and a block explorer on {explorer}",
                 ).format(
                     setup=link("https://nigiri.vulpem.com/", "nigiri"),
                     server=link("http://localhost:3000", "localhost:3000"),
@@ -332,7 +352,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.SIGNET: (
                 translate(
                     "net_conf",
-                    "A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.",
+                    "A (somtimes working) server is {link} and a block explorer on {explorer}. "
+                    "There is a {faucet}.",
                 ).format(
                     link=link(get_esplora_urls(bdk.Network.SIGNET)["mutinynet"]),
                     explorer=link("https://mutinynet.com/"),
@@ -353,7 +374,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.TESTNET4: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=testnet4"'),
             bdk.Network.SIGNET: translate(
                 "net_conf",
-                'Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.',
+                'Run your bitcoind with "bitcoind -chain=signet"  '
+                "This however is a different signet than mutinynet.com.",
             ),
         }
         return d[network]
@@ -366,7 +388,7 @@ class Peer:
     port: int
 
     @classmethod
-    def parse(cls, url: str, network: bdk.Network) -> "Peer":
+    def parse(cls, url: str, network: bdk.Network) -> Peer:
         """
         Parse any of these forms:
         - IPv4                ("192.168.1.1")
@@ -391,6 +413,7 @@ class Peer:
         return Peer(host=host, port=port)
 
     def __str__(self) -> str:
+        """Return string representation."""
         host = self.host
         port = self.port
         if ":" in host and not host.startswith("["):  # likely an IPv6 address
@@ -398,9 +421,10 @@ class Peer:
         return f"{host}:{port}"
 
     def to_bdk(self, v2_transport=False) -> bdk.Peer | None:
+        """To bdk."""
         try:
             return bdk.Peer(address=IpAddress.from_host(self.host), port=self.port, v2_transport=v2_transport)
-        except:
+        except Exception:
             return None
 
 
@@ -433,9 +457,10 @@ class NetworkConfig(BaseSaveableClass):
     def __init__(
         self,
         network: bdk.Network,
-        discovered_peers: Peers | List[Peer] | None = None,
+        discovered_peers: Peers | list[Peer] | None = None,
         mempool_data: MempoolData | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.network = network
         self.server_type: BlockchainType = (
@@ -455,12 +480,13 @@ class NetworkConfig(BaseSaveableClass):
         self.proxy_url: str | None = None
         self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
         self.p2p_inital_url: str = get_default_p2p_node_urls(network=network)["default"]
-        self.discovered_peers: Peers | List[Peer] = discovered_peers if discovered_peers else Peers()
+        self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
         self.cbf_connections: int = 2
 
     def description_short(self):
+        """Description short."""
         server_name = ""
         if self.server_type == BlockchainType.Electrum:
             server_name = f"{self.electrum_url}"
@@ -480,7 +506,8 @@ class NetworkConfig(BaseSaveableClass):
         else:
             return translate("network_config", "{server_name}").format(server_name=server_name)
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d.update(self.__dict__)
 
@@ -490,6 +517,7 @@ class NetworkConfig(BaseSaveableClass):
         return d
 
     def get_p2p_initial_peer(self) -> Peer | None:
+        """Get p2p initial peer."""
         return (
             Peer.parse(self.p2p_inital_url, network=self.network)
             if self.p2p_inital_url and self.p2p_listener_type == P2pListenerType.inital
@@ -497,7 +525,8 @@ class NetworkConfig(BaseSaveableClass):
         )
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfig":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> NetworkConfig:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         u = cls(**filtered_for_init(dct, cls))
@@ -512,7 +541,8 @@ class NetworkConfig(BaseSaveableClass):
         return u
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             dct["_network"] = dct["network"]
             del dct["network"]
@@ -547,6 +577,7 @@ class NetworkConfigs(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes, NetworkConfig.__name__: NetworkConfig}
 
     def __init__(self, configs: dict[str, NetworkConfig] | None = None) -> None:
+        """Initialize instance."""
         super().__init__()
 
         self.configs: dict[str, NetworkConfig] = (
@@ -556,6 +587,7 @@ class NetworkConfigs(BaseSaveableClass):
 
     @classmethod
     def enforce_consistency(cls, configs: dict[str, NetworkConfig]):
+        """Enforce consistency."""
         for network in bdk.Network:
             if network.name not in configs:
                 configs[network.name] = NetworkConfig(network=network)
@@ -563,7 +595,8 @@ class NetworkConfigs(BaseSaveableClass):
                 configs[network.name].network = network
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
         if fast_version(str(dct["VERSION"])) <= fast_version("0.1.0"):
@@ -572,20 +605,23 @@ class NetworkConfigs(BaseSaveableClass):
 
         return super().from_dump_migration(dct=dct)
 
-    def dump(self) -> Dict:
+    def dump(self) -> dict:
+        """Dump."""
         d = super().dump()
         d["configs"] = {k: v.dump() for k, v in self.configs.items()}
         return d
 
     @classmethod
-    def from_file(cls, filename: str, password: str | None = None) -> "NetworkConfigs":
+    def from_file(cls, filename: str, password: str | None = None) -> NetworkConfigs:
+        """From file."""
         return super()._from_file(
             filename=filename,
             password=password,
         )
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "NetworkConfigs":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> NetworkConfigs:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**filtered_for_init(dct, cls))

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -63,6 +64,7 @@ class CurrencyConverter(QObject):
         self.fiat_spin.valueChanged.connect(self._on_fiat_changed)
 
     def _on_crypto_changed(self, value: float):
+        """On crypto changed."""
         if self._updating:
             return
         if not self.fx:
@@ -79,6 +81,7 @@ class CurrencyConverter(QObject):
             self._updating = False
 
     def _on_fiat_changed(self, value: float):
+        """On fiat changed."""
         if self._updating:
             return
         if not self.fx:

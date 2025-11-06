@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -37,10 +38,12 @@ logger = logging.getLogger(__name__)
 
 class GridFormLayout(QGridLayout):
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
 
     def _get_max_row(self) -> int:
         # Compute next available row by scanning existing items
+        """Get max row."""
         max_row = -1
         for idx in range(self.count()):
             r, _, _, _ = self.getItemPosition(idx)
@@ -55,10 +58,8 @@ class GridFormLayout(QGridLayout):
         label_alignment: Qt.AlignmentFlag = Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom,
         field_alignment: Qt.AlignmentFlag = Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom,
     ) -> None:
-        """
-        Adds a label/field pair at the next free row, with optional
-        alignment for each cell.
-        """
+        """Adds a label/field pair at the next free row, with optional alignment for
+        each cell."""
         row = self._get_max_row()
 
         # add the label in column 0, with its alignment
@@ -70,9 +71,7 @@ class GridFormLayout(QGridLayout):
             self.addWidget(field, row, 1, 1, 1, field_alignment)
 
     def set_row_visibility_of_widget(self, widget: QWidget, visible: bool) -> None:
-        """
-        Shows or hides all widgets in the row containing `widget`.
-        """
+        """Shows or hides all widgets in the row containing `widget`."""
         idx = self.indexOf(widget)
         if idx < 0:
             return  # widget not in layout

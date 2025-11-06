@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Set, Tuple
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 import numpy as np
@@ -51,14 +52,15 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ....config import MIN_RELAY_FEE, UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
 from ....psbt_util import FeeInfo
 from ....pythonbdk_types import OutPoint, PythonUtxo, TransactionDetails, UtxosForInputs
 from ....signals import (
-    TypedPyQtSignalNo,
     UpdateFilter,
     UpdateFilterReason,
     WalletFunctions,
@@ -90,8 +92,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         TxUiInfos.__name__: TxUiInfos,
     }
 
-    signal_input_changed: TypedPyQtSignalNo = pyqtSignal()  # type: ignore
-    signal_create_tx: TypedPyQtSignal[TxUiInfos] = pyqtSignal(TxUiInfos)  # type: ignore
+    signal_input_changed: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_create_tx: TypedPyQtSignal[TxUiInfos] = cast(Any, pyqtSignal(TxUiInfos))
 
     def __init__(
         self,
@@ -107,6 +109,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             config=config,
             fx=fx,
@@ -161,7 +164,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
-        self.additional_outpoints: List[OutPoint] = []
+        self.additional_outpoints: list[OutPoint] = []
         self.utxo_list.outpoints = self.get_outpoints()
         self.replace_tx: bdk.Transaction | None = None
 
@@ -255,7 +258,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.recipients.add_recipient()
 
     def reset_splitter_sizes(self):
-
+        """Reset splitter sizes."""
         self.splitter.setSizes([1, 10, 1])
         self.splitter.setCollapsible(self.splitter.indexOf(self.column_inputs), True)
         self.splitter.setCollapsible(self.splitter.indexOf(self.column_recipients), False)
@@ -265,7 +268,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.splitter.setStretchFactor(self.splitter.indexOf(self.column_recipients), 1)
         self.splitter.setStretchFactor(self.splitter.indexOf(self.column_fee), 0)
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["opportunistic_coin_select"] = (
             self.column_inputs.checkBox_auto_opportunistic_coin_select.isChecked()
@@ -277,11 +281,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
     def set_category_core(self, category_core: CategoryCore | None):
+        """Set category core."""
         self._signal_tracker_wallet_signals.disconnect_all()
         self.category_list.set_category_core(category_core)
         self.wallet = category_core.wallet if category_core else None
@@ -292,6 +298,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.button_ok.set_enable_signal(enable_signal=(_wallet_signal.finished_psbt_creation))
 
     def get_tx_status(self) -> TxStatus:
+        """Get tx status."""
         return TxStatus(
             tx=None,
             chain_position=None,
@@ -300,6 +307,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def on_input_changed(self):
+        """On input changed."""
         fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
         # set max values
         fee_info = self.estimate_fee_info(fee_rate=fee_rate)
@@ -332,14 +340,16 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def _set_warning_bars(
-        self, outpoints: List[OutPoint], recipient_addresses: List[str], tx_status: TxStatus
+        self, outpoints: list[OutPoint], recipient_addresses: list[str], tx_status: TxStatus
     ):
+        """Set warning bars."""
         super()._set_warning_bars(
             outpoints=outpoints, recipient_addresses=recipient_addresses, tx_status=tx_status
         )
         self.update_high_fee_warning_label()
 
     def showEvent(self, a0: QShowEvent | None):
+        """ShowEvent."""
         if not self._was_shown:
             self._was_shown = True
             if self.initial_tx_ui_infos:
@@ -348,7 +358,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     # state can have changed in the meantime, such that it requires full rbf
                     self.set_ui(tx_ui_infos=self.initial_tx_ui_infos)
                 except Exception as e:
-                    logger.error(f"error in loading initial_tx_ui_infos { str(e)}")
+                    logger.error(f"error in loading initial_tx_ui_infos {str(e)}")
                     self.clear_ui()
             else:
                 self.clear_ui()
@@ -356,10 +366,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         super().showEvent(a0)
 
     def on_fee_rate_change(self, fee_rate: float) -> None:
+        """On fee rate change."""
         self.on_input_changed()
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        """Update with filter."""
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
@@ -374,12 +386,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.utxo_list.set_outpoints(self.get_outpoints())
 
     def update_recipients_totals(self):
+        """Update recipients totals."""
         amount = self._get_total_non_change_output_amount(
             self.recipients.recipients,
         )
         self.column_recipients.totals.set_amount(amount)
 
     def update_sending_source_totals(self):
+        """Update sending source totals."""
         selected_values = (
             self.utxo_list.get_selected_values()
             if self.column_inputs.checkBox_manual_coin_select.isChecked()
@@ -389,11 +403,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_inputs.totals.set_amount(amount)
 
     def update_all_totals(self):
+        """Update all totals."""
         self.update_sending_source_totals()
         self.update_recipients_totals()
         self.column_fee.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         # translations
         self.column_inputs.updateUi()
@@ -409,6 +425,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def update_opportunistic_checkbox(self):
+        """Update opportunistic checkbox."""
         opportunistic_merging_threshold = self.opportunistic_merging_threshold()
         self.column_inputs.checkBox_auto_opportunistic_coin_select.setText(
             self.tr("Reduce future fees by merging UTXOs below {rate}").format(
@@ -422,15 +439,19 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
+        """On signal clicked send max button."""
         self.on_input_changed()
 
     def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
+        """On signal address text changed."""
         self.update_categories()
 
     def clear_utxo_list_selection(self):
+        """Clear utxo list selection."""
         self.utxo_list.select_rows([], self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY)
 
     def on_category_selection_changed(self):
+        """On category selection changed."""
         if self.column_inputs.checkBox_auto_opportunistic_coin_select.isChecked():
             self.coin_selection_checkbox_state_change()
         else:
@@ -438,21 +459,26 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.utxo_list.restrict_selection_to_non_hidden_rows()
 
     def on_recipients_added(self, recipient_tab_widget: RecipientBox):
+        """On recipients added."""
         recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
         recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
         self.on_input_changed_and_categories()
 
     def on_recipients_removed(self, recipient_box: RecipientBox):
+        """On recipients removed."""
         self.on_input_changed_and_categories()
 
     def on_signal_amount_changed(self, recipient_widget: Any):
+        """On signal amount changed."""
         self.on_input_changed()
 
     def on_input_changed_and_categories(self):
+        """On input changed and categories."""
         self.on_input_changed()
         self.update_categories()
 
     def update_high_fee_warning_label(self):
+        """Update high fee warning label."""
         fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
         fee_info = self.estimate_fee_info(fee_rate)
         self._update_high_fee_warning_label(
@@ -460,6 +486,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def update_categories(self):
+        """Update categories."""
         if not self.wallet:
             return
         tx_ui_infos = self.get_tx_ui_infos()
@@ -496,9 +523,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def reset_fee_rate(self) -> None:
+        """Reset fee rate."""
         self.column_fee.fee_group.set_spin_fee_value(self.mempool_manager.get_prio_fee_rates()[TxPrio.low])
 
     def clear_ui(self) -> None:
+        """Clear ui."""
         if not self.wallet:
             return
         with BlockChangesSignals([self.utxo_list]):
@@ -513,6 +542,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.on_input_changed_and_categories()
 
     def create_tx(self) -> None:
+        """Create tx."""
         if not self.wallet:
             return
         if (
@@ -530,7 +560,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if self.column_inputs.checkBox_manual_coin_select.isChecked() and not tx_ui_infos.utxo_dict:
             Message(
                 self.tr(
-                    'Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.'
+                    "Select one or more UTXOs from the list on the left, "
+                    'or uncheck "Select specific UTXOs" above to let '
+                    "Bitcoin-Safe pick the best coins for your transaction."
                 ),
                 type=MessageType.Warning,
             )
@@ -542,7 +574,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < MIN_RELAY_FEE:
             if question_dialog(
                 self.tr(
-                    "Please change the fee rate to be at least {minimum},\notherwise you will not be able to broadcast it."
+                    "Please change the fee rate to be at least {minimum},\n"
+                    "otherwise you will not be able to broadcast it."
                 ).format(minimum=format_fee_rate(MIN_RELAY_FEE, network=self.config.network)),
                 true_button=self.tr("Change fee rate"),
                 false_button=self.tr("Keep fee rate"),
@@ -574,15 +607,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.reset_fee_rate()
         self.mempool_manager.signal_data_updated.disconnect(self.update_fee_rate_to_mempool)
 
-    def get_outpoints(self) -> List[OutPoint]:
+    def get_outpoints(self) -> list[OutPoint]:
+        """Get outpoints."""
         if not self.wallet:
             return []
         return [utxo.outpoint for utxo in self.wallet.get_all_utxos()] + self.additional_outpoints
 
     def on_checkBox_opportunistic_coin_select(self):
+        """On checkBox opportunistic coin select."""
         self.coin_selection_checkbox_state_change()
 
-    def add_outpoints(self, outpoints: List[OutPoint]) -> None:
+    def add_outpoints(self, outpoints: list[OutPoint]) -> None:
+        """Add outpoints."""
         old_outpoints = self.get_outpoints()
         for outpoint in outpoints:
             if outpoint not in old_outpoints:
@@ -590,7 +626,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.utxo_list.set_outpoints(self.get_outpoints())
 
     def click_add_utxo(self) -> None:
+        """Click add utxo."""
+
         def process_input(s: str) -> None:
+            """Process input."""
             outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
             self.add_outpoints(outpoints)
             self.utxo_list.update_content()
@@ -613,8 +652,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def opportunistic_merging_threshold(self) -> float:
         """Calculates the ema fee rate from past transactions.
-        Then it lowers this to the low prio mempool fee rate
-        (if the high prio fee rate it is 10x higher than the min relay fee).
+
+        Then it lowers this to the low prio mempool fee rate (if the high prio fee rate it is 10x higher than
+        the min relay fee).
         """
         fee_rate = self.wallet.get_ema_fee_rate() if self.wallet else MIN_RELAY_FEE
 
@@ -631,13 +671,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
     def _select_minimum_number_utxos_no_fee(
         self, utxos_for_input: UtxosForInputs, send_value: int
     ) -> UtxosForInputs:
+        """Select minimum number utxos no fee."""
         if utxos_for_input.spend_all_utxos or not utxos_for_input.utxos:
             return utxos_for_input
 
         utxo_values = np.array([utxo.value for utxo in utxos_for_input.utxos])
-        sort_filter: List[int] = (np.argsort(utxo_values)[::-1]).tolist()  # type: ignore
+        sort_filter: list[int] = (np.argsort(utxo_values)[::-1]).tolist()  # type: ignore
 
-        selected_utxos: List[PythonUtxo] = []
+        selected_utxos: list[PythonUtxo] = []
         for i in sort_filter:
             utxo = utxos_for_input.utxos[i]
             selected_utxos.append(utxo)
@@ -651,6 +692,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def estimate_fee_info(self, fee_rate: float | None = None) -> FeeInfo:
+        """Estimate fee info."""
         sent_values = [r.amount for r in self.recipients.recipients]
         # one more output for the change
         num_outputs = len(sent_values) + 1
@@ -675,6 +717,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         return fee_info
 
     def get_tx_ui_infos(self, use_categories: bool | None = None) -> TxUiInfos:
+        """Get tx ui infos."""
         infos = TxUiInfos()
         if not self.wallet:
             return infos
@@ -717,7 +760,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         infos.utxos_read_only = not self.utxo_list.allow_edit or not self.column_inputs.isEnabled()
         return infos
 
-    def get_global_xpub_dict(self, wallets: List[Wallet]) -> Dict[str, Tuple[str, str]]:
+    def get_global_xpub_dict(self, wallets: list[Wallet]) -> dict[str, tuple[str, str]]:
+        """Get global xpub dict."""
         return {
             keystore.xpub: (keystore.fingerprint, keystore.key_origin)
             for wallet in wallets
@@ -725,6 +769,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         }
 
     def reapply_max_amounts(self, fee_amount: int) -> None:
+        """Reapply max amounts."""
         recipient_group_boxes = self.recipients.get_recipient_group_boxes()
         for recipient_group_box in recipient_group_boxes:
             recipient_group_box.recipient_widget.amount_spin_box.set_warning_maximum(
@@ -743,11 +788,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             )
 
     def get_total_input_value(self) -> int:
+        """Get total input value."""
         txinfos = self.get_tx_ui_infos()
         total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
         return total_input_value
 
     def get_total_change_amount(self, include_max_checked=False) -> int:
+        """Get total change amount."""
         txinfos = self.get_tx_ui_infos()
         total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
 
@@ -761,11 +808,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         return total_change_amount
 
     def set_max_amount(self, recipient_group_box: RecipientBox, max_amount: int) -> None:
+        """Set max amount."""
         with BlockChangesSignals([recipient_group_box]):
-
             recipient_group_box.recipient_widget.amount = max_amount
 
     def coin_selection_checkbox_state_change(self) -> None:
+        """Coin selection checkbox state change."""
         self.set_utxo_list_visible(bool(self.column_inputs.checkBox_manual_coin_select.isChecked()))
 
         tx_ui_infos = self.get_tx_ui_infos(use_categories=True)
@@ -775,19 +823,20 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.column_inputs.checkBox_manual_coin_select.isChecked()
             and tx_ui_infos.opportunistic_merge_utxos
         ):
-
             # take the coin selection from the category to the utxo tab (but only if one is selected)
             self.set_coin_selection_in_sent_tab(tx_ui_infos)
         else:
             self.clear_utxo_list_selection()
 
     def set_utxo_list_visible(self, value: bool):
+        """Set utxo list visible."""
         self.column_inputs.lower_widget_utxo_selection.setHidden(not value)
         if value:
             upper = self.category_list.sizeHint().height()
             self.column_inputs.v_splitter.setSizes([upper, max(upper, self.height() - upper)])
 
     def set_coin_selection_in_sent_tab(self, txinfos: TxUiInfos) -> None:
+        """Set coin selection in sent tab."""
         if not self.wallet:
             return
         utxos_for_input = self.wallet.handle_opportunistic_merge_utxos(txinfos)
@@ -798,6 +847,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def handle_conflicting_utxo(self, txinfos: TxUiInfos) -> None:
+        """Handle conflicting utxo."""
         if not self.wallet:
             return
         ##################
@@ -815,7 +865,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         conflicting_confirmed = set(
             [
                 conflicting_python_utxo
-                for conflicting_python_utxo, chain_position in zip(conflicting_python_txos, chain_positions)
+                for conflicting_python_utxo, chain_position in zip(
+                    conflicting_python_txos, chain_positions, strict=False
+                )
                 if chain_position.is_confirmed()
             ]
         )
@@ -832,7 +884,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             # these involved txs i can do rbf
 
             # for each conflicted_unconfirmed, get all roots and dependents
-            dependents_to_be_replaced: List[TransactionDetails] = []
+            dependents_to_be_replaced: list[TransactionDetails] = []
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:
                     dependents_to_be_replaced += [
@@ -844,12 +896,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             if dependents_to_be_replaced:
                 Message(
                     self.tr(
-                        "The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating."
+                        "The unconfirmed dependent transactions {txids} will be "
+                        "removed by this new transaction you are creating."
                     ).format(txids=[dependent.txid for dependent in dependents_to_be_replaced])
                 )
 
             # for each conflicted_unconfirmed, get all roots and dependents
-            txs_to_be_replaced: List[TransactionDetails] = []
+            txs_to_be_replaced: list[TransactionDetails] = []
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:
                     txs_to_be_replaced += [
@@ -869,9 +922,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 except Exception:
                     pass
             else:
-                assert (
-                    txinfos.replace_tx
-                ), f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
+                assert txinfos.replace_tx, (
+                    f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
+                )
                 replace_txid = str(txinfos.replace_tx.compute_txid())
                 replace_tx_details, wallet = get_tx_details(
                     txid=replace_txid, wallet_functions=self.wallet_functions
@@ -893,7 +946,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             ).fee_rate()
             if not GENERAL_RBF_AVAILABLE:
                 # the BumpFeeTxBuilder disallows the minimum rbf fee, and requires a slightly higer fee
-                # the error message by BumpFeeTxBuilder is unfortunately completely wrong (and giving a >=2*minimum_rbf_fee_rate)
+                # the error message by BumpFeeTxBuilder is unfortunately
+                # completely wrong (and giving a >=2*minimum_rbf_fee_rate)
                 min_rbf_fee_rate += 0.1
 
             txinfos.fee_rate = max(
@@ -910,6 +964,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.column_fee.fee_group.set_rbf_label(None)
 
     def handle_cpfp(self, txinfos: TxUiInfos) -> None:
+        """Handle cpfp."""
         parent_txids = set()
         # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
         if txinfos.spend_all_utxos:
@@ -924,6 +979,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
     def set_ui(self, tx_ui_infos: TxUiInfos) -> None:
+        """Set ui."""
         self.handle_conflicting_utxo(txinfos=tx_ui_infos)
         self.handle_cpfp(tx_ui_infos)
 
@@ -937,7 +993,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.reset_splitter_sizes()
         self.utxo_list.update_content()
 
-        categories: Set[str] = set()
+        categories: set[str] = set()
         if tx_ui_infos.utxo_dict:
             # first select the correct categories
             if self.wallet:
@@ -976,6 +1032,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.replace_tx = tx_ui_infos.replace_tx
 
     def close(self):
+        """Close."""
         self.signal_tracker.disconnect_all()
         self._signal_tracker_wallet_signals.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

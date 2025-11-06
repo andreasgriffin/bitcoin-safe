@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING
 
 import bdkpython as bdk
 import nostr_sdk
@@ -58,7 +59,9 @@ from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
 from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
@@ -66,6 +69,7 @@ logger = logging.getLogger(__name__)
 
 class BackupNsecNotificationBar(NotificationBar):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="Save",
@@ -85,13 +89,14 @@ class BackupNsecNotificationBar(NotificationBar):
         self.add_styled_widget(self.import_button)
 
     def on_optional_button(self):
+        """On optional button."""
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
             default_filename=shorten_filename(
                 filename_clean(f"Sync key {self.wallet_id}", file_extension=".txt"), max_total_length=20
             ),
-            window_title=f"Save Label backup key",
+            window_title="Save Label backup key",
         )
 
         if not filename:
@@ -105,16 +110,19 @@ class BackupNsecNotificationBar(NotificationBar):
             )
         return filename
 
-    def setText(self, value: Optional[str]):
+    def setText(self, value: str | None):
+        """SetText."""
         self.icon_label.textLabel.setText(value if value else "")
 
     def set_nsec(self, nsec: str, wallet_id: str) -> None:
+        """Set nsec."""
         self.nsec = nsec
         self.wallet_id = wallet_id
         self.setText(self.tr("Please backup your sync key.").format(nsec=nsec))
         self.setHidden(False)
 
     def updateUi(self):
+        """UpdateUi."""
         self.import_button.setText(self.tr("Restore labels"))
         self.optionalButton.setText(self.tr("Save sync key"))
 
@@ -124,7 +132,11 @@ class SyncClient(PluginClient):
     title = translate("SyncClient", "Sync & Chat")
     description = translate(
         "SyncClient",
-        "- Backup your labels and coin categories in the cloud.<br>- Synchronize your labels and coin categories between multiple computers. {synclink}<br>- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}<br>- Everything is always encrypted (learn more about the {protocol_link})",
+        "- Backup your labels and coin categories in the cloud.<br>"
+        "- Synchronize your labels and coin categories between multiple computers. {synclink}<br>"
+        "- Sign a transaction with others collaboratively, "
+        "no matter where you are in the world. {videolink}<br>"
+        "- Everything is always encrypted (learn more about the {protocol_link})",
     ).format(
         videolink=link(
             url="https://bitcoin-safe.org/en/features/collaboration/",
@@ -145,11 +157,12 @@ class SyncClient(PluginClient):
         self,
         network: bdk.Network,
         signals: Signals,
-        nostr_sync_dump: Dict,
+        nostr_sync_dump: dict,
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
     ):
+        """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
         self.server: SyncServer | None = None
         self.close_all_video_widgets: TypedPyQtSignalNo | None = None
@@ -164,9 +177,9 @@ class SyncClient(PluginClient):
             if nostr_sync
             else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=self)
         )
-        assert (
-            self.nostr_sync.network == network
-        ), f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
+        assert self.nostr_sync.network == network, (
+            f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
+        )
 
         self.backup_nsec_notificationbar = BackupNsecNotificationBar()
 
@@ -189,15 +202,14 @@ class SyncClient(PluginClient):
 
         self.updateUi()
 
-        logger.info(
-            f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
-        )
-        self.nostr_sync.publish_my_key_in_protocol(force=True)
+        self.publish_key()
 
     def import_nsec(self):
+        """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
 
     def on_set_enabled(self, value: bool):
+        """On set enabled."""
         if self.enabled == value:
             return
         super().on_set_enabled(value=value)
@@ -210,13 +222,15 @@ class SyncClient(PluginClient):
             self.label_syncer.set_enabled(value=value)
 
     def get_widget(self) -> QWidget:
+        """Get widget."""
         return self
 
     def save_connection_details(
         self,
         server: SyncServer,
     ):
-        logger.debug(f"save_connection_details")
+        """Save connection details."""
+        logger.debug("save_connection_details")
         self.server = server
 
         labels = server.get_labels()
@@ -236,7 +250,8 @@ class SyncClient(PluginClient):
         network: bdk.Network,
         signals: Signals,
         parent: QWidget | None = None,
-    ) -> "SyncClient":
+    ) -> SyncClient:
+        """From descriptor."""
         descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
         xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
 
@@ -250,7 +265,8 @@ class SyncClient(PluginClient):
 
         device_keys = nostr_sdk.Keys.generate()
         logger.info(
-            f"Generated a new nostr keypair with public key {short_key(device_keys.public_key().to_bech32())} and saving to wallet"
+            f"Generated a new nostr keypair with public key "
+            f"{short_key(device_keys.public_key().to_bech32())} and saving to wallet"
         )
         nostr_sync = NostrSync.from_keys(
             network=network,
@@ -270,42 +286,52 @@ class SyncClient(PluginClient):
 
     def load(self):
         # setting the parent here is crucial to avoid errors when closing
+        """Load."""
         self.nostr_sync.setParent(self)
         self.subscribe()
         self.publish_key()
 
     def unload(self):
+        """Unload."""
         self.nostr_sync.unsubscribe()
 
     def publish_key(self):
         # just in case the relay lost the publish key message. I republish here
-        logger.info(
-            f"Publish my key {short_key( self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32())} in protocol chat {short_key( self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32())}"
+        """Publish key."""
+        my_key = short_key(
+            self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()
         )
+        chat_key = short_key(
+            self.nostr_sync.nostr_protocol.dm_connection.async_dm_connection.keys.public_key().to_bech32()
+        )
+        logger.info(f"Publish my key {my_key} in protocol chat {chat_key}")
         self.nostr_sync.publish_my_key_in_protocol(force=True)
 
     @classmethod
     def get_checkbox_text(cls):
+        """Get checkbox text."""
         return cls.tr("Label backup and encrypted syncing to trusted devices")
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.node.setTitle(self.tr("Sync & Chat"))
         self.checkbox_auto_open_psbts.setText(self.tr("Open received Transactions and PSBTs"))
         self.backup_nsec_notificationbar.updateUi()
         super().updateUi()
 
     def close(self) -> bool:
+        """Close."""
         self.nostr_sync.unsubscribe()
         self.nostr_sync.ui.close()
         return super().close()
 
     def subscribe(self) -> None:
+        """Subscribe."""
         self.nostr_sync.subscribe()
 
     def on_dm(self, dm: ChatDM) -> None:
-        """
-        Catches DataType.PSBT, DataType.Tx and opens them in a tab
-        It also notifies of
+        """Catches DataType.PSBT, DataType.Tx and opens them in a tab It also notifies
+        of.
 
         Args:
             dm (ChatDM): _description_
@@ -342,15 +368,17 @@ class SyncClient(PluginClient):
     def generate_hash_hex(
         cls,
         address_type: AddressType,
-        xpubs: List[str],
+        xpubs: list[str],
         network: bdk.Network,
     ) -> str:
+        """Generate hash hex."""
         default_key_origin = address_type.key_origin(network)
 
         total_string = default_key_origin + "".join(sorted(xpubs))
         return hashlib.sha256(total_string.encode()).hexdigest()
 
-    def dump(self) -> Dict:
+    def dump(self) -> dict:
+        """Dump."""
         d = super().dump()
         d["auto_open_psbts"] = self.checkbox_auto_open_psbts.isChecked()
         d["nostr_sync_dump"] = self.nostr_sync.dump()
@@ -358,6 +386,7 @@ class SyncClient(PluginClient):
         return d
 
     def open_file_object(self, file_object: FileObject) -> None:
+        """Open file object."""
         if not file_object or not file_object.data:
             return
         self.signals.open_tx_like.emit(file_object.data.data)

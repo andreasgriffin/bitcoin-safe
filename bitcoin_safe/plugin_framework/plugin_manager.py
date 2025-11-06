@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import Any, Dict, List, Type, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from packaging import version
@@ -44,7 +46,9 @@ from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraph
 from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraphServer
 from bitcoin_safe.signals import T, WalletFunctions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +64,8 @@ class PluginManager(BaseSaveableClass):
     }
     VERSION = "0.0.1"
 
-    signal_client_action = cast(TypedPyQtSignal[PluginClient], pyqtSignal(PluginClient))
-    client_classes: List[Type[PluginClient]] = [SyncClient, WalletGraphClient]
+    signal_client_action: TypedPyQtSignal[PluginClient] = cast(Any, pyqtSignal(PluginClient))
+    client_classes: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
 
     def __init__(
         self,
@@ -69,9 +73,10 @@ class PluginManager(BaseSaveableClass):
         wallet_functions: WalletFunctions,
         config: UserConfig,
         fx: FX,
-        clients: List[PluginClient] | None = None,
+        clients: list[PluginClient] | None = None,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.network = network
         self.parent = parent
@@ -82,7 +87,8 @@ class PluginManager(BaseSaveableClass):
         for client in self.clients:
             self._register_client(client=client)
 
-    def get_instance(self, cls: Type[T], clients: List[PluginClient] | None = None) -> T | None:
+    def get_instance(self, cls: type[T], clients: list[PluginClient] | None = None) -> T | None:
+        """Get instance."""
         clients = clients if clients else self.clients
         for client in clients:
             if isinstance(client, cls):
@@ -93,6 +99,7 @@ class PluginManager(BaseSaveableClass):
         self,
         client: PluginClient,
     ):
+        """Register client."""
         if client not in self.clients:
             self.clients.append(client)
 
@@ -100,6 +107,7 @@ class PluginManager(BaseSaveableClass):
         self,
         descriptor: bdk.Descriptor,
     ):
+        """Register all clients."""
         existing_clients = self.clients.copy()
         self.clients.clear()
         for cls in self.client_classes:
@@ -127,6 +135,7 @@ class PluginManager(BaseSaveableClass):
         client: SyncClient,
         wallet_id: str,
     ):
+        """Create and connect ChatSyncClient."""
         server = SyncServer(
             wallet_id=wallet_id,
             wallet_functions=self.wallet_functions,
@@ -137,6 +146,7 @@ class PluginManager(BaseSaveableClass):
     def create_and_connect_clients(
         self, descriptor: bdk.Descriptor, wallet_id: str, category_core: CategoryCore
     ):
+        """Create and connect clients."""
         self._register_all_clients(
             descriptor=descriptor,
         )
@@ -154,6 +164,7 @@ class PluginManager(BaseSaveableClass):
                 )
 
     def _create_and_connect_wallet_graph_client(self, client: WalletGraphClient, wallet_id: str) -> None:
+        """Create and connect wallet graph client."""
         server = WalletGraphServer(
             wallet_id=wallet_id,
             network=self.network,
@@ -162,25 +173,30 @@ class PluginManager(BaseSaveableClass):
         client.save_connection_details(server=server)
 
     def load_all_enabled(self):
+        """Load all enabled."""
         for client in self.clients:
             if client.enabled:
                 client.load()
 
     def disconnect_all(self):
+        """Disconnect all."""
         for client in self.clients:
             client.unload()
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["clients"] = self.clients
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
+        """From dump."""
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
 
@@ -190,9 +206,11 @@ class PluginManager(BaseSaveableClass):
         return dct
 
     def close(self):
+        """Close."""
         for client in self.clients:
             client.close()
 
     def updateUi(self):
+        """UpdateUi."""
         for client in self.clients:
             client.updateUi()

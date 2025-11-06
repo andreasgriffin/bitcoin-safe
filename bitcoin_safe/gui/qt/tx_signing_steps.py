@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional, Type
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -55,10 +55,11 @@ logger = logging.getLogger(__name__)
 class HorizontalImporters(HorizontalImportExportGroups):
     def __init__(
         self,
-        signature_importers: List[AbstractSignatureImporter],
+        signature_importers: list[AbstractSignatureImporter],
         psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.signature_importers = signature_importers
         self.psbt = psbt
@@ -70,7 +71,8 @@ class HorizontalImporters(HorizontalImportExportGroups):
         self._add(self.group_share, SignatureImporterClipboard)
         self._add(self.group_seed, SignatureImporterWallet)
 
-    def _add(self, group: DataGroupBox, cls: Type[AbstractSignatureImporter]) -> None:
+    def _add(self, group: DataGroupBox, cls: type[AbstractSignatureImporter]) -> None:
+        """Add."""
         importer = self._get_importer(cls)
         group.setVisible(bool(importer))
         if importer:
@@ -82,7 +84,8 @@ class HorizontalImporters(HorizontalImportExportGroups):
             group._layout.addWidget(signerui)
             group.setData(signerui)
 
-    def _get_importer(self, cls: Type[AbstractSignatureImporter]) -> Optional[AbstractSignatureImporter]:
+    def _get_importer(self, cls: type[AbstractSignatureImporter]) -> AbstractSignatureImporter | None:
+        """Get importer."""
         for importer in self.signature_importers:
             if isinstance(importer, cls):
                 return importer
@@ -92,18 +95,19 @@ class HorizontalImporters(HorizontalImportExportGroups):
 class TxSigningSteps(StepProgressContainer):
     def __init__(
         self,
-        signature_importer_dict: Dict[str, List[AbstractSignatureImporter]],
+        signature_importer_dict: dict[str, list[AbstractSignatureImporter]],
         psbt: bdk.Psbt,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         step_labels = []
-        self.sub_indices: List[int] = []
-        for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
+        self.sub_indices: list[int] = []
+        for i in range(len(signature_importer_dict)):
             # export
-            step_labels.append((self.tr("Create and collect {n}. signature").format(n=i + 1)))
+            step_labels.append(self.tr("Create and collect {n}. signature").format(n=i + 1))
 
         super().__init__(
             step_labels=step_labels,
@@ -120,7 +124,7 @@ class TxSigningSteps(StepProgressContainer):
 
         first_non_signed_index = None
         # fill ui
-        for i, (wallet_id, signature_importer_list) in enumerate(signature_importer_dict.items()):
+        for i, signature_importer_list in enumerate(signature_importer_dict.values()):
             if not signature_importer_list:
                 continue
             self.set_custom_widget(
@@ -132,16 +136,20 @@ class TxSigningSteps(StepProgressContainer):
                 self.set_current_index(self._get_idx(i, 0))
 
     def _get_idx(self, i: int, j: int) -> int:
+        """Get idx."""
         return i
 
     def _get_name(self, i: int, j: int) -> str:
+        """Get name."""
         alphabet = "abcdefghijklmnopqrstuvwxyz"
-        return f"{i+1}.{alphabet[j]}"
+        return f"{i + 1}.{alphabet[j]}"
 
     def set_current_index(self, index: int) -> None:
+        """Set current index."""
         super().set_current_index(index)
 
     def go_to_next_index(self) -> None:
+        """Go to next index."""
         if self.current_index() + 1 < self.count():
             self.set_current_index(self.current_index() + 1)
         else:
@@ -150,13 +158,14 @@ class TxSigningSteps(StepProgressContainer):
             # self.step_bar.set_mark_current_step_as_completed(True)
 
     def go_to_previous_index(self) -> None:
+        """Go to previous index."""
         self.step_bar.set_mark_current_step_as_completed(False)
 
         if self.current_index() - 1 >= 0:
             self.set_current_index(self.current_index() - 1)
 
-    def create_export_import_widget(self, signature_importers: List[AbstractSignatureImporter]) -> QWidget:
-
+    def create_export_import_widget(self, signature_importers: list[AbstractSignatureImporter]) -> QWidget:
+        """Create export import widget."""
         if not signature_importers:
             return QWidget()
 
@@ -179,7 +188,8 @@ class TxSigningSteps(StepProgressContainer):
                     )
 
                 text += self.tr(
-                    "Transaction signed with the private key belonging to {label}\n\nSignatures:\n{signatures}\n\n\n"
+                    "Transaction signed with the private key belonging "
+                    "to {label}\n\nSignatures:\n{signatures}\n\n\n"
                 ).format(label=signature_importers[0].key_label, signatures=signatures_formatted)
 
             return SignedUI(

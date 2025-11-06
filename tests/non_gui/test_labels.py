@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import datetime
 import json
@@ -40,6 +41,7 @@ from .utils import create_multisig_protowallet
 
 
 def test_label_export():
+    """Test label export."""
     labels = Labels()
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
     labels.set_addr_label("some_address", "my label", timestamp=timestamp)
@@ -74,6 +76,7 @@ def test_label_export():
 
 
 def test_dumps_data():
+    """Test dumps data."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
     labels = Labels()
@@ -98,6 +101,7 @@ def test_dumps_data():
 
 
 def test_preservebip329_keys_for_single_label():
+    """Test preservebip329 keys for single label."""
     import json
 
     labels = Labels()
@@ -116,6 +120,7 @@ def test_preservebip329_keys_for_single_label():
 
 
 def test_label_bip329_import():
+    """Test label bip329 import."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
     labels = Labels()
@@ -135,6 +140,7 @@ def test_label_bip329_import():
 
 
 def test_label_bip329_import_with_timestamp():
+    """Test label bip329 import with timestamp."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
     d = {"type": "addr", "ref": "some_address", "label": "my label #category 0", "timestamp": timestamp}
@@ -155,6 +161,7 @@ def test_label_bip329_import_with_timestamp():
 
 
 def test_label_bip329_category_drop_multiple_categories():
+    """Test label bip329 category drop multiple categories."""
     s = '{"type": "addr", "ref": "some_address", "label": "my label #category 0 #category 1"}'
 
     labels2 = Labels()
@@ -167,6 +174,7 @@ def test_label_bip329_category_drop_multiple_categories():
 
 def test_label_bip329_category_bad_input():
     # empty
+    """Test label bip329 category bad input."""
     s = '{"type": "addr", "ref": "some_address", "label": "my label #"}'
 
     labels2 = Labels()
@@ -192,6 +200,7 @@ def test_label_bip329_category_bad_input():
 
 
 def test_import():
+    """Test import."""
     s = """
     
     {"type": "tx", "ref": "f91d0a8a78462bc59398f2c5d7a84fcff491c26ba54c4833478b202796c8aafd", "label": "Transaction", "origin": "wpkh([d34db33f/84'/0'/0'])"}
@@ -232,11 +241,14 @@ def test_import():
 
 
 def test_label_timestamp_correctly(test_config: UserConfig):
-    """Automatic category setting also sets a timestamp. It is crucial that the automatic timestamp is in the far past, such that
-    when exchaning labels with another wallet with manual timestamps, the manual ones superceed the automatic ones.
+    """Automatic category setting also sets a timestamp.
+
+    It is crucial that the automatic timestamp is in the far past, such that when exchaning labels with
+    another wallet with manual timestamps, the manual ones superceed the automatic ones.
     """
 
     def set_timestamps(w: Wallet):
+        """Set timestamps."""
         address_info_manual = w.get_address(force_new=True)
         w.labels.set_category(type=LabelType.addr, ref=str(address_info_manual.address), category="manual")
         assert (
@@ -250,6 +262,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
         ) and timestamp_manual2 > AUTOMATIC_TIMESTAMP
 
     def check_timestamps_behavior_correct(w: Wallet):
+        """Check timestamps behavior correct."""
         address_info_auto = w.get_unused_category_address("manual")
         assert w.labels.get_timestamp(str(address_info_auto.address)) == AUTOMATIC_TIMESTAMP
 
@@ -265,7 +278,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
     protowallet = create_multisig_protowallet(
         threshold=1,
         signers=1,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         wallet_id="w org",
         network=test_config.network,
     )
@@ -287,7 +300,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
     protowallet2 = create_multisig_protowallet(
         threshold=1,
         signers=1,
-        key_origins=[f"m/{i+41}h/1h/0h/2h" for i in range(5)],
+        key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
         wallet_id="w 2",
         network=test_config.network,
     )
@@ -313,5 +326,5 @@ def test_label_timestamp_correctly(test_config: UserConfig):
     eorg = w_org.labels.dumps_data_jsonline_list()
     ecopy = w_copy.labels.dumps_data_jsonline_list()
     assert len(eorg) == len(ecopy)
-    for e1, e2 in zip(eorg, ecopy):
+    for e1, e2 in zip(eorg, ecopy, strict=False):
         assert e1 == e2

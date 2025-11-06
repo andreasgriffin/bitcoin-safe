@@ -26,23 +26,22 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import datetime
 import logging
 import threading
+from collections.abc import Hashable
 from threading import Lock
-from typing import Dict, Hashable, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
 
 class PasswordCache:
-    """
-    A thread-safe cache for storing passwords with automatic expiration.
-    """
+    """A thread-safe cache for storing passwords with automatic expiration."""
 
     def __init__(self, retain_password: datetime.timedelta = datetime.timedelta(minutes=5)) -> None:
-        """
-        Initialize the PasswordCache.
+        """Initialize the PasswordCache.
 
         Args:
             retain_password: Duration (in minutes) to retain each password,
@@ -51,13 +50,12 @@ class PasswordCache:
         self._retain = retain_password
 
         # Internal store and timer registry
-        self._store: Dict[Hashable, Tuple[str, datetime.datetime]] = {}
-        self._timers: Dict[Hashable, threading.Timer] = {}
+        self._store: dict[Hashable, tuple[str, datetime.datetime]] = {}
+        self._timers: dict[Hashable, threading.Timer] = {}
         self._lock = Lock()
 
     def set_password(self, key: Hashable, password: str) -> None:
-        """
-        Store a password in the cache and schedule its automatic deletion.
+        """Store a password in the cache and schedule its automatic deletion.
 
         Args:
             key: Identifier for the password.
@@ -79,9 +77,8 @@ class PasswordCache:
             self._timers[key] = timer
             timer.start()
 
-    def get_password(self, key: Hashable) -> Optional[str]:
-        """
-        Retrieve a password from the cache if it has not expired.
+    def get_password(self, key: Hashable) -> str | None:
+        """Retrieve a password from the cache if it has not expired.
 
         Args:
             key: Identifier for the password.
@@ -102,9 +99,7 @@ class PasswordCache:
             return password
 
     def _expire_key(self, key: Hashable) -> None:
-        """
-        Internal callback to remove a password from the cache once expired.
-        """
+        """Internal callback to remove a password from the cache once expired."""
         with self._lock:
             # Remove stored entry and its timer
             self._store.pop(key, None)

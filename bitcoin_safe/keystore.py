@@ -26,10 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import copy
 import logging
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
@@ -58,8 +59,9 @@ class KeyStoreImporterType(SaveAllClass):
         name: str,
         description: str,
         icon_filename: str,
-        networks: List[bdk.Network] | Literal["all"] = "all",
+        networks: list[bdk.Network] | Literal["all"] = "all",
     ) -> None:
+        """Initialize instance."""
         self.id = id
         self.name = name
         self.description = description
@@ -77,7 +79,8 @@ class KeyStoreImporterType(SaveAllClass):
         )
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
@@ -115,11 +118,13 @@ class KeyStoreImporterTypes:
     )  # add networks here to make the seed option visible
 
     @classmethod
-    def list_types(cls, network: bdk.Network) -> List[KeyStoreImporterType]:
+    def list_types(cls, network: bdk.Network) -> list[KeyStoreImporterType]:
+        """List types."""
         return [v for v in [cls.hwi, cls.file, cls.qr, cls.seed] if network in v.networks]
 
     @classmethod
-    def list_names(cls, network: bdk.Network) -> List[str]:
+    def list_names(cls, network: bdk.Network) -> list[str]:
+        """List names."""
         return [v.name for v in cls.list_types(network)]
 
 
@@ -136,10 +141,11 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         key_origin: str,
         label: str,
         network: bdk.Network,
-        mnemonic: Optional[str] = None,
+        mnemonic: str | None = None,
         description: str = "",
         derivation_path: str = ConstDerivationPaths.multipath,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             xpub=xpub,
             fingerprint=fingerprint,
@@ -155,7 +161,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         self.mnemonic = mnemonic
         self.description = description
 
-    def get_differences(self, other_keystore: "KeyStore", prefix="") -> WalletDifferences:
+    def get_differences(self, other_keystore: KeyStore, prefix="") -> WalletDifferences:
         "Compares the relevant entries like keystores"
         differences = WalletDifferences()
         this = self.dump()
@@ -197,11 +203,13 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
         return differences
 
-    def is_equal(self, other: "KeyStore") -> bool:
+    def is_equal(self, other: KeyStore) -> bool:
+        """Is equal."""
         return self.__dict__ == other.__dict__
 
     @classmethod
     def is_seed_valid(cls, mnemonic: str) -> bool:
+        """Is seed valid."""
         try:
             bdk.Mnemonic.from_string(mnemonic)
             return True
@@ -211,6 +219,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @staticmethod
     def network_consistent(pub: bdk.DescriptorPublicKey, network: bdk.Network) -> bool:
+        """Network consistent."""
         if network == bdk.Network.BITCOIN:
             return "network: Main" in pub.__repr__()
         else:
@@ -218,6 +227,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @classmethod
     def is_xpub_valid(cls, xpub: str, network: bdk.Network) -> bool:
+        """Is xpub valid."""
         if not AddressTypes.p2pkh.bdk_descriptor:
             return False
         try:
@@ -236,13 +246,16 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             logger.debug(f"{cls.__name__}: {e}")
             return False
 
-    def clone(self, class_kwargs: Dict | None = None) -> "KeyStore":
+    def clone(self, class_kwargs: dict | None = None) -> KeyStore:
+        """Clone."""
         return KeyStore(**self.__dict__)
 
     def __repr__(self) -> str:
+        """Return representation."""
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
 
         # you must copy it, so you not't change any calues
@@ -252,13 +265,15 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "KeyStore":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> KeyStore:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             if "derivation_path" in dct:
                 dct["key_origin"] = dct["derivation_path"]
@@ -270,13 +285,15 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
         return super().from_dump_migration(dct=dct)
 
-    def from_other_keystore(self, other_keystore: "KeyStore") -> None:
+    def from_other_keystore(self, other_keystore: KeyStore) -> None:
+        """From other keystore."""
         for k, v in other_keystore.__dict__.items():
             setattr(self, k, v)
 
     def is_identical_to(self, spk_provider: SimplePubKeyProvider) -> bool:
         # fill in missing info in keystores
 
+        """Is identical to."""
         return (
             self.fingerprint == spk_provider.fingerprint
             and self.xpub == spk_provider.xpub
@@ -286,7 +303,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
     @classmethod
     def from_signer_info(
         cls, signer_info: SignerInfo, network: bdk.Network, default_label: str, default_derivation_path: str
-    ) -> "KeyStore":
+    ) -> KeyStore:
+        """From signer info."""
         return KeyStore(
             xpub=signer_info.xpub,
             fingerprint=signer_info.fingerprint,
@@ -299,8 +317,11 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         )
 
 
-def sorted_keystores(keystores: List[KeyStore]) -> List[KeyStore]:
+def sorted_keystores(keystores: list[KeyStore]) -> list[KeyStore]:
+    """Sorted keystores."""
+
     def key(v: KeyStore) -> str:
+        """Key."""
         return v.xpub
 
     return sorted(keystores, key=key)

@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import argparse
 import hashlib
@@ -34,8 +35,9 @@ import os
 import platform
 import shutil
 import subprocess
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Dict, List, Literal
+from typing import Literal
 
 from appimage_to_deb_converter import Appimage2debConverter
 from translation_handler import TranslationHandler, run_local
@@ -60,10 +62,9 @@ assert ENABLE_TIMERS
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 
 
-def calc_hashes_of_files(folder: Path) -> Dict[Path, str]:
-    """
-    Calculates SHA-256 hashes for all files in a specified directory and returns a dictionary
-    where the keys are the file paths and the values are the SHA-256 hashes.
+def calc_hashes_of_files(folder: Path) -> dict[Path, str]:
+    """Calculates SHA-256 hashes for all files in a specified directory and returns a
+    dictionary where the keys are the file paths and the values are the SHA-256 hashes.
 
     :param folder: Path object representing the directory to scan
     :return: Dictionary mapping file paths to their hashes
@@ -84,6 +85,7 @@ class Builder:
     build_dir = "build"
 
     def __init__(self, module_name, clean_all=False):
+        """Initialize instance."""
         self.module_name = module_name
         self.version = __version__ if __version__ else "unknown-version"
         if __version__ != get_git_tag():
@@ -103,6 +105,7 @@ class Builder:
 
     @staticmethod
     def get_target_arch():
+        """Get target arch."""
         arch = platform.machine()
         if arch == "x86_64":
             return "x86_64"
@@ -113,14 +116,14 @@ class Builder:
 
     @staticmethod
     def app_name_formatter(module_name: str, join_character="-") -> str:
+        """App name formatter."""
         parts = [s.capitalize() for s in module_name.split("_")]
 
         return join_character.join(parts)
 
     @staticmethod
-    def list_files(directory: str, extension: str) -> List[Path]:
-        """
-        List all files in the given directory with the specified extension.
+    def list_files(directory: str, extension: str) -> list[Path]:
+        """List all files in the given directory with the specified extension.
 
         Args:
             directory (str): The directory to search.
@@ -135,7 +138,8 @@ class Builder:
         return list(dir_path.glob(f"*{extension}"))
 
     def appimage2deb(self, **kwargs):
-        for filename in self.list_files(f"dist/", extension=".AppImage"):
+        """Appimage2deb."""
+        for filename in self.list_files("dist/", extension=".AppImage"):
             converter = Appimage2debConverter(
                 appimage=filename,
                 output_deb=filename.with_suffix(".deb"),
@@ -153,6 +157,7 @@ class Builder:
     def build_appimage_docker(
         self, no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
     ):
+        """Build appimage docker."""
         self.build_in_docker(
             "bitcoin_safe-appimage-builder-img",
             Path("tools/build-linux/appimage"),
@@ -163,6 +168,7 @@ class Builder:
     def build_windows_exe_and_installer_docker(
         self, no_cache=False, build_commit: None | str | Literal["current_commit"] = "current_commit"
     ):
+        """Build windows exe and installer docker."""
         self.build_in_docker(
             "bitcoin_safe-wine-builder-img",
             Path("tools/build-wine"),
@@ -216,7 +222,7 @@ class Builder:
         if not build_commit:
             # Local development build
             DOCKER_BUILD_FLAGS += f" --build-arg UID={BUILD_UID}"
-            logger.info(f"Building within current project")
+            logger.info("Building within current project")
 
         logger.info("Building docker image.")
         run_local(f'docker build {DOCKER_BUILD_FLAGS} -t {docker_image} "{path_build}"')
@@ -225,7 +231,7 @@ class Builder:
         cloned_path: Path | None = None
         if build_commit:
             logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            cloned_path = Path(f"/tmp/{docker_image.replace(' ','')}/fresh_clone/bitcoin_safe")
+            cloned_path = Path(f"/tmp/{docker_image.replace(' ', '')}/fresh_clone/bitcoin_safe")
             try:
                 run_local(f'rm -rf "{cloned_path}"')
             except subprocess.CalledProcessError:
@@ -270,6 +276,7 @@ class Builder:
         self,
         build_commit: None | str | Literal["current_commit"] = "current_commit",
     ):
+        """Build dmg."""
         PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT = Path(".").resolve().absolute()
         DISTDIR = PROJECT_ROOT / "dist"
 
@@ -282,13 +289,13 @@ class Builder:
 
         if not build_commit:
             # Local development build
-            logger.info(f"Building within current project")
+            logger.info("Building within current project")
 
         # Possibly do a fresh clone
         cloned_path: Path | None = None
         if build_commit:
             logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            cloned_path = Path(f"/tmp/{build_commit.replace(' ','')}/fresh_clone/bitcoin_safe")
+            cloned_path = Path(f"/tmp/{build_commit.replace(' ', '')}/fresh_clone/bitcoin_safe")
             try:
                 run_local(f'rm -rf "{cloned_path}"')
             except subprocess.CalledProcessError:
@@ -305,7 +312,7 @@ class Builder:
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / "dist"
 
         os.chdir(str(PROJECT_ROOT_OR_FRESHCLONE_ROOT))
-        run_local(f'bash {PROJECT_ROOT_OR_FRESHCLONE_ROOT / "tools" / "build-mac" / "make_osx.sh"}')
+        run_local(f"bash {PROJECT_ROOT_OR_FRESHCLONE_ROOT / 'tools' / 'build-mac' / 'make_osx.sh'}")
 
         os.chdir(str(PROJECT_ROOT))
 
@@ -323,11 +330,11 @@ class Builder:
 
     def package_application(
         self,
-        targets: List[TARGET_LITERAL],
+        targets: list[TARGET_LITERAL],
         build_commit: None | str | Literal["current_commit"] = None,
     ):
-
-        f_map: Dict[str, Callable[..., None]] = {
+        """Package application."""
+        f_map: dict[str, Callable[..., None]] = {
             "appimage": self.build_appimage_docker,
             "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.build_dmg,
@@ -340,14 +347,14 @@ class Builder:
 
         # calc hashes
         hashes = calc_hashes_of_files(Path(".") / "dist")
-        print(f"Resulting hashes:")
+        print("Resulting hashes:")
         for file, hash in hashes.items():
             print(f"{file.name}: {hash}")
 
         print(f"Packaging completed for version {self.version}.")
 
     def sign(self):
-
+        """Sign."""
         manager = SignatureSigner(
             version=self.version,
             app_name=self.app_name_formatter(self.module_name),
@@ -357,9 +364,11 @@ class Builder:
         assert self.verify(signed_files), "Error: Signature Verification failed!!!!"
 
     def lock(self):
+        """Lock."""
         run_local("poetry lock --no-cache --no-update")
 
-    def verify(self, signed_files: List[Path]):
+    def verify(self, signed_files: list[Path]):
+        """Verify."""
         manager = SignatureVerifyer(list_of_known_keys=[KnownGPGKeys.andreasgriffin], proxies=None)
 
         assert signed_files
@@ -372,9 +381,7 @@ class Builder:
         return True
 
     def build_snap(self, **kwargs):
-        """
-        Build a Snap package for a Python application.
-        """
+        """Build a Snap package for a Python application."""
 
         # Create necessary directories
         build_snap_dir = Path(self.build_dir) / "snap"
@@ -478,7 +485,8 @@ apps:
         os.chdir(original_dir)
 
 
-def get_default_targets() -> List[TARGET_LITERAL]:
+def get_default_targets() -> list[TARGET_LITERAL]:
+    """Get default targets."""
     if platform.system() == "Windows":
         return ["windows"]
     elif platform.system() == "Linux":
@@ -493,13 +501,12 @@ def get_default_targets() -> List[TARGET_LITERAL]:
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Package the Python application.")
     parser.add_argument("--clean", action="store_true", help=f"Removes the {Builder.build_dir} folder")
     parser.add_argument(
         "--commit",
         type=str,
-        help=f"The commit to be build. tag|commit_hash|'None'|'current_commit' .   The default is 'current_commit'.  None, will build within the current project.",
+        help="The commit to be build. tag|commit_hash|'None'|'current_commit' .   The default is 'current_commit'.  None, will build within the current project.",
         default="current_commit",
     )
     parser.add_argument(
@@ -540,7 +547,7 @@ if __name__ == "__main__":
 
     if args.targets is not None:
         # clean args
-        targets: List[TARGET_LITERAL] = args.targets
+        targets: list[TARGET_LITERAL] = args.targets
         if not targets:
             print("--targets was given without any values.")
             targets = get_default_targets()

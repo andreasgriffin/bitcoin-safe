@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 import logging
@@ -33,7 +34,7 @@ import os
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
@@ -63,8 +64,10 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
-from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.util import filename_clean
 
 from ...hardware_signers import (
@@ -89,19 +92,23 @@ logger = logging.getLogger(__name__)
 
 class DataGroupBox(QGroupBox):
     def __init__(self, title: str | None = None, parent=None, data=None) -> None:
+        """Initialize instance."""
         super().__init__(title=title if title else "", parent=parent)
         self.data = data
-        self._layout: Union[QVBoxLayout, QHBoxLayout] = QVBoxLayout()
+        self._layout: QVBoxLayout | QHBoxLayout = QVBoxLayout()
 
-    def set_layout(self, layout_cls: Union[QVBoxLayout, QHBoxLayout]):
+    def set_layout(self, layout_cls: QVBoxLayout | QHBoxLayout):
+        """Set layout."""
         self._layout = layout_cls
         self.setLayout(self._layout)
 
     def setData(self, data) -> None:
+        """SetData."""
         self.data = data
 
 
 def pretty_name(data_type: DataType) -> str:
+    """Pretty name."""
     if data_type == DataType.PSBT:
         return translate("general", "PSBT")
     if data_type == DataType.Tx:
@@ -110,34 +117,37 @@ def pretty_name(data_type: DataType) -> str:
 
 
 def get_txid(data: Data) -> str | None:
+    """Get txid."""
     if data.data_type == DataType.PSBT:
         if not isinstance(data.data, bdk.Psbt):
-            logger.error(f"data is not of type bdk.Psbt")
+            logger.error("data is not of type bdk.Psbt")
             return None
         return str(data.data.extract_tx().compute_txid())
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"data is not of type bdk.Transaction")
+            logger.error("data is not of type bdk.Transaction")
             return None
         return str(data.data.compute_txid())
     return None
 
 
 def get_json_data(data: Data, network: bdk.Network) -> str | None:
+    """Get json data."""
     if data.data_type == DataType.PSBT:
         if not isinstance(data.data, bdk.Psbt):
-            logger.error(f"data is not of type bdk.Psbt")
+            logger.error("data is not of type bdk.Psbt")
             return None
         return json.dumps(json.loads(data.data.json_serialize()), indent=4)
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"data is not of type bdk.Transaction")
+            logger.error("data is not of type bdk.Transaction")
             return None
         return json.dumps(transaction_to_dict(data.data, network=network), indent=4)
     return None
 
 
-def get_export_display_name(export_type: Union[DescriptorExportType, QrExportType]) -> str:
+def get_export_display_name(export_type: DescriptorExportType | QrExportType) -> str:
+    """Get export display name."""
     parts = [export_type.display_name]
     filtered_hardware_signers = HardwareSigners.filtered_by([export_type])  # type:ignore
 
@@ -149,7 +159,8 @@ def get_export_display_name(export_type: Union[DescriptorExportType, QrExportTyp
     return " - ".join(parts)
 
 
-def get_export_icon(export_type: Union[DescriptorExportType, QrExportType]) -> QIcon:
+def get_export_icon(export_type: DescriptorExportType | QrExportType) -> QIcon:
+    """Get export icon."""
     filtered_hardware_signers = HardwareSigners.filtered_by([export_type])  # type:ignore
     if filtered_hardware_signers:
         filtered_hardware_signer = filtered_hardware_signers[0]
@@ -167,6 +178,7 @@ class FileToolButton(QToolButton):
         parent: QWidget | None = None,
         button_prefix: str = "",
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.wallet_id = wallet_id
         self.network = network
@@ -183,9 +195,9 @@ class FileToolButton(QToolButton):
         self.updateUi()
 
     def _fill_menu(self):
+        """Fill menu."""
         self._menu.clear()
         with QSignalBlocker(self._menu):
-
             if self.data.data_type in [DataType.Descriptor] and isinstance(self.data.data, bdk.Descriptor):
                 self.fill_file_menu_descriptor_export_actions(
                     self._menu,
@@ -196,7 +208,8 @@ class FileToolButton(QToolButton):
             else:
                 self.fill_file_menu_export_actions(self._menu)
 
-    def export_to_file(self, default_filename=None) -> Optional[str]:
+    def export_to_file(self, default_filename=None) -> str | None:
+        """Export to file."""
         default_suffix = "txt"
         if self.data.data_type == DataType.Tx:
             default_suffix = "tx"
@@ -205,12 +218,12 @@ class FileToolButton(QToolButton):
 
         txid = get_txid(self.data)
         if not default_filename and txid:
-            default_filename = f"{short_tx_id( txid)}.{default_suffix}"
+            default_filename = f"{short_tx_id(txid)}.{default_suffix}"
         if not default_filename and self.data.data_type in [
             DataType.Descriptor,
         ]:
             default_filename = (
-                (f"{filename_clean( self.wallet_id, file_extension='', replace_spaces_by='_')}.txt")
+                (f"{filename_clean(self.wallet_id, file_extension='', replace_spaces_by='_')}.txt")
                 if self.wallet_id
                 else "descriptor.txt"
             )
@@ -233,6 +246,7 @@ class FileToolButton(QToolButton):
         return filename
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setText(self.button_prefix + self.tr("Export"))
         self.action_copy_data.setText(
             self.tr("Copy {name}").format(name=pretty_name(data_type=self.data.data_type))
@@ -241,6 +255,7 @@ class FileToolButton(QToolButton):
         self.action_json.setText(self.tr("Copy JSON"))
 
     def set_data(self, data: Data):
+        """Set data."""
         self.data = data
         self.serialized = data.data_as_string()
         self.txid = get_txid(data)
@@ -256,6 +271,7 @@ class FileToolButton(QToolButton):
         network: bdk.Network,
         descripor_type: DescriptorExportType,
     ):
+        """Save file."""
         return DescriptorExportTools.export(
             wallet_id=wallet_id,
             multipath_descriptor=multipath_descriptor,
@@ -270,6 +286,7 @@ class FileToolButton(QToolButton):
         multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
     ):
+        """Fill file menu descriptor export actions."""
         with QSignalBlocker(menu):
             menu.clear()
 
@@ -302,6 +319,7 @@ class FileToolButton(QToolButton):
         self,
         menu: Menu,
     ):
+        """Fill file menu export actions."""
         file_icon = svg_tools.get_QIcon("bi--download.svg")
         with QSignalBlocker(menu):
             menu.clear()
@@ -323,19 +341,23 @@ class FileToolButton(QToolButton):
                 "", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg")
             )
 
-    def copy_if_available(self, s: Optional[str]) -> None:
+    def copy_if_available(self, s: str | None) -> None:
+        """Copy if available."""
         if s:
             do_copy(s)
         else:
             Message(self.tr("Not available"))
 
     def on_action_copy_data(self):
+        """On action copy data."""
         return self.copy_if_available(self.serialized)
 
     def on_action_copy_txid(self):
+        """On action copy txid."""
         return self.copy_if_available(self.txid)
 
     def on_action_json(self):
+        """On action json."""
         return self.copy_if_available(self.json_data)
 
 
@@ -348,27 +370,36 @@ class SyncChatToolButton(QToolButton):
         parent: QWidget | None = None,
         button_prefix: str = "",
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.sync_clients = sync_client
         self.network = network
-        self.action_share_with_all_devices: Dict[str, QAction] = {}
-        self.menu_share_with_single_devices: Dict[str, Menu] = {}
+        self.action_share_with_all_devices: dict[str, QAction] = {}
+        self.menu_share_with_single_devices: dict[str, Menu] = {}
         self.button_prefix = button_prefix
         self._set_data(data=data, sync_clients=sync_client)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
         self.setMenu(self._menu)
+        self._menu.aboutToShow.connect(self._fill_menu)
+        self._menu.aboutToHide.connect(self._clear_menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
         self.setIcon(svg_tools.get_QIcon("bi--cloud.svg"))
 
-        self._fill_menu()
         self.updateUi()
+
+    def _clear_menu(self) -> None:
+        with QSignalBlocker(self._menu):
+            self._menu.clear()
+        self.action_share_with_all_devices.clear()
+        self.menu_share_with_single_devices.clear()
 
     def _share_with_device(
         self, wallet_id: str, sync_client: SyncClient, receiver_public_key_bech32: str | None = None
     ) -> None:
+        """Share with device."""
         if not sync_client.enabled:
             Message(self.tr("Please enable the sync tab first"))
             return
@@ -380,16 +411,14 @@ class SyncChatToolButton(QToolButton):
             self.on_nostr_share_in_group(wallet_id, sync_client)
 
     def _fill_menu(self):
+        """Fill menu."""
         menu = self._menu
-        menu.clear()
+        self._clear_menu()
         if not self.sync_clients:
             return
 
         with QSignalBlocker(self._menu):
-
             # Create a menu for the button
-            self.action_share_with_all_devices.clear()
-            self.menu_share_with_single_devices.clear()
             for wallet_id, sync_client in self.sync_clients.items():
                 action_alldevices = partial(
                     self._share_with_device,
@@ -408,30 +437,36 @@ class SyncChatToolButton(QToolButton):
                         receiver_public_key_bech32=member.to_bech32(),
                     )
                     self.menu_share_with_single_devices[wallet_id].add_action(
-                        f"{ sync_client.nostr_sync.chat.get_alias(member)  }", action
+                        f"{sync_client.nostr_sync.chat.get_alias(member)}", action
                     )
                 menu.addSeparator()
 
+        self.updateUi()
+
     def _set_data(self, data: Data, sync_clients: dict[str, SyncClient] | None) -> None:
+        """Set data."""
         self.data = data
         self.sync_clients = sync_clients
 
     def set_data(self, data: Data, sync_clients: dict[str, SyncClient] | None):
+        """Set data."""
         self._set_data(data=data, sync_clients=sync_clients)
-        self._fill_menu()
+        self._clear_menu()
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setText(self.button_prefix + self.tr("Share with trusted devices"))
 
         for wallet_id, action in self.action_share_with_all_devices.items():
             action.setText(self.tr("Share with all devices in {wallet_id}").format(wallet_id=wallet_id))
-        for wallet_id, menu in self.menu_share_with_single_devices.items():
+        for menu in self.menu_share_with_single_devices.values():
             menu.setTitle(self.tr("Share with single device"))
 
     def on_nostr_share_with_member(
         self, receiver_public_key: PublicKey, wallet_id: str, sync_client: SyncClient
     ) -> None:
+        """On nostr share with member."""
         if not sync_client.enabled:
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
@@ -443,6 +478,7 @@ class SyncChatToolButton(QToolButton):
         )
 
     def to_dm(self, use_compression: bool) -> ChatDM:
+        """To dm."""
         txid = get_txid(self.data)
         return ChatDM(
             label=ChatLabel.GroupChat,
@@ -456,6 +492,7 @@ class SyncChatToolButton(QToolButton):
         )
 
     def on_nostr_share_in_group(self, wallet_id: str, sync_client: SyncClient) -> None:
+        """On nostr share in group."""
         if not sync_client.enabled:
             Message(
                 self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
@@ -470,12 +507,14 @@ class SyncChatToolButton(QToolButton):
 
 class QrComboBox(QComboBox):
     def __init__(self, data: Data, network: bdk.Network, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.data = data
         self.network = network
         self.setMaximumWidth(150)
 
-    def fill_qr_menu_export_actions(self, qr_types: List[QrExportType]):
+    def fill_qr_menu_export_actions(self, qr_types: list[QrExportType]):
+        """Fill qr menu export actions."""
         with QSignalBlocker(self):
             self.clear()
             for qr_type in qr_types:
@@ -486,14 +525,17 @@ class QrComboBox(QComboBox):
                 )
 
     def setCurrentQrType(self, value: QrExportType):
+        """SetCurrentQrType."""
         for i in range(self.count()):
             if value == self.itemData(i):
                 self.setCurrentIndex(i)
 
-    def getCurrentExportType(self) -> Optional[QrExportType]:
+    def getCurrentExportType(self) -> QrExportType | None:
+        """GetCurrentExportType."""
         return self.currentData()
 
     def getItemExportType(self, i: int) -> QrExportType:
+        """GetItemExportType."""
         return self.itemData(i)
 
 
@@ -502,13 +544,14 @@ class HorizontalImportExportGroups(QWidget):
 
     def __init__(
         self,
-        layout: Optional[QBoxLayout] = None,
+        layout: QBoxLayout | None = None,
         enable_qr=True,
         enable_file=True,
         enable_usb=True,
         enable_clipboard=True,
         **kwargs,
     ) -> None:
+        """Initialize instance."""
         super().__init__(**kwargs)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._layout = layout if layout is not None else QHBoxLayout()
@@ -560,9 +603,9 @@ class HorizontalImportExportGroups(QWidget):
 
 
 class ExportDataSimple(HorizontalImportExportGroups):
-    signal_set_qr_images = cast(TypedPyQtSignal[List[str]], pyqtSignal(list))
-    signal_close = pyqtSignal()
-    signal_show = pyqtSignal()
+    signal_set_qr_images: TypedPyQtSignal[list[str]] = cast(Any, pyqtSignal(list))
+    signal_close: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_show: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
@@ -579,6 +622,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         loop_in_thread: LoopInThread | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             layout=layout,
             enable_qr=enable_qr,
@@ -642,9 +686,11 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.signal_set_qr_images.connect(self.qr_label.set_images)
 
     def set_minimum_size_as_floating_window(self):
+        """Set minimum size as floating window."""
         self.setMinimumSize(650, 300)
 
     def refresh_qr_and_file_menus_if_needed(self):
+        """Refresh qr and file menus if needed."""
         if [t.name for t in self.qr_types] == [
             self.combo_qr_type.getItemExportType(i).name for i in range(self.combo_qr_type.count())
         ]:
@@ -656,6 +702,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self.button_file.set_data(self.data)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         selected_qr_type = self.combo_qr_type.getCurrentExportType()
         self.button_enlarge_qr.setText(
             self.tr("Enlarge {} QR").format(selected_qr_type.display_name if selected_qr_type else "")
@@ -672,22 +719,24 @@ class ExportDataSimple(HorizontalImportExportGroups):
         )
 
     def refresh_qr(self) -> None:
+        """Refresh qr."""
         self.clear_qr()
         self.lazy_load_qr(self.data)
         self.updateUi()
 
     def _set_data(self, data: Data) -> None:
+        """Set data."""
         self.data = data
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
             if not isinstance(data.data, bdk.Psbt):
-                logger.error(f"data is not of type bdk.Psbt")
+                logger.error("data is not of type bdk.Psbt")
                 return
             self.txid = data.data.extract_tx().compute_txid()
             self.json_data = json.dumps(json.loads(data.data.json_serialize()), indent=4)
         if data.data_type == DataType.Tx:
             if not isinstance(data.data, bdk.Transaction):
-                logger.error(f"data is not of type bdk.Transaction")
+                logger.error("data is not of type bdk.Transaction")
                 return
             self.txid = data.data.compute_txid()
             self.json_data = json.dumps(transaction_to_dict(data.data, network=self.network), indent=4)
@@ -700,18 +749,21 @@ class ExportDataSimple(HorizontalImportExportGroups):
             self.qr_types = QrExportTypes.as_list()
 
     def set_data(self, data: Data) -> None:
+        """Set data."""
         self._set_data(data=data)
         self.refresh_qr()
 
     @staticmethod
     def wrap_in_widget(widget: QWidget) -> QWidget:
+        """Wrap in widget."""
         outer_widget = QWidget()
         outer_widget_layout = QVBoxLayout(outer_widget)
         outer_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
         outer_widget_layout.addWidget(widget)
         return outer_widget
 
-    def export_qrcode(self) -> Optional[Path]:
+    def export_qrcode(self) -> Path | None:
+        """Export qrcode."""
         image_format = "gif" if len(self.qr_label.svg_renderers) > 1 else "png"
 
         filename = save_file_dialog(
@@ -719,7 +771,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
                 self.tr("Image (*.{image_format})", "All Files (*.*)").format(image_format=image_format)
             ],
             default_suffix=image_format,
-            default_filename=f"{short_tx_id( self.txid)}.{image_format}" if self.txid else None,
+            default_filename=f"{short_tx_id(self.txid)}.{image_format}" if self.txid else None,
         )
         if not filename:
             return None
@@ -731,9 +783,11 @@ class ExportDataSimple(HorizontalImportExportGroups):
         return file_path
 
     def clear_qr(self) -> None:
+        """Clear qr."""
         self.qr_label.set_images([])
 
-    def generate_qr_fragments(self, data: Data) -> List[str]:
+    def generate_qr_fragments(self, data: Data) -> list[str]:
+        """Generate qr fragments."""
         qr_export_type = self.combo_qr_type.getCurrentExportType()
         if not qr_export_type:
             return []
@@ -773,18 +827,24 @@ class ExportDataSimple(HorizontalImportExportGroups):
             return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
 
     def lazy_load_qr(self, data: Data) -> None:
+        """Lazy load qr."""
+
         async def do() -> Any:
+            """Do."""
             fragments = self.generate_qr_fragments(data=data)
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
         def on_done(result) -> None:
+            """On done."""
             pass
 
         def on_error(packed_error_info) -> None:
+            """On error."""
             Message(packed_error_info, type=MessageType.Error)
 
         def on_success(result) -> None:
+            """On success."""
             if result:
                 if any([(item is None) for item in result]):
                     return self.signal_set_qr_images.emit([])
@@ -802,7 +862,8 @@ class ExportDataSimple(HorizontalImportExportGroups):
                 multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
             )
 
-    def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> Optional[str]:
+    def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> str | None:
+        """Export wallet."""
         if not isinstance(self.data.data, bdk.Descriptor):
             return None
 
@@ -822,10 +883,12 @@ class ExportDataSimple(HorizontalImportExportGroups):
         return filename
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
+        """CloseEvent."""
         self.signal_close.emit()
         return super().closeEvent(a0)
 
     def showEvent(self, a0: QShowEvent | None) -> None:
+        """ShowEvent."""
         super().showEvent(a0)
         self.signal_show.emit()  # Emit custom signal when the widget is shown.
 
@@ -841,6 +904,7 @@ class QrToolButton(QToolButton):
         button_prefix: str = "",
         wallet_name: str = "MultiSig",
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.button_prefix = button_prefix
 
@@ -868,15 +932,16 @@ class QrToolButton(QToolButton):
         self.updateUi()
 
     def _show_export_widget(self, export_type: QrExportType):
+        """Show export widget."""
         if not self.export_qr_widget:
             return
         self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
         self.export_qr_widget.show()
 
     def _fill_menu(self):
+        """Fill menu."""
         self._menu.clear()
         with QSignalBlocker(self._menu):
-
             for qr_type in self.export_qr_widget.qr_types:
                 self._menu.add_action(
                     get_export_display_name(qr_type),
@@ -885,10 +950,12 @@ class QrToolButton(QToolButton):
                 )
 
     def set_data(self, data: Data):
+        """Set data."""
         self.export_qr_widget.set_data(data)
         self._fill_menu()
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.setText(self.button_prefix + self.tr("QR Code"))
         self.export_qr_widget.updateUi()

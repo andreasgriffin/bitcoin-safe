@@ -26,11 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Literal, cast
+from typing import Literal, cast
 
 import bdkpython as bdk
 import pytest
@@ -41,7 +42,10 @@ from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.signals import TypedPyQtSignalNo
+from typing import Any, TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.signer import SignatureImporterClipboard
 
 logger = logging.getLogger(__name__)
@@ -150,19 +154,20 @@ romance slush habit speed type also grace coffee grape inquiry receive filter"""
 
 
 class My(QObject):
-    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
+    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
 
 @pytest.fixture()
 def dummy_instance_with_close_all_video_widgets() -> My:
+    """Dummy instance with close all video widgets."""
     return My()
 
 
 @dataclass
 class PyTestBDKSetup:
     network: bdk.Network
-    descriptors: List[bdk.Descriptor]
-    wallets: List[bdk.Wallet]
+    descriptors: list[bdk.Descriptor]
+    wallets: list[bdk.Wallet]
 
 
 def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.REGTEST) -> PyTestBDKSetup:
@@ -170,7 +175,10 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
 
     # blockchain = bdk.Blockchain(blockchain_config)
 
+    """Pytest bdk setup multisig."""
+
     def create_single_sig_descriptor(seed):
+        """Create single sig descriptor."""
         mnemonic = bdk.Mnemonic.from_string(seed)
 
         return bdk.Descriptor.new_bip84(
@@ -180,6 +188,7 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
         )
 
     def create_wallet(descriptor: bdk.Descriptor):
+        """Create wallet."""
         wallet = bdk.Wallet(
             descriptor=descriptor,
             change_descriptor=None,
@@ -192,6 +201,7 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
     def gen_multisig_descriptor_str(
         descriptor_strings, threshold, type: Literal["p2wsh", "p2sh_p2wsh", "p2sh"] = "p2wsh"
     ) -> str:
+        """Gen multisig descriptor str."""
         new_strings = []
         for descriptor_string in descriptor_strings:
             s: str = descriptor_string
@@ -224,6 +234,7 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
 
 
 def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST) -> PyTestBDKSetup:
+    """Pytest bdk setup single sig."""
     logger.debug("pytest_bdk_setup_single_sig start")
     # blockchain_config = get_blockchain_config(bitcoin_core, network=network)
     # logger.debug(f"blockchain_config = {blockchain_config}")
@@ -260,12 +271,14 @@ def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST)
 
 @pytest.fixture
 def pytest_2_of_3_multisig_wallets(bitcoin_core: Path) -> PyTestBDKSetup:
+    """Pytest 2 of 3 multisig wallets."""
     logger.debug("prepare fixture pytest_2_of_3_multisig_wallets")
     return pytest_bdk_setup_multisig(bitcoin_core, m=2, n=3, network=bdk.Network.REGTEST)
 
 
 @pytest.fixture
 def pytest_siglesig_wallet(bitcoin_core: Path) -> PyTestBDKSetup:
+    """Pytest siglesig wallet."""
     logger.debug("prepare fixture pytest_siglesig_wallet")
     return pytest_bdk_setup_single_sig(bitcoin_core, network=bdk.Network.REGTEST)
 
@@ -276,7 +289,7 @@ def test_signer_finalizes_ofn_final_sig_receive(
     caplog: LogCaptureFixture,
     qtbot: QtBot,
 ):
-
+    """Test signer finalizes ofn final sig receive."""
     signer = SignatureImporterClipboard(
         network=pytest_siglesig_wallet.network,
         close_all_video_widgets=dummy_instance_with_close_all_video_widgets.close_all_video_widgets,
@@ -306,7 +319,7 @@ def test_signer_recognizes_finalized_tx_received(
     caplog: LogCaptureFixture,
     qtbot: QtBot,
 ):
-
+    """Test signer recognizes finalized tx received."""
     signer = SignatureImporterClipboard(
         network=pytest_siglesig_wallet.network,
         close_all_video_widgets=dummy_instance_with_close_all_video_widgets.close_all_video_widgets,

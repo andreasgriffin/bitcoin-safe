@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -65,12 +66,12 @@ logger = logging.getLogger(__name__)
 
 
 class BaseColumn(QWidget):
-
     def __init__(
         self,
         fx: FX,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
 
         self._layout = QVBoxLayout(self)
@@ -84,17 +85,19 @@ class BaseColumn(QWidget):
         set_margins(self.totals._layout, {Qt.Edge.BottomEdge: 0})
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         pass
 
     def insert_middle_widget(self, widget: QWidget, **kwargs):
+        """Insert middle widget."""
         self._layout.insertWidget(1, widget, **kwargs)
 
     def is_available(self) -> bool:
+        """Is available."""
         return True
 
 
 class ColumnInputs(BaseColumn):
-
     def __init__(
         self,
         category_list: CategoryList | None,
@@ -102,6 +105,7 @@ class ColumnInputs(BaseColumn):
         fx: FX,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, fx=fx)
 
         self.setMinimumWidth(200)
@@ -169,11 +173,12 @@ class ColumnInputs(BaseColumn):
 
         # nLocktime
         self.nlocktime_picker = nLocktimePicker()
-        # TODO actiavte this as soon as https://docs.rs/bdk/latest/bdk/wallet/tx_builder/struct.TxBuilder.html#method.nlocktime is exposed in ffi
+        # TODO actiavte this as soon as https://docs.rs/bdk/latest/bdk/wallet/tx_builder/struct.TxBuilder.html#method.nlocktime is exposed in ffi   # noqa: E501
         self.nlocktime_picker.setHidden(True)
         groupbox_layout.addWidget(self.nlocktime_picker)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.button_add_utxo.setText(self.tr("Add foreign UTXOs"))
         if self.checkBox_manual_coin_select:
             self.checkBox_manual_coin_select.setText(self.tr("Select specific UTXOs"))
@@ -182,7 +187,6 @@ class ColumnInputs(BaseColumn):
 
 
 class ColumnRecipients(BaseColumn):
-
     def __init__(
         self,
         wallet_functions: WalletFunctions,
@@ -190,6 +194,7 @@ class ColumnRecipients(BaseColumn):
         allow_edit=True,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, fx=fx)
 
         set_margins(
@@ -211,18 +216,19 @@ class ColumnRecipients(BaseColumn):
         self.setMinimumWidth(250)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.recipients.updateUi()
         self.totals.c0.l2.setText(self.tr("Sending total:"))
 
 
 class ColumnSankey(BaseColumn):
-
     def __init__(
         self,
         wallet_functions: WalletFunctions,
         fx: FX,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, fx=fx)
 
         set_margins(
@@ -246,19 +252,21 @@ class ColumnSankey(BaseColumn):
         self.insert_middle_widget(self.sankey_bitcoin)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.header_widget.label_title.setText(self.tr("Diagram"))
         self.button_export_svg.setText(self.tr("Export svg"))
 
     def is_available(self) -> bool:
+        """Is available."""
         return self.sankey_bitcoin.isEnabled()
 
     def close(self):
+        """Close."""
         self.sankey_bitcoin.close()
         return super().close()
 
 
 class ColumnFee(BaseColumn):
-
     def __init__(
         self,
         mempool_manager: MempoolManager,
@@ -271,6 +279,7 @@ class ColumnFee(BaseColumn):
         is_viewer=False,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, fx=fx)
 
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
@@ -299,6 +308,7 @@ class ColumnFee(BaseColumn):
         self.insert_middle_widget(self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         title = self.tr("Mempool Fees")
         tx_status = self.fee_group.mempool_buttons.tx_status
         icon_text = sort_id_to_icon(tx_status.sort_id())

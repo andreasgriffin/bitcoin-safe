@@ -26,13 +26,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import io
 import logging
 import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any
 
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_usb.address_types import DescriptorInfo
@@ -68,6 +70,7 @@ DEFAULT_MARGIN = 36
 
 
 def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
+    """Pilimage to reportlab."""
     buffer = io.BytesIO()
     pilimage.save(buffer, format="PNG")
     buffer.seek(0)
@@ -88,9 +91,8 @@ class FontInfo:
 
 
 def register_font(lang_code: str) -> FontInfo:
-    """
-    Registers a font for the given language code and returns a FontInfo object that contains
-    the font details, font type, and supported language.
+    """Registers a font for the given language code and returns a FontInfo object that
+    contains the font details, font type, and supported language.
 
     If the language is not fully supported, it falls back to 'en_US' and uses Helvetica.
 
@@ -142,7 +144,6 @@ def register_font(lang_code: str) -> FontInfo:
         "vi_VN": FontInfo("Helvetica", FontType.BUILTIN, "vi_VN"),  # Vietnamese (Latin-based characters)
         "ms_MY": FontInfo("Helvetica", FontType.BUILTIN, "ms_MY"),  # Malay
         "id_ID": FontInfo("Helvetica", FontType.BUILTIN, "id_ID"),  # Indonesian
-        "en_US": FontInfo("Helvetica", FontType.BUILTIN, "en_US"),  # English
     }
 
     if lang_code in FONT_MAP:
@@ -168,6 +169,7 @@ white_space = '<font color="white"> - </font>'
 
 class BasePDF:
     def __init__(self, lang_code: str) -> None:
+        """Initialize instance."""
         font_info = register_font(lang_code=lang_code)
         self.font_name = font_info.font_name
         self.no_translate = font_info.supported_lang_code == "en_US"
@@ -201,11 +203,11 @@ class BasePDF:
             name="normal",
             fontName=self.font_name,
         )
-        self.elements: List[Any] = []
+        self.elements: list[Any] = []
 
     def save_pdf(self, filename: str) -> None:
-
         # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
+        """Save pdf."""
         LEFT_MARGIN = 36  # 0.5 inch
         RIGHT_MARGIN = 36  # 0.5 inch
         TOP_MARGIN = 36  # 0.5 inch
@@ -222,6 +224,7 @@ class BasePDF:
         document.build(self.elements)
 
     def open_pdf(self, filename: str) -> None:
+        """Open pdf."""
         if os.path.exists(filename):
             xdg_open_file(Path(filename))
         else:
@@ -229,14 +232,15 @@ class BasePDF:
 
 
 class BitcoinWalletRecoveryPDF(BasePDF):
-
     @property
     def TEXT_24_WORDS(self):
+        """TEXT 24 WORDS."""
         return translate("pdf", "12 or 24", no_translate=self.no_translate)
 
     @staticmethod
-    def create_table(columns: List[Any], col_widths: List[int]) -> Table:
+    def create_table(columns: list[Any], col_widths: list[int]) -> Table:
         # Validate input and create data for the table
+        """Create table."""
         max_rows = max([len(col) for col in columns])
         data = []
         for i in range(max_rows):
@@ -263,16 +267,18 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         return table
 
     def add_page_break(self) -> None:
+        """Add page break."""
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
     def _seed_part(
         self,
-        seed: Optional[str],
+        seed: str | None,
         keystore_description: str,
         keystore_fingerprint: str,
         keystore_label: str,
         num_signers: int,
     ) -> None:
+        """Seed part."""
         self.elements.append(Spacer(1, 5))
         # Additional subtitle
         if num_signers == 1:
@@ -283,7 +289,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 2. Fold this  paper at the line below <br/>
                 3. Put this paper in a secure location, where only you have access<br/>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
-                """,
+                """,  # noqa: E501
                     no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS),
                 self.style_paragraph_left,
@@ -296,7 +302,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 2. Fold this  paper at the line below <br/>
                 3. Put each paper in a different secure location, where only you have access<br/>
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
-                """,
+                """,  # noqa: E501
                     no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS),
                 self.style_paragraph_left,
@@ -335,7 +341,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         # 24 words placeholder in three columns
         data = [[table_title, "", ""]]  # First row is the title
         for i in range(8):
-            data.append([f"{i + j+1} {seed_items[i+j]}" for j in [0, 8, 16]])
+            data.append([f"{i + j + 1} {seed_items[i + j]}" for j in [0, 8, 16]])
 
         table = Table(data)
 
@@ -372,7 +378,8 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         description_text = Paragraph(
             translate(
                 "pdf",
-                "{keystore_label} ({keystore_fingerprint}): {keystore_description}<br/><br/>Instructions for the heirs:",
+                "{keystore_label} ({keystore_fingerprint}): {keystore_description}<br/><br/>"
+                "Instructions for the heirs:",
                 no_translate=self.no_translate,
             ).format(
                 keystore_description=keystore_description.replace("\n", "<br/>"),
@@ -394,6 +401,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         wallet_descriptor_string: str,
         threshold: int,
     ) -> None:
+        """Descriptor part."""
         qr_image = pilimage_to_reportlab(
             QRGenerator.create_qr_PILimage(wallet_descriptor_string), width=200, height=200
         )
@@ -401,7 +409,9 @@ class BitcoinWalletRecoveryPDF(BasePDF):
             desc_str = Paragraph(
                 translate(
                     "pdf",
-                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.",
+                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> "
+                    "allows you to create a watch-only wallet to see your balance. "
+                    "To spent from it you need {threshold} Seeds and the wallet descriptor.",
                     no_translate=self.no_translate,
                 ).format(threshold=threshold, wallet_descriptor_string=wallet_descriptor_string),
                 self.style_paragraph,
@@ -410,7 +420,9 @@ class BitcoinWalletRecoveryPDF(BasePDF):
             desc_str = Paragraph(
                 translate(
                     "pdf",
-                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).",
+                    "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows "
+                    "you to create a watch-only wallet to see your balance. "
+                    "To spent from it you need the secret {number} words (Seed).",
                     no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS, wallet_descriptor_string=wallet_descriptor_string),
                 self.style_paragraph,
@@ -427,20 +439,21 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         keystore_key_origin: str,
         keystore_fingerprint: str,
         threshold: int,
-        seed: Optional[str] = None,
+        seed: str | None = None,
         num_signers: int = 1,
     ) -> None:
+        """Create pdf."""
         self.elements.append(Paragraph(title, style=self.style_heading))
 
         # Small subtitle
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" Bitcoin Safe: {white_space*5} www.bitcoin-safe.org",
+                + f" Bitcoin Safe: {white_space * 5} www.bitcoin-safe.org",
                 self.style_paragraph,
             )
         )
-        self.elements.append(Paragraph(f"", self.style_paragraph))
+        self.elements.append(Paragraph("", self.style_paragraph))
 
         self._seed_part(
             seed,
@@ -472,7 +485,8 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         keystore_info_text = Paragraph(
             translate(
                 "pdf",
-                "{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}",
+                "{keystore_label}: Fingerprint: {keystore_fingerprint}, "
+                "Key origin: {keystore_key_origin}, {keystore_xpub}",
                 no_translate=self.no_translate,
             ).format(
                 keystore_label=keystore_label,
@@ -486,6 +500,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
 
 
 def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
+    """Make and open pdf."""
     info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
     pdf_recovery = BitcoinWalletRecoveryPDF(lang_code=lang_code)
 
@@ -497,7 +512,7 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
                 no_translate=pdf_recovery.no_translate,
             ).format(i=i + 1, threshold=info.threshold, m=len(wallet.keystores), id=wallet.id)
             if len(wallet.keystores) > 1
-            else f"{wallet.id }"
+            else f"{wallet.id}"
         )
         pdf_recovery.create_pdf(
             title=title,
@@ -517,16 +532,3 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
     )
     pdf_recovery.save_pdf(temp_file)
     pdf_recovery.open_pdf(temp_file)
-
-
-# # Example Usage
-# wallet_name = "My Wallet Name"
-# wallet_descriptor_qr_code = Image("../bitcoin_safe/gui/icons/qrcode.png")  # Replace with path to your QR code image
-# wallet_descriptor_string = "Your wallet descriptor string here"
-# wallet_description = "Your wallet description here"
-
-# pdf_creator = BitcoinWalletRecoveryPDF(wallet_name, wallet_descriptor_qr_code, wallet_descriptor_string, wallet_description)
-# pdf_creator.create_pdf()
-# pdf_filename = "wallet_recovery.pdf"
-# pdf_creator.save_pdf(pdf_filename)
-# pdf_creator.open_pdf(pdf_filename)

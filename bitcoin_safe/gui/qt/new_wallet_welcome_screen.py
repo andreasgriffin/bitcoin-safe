@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -47,7 +48,9 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .util import svg_widget_hardware_signer
 
@@ -55,10 +58,10 @@ logger = logging.getLogger(__name__)
 
 
 class NewWalletWelcomeScreen(QWidget):
-    signal_onclick_multisig_signature = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_onclick_single_signature = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_onclick_custom_signature = cast(TypedPyQtSignalNo, pyqtSignal())
-    signal_remove_me = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
+    signal_onclick_multisig_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_onclick_single_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_onclick_custom_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_remove_me: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -67,6 +70,7 @@ class NewWalletWelcomeScreen(QWidget):
         signal_recently_open_wallet_changed: TypedPyQtSignal,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setVisible(False)
         self.signals = signals
@@ -83,21 +87,26 @@ class NewWalletWelcomeScreen(QWidget):
         logger.debug(f"initialized welcome_screen = {self.__class__.__name__}")
 
     def remove_me(self) -> None:
+        """Remove me."""
         self.signal_remove_me.emit(self)
 
     def on_pushButton_multisig(self):
+        """On pushButton multisig."""
         self.signal_onclick_multisig_signature.emit()
         self.signal_remove_me.emit(self)
 
     def on_pushButton_singlesig(self):
+        """On pushButton singlesig."""
         self.signal_onclick_single_signature.emit()
         self.signal_remove_me.emit(self)
 
     def on_pushButton_custom_wallet(self):
+        """On pushButton custom wallet."""
         self.signal_onclick_custom_signature.emit()
         self.signal_remove_me.emit(self)
 
     def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
+        """Add new wallet welcome tab."""
         main_tabs.root.addChildNode(
             SidebarNode(
                 icon=svg_tools.get_QIcon("file.svg"),
@@ -108,6 +117,7 @@ class NewWalletWelcomeScreen(QWidget):
         )
 
     def create_ui(self) -> None:
+        """Create ui."""
         svg_max_height = 70
         svg_max_width = 60
         self._layout = QHBoxLayout(self)
@@ -175,7 +185,7 @@ class NewWalletWelcomeScreen(QWidget):
             )
             for i in range(3)
         ]
-        for i, svg_widget in enumerate(svg_widgets):
+        for svg_widget in svg_widgets:
             self.groupBox_3signingdevices_layout.addWidget(svg_widget)
 
         self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
@@ -210,36 +220,37 @@ class NewWalletWelcomeScreen(QWidget):
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.label_singlesig.setText(
-            f"""<h1>{self.tr('Single Signature Wallet')}</h1>
+            f"""<h1>{self.tr("Single Signature Wallet")}</h1>
 <ul>
-<li>{self.tr('Best for medium-sized funds')}</li>
+<li>{self.tr("Best for medium-sized funds")}</li>
 </ul>             
-<p><b>{self.tr('Pros:')}</b></p>
+<p><b>{self.tr("Pros:")}</b></p>
 <ul>
-<li>{self.tr('1 seed (24 secret words) is all you need to access your funds')}</li>
-<li>{self.tr('1 secure location to store the seed backup (on paper or steel) is needed')}</li>
+<li>{self.tr("1 seed (24 secret words) is all you need to access your funds")}</li>
+<li>{self.tr("1 secure location to store the seed backup (on paper or steel) is needed")}</li>
 </ul>
-<p><b>{self.tr('Cons:')}</b></p>
+<p><b>{self.tr("Cons:")}</b></p>
 <ul>
-<li>{self.tr('If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately')}</li>
+<li>{self.tr("If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately")}</li>
 </ul>""",
         )
         self.groupBox_1signingdevice.setTitle(self.tr("1 signing devices"))
         self.pushButton_singlesig.setText(self.tr("Choose Single Signature"))
         self.label_multisig.setText(
-            f"""<h1>{self.tr('2 of 3 Multi-Signature Wal')}let</h1>
+            f"""<h1>{self.tr("2 of 3 Multi-Signature Wal")}let</h1>
 <ul>
-<li>{self.tr('Best for large funds')}</li>
+<li>{self.tr("Best for large funds")}</li>
 </ul>             
-<p><b>{self.tr('Pros:')}</b></p>
+<p><b>{self.tr("Pros:")}</b></p>
 <ul>
-<li>{self.tr('If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)')}</li>
+<li>{self.tr("If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)")}</li>
 </ul>
-<p><b>{self.tr('Cons:')}</b></p>
+<p><b>{self.tr("Cons:")}</b></p>
 <ul>
-<li>{self.tr('3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)')}</li>
-<li>{self.tr('The wallet descriptor (QR-code) is necessary to recover the wallet')}</li>
+<li>{self.tr("3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)")}</li>
+<li>{self.tr("The wallet descriptor (QR-code) is necessary to recover the wallet")}</li>
 </ul>
 """,
         )
@@ -247,9 +258,9 @@ class NewWalletWelcomeScreen(QWidget):
         self.pushButton_multisig.setText(self.tr("Choose Multi-Signature"))
         self.label_custom.setText(
             html_f(
-                f"""<h1>{self.tr('Custom or import existing Wallet')}</h1>
-                <p><b>{self.tr('Pros:')}</b></p><p>{self.tr('Customize the wallet to your needs')}</p>
-                <p><b>{self.tr('Cons:')}</b></p><p>{self.tr('Less support material online in case of recovery')}</p>""",
+                f"""<h1>{self.tr("Custom or import existing Wallet")}</h1>
+                <p><b>{self.tr("Pros:")}</b></p><p>{self.tr("Customize the wallet to your needs")}</p>
+                <p><b>{self.tr("Cons:")}</b></p><p>{self.tr("Less support material online in case of recovery")}</p>""",
                 add_html_and_body=True,
             )
         )

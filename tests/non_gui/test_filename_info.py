@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 import logging
 
 from bitcoin_safe.signature_manager import FilenameInfo
@@ -34,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def test_name_splitting_sparrow():
+    """Test name splitting sparrow."""
     filename = "Sparrow-2.0.0-aarch64.dmg"
     info = FilenameInfo.from_filename(filename)
     assert (
@@ -120,7 +122,7 @@ def test_name_splitting_sparrow():
 
 
 def test_name_bitcoin_safe():
-
+    """Test name bitcoin safe."""
     filename = "Bitcoin-Safe-1.0.0b4-portable.exe"
     info = FilenameInfo.from_filename(filename)
     assert (
@@ -173,7 +175,7 @@ def test_name_bitcoin_safe():
 
 
 def test_name_splitting_linux_packages():
-
+    """Test name splitting linux packages."""
     filename = "libreoffice-qt6-7.6.7.2-r0.apk"
     info = FilenameInfo.from_filename(filename)
     assert (

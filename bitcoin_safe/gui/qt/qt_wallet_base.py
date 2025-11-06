@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from abc import abstractmethod
-from typing import List, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -38,7 +40,9 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from bitcoin_safe.client import SyncStatus
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 from ...config import UserConfig
 from ...signals import WalletFunctions
@@ -50,11 +54,12 @@ logger = logging.getLogger(__name__)
 
 class WrapperQWidget(QWidget):
     def __init__(self, parent=None, **kwargs) -> None:
+        """Initialize instance."""
         super().__init__(parent, **kwargs)
 
 
 class QtWalletBase(WrapperQWidget):
-    signal_after_sync = cast(TypedPyQtSignal[SyncStatus], pyqtSignal(SyncStatus))  # SyncStatus
+    signal_after_sync: TypedPyQtSignal[SyncStatus] = cast(Any, pyqtSignal(SyncStatus))  # SyncStatus
     wizard: WizardBase | None = None
     wallet_descriptor_ui: DescriptorUI
 
@@ -66,6 +71,7 @@ class QtWalletBase(WrapperQWidget):
         parent=None,
         **kwargs,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent, **kwargs)
         self.signal_tracker = SignalTracker()
         self.loop_in_thread = LoopInThread()
@@ -87,23 +93,28 @@ class QtWalletBase(WrapperQWidget):
         # self.outer_layout.addWidget(self.tabs)
 
     @abstractmethod
-    def get_mn_tuple(self) -> Tuple[int, int]:
+    def get_mn_tuple(self) -> tuple[int, int]:
+        """Get mn tuple."""
         pass
 
     @abstractmethod
-    def get_keystore_labels(self) -> List[str]:
+    def get_keystore_labels(self) -> list[str]:
+        """Get keystore labels."""
         pass
 
     @abstractmethod
     def get_editable_protowallet(self) -> ProtoWallet:
+        """Get editable protowallet."""
         pass
 
     def set_tutorial_index(self, value: int | None):
+        """Set tutorial index."""
         self.tutorial_index = value
         if self.wizard:
             self.wizard.set_visibilities()
 
     def close(self) -> bool:
+        """Close."""
         SignalTools.disconnect_all_signals_from(self)
         self.signal_tracker.disconnect_all()
         self.loop_in_thread.stop()

@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import cast
+from typing import cast, Any
 from unittest.mock import patch
 
 import pytest
@@ -49,32 +50,37 @@ from bitcoin_safe.gui.qt.custom_edits import AnalyzerMessage, BaseAnalyzer
 logger = logging.getLogger(__name__)
 
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent
-from PyQt6.QtWidgets import QApplication, QPushButton, QWidget
 
-from bitcoin_safe.signals import TypedPyQtSignalNo
+from typing import Any, TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 
 class My(QObject):
-    close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
+    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
 
 @pytest.fixture()
 def dummy_instance_with_close_all_video_widgets(qapp: QApplication) -> My:
+    """Dummy instance with close all video widgets."""
     return My()
 
 
 @pytest.fixture()
 def button_edit(dummy_instance_with_close_all_video_widgets: My, qapp: QApplication) -> ButtonEdit:
+    """Button edit."""
     return ButtonEdit(
         close_all_video_widgets=dummy_instance_with_close_all_video_widgets.close_all_video_widgets
     )
 
 
 def test_square_button(qapp: QApplication):
+    """Test square button."""
     icon = QIcon()
     parent = QWidget()
     button = SquareButton(icon, parent)
@@ -84,6 +90,7 @@ def test_square_button(qapp: QApplication):
 
 
 def test_buttons_field_initialization(qapp: QApplication):
+    """Test buttons field initialization."""
     parent = QWidget()
     buttons_field = ButtonsField(Qt.AlignmentFlag.AlignBottom, parent)
     assert buttons_field.parent() == parent
@@ -93,6 +100,7 @@ def test_buttons_field_initialization(qapp: QApplication):
 
 
 def test_buttons_field_add_button(qapp: QApplication):
+    """Test buttons field add button."""
     buttons_field = ButtonsField()
     button = QPushButton()
     buttons_field.append_button(button)
@@ -101,6 +109,7 @@ def test_buttons_field_add_button(qapp: QApplication):
 
 
 def test_buttons_field_remove_button(qapp: QApplication):
+    """Test buttons field remove button."""
     buttons_field = ButtonsField()
     button = QPushButton()
     buttons_field.append_button(button)
@@ -111,6 +120,7 @@ def test_buttons_field_remove_button(qapp: QApplication):
 
 
 def test_buttons_field_clear_buttons(qapp: QApplication):
+    """Test buttons field clear buttons."""
     buttons_field = ButtonsField()
     button1 = QPushButton()
     button2 = QPushButton()
@@ -122,6 +132,7 @@ def test_buttons_field_clear_buttons(qapp: QApplication):
 
 
 def test_buttons_field_resize_event(qapp: QApplication):
+    """Test buttons field resize event."""
     buttons_field = ButtonsField()
     for _ in range(10):
         button = QPushButton()
@@ -136,23 +147,27 @@ def test_buttons_field_resize_event(qapp: QApplication):
 
 
 def test_button_edit_initialization(button_edit: ButtonEdit):
+    """Test button edit initialization."""
     assert isinstance(button_edit.input_field, AnalyzerLineEdit)
     assert button_edit.button_container is not None
     assert button_edit.main_layout is not None
 
 
 def test_button_edit_set_text(button_edit: ButtonEdit):
+    """Test button edit set text."""
     button_edit.setText("Test Text")
     assert button_edit.input_field.text() == "Test Text"
 
 
 def test_button_edit_get_text(button_edit: ButtonEdit):
+    """Test button edit get text."""
     button_edit.setText("Test Text")
     assert button_edit.text() == "Test Text"
     assert button_edit.input_field.text() == "Test Text"
 
 
 def test_button_edit_set_input_field(button_edit: ButtonEdit):
+    """Test button edit set input field."""
     new_input_field = AnalyzerTextEdit()
     button_edit.set_input_field(new_input_field)
     assert button_edit.input_field == new_input_field
@@ -160,6 +175,7 @@ def test_button_edit_set_input_field(button_edit: ButtonEdit):
 
 
 def test_button_edit_format_as_error(button_edit: ButtonEdit):
+    """Test button edit format as error."""
     button_edit.format_as_error(True)
     assert "background-color" in button_edit.input_field.styleSheet()
     button_edit.format_as_error(False)
@@ -167,6 +183,7 @@ def test_button_edit_format_as_error(button_edit: ButtonEdit):
 
 
 def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit):
+    """Test button edit format and apply validator valid."""
     button_edit.input_field.setText("Valid Input")
     analyzer = BaseAnalyzer()
     with patch.object(BaseAnalyzer, "analyze", return_value=AnalyzerMessage("", AnalyzerState.Valid)):
@@ -176,6 +193,7 @@ def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit):
 
 
 def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit):
+    """Test button edit format and apply validator invalid."""
     button_edit.input_field.setText("Invalid Input")
     invalid_result = AnalyzerMessage("Error message", AnalyzerState.Invalid)
     analyzer = BaseAnalyzer()
@@ -187,6 +205,7 @@ def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit)
 
 
 def test_button_edit_add_pdf_button(button_edit: ButtonEdit, qtbot: QtBot):
+    """Test button edit add pdf button."""
     qtbot.addWidget(button_edit)  # Register the widget with qtbot
     callback = MagicMock()
     button_edit.add_pdf_buttton(callback)
@@ -197,6 +216,7 @@ def test_button_edit_add_pdf_button(button_edit: ButtonEdit, qtbot: QtBot):
 
 
 def test_button_edit_add_open_file_button(button_edit: ButtonEdit, qtbot: QtBot):
+    """Test button edit add open file button."""
     callback = MagicMock()
     with patch("PyQt6.QtWidgets.QFileDialog.getOpenFileName", return_value=("file_path", "")):
         button_edit.add_open_file_button(callback)
@@ -207,11 +227,13 @@ def test_button_edit_add_open_file_button(button_edit: ButtonEdit, qtbot: QtBot)
 
 
 def test_button_edit_set_placeholder_text(button_edit: ButtonEdit):
+    """Test button edit set placeholder text."""
     button_edit.setPlaceholderText("Enter text...")
     assert button_edit.input_field.placeholderText() == "Enter text..."
 
 
 def test_button_edit_set_read_only(button_edit: ButtonEdit):
+    """Test button edit set read only."""
     button_edit.setReadOnly(True)
     assert button_edit.input_field.isReadOnly()
     button_edit.setReadOnly(False)
@@ -219,6 +241,7 @@ def test_button_edit_set_read_only(button_edit: ButtonEdit):
 
 
 def test_button_edit_update_ui(button_edit: ButtonEdit):
+    """Test button edit update ui."""
     button_edit.add_copy_button()
     button_edit.add_pdf_buttton(lambda: None)
     button_edit.updateUi()
@@ -227,6 +250,7 @@ def test_button_edit_update_ui(button_edit: ButtonEdit):
 
 
 def test_button_edit_add_button(button_edit: ButtonEdit):
+    """Test button edit add button."""
     callback = MagicMock()
     button = button_edit.add_button(get_icon_path("icon.png"), callback, "Tooltip text")
     assert button in button_edit.button_container.buttons
@@ -237,16 +261,19 @@ def test_button_edit_add_button(button_edit: ButtonEdit):
 
 
 def test_button_edit_set_plain_text(button_edit: ButtonEdit):
+    """Test button edit set plain text."""
     button_edit.setPlainText("Plain Text")
     assert button_edit.input_field.text() == "Plain Text"
 
 
 def test_button_edit_set_style_sheet(button_edit: ButtonEdit):
+    """Test button edit set style sheet."""
     button_edit.setStyleSheet("background-color: red;")
     assert button_edit.input_field.styleSheet() == "background-color: red;"
 
 
 def test_buttons_field_rearrange_buttons(button_edit: ButtonEdit):
+    """Test buttons field rearrange buttons."""
     buttons_field = ButtonsField()
     for i in range(5):
         button = QPushButton(f"Button {i}")
@@ -260,6 +287,7 @@ def test_buttons_field_rearrange_buttons(button_edit: ButtonEdit):
 
 
 def test_square_button_click(button_edit: ButtonEdit, qtbot: QtBot):
+    """Test square button click."""
     icon = QIcon()
     parent = QWidget()
     button = SquareButton(icon, parent)
@@ -271,6 +299,7 @@ def test_square_button_click(button_edit: ButtonEdit, qtbot: QtBot):
 
 
 def test_button_edit_set_input_field_text_edit(button_edit: ButtonEdit):
+    """Test button edit set input field text edit."""
     text_edit = AnalyzerTextEdit()
     button_edit.set_input_field(text_edit)
     assert isinstance(button_edit.input_field, AnalyzerTextEdit)
@@ -281,6 +310,7 @@ def test_button_edit_set_input_field_text_edit(button_edit: ButtonEdit):
 
 def test_button_edit_method_delegation(button_edit: ButtonEdit):
     # Set placeholder text
+    """Test button edit method delegation."""
     button_edit.setPlaceholderText("Placeholder")
     assert button_edit.input_field.placeholderText() == "Placeholder"
     # Set read-only
@@ -289,12 +319,14 @@ def test_button_edit_method_delegation(button_edit: ButtonEdit):
 
 
 def test_button_edit_format_and_apply_validator_no_analyzer(button_edit: ButtonEdit):
+    """Test button edit format and apply validator no analyzer."""
     with patch.object(button_edit.input_field, "analyzer", return_value=None):
         button_edit.format_and_apply_validator()
         assert "background-color" not in button_edit.input_field.styleSheet()
 
 
 def test_button_edit_add_reset_button(button_edit: ButtonEdit, qtbot: QtBot):
+    """Test button edit add reset button."""
     get_reset_text = MagicMock(return_value="Reset Text")
     reset_button = button_edit.addResetButton(get_reset_text)
     assert reset_button in button_edit.button_container.buttons

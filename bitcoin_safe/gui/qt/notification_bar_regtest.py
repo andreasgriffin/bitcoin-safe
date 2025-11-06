@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 import bdkpython as bdk
 from bitcoin_safe_lib.util_os import webopen
@@ -48,6 +49,7 @@ class NotificationBarRegtest(NotificationBar):
     def __init__(
         self, callback_open_network_setting: Callable, network: bdk.Network, signals_min: SignalsMin
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -72,10 +74,12 @@ class NotificationBarRegtest(NotificationBar):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def open_faucet(self):
+        """Open faucet."""
         if self.faucet:
             webopen(self.faucet)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
         self.faucet_button.setText(self.tr("Get {testnet} coins").format(testnet=self.network.name.lower()))
         self.optionalButton.setText(self.tr("Open Network Settings"))

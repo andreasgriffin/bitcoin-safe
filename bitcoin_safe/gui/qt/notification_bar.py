@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 import sys
-from typing import Callable, Optional, Tuple
+from collections.abc import Callable
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QIcon
@@ -56,10 +58,11 @@ class NotificationBar(QWidget):
         self,
         text: str = "",
         optional_button_text: str | None = None,
-        callback_optional_button: Optional[Callable] = None,
+        callback_optional_button: Callable | None = None,
         has_close_button: bool = True,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self._layout = QHBoxLayout(self)
         self.color: QColor | None = None
@@ -97,27 +100,33 @@ class NotificationBar(QWidget):
         logger.debug(f"initialized {self.__class__.__name__}")
 
     def add_styled_widget(self, widget: QWidget):
+        """Add styled widget."""
         if self.color:
             self.style_widget(widget, color=self.color)
         self._layout.insertWidget(self._layout.count() - 2, widget)
 
     def set_has_close_button(self, has_close_button: bool):
+        """Set has close button."""
         self.closeButton.setHidden(not has_close_button)
 
     def style_widget(self, button: QWidget, color: QColor):
+        """Style widget."""
         button.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
         button.setObjectName(button.__class__.__name__)
         button.setStyleSheet(f"#{button.objectName()} {{ background-color: {color.name()};}}")
 
     def set_background_color(self, color: QColor) -> None:
+        """Set background color."""
         self.color = color
         self.style_widget(self, color=color)
         self.style_widget(self.optionalButton, color=color)
 
-    def set_icon(self, icon: Optional[QIcon], sizes: Tuple[int | None, int | None] = (None, None)) -> None:
+    def set_icon(self, icon: QIcon | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
+        """Set icon."""
         self.icon_label.set_icon(icon=icon, sizes=sizes)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.closeButton.setAccessibleName(self.tr("Close notification"))
 
 
@@ -125,6 +134,7 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self) -> None:
+            """Initialize instance."""
             super().__init__()
 
             self.setCentralWidget(QWidget())
@@ -139,6 +149,7 @@ if __name__ == "__main__":
             layout.addWidget(QTextEdit("some text"))
 
         def on_button_clicked(self) -> None:
+            """On button clicked."""
             print("Optional Button Clicked")
             self.notificationBar.icon_label.setText("Button Clicked!")
 

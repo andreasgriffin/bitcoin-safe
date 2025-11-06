@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
@@ -45,13 +46,14 @@ class MempoolData(BaseSaveableClass):
 
     def __init__(
         self,
-        mempool_blocks: List[Dict[str, Any]] | None = None,
-        recommended: Dict[str, int] | None = None,
-        mempool_dict: Dict[str, Any] | None = None,
+        mempool_blocks: list[dict[str, Any]] | None = None,
+        recommended: dict[str, int] | None = None,
+        mempool_dict: dict[str, Any] | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
-        self.recommended: Dict[str, int] = (
+        self.recommended: dict[str, int] = (
             recommended
             if recommended
             else {
@@ -62,7 +64,7 @@ class MempoolData(BaseSaveableClass):
                 "minimumFee": MIN_RELAY_FEE,
             }
         )
-        self.mempool_dict: Dict[str, Any] = (
+        self.mempool_dict: dict[str, Any] = (
             mempool_dict
             if mempool_dict
             else {
@@ -73,7 +75,8 @@ class MempoolData(BaseSaveableClass):
             }
         )
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["mempool_blocks"] = self.mempool_blocks
         d["recommended"] = self.recommended
@@ -81,11 +84,13 @@ class MempoolData(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
-    def _empty_mempool_blocks(self) -> List[Dict[str, Any]]:
+    def _empty_mempool_blocks(self) -> list[dict[str, Any]]:
+        """Empty mempool blocks."""
         return [
             {
                 "blockSize": 1,

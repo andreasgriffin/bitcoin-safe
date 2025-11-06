@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List, Set
 
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
@@ -55,6 +55,7 @@ logger = logging.getLogger(__name__)
 
 class CategoryManager(QWidget):
     def __init__(self, config: UserConfig, category_core: CategoryCore, wallet_id: str):
+        """Initialize instance."""
         super().__init__()
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.category_core = category_core
@@ -102,15 +103,18 @@ class CategoryManager(QWidget):
         self._layout.addWidget(self.button_box)
 
     def on_selection_changed(self):
+        """On selection changed."""
         self.set_visibilities()
 
     def set_visibilities(self):
+        """Set visibilities."""
         keys = self.category_list.get_selected_keys()
         self.button_rename.setEnabled(len(keys) == 1)
 
         self.button_merge.setEnabled(len(keys) > 1)
 
     def updateUi(self):
+        """UpdateUi."""
         self.setWindowTitle(self.tr("Manage Categories of {wallet_id}").format(wallet_id=self.wallet_id))
         self.button_add.setText(self.tr("Add Category"))
         self.button_merge.setText(self.tr("Merge"))
@@ -118,6 +122,7 @@ class CategoryManager(QWidget):
         self.set_visibilities()
 
     def add_category(self):
+        """Add category."""
         category = prompt_new_category(self)
         if not category:
             return
@@ -130,6 +135,7 @@ class CategoryManager(QWidget):
         )
 
     def on_button_merge(self):
+        """On button merge."""
         category_infos = self.category_list.get_selected_category_infos()
         if len(category_infos) <= 1:
             return
@@ -159,7 +165,8 @@ class CategoryManager(QWidget):
         for category in categories:
             self.rename_category(old_category=category, new_category=new_category)
 
-    def get_used_addresses(self, category: str, addresses: List[str] | None = None) -> List[str]:
+    def get_used_addresses(self, category: str, addresses: list[str] | None = None) -> list[str]:
+        """Get used addresses."""
         addresses = (
             addresses
             if addresses
@@ -176,6 +183,7 @@ class CategoryManager(QWidget):
         return used_addresses
 
     def on_button_rename(self):
+        """On button rename."""
         category_infos = self.category_list.get_selected_category_infos()
         if len(category_infos) != 1:
             return
@@ -188,6 +196,7 @@ class CategoryManager(QWidget):
         self.rename_category(old_category=category, new_category=new_category)
 
     def rename_category(self, old_category: str, new_category: str) -> None:
+        """Rename category."""
         affected_keys = self.category_core.wallet.labels.rename_category(old_category, new_category)
         # add addresses with no category
         affected_keys += [
@@ -206,6 +215,7 @@ class CategoryManager(QWidget):
         )
 
     def set_category(self, address_drag_info: AddressDragInfo) -> None:
+        """Set category."""
         apply_addresses = address_drag_info.addresses
         used_addresses = [
             address
@@ -227,7 +237,7 @@ class CategoryManager(QWidget):
             for category in address_drag_info.tags:
                 self.category_core.wallet.labels.set_addr_category(address, category, timestamp="now")
 
-        txids: Set[str] = set()
+        txids: set[str] = set()
         for address in apply_addresses:
             txids = txids.union(self.category_core.wallet.get_involved_txids(address))
 
@@ -241,5 +251,6 @@ class CategoryManager(QWidget):
         )
 
     def close(self) -> bool:
+        """Close."""
         self.category_list.close()
         return super().close()

@@ -26,17 +26,19 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import datetime
 import enum
 import ipaddress
 import logging
 import socket
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from functools import cached_property, lru_cache
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -50,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 def is_address(a: str, network: bdk.Network) -> bool:
+    """Is address."""
     try:
         bdk.Address(a, network=network)
     except Exception as e:
@@ -63,9 +66,12 @@ class IpAddress(bdk.IpAddress):
 
     @staticmethod
     def _resolve_domain(host: str, timeout: float) -> str:
+        """Resolve domain."""
+
         def _resolve() -> str:
+            """Resolve."""
             infos = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
-            addresses: List[str] = []
+            addresses: list[str] = []
             for family, _, _, _, sockaddr in infos:
                 if family in (socket.AF_INET, socket.AF_INET6):
                     addresses.append(str(sockaddr[0]))
@@ -82,6 +88,7 @@ class IpAddress(bdk.IpAddress):
 
     @classmethod
     def from_host(cls, host: str):
+        """From host."""
         try:
             host_ip = ipaddress.ip_address(host)
         except ValueError:
@@ -92,7 +99,7 @@ class IpAddress(bdk.IpAddress):
         try:
             a1, a2, a3, a4 = host.split(".")
             return cls.from_ipv4(int(a1), int(a2), int(a3), int(a4))
-        except:
+        except Exception:
             pass
 
         try:
@@ -107,7 +114,7 @@ class IpAddress(bdk.IpAddress):
                 int(a7, 16),
                 int(a8, 16),
             )
-        except:
+        except Exception:
             pass
         raise Exception(f"{host=} could not be converted to {cls}")
 
@@ -116,46 +123,62 @@ class IpAddress(bdk.IpAddress):
 class Recipient:
     address: str
     amount: int
-    label: Optional[str] = None
+    label: str | None = None
     checked_max_amount: bool = False
 
-    def clone(self) -> "Recipient":
+    def clone(self) -> Recipient:
+        """Clone."""
         return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
 
 
 class OutPoint(bdk.OutPoint):
-
     def __key__(self) -> tuple[str, int]:
+        """Key."""
         return (self.txid_str, self.vout)
 
     @cached_property
     def txid_str(self):
+        """Txid str."""
         return str(self.txid)
 
-    def __hash__(self) -> int:
-        "Necessary for the caching"
-        # Attention: It has to reflect the content, not the id(self)
-        try:
-            return self._cached_hash
-        except AttributeError:
-            h = hash(self.__key__())
-            self._cached_hash: int = h
-            return h
+    @cached_property
+    def __hash__cached(self):
+        """Hash  cached."""
+        return hash(self.__key__())
 
-    def __str__(self) -> str:  # type: ignore
+    def __hash__(self) -> int:
+        # Necessary for the caching
+        # Attention: It has to reflect the content, not the id(self)
+        """Return hash value."""
+        return self.__hash__cached
+
+    @cached_property
+    def __str__cached(self):
+        """Str  cached."""
         return f"{self.txid_str}:{self.vout}"
 
-    @lru_cache(maxsize=200_000)
-    def __repr__(self) -> str:  # type: ignore
+    def __str__(self) -> str:
+        """Return string representation."""
+        return self.__str__cached
+
+    @cached_property
+    def __repr__cached(self):
+        """Repr  cached."""
         return str(f"{self.__class__.__name__}({self.txid},{self.vout})")
 
+    def __repr__(self) -> str:
+        """Return representation."""
+        return self.__repr__cached
+
     def __eq__(self, other) -> bool:
+        """Eq."""
         if isinstance(other, OutPoint):
             return hash(self) == hash(other)
         return False
 
     @classmethod
-    def from_bdk(cls, bdk_outpoint: bdk.OutPoint) -> "OutPoint":
+    def from_bdk(cls, bdk_outpoint: bdk.OutPoint) -> OutPoint:
+        """From bdk."""
         if isinstance(bdk_outpoint, OutPoint):
             return bdk_outpoint
         if isinstance(bdk_outpoint, str):
@@ -163,69 +186,94 @@ class OutPoint(bdk.OutPoint):
         return OutPoint(txid=bdk_outpoint.txid, vout=bdk_outpoint.vout)
 
     @classmethod
-    def from_str(cls, outpoint_str: str) -> "OutPoint":
+    def from_str(cls, outpoint_str: str) -> OutPoint:
+        """From str."""
         if isinstance(outpoint_str, OutPoint):
             return outpoint_str
         txid, vout = outpoint_str.split(":")
         return OutPoint(txid=bdk.Txid.from_string(txid), vout=int(vout))
 
 
-def get_prev_outpoints(tx: bdk.Transaction) -> List[OutPoint]:
+def get_prev_outpoints(tx: bdk.Transaction) -> list[OutPoint]:
     "Returns the list of prev_outpoints"
     return [OutPoint.from_bdk(input.previous_output) for input in tx.input()]
 
 
 def _is_taproot_script(script_bytes: bytes) -> bool:
+    """Is taproot script."""
     return len(script_bytes) == 34 and script_bytes[:2] == b"\x51\x20"
 
 
 class TxOut(bdk.TxOut):
     @cached_property
     def spk_bytes(self) -> bytes:
+        """Spk bytes."""
         return bytes(self.script_pubkey.to_bytes())
 
     @cached_property
     def spk_hex(self) -> str:
+        """Spk hex."""
         return serialized_to_hex(self.spk_bytes)
+
+    @cached_property
+    def _key_cache(self) -> tuple[str, int]:
+        """Key cache."""
+        return (self.spk_hex, self.value.to_sat())
 
     def __key__(self) -> tuple[str, int]:
         # use cached hex + value
-        return (self.spk_hex, self.value.to_sat())
+        """Key."""
+        return self._key_cache
+
+    @cached_property
+    def __hash__cached(self):
+        """Hash  cached."""
+        return hash((self.value.to_sat(), self.spk_bytes))
 
     def __hash__(self) -> int:
         # hash on bytes (fast) + value
         # Attention: It has to reflect the content, not the id(self)
-        try:
-            return self._cached_hash
-        except AttributeError:
-            h = hash((self.value.to_sat(), self.spk_bytes))
-            self._cached_hash: int = h
-            return h
+        """Return hash value."""
+        return self.__hash__cached
 
     def seralized_tuple(self) -> tuple[str, int]:
+        """Seralized tuple."""
         return (self.spk_hex, self.value.to_sat())
 
-    @lru_cache(maxsize=200_000)
-    def __str__(self) -> str:  # type: ignore
+    @cached_property
+    def __str__cached(self):
+        """Str  cached."""
         return str(self.__key__())
 
-    @lru_cache(maxsize=200_000)
-    def __repr__(self) -> str:  # type: ignore
+    def __str__(self) -> str:
+        """Return string representation."""
+        return self.__str__cached
+
+    @cached_property
+    def _repr_cache(self):
+        """Repr cache."""
         return f"{self.__class__.__name__}({self.__key__()})"
 
+    def __repr__(self) -> str:
+        """Return representation."""
+        return self._repr_cache
+
     def __eq__(self, other) -> bool:
+        """Eq."""
         return isinstance(other, TxOut) and (
             self.value.to_sat() == other.value.to_sat() and self.spk_bytes == other.spk_bytes
         )
 
     @classmethod
-    def from_bdk(cls, tx_out: bdk.TxOut) -> "TxOut":
+    def from_bdk(cls, tx_out: bdk.TxOut) -> TxOut:
+        """From bdk."""
         if isinstance(tx_out, TxOut):
             return tx_out
         return TxOut(value=tx_out.value, script_pubkey=tx_out.script_pubkey)
 
     @classmethod
-    def from_seralized_tuple(cls, seralized_tuple: Tuple[str, int]) -> "TxOut":
+    def from_seralized_tuple(cls, seralized_tuple: tuple[str, int]) -> TxOut:
+        """From seralized tuple."""
         script_pubkey, value = seralized_tuple
         return TxOut(
             script_pubkey=bdk.Script(hex_to_serialized(script_pubkey)), value=bdk.Amount.from_sat(value)
@@ -242,9 +290,10 @@ class PythonUtxo(BaseSaveableClass):
     address: str
     outpoint: OutPoint
     txout: TxOut
-    is_spent_by_txid: Optional[str] = None
+    is_spent_by_txid: str | None = None
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["address"] = self.address
         d["outpoint"] = str(self.outpoint)
@@ -253,7 +302,8 @@ class PythonUtxo(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         dct["outpoint"] = OutPoint.from_str(dct["outpoint"])
@@ -264,24 +314,28 @@ class PythonUtxo(BaseSaveableClass):
         # Attention: It has to reflect the content, not the id(self)
         # Leverage Python’s tuple‐hashing;
         # this requires that OutPoint and TxOut themselves be hashable
+        """Return hash value."""
         return hash((self.address, self.outpoint, self.txout, self.is_spent_by_txid))
 
     @cached_property
     def value(self):
+        """Value."""
         return self.txout.value.to_sat()
 
 
-def python_utxo_balance(python_utxos: List[PythonUtxo]) -> int:
+def python_utxo_balance(python_utxos: list[PythonUtxo]) -> int:
+    """Python utxo balance."""
     return sum(python_utxo.value for python_utxo in python_utxos)
 
 
 class UtxosForInputs:
     def __init__(
         self,
-        utxos: List[PythonUtxo],
+        utxos: list[PythonUtxo],
         included_opportunistic_merging_utxos=None,
         spend_all_utxos=False,
     ) -> None:
+        """Initialize instance."""
         if included_opportunistic_merging_utxos is None:
             included_opportunistic_merging_utxos = []
 
@@ -300,17 +354,21 @@ class TransactionDetails:
 
     @cached_property
     def bdk_txid(self):
+        """Bdk txid."""
         return self.transaction.compute_txid()
 
     @cached_property
     def txid(self):
+        """Txid."""
         return str(self.bdk_txid)
 
     @cached_property
     def vsize(self):
+        """Vsize."""
         return self.transaction.vsize()
 
     def get_height(self, unconfirmed_height: int) -> int:
+        """Get height."""
         if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
             return self.chain_position.confirmation_block_time.block_id.height
         if isinstance(self.chain_position, bdk.ChainPosition.UNCONFIRMED):
@@ -318,8 +376,8 @@ class TransactionDetails:
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
 
     def get_datetime(self, fallback_timestamp: float = 0) -> datetime.datetime:
+        """Get datetime."""
         if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
-
             return datetime.datetime.fromtimestamp(
                 self.chain_position.confirmation_block_time.confirmation_time
             )
@@ -333,12 +391,14 @@ class FullTxDetail:
     """For all outputs and inputs, where it has a full PythonUtxo ."""
 
     def __init__(self, tx: TransactionDetails, received=None, send=None) -> None:
-        self.outputs: Dict[str, PythonUtxo] = received if received else {}  # outpoint_str: PythonUtxo
-        self.inputs: Dict[str, Optional[PythonUtxo]] = send if send else {}  # outpoint_str: PythonUtxo
+        """Initialize instance."""
+        self.outputs: dict[str, PythonUtxo] = received if received else {}  # outpoint_str: PythonUtxo
+        self.inputs: dict[str, PythonUtxo | None] = send if send else {}  # outpoint_str: PythonUtxo
         self.tx = tx
         self.txid = tx.txid
 
-    def involved_addresses(self) -> Set[str]:
+    def involved_addresses(self) -> set[str]:
+        """Involved addresses."""
         input_addresses = [input.address for input in self.inputs.values() if input]
         output_addresses = [output.address for output in self.outputs.values() if output]
         return set(input_addresses).union(output_addresses)
@@ -346,7 +406,8 @@ class FullTxDetail:
     @classmethod
     def fill_received(
         cls, tx: TransactionDetails, get_address_of_txout: Callable[[str, int, TxOut], str | None]
-    ) -> "FullTxDetail":
+    ) -> FullTxDetail:
+        """Fill received."""
         res = FullTxDetail(tx)
 
         for vout, txout in enumerate(tx.transaction.output()):
@@ -364,8 +425,9 @@ class FullTxDetail:
 
     def fill_inputs(
         self,
-        lookup_dict_fulltxdetail: Dict[str, "FullTxDetail"],
+        lookup_dict_fulltxdetail: dict[str, FullTxDetail],
     ) -> None:
+        """Fill inputs."""
         for prev_outpoint in get_prev_outpoints(self.tx.transaction):
             prev_outpoint_str = str(prev_outpoint)
             prevout_txid = prev_outpoint.txid_str
@@ -382,14 +444,16 @@ class FullTxDetail:
             python_utxo.is_spent_by_txid = self.tx.txid
             self.inputs[prev_outpoint_str] = python_utxo
 
-    def sum_outputs(self, address_domain: List[str]) -> int:
+    def sum_outputs(self, address_domain: list[str]) -> int:
+        """Sum outputs."""
         return sum(
             python_utxo.value
             for python_utxo in self.outputs.values()
             if python_utxo and python_utxo.address in address_domain
         )
 
-    def sum_inputs(self, address_domain: List[str]) -> int:
+    def sum_inputs(self, address_domain: list[str]) -> int:
+        """Sum inputs."""
         return sum(
             python_utxo.value
             for python_utxo in self.inputs.values()
@@ -399,35 +463,46 @@ class FullTxDetail:
 
 class AddressInfoMin(SaveAllClass):
     def __init__(self, address: str, index: int, keychain: bdk.KeychainKind) -> None:
+        """Initialize instance."""
         self.address = address
         self.index = index
         self.keychain = keychain
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
         return super().from_dump_migration(dct=dct)
 
     def __repr__(self) -> str:
+        """Return representation."""
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def __key__(self) -> Tuple:
+    @cached_property
+    def __key__cached(self):
+        """Key  cached."""
         return tuple(v for k, v in sorted(self.__dict__.items()))
 
+    def __key__(self) -> tuple:
+        """Key."""
+        return self.__key__cached
+
+    @cached_property
+    def __hash__cached(self):
+        """Hash  cached."""
+        return hash(self.__key__())
+
     def __hash__(self) -> int:
-        "Necessary for the caching"
+        # Necessary for the caching
         # Attention: It has to reflect the content, not the id(self)
-        try:
-            return self._cached_hash
-        except AttributeError:
-            h = hash(self.__key__())
-            self._cached_hash: int = h
-            return h
+        """Return hash value."""
+        return self.__hash__cached
 
     @classmethod
-    def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo) -> "AddressInfoMin":
+    def from_bdk_address_info(cls, bdk_address_info: bdk.AddressInfo) -> AddressInfoMin:
+        """From bdk address info."""
         return AddressInfoMin(
             str(bdk_address_info.address),
             bdk_address_info.index,
@@ -435,13 +510,16 @@ class AddressInfoMin(SaveAllClass):
         )
 
     def is_change(self) -> bool:
+        """Is change."""
         return self.keychain == bdk.KeychainKind.INTERNAL
 
-    def address_path(self) -> Tuple[int, int]:
+    def address_path(self) -> tuple[int, int]:
+        """Address path."""
         return (bool(self.is_change()), self.index)
 
     @staticmethod
     def is_change_to_keychain(is_change: bool) -> bdk.KeychainKind:
+        """Is change to keychain."""
         if is_change:
             return bdk.KeychainKind.INTERNAL
         else:
@@ -455,7 +533,8 @@ class BlockchainType(enum.Enum):
     RPC = enum.auto()
 
     @classmethod
-    def from_text(cls, t) -> "BlockchainType":
+    def from_text(cls, t) -> BlockchainType:
+        """From text."""
         if t == "Compact Block Filters":
             return cls.CompactBlockFilter
         elif t == "Electrum Server":
@@ -469,6 +548,7 @@ class BlockchainType(enum.Enum):
 
     @classmethod
     def to_text(cls, t) -> str:
+        """To text."""
         if t == cls.CompactBlockFilter:
             return "Compact Block Filters"
         elif t == cls.Electrum:
@@ -481,7 +561,8 @@ class BlockchainType(enum.Enum):
             raise ValueError()
 
     @classmethod
-    def active_types(cls, network: bdk.Network) -> List["BlockchainType"]:
+    def active_types(cls, network: bdk.Network) -> list[BlockchainType]:
+        """Active types."""
         if network == bdk.Network.TESTNET:
             return [cls.Electrum, cls.Esplora]
         return [cls.CompactBlockFilter, cls.Electrum, cls.Esplora]
@@ -494,6 +575,7 @@ class Balance(QObject, SaveAllClass):
     }
 
     def __init__(self, immature=0, trusted_pending=0, untrusted_pending=0, confirmed=0) -> None:
+        """Initialize instance."""
         super().__init__()
         self.immature = immature
         self.trusted_pending = trusted_pending
@@ -502,6 +584,7 @@ class Balance(QObject, SaveAllClass):
 
     @classmethod
     def from_bdk(cls, balance: bdk.Balance):
+        """From bdk."""
         return cls(
             immature=balance.immature.to_sat(),
             trusted_pending=balance.trusted_pending.to_sat(),
@@ -511,18 +594,21 @@ class Balance(QObject, SaveAllClass):
 
     @property
     def total(self) -> int:
+        """Total."""
         return self.immature + self.trusted_pending + self.untrusted_pending + self.confirmed
 
     @property
     def spendable(self) -> int:
+        """Spendable."""
         return self.trusted_pending + self.confirmed
 
-    def __add__(self, other: "Balance") -> "Balance":
+    def __add__(self, other: Balance) -> Balance:
+        """Add."""
         summed = {key: self.__dict__[key] + other.__dict__[key] for key in self.__dict__.keys()}
         return self.__class__(**summed)
 
     def format_long(self, network: bdk.Network) -> str:
-
+        """Format long."""
         details = [
             f"{title}: {Satoshis(value, network=network).str_with_unit()}"
             for title, value in [
@@ -538,13 +624,14 @@ class Balance(QObject, SaveAllClass):
         return long
 
     def format_short(self, network: bdk.Network) -> str:
-
+        """Format short."""
         short = Satoshis(value=self.total, network=network).format_as_balance()
 
         return short
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
@@ -554,6 +641,7 @@ class Balance(QObject, SaveAllClass):
 def robust_address_str_from_script(
     script_pubkey: bdk.Script, network: bdk.Network, on_error_return_hex=True
 ) -> str:
+    """Robust address str from script."""
     try:
         return str(bdk.Address.from_script(script_pubkey, network))
     except Exception as e:
@@ -566,6 +654,7 @@ def robust_address_str_from_script(
 
 @lru_cache(maxsize=200_000)
 def robust_address_str_from_txout(txout: TxOut, network: bdk.Network, on_error_return_hex=True) -> str:
+    """Robust address str from txout."""
     return robust_address_str_from_script(
         script_pubkey=txout.script_pubkey, network=network, on_error_return_hex=on_error_return_hex
     )
@@ -575,6 +664,7 @@ if __name__ == "__main__":
     testdict = {}
 
     def test_hashing(v) -> None:
+        """Test hashing."""
         testdict[v] = v.__hash__()
         print(testdict[v])
 

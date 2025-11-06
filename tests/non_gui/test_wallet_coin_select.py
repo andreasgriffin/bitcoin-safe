@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 import random
@@ -49,8 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
-    """
-    Recursively compares two dictionaries (or lists), allowing for arbitrary depth.
+    """Recursively compares two dictionaries (or lists), allowing for arbitrary depth.
     If a value matches `ignore_value`, the corresponding value in the other structure
     does not affect the outcome of the comparison.
 
@@ -121,6 +121,7 @@ class TestCoinControlConfig:
     ],
 )
 def test_wallet_config(request) -> TestWalletConfig:
+    """Test wallet config."""
     return request.param
 
 
@@ -132,6 +133,7 @@ def test_wallet_config(request) -> TestWalletConfig:
     ],
 )
 def test_coin_control_config(request) -> TestCoinControlConfig:
+    """Test coin control config."""
     return request.param
 
 
@@ -144,9 +146,9 @@ def test_funded_wallet(
     test_wallet_config: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
 ) -> Wallet:
-
     # for test_seed: ensure diet bench scale future thumb holiday wild erupt cancel paper system
 
+    """Test funded wallet."""
     descriptor_str = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)#numnatkk"
 
     descriptor_info = DescriptorInfo.from_str(descriptor_str=descriptor_str)
@@ -196,6 +198,7 @@ def test_manual_coin_selection(
     test_wallet_config: TestWalletConfig,
     test_coin_control_config: TestCoinControlConfig,
 ) -> None:
+    """Test manual coin selection."""
     wallet = test_funded_wallet
 
     txinfos = TxUiInfos()
@@ -213,7 +216,8 @@ def test_manual_coin_selection(
     recpient_amounts = [15_000, 25_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
-        Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
+        Recipient(address=address, amount=amount)
+        for address, amount in zip(addresses, recpient_amounts, strict=False)
     ]
     txinfos.recipients = recipients
 
@@ -268,6 +272,7 @@ def test_manual_coin_selection_1_max(
     test_wallet_config: TestWalletConfig,
     test_coin_control_config: TestCoinControlConfig,
 ) -> None:
+    """Test manual coin selection 1 max."""
     wallet = test_funded_wallet
 
     txinfos = TxUiInfos()
@@ -348,6 +353,7 @@ def test_manual_coin_selection_2_max(
     test_wallet_config: TestWalletConfig,
     test_coin_control_config: TestCoinControlConfig,
 ) -> None:
+    """Test manual coin selection 2 max."""
     wallet = test_funded_wallet
 
     txinfos = TxUiInfos()
@@ -436,6 +442,7 @@ def test_category_coin_selection(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
@@ -456,7 +463,8 @@ def test_category_coin_selection(
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
-        Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
+        Recipient(address=address, amount=amount)
+        for address, amount in zip(addresses, recpient_amounts, strict=False)
     ]
     txinfos.recipients = recipients
 
@@ -511,6 +519,7 @@ def test_category_coin_selection_1_max(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection 1 max."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
@@ -594,6 +603,7 @@ def test_category_coin_selection_2_max(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection 2 max."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
@@ -682,6 +692,7 @@ def test_category_coin_selection_6_max(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection 6 max."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
@@ -703,14 +714,17 @@ def test_category_coin_selection_6_max(
     num_max_recipients = 6
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(num_max_recipients + 1)]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // num_max_recipients
-    recipients = [Recipient(address=addresses[0], amount=recpient_amounts[0])] + [
-        Recipient(
-            address=address,
-            checked_max_amount=True,
-            amount=estimated_max_amount_of_first_max,  # bdk cant handle multiple max amounts natively
-        )
-        for address in addresses[1:]
-    ]
+    recipients = (
+        [Recipient(address=addresses[0], amount=recpient_amounts[0])]
+        + [
+            Recipient(
+                address=address,
+                checked_max_amount=True,
+                amount=estimated_max_amount_of_first_max,  # bdk cant handle multiple max amounts natively
+            )
+            for address in addresses[1:]
+        ]
+    )
 
     txinfos.recipients = recipients
 
@@ -772,6 +786,7 @@ def test_category_coin_selection_opportunistic(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection opportunistic."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=True, python_random_seed=1)
     wallet = test_funded_wallet
 
@@ -795,7 +810,8 @@ def test_category_coin_selection_opportunistic(
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
-        Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
+        Recipient(address=address, amount=amount)
+        for address, amount in zip(addresses, recpient_amounts, strict=False)
     ]
     txinfos.recipients = recipients
 
@@ -851,6 +867,7 @@ def test_category_coin_selection_opportunistic_different_seed(
     test_funded_wallet: Wallet,
     test_wallet_config: TestWalletConfig,
 ) -> None:
+    """Test category coin selection opportunistic different seed."""
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=True, python_random_seed=42)
     wallet = test_funded_wallet
 
@@ -874,7 +891,8 @@ def test_category_coin_selection_opportunistic_different_seed(
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
-        Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
+        Recipient(address=address, amount=amount)
+        for address, amount in zip(addresses, recpient_amounts, strict=False)
     ]
     txinfos.recipients = recipients
 

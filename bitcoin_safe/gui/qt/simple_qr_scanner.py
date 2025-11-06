@@ -26,14 +26,18 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 import bdkpython as bdk
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
-from bitcoin_safe.typestubs import TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 from .util import do_copy
 
@@ -48,6 +52,7 @@ class SimpleQrScanner(BitcoinVideoWidget):
         title: str,
         label_description: str = "",
     ) -> None:
+        """Initialize instance."""
         super().__init__(network=network, close_on_result=True)
 
         self.close_all_video_widgets = close_all_video_widgets
@@ -60,12 +65,14 @@ class SimpleQrScanner(BitcoinVideoWidget):
         self.show()
 
     def _show_result(self, o: object) -> None:
+        """Show result."""
         do_copy(str(o), title=self.title)
         show_textedit_message(text=str(o), label_description=self.label_description, title=self.title)
 
     def on_raw_decoded(self, o: object) -> None:
+        """On raw decoded."""
         try:
             data = self.meta_data_handler.get_complete_data()
             self._show_result(data)
-        except:
+        except Exception:
             self._show_result(o)

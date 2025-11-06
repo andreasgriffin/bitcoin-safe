@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from pathlib import Path
@@ -46,6 +47,7 @@ logger = logging.getLogger(__name__)
 @patch("pathlib.Path.home")
 def test_path_to_rel_home_path(mock_home):
     # Mock the home directory to a fixed path
+    """Test path to rel home path."""
     mock_home.return_value = Path("/home/user")
 
     # Define a test case
@@ -53,14 +55,15 @@ def test_path_to_rel_home_path(mock_home):
     expected_rel_path = Path("documents/test.txt")
 
     # Test the path_to_rel_home_path function
-    assert (
-        Path(path_to_rel_home_path(test_abs_path)) == expected_rel_path
-    ), "Failed to convert absolute path to relative path correctly"
+    assert Path(path_to_rel_home_path(test_abs_path)) == expected_rel_path, (
+        "Failed to convert absolute path to relative path correctly"
+    )
 
 
 @patch("pathlib.Path.home")
 def test_rel_path_to_abs_path(mock_home):
     # Mock the home directory to a fixed path
+    """Test rel path to abs path."""
     mock_home.return_value = Path("/home/user")
 
     # Define a test case
@@ -68,14 +71,15 @@ def test_rel_path_to_abs_path(mock_home):
     expected_abs_path = Path("/home/user/documents/test.txt")
 
     # Test the rel_path_to_abs_path function
-    assert (
-        Path(rel_home_path_to_abs_path(test_rel_path)) == expected_abs_path
-    ), "Failed to convert relative path to absolute path correctly"
+    assert Path(rel_home_path_to_abs_path(test_rel_path)) == expected_abs_path, (
+        "Failed to convert relative path to absolute path correctly"
+    )
 
 
 @patch("pathlib.Path.home")
 def test_rel_path_to_abs_path_with_given_absolute(mock_home):
     # Mock the home directory to a fixed path
+    """Test rel path to abs path with given absolute."""
     mock_home.return_value = Path("/home/user")
 
     # Define a test case
@@ -83,14 +87,15 @@ def test_rel_path_to_abs_path_with_given_absolute(mock_home):
     expected_abs_path = Path("/home/user/documents/test.txt")
 
     # Test the rel_path_to_abs_path function
-    assert (
-        Path(rel_home_path_to_abs_path(test_rel_path)) == expected_abs_path
-    ), "Failed to convert relative path to absolute path correctly"
+    assert Path(rel_home_path_to_abs_path(test_rel_path)) == expected_abs_path, (
+        "Failed to convert relative path to absolute path correctly"
+    )
 
 
 @patch("pathlib.Path.home")
 def test_conversion_round_trip(mock_home):
     # Mock the home directory to a fixed path
+    """Test conversion round trip."""
     mock_home.return_value = Path("/home/user")
 
     # A path for round-trip conversion
@@ -104,13 +109,16 @@ def test_conversion_round_trip(mock_home):
 
 
 def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
+    """Test chained one time signal connections."""
     with caplog.at_level(logging.INFO):
-
         n = 4
         instances = [MySignalclass() for _ in range(n)]
 
         def factory(i, instance):
+            """Factory."""
+
             def f(i=i, instance=instance):
+                """F."""
                 logger.info(str(i))
                 return True
 
@@ -133,13 +141,16 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
 
 def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture):
     # repeat, but now do not return True
+    """Test chained one time signal connections prevent disconnect."""
     with caplog.at_level(logging.INFO):
-
         n = 4
         instances = [MySignalclass() for _ in range(n)]
 
         def factory(i, instance):
+            """Factory."""
+
             def f(i=i, instance=instance):
+                """F."""
                 logger.info(str(i))
                 return None
 

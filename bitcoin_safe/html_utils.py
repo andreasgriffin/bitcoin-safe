@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -33,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 def html_f(s: str, color=None, bf=False, p=False, size=None, add_html_and_body=False) -> str:
+    """Html f."""
     if bf:
         s = f"<b>{s}</b>"
 
@@ -53,4 +55,5 @@ def html_f(s: str, color=None, bf=False, p=False, size=None, add_html_and_body=F
 
 
 def link(url, text=None) -> str:
+    """Link."""
     return f"<a href='{url}'>{text if text else url}</a>"

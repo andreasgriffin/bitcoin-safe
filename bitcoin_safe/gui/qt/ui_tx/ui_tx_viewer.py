@@ -26,11 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from functools import partial
 from time import time
-from typing import Any, Dict, List, Optional, Set, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -72,7 +73,6 @@ from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.tx import short_tx_id
-from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -87,7 +87,6 @@ from ....pythonbdk_types import (
     robust_address_str_from_txout,
 )
 from ....signals import (
-    TypedPyQtSignalNo,
     UpdateFilter,
     UpdateFilterReason,
     WalletFunctions,
@@ -120,6 +119,10 @@ from ..util import (
     set_no_margins,
     sort_id_to_icon,
 )
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
 from ..utxo_list import UtxoListWithToolbar
 from .columns import BaseColumn, ColumnFee, ColumnInputs, ColumnRecipients, ColumnSankey
 
@@ -128,6 +131,7 @@ logger = logging.getLogger(__name__)
 
 class PSBTAlreadyBroadcastedBar(NotificationBar):
     def __init__(self) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -141,6 +145,7 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
         self.setVisible(False)
 
     def set(self, wallet_tx_details: TransactionDetails | None, wallet: Wallet | None, data: Data):
+        """Set."""
         if isinstance(data.data, bdk.Psbt) and wallet_tx_details and wallet:
             self.setHidden(False)
             self.icon_label.setText(
@@ -157,7 +162,8 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
                 self.icon_label.setText(
                     self.tr(
                         "This transaction {txid} was already signed and is in wallet {wallet}."
-                        "\nThe serializations of both differ, which could be caused by different collected signatures."
+                        "\nThe serializations of both differ, which could be "
+                        "caused by different collected signatures."
                     ).format(txid=short_tx_id(wallet_tx_details.txid), wallet=html_f(wallet.id, bf=True))
                 )
                 return
@@ -167,8 +173,8 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
 
 
 class UITx_Viewer(UITx_Base):
-    signal_updated_content = cast(TypedPyQtSignal[Data], pyqtSignal(Data))
-    signal_edit_tx = cast(TypedPyQtSignalNo, pyqtSignal())
+    signal_updated_content: TypedPyQtSignal[Data] = cast(Any, pyqtSignal(Data))
+    signal_edit_tx: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     def __init__(
         self,
@@ -185,6 +191,7 @@ class UITx_Viewer(UITx_Base):
         parent=None,
         focus_ui_element: UiElements = UiElements.none,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             fx=fx,
             parent=parent,
@@ -318,7 +325,7 @@ class UITx_Viewer(UITx_Base):
         self.tx_singning_steps_container_layout = QVBoxLayout(self.tx_singning_steps_container)
         set_no_margins(self.tx_singning_steps_container_layout)
         self._layout.addWidget(self.tx_singning_steps_container)
-        self.tx_singning_steps: Optional[TxSigningSteps] = None
+        self.tx_singning_steps: TxSigningSteps | None = None
 
         # # txid and block explorers
         # self.blockexplorer_group = BlockExplorerGroup(tx.txid(), layout=self.right_sidebar_layout)
@@ -412,29 +419,34 @@ class UITx_Viewer(UITx_Base):
         )
 
     def _on_lang_switch(self):
+        """On lang switch."""
         self.updateUi()
         # this must be after  updateUi because it takes the button text from other elements
         self.fill_button_group()
 
     def _on_edit_with_fee_icon(self, index: int) -> None:
+        """On edit with fee icon."""
         rate = self.mempool_manager.median_block_fee_rate(
             index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
         )
         self.edit(new_fee_rate=rate)
 
     def _on_rbf_icon(self, index: int) -> None:
+        """On rbf icon."""
         rate = self.mempool_manager.median_block_fee_rate(
             index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
         )
         self.rbf(new_fee_rate=rate)
 
     def _on_cpfp_icon(self, index: int) -> None:
+        """On cpfp icon."""
         rate = self.mempool_manager.median_block_fee_rate(
             index, decimal_precision=self.column_fee.fee_group.mempool_buttons.decimal_precision
         )
         self.cpfp(fee_rate=rate)
 
     def update_recipients_totals(self):
+        """Update recipients totals."""
         amount = self._get_total_non_change_output_amount(
             self.recipients.recipients,
         )
@@ -442,6 +454,7 @@ class UITx_Viewer(UITx_Base):
         self.column_sankey.totals.set_amount(amount)
 
     def get_total(self) -> int | None:
+        """Get total."""
         fee_info = self.fee_info if self.fee_info else self._fetch_cached_feeinfo(self.txid())
         fee_amount = None
 
@@ -458,17 +471,19 @@ class UITx_Viewer(UITx_Base):
         return None
 
     def update_sending_source_totals(self):
-
+        """Update sending source totals."""
         total = self.get_total()
         self.column_inputs.totals.set_amount(total)
         self.column_sankey.totals.set_amount(total, alignment=Qt.Edge.LeftEdge)
 
     def update_all_totals(self):
+        """Update all totals."""
         self.update_sending_source_totals()
         self.update_recipients_totals()
         self.column_fee.updateUi()
 
     def fill_button_group(self):
+        """Fill button group."""
         self.header_button_group.clear()
         if not IS_PRODUCTION and not DEMO_MODE:
             button = QPushButton()
@@ -491,6 +506,7 @@ class UITx_Viewer(UITx_Base):
             button.clicked.connect(partial(self.focus_tab, widget))
 
     def focus_tab(self, focus_widget: BaseColumn):
+        """Focus tab."""
         for i in range(self.splitter.count()):
             widget = self.splitter.widget(i)
             if not isinstance(widget, BaseColumn):
@@ -509,8 +525,9 @@ class UITx_Viewer(UITx_Base):
             self.update_all_totals()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         super().updateUi()
-        edits: List[Tuple[ButtonInfoType, QPushButton]] = [
+        edits: list[tuple[ButtonInfoType, QPushButton]] = [
             (ButtonInfoType.edit, self.button_edit_tx),
             (ButtonInfoType.cpfp, self.button_cpfp_tx),
             (ButtonInfoType.rbf, self.button_rbf),
@@ -539,9 +556,11 @@ class UITx_Viewer(UITx_Base):
         self.update_all_totals()
 
     def save_local_tx(self):
+        """Save local tx."""
         self.signals.apply_txs_to_wallets.emit([self.extract_tx()])
 
     def extract_tx(self) -> bdk.Transaction:
+        """Extract tx."""
         if self.data.data_type == DataType.Tx:
             if not isinstance(self.data.data, bdk.Transaction):
                 raise Exception(f"{self.data.data} is not of type bdk.Transaction")
@@ -553,6 +572,7 @@ class UITx_Viewer(UITx_Base):
         raise Exception(f"invalid data type {self.data.data}")
 
     def _step_allows_forward(self, index: int) -> bool:
+        """Step allows forward."""
         if not self.tx_singning_steps:
             return False
         if index == self.tx_singning_steps.count() - 1:
@@ -560,6 +580,7 @@ class UITx_Viewer(UITx_Base):
         return index in self.tx_singning_steps.sub_indices
 
     def _step_allows_backward(self, index: int) -> bool:
+        """Step allows backward."""
         if not self.tx_singning_steps:
             return False
         if index == 0:
@@ -567,6 +588,7 @@ class UITx_Viewer(UITx_Base):
         return index - 1 in self.tx_singning_steps.sub_indices
 
     def set_next_prev_button_enabledness(self):
+        """Set next prev button enabledness."""
         if not self.tx_singning_steps:
             return
         next_enabled = self._step_allows_forward(self.tx_singning_steps.current_index())
@@ -577,6 +599,7 @@ class UITx_Viewer(UITx_Base):
         self.button_previous.setHidden(not next_enabled and not prev_enabled)
 
     def go_to_next_index(self) -> None:
+        """Go to next index."""
         if not self.tx_singning_steps:
             return
         self.tx_singning_steps.go_to_next_index()
@@ -584,6 +607,7 @@ class UITx_Viewer(UITx_Base):
         self.set_next_prev_button_enabledness()
 
     def go_to_previous_index(self) -> None:
+        """Go to previous index."""
         if not self.tx_singning_steps:
             return
         self.tx_singning_steps.go_to_previous_index()
@@ -593,6 +617,7 @@ class UITx_Viewer(UITx_Base):
     def cpfp(
         self, fee_rate: float | None = None, target_total_unconfirmed_fee_rate: float | None = None
     ) -> None:
+        """Cpfp."""
         tx = self.extract_tx()
         tx_details, wallet = get_tx_details(
             txid=str(tx.compute_txid()), wallet_functions=self.wallet_functions
@@ -608,6 +633,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def _infos_for_edit_or_rbf(self, new_fee_rate: float | None = None):
+        """Infos for edit or rbf."""
         tx = self.extract_tx()
         wallets = get_wallets(self.wallet_functions)
         txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
@@ -622,6 +648,7 @@ class UITx_Viewer(UITx_Base):
         return txid, wallet, tx_details, txinfos
 
     def edit(self, new_fee_rate: float | None = None) -> None:
+        """Edit."""
         txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
 
         if not wallet:
@@ -646,6 +673,7 @@ class UITx_Viewer(UITx_Base):
             )
 
     def rbf(self, new_fee_rate: float | None = None) -> None:
+        """Rbf."""
         txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
 
         if not wallet and txinfos.main_wallet_id:
@@ -674,6 +702,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def showEvent(self, a0: QShowEvent | None) -> None:
+        """ShowEvent."""
         super().showEvent(a0)
         if a0 and a0.isAccepted() and self._pending_update:
             self._forced_update = True
@@ -694,7 +723,9 @@ class UITx_Viewer(UITx_Base):
         return defer
 
     def reload(self, update_filter: UpdateFilter) -> None:
-        # update the tab icons no matter what, since the chain_height can advance, needing a change in the icon
+        # update the tab icons no matter what, since the chain_height can advance,
+        # needing a change in the icon
+        """Reload."""
         self.set_tab_properties(chain_position=self.chain_position)
 
         if self.maybe_defer_update():
@@ -728,9 +759,9 @@ class UITx_Viewer(UITx_Base):
                 result = self.data.data.finalize()
                 finalized_tx = result.psbt.extract_tx() if result.could_finalize else None
                 if finalized_tx:
-                    assert (
-                        finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid()
-                    ), "error. The txid should not be changed during finalizing/reloading"
+                    assert finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid(), (
+                        "error. The txid should not be changed during finalizing/reloading"
+                    )
                     self.set_tx(
                         finalized_tx,
                         fee_info=self.fee_info,
@@ -746,6 +777,7 @@ class UITx_Viewer(UITx_Base):
             )
 
     def set_tab_properties(self, chain_position: bdk.ChainPosition | None):
+        """Set tab properties."""
         title = ""
         icon_text = ""
         txid = self.txid()
@@ -764,14 +796,17 @@ class UITx_Viewer(UITx_Base):
             self.signals.signal_set_tab_properties.emit(self, title, icon_text, tooltip)
 
     def txid(self) -> str:
+        """Txid."""
         return str(self.extract_tx().compute_txid())
 
     def _get_height(self) -> int | None:
+        """Get height."""
         for wallet in get_wallets(self.wallet_functions):
             return wallet.get_height()
         return None
 
     def _broadcast(self, tx: bdk.Transaction) -> bool:
+        """Broadcast."""
         if self.client:
             try:
                 self.client.broadcast(tx)
@@ -789,8 +824,7 @@ class UITx_Viewer(UITx_Base):
         else:
             Message(
                 self.tr(
-                    "Please open a wallet first to broadcast the transaction."
-                    "\nOr you can broadcast via {url}"
+                    "Please open a wallet first to broadcast the transaction.\nOr you can broadcast via {url}"
                 ).format(url="https://blockstream.info/tx/push"),
                 type=MessageType.Error,
             )
@@ -798,16 +832,18 @@ class UITx_Viewer(UITx_Base):
         return False
 
     def _set_blockchain(self):
+        """Set blockchain."""
         for wallet in get_wallets(self.wallet_functions):
             if wallet.client:
                 self.client = wallet.client
                 logger.error(f"Using {self.client} from wallet {wallet.id}")
 
     def broadcast(self) -> None:
+        """Broadcast."""
         if not self.data.data_type == DataType.Tx:
             return
         if not isinstance(self.data.data, bdk.Transaction):
-            logger.error(f"data is not of type bdk.Transaction and cannot be broadcastet")
+            logger.error("data is not of type bdk.Transaction and cannot be broadcastet")
             return
         tx = self.data.data
 
@@ -820,14 +856,17 @@ class UITx_Viewer(UITx_Base):
             logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
-        def get_keystore(fingerprint: str, keystores: List[KeyStore]) -> Optional[KeyStore]:
+        """Enrich simple psbt with wallet data."""
+
+        def get_keystore(fingerprint: str, keystores: list[KeyStore]) -> KeyStore | None:
+            """Get keystore."""
             for keystore in keystores:
                 if keystore.fingerprint == fingerprint:
                     return keystore
             return None
 
         # collect all wallets that have input utxos
-        inputs: List[bdk.TxIn] = self.extract_tx().input()
+        inputs: list[bdk.TxIn] = self.extract_tx().input()
 
         outpoint_dict = {
             outpoint_str: (python_utxo, wallet)
@@ -836,7 +875,7 @@ class UITx_Viewer(UITx_Base):
         }
 
         # fill fingerprints, if not available
-        for this_input, simple_input in zip(inputs, simple_psbt.inputs):
+        for this_input, simple_input in zip(inputs, simple_psbt.inputs, strict=False):
             outpoint_str = str(this_input.previous_output)
             if outpoint_str not in outpoint_dict:
                 continue
@@ -860,37 +899,42 @@ class UITx_Viewer(UITx_Base):
 
         return simple_psbt
 
-    def get_wallet_inputs(self, simple_psbt: SimplePSBT) -> Dict[str, List[SimpleInput]]:
-        "structures the inputs into categories, usually wallet_ids, such that all the inputs are sure to belong to 1 wallet"
-        wallet_inputs: Dict[str, List[SimpleInput]] = {}
-        for i, inp in enumerate(simple_psbt.inputs):
-
-            if inp.wallet_id and inp.m_of_n:
-                id = inp.wallet_id
-            elif inp.pubkeys:
+    def get_wallet_inputs(self, simple_psbt: SimplePSBT) -> dict[str, list[SimpleInput]]:
+        """structures the inputs into categories, usually wallet_ids,
+        such that all the inputs are sure to belong to 1 wallet"""
+        wallet_inputs: dict[str, list[SimpleInput]] = {}
+        for i, _input in enumerate(simple_psbt.inputs):
+            if _input.wallet_id and _input.m_of_n:
+                id = _input.wallet_id
+            elif _input.pubkeys:
                 id = ", ".join(
-                    sorted([(pubkey.fingerprint or pubkey.pubkey or pubkey.label) for pubkey in inp.pubkeys])
+                    sorted(
+                        [(pubkey.fingerprint or pubkey.pubkey or pubkey.label) for pubkey in _input.pubkeys]
+                    )
                 )
             else:
                 id = f"Input {i}"
 
-            l = wallet_inputs.setdefault(id, [])
-            l.append(inp)
+            inputs = wallet_inputs.setdefault(id, [])
+            inputs.append(_input)
 
         return wallet_inputs
 
-    def get_combined_signature_importers(self, psbt: bdk.Psbt) -> Dict[str, List[AbstractSignatureImporter]]:
-        signature_importers: Dict[str, List[AbstractSignatureImporter]] = {}
+    def get_combined_signature_importers(self, psbt: bdk.Psbt) -> dict[str, list[AbstractSignatureImporter]]:
+        """Get combined signature importers."""
+        signature_importers: dict[str, list[AbstractSignatureImporter]] = {}
 
-        def get_signing_fingerprints_of_wallet(wallet: Wallet) -> Set[str]:
+        def get_signing_fingerprints_of_wallet(wallet: Wallet) -> set[str]:
             # check which keys the wallet can sign
 
+            """Get signing fingerprints of wallet."""
             wallet_signing_fingerprints = set(
                 [keystore.fingerprint for keystore in wallet.keystores if keystore.mnemonic]
             )
             return wallet_signing_fingerprints
 
-        def get_wallets_with_seed(fingerprints: List[str]) -> List[Wallet]:
+        def get_wallets_with_seed(fingerprints: list[str]) -> list[Wallet]:
+            """Get wallets with seed."""
             result = []
             for wallet in wallets:
                 signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(wallet)
@@ -899,10 +943,11 @@ class UITx_Viewer(UITx_Base):
                         result.append(wallet)
             return result
 
-        def get_pubkey_dict(pubkeys_of_inp: List[List[PubKeyInfo]]) -> Dict[str, PubKeyInfo]:
+        def get_pubkey_dict(pubkeys_of_inp: list[list[PubKeyInfo]]) -> dict[str, PubKeyInfo]:
+            """Get pubkey dict."""
             pubkeys = {}
-            for l in pubkeys_of_inp:
-                for _pubkey in l:
+            for _pubkeys in pubkeys_of_inp:
+                for _pubkey in _pubkeys:
                     if _pubkey.fingerprint not in pubkeys:
                         pubkeys[_pubkey.fingerprint] = _pubkey
             return pubkeys
@@ -912,7 +957,7 @@ class UITx_Viewer(UITx_Base):
 
         wallet_inputs = self.get_wallet_inputs(simple_psbt)
 
-        wallets: List[Wallet] = get_wallets(self.wallet_functions)
+        wallets: list[Wallet] = get_wallets(self.wallet_functions)
 
         for wallet_id, inputs in wallet_inputs.items():
             if not inputs:
@@ -926,7 +971,7 @@ class UITx_Viewer(UITx_Base):
 
             # only add a maximum of m *(all_signature_importers) for each wallet
             for i in range(m):
-                l = signature_importers.setdefault(f"{wallet_id}.{i}", [])
+                signer_list = signature_importers.setdefault(f"{wallet_id}.{i}", [])
                 if pubkeys_with_signature:
                     fingerprint, pubkey_info = pubkeys_with_signature.popitem()
 
@@ -939,7 +984,7 @@ class UITx_Viewer(UITx_Base):
                         ):
                             signatures[simple_psbt.inputs.index(inp)] = sig
 
-                    l.append(
+                    signer_list.append(
                         SignatureImporterFile(
                             self.network,
                             signature_available=True,
@@ -957,7 +1002,7 @@ class UITx_Viewer(UITx_Base):
                 ):
                     if DEMO_MODE:
                         break
-                    l.append(
+                    signer_list.append(
                         SignatureImporterWallet(
                             wallet_with_seed,
                             self.network,
@@ -974,7 +1019,7 @@ class UITx_Viewer(UITx_Base):
                     SignatureImporterClipboard,
                     SignatureImporterUSB,
                 ]:
-                    l.append(
+                    signer_list.append(
                         cls(
                             self.network,
                             signature_available=False,
@@ -989,11 +1034,12 @@ class UITx_Viewer(UITx_Base):
                 importer.signal_final_tx_received.connect(self.tx_received)
         return signature_importers
 
-    def update_tx_progress(self) -> Optional[TxSigningSteps]:
+    def update_tx_progress(self) -> TxSigningSteps | None:
+        """Update tx progress."""
         if self.data.data_type != DataType.PSBT:
             return None
         if not isinstance(self.data.data, bdk.Psbt):
-            logger.error(f"data is not of type bdk.Psbt")
+            logger.error("data is not of type bdk.Psbt")
             return None
 
         # this approach to clearning the layout
@@ -1015,10 +1061,11 @@ class UITx_Viewer(UITx_Base):
         return tx_singning_steps
 
     def tx_received(self, tx: bdk.Transaction) -> None:
+        """Tx received."""
         if self.data.data_type != DataType.PSBT:
             return
         if not isinstance(self.data.data, bdk.Psbt):
-            logger.error(f"data is not of type bdk.Psbt")
+            logger.error("data is not of type bdk.Psbt")
             return
 
         if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():
@@ -1032,6 +1079,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def _get_any_signature_importer(self) -> AbstractSignatureImporter | None:
+        """Get any signature importer."""
         if not self.tx_singning_steps:
             return None
         for signature_importers in self.tx_singning_steps.signature_importer_dict.values():
@@ -1040,6 +1088,7 @@ class UITx_Viewer(UITx_Base):
         return None
 
     def import_untrusted_psbt(self, import_psbt: bdk.Psbt) -> None:
+        """Import untrusted psbt."""
         if isinstance(self.data.data, bdk.Psbt) and (
             signature_importer := self._get_any_signature_importer()
         ):
@@ -1048,12 +1097,14 @@ class UITx_Viewer(UITx_Base):
             )
         elif isinstance(self.data.data, bdk.Transaction):
             logger.info(
-                f"Will not open the tx if the transaction, since we cannot verify if all signatures are present"
+                "Will not open the tx if the transaction, "
+                "since we cannot verify if all signatures are present"
             )
         else:
             logger.warning("Cannot update the psbt. Unclear if more signatures were added")
 
     def import_trusted_psbt(self, import_psbt: bdk.Psbt) -> None:
+        """Import trusted psbt."""
         simple_psbt = SimplePSBT.from_psbt(import_psbt)
 
         tx = import_psbt.extract_tx()
@@ -1066,6 +1117,7 @@ class UITx_Viewer(UITx_Base):
             self.set_psbt(import_psbt)
 
     def is_in_mempool(self, txid: str) -> bool:
+        """Is in mempool."""
         wallets = get_wallets(self.wallet_functions)
         for wallet in wallets:
             if wallet.is_in_mempool(txid):
@@ -1074,10 +1126,11 @@ class UITx_Viewer(UITx_Base):
 
     def _set_warning_bars(
         self,
-        outpoints: List[OutPoint],
-        recipient_addresses: List[str],
+        outpoints: list[OutPoint],
+        recipient_addresses: list[str],
         tx_status: TxStatus,
     ):
+        """Set warning bars."""
         super()._set_warning_bars(
             outpoints=outpoints, recipient_addresses=recipient_addresses, tx_status=tx_status
         )
@@ -1090,6 +1143,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def update_high_fee_warning_label(self, confirmation_status: TxConfirmationStatus):
+        """Update high fee warning label."""
         if confirmation_status != TxConfirmationStatus.LOCAL:
             self.high_fee_warning_label.setVisible(False)
             return
@@ -1100,13 +1154,13 @@ class UITx_Viewer(UITx_Base):
             tx_status=self.column_fee.fee_group.mempool_buttons.tx_status,
         )
 
-    def set_poisoning_warning_bar(self, outpoints: List[OutPoint], recipient_addresses: List[str]):
+    def set_poisoning_warning_bar(self, outpoints: list[OutPoint], recipient_addresses: list[str]):
         # warn if multiple categories are combined
-        wallets: List[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
+        """Set poisoning warning bar."""
+        wallets: list[Wallet] = list(self.wallet_functions.get_wallets.emit().values())
 
         all_addresses = set(recipient_addresses)
         for wallet in wallets:
-
             addresses = [wallet.get_address_of_outpoint(outpoint) for outpoint in outpoints]
             for address in addresses:
                 if not address:
@@ -1114,20 +1168,24 @@ class UITx_Viewer(UITx_Base):
                 all_addresses.add(address)
 
         async def do() -> Any:
+            """Do."""
             start_time = time()
             poisonous_matches = AddressComparer.poisonous(all_addresses)
             logger.debug(
-                f"AddressComparer.poisonous {len(poisonous_matches)} results in { time()-start_time}s"
+                f"AddressComparer.poisonous {len(poisonous_matches)} results in {time() - start_time}s"
             )
             return poisonous_matches
 
         def on_done(poisonous_matches) -> None:
+            """On done."""
             logger.debug(f"finished AddressComparer, found {len(poisonous_matches)=}")
 
         def on_success(poisonous_matches) -> None:
+            """On success."""
             self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
 
         def on_error(packed_error_info) -> None:
+            """On error."""
             logger.error(f"AddressComparer error {packed_error_info}")
 
         self.loop_in_thread.run_task(
@@ -1139,7 +1197,7 @@ class UITx_Viewer(UITx_Base):
             multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
         )
 
-    def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> Optional[FeeInfo]:
+    def calc_finalized_tx_fee_info(self, tx: bdk.Transaction, tx_has_final_size: bool) -> FeeInfo | None:
         "This only should be done for tx, not psbt, since the PSBT.extract_tx size is too low"
         wallets = get_wallets(self.wallet_functions)
         # try via tx details
@@ -1154,7 +1212,7 @@ class UITx_Viewer(UITx_Base):
                 )
 
         #  try via utxos
-        pythonutxo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
+        pythonutxo_dict: dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
         for wallet_ in wallets:
             pythonutxo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
 
@@ -1178,6 +1236,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def get_chain_position(self, txid: str) -> bdk.ChainPosition | None:
+        """Get chain position."""
         for wallet in get_wallets(self.wallet_functions):
             tx_details = wallet.get_tx(txid)
             if tx_details:
@@ -1190,6 +1249,7 @@ class UITx_Viewer(UITx_Base):
         fee_info: FeeInfo | None = None,
         chain_position: bdk.ChainPosition | None = None,
     ) -> None:
+        """Set tx."""
         self.data = Data.from_tx(tx, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
         if fee_info is None or fee_info.any_is_estimated():
@@ -1251,7 +1311,8 @@ class UITx_Viewer(UITx_Base):
         self.signal_updated_content.emit(self.data)
 
     def _get_python_txos(self):
-        txo_dict: Dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
+        """Get python txos."""
+        txo_dict: dict[str, PythonUtxo] = {}  # outpoint_str:PythonUTXO
         for wallet_ in get_wallets(self.wallet_functions):
             txo_dict.update(wallet_.get_all_txos_dict(include_not_mine=True))
         return txo_dict
@@ -1260,10 +1321,12 @@ class UITx_Viewer(UITx_Base):
         self,
         tx: bdk.Transaction,
         fee_info: FeeInfo | None = None,
-        txo_dict: Dict[str, PythonUtxo] | None = None,
+        txo_dict: dict[str, PythonUtxo] | None = None,
     ):
+        """Set sankey."""
 
         async def do() -> bool:
+            """Do."""
             try:
                 return self.column_sankey.sankey_bitcoin.set_tx(tx, fee_info=fee_info, txo_dict=txo_dict)
             except Exception as e:
@@ -1271,14 +1334,17 @@ class UITx_Viewer(UITx_Base):
             return False
 
         def on_done(success) -> None:
+            """On done."""
             pass
 
         def on_success(success) -> None:
+            """On success."""
             self.fill_button_group()
             if not success:
                 self.set_tab_focus(UiElements.default)
 
         def on_error(packed_error_info) -> None:
+            """On error."""
             logger.warning(str(packed_error_info))
 
         self.loop_in_thread.run_task(
@@ -1291,6 +1357,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def set_tab_focus(self, focus_ui_element: UiElements):
+        """Set tab focus."""
         self.focus_ui_element = focus_ui_element
         if self.focus_ui_element == UiElements.default:
             self.focus_tab(self.column_recipients)
@@ -1300,6 +1367,7 @@ class UITx_Viewer(UITx_Base):
         self.focus_ui_element = UiElements.none
 
     def get_tx_status(self, chain_position: bdk.ChainPosition | None) -> TxStatus:
+        """Get tx status."""
         tx = self.extract_tx()
         return TxStatus(
             tx=tx,
@@ -1313,6 +1381,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def set_visibility(self, chain_position: bdk.ChainPosition | None) -> None:
+        """Set visibility."""
         is_psbt = self.data.data_type == DataType.PSBT
         self.export_data_simple.setVisible(not is_psbt)
         self.tx_singning_steps_container.setVisible(is_psbt)
@@ -1339,6 +1408,7 @@ class UITx_Viewer(UITx_Base):
         self.set_next_prev_button_enabledness()
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
+        """Fetch cached feeinfo."""
         if isinstance(self.data.data, bdk.Psbt) and self.data.data.extract_tx().compute_txid() == txid:
             return self.fee_info
         elif isinstance(self.data.data, bdk.Transaction) and self.data.data.compute_txid() == txid:
@@ -1369,7 +1439,9 @@ class UITx_Viewer(UITx_Base):
         self.fee_info = fee_info
 
         self.column_fee.fee_group.set_fee_infos(
-            fee_info=fee_info, tx_status=tx_status, can_rbf_safely=False  # Since RBF doesnt apply for PSBT
+            fee_info=fee_info,
+            tx_status=tx_status,
+            can_rbf_safely=False,  # Since RBF doesnt apply for PSBT
         )
 
         outputs = [TxOut.from_bdk(txout) for txout in tx.output()]
@@ -1407,12 +1479,14 @@ class UITx_Viewer(UITx_Base):
         self.signal_updated_content.emit(self.data)
 
     def set_psbt_already_broadcasted_bar(self):
+        """Set psbt already broadcasted bar."""
         tx, wallet = get_tx_details(self.txid(), wallet_functions=self.wallet_functions)
         self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
 
     def handle_cpfp(
         self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None
     ) -> None:
+        """Handle cpfp."""
         parent_txids = set(str(txin.previous_output.txid) for txin in tx.input())
         self.set_fee_group_cpfp_label(
             parent_txids=parent_txids,
@@ -1422,6 +1496,7 @@ class UITx_Viewer(UITx_Base):
         )
 
     def close(self):
+        """Close."""
         self.column_sankey.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

@@ -32,9 +32,10 @@ import datetime
 import logging
 import time
 import xml.etree.ElementTree as ET
-from typing import Dict, Iterable, Optional
+from collections.abc import Iterable
 
 import bdkpython as bdk
+from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
@@ -78,12 +79,16 @@ class WalletGraphClient(PluginClient):
         network: bdk.Network,
         enabled: bool = False,
     ) -> None:
+        """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("wallet-graph-icon.svg"))
         self.signals = signals
         self.network = network
         self.server: WalletGraphServer | None = None
         self.wallet_id: str | None = None
         self._wallet_signal_connected = False
+
+        self._forced_update = False
+        self._pending_update = False
 
         self.graph_view = WalletGraphView(network=network)
 
@@ -98,7 +103,8 @@ class WalletGraphClient(PluginClient):
         self.instructions_label = QLabel(
             translate(
                 "WalletGraphClient",
-                "Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.",
+                "Drag to explore the timeline. Click or right-click a "
+                "transaction, txid, or UTXO for options.",
             )
         )
         self.instructions_label.setWordWrap(True)
@@ -117,9 +123,11 @@ class WalletGraphClient(PluginClient):
         self.updateUi()
 
     def get_widget(self) -> QWidget:
+        """Get widget."""
         return self
 
     def save_connection_details(self, server: WalletGraphServer) -> None:
+        """Save connection details."""
         self.server = server
         self.wallet_id = server.wallet_id
         server.set_enabled(self.enabled)
@@ -127,6 +135,7 @@ class WalletGraphClient(PluginClient):
             self.refresh_graph()
 
     def load(self) -> None:
+        """Load."""
         if self.server:
             self.server.set_enabled(True)
         self._connect_wallet_signal()
@@ -134,6 +143,7 @@ class WalletGraphClient(PluginClient):
         logger.debug("WalletGraphClient loaded")
 
     def unload(self) -> None:
+        """Unload."""
         self._disconnect_wallet_signal()
         if self.server:
             self.server.set_enabled(False)
@@ -142,14 +152,36 @@ class WalletGraphClient(PluginClient):
         logger.debug("WalletGraphClient unloaded")
 
     def on_set_enabled(self, value: bool) -> None:
+        """On set enabled."""
         super().on_set_enabled(value)
         self.refresh_button.setEnabled(value)
         if self.server:
             self.server.set_enabled(value)
 
+    def maybe_defer_update(self) -> bool:
+        """Returns whether we should defer an update/refresh."""
+        defer = not self._forced_update and (not self.isVisible())
+        # side-effect: if we decide to defer update, the state will become stale:
+        self._pending_update = defer
+        return defer
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        """ShowEvent."""
+        super().showEvent(a0)
+        if a0 and a0.isAccepted() and self._pending_update:
+            self._forced_update = True
+            self.refresh_graph()
+            self._forced_update = False
+
     def refresh_graph(self) -> None:
+        """Refresh graph."""
+
         if not self.enabled or not self.server:
             return
+
+        if self.maybe_defer_update():
+            return
+
         wallet = self.server.get_wallet()
         if not wallet:
             self.graph_view.clear()
@@ -173,15 +205,18 @@ class WalletGraphClient(PluginClient):
         self.export_button.setEnabled(bool(full_tx_details))
 
     def _on_transaction_clicked(self, txid: str) -> None:
+        """On transaction clicked."""
         self.signals.open_tx_like.emit(PackagedTxLike(tx_like=txid, focus_ui_elements=UiElements.diagram))
 
     def _connect_wallet_signal(self) -> None:
+        """Connect wallet signal."""
         if not self.server or self._wallet_signal_connected or not self.wallet_id:
             return
         self.server.wallet_signals.updated.connect(self.on_wallet_updated)
         self._wallet_signal_connected = True
 
     def _disconnect_wallet_signal(self) -> None:
+        """Disconnect wallet signal."""
         if not self.server or not self._wallet_signal_connected or not self.wallet_id:
             return
         try:
@@ -191,12 +226,16 @@ class WalletGraphClient(PluginClient):
         self._wallet_signal_connected = False
 
     def on_wallet_updated(self, update_filter: UpdateFilter) -> None:
+        """On wallet updated."""
         if not self.enabled:
             return
         logger.debug("WalletGraphClient refreshing after wallet update %s", update_filter)
+        if self.graph_view.is_drawing:
+            return
         self.refresh_graph()
 
     def on_export_graph(self) -> None:
+        """On export graph."""
         if not self.server or not self.graph_view.current_details or not self.graph_view.current_wallet:
             return
         file_path, _ = QFileDialog.getSaveFileName(
@@ -228,6 +267,7 @@ class WalletGraphClient(PluginClient):
 
     def _build_graphml(self, details: Iterable[FullTxDetail]) -> bytes:
         # Ensure the default GraphML namespace is registered (avoids ns0 prefixes)
+        """Build graphml."""
         ET.register_namespace("", "http://graphml.graphdrawing.org/xmlns")
         root = ET.Element("graphml")
 
@@ -258,11 +298,12 @@ class WalletGraphClient(PluginClient):
 
         graph = ET.SubElement(root, "graph", id="G", edgedefault="directed")
 
-        utxo_nodes: Dict[str, PythonUtxo] = {}
+        utxo_nodes: dict[str, PythonUtxo] = {}
         edge_counter = 0
 
         def _utxo_id(utxo: PythonUtxo) -> str:
             # Single source of truth for UTXO node ids
+            """Utxo id."""
             return str(utxo.outpoint)
 
         fallback_base = time.time()
@@ -288,7 +329,7 @@ class WalletGraphClient(PluginClient):
 
             tx_label = ""
             categories = []
-            metadata_ref: Optional[str] = None
+            metadata_ref: str | None = None
             if wallet:
                 metadata_ref = detail.txid
                 tx_label = wallet.get_label_for_txid(detail.txid) or ""
@@ -357,6 +398,7 @@ class WalletGraphClient(PluginClient):
         return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
     def _create_utxo_node(self, graph: ET.Element, utxo: PythonUtxo) -> None:
+        """Create utxo node."""
         if not self.server:
             return
         node_id = str(utxo.outpoint)
@@ -376,7 +418,7 @@ class WalletGraphClient(PluginClient):
         self._set_data(node, "d7", "true" if is_mine else "false")
 
         utxo_label = ""
-        metadata_ref: Optional[str] = None
+        metadata_ref: str | None = None
         if wallet:
             metadata_ref = utxo.address
             utxo_label = wallet.get_label_for_address(utxo.address) or ""
@@ -384,7 +426,8 @@ class WalletGraphClient(PluginClient):
         self._apply_wallet_label_metadata(node, metadata_ref, wallet_label=utxo_label)
 
     @staticmethod
-    def _set_data(node: ET.Element, key: str, value: Optional[str | bool | int | float]) -> None:
+    def _set_data(node: ET.Element, key: str, value: str | bool | int | float | None) -> None:
+        """Set data."""
         data_element = ET.SubElement(node, "data", key=key)
         if isinstance(value, bool):
             data_element.text = "true" if value else "false"
@@ -394,7 +437,8 @@ class WalletGraphClient(PluginClient):
             data_element.text = str(value)
 
     @staticmethod
-    def _format_timestamp(timestamp: Optional[float]) -> Optional[str]:
+    def _format_timestamp(timestamp: float | None) -> str | None:
+        """Format timestamp."""
         if timestamp is None:
             return None
         dt = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
@@ -406,11 +450,12 @@ class WalletGraphClient(PluginClient):
     def _apply_wallet_label_metadata(
         self,
         node: ET.Element,
-        ref: Optional[str],
+        ref: str | None,
         *,
         wallet_label: str = "",
         categories: Iterable[str] | None = None,
     ) -> None:
+        """Apply wallet label metadata."""
         wallet_label_value = wallet_label or ""
         categories_value = ""
         if categories:
@@ -422,7 +467,7 @@ class WalletGraphClient(PluginClient):
         category_value = ""
         timestamp_iso = ""
         origin_value = ""
-        spendable_value: Optional[bool] | str = ""
+        spendable_value: bool | None | str = ""
 
         labels = wallet.labels if wallet else None
         if ref and labels:
@@ -454,7 +499,8 @@ class WalletGraphClient(PluginClient):
         self._set_data(node, "d14", wallet_name_value)
 
     @staticmethod
-    def _get_wallet_name(wallet: Optional[object]) -> str:
+    def _get_wallet_name(wallet: object | None) -> str:
+        """Get wallet name."""
         if not wallet:
             return ""
 
@@ -465,6 +511,7 @@ class WalletGraphClient(PluginClient):
         return ""
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.export_button.setText(self.tr("Export graph…"))
         self.refresh_button.setText(self.tr("Refresh"))
         if ENABLE_WALLET_GRAPH_TOOLTIPS:

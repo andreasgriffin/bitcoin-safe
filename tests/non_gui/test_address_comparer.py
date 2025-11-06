@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import random
 import time
@@ -34,11 +35,13 @@ from bitcoin_safe.address_comparer import AddressComparer
 
 
 def test_identical_addresses():
+    """Test identical addresses."""
     addr = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     assert not AddressComparer.poisonous({addr, addr})
 
 
 def test_similar_poisonous_base58():
+    """Test similar poisonous base58."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     # Slight difference at the end.
     addr2 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNb"
@@ -51,6 +54,7 @@ def test_similar_poisonous_base58():
 
 
 def test_different_addresses():
+    """Test different addresses."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "1A1atSLRHtKNngkdXEeobR76b53LETtpNa"  # Only 2 matching characters  (can be coincidence)
     assert not AddressComparer.poisonous({addr1, addr2})
@@ -58,6 +62,7 @@ def test_different_addresses():
 
 def test_similar_poisonous_bech32():
     # Two bech32 addresses that differ only slightly.
+    """Test similar poisonous bech32."""
     addr1 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080"
     addr2 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt081"
 
@@ -79,6 +84,7 @@ def test_similar_poisonous_bech32():
 def test_base58_vs_bech32():
     # Compare a base58 address with a bech32 address.
     # Since the strings are very different, the similarity score should be low.
+    """Test base58 vs bech32."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080"
     assert not AddressComparer.poisonous({addr1, addr2})
@@ -86,6 +92,7 @@ def test_base58_vs_bech32():
 
 def test_poisonous_bech32():
     # source https://github.com/jlopp/bitcoin-utils/tree/master/addressPoisonAttacks?ref=blog.lopp.net
+    """Test poisonous bech32."""
     poision_tuples = [
         ("bc1qr9wuw4zkjflet80lr9cr5ec8620c4fg52wua0h", "bc1qr9xkxanfstzqpfd5ce0t3evwc45pnmsr2wua0h"),
         ("18V7xnpitbSwpiQ5RbxhCbnLvxwvNM8BeU", "18VUR5V2cpU7NF8ZaVe8eP1h9nwMhB8BeU"),
@@ -96,7 +103,6 @@ def test_poisonous_bech32():
 
     combined_set = set()
     for addr1, addr2 in poision_tuples:
-
         assert AddressComparer.poisonous({addr1, addr2})
         combined_set.add(addr1)
         combined_set.add(addr2)
@@ -106,12 +112,14 @@ def test_poisonous_bech32():
 
 
 def test_non_poisonous_bech32():
+    """Test non poisonous bech32."""
     random.seed(22)
     # Allowed characters for base58 (excluding 0, O, I, and l)
     base58_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
     # Helper to generate a fake base58 address of length 34 (first char is "1" for mainnet p2pkh)
     def generate_address():
+        """Generate address."""
         return "1" + "".join(random.choices(base58_chars, k=33))
 
     # Generate addresses  (increasing this a little more WILL generate fals positives)
@@ -130,10 +138,8 @@ def test_non_poisonous_bech32():
 
 
 def test_compare_all_similar():
-    """
-    For two very similar base58 addresses, check that compare_all returns a similarity that is
-    nearly equal to the result of compare_address_info.
-    """
+    """For two very similar base58 addresses, check that compare_all returns a
+    similarity that is nearly equal to the result of compare_address_info."""
     addr1 = "1A1zPaaaeP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "1A1zPbbb5QGefi2DMPTfTL5SLmv7DivfNb"
 
@@ -154,6 +160,7 @@ def test_compare_all_similar():
 
 def test_fuzzy_prefix_match_exact():
     # For two identical strings, the match score should equal the string length.
+    """Test fuzzy prefix match exact."""
     a = "A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNbabcdef"
     b = "A1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcdef"
     result = AddressComparer.fuzzy_prefix_match(a, b)
@@ -175,6 +182,7 @@ def test_fuzzy_prefix_match_gap():
     #   - At index 3, a[3]="d" vs b[3]="x": gap is used.
     #   - Then indices 4 and 5 match: "ef"
     # Total fuzzy score = 3 (from indices 0-2) + 2 (from indices 4-5) = 5.
+    """Test fuzzy prefix match gap."""
     a = "abcdef"
     b = "abcxef"
     result = AddressComparer.fuzzy_prefix_match(a, b)

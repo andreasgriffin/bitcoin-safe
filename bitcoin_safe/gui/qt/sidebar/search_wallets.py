@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 from bitcoin_safe.gui.qt.my_treeview import MyTreeView
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 
 class SearchWallets(SearchTreeView):
     def __init__(self, wallet_functions: WalletFunctions, parent=None, search_box_on_bottom=True) -> None:
+        """Initialize instance."""
         super().__init__(
             self.do_search,
             parent=parent,
@@ -60,10 +61,12 @@ class SearchWallets(SearchTreeView):
         self.wallet_functions.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self):
+        """UpdateUi."""
         super().updateUi()
 
     def search_result_on_click(self, result_item: ResultItem) -> None:
         # call the parent action first
+        """Search result on click."""
         if result_item.parent is not None:
             self.search_result_on_click(result_item.parent)
 
@@ -80,10 +83,10 @@ class SearchWallets(SearchTreeView):
                 result_item.obj.data.set_utxo_list_visible(True)
 
     def do_search(self, search_text: str) -> ResultItem:
-
+        """Do search."""
         search_text = search_text.strip()
         root = ResultItem("")
-        qt_wallets: List[QTWallet] = list(self.wallet_functions.get_qt_wallets.emit().values())
+        qt_wallets: list[QTWallet] = list(self.wallet_functions.get_qt_wallets.emit().values())
         for qt_wallet in qt_wallets:
             wallet_item = ResultItem(
                 html_f(qt_wallet.wallet.id, bf=True), icon=qt_wallet.tabs.icon, obj=qt_wallet
@@ -95,7 +98,7 @@ class SearchWallets(SearchTreeView):
                 icon=qt_wallet.hist_node.icon,
                 obj=qt_wallet.hist_node,
             )
-            for txid, fulltxdetail in qt_wallet.wallet.get_dict_fulltxdetail().items():
+            for txid in qt_wallet.wallet.get_dict_fulltxdetail().keys():
                 if search_text in txid:
                     ResultItem(
                         format_result_text(full_text=txid, search_text=search_text),

@@ -26,9 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from abc import abstractmethod
-from typing import Any, Dict, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
@@ -38,7 +40,9 @@ from PyQt6.QtWidgets import QWidget
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +57,10 @@ class PluginClient(BaseSaveableClass, QWidget):
     description = ""
     provider = ""
 
-    signal_set_enabled = cast(TypedPyQtSignal[bool], pyqtSignal(bool))
+    signal_set_enabled: TypedPyQtSignal[bool] = cast(Any, pyqtSignal(bool))
 
     def __init__(self, enabled: bool, icon: QIcon) -> None:
+        """Initialize instance."""
         super().__init__()
         self.icon = icon
         self.node = SidebarNode[object](data=self, widget=self, title=self.title, icon=icon)
@@ -65,9 +70,11 @@ class PluginClient(BaseSaveableClass, QWidget):
 
     @abstractmethod
     def get_widget(self) -> QWidget:
+        """Get widget."""
         pass
 
     def on_set_enabled(self, value: bool):
+        """On set enabled."""
         if self.enabled == value:
             return
 
@@ -82,24 +89,29 @@ class PluginClient(BaseSaveableClass, QWidget):
 
     @abstractmethod
     def load(self):
+        """Load."""
         pass
 
     @abstractmethod
     def unload(self):
+        """Unload."""
         pass
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["tab_text"] = self.title
         d["enabled"] = self.enabled
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
+        """From dump."""
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
@@ -111,7 +123,9 @@ class PluginClient(BaseSaveableClass, QWidget):
         return dct
 
     def close(self) -> bool:
+        """Close."""
         return super().close()
 
     def updateUi(self):
+        """UpdateUi."""
         pass

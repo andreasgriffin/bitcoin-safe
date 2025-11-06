@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>شراء {number} من الموقعين على الأجهزة                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe يدعم جميع الموقعين الرئيسيين على الأجهزة: &lt;a href="{url}"&gt;اعرض القائمة الكاملة&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>اشترِ {number} من الموقّعين بالأجهزة                              &lt;ul&gt;         {different_hint}          &lt;li&gt;يدعم Bitcoin Safe جميع الموقّعين الرئيسيين بالأجهزة: &lt;a href="{url}"&gt;عرض القائمة الكاملة&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>هل تريد ملء معلومات الموقّع بناءً على الوصف الجديد؟</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>تم تصحيح الإدخال</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>معدل تقريبي</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>لا يمكن معرفة معدل الرسوم بدقة، لأن الحجم النهائي للمعاملة غير معروف.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2077,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>لا يزال هذا المحفظة في حالة مزامنة، ويجب أن تبدأ المزامنة من جديد إذا أغلقتها. هل تريد إبقاء المحفظة مفتوحة؟</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>حاول الاتصال بـ: {ip}</translation>
 		</message>
@@ -2104,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>مزامنة المحفظة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>لا تزال المحافظ في حالة مزامنة، ويجب أن تبدأ من جديد إذا أغلقت التطبيق. هل ترغب في إخفائها في شريط المهام بدلاً من ذلك؟</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2773,6 +2796,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>استلام</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>قم بتحديث جميع الذاكرات المؤقتة قبل المزامنة.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4899,8 +4927,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>وصف المحفظة (رمز الاستجابة السريعة) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يتيح لك إنشاء محفظة للمراقبة فقط لرؤية رصيدك. للإنفاق منها تحتاج إلى {number} كلمات سرية (البذور).</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>مُعرّف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لعرض رصيدك. للإنفاق منها تحتاج إلى {number} كلمات سرية (Seed).</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5232,6 +5260,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>UTXO مؤكد</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

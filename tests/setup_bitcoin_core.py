@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 import logging
@@ -37,8 +38,8 @@ import subprocess
 import tarfile
 import time
 import zipfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator, List
 
 import pytest
 import requests
@@ -88,6 +89,7 @@ BITCOIN_BIN_DIR = BITCOIN_EXTRACT_DIR / "bin"
 
 
 def runcmd(cmd, background=False):
+    """Runcmd."""
     try:
         system = platform.system()
         if system == "Windows":
@@ -116,7 +118,7 @@ def runcmd(cmd, background=False):
 
 
 def bitcoind():
-    """ """
+    """"""
     system = platform.system()
     executable = "bitcoind.exe" if system == "Windows" else "bitcoind"
     cmd = f"{BITCOIN_BIN_DIR / executable}    -conf={BITCOIN_CONF}"
@@ -135,8 +137,7 @@ def bitcoin_cli(
     rpc_user=RPC_USER,
     rpc_password=RPC_PASSWORD,
 ):
-    """
-    Run a bitcoin-cli command with the specified parameters.
+    """Run a bitcoin-cli command with the specified parameters.
 
     Parameters:
     - command: The bitcoin-cli command to execute.
@@ -173,8 +174,7 @@ def get_default_bitcoin_data_dir():
 
 
 def remove_bitcoin_regtest_folder(custom_datadir=None):
-    """
-    Remove the regtest folder from the Bitcoin data directory.
+    """Remove the regtest folder from the Bitcoin data directory.
 
     Parameters:
     - custom_datadir: Optional custom Bitcoin data directory.
@@ -197,6 +197,7 @@ def remove_bitcoin_regtest_folder(custom_datadir=None):
 
 
 def download_bitcoin():
+    """Download bitcoin."""
     system = platform.system()
 
     if system == "Windows":
@@ -238,6 +239,7 @@ def download_bitcoin():
 @pytest.fixture(scope="session")
 def bitcoin_core() -> Generator[Path, None, None]:
     # Ensure Bitcoin Core directory exists
+    """Bitcoin core."""
     BITCOIN_DIR.mkdir(exist_ok=True)
 
     download_bitcoin()
@@ -266,6 +268,7 @@ def bitcoin_core() -> Generator[Path, None, None]:
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory
 def test_get_blockchain_info(bitcoin_core: Path):
     # Execute the command to get blockchain information
+    """Test get blockchain info."""
     result = bitcoin_cli("getblockchaininfo", bitcoin_core)
 
     # Parse the output as JSON
@@ -279,12 +282,14 @@ def test_get_blockchain_info(bitcoin_core: Path):
 
 def mine_blocks(
     bitcoin_core: Path, n=1, address="bcrt1qdlxaahyrtx7g76c9l6szn4qn979ku4j6wx67vv5qvtf888y7lcpqdsnhxg"
-) -> List[str]:
+) -> list[str]:
     # Mine n blocks to the specified address
+    """Mine blocks."""
     result = bitcoin_cli(f"generatetoaddress {n} {address}", bitcoin_core)
     return json.loads(result.strip())
 
 
 def test_mine_blocks(bitcoin_core: Path):
+    """Test mine blocks."""
     block_hashes = mine_blocks(bitcoin_core, 10)
     assert len(block_hashes) > 0

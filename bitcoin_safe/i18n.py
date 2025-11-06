@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from PyQt6.QtCore import QCoreApplication
 
@@ -38,12 +38,13 @@ logger = logging.getLogger(__name__)
 # this function must eb named identical to QCoreApplication.translate
 # otherwise lupdate doesnt recognize it
 def translate(
-    context: Optional[str],
-    sourceText: Optional[str],
-    disambiguation: Optional[str] = None,
+    context: str | None,
+    sourceText: str | None,
+    disambiguation: str | None = None,
     n: int = 1,
     no_translate=False,
 ) -> str:
+    """Translate."""
     if no_translate:
         return sourceText if sourceText else ""
     return QCoreApplication.translate(context, sourceText, disambiguation=disambiguation, n=n)

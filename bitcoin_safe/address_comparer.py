@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple
 
 import numpy as np
 
@@ -39,7 +40,7 @@ logger = logging.getLogger(__name__)
 class FuzzyMatch:
     identical: bool
     score: int
-    matches: List[Tuple[str, str]]
+    matches: list[tuple[str, str]]
 
 
 class AddressComparer:
@@ -47,7 +48,8 @@ class AddressComparer:
     ADDRESS_SIMILARITY_THRESHOLD = 10_000_000
 
     @classmethod
-    def detect_network_and_type(cls, address: str) -> Tuple[str, str]:
+    def detect_network_and_type(cls, address: str) -> tuple[str, str]:
+        """Detect network and type."""
         if address and address[0] in "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz":
             if address[0] == "1":
                 return ("mainnet", "p2pkh")
@@ -80,11 +82,12 @@ class AddressComparer:
 
     @classmethod
     def strip_prefix(cls, address: str) -> str:
+        """Strip prefix."""
         network, addr_type = cls.detect_network_and_type(address)
         if addr_type in ["p2pkh", "p2sh"]:
             return address[1:] if len(address) > 1 else ""
         elif addr_type in ["v0_p2wpkh", "v1_p2tr"]:
-            parts: List[str] = address.split("1", 1)
+            parts: list[str] = address.split("1", 1)
             return parts[1] if len(parts) > 1 else address
         else:
             return address
@@ -98,10 +101,10 @@ class AddressComparer:
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Extract overlapping 3-character sequences (trigrams) from the stripped address
-        and assign weights. The first `n_begin` and last `m_end` trigrams receive higher weights.
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Extract overlapping 3-character sequences (trigrams) from the stripped
+        address and assign weights. The first `n_begin` and last `m_end` trigrams
+        receive higher weights.
 
         For example, if the stripped address is "ABCDEFG", then the trigrams produced are:
             ["ABC", "BCD", "CDE", "DEF", "EFG"]
@@ -144,32 +147,29 @@ class AddressComparer:
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
-    ) -> Dict[str, float]:
-        """
-        Builds a dictionary mapping each trigram to its total weight for a given address.
-        """
+    ) -> dict[str, float]:
+        """Builds a dictionary mapping each trigram to its total weight for a given
+        address."""
         trigrams, weights = cls.extract_trigrams_numpy(
             address, n_begin, m_end, weight_begin, weight_end, default_weight
         )
-        trigram_dict: Dict[str, float] = {}
-        for tg, wt in zip(trigrams, weights):
+        trigram_dict: dict[str, float] = {}
+        for tg, wt in zip(trigrams, weights, strict=False):
             trigram_dict[tg] = trigram_dict.get(tg, 0.0) + wt
         return trigram_dict
 
     @classmethod
     def precompute_trigram_dicts(
         cls,
-        addresses: Set[str],
+        addresses: set[str],
         n_begin: int = 3,
         m_end: int = 3,
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
-    ) -> Dict[str, Dict[str, float]]:
-        """
-        Precomputes the trigram dictionary for each address in the set.
-        """
-        precomputed: Dict[str, Dict[str, float]] = {}
+    ) -> dict[str, dict[str, float]]:
+        """Precomputes the trigram dictionary for each address in the set."""
+        precomputed: dict[str, dict[str, float]] = {}
         for addr in addresses:
             precomputed[addr] = cls.build_trigram_dict(
                 addr, n_begin, m_end, weight_begin, weight_end, default_weight
@@ -180,17 +180,17 @@ class AddressComparer:
     @classmethod
     def find_neighbors(
         cls,
-        addresses: Set[str],
+        addresses: set[str],
         n_begin: int = 3,
         m_end: int = 3,
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
         candidate_threshold: float = 2.0,
-    ) -> Dict[str, List[Tuple[str, float]]]:
-        """
-        For each address in the given set, finds neighboring addresses that share similar trigrams,
-        using an inverted index built from the precomputed trigram dictionaries.
+    ) -> dict[str, list[tuple[str, float]]]:
+        """For each address in the given set, finds neighboring addresses that share
+        similar trigrams, using an inverted index built from the precomputed trigram
+        dictionaries.
 
         For each trigram in an address's precomputed dictionary, each candidate address that shares the trigram
         gets its candidate score incremented by min(weight_in_address, weight_in_candidate).
@@ -203,7 +203,7 @@ class AddressComparer:
         # For each address, build a dictionary mapping trigrams (e.g., "ABC") to a cumulative weight.
         # Example: For address "ABCDEF", after stripping, the trigrams might be:
         #           "ABC": weight 5.0, "BCD": weight 1.0, "CDE": weight 1.0, "DEF": weight 5.0.
-        precomputed: Dict[str, Dict[str, float]] = cls.precompute_trigram_dicts(
+        precomputed: dict[str, dict[str, float]] = cls.precompute_trigram_dicts(
             addresses, n_begin, m_end, weight_begin, weight_end, default_weight
         )
 
@@ -211,16 +211,16 @@ class AddressComparer:
         # This allows us to quickly find candidates that share a given trigram.
         # For example, if "ABC" appears in addresses "addr1" and "addr2", then
         # inverted_index["ABC"] = { "addr1", "addr2" }.
-        inverted_index: Dict[str, Set[str]] = {}
+        inverted_index: dict[str, set[str]] = {}
         for addr, tg_dict in precomputed.items():
             for trigram in tg_dict.keys():
                 inverted_index.setdefault(trigram, set()).add(addr)
 
         # Initialize a dictionary to hold neighbor candidate scores for each address.
         # Here, "neighbors" will map an address to a list of (candidate_address, candidate_score) tuples.
-        neighbors: Dict[str, List[Tuple[str, float]]] = {}
+        neighbors: dict[str, list[tuple[str, float]]] = {}
         for addr in addresses:
-            candidate_scores: Dict[str, float] = {}
+            candidate_scores: dict[str, float] = {}
             # Get the trigram dictionary for the current address.
             # Example: For "addr1", tg_dict might be {"ABC": 5.0, "BCD": 1.0, "CDE": 1.0, "DEF": 5.0}.
             tg_dict = precomputed[addr]
@@ -249,8 +249,8 @@ class AddressComparer:
 
     @classmethod
     def fuzzy_prefix_match(cls, a: str, b: str, rtl: bool = False) -> FuzzyMatch:
-        """
-        Performs a fuzzy prefix match between two strings, a and b, allowing one gap (i.e. skipping a mismatch once).
+        """Performs a fuzzy prefix match between two strings, a and b, allowing one gap
+        (i.e. skipping a mismatch once).
 
         Returns a FuzzyMatch object with:
           - score: the total count of matching characters,
@@ -336,10 +336,10 @@ class AddressComparer:
 
     @classmethod
     def compare_address_info(cls, a: str, b: str) -> FuzzyMatch:
-        """
-        Compares two addresses using fuzzy matching.
-        It applies fuzzy_prefix_match in both left-to-right and right-to-left directions,
-        subtracts a prefix score (1 for base58 addresses; or the length of the HRP for Bech32 addresses),
+        """Compares two addresses using fuzzy matching. It applies fuzzy_prefix_match in
+        both left-to-right and right-to-left directions, subtracts a prefix score (1 for
+        base58 addresses; or the length of the HRP for Bech32 addresses),
+
         and then computes an exponential scaling:
             normalized_score = base ** (left_score + right_score - prefix_score).
         Here, base is 58 for base58 addresses and 32 for Bech32 addresses.
@@ -373,35 +373,34 @@ class AddressComparer:
     @classmethod
     def compare_all(
         cls,
-        addresses: Set[str],
+        addresses: set[str],
         n_begin: int = 3,
         m_end: int = 3,
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
         candidate_threshold: float = 2.0,
-    ) -> Dict[Tuple[str, str], FuzzyMatch]:
-        """
-        Precomputes the trigram dictionaries and uses find_neighbors to restrict the full similarity comparisons
-        only to candidate pairs (neighbors). For each candidate pair, computes the similarity using
-        compare_address_info.
+    ) -> dict[tuple[str, str], FuzzyMatch]:
+        """Precomputes the trigram dictionaries and uses find_neighbors to restrict the
+        full similarity comparisons only to candidate pairs (neighbors). For each
+        candidate pair, computes the similarity using compare_address_info.
 
-        Returns a dictionary mapping each candidate pair (an ordered tuple (a, b), where a < b lexicographically)
-        to a FuzzyMatch.
+        Returns a dictionary mapping each candidate pair (an ordered tuple (a, b), where a < b
+        lexicographically) to a FuzzyMatch.
         """
         # Use find_neighbors to get candidate addresses.
-        neighbor_dict: Dict[str, List[Tuple[str, float]]] = cls.find_neighbors(
+        neighbor_dict: dict[str, list[tuple[str, float]]] = cls.find_neighbors(
             addresses, n_begin, m_end, weight_begin, weight_end, default_weight, candidate_threshold
         )
         # Use an ordered tuple as key, so that the comparison order is consistent.
-        results: Dict[Tuple[str, str], FuzzyMatch] = {}
+        results: dict[tuple[str, str], FuzzyMatch] = {}
         for addr, cand_list in neighbor_dict.items():
             for candidate, _ in cand_list:
                 # If the addresses are the same, skip.
                 if addr == candidate:
                     continue
                 # Create an ordered tuple based on lexicographical order.
-                ordered_pair: Tuple[str, str] = tuple(sorted([addr, candidate]))  # type: ignore
+                ordered_pair: tuple[str, str] = tuple(sorted([addr, candidate]))  # type: ignore
                 if ordered_pair not in results:
                     # Always compare in the same order using compare_address_info.
                     sim = cls.compare_address_info(ordered_pair[0], ordered_pair[1])
@@ -410,17 +409,15 @@ class AddressComparer:
 
     @classmethod
     def _list_poisonous_pairs(
-        cls, results: Dict[Tuple[str, str], FuzzyMatch]
-    ) -> List[Tuple[str, str, FuzzyMatch]]:
-        """
-        Given a results dictionary (mapping frozenset({address1, address2}) to a similarity float),
-        returns a list of tuples (address1, address2, similarity) for all pairs whose similarity is
-        greater than or equal to THRESHOLD_POISONOUS.
-        """
-        poisonous_pairs: List[Tuple[str, str, FuzzyMatch]] = []
+        cls, results: dict[tuple[str, str], FuzzyMatch]
+    ) -> list[tuple[str, str, FuzzyMatch]]:
+        """Given a results dictionary (mapping frozenset({address1, address2}) to a
+        similarity float), returns a list of tuples (address1, address2, similarity) for
+        all pairs whose similarity is greater than or equal to THRESHOLD_POISONOUS."""
+        poisonous_pairs: list[tuple[str, str, FuzzyMatch]] = []
         for pair, sim in results.items():
             if sim.score >= cls.ADDRESS_SIMILARITY_THRESHOLD:
-                pair_list: List[str] = list(pair)
+                pair_list: list[str] = list(pair)
                 if len(pair_list) == 2:
                     poisonous_pairs.append((pair_list[0], pair_list[1], sim))
         return poisonous_pairs
@@ -428,17 +425,16 @@ class AddressComparer:
     @classmethod
     def poisonous(
         cls,
-        addresses: Set[str],
+        addresses: set[str],
         n_begin: int = 3,
         m_end: int = 3,
         weight_begin: float = 5.0,
         weight_end: float = 5.0,
         default_weight: float = 1.0,
         candidate_threshold: float = 2.0,
-    ) -> List[Tuple[str, str, FuzzyMatch]]:
-        """
-        Returns   a list of tuples (address1, address2, similarity) for all pairs considered poisonous
-        """
+    ) -> list[tuple[str, str, FuzzyMatch]]:
+        """Returns   a list of tuples (address1, address2, similarity) for all pairs
+        considered poisonous."""
         result_dict = AddressComparer.compare_all(
             addresses, n_begin, m_end, weight_begin, weight_end, default_weight, candidate_threshold
         )

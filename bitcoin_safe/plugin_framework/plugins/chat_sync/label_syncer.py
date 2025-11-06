@@ -26,11 +26,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 from datetime import datetime
 from time import sleep
-from typing import List
 
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_nostr_chat.nostr_sync import Data, DataType, NostrSync
@@ -48,6 +48,7 @@ class LabelSyncer(QObject):
     def __init__(
         self, labels: Labels, enabled: bool, nostr_sync: NostrSync, wallet_signals: WalletSignals
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.labels = labels
         self.enabled = enabled
@@ -66,13 +67,16 @@ class LabelSyncer(QObject):
         self.wallet_signals.updated.connect(self.on_labels_updated)
 
     def is_enabled(self) -> bool:
+        """Is enabled."""
         return self.enabled
 
     def set_enabled(self, value: bool):
+        """Set enabled."""
         self.enabled = value
 
     @staticmethod
-    def chunk_lines(lines: List[str], max_len: int = 60_000) -> List[List[str]]:
+    def chunk_lines(lines: list[str], max_len: int = 60_000) -> list[list[str]]:
+        """Chunk lines."""
         len_of_lines = [len(line) for line in lines]  # Calculate the length of each line
 
         # Determine split points
@@ -100,7 +104,8 @@ class LabelSyncer(QObject):
 
         return chunks
 
-    def get_chunked_bitcoin_data(self, refs: List[str]) -> List[Data]:
+    def get_chunked_bitcoin_data(self, refs: list[str]) -> list[Data]:
+        """Get chunked bitcoin data."""
         lines = self.labels.dumps_data_jsonline_list(refs=refs)
         chunks = self.chunk_lines(lines, max_len=60_000)
         return [
@@ -109,9 +114,10 @@ class LabelSyncer(QObject):
         ]
 
     def send_all_labels(self, pub_key_bech32: str) -> None:
+        """Send all labels."""
         if not self.enabled:
             return
-        logger.debug(f"send_all_labels")
+        logger.debug("send_all_labels")
 
         # send entire label data
         refs = list(self.labels.data.keys())
@@ -128,12 +134,13 @@ class LabelSyncer(QObject):
                 ),
                 PublicKey.parse(pub_key_bech32),
             )
-        logger.info(f"Sent all labels to trusted device {short_key( pub_key_bech32)}")
+        logger.info(f"Sent all labels to trusted device {short_key(pub_key_bech32)}")
 
     def send_all_labels_to_myself(self) -> None:
+        """Send all labels to myself."""
         if not self.enabled:
             return
-        logger.debug(f"send_all_labels_to_myself")
+        logger.debug("send_all_labels_to_myself")
 
         my_key = self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key()
         self.send_all_labels(my_key.to_bech32())
@@ -143,20 +150,23 @@ class LabelSyncer(QObject):
         sleep(0.2)
 
     def on_trusted_device_published_trust_me_back(self, pub_key_bech32: str) -> None:
+        """On trusted device published trust me back."""
         if not self.enabled:
             return
-        logger.debug(f"on_add_trusted_device")
+        logger.debug("on_add_trusted_device")
 
         self.send_all_labels(pub_key_bech32)
 
     def on_add_trusted_device(self, pub_key_bech32: str) -> None:
+        """On add trusted device."""
         if not self.enabled:
             return
-        logger.debug(f"on_add_trusted_device")
+        logger.debug("on_add_trusted_device")
 
         self.send_all_labels(pub_key_bech32)
 
     def on_nostr_label_bip329_received(self, data: Data, author: PublicKey) -> None:
+        """On nostr label bip329 received."""
         if not self.enabled:
             return
 
@@ -166,18 +176,19 @@ class LabelSyncer(QObject):
 
         if self.nostr_sync.is_me(author) and not self.apply_own_labels:
             logger.debug(
-                f"on_nostr_label_bip329_received do not apply laybels from myself {short_key(author.to_bech32())}"
+                f"on_nostr_label_bip329_received do not apply "
+                f"laybels from myself {short_key(author.to_bech32())}"
             )
             return
 
         changed_labels = self.labels.import_dumps_data(data.data)
         if not changed_labels:
-            logger.debug(f"no labels changed in on_nostr_label_bip329_received")
+            logger.debug("no labels changed in on_nostr_label_bip329_received")
             return
         logger.info(f"on_nostr_label_bip329_received applied {len(changed_labels)} labels")
 
-        addresses: List[str] = []
-        txids: List[str] = []
+        addresses: list[str] = []
+        txids: list[str] = []
         for label in changed_labels.values():
             if label.type == LabelType.addr:
                 addresses.append(label.ref)
@@ -194,10 +205,12 @@ class LabelSyncer(QObject):
         #  make the wallet add new addresses
         self.wallet_signals.updated.emit(update_filter)
         logger.info(
-            f"{self.__class__.__name__}: Received {len(addresses)} addresses, {len(txids)} txids, {len(new_categories)} categories  from {short_key(author.to_bech32())}"
+            f"{self.__class__.__name__}: Received {len(addresses)} addresses, "
+            f"{len(txids)} txids, {len(new_categories)} categories from {short_key(author.to_bech32())}"
         )
 
     def on_labels_updated(self, update_filter: UpdateFilter) -> None:
+        """On labels updated."""
         if not self.enabled:
             return
         if update_filter.reason == UpdateFilterReason.SourceLabelSyncer:
@@ -236,5 +249,7 @@ class LabelSyncer(QObject):
                 )
             )
         logger.info(
-            f"{self.__class__.__name__}: Sent {len(update_filter.addresses)} addresses, {len(update_filter.txids)} txids to {[short_key(m.to_bech32()) for m in  self.nostr_sync.group_chat.members]}"
+            f"{self.__class__.__name__}: Sent {len(update_filter.addresses)} addresses, "
+            f"{len(update_filter.txids)} txids to "
+            f"{[short_key(m.to_bech32()) for m in self.nostr_sync.group_chat.members]}"
         )

@@ -26,12 +26,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import argparse
 import json
 import time
 from random import randint
-from typing import List, Optional, Union
 
 import bdkpython as bdk
 import numpy as np
@@ -39,11 +39,12 @@ import requests
 
 
 class ProgressPrint:
-    def update(self, progress: "float", message: "Optional[str]"):
+    def update(self, progress: "float", message: "str | None"):
+        """Update."""
         print(str((progress, message)))
 
 
-def send_rpc_command(ip: str, port: Union[str, int], username: str, password: str, method: str, params=None):
+def send_rpc_command(ip: str, port: str | int, username: str, password: str, method: str, params=None):
     """Sends an RPC command to a Bitcoin node.
 
     :param ip: IP address of the Bitcoin node.
@@ -98,10 +99,12 @@ def mine_coins(rpc_ip, rpc_username, rpc_password, wallet, blocks=101, always_ne
 
 
 def extend_tip(wallet, n):
+    """Extend tip."""
     return [wallet.get_address(bdk.AddressIndex.NEW()) for i in range(n)]
 
 
 def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10, always_new_addresses=False):
+    """Generate random own addresses info."""
     if always_new_addresses:
         address_indices = [wallet.get_address(bdk.AddressIndex.NEW()).index for _ in range(n)]
     else:
@@ -120,12 +123,13 @@ def generate_random_own_addresses_info(wallet: bdk.Wallet, n=10, always_new_addr
 def create_complex_transactions(
     rpc_ip, rpc_username, rpc_password, wallet: bdk.Wallet, blockchain, n=300, always_new_addresses=True
 ):
+    """Create complex transactions."""
     for i in range(n):
         try:
             # Build the transaction
             tx_builder = bdk.TxBuilder().fee_rate(1.0)
 
-            recieve_address_infos: List[bdk.AddressInfo] = generate_random_own_addresses_info(
+            recieve_address_infos: list[bdk.AddressInfo] = generate_random_own_addresses_info(
                 wallet, randint(1, 10), always_new_addresses=always_new_addresses
             )
             for recieve_address_info in recieve_address_infos:
@@ -162,12 +166,13 @@ def create_complex_transactions(
 
 # Synchronize the wallet
 def update(progress: float, message: str):
+    """Update."""
     print(progress, message)
 
 
 def main():
-
     # Initialize bdk and configurations
+    """Main."""
     network = bdk.Network.REGTEST
 
     # Set up argument parsing
@@ -217,7 +222,6 @@ def main():
         )
 
     if args.seed:
-
         # Use provided mnemonic or generate a new one
         mnemonic = bdk.Mnemonic.from_string(args.seed) if args.seed else None
         if mnemonic:

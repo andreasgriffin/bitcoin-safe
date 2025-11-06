@@ -30,8 +30,9 @@ from __future__ import annotations
 
 import logging
 import sys
+from collections.abc import Callable
 from functools import partial
-from typing import Callable, Generic, List, Optional, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.util import is_dark_mode
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
@@ -62,12 +63,15 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
     to_color_name,
 )
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
 def modify_color(color: QColor, alpha: int):
+    """Modify color."""
     color.setAlpha(alpha)
     return color
 
@@ -83,6 +87,7 @@ class SidebarRow(QWidget):
         selected_hover_color: str | None | QPalette.ColorRole,
         parent=None,
     ):
+        """Initialize instance."""
         super().__init__(parent)
         self.hover_color = hover_color
         self.selected_color = selected_color
@@ -103,7 +108,7 @@ class SidebarRow(QWidget):
 
         self.sidebar_btn = sidebar_btn
         self._layout.addWidget(self.sidebar_btn)
-        self.square_buttons: List[QWidget] = []
+        self.square_buttons: list[QWidget] = []
 
         # Qt6: enable stylesheet background painting + hover events
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
@@ -115,6 +120,7 @@ class SidebarRow(QWidget):
             self.sidebar_btn.toggled.connect(self._on_main_toggled)
 
     def is_selected(self) -> bool:
+        """Is selected."""
         return self.property("selected")
 
     def set_selected(self, selected: bool) -> None:
@@ -128,26 +134,30 @@ class SidebarRow(QWidget):
         self.update()
 
     def add_square_button(self, btn: QWidget) -> None:
+        """Add square button."""
         self._layout.addWidget(btn)
         self.square_buttons.append(btn)
 
     def get_css(self, widget: QWidget):
         # NOTE: QWidget doesn't support :checked, so use a dynamic property instead.
+        """Get css."""
         base = f"#{widget.objectName()}"
         css = ""
         if self.hover_color:
             css += f"\n{base}:hover {{ background-color: {to_color_name(self.hover_color)}; }}"
         if self.selected_color:
-            css += f'\n{base}[selected="true"] {{ background-color: {to_color_name(self.selected_color)}; }}'
+            css += f'\n{base}[selected="true"] {{ background-color: {to_color_name(self.selected_color)}; }}'  # noqa: E501
         if self.selected_hover_color:
-            css += f'\n{base}[selected="true"]:hover {{ background-color: {to_color_name(self.selected_hover_color)}; }}'
+            css += f'\n{base}[selected="true"]:hover {{ background-color: {to_color_name(self.selected_hover_color)}; }}'  # noqa: E501
         return css
 
     def style_widget(self, widget: QWidget):
+        """Style widget."""
         self.setStyleSheet(self.get_css(widget=widget))
 
     def _on_main_toggled(self, selected: bool) -> None:
         # Update dynamic property and repolish so QSS re-evaluates selectors
+        """On main toggled."""
         if self.property("selected") == selected:
             return
 
@@ -161,7 +171,8 @@ class SidebarRow(QWidget):
 class SidebarButton(QPushButton):
     """Checkable sidebar button with instance-scoped styles and adjustable indent."""
 
-    def __init__(self, text: str, icon: Optional[QIcon] = None, indent: int = 0, bf=False):
+    def __init__(self, text: str, icon: QIcon | None = None, indent: int = 0, bf=False):
+        """Initialize instance."""
         super().__init__(text)
         self._bold = bf
         self._indent = indent
@@ -176,11 +187,13 @@ class SidebarButton(QPushButton):
         self._apply_style()
 
     def setIndent(self, indent: int, bf=False) -> None:
+        """SetIndent."""
         self._indent = indent
         self._bold = bf
         self._apply_style()
 
     def _apply_style(self) -> None:
+        """Apply style."""
         padding = 12 + self._indent * 16
         # Add font-weight when bf=True
         font_weight = "font-weight: bold;" if self._bold else ""
@@ -198,8 +211,7 @@ TT = TypeVar("TT")
 
 
 class SidebarNode(QFrame, Generic[TT]):
-    """
-    A single, mutable sidebar node: combines both data and UI.
+    """A single, mutable sidebar node: combines both data and UI.
 
     Signals (emit the SidebarNode instance):
     - closeClicked(node)
@@ -208,11 +220,11 @@ class SidebarNode(QFrame, Generic[TT]):
     """
 
     # PyQt only supports built-ins; use 'object' here to carry the node itself.
-    closeClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
-    hideClicked = cast(TypedPyQtSignal[object], pyqtSignal(object))
-    nodeSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
-    nodeUnSelected = cast(TypedPyQtSignal[object], pyqtSignal(object))
-    nodeToggled = cast(TypedPyQtSignal[object, bool], pyqtSignal(object, bool))
+    closeClicked: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    hideClicked: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    nodeSelected: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    nodeUnSelected: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    nodeToggled: TypedPyQtSignal[object, bool] = cast(Any, pyqtSignal(object, bool))
 
     hide_icon_name = "close.svg"
 
@@ -220,9 +232,9 @@ class SidebarNode(QFrame, Generic[TT]):
         self,
         title: str,
         data: TT,
-        widget: Optional[QWidget] = None,
+        widget: QWidget | None = None,
         hide_header: bool = False,
-        icon: Optional[QIcon] = None,
+        icon: QIcon | None = None,
         closable: bool = False,
         hidable: bool = False,
         collapsible: bool = True,
@@ -235,9 +247,10 @@ class SidebarNode(QFrame, Generic[TT]):
         selected_hover_color: str | None | QPalette.ColorRole = None,
         indent: int = 0,
         bf_top_level: bool = True,
-        parent_node: Optional[SidebarNode[TT]] = None,
-        parent: Optional[QWidget] = None,
+        parent_node: SidebarNode[TT] | None = None,
+        parent: QWidget | None = None,
     ):
+        """Initialize instance."""
         super().__init__(parent)
         # --- Data / config ---
         self.bf_top_level = bf_top_level
@@ -260,8 +273,8 @@ class SidebarNode(QFrame, Generic[TT]):
 
         self.indent = indent
         self.parent_node = parent_node
-        self.child_nodes: List[SidebarNode[TT]] = []
-        self.stack: Optional[QStackedWidget] = None  # wired by SidebarTree
+        self.child_nodes: list[SidebarNode[TT]] = []
+        self.stack: QStackedWidget | None = None  # wired by SidebarTree
 
         self.setObjectName(str(id(self)))
 
@@ -275,6 +288,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self._build_ui()
 
     def setVisible(self, visible: bool) -> None:
+        """SetVisible."""
         self.header_row.setVisible(not self.hide_header and visible)
         super().setVisible(visible)
         if not visible and self.header_row.is_selected():
@@ -283,34 +297,41 @@ class SidebarNode(QFrame, Generic[TT]):
     # -------------------- Public API: mutation-friendly --------------------
 
     def setTitle(self, text: str) -> None:
+        """SetTitle."""
         self.title = text
         if "&&" not in text and "&" in text:
             text = text.replace("&", "&&")
         self.header_btn.setText(text)
 
     def setIcon(self, icon: QIcon) -> None:
+        """SetIcon."""
         self.icon = icon
         self.header_btn.setIcon(icon)
 
-    def setToolTip(self, a0: Optional[str]) -> None:
+    def setToolTip(self, a0: str | None) -> None:
+        """SetToolTip."""
         self.header_btn.setToolTip(a0)
 
     def setClosable(self, closable: bool) -> None:
+        """SetClosable."""
         self.closable = closable
         self._rebuild_trailing_buttons()
 
     def setHidable(self, hidable: bool) -> None:
+        """SetHidable."""
         self.hidable = hidable
         self._rebuild_trailing_buttons()
 
     def setCollapsible(self, collapsible: bool) -> None:
+        """SetCollapsible."""
         self.collapsible = collapsible
         self._sync_toggle_button_visibility()
 
     def setAutoCollapseSiblings(self, enabled: bool) -> None:
+        """SetAutoCollapseSiblings."""
         self.auto_collapse_siblings = enabled
 
-    def setWidget(self, widget: Optional[QWidget]) -> None:
+    def setWidget(self, widget: QWidget | None) -> None:
         """Assign or replace the widget for this node and (re)register in the stack."""
         self.widget = widget
         self.header_btn.setCheckable(widget is not None)
@@ -328,6 +349,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.insertChildNode(len(self.child_nodes), node, focus=focus)
 
     def insertChildNode(self, index: int, node: SidebarNode[TT], focus: bool = True) -> None:
+        """InsertChildNode."""
         node.setParent(self)
         node.parent_node = self
         node.indent = self.indent + 1
@@ -355,6 +377,7 @@ class SidebarNode(QFrame, Generic[TT]):
             node.select()
 
     def removeChildNode(self, node: SidebarNode[TT]) -> None:
+        """RemoveChildNode."""
         node.clearChildren()
 
         try:
@@ -375,6 +398,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self._sync_toggle_button_visibility()
 
     def clearChildren(self) -> None:
+        """ClearChildren."""
         for child in list(self.child_nodes):
             self.removeChildNode(child)
 
@@ -386,7 +410,8 @@ class SidebarNode(QFrame, Generic[TT]):
             child._recompute_indents_from_here()
 
     def _ensure_stack_link(self) -> bool:
-        """If this subtree isn't attached to a QStackedWidget yet, discover and attach it."""
+        """If this subtree isn't attached to a QStackedWidget yet, discover and attach
+        it."""
         if self.stack:
             return True
         p = self.parent()
@@ -399,6 +424,7 @@ class SidebarNode(QFrame, Generic[TT]):
         return False
 
     def select(self) -> bool:
+        """Select."""
         self._expand_ancestors()
 
         if self.widget is None:
@@ -410,7 +436,8 @@ class SidebarNode(QFrame, Generic[TT]):
             self._ensure_stack_link()
         if not self.stack:
             logger.warning(
-                f"SidebarNode {self.title}.select(): node {self.objectName()} is not attached to a SidebarTree stack"
+                f"SidebarNode {self.title}.select(): node {self.objectName()} "
+                "is not attached to a SidebarTree stack"
             )
             return False
 
@@ -420,13 +447,16 @@ class SidebarNode(QFrame, Generic[TT]):
         self.nodeSelected.emit(self)
         return True
 
-    def findNodeByWidget(self, widget: QWidget) -> Optional[SidebarNode[TT]]:
+    def findNodeByWidget(self, widget: QWidget) -> SidebarNode[TT] | None:
+        """FindNodeByWidget."""
         return self._find(lambda n: n.widget is widget)
 
-    def findNodeByTitle(self, title: str) -> Optional[SidebarNode[TT]]:
+    def findNodeByTitle(self, title: str) -> SidebarNode[TT] | None:
+        """FindNodeByTitle."""
         return self._find(lambda n: n.title == title)
 
     def set_collapsed(self, value: bool, emit: bool = True) -> None:
+        """Set collapsed."""
         new_expanded = not value
         if getattr(self, "expanded", None) == new_expanded:
             return
@@ -448,6 +478,7 @@ class SidebarNode(QFrame, Generic[TT]):
     # -------------------- Internal UI build / wiring --------------------
 
     def _build_ui(self) -> None:
+        """Build ui."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(0)
@@ -471,7 +502,7 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.hide_header:
             self.header_row.hide()  # <- no visible header for root
 
-        self.toggle_btn: Optional[FlatSquareButton] = None
+        self.toggle_btn: FlatSquareButton | None = None
         self._rebuild_trailing_buttons()
 
         self.content = QWidget(self)
@@ -486,6 +517,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def _rebuild_trailing_buttons(self) -> None:
         # Clear existing trailing buttons (except the sidebar_btn)
+        """Rebuild trailing buttons."""
         for btn in list(self.header_row.square_buttons):
             btn.setParent(None)
         self.header_row.square_buttons.clear()
@@ -510,6 +542,7 @@ class SidebarNode(QFrame, Generic[TT]):
                 self.toggle_btn = None
 
     def _ensure_toggle_button(self) -> None:
+        """Ensure toggle button."""
         if self.toggle_btn:
             return
         self.toggle_btn = FlatSquareButton(
@@ -520,6 +553,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.add_square_button(self.toggle_btn)
 
     def _sync_toggle_button_visibility(self) -> None:
+        """Sync toggle button visibility."""
         has_children = bool(self.child_nodes)
         if self.show_expand_button and has_children and self.collapsible:
             self._ensure_toggle_button()
@@ -529,6 +563,7 @@ class SidebarNode(QFrame, Generic[TT]):
                 self.toggle_btn = None
 
     def _sync_content_visibility(self) -> None:
+        """Sync content visibility."""
         self.content.setVisible(bool(self.child_nodes and self.expanded and self.collapsible))
 
     # -------------------- Tree helpers --------------------
@@ -542,48 +577,57 @@ class SidebarNode(QFrame, Generic[TT]):
             child._attach_to_stack(stack)
 
     def _root(self) -> SidebarNode[TT]:
+        """Root."""
         n = self
         while n.parent_node is not None:
             n = n.parent_node
         return n
 
     def _maybe_select_self(self) -> None:
+        """Maybe select self."""
         if self.widget is not None:
             self.select()
         elif self.child_nodes and self.collapsible:
             self._toggle_children()
 
     def _toggle_children(self) -> None:
+        """Toggle children."""
         self.set_collapsed(self.expanded)
 
     def _bubble_selected(self, entry: object) -> None:
+        """Bubble selected."""
         if not isinstance(entry, SidebarNode):
             return
         self.nodeSelected.emit(entry)
 
     def _bubble_unselected(self, entry: object) -> None:
+        """Bubble unselected."""
         if not isinstance(entry, SidebarNode):
             return
         # REMOVE checked sync
         self.nodeUnSelected.emit(entry)
 
     def _bubble_toggled(self, entry: object, expanded: bool) -> None:
+        """Bubble toggled."""
         if not isinstance(entry, SidebarNode):
             return
         self.nodeToggled.emit(entry, expanded)
 
     def _uncheck_all_recursively(self) -> None:
+        """Uncheck all recursively."""
         self.header_row.set_selected(False)  # CHANGED
         for child in self.child_nodes:
             child._uncheck_all_recursively()
 
     def _expand_ancestors(self) -> None:
+        """Expand ancestors."""
         p = self.parent_node
         while p:
             p.set_collapsed(False)
             p = p.parent_node
 
-    def _first_leaf_with_widget(self, must_be_visible=True) -> Optional[SidebarNode[TT]]:
+    def _first_leaf_with_widget(self, must_be_visible=True) -> SidebarNode[TT] | None:
+        """First leaf with widget."""
         if self.widget is not None:
             return self
         for child in self.child_nodes:
@@ -592,7 +636,8 @@ class SidebarNode(QFrame, Generic[TT]):
                 return found
         return None
 
-    def _find(self, predicate: Callable[[SidebarNode[TT]], bool]) -> Optional[SidebarNode[TT]]:
+    def _find(self, predicate: Callable[[SidebarNode[TT]], bool]) -> SidebarNode[TT] | None:
+        """Find."""
         if predicate(self):
             return self
         for c in self.child_nodes:
@@ -601,7 +646,8 @@ class SidebarNode(QFrame, Generic[TT]):
                 return r
         return None
 
-    def _node_by_index_path(self, index_path: List[int]) -> Optional[SidebarNode[TT]]:
+    def _node_by_index_path(self, index_path: list[int]) -> SidebarNode[TT] | None:
+        """Node by index path."""
         node = self
         for i in index_path:
             if not node.child_nodes or i < 0 or i >= len(node.child_nodes):
@@ -612,21 +658,23 @@ class SidebarNode(QFrame, Generic[TT]):
 
     # Convenience selection by different keys
     def setCurrentWidget(self, widget: QWidget) -> bool:
+        """SetCurrentWidget."""
         node = self._find(lambda n: n.widget is widget)
         return node.select() if node else False
 
     def setCurrentNode(self, node: SidebarNode[TT]) -> bool:
+        """SetCurrentNode."""
         target = self._find(lambda n: n is node)
         return target.select() if target else False
 
-    def setCurrentIndex(self, index_path: List[int]) -> bool:
+    def setCurrentIndex(self, index_path: list[int]) -> bool:
+        """SetCurrentIndex."""
         node = self._node_by_index_path(index_path)
         return node.select() if node else False
 
     def removeNode(self) -> None:
-        """
-        Remove this node from its parent and, if possible, select a neighboring node's page.
-        """
+        """Remove this node from its parent and, if possible, select a neighboring
+        node's page."""
         self.clearChildren()
 
         # Root nodes aren't closed here (match the example semantics).
@@ -650,8 +698,9 @@ class SidebarNode(QFrame, Generic[TT]):
             yield from child._iter_selectable_leaves(must_be_visible=must_be_visible)
 
     def select_relative(self, delta: int, wrap: bool = True) -> bool:
-        """
-        Move selection by `delta` within the flattened list of visible, selectable leaves.
+        """Move selection by `delta` within the flattened list of visible, selectable
+        leaves.
+
         Positive delta goes down; negative goes up.
         """
         root = self._root()
@@ -675,8 +724,7 @@ class SidebarNode(QFrame, Generic[TT]):
         return items[new_idx].select()
 
     def _select_adjacent_sibling(self, idx_hint: int | None = None) -> bool:
-        """
-        Pick the next *reachable* selectable leaf after this node has been removed.
+        """Pick the next *reachable* selectable leaf after this node has been removed.
 
         Strategy
         --------
@@ -719,16 +767,19 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def select_neighbor(self, idx: int | None = None):
         # Root nodes aren't closed here (match the example semantics).
+        """Select neighbor."""
         if self.parent_node is None:
             return
         self._select_adjacent_sibling(idx_hint=idx)
 
     def set_current_tab_by_text(self, title: str):
+        """Set current tab by text."""
         node = self.findNodeByTitle(title)
         if node:
             node.select()
 
-    def currentChildNode(self) -> Optional[SidebarNode[TT]]:
+    def currentChildNode(self) -> SidebarNode[TT] | None:
+        """CurrentChildNode."""
         if not self.stack:
             return None
         w = self.stack.currentWidget()
@@ -741,12 +792,12 @@ class SidebarNode(QFrame, Generic[TT]):
         return None
 
     def currentWidget(self) -> QWidget | None:
+        """CurrentWidget."""
         return node.widget if (node := self.currentChildNode()) else None
 
 
 class SidebarTree(QWidget, Generic[TT]):
-    """
-    Container with a left column (vertical layout) and a right shared stack.
+    """Container with a left column (vertical layout) and a right shared stack.
 
     Left column (new):
       - self.left_panel: QWidget that hosts the left UI
@@ -761,12 +812,12 @@ class SidebarTree(QWidget, Generic[TT]):
     - currentChanged(node)
     """
 
-    nodeToggled = cast(TypedPyQtSignal[SidebarNode[TT], bool], pyqtSignal(object, bool))
-    nodeSelected = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
-    nodeUnSelected = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
-    closeClicked = cast(TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object))
-    currentChanged = cast(
-        TypedPyQtSignal[SidebarNode[TT]], pyqtSignal(object)
+    nodeToggled: TypedPyQtSignal[SidebarNode[TT], bool] = cast(Any, pyqtSignal(object, bool))
+    nodeSelected: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
+    nodeUnSelected: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
+    closeClicked: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
+    currentChanged: TypedPyQtSignal[SidebarNode[TT]] = cast(
+        Any, pyqtSignal(object)
     )  # emits the SidebarNode (or None) for the new current page
 
     nodeContextMenuRequested = pyqtSignal(object, object)  # (node: SidebarNode|None, global_pos: QPoint)
@@ -775,10 +826,11 @@ class SidebarTree(QWidget, Generic[TT]):
     scroll_bg = "rgba(255,255,255,0.1)" if is_dark_mode() else "rgba(0,0,0,0.1)"
 
     def __init__(self, parent=None):
+        """Initialize instance."""
         super().__init__(parent)
         self.stack = QStackedWidget(self)
-        self._selection_history: List[SidebarNode[TT]] = []
-        self._current_node: Optional[SidebarNode[TT]] = None
+        self._selection_history: list[SidebarNode[TT]] = []
+        self._current_node: SidebarNode[TT] | None = None
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
         pal = self.stack.palette()
@@ -875,16 +927,16 @@ class SidebarTree(QWidget, Generic[TT]):
         self._shortcut_next.activated.connect(lambda: self._select_relative(+1))
 
     @property
-    def roots(self) -> List[SidebarNode[TT]]:
+    def roots(self) -> list[SidebarNode[TT]]:
+        """Roots."""
         return self.root.child_nodes
 
     def currentNode(self):
+        """CurrentNode."""
         return self.root.currentChildNode()
 
     def _select_relative(self, delta: int, wrap: bool = True) -> None:
-        """
-        Move selection up/down across the visible, selectable leaves.
-        """
+        """Move selection up/down across the visible, selectable leaves."""
         node = self.root.currentChildNode()
         if node is not None:
             node.select_relative(delta, wrap=wrap)
@@ -896,6 +948,7 @@ class SidebarTree(QWidget, Generic[TT]):
             first.select()
 
     def _on_stack_current_changed(self, idx: int) -> None:
+        """On stack current changed."""
         node = self.currentNode()
 
         # --- skip pages whose row is invisible *and* not already selected ----
@@ -916,7 +969,8 @@ class SidebarTree(QWidget, Generic[TT]):
         if node:
             self.currentChanged.emit(node)
 
-    def _select_previous_from_history(self, excluding: Optional[SidebarNode[TT]] = None) -> bool:
+    def _select_previous_from_history(self, excluding: SidebarNode[TT] | None = None) -> bool:
+        """Select previous from history."""
         while self._selection_history:
             candidate = self._selection_history.pop()
             if candidate is excluding:
@@ -927,7 +981,8 @@ class SidebarTree(QWidget, Generic[TT]):
                 return True
         return False
 
-    def nodeAtGlobalPos(self, global_pos: QPoint) -> Optional[SidebarNode[TT]]:
+    def nodeAtGlobalPos(self, global_pos: QPoint) -> SidebarNode[TT] | None:
+        """NodeAtGlobalPos."""
         container_pos = self.container.mapFromGlobal(global_pos)
         w = self.container.childAt(container_pos)
         while w and not isinstance(w, SidebarNode):
@@ -935,6 +990,7 @@ class SidebarTree(QWidget, Generic[TT]):
         return w if isinstance(w, SidebarNode) else None
 
     def _on_context_menu_requested(self, pos: QPoint) -> None:
+        """On context menu requested."""
         vp = self.scroll_area.viewport()
         if not vp:
             return
@@ -949,11 +1005,13 @@ class SidebarTree(QWidget, Generic[TT]):
     # -------- Forwarders / queries --------
 
     def _on_close_clicked(self, node: object) -> None:
+        """On close clicked."""
         if not isinstance(node, SidebarNode):
             return
         self.closeClicked.emit(node)
 
     def _on_node_unselected(self, node: object) -> None:
+        """On node unselected."""
         if not isinstance(node, SidebarNode):
             return
         successful_new_selection = self._select_previous_from_history()
@@ -970,10 +1028,12 @@ class SidebarTree(QWidget, Generic[TT]):
         self.nodeUnSelected.emit(node)
 
     def _append_to_slection_history(self, node: SidebarNode):
+        """Append to slection history."""
         self._selection_history = [n for n in self._selection_history if n is not node]
         self._selection_history.append(node)
 
     def _on_node_selected(self, node: object) -> None:
+        """On node selected."""
         if not isinstance(node, SidebarNode):
             return
         prev = self._current_node
@@ -984,25 +1044,28 @@ class SidebarTree(QWidget, Generic[TT]):
         self.nodeSelected.emit(node)
 
     def _on_node_toggled(self, node: object, expanded: bool) -> None:
+        """On node toggled."""
         if not isinstance(node, SidebarNode):
             return
         self.nodeToggled.emit(node, expanded)
 
     def setCurrentWidget(self, widget: QWidget) -> None:
+        """SetCurrentWidget."""
         for root in self.roots:
             if root.setCurrentWidget(widget):
                 return
 
-    def currentWidget(self) -> Optional[QWidget]:
+    def currentWidget(self) -> QWidget | None:
+        """CurrentWidget."""
         return self.stack.currentWidget()
 
     def count(self) -> int:
+        """Count."""
         return self.stack.count()
 
 
 # ---------------- Example MainWindow using 3 levels (no SidebarModel) ----------------
 if __name__ == "__main__":
-
     # 1) Set up standard Python logging to the console at DEBUG level
     logging.basicConfig(
         level=logging.DEBUG, format="%(asctime)s %(levelname)-8s %(name)s: %(message)s", stream=sys.stdout
@@ -1010,6 +1073,7 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self):
+            """Initialize instance."""
             super().__init__()
             self.setWindowTitle("PyQt6 SidebarTree Example (3 levels, no model)")
             self.resize(1000, 600)
@@ -1074,6 +1138,7 @@ if __name__ == "__main__":
 
         # ---------- Helpers ----------
         def _mk_page(self, title: str) -> QWidget:
+            """Mk page."""
             page = QWidget()
             vl = QVBoxLayout(page)
             lbl = QLabel(f"<h1>{title}</h1>")
@@ -1082,6 +1147,7 @@ if __name__ == "__main__":
             return page
 
         def _mk_wallet_node(self, wallet_name: str) -> SidebarNode[str]:
+            """Mk wallet node."""
             icons = {
                 "History": QIcon.fromTheme("view-history"),
                 "Send": QIcon.fromTheme("mail-send"),
@@ -1115,6 +1181,7 @@ if __name__ == "__main__":
 
         # ---------- Menu actions ----------
         def _add_wallet(self):
+            """Add wallet."""
             self.wallet_counter += 1
             wallet_name = f"Wallet {chr(ord('A') + self.wallet_counter - 1)} with long name"
             wallet_node = self._mk_wallet_node(wallet_name)
@@ -1124,8 +1191,9 @@ if __name__ == "__main__":
             if first_leaf and first_leaf.widget:
                 self.tree.setCurrentWidget(first_leaf.widget)
 
-        def _wallet_of_widget(self, w: QWidget) -> Optional[SidebarNode[str]]:
+        def _wallet_of_widget(self, w: QWidget) -> SidebarNode[str] | None:
             # root > wallet > tab
+            """Wallet of widget."""
             node = self.root.findNodeByWidget(w)
             if not node:
                 return None
@@ -1133,6 +1201,7 @@ if __name__ == "__main__":
             return node.parent_node
 
         def _add_tab_to_current_wallet(self):
+            """Add tab to current wallet."""
             current_widget = self.tree.currentWidget()
             if not current_widget:
                 return
@@ -1154,6 +1223,7 @@ if __name__ == "__main__":
                 self.tree.setCurrentWidget(new_leaf.widget)
 
         def _remove_current_tab(self):
+            """Remove current tab."""
             current_widget = self.tree.currentWidget()
             if not current_widget:
                 return
@@ -1173,7 +1243,7 @@ if __name__ == "__main__":
 
             wallet.removeChildNode(tab)
 
-            next_widget: Optional[QWidget] = None
+            next_widget: QWidget | None = None
             if wallet.child_nodes:
                 new_idx = min(idx, len(wallet.child_nodes) - 1)
                 candidate = wallet.child_nodes[new_idx]._first_leaf_with_widget()
@@ -1182,6 +1252,7 @@ if __name__ == "__main__":
                 self.tree.setCurrentWidget(next_widget)
 
         def _remove_current_wallet(self):
+            """Remove current wallet."""
             current_widget = self.tree.currentWidget()
             if not current_widget:
                 return
@@ -1198,7 +1269,8 @@ if __name__ == "__main__":
                 self.tree.setCurrentWidget(next_widget)
 
         # --- NEW: helpers to get the currently selected SidebarNode ---
-        def _current_node(self) -> Optional[SidebarNode[str]]:
+        def _current_node(self) -> SidebarNode[str] | None:
+            """Current node."""
             return self.tree.currentNode()
 
         # # --- NEW: demonstrate moving the selected node under the last wallet ---
@@ -1224,6 +1296,7 @@ if __name__ == "__main__":
         # ---------- Signal handlers ----------
         def _on_node_selected(self, node: SidebarNode[TT]):
             # Build a breadcrumb like "All Wallets > Wallet A > History"
+            """On node selected."""
             parts = []
             n = node
             while n:
@@ -1235,6 +1308,7 @@ if __name__ == "__main__":
             print(breadcrumb, "| data:", node.data)
 
         def _on_close_requested(self, node: SidebarNode[TT]):
+            """On close requested."""
             node.removeNode()
 
     app = QApplication(sys.argv)

@@ -393,13 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>Купить {number} аппаратных подписантов                                                  &lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe поддерживает все основные аппаратные подписанты: &lt;a href="{url}"&gt;Смотреть полный список&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;
-                           </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>Купить {number} аппаратных подписантов                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe поддерживает всех основных аппаратных подписантов: &lt;a href="{url}"&gt;Посмотреть полный список&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -758,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>Заполнить информацию о подписанте на основе нового дескриптора?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>Ввод исправлен</translation>
 		</message>
@@ -926,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>Примерная ставка</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>Точная комиссия неизвестна, так как окончательный размер транзакции неизвестен.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2078,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>Этот кошелёк всё ещё синхронизируется, и при закрытии синхронизация начнётся заново. Хотите оставить кошелёк открытым?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>Попробовать подключиться к: {ip}</translation>
 		</message>
@@ -2105,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>Синхронизация кошелька</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>Кошельки всё ещё синхронизируются, и при закрытии приложения синхронизация начнётся заново. Хотите свернуть в трей?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2774,6 +2796,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>Получить</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>Обновите все кэши перед синхронизацией.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4906,8 +4933,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>Дескриптор кошелька (QR-код) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; позволяет вам создать кошелек только для просмотра, чтобы видеть ваш баланс. Чтобы потратить с него, вам нужны секретные {number} слова (Семя).</translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>Дескриптор кошелька (QR-код) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; позволяет создать кошелёк только для просмотра, чтобы видеть баланс. Чтобы потратить, нужны секретные {number} слов (Seed).</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5239,6 +5266,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>Подтверждённый UTXO</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

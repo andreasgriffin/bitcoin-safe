@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -56,6 +57,7 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         sync_client: dict[str, SyncClient] | None = None,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.setWindowTitle(self.tr("Export Transaction"))
         self.data = data
@@ -86,12 +88,14 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.updateUi()
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.export_qr_button.updateUi()
         self.button_export_file.updateUi()
         self.button_sync_share.updateUi()
         super().updateUi()
 
     def set_data(self, data: Data, sync_client: dict[str, SyncClient] | None = None):
+        """Set data."""
         self.export_qr_button.set_data(data=data)
         self.button_export_file.set_data(data=data)
         self.button_sync_share.set_data(data=data, sync_clients=sync_client)
@@ -99,4 +103,5 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.updateUi()
 
     def set_minimum_size_as_floating_window(self):
+        """Set minimum size as floating window."""
         self.setMinimumSize(500, 200)

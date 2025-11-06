@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
 
@@ -53,6 +54,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         parent: QWidget | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.wallet = wallet
         self.wallet_functions = wallet_functions
@@ -111,4 +113,5 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         self.updateUi()
 
     def set_minimum_size_as_floating_window(self) -> None:
+        """Set minimum size as floating window."""
         self.setMinimumSize(500, 200)

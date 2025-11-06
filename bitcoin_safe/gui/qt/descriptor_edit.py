@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
@@ -64,17 +66,19 @@ from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWid
 from bitcoin_safe.gui.qt.util import Message, MessageType, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import SignalsMin, WalletFunctions
-from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 from ...pdfrecovery import make_and_open_pdf
-from .util import Message, MessageType, do_copy, set_no_margins
+from .util import set_no_margins
 
 logger = logging.getLogger(__name__)
 
 
 class DescriptorExport(QDialog):
-    aboutToClose = cast(TypedPyQtSignal[QWidget], pyqtSignal(QWidget))  # type: ignore
+    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -85,6 +89,7 @@ class DescriptorExport(QDialog):
         loop_in_thread: LoopInThread | None = None,
         wallet_id: str = "MultiSig",
     ):
+        """Initialize instance."""
         super().__init__(parent)
         self.setWindowTitle(self.tr("Export Descriptor"))
 
@@ -106,29 +111,31 @@ class DescriptorExport(QDialog):
         self._layout.addWidget(self.export_widget)
 
     def closeEvent(self, a0: QCloseEvent | None):
+        """CloseEvent."""
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
         super().closeEvent(a0)
 
 
 class DescriptorInputField(AnalyzerTextEdit):
-
     def sizeHint(self) -> QSize:
+        """SizeHint."""
         size = super().sizeHint()
         size.setHeight(30)
         return size
 
 
 class DescriptorEdit(QWidget):
-    signal_descriptor_change = cast(TypedPyQtSignal[str], pyqtSignal(str))
+    signal_descriptor_change: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
 
     def __init__(
         self,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
-        wallet: Optional[Wallet] = None,
+        wallet: Wallet | None = None,
         signal_update: TypedPyQtSignalNo | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.edit = ButtonEdit(
             input_field=DescriptorInputField(),
@@ -209,7 +216,7 @@ class DescriptorEdit(QWidget):
         self.signal_tracker.connect(self.edit.input_field.textChanged, self.on_input_field_textChanged)
 
     def updateUi(self):
-
+        """UpdateUi."""
         self.import_button.setText(self.tr("Import"))
         self.action_import_qr.setText(self.tr("Read QR Code"))
         self.action_import_clipbard.setText(self.tr("Import from Clipboard"))
@@ -229,6 +236,7 @@ class DescriptorEdit(QWidget):
         self.register_button.setText(self.tr("Register with hardware signers"))
 
     def _do_pdf(self) -> None:
+        """Do pdf."""
         if not self.wallet:
             Message(
                 self.tr("Wallet setup not finished. Please finish before creating a Backup pdf."),
@@ -240,15 +248,18 @@ class DescriptorEdit(QWidget):
         make_and_open_pdf(self.wallet, lang_code=lang_code)
 
     def on_input_field_textChanged(self):
+        """On input field textChanged."""
         self.signal_descriptor_change.emit(self.edit.text())
 
     def _check_if_valid(self) -> bool:
+        """Check if valid."""
         if not self.edit.text():
             return True
 
         return is_valid_descriptor(self.edit.text(), network=self.network)
 
     def _data_to_descriptor(self, data: Data) -> str | None:
+        """Data to descriptor."""
         if data.data_type in [DataType.Descriptor]:
             return str(
                 convert_to_multipath_descriptor(descriptor_str=data.data_as_string(), network=self.network)
@@ -263,11 +274,13 @@ class DescriptorEdit(QWidget):
         return None
 
     def _on_signal_data(self, data: Data):
+        """On signal data."""
         text = self._data_to_descriptor(data)
         if text:
             self.edit.input_field.setText(text)
 
     def _exception_callback(self, e: Exception) -> None:
+        """Exception callback."""
         if isinstance(e, DecodingException):
             if question_dialog(
                 self.tr("Could not recognize the input. Do you want to scan again?"),
@@ -280,20 +293,24 @@ class DescriptorEdit(QWidget):
             Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
 
     def on_action_import_from_clipboard(self):
+        """On action import from clipboard."""
         clipboard = QApplication.clipboard()
         if clipboard:
             self.edit.input_field.setText(clipboard.text())
 
     def on_action_import_qr(self):
+        """On action import qr."""
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network, close_on_result=True)
         self._temp_bitcoin_video_widget.signal_data.connect(self._on_signal_data)
         self._temp_bitcoin_video_widget.signal_recognize_exception.connect(self._exception_callback)
         self._temp_bitcoin_video_widget.show()
 
     def _on_copy_descriptor(self):
+        """On copy descriptor."""
         do_copy(self.edit.text().strip())
 
     def show_export_widget(self):
+        """Show export widget."""
         if not self._check_if_valid():
             Message(self.tr("Descriptor not valid"))
             return
@@ -315,6 +332,7 @@ class DescriptorEdit(QWidget):
             return
 
     def close(self):
+        """Close."""
         self.loop_in_thread.stop()
         self.edit.close()
         self.signal_tracker.disconnect_all()
@@ -329,6 +347,7 @@ class DescriptorEdit(QWidget):
         return super().close()
 
     def show_register_multisig(self) -> None:
+        """Show register multisig."""
         if not self.wallet:
             return
         if not self.wallet.is_multisig():

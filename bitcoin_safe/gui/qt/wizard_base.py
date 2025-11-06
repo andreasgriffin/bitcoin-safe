@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 class WizardBase(QWidget):
     def __init__(
         self,
-        step_labels: List[str],
+        step_labels: list[str],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
         current_index: int = 0,
@@ -54,9 +54,10 @@ class WizardBase(QWidget):
         clickable=True,
         use_checkmark_icon=True,
         parent=None,
-        sub_indices: List[int] | None = None,
+        sub_indices: list[int] | None = None,
         use_resizing_stacked_widget=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.step_container = StepProgressContainer(
             step_labels=step_labels,
@@ -83,16 +84,19 @@ class WizardBase(QWidget):
         )
 
     def set_visibilities(self) -> None:
+        """Set visibilities."""
         pass
 
     def toggle_tutorial(self) -> None:
+        """Toggle tutorial."""
         pass
 
     def deleterefrences(self):
+        """Deleterefrences."""
         pass
 
     def close(self) -> bool:
-
+        """Close."""
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
 

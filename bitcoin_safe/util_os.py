@@ -50,6 +50,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import os
 import platform
@@ -65,6 +66,7 @@ from pathlib import Path
 
 def linux_env():
     # Create a copy of the current environment variables.
+    """Linux env."""
     env = os.environ.copy()
 
     # Set LD_LIBRARY_PATH to prefer system libraries.
@@ -76,8 +78,9 @@ def linux_env():
 
 
 def subprocess_empty_env(cmd: list[str]) -> bool:
-    """
-    Run the given command in a cleaned environment (dropping AppImage/PyInstaller libs).
+    """Run the given command in a cleaned environment (dropping AppImage/PyInstaller
+    libs).
+
     Returns True if the process ran successfully (exit code 0), False otherwise.
     """
     # Copy the current env and remove variables that point to bundled libs
@@ -93,8 +96,7 @@ def subprocess_empty_env(cmd: list[str]) -> bool:
 
 
 def webopen(url: str) -> bool:
-    """
-    Cross-platform URL opener with honest success/fail.
+    """Cross-platform URL opener with honest success/fail.
 
     - On Linux: tries system helpers (xdg-open, gio, gvfs-open) in a clean env;
       falls back to webbrowser.open() if none succeed.
@@ -142,6 +144,7 @@ def open_mailto_link(mailto_link: str) -> None:
 
 
 def xdg_open_file(filename: Path, is_text_file=False):
+    """Xdg open file."""
     system_name = platform.system()
     if system_name == "Windows":
         if is_text_file:
@@ -155,6 +158,7 @@ def xdg_open_file(filename: Path, is_text_file=False):
 
 
 def show_file_in_explorer(filename: Path) -> None:
+    """Show file in explorer."""
     try:
         if platform.system() == "Windows":
             subprocess.Popen(["explorer", "/select,", filename])

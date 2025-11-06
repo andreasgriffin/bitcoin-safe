@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import csv
 import logging
@@ -36,7 +37,6 @@ import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from subprocess import CompletedProcess
-from typing import Dict, List, Tuple, Union
 
 from bitcoin_safe_lib.util import threadtable
 
@@ -51,11 +51,13 @@ source_key = "source"
 
 
 def run_local(cmd) -> CompletedProcess:
+    """Run local."""
     completed_process = subprocess.run(shlex.split(cmd), check=True)
     return completed_process
 
 
 def ts_to_csv(ts_path: Path, csv_path: Path):
+    """Ts to csv."""
     tree = ET.parse(ts_path)
     root = tree.getroot()
 
@@ -80,11 +82,12 @@ def ts_to_csv(ts_path: Path, csv_path: Path):
 
 
 def csv_to_ts(csv_path: Path, ts_path: Path):
+    """Csv to ts."""
     root = ET.Element("TS", version="2.1")
 
     with open(csv_path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        contexts: Dict[str, ET.Element] = {}
+        contexts: dict[str, ET.Element] = {}
 
         for row in reader:
             context_name = row["context"]
@@ -120,6 +123,7 @@ class TranslationHandler:
         module_name,
         prefix="app",
     ) -> None:
+        """Initialize instance."""
         self.module_name = module_name
         self.ts_folder = Path(module_name) / "gui" / "locales"
         self.prefix = prefix
@@ -148,28 +152,32 @@ Content to translate:
             assert language in FLAGS
 
     def delete_po_files(self):
+        """Delete po files."""
         for file in self.ts_folder.glob("*.po"):
             file.unlink()
 
-    def get_all_python_files(self, additional_dirs=[".venv/lib"]) -> List[str]:
+    def get_all_python_files(self, additional_dirs=[".venv/lib"]) -> list[str]:
+        """Get all python files."""
         all_dirs = [self.module_name] + additional_dirs
 
-        python_files: List[str] = []
+        python_files: list[str] = []
         for d in all_dirs:
             python_files += [str(file) for file in Path(d).rglob("*.py")]
         return python_files
 
-    def get_all_ts_files(self) -> List[str]:
+    def get_all_ts_files(self) -> list[str]:
+        """Get all ts files."""
         python_files = [str(file) for file in self.ts_folder.rglob("*.ts")]
         return python_files
 
     def _ts_file(self, language: str) -> Path:
+        """Ts file."""
         return self.ts_folder / f"{self.prefix}_{language}.ts"
 
     @staticmethod
-    def sort_csv(input_file: Path, output_file: Path, sort_columns: Union[Tuple[str, ...], List[str]]):
-        """
-        Sorts a CSV file by specified columns and writes the sorted data to another CSV file.
+    def sort_csv(input_file: Path, output_file: Path, sort_columns: tuple[str, ...] | list[str]):
+        """Sorts a CSV file by specified columns and writes the sorted data to another
+        CSV file.
 
         Parameters:
             input_file (Path): The input CSV file path.
@@ -177,7 +185,7 @@ Content to translate:
             sort_columns (Tuple[str, ...]): A tuple of column names to sort the CSV data by (in priority order).
         """
         # Read the CSV file into a list of dictionaries
-        with open(str(input_file), mode="r", newline="", encoding="utf-8") as infile:
+        with open(str(input_file), newline="", encoding="utf-8") as infile:
             reader = csv.DictReader(infile)
             rows = list(reader)
 
@@ -198,10 +206,12 @@ Content to translate:
             writer.writerows(sorted_rows)
 
     def update_translations_from_py(self):
+        """Update translations from py."""
         python_files = self.get_all_python_files()
         print(f"Found {len(python_files)} python files for translation")
 
         def process(language):
+            """Process."""
             ts_file = self._ts_file(language)
             run_local(f"pylupdate6  {' '.join(python_files)} -no-obsolete  -ts {ts_file}")  # -no-obsolete
             ts_to_csv(ts_file, ts_file.with_suffix(".csv"))
@@ -217,6 +227,7 @@ Content to translate:
         self.compile()
 
     def assert_no_escaped_quotes(self, ts_file: Path):
+        """Assert no escaped quotes."""
         with open(ts_file, encoding="utf-8") as f:
             content = f.read()
         assert "&#13;" not in content
@@ -224,6 +235,7 @@ Content to translate:
         assert '\\"' not in content
 
     def csv_to_ts(self):
+        """Csv to ts."""
         for language in self.languages:
             ts_file = self._ts_file(language)
 
@@ -239,6 +251,7 @@ Content to translate:
         self.compile()
 
     def compile(self):
+        """Compile."""
         run_local(f"/usr/lib/qt6/bin/lrelease   {' '.join(self.get_all_ts_files())}")
 
     def insert_chatgpt_translations(
@@ -262,9 +275,9 @@ Content to translate:
         # --- STEP 1: Read and parse the translation file ---
         translations = {}
         current_lang = None
-        current_lines: List[str] = []
+        current_lines: list[str] = []
 
-        with open(translation_file, "r", encoding="utf-8") as f:
+        with open(translation_file, encoding="utf-8") as f:
             for raw_line in f:
                 line = raw_line.replace("\\", "").rstrip("\n")
                 if not line:
@@ -329,11 +342,11 @@ Content to translate:
                 )
 
             # Fill the empty targets
-            for i_empty, translation_line in zip(empty_target_indices, lang_lines):
+            for i_empty, translation_line in zip(empty_target_indices, lang_lines, strict=False):
                 # Extra safety check: ensure no content was put in after we counted
                 if rows[i_empty][target_key].strip():
                     raise ValueError(
-                        f"Cannot overwrite target in '{csv_path.name}' at row {i_empty+1}. "
+                        f"Cannot overwrite target in '{csv_path.name}' at row {i_empty + 1}. "
                         f"Existing value: '{rows[i_empty]['target']}'"
                     )
                 rows[i_empty][target_key] = translation_line

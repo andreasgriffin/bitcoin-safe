@@ -26,9 +26,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import List
 
 import bdkpython as bdk
 from PyQt6.QtGui import QShowEvent
@@ -54,6 +54,7 @@ class BitcoinQuickReceive(
         limit_to_categories=None,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__("", parent=parent)
         self.wallet_signals = wallet_signals
         self.wallet = wallet
@@ -70,9 +71,11 @@ class BitcoinQuickReceive(
         self.wallet_signals.language_switch.connect(self.refresh_all)
 
     def refresh_all(self):
+        """Refresh all."""
         self.update_content(UpdateFilter(refresh_all=True))
 
     def set_address(self, category: str, address_info: bdk.AddressInfo) -> ReceiveGroup:
+        """Set address."""
         receive_group = ReceiveGroup(
             category,
             category_color(category).name(),
@@ -85,6 +88,7 @@ class BitcoinQuickReceive(
         return receive_group
 
     def on_signal_set_address_as_used(self, address_info: AddressInfoMin):
+        """On signal set address as used."""
         self.wallet.bdkwallet.mark_used(keychain=address_info.keychain, index=address_info.index)
         self.wallet_signals.updated.emit(
             UpdateFilter(
@@ -95,14 +99,17 @@ class BitcoinQuickReceive(
         )
 
     @property
-    def addresses(self) -> List[str]:
+    def addresses(self) -> list[str]:
+        """Addresses."""
         return [group_box.address for group_box in self.group_boxes]
 
     @property
-    def categories(self) -> List[str]:
+    def categories(self) -> list[str]:
+        """Categories."""
         return [group_box.category for group_box in self.group_boxes]
 
     def showEvent(self, a0: QShowEvent | None) -> None:
+        """ShowEvent."""
         super().showEvent(a0)
         if a0 and a0.isAccepted() and self._pending_update:
             self._forced_update = True
@@ -117,6 +124,7 @@ class BitcoinQuickReceive(
         return defer
 
     def update_content(self, update_filter: UpdateFilter) -> None:
+        """Update content."""
         if self.maybe_defer_update():
             return
 
@@ -147,7 +155,7 @@ class BitcoinQuickReceive(
         old_tips = self.wallet.tips
 
         # 1) grab old boxes and clear the list
-        old_boxes: List[ReceiveGroup] = list(self.group_boxes)
+        old_boxes: list[ReceiveGroup] = list(self.group_boxes)
         self.group_boxes.clear()
 
         updated_addressed = set()

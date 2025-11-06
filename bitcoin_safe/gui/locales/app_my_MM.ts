@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>{number} ခုအား ဝယ်ယူပါ။&lt;ul&gt;                             {different_hint}                              &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲလ်လက်မှတ်ထိုးသူများကို ထောက်ခံသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;                                                      &lt;/ul&gt;                            </translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>အသစ်သော descriptor အပေါ် အခြေခံ၍ လက်မှတ်ရေးသူအချက်အလက် ဖြည့်မလား?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>ထည့်သွင်းမှု ပြင်ဆင်ပြီး</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>ခန့်မှန်းနှုန်း</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>အလုပ်ချိန်နှုန်းကို တိကျစွာ မသိနိုင်ပါ၊ ငွေလွဲလုပ်ဆောင်မှု၏ အဆုံးသတ်အရွယ်အစား မသိသေးပါ။</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2077,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>ဤပိုက်ဆံအိတ်သည် စနစ်ချိန်ညှိနေဆဲဖြစ်ပြီး ပိတ်ပါက စတင်မှစချိန်ညှိရန်လိုပါသည်။ ပိုက်ဆံအိတ်ကို ဖွင့်ထားလိုပါသလား?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>ချိတ်ဆက်ရန် စမ်းသပ်မည့် လိပ်စာ: {ip}</translation>
 		</message>
@@ -2104,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>ပိုက်ဆံအိတ်ကို သင်တင်ဆက်နေပါသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>ပိုက်ဆံအိတ်များသည် စနစ်ချိန်ညှိနေဆဲဖြစ်ပြီး အက်ပ်ကို ပိတ်ပါက စတင်မှစချိန်ညှိရန်လိုပါသည်။ ၎င်းကို tray ထဲတွင် ဖျောက်ထားလိုပါသလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2770,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>လက်ခံပါ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>စနစ်ချိန်ညှိခြင်းမပြုမီ cache အားလုံးကို ပြန်လည်သက်ဝင်စေပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4896,8 +4924,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; သည် သင့်လက်ကျန်ငွေကိုကြည့်ရန် watch-only ပိုက်ဆံအိတ်ဖန်တီးရန်ခွင့်ပြုပါသည်။ ထိုက်နေရာမှ ငွေသုံးရန် လျို့ဝှက် {number} စကားလုံးများ (မျိုးစေ့) လိုအပ်သည်။  </translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>ပိုက်ဆံအိတ် အညွှန်း (QR ကုဒ်) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; သည် သင်၏လက်ကျန်ငွေကိုကြည့်ရန် အကြည့်သာပိုက်ဆံအိတ်တစ်ခုပြုလုပ်နိုင်စေသည်။ ထိုနေရာမှအသုံးပြုရန်အတွက် သင်သည် လျှို့ဝှက် {number} စကားလုံး (Seed) လိုအပ်သည်။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5229,6 +5257,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>အတည်ပြုပြီးသော UTXO</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

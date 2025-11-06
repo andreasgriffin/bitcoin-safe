@@ -393,12 +393,12 @@
 		<name>BuyHardware</name>
 		<message>
 			<source>Buy {number} hardware signers                         
-                        &lt;ul&gt;
-                            {different_hint} 
-                            &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;                             
-                        &lt;/ul&gt;
-                           </source>
-			<translation>{number}개 하드웨어 서명자 구입&lt;ul&gt; {different_hint} &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href="{url}"&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt;</translation>
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </source>
+			<translation>{number}개의 하드웨어 서명자 구매                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href="{url}"&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -757,6 +757,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Fill signer information based on the new descriptor?</source>
+			<translation>새 설명자 기반으로 서명자 정보를 채우시겠습니까?</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Input corrected</source>
 			<translation>입력이 수정되었습니다</translation>
 		</message>
@@ -925,6 +930,12 @@ Default 20</source>
 		<message>
 			<source>Approximate rate</source>
 			<translation>대략적인 수수료율</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The fee rate cannot be known exactly,
+since the final size of the transaction is unknown.</source>
+			<translation>거래의 최종 크기를 알 수 없기 때문에 수수료율을 정확히 알 수 없습니다.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2077,6 +2088,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+Do you want to keep the wallet open?</source>
+			<translation>이 지갑은 아직 동기화 중이며 닫으면 처음부터 다시 시작해야 합니다. 지갑을 계속 열어두시겠습니까?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Try connecting to: {ip}</source>
 			<translation>다음에 연결 시도: {ip}</translation>
 		</message>
@@ -2104,6 +2121,12 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Wallet syncing</source>
 			<translation>지갑 동기화 중</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+Do you want to hide to tray instead?</source>
+			<translation>지갑들이 아직 동기화 중이며 앱을 닫으면 처음부터 다시 시작해야 합니다. 대신 트레이로 숨기시겠습니까?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2770,6 +2793,11 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Receive</source>
 			<translation>받기  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Refresh all caches before syncing.</source>
+			<translation>동기화 전에 모든 캐시를 새로고침하세요.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4896,8 +4924,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance.  To spent from it you need the secret {number} words (Seed).</source>
-			<translation>지갑 디스크립터 (QR 코드) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;를 사용하면 잔액을 확인할 수 있는 조회 전용 지갑을 생성할 수 있습니다. 그것에서 지출하려면 비밀 {number} 단어 (시드)가 필요합니다.  </translation>
+			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+			<translation>지갑 설명자(QR 코드) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;를 사용하면 잔액을 확인할 수 있는 보기 전용 지갑을 만들 수 있습니다. 여기서 지출하려면 {number}개의 비밀 단어(시드)가 필요합니다.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5229,6 +5257,11 @@ to speed up the confirmation.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_list</name>
+		<message>
+			<source>Confirmed UTXO</source>
+			<translation>확인된 UTXO</translation>
+		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>

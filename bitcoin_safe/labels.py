@@ -26,15 +26,17 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import copy
 import enum
 import json
 import logging
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, Union
+from typing import Any, Literal
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -85,12 +87,13 @@ class Label(SaveAllClass):
         self,
         type: LabelType,
         ref: str,
-        timestamp: Union[Literal["now", "old"], float],
-        label: Optional[str] = None,
-        origin: Optional[str] = None,
-        spendable: Optional[bool] = None,
-        category: Optional[str] = None,
+        timestamp: Literal["now", "old"] | float,
+        label: str | None = None,
+        origin: str | None = None,
+        spendable: bool | None = None,
+        category: str | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.type = type
         self.ref = ref
@@ -101,7 +104,8 @@ class Label(SaveAllClass):
         self.timestamp = self._to_timestamp(timestamp)
 
     @staticmethod
-    def _to_timestamp(timestamp: Union[Literal["now", "old"], float]) -> float:
+    def _to_timestamp(timestamp: Literal["now", "old"] | float) -> float:
+        """To timestamp."""
         if timestamp == "now":
             return datetime.now().timestamp()
         elif timestamp == "old":
@@ -109,18 +113,20 @@ class Label(SaveAllClass):
         else:
             return timestamp
 
-    def set_timestamp(self, timestamp: Union[Literal["now", "old"], float]):
+    def set_timestamp(self, timestamp: Literal["now", "old"] | float):
+        """Set timestamp."""
         new_timestamp = self._to_timestamp(timestamp=timestamp)
         if new_timestamp > self.timestamp:
             self.timestamp = new_timestamp
 
-    def to_bip329(self) -> Dict[str, Any]:
-        d: Dict[str, Any] = {}
+    def to_bip329(self) -> dict[str, Any]:
+        """To bip329."""
+        d: dict[str, Any] = {}
 
         d["type"] = self.type.name
         d["ref"] = self.ref
         d["label"] = (
-            f'{self.label if self.label else ""}{self.separator}{self.category}'
+            f"{self.label if self.label else ''}{self.separator}{self.category}"
             if self.category
             else self.label
         )
@@ -132,14 +138,9 @@ class Label(SaveAllClass):
         return d
 
     @classmethod
-    def from_bip329(
-        cls, d: Dict[str, Any], timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> "Label":
-        """
-        Can import bip329,
-        Also uses additional fields (like timestamp)
-        if available.
-        """
+    def from_bip329(cls, d: dict[str, Any], timestamp: Literal["now", "old"] | float = "now") -> Label:
+        """Can import bip329, Also uses additional fields (like timestamp) if
+        available."""
         d["timestamp"] = (
             label_timestamp
             if (label_timestamp := d.get("timestamp"))
@@ -163,7 +164,8 @@ class Label(SaveAllClass):
                     break
         return label
 
-    def dump(self, preserve_bip329_keys=True) -> Dict:
+    def dump(self, preserve_bip329_keys=True) -> dict:
+        """Dump."""
         d = super().dump()
         d["type"] = self.type.name
 
@@ -177,7 +179,8 @@ class Label(SaveAllClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         dct["type"] = LabelType[dct["type"]]
@@ -185,7 +188,8 @@ class Label(SaveAllClass):
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
 
@@ -197,6 +201,7 @@ class Label(SaveAllClass):
         return super().from_dump_migration(dct=dct)
 
     def __eq__(self, other: object) -> bool:
+        """Eq."""
         if not isinstance(other, Label):
             return False
         return self.dump() == other.dump()
@@ -219,19 +224,22 @@ class LabelSnapshot(SaveAllClass):
     count_address_labels: int = 0
 
     def dump(self):
+        """Dump."""
         d = super().dump()
         d["created_at"] = self.created_at.timestamp()
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
         dct["created_at"] = datetime.fromtimestamp(dct["created_at"])
         return cls(**filtered_for_init(dct, cls))
 
 
-class ChangedItems(Dict[str, Label]):
+class ChangedItems(dict[str, Label]):
     def to_update_filter(self, reason: UpdateFilterReason) -> UpdateFilter:
+        """To update filter."""
         addresses = []
         txids = []
         for label in self.values():
@@ -254,23 +262,27 @@ class Labels(BaseSaveableClass):
 
     def __init__(
         self,
-        data: Dict[str, Label] | None = None,
-        categories: Optional[List[str]] = None,
+        data: dict[str, Label] | None = None,
+        categories: list[str] | None = None,
         default_category: str = "default",
-        _snapshots: List[LabelSnapshot] | None = None,
+        _snapshots: list[LabelSnapshot] | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
 
-        # "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f":{ "type": "addr", "ref": "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f", "label": "Address" }
-        self.data: Dict[str, Label] = data if data else {}
-        self.categories: List[str] = categories if categories else []
+        # "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f":{ "type": "addr",
+        # "ref": "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f", "label": "Address" }
+        self.data: dict[str, Label] = data if data else {}
+        self.categories: list[str] = categories if categories else []
         self.default_category = default_category
-        self._snapshots: List[LabelSnapshot] = _snapshots if _snapshots else []
+        self._snapshots: list[LabelSnapshot] = _snapshots if _snapshots else []
 
     def count_address_labels(self):
+        """Count address labels."""
         return sum(1 for label in self.data.values() if label.label)
 
     def _store_snapshot(self, reason: LabelSnapshotReason | None = None) -> bool:
+        """Store snapshot."""
         snapshot = LabelSnapshot(
             created_at=datetime.now(),
             state=self.dumps_data_jsonlines(),
@@ -285,10 +297,12 @@ class Labels(BaseSaveableClass):
             self._snapshots.pop(0)
         return True
 
-    def get_snapshots(self) -> List[LabelSnapshot]:
+    def get_snapshots(self) -> list[LabelSnapshot]:
+        """Get snapshots."""
         return list(self._snapshots)
 
     def restore_snapshot(self, snapshot: LabelSnapshot) -> ChangedItems:
+        """Restore snapshot."""
         self._store_snapshot(reason=LabelSnapshotReason.RESTORE)
         return self.import_dumps_data(
             snapshot.state,
@@ -296,24 +310,28 @@ class Labels(BaseSaveableClass):
         )
 
     def add_category(self, value: str) -> None:
+        """Add category."""
         if value in self.categories:
             return
         self._store_snapshot()
         self.categories.append(value)
 
     def del_item(self, ref: str) -> None:
+        """Del item."""
         if ref not in self.data:
             return
         self._store_snapshot()
         del self.data[ref]
 
-    def get_label(self, ref: str, default_value: str | None = None) -> Optional[str]:
+    def get_label(self, ref: str, default_value: str | None = None) -> str | None:
+        """Get label."""
         item = self.data.get(ref)
         if not item:
             return default_value
         return item.label
 
     def get_category_raw(self, ref: str) -> str | None:
+        """Get category raw."""
         item = self.data.get(ref)
         if not item or item.category is None:
             return None
@@ -321,13 +339,15 @@ class Labels(BaseSaveableClass):
         return item.category
 
     def get_category(self, ref: str, default_value=None) -> str:
+        """Get category."""
         item = self.data.get(ref)
         if not item or item.category is None:
             return default_value if default_value else self.get_default_category()
 
         return item.category
 
-    def get_timestamp(self, ref: str, default_value=None) -> Optional[float]:
+    def get_timestamp(self, ref: str, default_value=None) -> float | None:
+        """Get timestamp."""
         item = self.data.get(ref)
         if not item or not item.timestamp:
             return default_value
@@ -335,8 +355,9 @@ class Labels(BaseSaveableClass):
         return item.timestamp
 
     def set_label(
-        self, type: LabelType, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+        self, type: LabelType, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now"
     ) -> None:
+        """Set label."""
         self._store_snapshot()
         label = self.data.get(ref)
 
@@ -350,8 +371,9 @@ class Labels(BaseSaveableClass):
             del self.data[ref]
 
     def set_category(
-        self, type: LabelType, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
+        self, type: LabelType, ref: str, category, timestamp: Literal["now", "old"] | float = "now"
     ) -> None:
+        """Set category."""
         self._store_snapshot()
         label = self.data.get(ref)
         if not label:
@@ -366,58 +388,59 @@ class Labels(BaseSaveableClass):
         if category and category not in self.categories:
             self.categories.append(category)
 
-    def set_tx_label(
-        self, label_value, value, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> None:
+    def set_tx_label(self, label_value, value, timestamp: Literal["now", "old"] | float = "now") -> None:
+        """Set tx label."""
         return self.set_label(LabelType.tx, label_value, value, timestamp=timestamp)
 
-    def set_addr_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> None:
+    def set_addr_label(self, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now") -> None:
+        """Set addr label."""
         return self.set_label(LabelType.addr, ref, label_value, timestamp=timestamp)
 
     def set_pubkey_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+        self, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now"
     ) -> None:
+        """Set pubkey label."""
         return self.set_label(LabelType.pubkey, ref, label_value, timestamp=timestamp)
 
     def set_input_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+        self, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now"
     ) -> None:
+        """Set input label."""
         return self.set_label(LabelType.input, ref, label_value, timestamp=timestamp)
 
     def set_output_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
+        self, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now"
     ) -> None:
+        """Set output label."""
         return self.set_label(LabelType.output, ref, label_value, timestamp=timestamp)
 
-    def set_xpub_label(
-        self, ref: str, label_value, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> None:
+    def set_xpub_label(self, ref: str, label_value, timestamp: Literal["now", "old"] | float = "now") -> None:
+        """Set xpub label."""
         return self.set_label(LabelType.xpub, ref, label_value, timestamp=timestamp)
 
-    def set_addr_category(
-        self, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> None:
+    def set_addr_category(self, ref: str, category, timestamp: Literal["now", "old"] | float = "now") -> None:
+        """Set addr category."""
         return self.set_category(LabelType.addr, ref, category, timestamp=timestamp)
 
-    def set_tx_category(
-        self, ref: str, category, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> None:
+    def set_tx_category(self, ref: str, category, timestamp: Literal["now", "old"] | float = "now") -> None:
+        """Set tx category."""
         return self.set_category(LabelType.tx, ref, category, timestamp=timestamp)
 
     def get_default_category(self) -> str:
+        """Get default category."""
         return self.categories[0] if self.categories else self.default_category
 
-    def get_category_dict_raw(self, filter_type: LabelType | None) -> Dict[str | None, List[Label]]:
-        d: Dict[str | None, List[Label]] = defaultdict(list)
+    def get_category_dict_raw(self, filter_type: LabelType | None) -> dict[str | None, list[Label]]:
+        """Get category dict raw."""
+        d: dict[str | None, list[Label]] = defaultdict(list)
         for label in self.data.values():
             if filter_type and label.type != filter_type:
                 continue
             d[label.category].append(label)
         return d
 
-    def dump(self) -> Dict:
+    def dump(self) -> dict:
+        """Dump."""
         d = super().dump()
 
         d["data"] = self.data
@@ -430,7 +453,8 @@ class Labels(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None) -> "Labels":
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Labels:
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         # handle a case of incorrectly saved labels
@@ -446,7 +470,8 @@ class Labels(BaseSaveableClass):
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump_migration(cls, dct: Dict[str, Any]) -> Dict[str, Any]:
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             if "data" in dct:
                 #
@@ -464,12 +489,14 @@ class Labels(BaseSaveableClass):
         return super().from_dump_migration(dct=dct)
 
     def export_bip329_jsonlines(self) -> str:
+        """Export bip329 jsonlines."""
         list_of_dict = [item.to_bip329() for item in self.data.values()]
         return list_of_dict_to_jsonlines(list_of_dict)
 
     def import_bip329_jsonlines(
-        self, jsonlines: str, fill_categories=True, timestamp: Union[Literal["now", "old"], float] = "now"
-    ) -> Dict[str, Label]:
+        self, jsonlines: str, fill_categories=True, timestamp: Literal["now", "old"] | float = "now"
+    ) -> dict[str, Label]:
+        """Import bip329 jsonlines."""
         list_of_dict = jsonlines_to_list_of_dict(jsonlines)
         labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
@@ -479,8 +506,9 @@ class Labels(BaseSaveableClass):
         file_content: str,
         network: bdk.Network,
         fill_categories=True,
-        timestamp: Union[Literal["now", "old"], float] = "now",
-    ) -> Dict[str, Label]:
+        timestamp: Literal["now", "old"] | float = "now",
+    ) -> dict[str, Label]:
+        """Import electrum wallet json."""
         electrum_dict = json.loads(file_content)
         list_of_dict = []
         for key, label in electrum_dict.items():
@@ -493,9 +521,8 @@ class Labels(BaseSaveableClass):
         labels = [Label.from_bip329(d, timestamp=timestamp) for d in list_of_dict]
         return self.import_labels(labels=labels, fill_categories=fill_categories)
 
-    def _should_overwrite(
-        self, new_label: Label, old_label: Optional[Label], tiebreaker: Optional[bool]
-    ) -> bool:
+    def _should_overwrite(self, new_label: Label, old_label: Label | None, tiebreaker: bool | None) -> bool:
+        """Should overwrite."""
         if not old_label:
             return True
         if not new_label.timestamp:
@@ -509,7 +536,8 @@ class Labels(BaseSaveableClass):
     @staticmethod
     def get_timestamp_range(
         labels: Iterable[Label], exclude_automatic=True
-    ) -> Tuple[float | None, float | None]:
+    ) -> tuple[float | None, float | None]:
+        """Get timestamp range."""
         earliest_timestamp: float | None = None
         latest_timestamp: float | None = None
         for label in labels:
@@ -524,7 +552,8 @@ class Labels(BaseSaveableClass):
                 )
         return earliest_timestamp, latest_timestamp
 
-    def _should_overwrite_mine_when_tie(self, new_labels: List[Label]) -> None | bool:
+    def _should_overwrite_mine_when_tie(self, new_labels: list[Label]) -> None | bool:
+        """Should overwrite mine when tie."""
         my_earliest_timestamp, _ = self.get_timestamp_range(self.data.values())
         other_earliest_timestamp, _ = self.get_timestamp_range(new_labels)
 
@@ -536,7 +565,8 @@ class Labels(BaseSaveableClass):
         # prefer the labels with the oldest (non_automatic) entries
         return False if my_earliest_timestamp < other_earliest_timestamp else True
 
-    def import_labels(self, labels: List[Label], fill_categories=True, force_overwrite=False) -> ChangedItems:
+    def import_labels(self, labels: list[Label], fill_categories=True, force_overwrite=False) -> ChangedItems:
+        """Import labels."""
         self._store_snapshot()
         changed_data = ChangedItems()
 
@@ -564,27 +594,31 @@ class Labels(BaseSaveableClass):
                     self.categories.append(item.category)
         return changed_data
 
-    def dumps_data_jsonline_list(self, refs: list[str] | None = None) -> List[str]:
+    def dumps_data_jsonline_list(self, refs: list[str] | None = None) -> list[str]:
+        """Dumps data jsonline list."""
         return list_of_dict_to_jsonline_list(
             [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
         )
 
     def dumps_data_jsonlines(self, refs: list[str] | None = None) -> str:
+        """Dumps data jsonlines."""
         return list_of_dict_to_jsonlines(
             [label.dump() for ref, label in self.data.items() if (refs is None) or (ref in refs)]
         )
 
     def import_dumps_data(self, dumps_data: str, fill_categories=True, force_overwrite=False) -> ChangedItems:
+        """Import dumps data."""
         labels = [Label.from_dump(label_dict) for label_dict in jsonlines_to_list_of_dict(dumps_data)]
         return self.import_labels(
             labels=labels, fill_categories=fill_categories, force_overwrite=force_overwrite
         )
 
-    def rename_category(self, old_category: str, new_category: str) -> List[str]:
+    def rename_category(self, old_category: str, new_category: str) -> list[str]:
+        """Rename category."""
         if old_category == new_category:
             return []
         self._store_snapshot()
-        affected_keys: List[str] = []
+        affected_keys: list[str] = []
         for key, item in list(self.data.items()):
             if (item.category and item.category == old_category) or (
                 not item.category and old_category == self.default_category
@@ -600,7 +634,8 @@ class Labels(BaseSaveableClass):
                 self.categories.insert(idx, new_category)
         return affected_keys
 
-    def delete_category(self, category: str) -> List[str]:
+    def delete_category(self, category: str) -> list[str]:
+        """Delete category."""
         self._store_snapshot()
         affected_keys = []
         for key, item in list(self.data.items()):

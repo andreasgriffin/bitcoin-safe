@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import json
 
@@ -55,18 +56,22 @@ serialized_persistence = '{"descriptor": "wpkh([44250c36/84\'/1\'/0\']tpubDCrUjj
 
 class MyMemoryPersistence(bdk.Persistence):
     def __init__(self):
+        """Initialize instance."""
         self.memory = []
 
     def merge_all(self) -> bdk.ChangeSet:
+        """Merge all."""
         total = bdk.ChangeSet()
         for cs in self.memory:
             total = bdk.ChangeSet.from_merge(total, cs)
         return total
 
     def initialize(self) -> bdk.ChangeSet:
+        """Initialize."""
         return self.merge_all()
 
     def persist(self, changeset: bdk.ChangeSet):
+        """Persist."""
         self.memory.append(changeset)
 
 
@@ -75,6 +80,7 @@ class MyMemoryPersistence(bdk.Persistence):
 
 def test_synced_transactions_roundtrip():
     # Build first wallet and persist its state
+    """Test synced transactions roundtrip."""
     myp = MyMemoryPersistence()
     persister = bdk.Persister.custom(myp)
 
@@ -101,7 +107,7 @@ def test_synced_transactions_roundtrip():
     outputs = wallet.list_output()
     outputs2 = wallet2.list_output()
     assert len(outputs) == len(outputs2)
-    for o, o2 in zip(outputs, outputs2):
+    for o, o2 in zip(outputs, outputs2, strict=False):
         assert o.outpoint.txid == o2.outpoint.txid
         assert o.outpoint.vout == o2.outpoint.vout
 
@@ -110,7 +116,7 @@ def test_synced_transactions_roundtrip():
     txs2 = wallet2.transactions()
     assert txs, "Sync error: no transactions returned"
     assert len(txs) == len(txs2)
-    for tx, tx2 in zip(txs, txs2):
+    for tx, tx2 in zip(txs, txs2, strict=False):
         assert tx.transaction.compute_txid().serialize() == tx2.transaction.compute_txid().serialize()
 
     # Balance check

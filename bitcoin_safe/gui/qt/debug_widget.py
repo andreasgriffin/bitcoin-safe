@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import random
-from typing import Optional, Type, TypeVar
+from typing import TypeVar
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QPainter, QPaintEvent
@@ -43,13 +44,16 @@ from PyQt6.QtWidgets import (
 
 class DebugWidget(QWidget):
     def paintEvent(self, a0: QPaintEvent | None) -> None:
+        """PaintEvent."""
         super().paintEvent(a0)
         self.drawDebugInfo(self)
 
     def _cleaned_size_policy(self, policy) -> str:
+        """Cleaned size policy."""
         return str(policy).split(".")[-1]
 
     def _collect_debug_info(self, widget: QWidget, level=0) -> str:
+        """Collect debug info."""
         indent = "    " * level
         sizePolicy = widget.sizePolicy()
         sizePolicyText = f"{indent}SP: H-{self._cleaned_size_policy(sizePolicy.horizontalPolicy())}, V-{self._cleaned_size_policy(sizePolicy.verticalPolicy())}"
@@ -81,6 +85,7 @@ class DebugWidget(QWidget):
         return tooltipText
 
     def drawDebugInfo(self, widget: QWidget) -> None:
+        """DrawDebugInfo."""
         widget_hash = hash(widget)
         random.seed(widget_hash)
         color = QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -105,9 +110,12 @@ class DebugWidget(QWidget):
 W = TypeVar("W", bound=QWidget)
 
 
-def generate_debug_class(BaseClass: Type[W]) -> Type[W]:
+def generate_debug_class(BaseClass: type[W]) -> type[W]:
+    """Generate debug class."""
+
     class DebugClass(BaseClass):  # type: ignore
-        def paintEvent(self, a0: Optional[QPaintEvent]) -> None:
+        def paintEvent(self, a0: QPaintEvent | None) -> None:
+            """PaintEvent."""
             super().paintEvent(a0)
             DebugWidget().drawDebugInfo(self)
 

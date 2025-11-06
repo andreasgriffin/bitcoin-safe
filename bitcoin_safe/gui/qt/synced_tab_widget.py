@@ -26,27 +26,30 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
 
-from bitcoin_safe.typestubs import TypedPyQtSignal
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
 class SignalEmitter(QObject):
-    change_tab = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    change_tab: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
 
 class GroupSignalManager:
-    signals: Dict[str, SignalEmitter] = {}
+    signals: dict[str, SignalEmitter] = {}
 
     @classmethod
     def get_emitter(cls, group: str) -> SignalEmitter:
+        """Get emitter."""
         if group not in cls.signals:
             cls.signals[group] = SignalEmitter()
         return cls.signals[group]
@@ -59,6 +62,7 @@ class SyncedTabWidget(QTabWidget):
         parent: QWidget | None = None,
         tab_position: QTabWidget.TabPosition = QTabWidget.TabPosition.North,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.group = group
         self.emitter: SignalEmitter = GroupSignalManager.get_emitter(self.group)
@@ -70,10 +74,12 @@ class SyncedTabWidget(QTabWidget):
         self.setTabPosition(tab_position)
 
     def onTabChange(self, index: int) -> None:
+        """OnTabChange."""
         self.emitter.change_tab.emit(index)
 
     def safeSetCurrentIndex(self, index: int) -> None:
         # Check if the index is within the valid range before setting it
+        """SafeSetCurrentIndex."""
         if 0 <= index < self.count():
             self.setCurrentIndex(index)
 
@@ -82,6 +88,7 @@ if __name__ == "__main__":
 
     class MainWindow(QMainWindow):
         def __init__(self) -> None:
+            """Initialize instance."""
             super().__init__()
             self.setWindowTitle("Grouped Synced Tab Widgets")
 

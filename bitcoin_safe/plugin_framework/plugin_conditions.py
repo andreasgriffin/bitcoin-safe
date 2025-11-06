@@ -26,6 +26,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 
@@ -36,9 +38,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class PluginConditions:
-    """
-    if a condition is None, it means it is not active
-    """
+    """If a condition is None, it means it is not active."""
 
     # allowed_address_types:List[ AddressType]|None =None
     # disallowed_address_types:List[ AddressType]|None =None
@@ -50,6 +50,7 @@ class PluginConditions:
     # max_allowed_threshold:int|None =None
 
     def descriptor_allowed(self, descriptor: str) -> bool:
+        """Descriptor allowed."""
         descriptor_info = DescriptorInfo.from_str(descriptor)
         if (self.min_allowed_signers is not None) and not (
             self.min_allowed_signers <= len(descriptor_info.spk_providers)

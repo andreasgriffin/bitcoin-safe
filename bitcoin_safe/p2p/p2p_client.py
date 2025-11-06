@@ -41,17 +41,19 @@ import socket
 import struct
 import time
 from asyncio import StreamReader, StreamWriter
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
-from typing import Any, Callable, Coroutine, Dict, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
-import socks  # PySocks: pip install PySocks
 from aiohttp_socks import open_connection as socks_open_connection
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.network_config import ConnectionInfo, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +72,7 @@ RATE_WINDOW_SEC = 1.0  # sliding-window size
 MAX_ADDR_ITEMS = 1000  # Cap addr/v1 and addrv2 list sizes
 
 # Mapping of recognised networks → magic value (big‑endian as on‑the‑wire)
-MAGIC_VALUES: Dict[Any, int] = {
+MAGIC_VALUES: dict[Any, int] = {
     bdk.Network.BITCOIN: 0xF9BEB4D9,  # https://github.com/bitcoin/bitcoin/blob/7590e93bc73b3bbac641f05d490fd5c984156b33/src/kernel/chainparams.cpp#L128
     bdk.Network.TESTNET: 0x0B110907,  # https://github.com/bitcoin/bitcoin/blob/7590e93bc73b3bbac641f05d490fd5c984156b33/src/kernel/chainparams.cpp#L247
     bdk.Network.REGTEST: 0xFABFB5DA,  # https://github.com/bitcoin/bitcoin/blob/7590e93bc73b3bbac641f05d490fd5c984156b33/src/kernel/chainparams.cpp#L563
@@ -106,7 +108,8 @@ class Inventory(list[InventoryItem]):
     pass
 
 
-def decode_varint(data: bytes) -> Tuple[int, int]:
+def decode_varint(data: bytes) -> tuple[int, int]:
+    """Decode varint."""
     if not data:
         raise ValueError("Empty varint")
     size = data[0]
@@ -136,6 +139,7 @@ def decode_varint(data: bytes) -> Tuple[int, int]:
 
 
 def encode_varint(n: int) -> bytes:
+    """Encode varint."""
     if n < 0xFD:
         return bytes([n])
     if n <= 0xFFFF:
@@ -146,6 +150,7 @@ def encode_varint(n: int) -> bytes:
 
 
 def double_sha256(b: bytes) -> bytes:
+    """Double sha256."""
     return hashlib.sha256(hashlib.sha256(b).digest()).digest()
 
 
@@ -161,46 +166,46 @@ class P2PClient(QObject):
     # Signals – one per message we explicitly parse, plus a generic fallback
     # ------------------------------------------------------------------
 
-    signal_version = pyqtSignal(object)
-    signal_verack = pyqtSignal()
-    signal_addr = pyqtSignal(object)
-    signal_addrv2 = pyqtSignal(object)
-    signal_sendaddrv2 = pyqtSignal()
-    signal_inv = pyqtSignal(Inventory)
-    signal_notfound = pyqtSignal(object)
-    signal_getdata = pyqtSignal(object)
-    signal_getblocks = pyqtSignal(object)
-    signal_getheaders = pyqtSignal(object)
-    signal_headers = pyqtSignal(object)
-    signal_block = pyqtSignal(str)  # block hash
-    signal_tx = pyqtSignal(bdk.Transaction)
-    signal_getblocktxn = pyqtSignal(object)
-    signal_blocktxn = pyqtSignal(object)
-    signal_cmpctblock = pyqtSignal(object)
-    signal_sendcmpct = pyqtSignal(object)
-    signal_sendheaders = pyqtSignal()
-    signal_ping = pyqtSignal()
-    signal_pong = pyqtSignal()
-    signal_mempool = pyqtSignal()
-    signal_reject = pyqtSignal(object)
-    signal_filterload = pyqtSignal(object)
-    signal_filteradd = pyqtSignal(object)
-    signal_filterclear = pyqtSignal()
-    signal_feefilter = pyqtSignal(int)
-    signal_wtxidrelay = pyqtSignal()
-    signal_getcfheaders = pyqtSignal(object)
-    signal_cfheaders = pyqtSignal(object)
-    signal_getcfcheckpt = pyqtSignal(object)
-    signal_cfcheckpt = pyqtSignal(object)
-    signal_getcfilter = pyqtSignal(object)
-    signal_cfilter = pyqtSignal(object)
+    signal_version: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_verack: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_addr: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_addrv2: TypedPyQtSignal[bytes] = cast(Any, pyqtSignal(bytes))
+    signal_sendaddrv2: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_inv: TypedPyQtSignal[Inventory] = cast(Any, pyqtSignal(Inventory))
+    signal_notfound: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_getdata: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_getblocks: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_getheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_headers: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_block: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # block hash
+    signal_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    signal_getblocktxn: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_blocktxn: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_cmpctblock: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_sendcmpct: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_sendheaders: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_ping: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_pong: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_mempool: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_reject: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_filterload: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_filteradd: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_filterclear: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_feefilter: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_wtxidrelay: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_getcfheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_cfheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_getcfcheckpt: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_cfcheckpt: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_getcfilter: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_cfilter: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
 
-    signal_unknown = pyqtSignal(str, bytes)  # (command, raw_payload)
+    signal_unknown: TypedPyQtSignal[str, bytes] = cast(Any, pyqtSignal(str, bytes))  # (command, raw_payload)
 
-    signal_disconnected_to = cast(TypedPyQtSignal[Peer], pyqtSignal(Peer))
-    signal_try_connecting_to = cast(TypedPyQtSignal[ConnectionInfo], pyqtSignal(ConnectionInfo))
-    signal_current_peer_change = cast(TypedPyQtSignal[ConnectionInfo | None], pyqtSignal(object))
-    signal_received_peers = cast(TypedPyQtSignal[Peers], pyqtSignal(Peers))
+    signal_disconnected_to: TypedPyQtSignal[Peer] = cast(Any, pyqtSignal(Peer))
+    signal_try_connecting_to: TypedPyQtSignal[ConnectionInfo] = cast(Any, pyqtSignal(ConnectionInfo))
+    signal_current_peer_change: TypedPyQtSignal[ConnectionInfo | None] = cast(Any, pyqtSignal(object))
+    signal_received_peers: TypedPyQtSignal[Peers] = cast(Any, pyqtSignal(Peers))
 
     # ------------------------------------------------------------------
 
@@ -210,13 +215,14 @@ class P2PClient(QObject):
         debug=True,
         fetch_txs=True,
         timeout: int = 200,
-        parent: Optional[QObject] = None,
+        parent: QObject | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.network = network
         self.timeout = timeout
-        self.reader: Optional[StreamReader] = None
-        self.writer: Optional[StreamWriter] = None
+        self.reader: StreamReader | None = None
+        self.writer: StreamWriter | None = None
         self.fetch_txs = fetch_txs
         # DoS-protection state
         self._msg_times: collections.deque[float] = collections.deque()
@@ -224,7 +230,7 @@ class P2PClient(QObject):
         self._current_peer: Peer | None = None
 
         # call once
-        self._DISPATCH_TABLE: Dict[str, Callable[[Any], Coroutine[Any, Any, None]]] = {}
+        self._DISPATCH_TABLE: dict[str, Callable[[Any], Coroutine[Any, Any, None]]] = {}
         self._init_dispatch()
 
         if debug:
@@ -242,13 +248,11 @@ class P2PClient(QObject):
     async def connect(
         self,
         peer: Peer,
-        proxy_info: Optional[ProxyInfo],
+        proxy_info: ProxyInfo | None,
     ) -> None:
-        """
-        Establish a connection and send VERSION (+ optionally SENDADDRV2).
+        """Establish a connection and send VERSION (+ optionally SENDADDRV2).
 
         Can raise Expceptions
-
         """
         establish_connection_timeout = 20 if proxy_info else 2
 
@@ -278,13 +282,13 @@ class P2PClient(QObject):
     async def _connect(
         cls,
         peer: Peer,
-        proxy_info: Optional[ProxyInfo],
+        proxy_info: ProxyInfo | None,
         timeout: float = 20,
-    ) -> Tuple[asyncio.StreamReader, asyncio.StreamWriter]:
-        """
-        If proxy_info is None (or missing host/port), do a plain connection.
-        If proxy_info.scheme starts with "socks", use aiohttp_socks.open_connection.
-        Otherwise, fall back to direct asyncio.open_connection.
+    ) -> tuple[asyncio.StreamReader, asyncio.StreamWriter]:
+        """If proxy_info is None (or missing host/port), do a plain connection.
+
+        If proxy_info.scheme starts with "socks", use aiohttp_socks.open_connection. Otherwise, fall back to
+        direct asyncio.open_connection.
         """
         # 1) No proxy → plain open_connection
         if proxy_info is None:
@@ -329,10 +333,8 @@ class P2PClient(QObject):
         raise ValueError(f"Unsupported proxy scheme: {proxy_info.scheme!r}")
 
     async def disconnect(self) -> None:  # type: ignore
-        """
-        Close the underlying TCP connection *and* clear the reader/writer so that
-        ``is_running()`` immediately reflects the new (disconnected) state.
-        """
+        """Close the underlying TCP connection *and* clear the reader/writer so that
+        ``is_running()`` immediately reflects the new (disconnected) state."""
         if self.writer:
             self.writer.close()
             try:
@@ -352,27 +354,26 @@ class P2PClient(QObject):
     # Connection-state helper
     # ------------------------------------------------------------------
     def is_running(self) -> bool:
-        """
-        Return ``True`` while the client has an open TCP connection to its peer.
-        """
+        """Return ``True`` while the client has an open TCP connection to its peer."""
         return bool(self.writer and not self.writer.is_closing())
 
     def current_peer(self) -> Peer | None:
+        """Current peer."""
         return self._current_peer
 
     @staticmethod
     def make_core_user_agent() -> bytes:
+        """Make core user agent."""
         versions = [f"{i}.0" for i in range(22, 28)]
         v = random.choice(versions)
         return f"/Satoshi:{v}/".encode()
 
     def _version_payload(self, peer: Peer) -> bytes:
-        """Build the payload for an outgoing `version` message,
-        handling IPv4, IPv6, Tor (.onion v2), and I2P (.i2p)."""
+        """Build the payload for an outgoing `version` message, handling IPv4, IPv6, Tor
+        (.onion v2), and I2P (.i2p)."""
 
         def encode_address(host: str) -> bytes:
-            """
-            Convert *host* to the 16-byte 'network address' field used in the VERSION
+            """Convert *host* to the 16-byte 'network address' field used in the VERSION
             message.
 
             Supported forms
@@ -482,13 +483,14 @@ class P2PClient(QObject):
     # Public helpers / high‑level API
     # ------------------------------------------------------------------
     async def request_addresses(self) -> None:
-        """
-        Ask the peer for its address table.
+        """Ask the peer for its address table.
+
         Call this only after VERACK.
         """
         await self._send_raw("getaddr", b"")  # ← nothing else here
 
     async def broadcast_tx(self, raw_hex: str) -> None:
+        """Broadcast tx."""
         try:
             raw = bytes.fromhex(raw_hex)
         except ValueError:
@@ -497,10 +499,8 @@ class P2PClient(QObject):
         await self._send_raw("tx", raw)
 
     async def getdata(self, inventory: Inventory) -> None:
-        """
-        Request data for the given inventory, *preferring witness* encodings
-        (BIP144) when asking for txs/blocks.
-        """
+        """Request data for the given inventory, *preferring witness* encodings (BIP144)
+        when asking for txs/blocks."""
         if not self.writer:
             logger.debug("Writer not initialised – cannot request data")
             return
@@ -519,6 +519,7 @@ class P2PClient(QObject):
         await self._send_raw("getdata", self._serialize_inv(upgraded))
 
     async def request_headers(self, *hashes_be: str) -> None:
+        """Request headers."""
         if not hashes_be:
             raise ValueError("Need at least one locator hash")
         payload = encode_varint(len(hashes_be))
@@ -527,6 +528,7 @@ class P2PClient(QObject):
         await self._send_raw("getheaders", payload)
 
     async def request_mempool(self) -> None:
+        """Request mempool."""
         await self._send_raw("mempool", b"")
 
     # ------------------------------------------------------------------
@@ -534,6 +536,7 @@ class P2PClient(QObject):
     # ------------------------------------------------------------------
 
     async def listen_forever(self) -> None:
+        """Listen forever."""
         while self.is_running():
             await self._read_message()
 
@@ -541,9 +544,8 @@ class P2PClient(QObject):
     # Low‑level framing
     # ------------------------------------------------------------------
     async def _send_raw(self, cmd: str, payload: bytes) -> None:
-        """
-        Send a raw Bitcoin P2P message **with a timeout applied to the drain() call**.
-        """
+        """Send a raw Bitcoin P2P message **with a timeout applied to the drain()
+        call**."""
         if not self.writer:
             return
 
@@ -569,10 +571,8 @@ class P2PClient(QObject):
         logger.debug("→ %s (%d bytes)", cmd, len(payload))
 
     async def _read_exact(self, n: int) -> bytes:
-        """
-        Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting)
-        if the peer stays silent for longer than ``self.timeout`` seconds.
-        """
+        """Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting) if
+        the peer stays silent for longer than ``self.timeout`` seconds."""
         if not self.reader:
             return b""
 
@@ -608,6 +608,7 @@ class P2PClient(QObject):
         max_per_sec: int,
         label: str,
     ) -> None:
+        """Enforce rate limit."""
         now = time.monotonic()
         dq.append(now)
 
@@ -693,6 +694,7 @@ class P2PClient(QObject):
     # ------------------------------------------------------------------
 
     def _init_dispatch(self) -> None:
+        """Init dispatch."""
         mapping = {
             "version": self._handle_version,
             "verack": self._handle_verack,
@@ -732,6 +734,7 @@ class P2PClient(QObject):
 
     async def _dispatch(self, cmd: str, payload: bytes) -> None:
         # ensure non-empty name
+        """Dispatch."""
         safe_cmd = cmd or "<?>"
         handler = self._DISPATCH_TABLE.get(safe_cmd)
         if handler is None:
@@ -752,10 +755,12 @@ class P2PClient(QObject):
     # Individual handlers ------------------------------------------------------------------
 
     async def _handle_version(self, p: bytes) -> None:
+        """Handle version."""
         self.signal_version.emit(self._decode_version(p))
         await self._send_raw("verack", b"")
 
     async def _handle_verack(self, p: bytes) -> None:
+        """Handle verack."""
         self.signal_verack.emit()
 
         # Immediately (and silently) ask for the address list.
@@ -764,17 +769,21 @@ class P2PClient(QObject):
         asyncio.create_task(self.request_addresses())
 
     async def _handle_ping(self, p: bytes) -> None:
+        """Handle ping."""
         self.signal_ping.emit()
         await self._send_raw("pong", p[:8])
 
     async def _handle_pong(self, p: bytes) -> None:
+        """Handle pong."""
         self.signal_pong.emit()
 
     async def _handle_sendheaders(self, p: bytes) -> None:
+        """Handle sendheaders."""
         self.signal_sendheaders.emit()
 
     async def _handle_sendcmpct(self, p: bytes) -> None:
         # 1 byte: announce bool, 8 bytes: version
+        """Handle sendcmpct."""
         if len(p) >= 9:
             announce, version = struct.unpack("<BQ", p[:9])
             self.signal_sendcmpct.emit({"announce": bool(announce), "version": version})
@@ -782,88 +791,115 @@ class P2PClient(QObject):
             self.signal_sendcmpct.emit({"raw": p})
 
     async def _handle_addr(self, p: bytes) -> None:
+        """Handle addr."""
         self.signal_addr.emit(self._parse_addr_like(p))
 
     async def _handle_addrv2(self, p: bytes) -> None:
+        """Handle addrv2."""
         self.signal_addrv2.emit(p)  # complex; emit raw
 
     async def _handle_sendaddrv2(self, p: bytes) -> None:
+        """Handle sendaddrv2."""
         self.signal_sendaddrv2.emit()
 
     async def _handle_inv(self, p: bytes) -> None:
+        """Handle inv."""
         inventory = self._parse_inv(p)
         self.signal_inv.emit(inventory)
 
     async def _handle_notfound(self, p: bytes) -> None:
+        """Handle notfound."""
         self.signal_notfound.emit(self._parse_inv(p))
 
     async def _handle_getdata(self, p: bytes) -> None:
+        """Handle getdata."""
         self.signal_getdata.emit(self._parse_inv(p))
 
     async def _handle_getblocks(self, p: bytes) -> None:
+        """Handle getblocks."""
         self.signal_getblocks.emit(p)  # rare to receive; raw
 
     async def _handle_tx(self, p: bytes) -> None:
+        """Handle tx."""
         self.signal_tx.emit(bdk.Transaction(p))
 
     async def _handle_block(self, p: bytes) -> None:
+        """Handle block."""
         blk_hash = double_sha256(p[:80])[::-1].hex()
         self.signal_block.emit(blk_hash)
 
     async def _handle_headers(self, p: bytes) -> None:
+        """Handle headers."""
         self.signal_headers.emit(p)
 
     async def _handle_mempool(self, p: bytes) -> None:
+        """Handle mempool."""
         self.signal_mempool.emit()
 
     async def _handle_reject(self, p: bytes) -> None:
+        """Handle reject."""
         self.signal_reject.emit(p)
 
     async def _handle_filterload(self, p: bytes) -> None:
+        """Handle filterload."""
         self.signal_filterload.emit(p)
 
     async def _handle_filteradd(self, p: bytes) -> None:
+        """Handle filteradd."""
         self.signal_filteradd.emit(p)
 
     async def _handle_filterclear(self, p: bytes) -> None:
+        """Handle filterclear."""
         self.signal_filterclear.emit()
 
     async def _handle_feefilter(self, p: bytes) -> None:
+        """Handle feefilter."""
         if len(p) == 8:
             (feerate,) = struct.unpack("<Q", p)
             self.signal_feefilter.emit(feerate)
 
     async def _handle_getcfheaders(self, p: bytes) -> None:
+        """Handle getcfheaders."""
         self.signal_getcfheaders.emit(p)
 
     async def _handle_cfheaders(self, p: bytes) -> None:
+        """Handle cfheaders."""
         self.signal_cfheaders.emit(p)
 
     async def _handle_getcfcheckpt(self, p: bytes) -> None:
+        """Handle getcfcheckpt."""
         self.signal_getcfcheckpt.emit(p)
 
     async def _handle_cfcheckpt(self, p: bytes) -> None:
+        """Handle cfcheckpt."""
         self.signal_cfcheckpt.emit(p)
 
     async def _handle_getcfilter(self, p: bytes) -> None:
+        """Handle getcfilter."""
         self.signal_getcfilter.emit(p)
 
     async def _handle_cfilter(self, p: bytes) -> None:
+        """Handle cfilter."""
         self.signal_cfilter.emit(p)
 
     async def _handle_wtxidrelay(self, p: bytes) -> None:
+        """Handle wtxidrelay."""
         self.signal_wtxidrelay.emit()
 
     async def _handle_cmpctblock(self, p: bytes) -> None:
+        """Handle cmpctblock."""
         self.signal_cmpctblock.emit(p)
 
     async def _handle_getblocktxn(self, p: bytes) -> None:
+        """Handle getblocktxn."""
         self.signal_getblocktxn.emit(p)
 
     async def _handle_blocktxn(self, p: bytes) -> None:
+        """Handle blocktxn."""
         self.signal_blocktxn.emit(p)
 
     async def _handle_unknown(self, p: bytes, cmd: str | None = None) -> None:  # type: ignore[override]
+        """Handle unknown."""
         self.signal_unknown.emit(cmd or "?", p)
 
     async def _handle_getheaders(self, p: bytes) -> None:
@@ -877,6 +913,7 @@ class P2PClient(QObject):
     # ------------------------------------------------------------------
     @staticmethod
     def _parse_inv(p: bytes) -> Inventory:
+        """Parse inv."""
         items = Inventory()
         count, consumed = decode_varint(p)
 
@@ -925,8 +962,9 @@ class P2PClient(QObject):
         return bytes(out)
 
     @staticmethod
-    def _parse_addr_like(p: bytes) -> List[Tuple[str, int]]:
-        addrs: List[Tuple[str, int]] = []
+    def _parse_addr_like(p: bytes) -> list[tuple[str, int]]:
+        """Parse addr like."""
+        addrs: list[tuple[str, int]] = []
         count, off = decode_varint(p)
 
         # ── HARDENING: cap and log
@@ -953,10 +991,11 @@ class P2PClient(QObject):
         return addrs
 
     @staticmethod
-    def _decode_version(p: bytes) -> Dict[str, Any]:
+    def _decode_version(p: bytes) -> dict[str, Any]:
         # https://en.bitcoin.it/wiki/Protocol_documentation#version
 
         # 1) version, services, timestamp (4 + 8 + 8 = 20 bytes)
+        """Decode version."""
         version, services, ts = struct.unpack_from("<iQQ", p, 0)
         off = 20
 
@@ -1017,14 +1056,15 @@ class P2PClient(QObject):
         }
 
     def _on_addrv2(self, payload: bytes):
-        """
-        Decode a BIP-155 ADDRv2 message (payload only) and remember the
-        peers it contains.  We handle the most common network IDs:
-            1 = IPv4
-            2 = IPv6
-            3 = Tor v2
-            4 = Tor v3
-            5 = I2P
+        """Decode a BIP-155 ADDRv2 message (payload only) and remember the peers it
+        contains.
+
+        We handle the most common network IDs:
+        1 = IPv4
+        2 = IPv6
+        3 = Tor v2
+        4 = Tor v3
+        5 = I2P
         """
         received_peers = Peers()
         try:

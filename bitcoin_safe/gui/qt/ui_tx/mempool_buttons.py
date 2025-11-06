@@ -26,8 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 import logging
-from typing import List, cast
+from typing import TYPE_CHECKING, Any, cast
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -59,7 +61,7 @@ from ....mempool_manager import (
     fee_to_color,
     mempoolFeeColors,
 )
-from ....signals import TypedPyQtSignal, WalletFunctions
+from ....signals import WalletFunctions
 from ....util import required_precision
 from ..invisible_scroll_area import InvisibleScrollArea
 from ..util import (
@@ -67,21 +69,27 @@ from ..util import (
     button_info,
     center_in_widget,
     set_no_margins,
-    svg_tools,
 )
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 SIZE_MEMPOOL_BLOCK = 100
 SIZE_CONFIRMED_BLOCK = 120
 
 
+_DEFAULT_ICON_SIZE = QSize(24, 24)
+
+
 def format_block_number(block_number) -> str:
+    """Format block number."""
     return QLocale().toString(int(block_number))
 
 
 class SmallTitleLabel(QLabel):
-
     def __init__(self, text: str = "", parent=None) -> None:
+        """Initialize instance."""
         super().__init__(text, parent)
 
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -102,6 +110,7 @@ class SmallTitleLabel(QLabel):
 
 class SmallTextLabel(QLabel):
     def __init__(self, text: str = "", parent=None) -> None:
+        """Initialize instance."""
         super().__init__(text, parent)
 
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -113,6 +122,7 @@ class SmallTextLabel(QLabel):
 
 class BetweenBlockInfoBox(QWidget):
     def __init__(self, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self.setVisible(False)
 
@@ -126,8 +136,8 @@ class BetweenBlockInfoBox(QWidget):
 
 
 class BaseBlockLabel(QLabel):
-
     def __init__(self, network: bdk.Network, text: str = "", parent=None) -> None:
+        """Initialize instance."""
         super().__init__(text, parent)
         self.network = network
 
@@ -137,16 +147,18 @@ class BaseBlockLabel(QLabel):
         self.setHidden(not text)
 
     def setText(self, a0: str | None) -> None:
+        """SetText."""
         self.setHidden(not a0)
         return super().setText(a0)
 
     def format_fee(self, fee: float, decimal_precision: int = 0) -> str:
+        """Format fee."""
         return f"{fee:.{decimal_precision}f}"
 
 
 class LabelTitle(BaseBlockLabel):
-
     def set(self, text: str, block_type: BlockType) -> None:
+        """Set."""
         self.setText(html_f(text, color="white" if block_type else "black", size="16px"))
 
 
@@ -155,14 +167,17 @@ class LabelApproximateMedianFee(BaseBlockLabel):
         self,
         block_info: BlockInfo,
     ) -> None:
+        """Set."""
         decimal_precision = required_precision(block_info.min_fee, block_info.max_fee)
-        s = f"~{self.format_fee(block_info.median_fee , decimal_precision=decimal_precision   )} {unit_fee_str(self.network)}"
+        median_fee_str = self.format_fee(block_info.median_fee, decimal_precision=decimal_precision)
+        s = f"~{median_fee_str} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="white" if block_info.block_type else "black", size="12px"))
 
 
 class LabelExactMedianFee(BaseBlockLabel):
     def set(self, median_fee: float, block_type: BlockType) -> None:
+        """Set."""
         s = f"{round(median_fee, 1)} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
@@ -170,29 +185,34 @@ class LabelExactMedianFee(BaseBlockLabel):
 
 class LabelNumberConfirmations(BaseBlockLabel):
     def set(self, i: int, block_type: BlockType) -> None:
-        s = f"{i} Confirmation{'s' if i>1 else ''}"
+        """Set."""
+        s = f"{i} Confirmation{'s' if i > 1 else ''}"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelBlockHeight(BaseBlockLabel):
     def set(self, i: int, block_type: BlockType) -> None:
+        """Set."""
         s = f"{round(i)}. Block"
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelFeeRange(BaseBlockLabel):
-
     def set(self, min_fee: float, max_fee: float) -> None:
+        """Set."""
         decimal_precision = required_precision(min_fee, max_fee)
-        s = f"{self.format_fee(min_fee, decimal_precision=decimal_precision)} - {self.format_fee(max_fee, decimal_precision=decimal_precision)} {unit_fee_str(self.network)}"
+        min_fee_str = self.format_fee(min_fee, decimal_precision=decimal_precision)
+        max_fee_str = self.format_fee(max_fee, decimal_precision=decimal_precision)
+        s = f"{min_fee_str} - {max_fee_str} {unit_fee_str(self.network)}"
 
         self.setText(html_f(s, color="#eee002", size="10px"))
 
 
 class LabelTimeEstimation(BaseBlockLabel):
     def set(self, block_number: int, block_type: BlockType) -> None:
+        """Set."""
         if block_number < 6:
             s = self.tr("~in {t} min").format(t=(block_number) * 10)
         else:
@@ -203,17 +223,16 @@ class LabelTimeEstimation(BaseBlockLabel):
 
 class LabelConfirmationTime(BaseBlockLabel):
     def set(self, timestamp: int, block_type: BlockType) -> None:
+        """Set."""
         s = QLocale().toString(QDateTime.fromSecsSinceEpoch(timestamp), QLocale.FormatType.ShortFormat)
 
         self.setText(html_f(s, color="white" if block_type else "black", size="12px"))
 
 
 class LabelExplorer(BaseBlockLabel):
-
     @staticmethod
     def _extract_domain(url: str):
-        """
-        Extract the domain from a given URL.
+        """Extract the domain from a given URL.
 
         Args:
             url (str): The URL to extract the domain from.
@@ -223,15 +242,17 @@ class LabelExplorer(BaseBlockLabel):
         """
         parsed_url = urlparse(url)
         domain = parsed_url.netloc.split(":")[0]  # Handles potential ports
-        return domain.lstrip("www.")  # Removes 'www.' if present
+        return domain.removeprefix("www.")  # Removes 'www.' if present
 
     def set(self, mempool_url: str, block_type: BlockType) -> None:
+        """Set."""
         s = f"visit<br>{self._extract_domain(mempool_url)}"
         self.setText(html_f(s, color="white" if block_type else "black", size="10px"))
 
 
 class ButtonExplorerIcon(FlatSquareButton):
-    def __init__(self, size=QSize(24, 24), parent: QWidget | None = None) -> None:
+    def __init__(self, size=_DEFAULT_ICON_SIZE, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(
             qicon=svg_tools.get_QIcon(
                 "block-explorer.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
@@ -244,7 +265,8 @@ class ButtonExplorerIcon(FlatSquareButton):
 
 
 class RBFIcon(FlatSquareButton):
-    def __init__(self, size=QSize(24, 24), parent: QWidget | None = None) -> None:
+    def __init__(self, size=_DEFAULT_ICON_SIZE, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(
             qicon=svg_tools.get_QIcon(
                 button_info(ButtonInfoType.rbf).icon_name,
@@ -259,7 +281,8 @@ class RBFIcon(FlatSquareButton):
 
 
 class CPFPIcon(FlatSquareButton):
-    def __init__(self, size=QSize(24, 24), parent: QWidget | None = None) -> None:
+    def __init__(self, size=_DEFAULT_ICON_SIZE, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(
             qicon=svg_tools.get_QIcon(
                 button_info(ButtonInfoType.cpfp).icon_name,
@@ -274,7 +297,8 @@ class CPFPIcon(FlatSquareButton):
 
 
 class EditWithFeeIcon(FlatSquareButton):
-    def __init__(self, size=QSize(24, 24), parent: QWidget | None = None) -> None:
+    def __init__(self, size=_DEFAULT_ICON_SIZE, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(
             qicon=svg_tools.get_QIcon(
                 button_info(ButtonInfoType.edit).icon_name,
@@ -289,12 +313,12 @@ class EditWithFeeIcon(FlatSquareButton):
 
 
 class BlockButton(QPushButton):
-    signal_click = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    signal_click: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
-    signal_rbf_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_cpfp_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_edit_with_fee_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_explorer_explorer_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    signal_rbf_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_cpfp_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_edit_with_fee_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_explorer_explorer_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
     def __init__(
         self,
@@ -306,6 +330,7 @@ class BlockButton(QPushButton):
         clickable=True,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.active = False
         self.block_info = BlockInfo(block_type=BlockType.confirmed)
@@ -334,7 +359,7 @@ class BlockButton(QPushButton):
         self.edit_with_fee_icon = EditWithFeeIcon()
 
         # define the order:
-        self.labels: List[BaseBlockLabel] = [
+        self.labels: list[BaseBlockLabel] = [
             self.label_approximate_median_fee,
             self.label_exact_median_fee,
             self.label_number_confirmations,
@@ -367,40 +392,50 @@ class BlockButton(QPushButton):
 
     def set_size(self, size=SIZE_MEMPOOL_BLOCK):
         # Ensure buttons are square
+        """Set size."""
         self.setMinimumHeight(size)
         self.setMinimumWidth(size)
 
     def _on_click(self) -> None:
+        """On click."""
         if self.clickable:
             self.signal_click.emit(self.index)
 
     def _on_rbf_icon(self) -> None:
+        """On rbf icon."""
         self.signal_rbf_icon.emit(self.index)
 
     def _on_cpfp_icon(self) -> None:
+        """On cpfp icon."""
         self.signal_cpfp_icon.emit(self.index)
 
     def _on_edit_with_fee_icon(self) -> None:
+        """On edit with fee icon."""
         self.signal_edit_with_fee_icon.emit(self.index)
 
     def _on_explorer_explorer_icon(self) -> None:
+        """On explorer explorer icon."""
         self.signal_explorer_explorer_icon.emit(self.index)
 
     def set_index(self, index: int):
+        """Set index."""
         self.index = index
 
     def set_active(self, value: bool):
+        """Set active."""
         self.active = value
         self.set_background_gradient(
             active=value,
         )
 
     def clear_labels(self) -> None:
+        """Clear labels."""
         for label in self.labels:
             label.setText("")
 
     def set_opacity(self, active: bool):
         # remove any existing effect first
+        """Set opacity."""
         self.setGraphicsEffect(None)
 
         if not active:
@@ -414,12 +449,13 @@ class BlockButton(QPushButton):
         color_bottom: str,
         median_color: str | None = None,
     ) -> str:
+        """Get css."""
         self.setObjectName(f"{id(self)}")
 
         colors = (
             [color_bottom, color_top] if median_color is None else [color_bottom, median_color, color_top]
         )
-        stops = ",".join([f"stop:{i/len(colors)} {c}" for i, c in enumerate(colors)])
+        stops = ",".join([f"stop:{i / len(colors)} {c}" for i, c in enumerate(colors)])
 
         css = f"""
             #{self.objectName()} {{
@@ -439,6 +475,7 @@ class BlockButton(QPushButton):
         return css
 
     def set_background_gradient(self, active: bool, block_info: BlockInfo | None = None) -> None:
+        """Set background gradient."""
         self.active = active
         block_info = block_info if block_info else self.block_info
         self.block_info = block_info
@@ -456,7 +493,6 @@ class BlockButton(QPushButton):
 
 
 class VerticalButtonGroup(InvisibleScrollArea):
-
     def __init__(
         self,
         network: bdk.Network,
@@ -467,6 +503,7 @@ class VerticalButtonGroup(InvisibleScrollArea):
         border_radius=5,
         clickable=True,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent)
         self._layout = QVBoxLayout(self.content_widget)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -474,10 +511,10 @@ class VerticalButtonGroup(InvisibleScrollArea):
         #     self.setMinimumHeight(size + 20)
 
         self.setWidgetResizable(True)
-        self.buttons: List[BlockButton] = []
+        self.buttons: list[BlockButton] = []
 
         # Create buttons
-        for i in range(button_count):
+        for _i in range(button_count):
             button = BlockButton(
                 network=network,
                 size=size,
@@ -493,11 +530,13 @@ class VerticalButtonGroup(InvisibleScrollArea):
         self.set_size(size=size)
 
     def set_size(self, size: int):
+        """Set size."""
         self.setMinimumWidth(size + 30)
         for button in self.buttons:
             button.set_size(size=size)
 
     def set_active(self, index: int, exclusive=True):
+        """Set active."""
         for i, button in enumerate(self.buttons):
             if i == index or exclusive:
                 button.set_active(i == index)
@@ -505,6 +544,7 @@ class VerticalButtonGroup(InvisibleScrollArea):
 
 class MempoolScheduler(QObject):
     def __init__(self, mempool_manager: MempoolManager, parent=None) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
 
         self.mempool_manager = mempool_manager
@@ -517,20 +557,22 @@ class MempoolScheduler(QObject):
     def set_mempool_block_unknown_fee_rate(
         self, i, confirmation_time: bdk.ConfirmationBlockTime | None = None
     ) -> None:
+        """Set mempool block unknown fee rate."""
         logger.error("This should not be called")
 
     def set_data_from_mempoolspace(self):
+        """Set data from mempoolspace."""
         self.mempool_manager.set_data_from_mempoolspace()
 
 
 class MempoolButtons(VerticalButtonGroup):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
 
-    signal_click_median_fee = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_rbf_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_cpfp_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_edit_with_fee_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
-    signal_explorer_explorer_icon = cast(TypedPyQtSignal[int], pyqtSignal(int))
+    signal_click_median_fee: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_rbf_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_cpfp_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_edit_with_fee_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_explorer_explorer_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
 
     def __init__(
         self,
@@ -542,6 +584,7 @@ class MempoolButtons(VerticalButtonGroup):
         max_button_count=4,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(
             network=mempool_manager.network_config.network,
             button_count=max_button_count,
@@ -586,9 +629,11 @@ class MempoolButtons(VerticalButtonGroup):
 
     @staticmethod
     def _tx_status_to_size(tx_status: TxStatus) -> int:
+        """Tx status to size."""
         return SIZE_CONFIRMED_BLOCK if tx_status.is_confirmed() else SIZE_MEMPOOL_BLOCK
 
     def calculate_button_indices(self, include_index: int):
+        """Calculate button indices."""
         button_indices = {include_index}
 
         default_indices = list(range(len(self.buttons)))
@@ -598,6 +643,7 @@ class MempoolButtons(VerticalButtonGroup):
         return sorted(list(button_indices))
 
     def open_context_menu(self, pos):
+        """Open context menu."""
         menu = QMenu(self)
         action_refresh = menu.addAction(self.tr("Fetch new mempool data"))
         if action_refresh:
@@ -614,6 +660,7 @@ class MempoolButtons(VerticalButtonGroup):
         self,
         fee_rate=None,
     ) -> None:
+        """Refresh confirmed."""
         self.fee_rate = fee_rate if fee_rate is not None else self.fee_rate
         if not self.tx_status.chain_position or not isinstance(
             self.tx_status.chain_position, bdk.ChainPosition.CONFIRMED
@@ -671,6 +718,7 @@ class MempoolButtons(VerticalButtonGroup):
         tx_status: TxStatus | None = None,
         fee_rate=None,
     ) -> None:
+        """Refresh."""
         self.tx_status = tx_status if tx_status else self.tx_status
         self.can_rbf_safely = can_rbf_safely if can_rbf_safely is not None else self.can_rbf_safely
         self.set_size(size=self._tx_status_to_size(self.tx_status))
@@ -691,7 +739,7 @@ class MempoolButtons(VerticalButtonGroup):
         self.set_active(block_index)
         button_indices = self.calculate_button_indices(block_index)
 
-        for index, button in zip(button_indices, self.buttons):
+        for index, button in zip(button_indices, self.buttons, strict=False):
             button.set_index(index)
             block_number = index + 1
             button.label_title.set(
@@ -712,6 +760,7 @@ class MempoolButtons(VerticalButtonGroup):
         self.set_visibilities(block_index=block_index)
 
     def set_visibilities(self, block_index: int):
+        """Set visibilities."""
         for button in self.buttons:
             # set visibilities
             button.setVisible(button.index < max(1, self.mempool_manager.num_mempool_blocks()))
@@ -750,11 +799,11 @@ class MempoolButtons(VerticalButtonGroup):
                 button.explorer_explorer_icon.setVisible(True)
 
     def _on_button_click(self, i: int) -> None:
+        """On button click."""
         if self.tx_status.confirmation_status != TxConfirmationStatus.DRAFT:
             return
-        logger.debug(
-            f"Clicked button {i}: {self.mempool_manager.median_block_fee_rate(i,decimal_precision=self.decimal_precision)}"
-        )
+        fee_rate = self.mempool_manager.median_block_fee_rate(i, decimal_precision=self.decimal_precision)
+        logger.debug(f"Clicked button {i}: {fee_rate}")
         self.set_active(i)
         self.signal_click_median_fee.emit(i)
 

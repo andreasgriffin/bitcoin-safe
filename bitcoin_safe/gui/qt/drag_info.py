@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 from bitcoin_safe_lib.caching import register_cache
 from PyQt6.QtGui import QColor
@@ -39,14 +40,17 @@ logger = logging.getLogger(__name__)
 
 
 class AddressDragInfo:
-    def __init__(self, tags: Iterable[Optional[str]], addresses: List[str]) -> None:
+    def __init__(self, tags: Iterable[str | None], addresses: list[str]) -> None:
+        """Initialize instance."""
         self.tags = tags
         self.addresses = addresses
 
     def __repr__(self) -> str:
+        """Return representation."""
         return f"AddressDragInfo({self.tags}, {self.addresses})"
 
 
 @register_cache(always_keep=True)
 def cached_category_color(text: str) -> QColor:
+    """Cached category color."""
     return category_color(text)

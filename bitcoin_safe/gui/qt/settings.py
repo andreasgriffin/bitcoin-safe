@@ -26,8 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-from typing import Optional
+from __future__ import annotations
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent
@@ -46,11 +45,12 @@ class Settings(QTabWidget):
     def __init__(
         self,
         config: UserConfig,
-        signals: Optional[Signals],
+        signals: Signals | None,
         language_chooser: LanguageChooser,
         fx: FX,
         parent=None,
     ) -> None:
+        """Initialize instance."""
         super().__init__(parent=parent)
         self.signals = signals
         self.language_chooser = language_chooser
@@ -106,6 +106,7 @@ class Settings(QTabWidget):
     #         self.category_tab_layout.addWidget(self.current_category_manager)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.network_settings_ui.updateUi()
         self.langauge_ui.updateUi()
         self.setTabText(self.indexOf(self.network_settings_ui), self.tr("Network"))
@@ -114,6 +115,7 @@ class Settings(QTabWidget):
 
     def keyPressEvent(self, a0: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
+        """KeyPressEvent."""
         if a0 and a0.key() == Qt.Key.Key_Escape:
             # Close the widget
             self.close()

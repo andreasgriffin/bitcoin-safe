@@ -26,6 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -82,6 +83,7 @@ psbt_sparrow_2of2 = bdk.Psbt(
 
 # Test function for psbt_0_1of1
 def test_psbt_0_1of1():
+    """Test psbt 0 1of1."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_1of1)
     input_ = psbt.inputs[0]
     input_._get_m_of_n
@@ -91,6 +93,7 @@ def test_psbt_0_1of1():
 
 # Test function for psbt_1_1of1
 def test_psbt_1_1of1():
+    """Test psbt 1 1of1."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_1of1)
     input_ = psbt.inputs[0]
     assert input_.final_script_witness, "psbt_1_1of1 should have 1 signature"
@@ -99,25 +102,28 @@ def test_psbt_1_1of1():
 
 # Test function for psbt_1_2of3
 def test_psbt_1_2of3():
+    """Test psbt 1 2of3."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_2of3)
     input_ = psbt.inputs[0]
     assert len(input_.partial_sigs) == 1, "psbt_1_2of3 should have 1 signature"
-    assert (
-        not input_.is_fully_signed()
-    ), "psbt_1_2of3 should not be fully signed considering it's a 2 of 3 multisig"
+    assert not input_.is_fully_signed(), (
+        "psbt_1_2of3 should not be fully signed considering it's a 2 of 3 multisig"
+    )
 
 
 # Test function for psbt_0_2of3
 def test_psbt_0_2of3():
+    """Test psbt 0 2of3."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of3)
     input_ = psbt.inputs[0]
     assert len(input_.partial_sigs) == 0, "psbt_0_2of3 should have 0 signatures"
-    assert (
-        not input_.is_fully_signed()
-    ), "psbt_0_2of3 should not be fully signed considering it's a 2 of 3 multisig"
+    assert not input_.is_fully_signed(), (
+        "psbt_0_2of3 should not be fully signed considering it's a 2 of 3 multisig"
+    )
 
 
 def test_psbt_optional_fields():
+    """Test psbt optional fields."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of2)
     assert psbt.inputs[0].non_witness_utxo
     psbt.inputs[0].non_witness_utxo.get("input", {}) == [
@@ -153,6 +159,7 @@ def test_psbt_optional_fields():
 
 
 def test_p2sh():
+    """Test p2sh."""
     psbt = SimplePSBT.from_psbt(p2sh_0_2of3)
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 3
@@ -160,6 +167,7 @@ def test_p2sh():
 
 
 def test_to_txout():
+    """Test to txout."""
     output_data = {"value": 1000, "script_pubkey": ""}
     unsigned_tx = {"value": 1000, "script_pubkey": ""}
 
@@ -171,7 +179,7 @@ def test_to_txout():
 
 
 def test_electrum_psbt():
-
+    """Test electrum psbt."""
     psbt = SimplePSBT.from_psbt(electrum_psbt)
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
@@ -179,7 +187,7 @@ def test_electrum_psbt():
 
 
 def test_psbt_sparrow_2of2():
-
+    """Test psbt sparrow 2of2."""
     psbt = SimplePSBT.from_psbt(psbt_sparrow_2of2)
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 2
@@ -191,7 +199,7 @@ def test_psbt_sparrow_2of2():
 
 
 def test_tr_psbt():
-
+    """Test tr psbt."""
     psbt = SimplePSBT.from_psbt(tr_psbt_singlesig)
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
@@ -201,6 +209,7 @@ def test_tr_psbt():
 def test_p2sh_2of3_fully_signed(
     qtbot: QtBot,
 ):
+    """Test p2sh 2of3 fully signed."""
     network = bdk.Network.REGTEST
     psbt = SimplePSBT.from_psbt(p2sh_2_2of3)
     input_ = psbt.inputs[0]

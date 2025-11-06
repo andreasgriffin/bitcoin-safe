@@ -26,9 +26,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
 
 import logging
-from typing import Dict, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import (
@@ -51,7 +52,9 @@ from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import WalletFunctions
-from bitcoin_safe.typestubs import TypedPyQtSignal
+
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
 from ....config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
@@ -74,6 +77,7 @@ BTC_FEE_MARK_RED = 100_000
 
 class FeeRateWarningBar(NotificationBar):
     def __init__(self, network: bdk.Network) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -87,7 +91,8 @@ class FeeRateWarningBar(NotificationBar):
 
         self.setVisible(False)
 
-    def setText(self, value: Optional[str]):
+    def setText(self, value: str | None):
+        """SetText."""
         self.icon_label.setText(value if value else "")
 
     def update_fee_rate_warning(
@@ -96,6 +101,7 @@ class FeeRateWarningBar(NotificationBar):
         max_reasonable_fee_rate: float,
         confirmation_status: TxConfirmationStatus,
     ) -> None:
+        """Update fee rate warning."""
         if (fee_rate is None) or (confirmation_status != TxConfirmationStatus.LOCAL):
             self.setVisible(False)
             return
@@ -117,6 +123,7 @@ class FeeRateWarningBar(NotificationBar):
 
 class FeeWarningBar(NotificationBar):
     def __init__(self, network: bdk.Network) -> None:
+        """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
@@ -130,7 +137,8 @@ class FeeWarningBar(NotificationBar):
 
         self.setVisible(False)
 
-    def setText(self, value: Optional[str]):
+    def setText(self, value: str | None):
+        """SetText."""
         self.icon_label.setText(value if value else "")
 
     def set_fee_to_send_ratio(
@@ -141,6 +149,7 @@ class FeeWarningBar(NotificationBar):
         tx_status: TxStatus,
         force_show_fee_warning_on_0_amont=False,
     ) -> None:
+        """Set fee to send ratio."""
         if not fee_info:
             self.setVisible(False)
             return
@@ -168,7 +177,8 @@ class FeeWarningBar(NotificationBar):
         if too_high:
             s = (
                 self.tr(
-                    "The estimated transaction fee is:\n{fee}, which is {percent}% of\nthe sending value {sent}"
+                    "The estimated transaction fee is:\n{fee}, "
+                    "which is {percent}% of\nthe sending value {sent}"
                 )
                 if fee_info.fee_amount_is_estimated
                 else self.tr(
@@ -191,7 +201,7 @@ class FeeWarningBar(NotificationBar):
 
 
 class FeeGroup(QObject):
-    signal_fee_rate_change = cast(TypedPyQtSignal[float], pyqtSignal(float))
+    signal_fee_rate_change: TypedPyQtSignal[float] = cast(Any, pyqtSignal(float))
 
     def __init__(
         self,
@@ -208,6 +218,7 @@ class FeeGroup(QObject):
         enable_approximate_fee_label: bool = True,
         totals_box: TotalsBox | None = None,
     ) -> None:
+        """Initialize instance."""
         super().__init__()
         self.is_viewer = is_viewer
         self.fx = fx
@@ -315,9 +326,11 @@ class FeeGroup(QObject):
         self.mempool_buttons.signal_explorer_explorer_icon.connect(self._on_explorer_explorer_icon)
 
     def _on_spin_fee_rate_valueChanged(self, value: float):
+        """On spin fee rate valueChanged."""
         self.signal_fee_rate_change.emit(value)
 
     def _on_explorer_explorer_icon(self, index: int) -> None:
+        """On explorer explorer icon."""
         if self.mempool_buttons.tx_status.is_confirmed():
             tx = self.mempool_buttons.tx_status.tx
             if tx:
@@ -334,10 +347,12 @@ class FeeGroup(QObject):
             open_website(url)
 
     def on_currency_switch(self):
+        """On currency switch."""
         btc = self.fx.fiat_to_btc(DOLLAR_FEE_MARK_RED, currency="USD") or BTC_FEE_MARK_RED
         self.totals_box.c2.mark_fiat_red_when_exceeding = self.fx.btc_to_fiat(btc) or DOLLAR_FEE_MARK_RED
 
     def on_mempool_button_clicked(self, index: int):
+        """On mempool button clicked."""
         self.set_spin_fee_value(
             fee_rate=self.mempool_buttons.mempool_manager.median_block_fee_rate(
                 index, decimal_precision=self.mempool_buttons.decimal_precision
@@ -345,6 +360,7 @@ class FeeGroup(QObject):
         )
 
     def set_spin_fee_value(self, fee_rate: float):
+        """Set spin fee value."""
         if self.spin_fee_rate.value() == round(fee_rate, self.spin_fee_rate.decimals()):
             return
         self._cached_spin_fee_rate = fee_rate
@@ -352,6 +368,7 @@ class FeeGroup(QObject):
         self.spin_fee_rate.setValue(fee_rate)
 
     def updateUi(self) -> None:
+        """UpdateUi."""
         self.fee_rate_label.setText(self.tr("Transaction fee rate"))
         self.approximate_fee_label.setText(html_f(self.tr("Approximate rate"), bf=True))
 
@@ -381,24 +398,23 @@ class FeeGroup(QObject):
 
         self.approximate_fee_label.setToolTip(
             self.tr(
-                f"The fee rate cannot be known exactly,\nsince the final size of the transaction is unknown."
+                "The fee rate cannot be known exactly,\nsince the final size of the transaction is unknown."
             )
         )
 
         self.set_fee_amount_label()
         self.mempool_buttons.refresh(fee_rate=self.spin_fee_rate.value())
 
-    def set_rbf_label(self, min_fee_rate: Optional[float]) -> None:
+    def set_rbf_label(self, min_fee_rate: float | None) -> None:
+        """Set rbf label."""
         self.form.set_row_visibility_of_widget(self.rbf_fee_label, bool(min_fee_rate))
         if min_fee_rate:
             fee_rate, unit = format_fee_rate_splitted(fee_rate=min_fee_rate, network=self.config.network)
             url = "https://learnmeabitcoin.com/technical/transaction/fee/#rbf"
             self.rbf_fee_label.setText(
-                (
-                    self.tr("{rbf} min: {rate}").format(
-                        rate=fee_rate,
-                        rbf=link(url, "RBF"),
-                    )
+                self.tr("{rbf} min: {rate}").format(
+                    rate=fee_rate,
+                    rbf=link(url, "RBF"),
                 )
             )
             self.rbf_fee_label.set_icon_as_help(
@@ -413,9 +429,9 @@ class FeeGroup(QObject):
             self.rbf_fee_label_currency.setText(unit)
 
     def set_cpfp_label(
-        self, unconfirmed_ancestors: Dict[str, TransactionDetails] | None, this_fee_info: FeeInfo
+        self, unconfirmed_ancestors: dict[str, TransactionDetails] | None, this_fee_info: FeeInfo
     ) -> None:
-
+        """Set cpfp label."""
         self.form.set_row_visibility_of_widget(self.cpfp_fee_label, bool(unconfirmed_ancestors))
         if not unconfirmed_ancestors:
             return
@@ -430,17 +446,16 @@ class FeeGroup(QObject):
         rate, unit = format_fee_rate_splitted(combined_fee_info.fee_rate(), self.config.network)
         url = "https://learnmeabitcoin.com/technical/transaction/fee/#cpfp"
         self.cpfp_fee_label.setText(
-            (
-                self.tr("{cpfp} total: {rate}").format(
-                    rate=rate,
-                    cpfp=link(url, "CPFP"),
-                )
+            self.tr("{cpfp} total: {rate}").format(
+                rate=rate,
+                cpfp=link(url, "CPFP"),
             )
         )
         self.cpfp_fee_label_currency.setText(unit)
         self.cpfp_fee_label.set_icon_as_help(
             tooltip=self.tr(
-                "This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}."
+                "This transaction has {number} unconfirmed parents "
+                "with a total fee rate of {parents_fee_rate}."
                 "\nClick to learn more about CPFP (Child Pays For Parent)."
             ).format(
                 parents_fee_rate=format_fee_rate(
@@ -452,6 +467,7 @@ class FeeGroup(QObject):
         )
 
     def set_fee_info(self, fee_info: FeeInfo | None):
+        """Set fee info."""
         self.fee_info = fee_info
 
         if not fee_info:
@@ -463,7 +479,8 @@ class FeeGroup(QObject):
             fee_info.fee_rate(), decimal_precision
         ):
             logger.error(
-                f"Aborting to set a fee info {fee_info.fee_rate()} that is inconsistent with the fee_rate {self.spin_fee_rate.value()}"
+                f"Aborting to set a fee info {fee_info.fee_rate()} that is "
+                f"inconsistent with the fee_rate {self.spin_fee_rate.value()}"
             )
             return
 
@@ -477,6 +494,7 @@ class FeeGroup(QObject):
     ) -> None:
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit
+        """Set fee infos."""
         fee_rate = fee_info.fee_rate() if fee_info else None
         if fee_rate is not None:
             self.set_spin_fee_value(fee_rate)
@@ -488,10 +506,12 @@ class FeeGroup(QObject):
         self.set_fee_info(fee_info)
 
     def set_fee_amount_label(self):
+        """Set fee amount label."""
         amount = self.fee_info.fee_amount if self.fee_info is not None else None
         self.totals_box.c2.set_amount(amount=amount)
 
     def update_spin_fee_range(self, value: float = 0) -> None:
+        """Update spin fee range."""
         fee_range = self.config.fee_ranges[self.config.network].copy()
         fee_range[1] = max(
             fee_range[1],

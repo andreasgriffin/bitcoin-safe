@@ -1,5 +1,5 @@
 import random
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -8,12 +8,13 @@ from PyQt6.QtWidgets import QApplication
 from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
-from ....signals import TypedPyQtSignalNo
+if TYPE_CHECKING:
+    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 
 def generate_random_hex_color() -> str:
     """Generate a random hex color code."""
-    random_color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
+    random_color = f"#{random.randint(0, 0xFFFFFF):06x}"
     return random_color
 
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     class My(QObject):
-        close_all_video_widgets = cast(TypedPyQtSignalNo, pyqtSignal())
+        close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
 
     my = My()
 

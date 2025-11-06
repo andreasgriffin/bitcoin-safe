@@ -25,8 +25,6 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 """Compare Windows installer builds and report the differences.
 
 This helper analyses two build outputs (typically the ``dist`` directory that
@@ -58,13 +56,15 @@ import json
 import platform
 import subprocess
 import sys
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from importlib import import_module, util
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, Sequence, TypedDict, cast
+from typing import Any, TypedDict, cast
 
 
 def _load_pefile_module() -> Any | None:
+    """Load pefile module."""
     spec = util.find_spec("pefile")
     if spec is None:
         return None
@@ -152,7 +152,7 @@ class BuildManifest(TypedDict):
     """High-level description of a build produced by :func:`_build_manifest`."""
 
     setup: SetupInfo
-    context: Dict[str, object]
+    context: dict[str, object]
     dist: DistManifest | None
 
 
@@ -162,14 +162,16 @@ class BuildPaths:
 
     base: Path
     setup: Path
-    dist: Optional[Path]
+    dist: Path | None
 
 
 def _format_dt(timestamp: float) -> str:
+    """Format dt."""
     return _dt.datetime.utcfromtimestamp(timestamp).isoformat(timespec="seconds") + "Z"
 
 
 def _sha256_file(path: Path) -> str:
+    """Sha256 file."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
@@ -177,7 +179,7 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _resolve_build_paths(raw: Path, override_dist: Optional[Path] = None) -> BuildPaths:
+def _resolve_build_paths(raw: Path, override_dist: Path | None = None) -> BuildPaths:
     """Discover the installer and dist directory for a build."""
 
     raw = raw.resolve()
@@ -194,7 +196,7 @@ def _resolve_build_paths(raw: Path, override_dist: Optional[Path] = None) -> Bui
             key=lambda path: (path.stat().st_mtime, -len(path.parts), path.name),
         )
 
-    dist_dir: Optional[Path]
+    dist_dir: Path | None
     if override_dist is not None:
         dist_dir = override_dist.resolve()
     else:
@@ -210,6 +212,7 @@ def _resolve_build_paths(raw: Path, override_dist: Optional[Path] = None) -> Bui
 
 
 def _pe_metadata(path: Path) -> PEMetadata:
+    """Pe metadata."""
     if pefile is None:
         return {"available": False}
 
@@ -256,6 +259,7 @@ def _pe_metadata(path: Path) -> PEMetadata:
 
 
 def _gather_setup_info(path: Path) -> SetupInfo:
+    """Gather setup info."""
     stat = path.stat()
     info: SetupInfo = {
         "path": str(path),
@@ -268,6 +272,7 @@ def _gather_setup_info(path: Path) -> SetupInfo:
 
 
 def _is_probably_pe(path: Path) -> bool:
+    """Is probably pe."""
     if not path.is_file():
         return False
     with path.open("rb") as handle:
@@ -275,7 +280,8 @@ def _is_probably_pe(path: Path) -> bool:
     return signature == b"MZ"
 
 
-def _pe_timestamp(path: Path) -> Optional[int]:
+def _pe_timestamp(path: Path) -> int | None:
+    """Pe timestamp."""
     if pefile is None:
         return None
     pe = pefile.PE(str(path), fast_load=True)
@@ -285,6 +291,7 @@ def _pe_timestamp(path: Path) -> Optional[int]:
 
 
 def _collect_dist_files(dist_dir: Path) -> DistManifest:
+    """Collect dist files."""
     files: list[DistFileEntry] = []
     total_size = 0
 
@@ -327,7 +334,8 @@ def _collect_dist_files(dist_dir: Path) -> DistManifest:
     return manifest
 
 
-def _find_repo_root(path: Path) -> Optional[Path]:
+def _find_repo_root(path: Path) -> Path | None:
+    """Find repo root."""
     current = path
     if current.is_file():
         current = current.parent
@@ -337,7 +345,8 @@ def _find_repo_root(path: Path) -> Optional[Path]:
     return None
 
 
-def _run_git_command(repo: Path, args: Sequence[str]) -> Optional[str]:
+def _run_git_command(repo: Path, args: Sequence[str]) -> str | None:
+    """Run git command."""
     completed = subprocess.run(
         ["git", "-C", str(repo), *args],
         stdout=subprocess.PIPE,
@@ -350,9 +359,10 @@ def _run_git_command(repo: Path, args: Sequence[str]) -> Optional[str]:
     return completed.stdout.strip()
 
 
-def _gather_context(build: BuildPaths) -> Dict[str, object]:
+def _gather_context(build: BuildPaths) -> dict[str, object]:
+    """Gather context."""
     repo_root = _find_repo_root(build.base)
-    info: Dict[str, object] = {
+    info: dict[str, object] = {
         "platform": platform.platform(),
         "python_version": sys.version,
         "repo_root": str(repo_root) if repo_root else None,
@@ -377,6 +387,7 @@ def _gather_context(build: BuildPaths) -> Dict[str, object]:
 
 
 def _build_manifest(paths: BuildPaths) -> BuildManifest:
+    """Build manifest."""
     manifest: BuildManifest = {
         "setup": _gather_setup_info(paths.setup),
         "context": _gather_context(paths),
@@ -389,7 +400,8 @@ def _build_manifest(paths: BuildPaths) -> BuildManifest:
     return manifest
 
 
-def _load_or_build(target: Path, override_dist: Optional[Path] = None) -> BuildManifest:
+def _load_or_build(target: Path, override_dist: Path | None = None) -> BuildManifest:
+    """Load or build."""
     if target.suffix.lower() == ".json" and target.is_file():
         with target.open("r", encoding="utf-8") as handle:
             return cast(BuildManifest, json.load(handle))
@@ -399,12 +411,14 @@ def _load_or_build(target: Path, override_dist: Optional[Path] = None) -> BuildM
 
 
 def _print_header(title: str) -> None:
+    """Print header."""
     print()
     print(title)
     print("=" * len(title))
 
 
 def _summarise_setup(local: SetupInfo, cloud: SetupInfo) -> None:
+    """Summarise setup."""
     _print_header("Setup executable")
     print(f"Local : {local['path']}")
     print(f"Cloud : {cloud['path']}")
@@ -424,6 +438,7 @@ def _summarise_setup(local: SetupInfo, cloud: SetupInfo) -> None:
         return
 
     def describe_overlay(pe_info: PEMetadata) -> str:
+        """Describe overlay."""
         overlay = pe_info.get("overlay")
         if overlay is None:
             return "<none>"
@@ -469,7 +484,8 @@ def _summarise_setup(local: SetupInfo, cloud: SetupInfo) -> None:
         print(f"  {name}: missing in cloud build")
 
 
-def _summarise_dist(local: Optional[DistManifest], cloud: Optional[DistManifest], *, limit: int = 30) -> None:
+def _summarise_dist(local: DistManifest | None, cloud: DistManifest | None, *, limit: int = 30) -> None:
+    """Summarise dist."""
     _print_header("NSIS payload (dist/bitcoin_safe)")
     if local is None or cloud is None:
         print("dist directory missing for one of the builds; skipping file comparison")
@@ -495,6 +511,7 @@ def _summarise_dist(local: Optional[DistManifest], cloud: Optional[DistManifest]
             changed.append(path_key)
 
     def _print_sample(title: str, entries: Iterable[str]) -> None:
+        """Print sample."""
         entries_list = list(entries)
         if not entries_list:
             return
@@ -523,10 +540,12 @@ def _summarise_dist(local: Optional[DistManifest], cloud: Optional[DistManifest]
 
 
 def _dump_json(manifest: BuildManifest, destination: Path) -> None:
+    """Dump json."""
     destination.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    """Parse args."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--local", required=True, type=Path, help="Local build directory or installer")
     parser.add_argument("--cloud", required=True, type=Path, help="Cloud build directory or installer")
@@ -540,7 +559,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
+    """Main."""
     args = parse_args(argv)
 
     local_manifest = _load_or_build(args.local, args.local_dist)

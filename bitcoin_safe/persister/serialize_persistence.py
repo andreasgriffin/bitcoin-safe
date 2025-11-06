@@ -26,7 +26,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Dict
+from typing import Any
 
 import bdkpython as bdk
 
@@ -49,6 +49,7 @@ class SerializePersistence(bdk.Persistence, BaseSaveableClass):
         restrict_chain_changes: bool = True,
         chain_prune_depth: int = DEFAULT_CHAIN_PRUNE_DEPTH,
     ):
+        """Initialize instance."""
         super().__init__()
         self.change_set = change_set if change_set else bdk.ChangeSet()
         self.restrict_chain_changes = restrict_chain_changes
@@ -59,19 +60,23 @@ class SerializePersistence(bdk.Persistence, BaseSaveableClass):
     #####
 
     def initialize(self) -> bdk.ChangeSet:
+        """Initialize."""
         return self.change_set
 
     def persist(self, changeset: bdk.ChangeSet):
+        """Persist."""
         self.change_set = bdk.ChangeSet.from_merge(self.change_set, changeset)
 
     def has_descriptor(self) -> bool:
+        """Has descriptor."""
         return bool(self.change_set.descriptor())
 
     #####
     # BaseSaveableClass
     #####
 
-    def dump(self) -> Dict[str, Any]:
+    def dump(self) -> dict[str, Any]:
+        """Dump."""
         d = super().dump()
         d["change_set"] = ChangeSetConverter.to_dict(
             self.change_set,
@@ -83,7 +88,8 @@ class SerializePersistence(bdk.Persistence, BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
         dct["change_set"] = (
