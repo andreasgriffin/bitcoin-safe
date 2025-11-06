@@ -45,7 +45,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import QLocale, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtGui import QCloseEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -63,7 +63,7 @@ from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
-from bitcoin_safe.gui.qt.util import Message, MessageType, do_copy, svg_tools
+from bitcoin_safe.gui.qt.util import Message, MessageType, center_on_screen, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import SignalsMin, WalletFunctions
 
@@ -89,7 +89,6 @@ class DescriptorExport(QDialog):
         loop_in_thread: LoopInThread | None = None,
         wallet_id: str = "MultiSig",
     ):
-        """Initialize instance."""
         super().__init__(parent)
         self.setWindowTitle(self.tr("Export Descriptor"))
 
@@ -214,6 +213,10 @@ class DescriptorEdit(QWidget):
 
         # signals
         self.signal_tracker.connect(self.edit.input_field.textChanged, self.on_input_field_textChanged)
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        center_on_screen(self)
 
     def updateUi(self):
         """UpdateUi."""

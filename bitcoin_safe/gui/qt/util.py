@@ -50,7 +50,15 @@ from bitcoin_safe_lib.caching import register_cache
 from bitcoin_safe_lib.gui.qt.icons import SvgTools
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from bitcoin_safe_lib.util import hash_string
-from PyQt6.QtCore import QByteArray, QCoreApplication, QRectF, QSize, Qt, QTimer, QUrl
+from PyQt6.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QRectF,
+    QSize,
+    Qt,
+    QTimer,
+    QUrl,
+)
 from PyQt6.QtGui import (
     QColor,
     QCursor,
@@ -118,6 +126,8 @@ QWIDGETSIZE_MAX = 16777215
 TRANSACTION_FILE_EXTENSION_FILTER_ANY = translate("constant", "Transaction (*.txn *.psbt);;All files (*)")
 TRANSACTION_FILE_EXTENSION_FILTER_ONLY_PARTIAL_TX = translate("constant", "Partial Transaction (*.psbt)")
 TRANSACTION_FILE_EXTENSION_FILTER_ONLY_COMPLETE_TX = translate("constant", "Complete Transaction (*.txn)")
+
+
 TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
     f"{TRANSACTION_FILE_EXTENSION_FILTER_ONLY_PARTIAL_TX};;"
     f"{TRANSACTION_FILE_EXTENSION_FILTER_ONLY_COMPLETE_TX};;" + translate("constant", "All files (*)")
@@ -137,6 +147,24 @@ TX_ICONS: list[str] = [
 
 ELECTRUM_SERVER_DELAY_MEMPOOL_TX = 1000
 ELECTRUM_SERVER_DELAY_BLOCK = 2000
+
+
+def center_on_screen(widget: QWidget, min_height: int = 0, min_width: int = 0) -> None:
+    if widget is None or not widget.isWindow():
+        return
+
+    window_handle = widget.windowHandle()
+    screen = window_handle.screen() if window_handle else QApplication.primaryScreen()
+    if screen is None:
+        return
+
+    if widget.width() == 0 or widget.height() == 0:
+        widget.adjustSize()
+
+    screen_geometry = screen.availableGeometry()
+    x = screen_geometry.center().x() - max(min_width, widget.width()) // 2
+    y = screen_geometry.center().y() - max(min_height, widget.height()) // 2
+    widget.move(x, y)
 
 
 def get_icon_path(icon_basename: str) -> str:

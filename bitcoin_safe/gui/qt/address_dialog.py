@@ -35,7 +35,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut
+from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
@@ -53,7 +53,7 @@ from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.sign_message import SignMessage
 from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
-from bitcoin_safe.gui.qt.util import set_no_margins, svg_tools
+from bitcoin_safe.gui.qt.util import center_on_screen, set_no_margins, svg_tools
 from bitcoin_safe.mempool_manager import MempoolManager
 
 if TYPE_CHECKING:
@@ -232,7 +232,6 @@ class AddressDialog(QWidget):
         self.recipient_box.amount = wallet.get_addr_balance(self.address).total
 
         self.upper_widget_layout.addWidget(self.recipient_tabs)
-
         address_info = self.wallet.get_address_info_min(address)
         self.tab_advanced = (
             AddressDetailsAdvanced(
@@ -297,6 +296,10 @@ class AddressDialog(QWidget):
         self.shortcut_close.activated.connect(self.close)
         self.shortcut_close2 = QShortcut(QKeySequence("ESC"), self)
         self.shortcut_close2.activated.connect(self.close)
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        center_on_screen(self)
 
     def keyPressEvent(self, a0: QKeyEvent | None) -> None:
         """KeyPressEvent."""

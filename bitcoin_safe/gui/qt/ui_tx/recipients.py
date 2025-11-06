@@ -39,6 +39,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import unit_sat_str, unit_str
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
     QFileDialog,
@@ -452,7 +453,7 @@ class RecipientBox(QWidget):
         self.recipient_widget.updateUi()
         self.autofill_wallet_id()
 
-    def showEvent(self, a0) -> None:
+    def showEvent(self, a0: QShowEvent | None) -> None:
         # this is necessary, otherwise the background color of the
         # address_line_edit.input_field is not updated properly when setting the adddress
         """ShowEvent."""

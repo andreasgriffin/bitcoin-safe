@@ -35,6 +35,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
+from bitcoin_safe.gui.qt.util import center_on_screen
 
 if TYPE_CHECKING:
     from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
@@ -63,6 +64,7 @@ class SimpleQrScanner(BitcoinVideoWidget):
         self.signal_raw_content.connect(self.on_raw_decoded)
         self.setWindowTitle(self.title)
         self.show()
+        center_on_screen(self, min_height=400, min_width=300)
 
     def _show_result(self, o: object) -> None:
         """Show result."""

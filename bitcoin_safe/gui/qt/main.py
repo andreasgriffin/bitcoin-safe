@@ -42,10 +42,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import (
-    BitcoinVideoWidget,
-    DecodingException,
-)
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget, DecodingException
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
@@ -63,7 +60,7 @@ from PyQt6.QtCore import (
     QTimer,
     pyqtSignal,
 )
-from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut
+from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -145,6 +142,7 @@ from .util import (
     Message,
     MessageType,
     caught_exception_message,
+    center_on_screen,
     delayed_execution,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
@@ -321,6 +319,9 @@ class MainWindow(QMainWindow):
     def close_video_widget(self):
         """Close video widget."""
         self.attached_widgets.remove_all_of_type(BitcoinVideoWidget)
+
+    def _register_attached_widget(self, widget: QWidget) -> None:
+        self.attached_widgets.append(widget)
 
     def get_mempool_url(self) -> str:
         """Get mempool url."""
@@ -833,6 +834,7 @@ class MainWindow(QMainWindow):
 
     def show_usb_gui(self):
         """Show usb gui."""
+        center_on_screen(self.hwi_tool_gui)
         self.hwi_tool_gui.show()
         self.hwi_tool_gui.raise_()
 
@@ -893,7 +895,7 @@ class MainWindow(QMainWindow):
         if current_node:
             self.close_tab(current_node)
 
-    def showEvent(self, a0) -> None:
+    def showEvent(self, a0: QShowEvent | None) -> None:
         """ShowEvent."""
         super().showEvent(a0)
         # self.updateUI()
@@ -1131,9 +1133,7 @@ class MainWindow(QMainWindow):
         self.settings.raise_()
 
     def open_network_settings(self) -> None:
-        """Open network settings."""
-        self.settings.show()
-        self.settings.raise_()
+        self.open_settings()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
     def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:
@@ -1152,7 +1152,7 @@ class MainWindow(QMainWindow):
             loop_in_thread=self.loop_in_thread,
             wallet_id=qt_wallet.wallet.id,
         )
-        self.attached_widgets.append(d)
+        self._register_attached_widget(d)
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         d.show()
         d.raise_()
@@ -1331,9 +1331,10 @@ class MainWindow(QMainWindow):
         self.signals.close_all_video_widgets.emit()
         d = BitcoinVideoWidget()
         d.aboutToClose.connect(self.signal_remove_attached_widget)
-        self.attached_widgets.append(d)
+        self._register_attached_widget(d)
         d.signal_data.connect(self._result_callback_load_tx_like_from_qr)
         d.signal_recognize_exception.connect(self._load_tx_like_from_qr_exception_callback)
+        center_on_screen(d)
         d.show()
         d.raise_()
         return None
@@ -1355,7 +1356,7 @@ class MainWindow(QMainWindow):
             close_all_video_widgets=self.signals.close_all_video_widgets,
             title=self.tr("QR Scanner"),
         )
-        self.attached_widgets.append(self._qr_scanner)
+        self._register_attached_widget(self._qr_scanner)
         self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
 
     def dialog_open_tx_from_str(self) -> ImportDialog:
@@ -1372,7 +1373,7 @@ class MainWindow(QMainWindow):
             close_all_video_widgets=self.signals.close_all_video_widgets,
         )
         tx_dialog.aboutToClose.connect(self.signal_remove_attached_widget)
-        self.attached_widgets.append(tx_dialog)
+        self._register_attached_widget(tx_dialog)
         tx_dialog.show()
         tx_dialog.raise_()
         return tx_dialog
@@ -2103,7 +2104,7 @@ class MainWindow(QMainWindow):
             loop_in_thread=self.loop_in_thread,
         )
         d.aboutToClose.connect(self.signal_remove_attached_widget)
-        self.attached_widgets.append(d)
+        self._register_attached_widget(d)
         d.show()
         d.raise_()
 

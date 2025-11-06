@@ -42,11 +42,13 @@ from PyQt6.QtGui import (
     QKeyEvent,
     QKeySequence,
     QShortcut,
+    QShowEvent,
 )
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
+from bitcoin_safe.gui.qt.util import center_on_screen
 from bitcoin_safe.i18n import translate
 
 if TYPE_CHECKING:
@@ -258,6 +260,10 @@ class ImportDialog(QWidget):
         """CloseEvent."""
         self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
         super().closeEvent(a0)
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        center_on_screen(self)
 
 
 if __name__ == "__main__":
