@@ -58,7 +58,6 @@ from PyQt6.QtCore import (
     QLocale,
     QPoint,
     QProcess,
-    QRect,
     QSettings,
     Qt,
     QTimer,
@@ -322,45 +321,6 @@ class MainWindow(QMainWindow):
     def close_video_widget(self):
         """Close video widget."""
         self.attached_widgets.remove_all_of_type(BitcoinVideoWidget)
-
-    def _center_child_window(
-        self,
-        widget: QWidget | None,
-        relative_to: QWidget | None = None,
-    ) -> None:
-        if not widget or not widget.isWindow():
-            return
-
-        target_geometry = widget.frameGeometry()
-        if not target_geometry.isValid() or target_geometry.width() == 0 or target_geometry.height() == 0:
-            size_hint = widget.sizeHint()
-            if not size_hint.isValid():
-                return
-            target_geometry = QRect(QPoint(0, 0), size_hint)
-
-        reference_widget = relative_to or self
-        parent_geometry: QRect | None = None
-        if reference_widget:
-            if reference_widget.isWindow():
-                parent_geometry = reference_widget.frameGeometry()
-            else:
-                parent_window = reference_widget.window()
-                if parent_window:
-                    parent_geometry = parent_window.frameGeometry()
-
-        if parent_geometry is not None and parent_geometry.isValid() and not parent_geometry.isNull():
-            target_geometry.moveCenter(parent_geometry.center())
-        else:
-            window_handle = reference_widget.windowHandle() if reference_widget else None
-            screen = window_handle.screen() if window_handle else QApplication.primaryScreen()
-            if screen is None:
-                return
-            target_geometry.moveCenter(screen.availableGeometry().center())
-
-        widget.move(target_geometry.topLeft())
-
-    def _register_attached_widget(self, widget: QWidget) -> None:
-        self.attached_widgets.append(widget)
 
     def get_mempool_url(self) -> str:
         """Get mempool url."""
@@ -873,7 +833,6 @@ class MainWindow(QMainWindow):
 
     def show_usb_gui(self):
         """Show usb gui."""
-        self._center_child_window(self.hwi_tool_gui)
         self.hwi_tool_gui.show()
         self.hwi_tool_gui.raise_()
 
@@ -881,12 +840,8 @@ class MainWindow(QMainWindow):
         """Open category manager."""
         if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
             return
-        manager = getattr(qt_wallet, "category_manager", None)
-        if manager is None:
-            return
-        self._center_child_window(manager)
-        manager.show()
-        manager.raise_()
+        qt_wallet.category_manager.show()
+        qt_wallet.category_manager.raise_()
 
     def menu_action_show_log(self):
         """Menu action show log."""
@@ -1172,13 +1127,13 @@ class MainWindow(QMainWindow):
 
     def open_settings(self) -> None:
         """Open settings."""
-        self._center_child_window(self.settings)
         self.settings.show()
         self.settings.raise_()
 
     def open_network_settings(self) -> None:
         """Open network settings."""
-        self.open_settings()
+        self.settings.show()
+        self.settings.raise_()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
     def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:
@@ -1197,10 +1152,9 @@ class MainWindow(QMainWindow):
             loop_in_thread=self.loop_in_thread,
             wallet_id=qt_wallet.wallet.id,
         )
-        self._register_attached_widget(d)
+        self.attached_widgets.append(d)
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         d.show()
-        self._center_child_window(d)
         d.raise_()
 
     def show_register_multisig(self, wallet: Wallet | None = None) -> None:
@@ -1377,11 +1331,10 @@ class MainWindow(QMainWindow):
         self.signals.close_all_video_widgets.emit()
         d = BitcoinVideoWidget()
         d.aboutToClose.connect(self.signal_remove_attached_widget)
-        self._register_attached_widget(d)
+        self.attached_widgets.append(d)
         d.signal_data.connect(self._result_callback_load_tx_like_from_qr)
         d.signal_recognize_exception.connect(self._load_tx_like_from_qr_exception_callback)
         d.show()
-        self._center_child_window(d)
         d.raise_()
         return None
 
@@ -1402,9 +1355,8 @@ class MainWindow(QMainWindow):
             close_all_video_widgets=self.signals.close_all_video_widgets,
             title=self.tr("QR Scanner"),
         )
-        self._register_attached_widget(self._qr_scanner)
+        self.attached_widgets.append(self._qr_scanner)
         self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
-        self._center_child_window(self._qr_scanner)
 
     def dialog_open_tx_from_str(self) -> ImportDialog:
         """Dialog open tx from str."""
@@ -1420,9 +1372,8 @@ class MainWindow(QMainWindow):
             close_all_video_widgets=self.signals.close_all_video_widgets,
         )
         tx_dialog.aboutToClose.connect(self.signal_remove_attached_widget)
-        self._register_attached_widget(tx_dialog)
+        self.attached_widgets.append(tx_dialog)
         tx_dialog.show()
-        self._center_child_window(tx_dialog)
         tx_dialog.raise_()
         return tx_dialog
 
@@ -2152,9 +2103,8 @@ class MainWindow(QMainWindow):
             loop_in_thread=self.loop_in_thread,
         )
         d.aboutToClose.connect(self.signal_remove_attached_widget)
-        self._register_attached_widget(d)
+        self.attached_widgets.append(d)
         d.show()
-        self._center_child_window(d, parent if parent else self)
         d.raise_()
 
     def event_wallet_tab_closed(self) -> None:
