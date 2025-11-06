@@ -127,8 +127,6 @@ QWIDGETSIZE_MAX = 16777215
 TRANSACTION_FILE_EXTENSION_FILTER_ANY = translate("constant", "Transaction (*.txn *.psbt);;All files (*)")
 TRANSACTION_FILE_EXTENSION_FILTER_ONLY_PARTIAL_TX = translate("constant", "Partial Transaction (*.psbt)")
 TRANSACTION_FILE_EXTENSION_FILTER_ONLY_COMPLETE_TX = translate("constant", "Complete Transaction (*.txn)")
-
-
 TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
     f"{TRANSACTION_FILE_EXTENSION_FILTER_ONLY_PARTIAL_TX};;"
     f"{TRANSACTION_FILE_EXTENSION_FILTER_ONLY_COMPLETE_TX};;" + translate("constant", "All files (*)")
