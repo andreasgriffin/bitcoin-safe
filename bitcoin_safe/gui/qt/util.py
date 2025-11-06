@@ -64,6 +64,7 @@ from PyQt6.QtGui import (
     QCursor,
     QDesktopServices,
     QFontMetrics,
+    QGuiApplication,
     QIcon,
     QImage,
     QPainter,
@@ -150,20 +151,24 @@ ELECTRUM_SERVER_DELAY_BLOCK = 2000
 
 
 def center_on_screen(widget: QWidget, min_height: int = 0, min_width: int = 0) -> None:
-    if widget is None or not widget.isWindow():
+    if not widget or not widget.isWindow():
         return
 
-    window_handle = widget.windowHandle()
-    screen = window_handle.screen() if window_handle else QApplication.primaryScreen()
-    if screen is None:
-        return
-
+    # Make sure we have a usable size
     if widget.width() == 0 or widget.height() == 0:
         widget.adjustSize()
 
-    screen_geometry = screen.availableGeometry()
-    x = screen_geometry.center().x() - max(min_width, widget.width()) // 2
-    y = screen_geometry.center().y() - max(min_height, widget.height()) // 2
+    screen = QGuiApplication.screenAt(QCursor.pos()) or QGuiApplication.primaryScreen()
+    if not screen:
+        return
+
+    # Respect minimum expected size
+    w = max(min_width, widget.width())
+    h = max(min_height, widget.height())
+
+    geom = screen.availableGeometry()
+    x = geom.center().x() - w // 2
+    y = geom.center().y() - h // 2
     widget.move(x, y)
 
 
