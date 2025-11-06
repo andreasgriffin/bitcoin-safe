@@ -22,10 +22,8 @@
   - Label synchronization between different computers
   - Wallet chat and PSBTs sharing between different computers
 - **Fast**: 
-  - Electrum server syncing
-  - planned upgrade to **Compact Block Filters** for the Bitcoin Safe 2.0 release
-
-
+  - Electrum/Esplora server
+  - Compact Block Filters 
 
 
 
@@ -92,12 +90,9 @@
   - Collaborative wallet management including chat and PSBT sharing via nostr and label synchronization between trusted devices
   - Optional custom nostr server 
 
-- **Upcoming Features**
-  
-  - For the 2.0 Release
-    - **Compact Block Filters** by default
-      - Compact Block Filters are **fast** and **private**
-      - Compact Block Filters (bdk) are being [worked on](https://github.com/bitcoindevkit/bdk/issues/679), and will be included in bdk 1.1. For now RPC, Electrum and Esplora are available, but will be replaced completely with Compact Block Filters.
+- **Fast syncing**: 
+  - Electrum/Esplora server
+  - Compact Block Filters 
 
 
 ## Installation from Git repository
