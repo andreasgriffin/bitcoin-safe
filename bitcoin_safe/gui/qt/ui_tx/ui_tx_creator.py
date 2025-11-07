@@ -129,7 +129,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.category_list = CategoryList(
                 config=self.config,
                 category_core=category_core,
-                wallet_functions=self.wallet_functions,
+                signals=self.signals,
                 hidden_columns=(
                     [
                         CategoryList.Columns.COLOR,

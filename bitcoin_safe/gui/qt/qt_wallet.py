@@ -288,7 +288,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
         self.notified_tx_ids = set(notified_tx_ids if notified_tx_ids else [])
-        self.category_core = CategoryCore(wallet=self.wallet, wallet_functions=self.wallet_functions)
+        self.category_core = CategoryCore(
+            wallet=self.wallet,
+            signals=self.signals,
+            wallet_signals=self.wallet_functions.wallet_signals[self.wallet.id],
+        )
         self._warned_change_without_input_txids = set(
             warned_change_without_input_txids if warned_change_without_input_txids else []
         )
@@ -465,7 +469,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     "fx": fx,
                 },
                 CategoryList.__name__: {
-                    "wallet_functions": wallet_functions,
+                    "signals": wallet_functions.signals,
                     "config": config,
                 },
                 WalletGraphClient.__name__: {
