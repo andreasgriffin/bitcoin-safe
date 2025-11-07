@@ -60,11 +60,14 @@ class CurrencyConverter(QObject):
         self._updating = False
 
         # connect signals
-        self.crypto_spin.valueChanged.connect(self._on_crypto_changed)
+        self.crypto_spin.valueChanged.connect(self._on_bitcoin_changed)
         self.fiat_spin.valueChanged.connect(self._on_fiat_changed)
 
-    def _on_crypto_changed(self, value: float):
-        """On crypto changed."""
+    def _target_currency(self) -> str | None:
+        return self.fx.get_currency_symbol(currency_loc=self.fiat_spin.locale()) if self.fx else None
+
+    def _on_bitcoin_changed(self, value: float):
+        """On bitcoin changed."""
         if self._updating:
             return
         if not self.fx:
@@ -72,7 +75,7 @@ class CurrencyConverter(QObject):
         self._updating = True
         try:
             # convert to fiat
-            fiat_val = self.fx.btc_to_fiat(int(value))
+            fiat_val = self.fx.btc_to_fiat(int(round(value)), currency=self._target_currency())
             if fiat_val is not None:
                 # this will emit fiat_spin.valueChanged,
                 # but _on_fiat_changed will early‐return
@@ -89,10 +92,10 @@ class CurrencyConverter(QObject):
         self._updating = True
         try:
             # convert back to crypto (int!)
-            crypto_val = self.fx.fiat_to_btc(value)
-            if crypto_val is not None:
+            btc_value = self.fx.fiat_to_btc(value, currency=self._target_currency())
+            if btc_value is not None:
                 # emits crypto_spin.valueChanged,
                 # but _on_crypto_changed will early‐return
-                self.crypto_spin.setValue(crypto_val)
+                self.crypto_spin.setValue(btc_value)
         finally:
             self._updating = False
