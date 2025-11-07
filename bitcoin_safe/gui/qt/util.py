@@ -50,12 +50,21 @@ from bitcoin_safe_lib.caching import register_cache
 from bitcoin_safe_lib.gui.qt.icons import SvgTools
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from bitcoin_safe_lib.util import hash_string
-from PyQt6.QtCore import QByteArray, QCoreApplication, QRectF, QSize, Qt, QTimer, QUrl
+from PyQt6.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QRectF,
+    QSize,
+    Qt,
+    QTimer,
+    QUrl,
+)
 from PyQt6.QtGui import (
     QColor,
     QCursor,
     QDesktopServices,
     QFontMetrics,
+    QGuiApplication,
     QIcon,
     QImage,
     QPainter,
@@ -137,6 +146,28 @@ TX_ICONS: list[str] = [
 
 ELECTRUM_SERVER_DELAY_MEMPOOL_TX = 1000
 ELECTRUM_SERVER_DELAY_BLOCK = 2000
+
+
+def center_on_screen(widget: QWidget, min_height: int = 0, min_width: int = 0) -> None:
+    if not widget or not widget.isWindow():
+        return
+
+    # Make sure we have a usable size
+    if widget.width() == 0 or widget.height() == 0:
+        widget.adjustSize()
+
+    screen = QGuiApplication.screenAt(QCursor.pos()) or QGuiApplication.primaryScreen()
+    if not screen:
+        return
+
+    # Respect minimum expected size
+    w = max(min_width, widget.width())
+    h = max(min_height, widget.height())
+
+    geom = screen.availableGeometry()
+    x = geom.center().x() - w // 2
+    y = geom.center().y() - h // 2
+    widget.move(x, y)
 
 
 def get_icon_path(icon_basename: str) -> str:

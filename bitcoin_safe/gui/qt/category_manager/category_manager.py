@@ -31,6 +31,8 @@ from __future__ import annotations
 import logging
 
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QKeySequence, QShortcut, QShowEvent
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
@@ -45,7 +47,7 @@ from bitcoin_safe.gui.qt.category_manager.category_list import (
     CategoryListWithToolbar,
 )
 from bitcoin_safe.gui.qt.drag_info import AddressDragInfo
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import center_on_screen, svg_tools
 from bitcoin_safe.labels import LabelType
 
 from ....signals import UpdateFilter, UpdateFilterReason
@@ -58,6 +60,7 @@ class CategoryManager(QWidget):
         """Initialize instance."""
         super().__init__()
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowFlag(Qt.WindowType.Window, True)
         self.category_core = category_core
         self.wallet_id = wallet_id
         self._layout = QVBoxLayout(self)
@@ -101,6 +104,15 @@ class CategoryManager(QWidget):
         self.button_rename.setIcon(svg_tools.get_QIcon("bi--input-cursor-text.svg"))
 
         self._layout.addWidget(self.button_box)
+
+        self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
+        self.shortcut_close.activated.connect(self.close)
+        self.shortcut_close2 = QShortcut(QKeySequence("ESC"), self)
+        self.shortcut_close2.activated.connect(self.close)
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        center_on_screen(self)
 
     def on_selection_changed(self):
         """On selection changed."""

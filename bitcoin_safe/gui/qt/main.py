@@ -42,10 +42,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import (
-    BitcoinVideoWidget,
-    DecodingException,
-)
+from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget, DecodingException
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
@@ -58,13 +55,12 @@ from PyQt6.QtCore import (
     QLocale,
     QPoint,
     QProcess,
-    QRect,
     QSettings,
     Qt,
     QTimer,
     pyqtSignal,
 )
-from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut
+from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -146,6 +142,7 @@ from .util import (
     Message,
     MessageType,
     caught_exception_message,
+    center_on_screen,
     delayed_execution,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
@@ -322,42 +319,6 @@ class MainWindow(QMainWindow):
     def close_video_widget(self):
         """Close video widget."""
         self.attached_widgets.remove_all_of_type(BitcoinVideoWidget)
-
-    def _center_child_window(
-        self,
-        widget: QWidget | None,
-        relative_to: QWidget | None = None,
-    ) -> None:
-        if not widget or not widget.isWindow():
-            return
-
-        target_geometry = widget.frameGeometry()
-        if not target_geometry.isValid() or target_geometry.width() == 0 or target_geometry.height() == 0:
-            size_hint = widget.sizeHint()
-            if not size_hint.isValid():
-                return
-            target_geometry = QRect(QPoint(0, 0), size_hint)
-
-        reference_widget = relative_to or self
-        parent_geometry: QRect | None = None
-        if reference_widget:
-            if reference_widget.isWindow():
-                parent_geometry = reference_widget.frameGeometry()
-            else:
-                parent_window = reference_widget.window()
-                if parent_window:
-                    parent_geometry = parent_window.frameGeometry()
-
-        if parent_geometry is not None and parent_geometry.isValid() and not parent_geometry.isNull():
-            target_geometry.moveCenter(parent_geometry.center())
-        else:
-            window_handle = reference_widget.windowHandle() if reference_widget else None
-            screen = window_handle.screen() if window_handle else QApplication.primaryScreen()
-            if screen is None:
-                return
-            target_geometry.moveCenter(screen.availableGeometry().center())
-
-        widget.move(target_geometry.topLeft())
 
     def _register_attached_widget(self, widget: QWidget) -> None:
         self.attached_widgets.append(widget)
@@ -873,7 +834,7 @@ class MainWindow(QMainWindow):
 
     def show_usb_gui(self):
         """Show usb gui."""
-        self._center_child_window(self.hwi_tool_gui)
+        center_on_screen(self.hwi_tool_gui)
         self.hwi_tool_gui.show()
         self.hwi_tool_gui.raise_()
 
@@ -881,12 +842,8 @@ class MainWindow(QMainWindow):
         """Open category manager."""
         if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
             return
-        manager = getattr(qt_wallet, "category_manager", None)
-        if manager is None:
-            return
-        self._center_child_window(manager)
-        manager.show()
-        manager.raise_()
+        qt_wallet.category_manager.show()
+        qt_wallet.category_manager.raise_()
 
     def menu_action_show_log(self):
         """Menu action show log."""
@@ -938,7 +895,7 @@ class MainWindow(QMainWindow):
         if current_node:
             self.close_tab(current_node)
 
-    def showEvent(self, a0) -> None:
+    def showEvent(self, a0: QShowEvent | None) -> None:
         """ShowEvent."""
         super().showEvent(a0)
         # self.updateUI()
@@ -1172,12 +1129,10 @@ class MainWindow(QMainWindow):
 
     def open_settings(self) -> None:
         """Open settings."""
-        self._center_child_window(self.settings)
         self.settings.show()
         self.settings.raise_()
 
     def open_network_settings(self) -> None:
-        """Open network settings."""
         self.open_settings()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
@@ -1200,7 +1155,6 @@ class MainWindow(QMainWindow):
         self._register_attached_widget(d)
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         d.show()
-        self._center_child_window(d)
         d.raise_()
 
     def show_register_multisig(self, wallet: Wallet | None = None) -> None:
@@ -1380,8 +1334,8 @@ class MainWindow(QMainWindow):
         self._register_attached_widget(d)
         d.signal_data.connect(self._result_callback_load_tx_like_from_qr)
         d.signal_recognize_exception.connect(self._load_tx_like_from_qr_exception_callback)
+        center_on_screen(d)
         d.show()
-        self._center_child_window(d)
         d.raise_()
         return None
 
@@ -1404,7 +1358,6 @@ class MainWindow(QMainWindow):
         )
         self._register_attached_widget(self._qr_scanner)
         self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
-        self._center_child_window(self._qr_scanner)
 
     def dialog_open_tx_from_str(self) -> ImportDialog:
         """Dialog open tx from str."""
@@ -1422,7 +1375,6 @@ class MainWindow(QMainWindow):
         tx_dialog.aboutToClose.connect(self.signal_remove_attached_widget)
         self._register_attached_widget(tx_dialog)
         tx_dialog.show()
-        self._center_child_window(tx_dialog)
         tx_dialog.raise_()
         return tx_dialog
 
@@ -2154,7 +2106,6 @@ class MainWindow(QMainWindow):
         d.aboutToClose.connect(self.signal_remove_attached_widget)
         self._register_attached_widget(d)
         d.show()
-        self._center_child_window(d, parent if parent else self)
         d.raise_()
 
     def event_wallet_tab_closed(self) -> None:

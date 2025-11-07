@@ -29,7 +29,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtGui import QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import QTabWidget
 
 from bitcoin_safe.config import UserConfig
@@ -37,7 +37,7 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.language_settings_ui import InterfaceSettingsUi
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import center_on_screen, svg_tools
 from bitcoin_safe.signals import Signals
 
 
@@ -121,3 +121,7 @@ class Settings(QTabWidget):
             self.close()
 
         super().keyPressEvent(a0)
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        center_on_screen(self)
