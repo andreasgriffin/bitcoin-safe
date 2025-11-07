@@ -45,7 +45,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.wallet import Wallet
 
 from ....i18n import translate
-from ....signals import UpdateFilter, UpdateFilterReason, WalletFunctions
+from ....signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
 
 logger = logging.getLogger(__name__)
 
@@ -144,17 +144,12 @@ def prompt_merge_category(categories: list[str], parent: QWidget | None = None) 
 
 
 class CategoryCore(QObject):
-    def __init__(
-        self,
-        wallet: Wallet,
-        wallet_functions: WalletFunctions,
-    ):
+    def __init__(self, wallet: Wallet, signals: Signals, wallet_signals: WalletSignals):
         """Initialize instance."""
         super().__init__()
         self.wallet = wallet
-        self.wallet_functions = wallet_functions
-        self.wallet_signals = wallet_functions.wallet_signals[wallet.id]
-        self.signals = wallet_functions.signals
+        self.wallet_signals = wallet_signals
+        self.signals = signals
 
     @classmethod
     def get_default_categories(cls) -> list[str]:
