@@ -220,7 +220,7 @@ class Client:
             return self.client.broadcast(tx)
         elif isinstance(self.client, CbfSync):
             assert self.client.client, "Not initialized"
-            return self.client.client.broadcast(tx)
+            return self.loop_in_thread.run_foreground(self.client.client.broadcast(tx))
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
 
