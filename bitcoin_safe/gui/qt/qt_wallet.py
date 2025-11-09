@@ -248,6 +248,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     signal_client_log_warning: TypedPyQtSignal[bdk.Warning] = cast(Any, pyqtSignal(bdk.Warning))
     signal_client_log_str: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
     signal_wallet_update: TypedPyQtSignal[UpdateInfo] = cast(Any, pyqtSignal(UpdateInfo))
+    signal_sync_status: TypedPyQtSignal[SyncStatus] = cast(Any, pyqtSignal(SyncStatus))
 
     def __init__(
         self,
@@ -282,7 +283,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.fx = fx
         self.plugins_menu = QMenu()
         self._file_path = file_path
-        self.sync_status: SyncStatus = SyncStatus.unknown
         self._client_bridge_tasks: list[Future[Any]] = []
         self.progress_update_timer = QTimer()
         self.timer_sync_retry = QTimer()
@@ -350,7 +350,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.plugin_manager_widget.set_plugins(plugins=self.plugin_manager.clients)
 
         self.create_status_bar(self, self.outer_layout)
-        self.set_sync_status(self.sync_status)
+        self.update_sync_status()
 
         self.updateUi()
         self.quick_receive.update_content(UpdateFilter(refresh_all=True))
@@ -378,6 +378,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signal_client_log_warning, self._handle_client_log_warning)
         self.signal_tracker.connect(self.signal_client_log_str, self._handle_client_log_str)
         self.signal_tracker.connect(self.signal_wallet_update, self._handle_client_update)
+        self.signal_tracker.connect(self.signal_sync_status, self.update_sync_status)
 
         self._start_progress_update_timer()
         self._start_sync_retry_timer()
@@ -607,7 +608,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _regular_sync(self):
         """Regular sync."""
-        if self.sync_status not in [SyncStatus.synced]:
+        if self.wallet.client and self.wallet.client.sync_status not in [SyncStatus.synced]:
             return
 
         logger.info(f"Regular update: Sync wallet {self.wallet.id} again")
@@ -615,7 +616,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_if_needed(self) -> None:
         """Sync if needed."""
-        if self.sync_status in [SyncStatus.syncing, SyncStatus.synced]:
+        if self.wallet.client and self.wallet.client.sync_status in [SyncStatus.syncing, SyncStatus.synced]:
             return
 
         logger.info(f"Retry timer: Try syncing wallet {self.wallet.id}")
@@ -1377,12 +1378,17 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             address_list_with_toolbar,
         )
 
-    def set_sync_status(self, sync_status: SyncStatus) -> None:
-        """Set sync status."""
-        if sync_status == self.sync_status:
+    def update_sync_status(self) -> None:
+        """Set sync status.
+
+
+        It should be called via a signal, since the caller is likely from another thread, and the UI update wont work properly.
+        """
+        if not self.wallet.client:
             return
 
-        self.sync_status = sync_status
+        sync_status = self.wallet.client.sync_status
+
         logger.info(f"{self.wallet.id} set_sync_status {sync_status}")
 
         icon_text = ""
@@ -1415,12 +1421,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Trigger sync."""
         self.init_blockchain()
         if self.wallet.client:
-            self.set_sync_status(SyncStatus.syncing)
             self.signal_progress_info.emit(self.wallet.client.progress_info)
+            self.signal_sync_status.emit(self.wallet.client.sync_status)
         self.wallet.trigger_sync()
         if self.wallet.client:
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.set_sync_status(self.wallet.client.sync_status)
+            self.signal_sync_status.emit(self.wallet.client.sync_status)
         return None
 
     def _sync_on_done(self, result) -> None:
@@ -1437,7 +1443,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_error(self, packed_error_info) -> None:
         """Sync on error."""
-        self.set_sync_status(SyncStatus.error)
+        self.signal_sync_status.emit(SyncStatus.error)
         logger.info(f"Could not sync. SynStatus set to {SyncStatus.error.name} for wallet {self.wallet.id}")
         logger.error(str(packed_error_info))
         # custom_exception_handler(*packed_error_info)
@@ -1448,7 +1454,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def sync(self) -> None:
         """Sync."""
-        if self.sync_status == SyncStatus.syncing:
+        if self.wallet.client and self.wallet.client.sync_status == SyncStatus.syncing:
             logger.info("Syncing already in progress")
             return
 
@@ -1494,7 +1500,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         if self.wallet.client.should_update_progress():
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.set_sync_status(SyncStatus.syncing)
+            self.signal_sync_status.emit(SyncStatus.syncing)
 
     def _handle_client_log_warning(self, warning: bdk.Warning):
         """Handle client log warning."""
@@ -1503,7 +1509,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet.client.handle_log_warning(warning)
         if self.wallet.client.should_update_progress():
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.set_sync_status(SyncStatus.syncing)
+            self.signal_sync_status.emit(SyncStatus.syncing)
 
     def _handle_client_log_str(self, message: str):
         """Handle client log str."""
@@ -1514,7 +1520,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not self.wallet.client:
             return
         self.signal_progress_info.emit(self.wallet.client.progress_info)
-        self.set_sync_status(self.wallet.client.sync_status)
+        self.signal_sync_status.emit(self.wallet.client.sync_status)
         self.on_update(update_info)
 
     def _cancel_client_tasks(self) -> None:
@@ -1569,15 +1575,17 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             return
 
         self._cancel_client_tasks()
-        self.set_sync_status(client.sync_status)
+        self.signal_sync_status.emit(client.sync_status)
         self._start_bridges()
 
     def is_in_cbf_ibd(self) -> bool:
         """Is in cbf ibd."""
+        if not self.wallet.client:
+            return False
         return (
             (self.wallet.bdkwallet.latest_checkpoint().height == 0)
             and (self.config.network_config.server_type == BlockchainType.CompactBlockFilter)
-            and self.sync_status in [SyncStatus.syncing, SyncStatus.unknown]
+            and self.wallet.client.sync_status in [SyncStatus.syncing, SyncStatus.unknown]
         )
 
     def on_update(self, update_info: UpdateInfo):
@@ -1595,7 +1603,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         self.fx.update_if_needed()
         self.save()
-        self.signal_after_sync.emit(self.sync_status)
+        if self.wallet.client:
+            self.signal_after_sync.emit(self.wallet.client.sync_status)
 
         # after the caches are refreshed i can check fast if
         # the last used address is more than gap distand from the tip
@@ -1620,7 +1629,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             return
         self.wallet.client.sync(self.wallet.bdkwallet.start_sync_with_revealed_spks().build())
         self.signal_progress_info.emit(self.wallet.client.progress_info)
-        self.set_sync_status(self.wallet.client.sync_status)
+        self.signal_sync_status.emit(self.wallet.client.sync_status)
         return None
 
     def get_editable_protowallet(self) -> ProtoWallet:

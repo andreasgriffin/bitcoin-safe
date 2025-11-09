@@ -1449,10 +1449,13 @@ class SendTest(BaseTab):
 
         self.widget_layout.addWidget(self.refs.qt_wallet.uitx_creator)
         self.refs.qt_wallet.uitx_creator.setVisible(True)
-        if self.refs.qt_wallet.sync_status in [SyncStatus.unknown, SyncStatus.unsynced]:
+        if self.refs.qt_wallet.wallet.client and self.refs.qt_wallet.wallet.client.sync_status in [
+            SyncStatus.unknown,
+            SyncStatus.unsynced,
+        ]:
             logger.debug(
                 f"Skipping tutorial callback  for send test, "
-                f"because {self.refs.qt_wallet.wallet.id} sync_status={self.refs.qt_wallet.sync_status}"
+                f"because {self.refs.qt_wallet.wallet.id} sync_status={self.refs.qt_wallet.wallet.client.sync_status}"
             )
             return
         logger.debug("tutorial callback")
