@@ -76,7 +76,7 @@ class Client:
         """Sync status."""
         return self._sync_status
 
-    def _set_sync_status(self, status: SyncStatus) -> None:
+    def set_sync_status(self, status: SyncStatus) -> None:
         """Set sync status."""
         self._sync_status = status
 
@@ -87,7 +87,7 @@ class Client:
         else:
             self.status_msg = warning.__class__.__name__
         if isinstance(self.client, CbfSync) and not self.client.node_running():
-            self._set_sync_status(SyncStatus.error)
+            self.set_sync_status(SyncStatus.error)
 
     def should_update_progress(self):
         """Should update progress."""
@@ -138,7 +138,7 @@ class Client:
         """On update."""
         self.progress = 1
         self.status_msg = ""
-        self._set_sync_status(SyncStatus.synced)
+        self.set_sync_status(SyncStatus.synced)
 
     def queue_update(self, update_info: UpdateInfo) -> None:
         """Queue update."""
@@ -230,7 +230,7 @@ class Client:
             self.start_time = datetime.now()
             self.progress = 0
             self.status_msg = translate("Client", "Syncing via Electrum")
-            self._set_sync_status(SyncStatus.syncing)
+            self.set_sync_status(SyncStatus.syncing)
             update = self.client.full_scan(
                 request=full_request,
                 stop_gap=stop_gap,
@@ -244,7 +244,7 @@ class Client:
             self.start_time = datetime.now()
             self.progress = 0
             self.status_msg = translate("Client", "Syncing via Esplora")
-            self._set_sync_status(SyncStatus.syncing)
+            self.set_sync_status(SyncStatus.syncing)
             update = self.client.full_scan(
                 request=full_request,
                 stop_gap=stop_gap,
@@ -264,7 +264,7 @@ class Client:
             self.start_time = datetime.now()
             self.progress = 0
             self.status_msg = translate("Client", "Syncing via Electrum")
-            self._set_sync_status(SyncStatus.syncing)
+            self.set_sync_status(SyncStatus.syncing)
             update = self.client.sync(
                 request=request,
                 batch_size=100,
@@ -278,7 +278,7 @@ class Client:
             self.start_time = datetime.now()
             self.progress = 0
             self.status_msg = translate("Client", "Syncing via Esplora")
-            self._set_sync_status(SyncStatus.syncing)
+            self.set_sync_status(SyncStatus.syncing)
             update = self.client.sync(
                 request=request,
                 parallel_requests=2,

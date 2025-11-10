@@ -36,12 +36,12 @@ import random
 import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from PyQt6.QtCharts import (
     QChart,
@@ -66,9 +66,6 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.util import monotone_increasing_timestamps
 from bitcoin_safe.wallet import Wallet
 
@@ -120,7 +117,7 @@ def find_nearest_point(
 
 
 class TrackingChartView(QChartView):
-    signal_click: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_click = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
         self,
@@ -450,7 +447,7 @@ class BalanceChart(QWidget):
 
 
 class WalletBalanceChart(BalanceChart):
-    signal_click_transaction: TypedPyQtSignal[TransactionDetails] = cast(Any, pyqtSignal(TransactionDetails))
+    signal_click_transaction = cast(SignalProtocol[[TransactionDetails]], pyqtSignal(TransactionDetails))
 
     def __init__(
         self,

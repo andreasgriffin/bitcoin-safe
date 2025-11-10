@@ -29,11 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QWidget
@@ -44,9 +45,6 @@ from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from ...signals import SignalsMin
 from .util import Message
 
@@ -54,14 +52,14 @@ logger = logging.getLogger(__name__)
 
 
 class SignMessage(QWidget):
-    signal_signed_message: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_signed_message = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
         bip32_path: str,
         network: bdk.Network,
         signals_min: SignalsMin,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         loop_in_thread: LoopInThread | None,
         parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
@@ -84,10 +82,9 @@ class SignMessage(QWidget):
 
         self.sign_label = QLabel(self.tr("Sign message"))
 
-        signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
         self.sign_usb_button = SpinningButton(
             self.tr("Sign"),
-            enable_signal=signal_end_hwi_blocker,
+            enable_signal=self.usb_gui.signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,

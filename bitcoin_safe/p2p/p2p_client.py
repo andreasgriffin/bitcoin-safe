@@ -43,17 +43,15 @@ import time
 from asyncio import StreamReader, StreamWriter
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 from aiohttp_socks import open_connection as socks_open_connection
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.network_config import ConnectionInfo, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -166,46 +164,46 @@ class P2PClient(QObject):
     # Signals – one per message we explicitly parse, plus a generic fallback
     # ------------------------------------------------------------------
 
-    signal_version: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_verack: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_addr: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_addrv2: TypedPyQtSignal[bytes] = cast(Any, pyqtSignal(bytes))
-    signal_sendaddrv2: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_inv: TypedPyQtSignal[Inventory] = cast(Any, pyqtSignal(Inventory))
-    signal_notfound: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_getdata: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_getblocks: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_getheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_headers: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_block: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # block hash
-    signal_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
-    signal_getblocktxn: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_blocktxn: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_cmpctblock: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_sendcmpct: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_sendheaders: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_ping: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_pong: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_mempool: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_reject: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_filterload: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_filteradd: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_filterclear: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_feefilter: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_wtxidrelay: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_getcfheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_cfheaders: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_getcfcheckpt: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_cfcheckpt: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_getcfilter: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    signal_cfilter: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
+    signal_version = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_verack = cast(SignalProtocol[[]], pyqtSignal())
+    signal_addr = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_addrv2 = cast(SignalProtocol[[bytes]], pyqtSignal(bytes))
+    signal_sendaddrv2 = cast(SignalProtocol[[]], pyqtSignal())
+    signal_inv = cast(SignalProtocol[[Inventory]], pyqtSignal(Inventory))
+    signal_notfound = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_getdata = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_getblocks = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_getheaders = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_headers = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))  # block hash
+    signal_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    signal_getblocktxn = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_blocktxn = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_cmpctblock = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_sendcmpct = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_sendheaders = cast(SignalProtocol[[]], pyqtSignal())
+    signal_ping = cast(SignalProtocol[[]], pyqtSignal())
+    signal_pong = cast(SignalProtocol[[]], pyqtSignal())
+    signal_mempool = cast(SignalProtocol[[]], pyqtSignal())
+    signal_reject = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_filterload = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_filteradd = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_filterclear = cast(SignalProtocol[[]], pyqtSignal())
+    signal_feefilter = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_wtxidrelay = cast(SignalProtocol[[]], pyqtSignal())
+    signal_getcfheaders = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_cfheaders = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_getcfcheckpt = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_cfcheckpt = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_getcfilter = cast(SignalProtocol[[object]], pyqtSignal(object))
+    signal_cfilter = cast(SignalProtocol[[object]], pyqtSignal(object))
 
-    signal_unknown: TypedPyQtSignal[str, bytes] = cast(Any, pyqtSignal(str, bytes))  # (command, raw_payload)
+    signal_unknown = cast(SignalProtocol[[str, bytes]], pyqtSignal(str, bytes))  # (command, raw_payload)
 
-    signal_disconnected_to: TypedPyQtSignal[Peer] = cast(Any, pyqtSignal(Peer))
-    signal_try_connecting_to: TypedPyQtSignal[ConnectionInfo] = cast(Any, pyqtSignal(ConnectionInfo))
-    signal_current_peer_change: TypedPyQtSignal[ConnectionInfo | None] = cast(Any, pyqtSignal(object))
-    signal_received_peers: TypedPyQtSignal[Peers] = cast(Any, pyqtSignal(Peers))
+    signal_disconnected_to = cast(SignalProtocol[[Peer]], pyqtSignal(Peer))
+    signal_try_connecting_to = cast(SignalProtocol[[ConnectionInfo]], pyqtSignal(ConnectionInfo))
+    signal_current_peer_change = cast(SignalProtocol[[ConnectionInfo | None]], pyqtSignal(object))
+    signal_received_peers = cast(SignalProtocol[[Peers]], pyqtSignal(Peers))
 
     # ------------------------------------------------------------------
 

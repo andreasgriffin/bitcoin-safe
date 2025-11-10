@@ -29,10 +29,11 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6 import QtCore, QtGui
@@ -42,9 +43,6 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
 from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ...i18n import translate
 from ...signals import (
@@ -61,8 +59,8 @@ MIN_ADVANCE_IF_PEEK_DISCOVERS_MINE = 20
 
 
 class AddressEdit(ButtonEdit):
-    signal_text_change: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    signal_bip21_input: TypedPyQtSignal[Data] = cast(Any, pyqtSignal(Data))
+    signal_text_change = cast(SignalProtocol[[str]], pyqtSignal(str))
+    signal_bip21_input = cast(SignalProtocol[[Data]], pyqtSignal(Data))
 
     def __init__(
         self,
@@ -78,12 +76,11 @@ class AddressEdit(ButtonEdit):
         self.signals = wallet_functions.signals
         self.network = network
         self.allow_edit = allow_edit
-        language_switch: TypedPyQtSignalNo = cast(Any, self.signals.language_switch)
         super().__init__(
             text=text,
             button_vertical_align=button_vertical_align,
             parent=parent,
-            signal_update=language_switch if wallet_functions else None,
+            signal_update=self.signals.language_switch,
             close_all_video_widgets=self.signals.close_all_video_widgets,
         )
 

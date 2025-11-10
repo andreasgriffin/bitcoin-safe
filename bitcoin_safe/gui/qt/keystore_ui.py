@@ -31,11 +31,11 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable, Iterable
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
@@ -76,9 +76,6 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
 from ...signer import AbstractSignatureImporter, SignatureImporterUSB
@@ -106,7 +103,7 @@ def icon_for_label(label: str) -> QIcon:
 
 
 class BaseHardwareSignerInteractionWidget(QWidget):
-    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    aboutToClose = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
@@ -194,7 +191,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
         )
         return button_import_qr
 
-    def add_hwi_button(self, signal_end_hwi_blocker: TypedPyQtSignalNo) -> QPushButton:
+    def add_hwi_button(self, signal_end_hwi_blocker: SignalProtocol[[]]) -> QPushButton:
         """Add hwi button."""
         button_hwi = SpinningButton(
             text="",
@@ -223,7 +220,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
 
 
 class KeyStoreUI(QWidget):
-    signal_signer_infos: TypedPyQtSignal[list[SignerInfo]] = cast(Any, pyqtSignal(list))
+    signal_signer_infos = cast(SignalProtocol[[list[SignerInfo]]], pyqtSignal(list))
 
     def __init__(
         self,
@@ -257,9 +254,8 @@ class KeyStoreUI(QWidget):
         self.tabs_import_type.addTab(self.tab_manual, "")
 
         self.label_fingerprint = QLabel(self)
-        language_switch: TypedPyQtSignalNo = cast(Any, self.signals_min.language_switch)
         self.edit_fingerprint = ButtonEdit(
-            signal_update=language_switch,
+            signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
             parent=self,
         )
@@ -274,7 +270,7 @@ class KeyStoreUI(QWidget):
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
         self.edit_key_origin = ButtonEdit(
             input_field=self.edit_key_origin_input,
-            signal_update=language_switch,
+            signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
             parent=self,
         )
@@ -292,7 +288,7 @@ class KeyStoreUI(QWidget):
         self.label_xpub = QLabel(self)
         self.edit_xpub = ButtonEdit(
             input_field=AnalyzerTextEdit(),
-            signal_update=language_switch,
+            signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
             parent=self,
         )
@@ -335,9 +331,8 @@ class KeyStoreUI(QWidget):
         self.button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
 
         self.usb_gui = USBGui(self.network, initalization_label=self.hardware_signer_label)
-        signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
         button_hwi = self.hardware_signer_interaction.add_hwi_button(
-            signal_end_hwi_blocker=signal_end_hwi_blocker
+            signal_end_hwi_blocker=self.usb_gui.signal_end_hwi_blocker
         )
         button_hwi.clicked.connect(self.on_hwi_click)
 
@@ -722,8 +717,8 @@ class SignedUI(QWidget):
 
 
 class SignerUI(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = cast(Any, pyqtSignal(bdk.Psbt))
-    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
 
     def __init__(
         self,
@@ -744,7 +739,7 @@ class SignerUI(QWidget):
         for signer in self.signature_importers:
             button: QPushButton
             if isinstance(signer, SignatureImporterUSB):
-                signal_end_hwi_blocker: TypedPyQtSignalNo = signer.usb_gui.signal_end_hwi_blocker  # type: ignore
+                signal_end_hwi_blocker = cast(SignalProtocol[[]], signer.usb_gui.signal_end_hwi_blocker)
                 button = SpinningButton(
                     text=button_prefix + signer.label,
                     enable_signal=signal_end_hwi_blocker,
@@ -766,8 +761,8 @@ class SignerUI(QWidget):
 
 
 class SignerUIHorizontal(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = cast(Any, pyqtSignal(bdk.Psbt))
-    signal_tx_received: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
 
     def __init__(
         self,

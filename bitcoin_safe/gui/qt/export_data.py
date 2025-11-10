@@ -34,7 +34,7 @@ import os
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
@@ -43,6 +43,7 @@ from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
@@ -64,9 +65,6 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.util import filename_clean
 
@@ -603,9 +601,9 @@ class HorizontalImportExportGroups(QWidget):
 
 
 class ExportDataSimple(HorizontalImportExportGroups):
-    signal_set_qr_images: TypedPyQtSignal[list[str]] = cast(Any, pyqtSignal(list))
-    signal_close: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_show: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_set_qr_images = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
+    signal_close = cast(SignalProtocol[[]], pyqtSignal())
+    signal_show = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

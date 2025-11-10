@@ -42,10 +42,10 @@ python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 cryptography = "^45.0.2"
-bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git",branch = "main" }
+bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git",branch = "main"  }
 bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "master" }
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }
-bitcoin-safe-lib  = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
+bitcoin-safe-lib  = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"  }
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"
 pycryptodome = "^3.23.0"  # for hash160, since it is not in default openssl

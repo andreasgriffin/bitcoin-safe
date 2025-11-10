@@ -28,10 +28,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6 import QtGui
 from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import (
@@ -47,9 +46,6 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 
 class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
@@ -141,8 +137,8 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def __init__(
         self,
         fx: FX | None,
-        signal_currency_changed: TypedPyQtSignalNo | pyqtBoundSignal,
-        signal_language_switch: TypedPyQtSignalNo | pyqtBoundSignal,
+        signal_currency_changed: SignalProtocol[[]] | pyqtBoundSignal,
+        signal_language_switch: SignalProtocol[[]] | pyqtBoundSignal,
         include_currrency_symbol=False,
         parent=None,
     ) -> None:
@@ -287,7 +283,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
 class BTCSpinBox(AnalyzerSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
 
-    def __init__(self, network: bdk.Network, signal_language_switch: TypedPyQtSignalNo, parent=None) -> None:
+    def __init__(self, network: bdk.Network, signal_language_switch: SignalProtocol[[]], parent=None) -> None:
         """Initialize instance."""
         super().__init__(parent)
         self.network = network
@@ -353,8 +349,8 @@ class BTCSpinBox(AnalyzerSpinBox):
 class FeerateSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def __init__(
         self,
-        signal_currency_changed: TypedPyQtSignalNo | pyqtBoundSignal,
-        signal_language_switch: TypedPyQtSignalNo | pyqtBoundSignal,
+        signal_currency_changed: SignalProtocol[[]] | pyqtBoundSignal,
+        signal_language_switch: SignalProtocol[[]] | pyqtBoundSignal,
         parent=None,
     ) -> None:
         """Initialize instance."""

@@ -31,11 +31,12 @@ from __future__ import annotations
 import csv
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.gui.qt.satoshis import unit_sat_str, unit_str
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -69,9 +70,6 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import get_wallet_of_address
 
 from ....pythonbdk_types import Recipient, is_address
@@ -119,7 +117,7 @@ class RecipientWidget(QWidget):
         )
 
         self.amount_layout = QHBoxLayout()
-        language_switch: TypedPyQtSignalNo = cast(Any, self.wallet_functions.signals.language_switch)
+        language_switch = cast(SignalProtocol[[]], self.wallet_functions.signals.language_switch)
         self.amount_spin_box = BTCSpinBox(network=network, signal_language_switch=language_switch)
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
@@ -378,10 +376,10 @@ class NotificationBarRecipient(NotificationBar):
 
 
 class RecipientBox(QWidget):
-    signal_close: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
-    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
-    signal_address_text_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
-    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_close = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_address_text_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_amount_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
 
     def __init__(
         self,
@@ -518,10 +516,10 @@ class RecipientBox(QWidget):
 
 
 class Recipients(QWidget):
-    signal_added_recipient: TypedPyQtSignal[RecipientBox] = cast(Any, pyqtSignal(RecipientBox))
-    signal_removed_recipient: TypedPyQtSignal[RecipientBox] = cast(Any, pyqtSignal(RecipientBox))
-    signal_clicked_send_max_button: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
-    signal_amount_changed: TypedPyQtSignal[RecipientWidget] = cast(Any, pyqtSignal(RecipientWidget))
+    signal_added_recipient = cast(SignalProtocol[[RecipientBox]], pyqtSignal(RecipientBox))
+    signal_removed_recipient = cast(SignalProtocol[[RecipientBox]], pyqtSignal(RecipientBox))
+    signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_amount_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
 
     def __init__(
         self,

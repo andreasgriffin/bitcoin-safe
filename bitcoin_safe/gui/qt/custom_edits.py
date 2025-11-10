@@ -33,15 +33,13 @@ import logging
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QRect, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent, QPainter, QPaintEvent, QPalette
 from PyQt6.QtWidgets import QApplication, QCompleter, QLineEdit, QTextEdit, QWidget
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 ENABLE_COMPLETERS = True
@@ -224,7 +222,7 @@ class AnalyzerTextEdit(QTextEdit):
 
 
 class QCompleterLineEdit(AnalyzerLineEdit):
-    signal_focus_out: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_focus_out = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

@@ -30,8 +30,9 @@ from __future__ import annotations
 
 import logging
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
@@ -40,9 +41,6 @@ from PyQt6.QtWidgets import QWidget
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +55,7 @@ class PluginClient(BaseSaveableClass, QWidget):
     description = ""
     provider = ""
 
-    signal_set_enabled: TypedPyQtSignal[bool] = cast(Any, pyqtSignal(bool))
+    signal_set_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(self, enabled: bool, icon: QIcon) -> None:
         """Initialize instance."""

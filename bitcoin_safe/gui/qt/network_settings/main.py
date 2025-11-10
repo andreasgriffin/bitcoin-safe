@@ -29,11 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 import numpy as np
 import requests
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -86,8 +87,6 @@ from bitcoin_safe.network_utils import (
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from ..icon_label import IconLabel
 
 logger = logging.getLogger(__name__)
@@ -169,8 +168,8 @@ def test_connection(network_config: NetworkConfig) -> str | None:
 
 
 class NetworkSettingsUI(QWidget):
-    signal_apply_and_shutdown: TypedPyQtSignal[bdk.Network] = cast(Any, pyqtSignal(bdk.Network))
-    signal_cancel: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_apply_and_shutdown = cast(SignalProtocol[[bdk.Network]], pyqtSignal(bdk.Network))
+    signal_cancel = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

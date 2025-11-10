@@ -30,10 +30,10 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from bitcoin_qr_tools.data import SignerInfo
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QMouseEvent
@@ -42,9 +42,6 @@ from PyQt6.QtWidgets import QTabBar
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.signals import SignalsMin
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet_util import signer_name
 
 from ...descriptors import AddressType
@@ -56,7 +53,7 @@ logger = logging.getLogger(__name__)
 
 
 class OrderTrackingTabBar(QTabBar):
-    signal_new_tab_order: TypedPyQtSignal[list[int]] = cast(Any, pyqtSignal(list))
+    signal_new_tab_order = cast(SignalProtocol[[list[int]]], pyqtSignal(list))
 
     def __init__(self, parent=None):
         """Initialize instance."""

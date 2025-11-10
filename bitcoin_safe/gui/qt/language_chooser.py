@@ -31,9 +31,9 @@ from __future__ import annotations
 import logging
 import os
 from functools import partial
-from typing import TYPE_CHECKING
 
 import bitcoin_safe_lib.caching
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLibraryInfo, QLocale, QObject, Qt, QTranslator
 from PyQt6.QtGui import QFont, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import (
@@ -48,9 +48,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 from ...execute_config import DEFAULT_LANG_CODE
 
@@ -170,8 +167,8 @@ class LanguageChooser(QObject):
     def __init__(
         self,
         config: UserConfig,
-        signals_language_switch: list[TypedPyQtSignalNo],
-        signals_currency_switch: TypedPyQtSignalNo,
+        signals_language_switch: list[SignalProtocol[[]]],
+        signals_currency_switch: SignalProtocol[[]],
         parent: QWidget | None,
     ) -> None:
         """Initialize instance."""
@@ -315,6 +312,6 @@ class LanguageChooser(QObject):
             signal.emit()  # Emit the signal when the language is switched
         self.config.language_code = langCode
 
-    def add_signal_language_switch(self, signal_language_switch: TypedPyQtSignalNo):
+    def add_signal_language_switch(self, signal_language_switch: SignalProtocol[[]]):
         """Add signal language switch."""
         self.signals_language_switch.append(signal_language_switch)

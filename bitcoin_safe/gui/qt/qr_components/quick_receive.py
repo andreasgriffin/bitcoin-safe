@@ -30,10 +30,10 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QKeyEvent, QMouseEvent, QPalette
@@ -53,9 +53,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ..util import to_color_name
 
@@ -102,7 +99,7 @@ class TitledComponent(QWidget):
 
 
 class ReceiveGroup(TitledComponent):
-    signal_set_address_as_used: TypedPyQtSignal[AddressInfoMin] = cast(Any, pyqtSignal(AddressInfoMin))
+    signal_set_address_as_used = cast(SignalProtocol[[AddressInfoMin]], pyqtSignal(AddressInfoMin))
 
     def __init__(
         self,
@@ -180,7 +177,7 @@ class ReceiveGroup(TitledComponent):
 
 
 class AddCategoryButton(TitledComponent):
-    clicked: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    clicked = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, width=170, parent=None) -> None:
         """Initialize instance."""
@@ -274,8 +271,8 @@ class AddCategoryButton(TitledComponent):
 
 
 class QuickReceive(QWidget):
-    signal_manage_categories_requested: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_add_category_requested: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_manage_categories_requested = cast(SignalProtocol[[]], pyqtSignal())
+    signal_add_category_requested = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, title="Quick Receive", parent=None) -> None:
         """Initialize instance."""

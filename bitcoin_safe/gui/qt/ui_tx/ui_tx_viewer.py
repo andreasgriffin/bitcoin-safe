@@ -31,12 +31,12 @@ from __future__ import annotations
 import logging
 from functools import partial
 from time import time
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QShowEvent
@@ -119,10 +119,6 @@ from ..util import (
     set_no_margins,
     sort_id_to_icon,
 )
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from ..utxo_list import UtxoListWithToolbar
 from .columns import BaseColumn, ColumnFee, ColumnInputs, ColumnRecipients, ColumnSankey
 
@@ -173,8 +169,8 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
 
 
 class UITx_Viewer(UITx_Base):
-    signal_updated_content: TypedPyQtSignal[Data] = cast(Any, pyqtSignal(Data))
-    signal_edit_tx: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_updated_content: SignalProtocol[Data] = cast(Any, pyqtSignal(Data))
+    signal_edit_tx = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

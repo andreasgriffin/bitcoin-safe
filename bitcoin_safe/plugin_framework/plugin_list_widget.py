@@ -32,8 +32,9 @@ import logging
 import sys
 from collections.abc import Sequence
 from functools import partial
-from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
+from typing import Protocol, cast, runtime_checkable
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -49,9 +50,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.util import svg_tools
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -61,7 +59,7 @@ class PluginProtocol(Protocol):
     description: str
     provider: str
     icon: QIcon
-    signal_set_enabled: TypedPyQtSignal[bool]
+    signal_set_enabled: SignalProtocol[bool]
     enabled: bool
     node: SidebarNode
 
@@ -186,7 +184,7 @@ class PluginListWidget(QWidget):
 
 # Example usage with a dummy plugin implementation
 class DummyPlugin(QObject):
-    signal_set_enabled: TypedPyQtSignal[bool] = cast(Any, pyqtSignal(bool))
+    signal_set_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(self, title, icon, description, provider):
         """Initialize instance."""

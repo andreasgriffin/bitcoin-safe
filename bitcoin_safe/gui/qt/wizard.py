@@ -35,12 +35,12 @@ from abc import abstractmethod
 from collections.abc import Callable
 from functools import partial
 from math import ceil
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
@@ -77,10 +77,6 @@ from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from bitcoin_safe.wallet import Wallet
 from bitcoin_safe.wallet_util import signer_name
 
@@ -261,7 +257,7 @@ class WizardTabInfo:
         go_to_next_index: Callable,
         go_to_previous_index: Callable,
         floating_button_box: FloatingButtonBar,
-        signal_create_wallet: TypedPyQtSignal[str],
+        signal_create_wallet: SignalProtocol[str],
         max_test_fund: int,
         qt_wallet: QTWallet | None = None,
     ) -> None:
@@ -291,7 +287,9 @@ class BaseTab(QObject):
             ok_text="",
             cancel_text="",
         )
-        self.signal_tracker.connect(self.refs.qtwalletbase.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.refs.qtwalletbase.signals.language_switch), self.updateUi
+        )
 
     @property
     def button_next(self) -> QPushButton:
@@ -600,9 +598,8 @@ class GenerateSeed(BaseTab):
             if usb_device_name in self.screenshot.tabs:
                 hardware_signer_interaction = HardwareSignerInteractionWidget()
                 self.hardware_signer_interactions[usb_device_name] = hardware_signer_interaction
-                signal_end_hwi_blocker: TypedPyQtSignalNo = self.usb_gui.signal_end_hwi_blocker  # type: ignore
                 button_hwi = hardware_signer_interaction.add_hwi_button(
-                    signal_end_hwi_blocker=signal_end_hwi_blocker
+                    signal_end_hwi_blocker=self.usb_gui.signal_end_hwi_blocker
                 )
                 button_hwi.clicked.connect(self.on_hwi_click)
 
@@ -1551,8 +1548,8 @@ class SendTest(BaseTab):
 
 
 class Wizard(WizardBase):
-    signal_create_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # protowallet_id
-    signal_step_change: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_create_wallet = cast(SignalProtocol[[str]], pyqtSignal(str))  # protowallet_id
+    signal_step_change = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
         self,

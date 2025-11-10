@@ -38,14 +38,14 @@ from datetime import datetime
 from functools import partial
 from pathlib import Path
 from types import FrameType
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import Literal, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget, DecodingException
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
@@ -109,9 +109,6 @@ from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import OptExcInfo
 
 from ...config import UserConfig
@@ -151,8 +148,8 @@ logger = logging.getLogger(__name__)
 
 
 class MainWindow(QMainWindow):
-    signal_recently_open_wallet_changed: TypedPyQtSignal[list[str]] = cast(Any, pyqtSignal(list))
-    signal_remove_attached_widget: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    signal_recently_open_wallet_changed = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
+    signal_remove_attached_widget = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -187,10 +184,9 @@ class MainWindow(QMainWindow):
 
         self.fx = FX(config=self.config)
         self.fx.signal_data_updated.connect(self.update_fx_rate_in_config)
-        language_switch: TypedPyQtSignalNo = cast(Any, self.signals.language_switch)
         self.language_chooser = LanguageChooser(
             config=self.config,
-            signals_language_switch=[language_switch],
+            signals_language_switch=[self.signals.language_switch],
             parent=self,
             signals_currency_switch=self.signals.currency_switch,
         )
@@ -658,10 +654,22 @@ class MainWindow(QMainWindow):
             self.action_reveal_file_explorer.setShortcut(self.key_sequence_reveral_wallet_in_file_explorer)
 
             menu.addSeparator()
+            self.context_menu_action_rename_wallet = menu.add_action(
+                self.menu_action_rename_wallet.text(),
+                slot=self.change_wallet_id,
+                icon=self.menu_action_rename_wallet.icon(),
+            )
+            self.context_menu_action_rename_wallet = menu.add_action(
+                self.menu_action_change_password.text(),
+                slot=self.change_wallet_password,
+                icon=self.menu_action_change_password.icon(),
+            )
+
+            menu.addSeparator()
             self.context_menu_action_toggle_tutorial = menu.add_action(
                 self.menu_action_toggle_tutorial.text(),
                 slot=self.toggle_tutorial,
-                icon=svg_tools.get_QIcon("stars4.svg"),
+                icon=self.menu_action_toggle_tutorial.icon(),
             )
 
         menu.exec(position)
@@ -2036,8 +2044,7 @@ class MainWindow(QMainWindow):
         if qt_wallet.wizard.should_be_visible:
             qt_wallet.wizard.node.select()
 
-        language_switch: TypedPyQtSignalNo = cast(Any, self.signals.language_switch)
-        self.language_chooser.add_signal_language_switch(language_switch)
+        self.language_chooser.add_signal_language_switch(self.signals.language_switch)
         self.wallet_functions.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
         self.signals.event_wallet_tab_added.emit()
 

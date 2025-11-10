@@ -31,9 +31,10 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QCloseEvent,
@@ -50,9 +51,6 @@ from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.util import center_on_screen
 from bitcoin_safe.i18n import translate
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -142,12 +140,12 @@ class DragAndDropTextEdit(AnalyzerTextEdit):
 
 
 class DragAndDropButtonEdit(ButtonEdit):
-    signal_drop_file: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_drop_file = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         parent=None,
         callback_enter=None,
         callback_esc=None,
@@ -182,12 +180,12 @@ class DragAndDropButtonEdit(ButtonEdit):
 
 
 class ImportDialog(QWidget):
-    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    aboutToClose = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         window_title="Open Transaction or PSBT",
         on_open=None,
         parent=None,
@@ -272,7 +270,7 @@ if __name__ == "__main__":
     from PyQt6.QtWidgets import QApplication
 
     class My(QObject):
-        close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+        close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
 
     my = My()
 

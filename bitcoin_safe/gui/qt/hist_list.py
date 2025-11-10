@@ -59,11 +59,11 @@ import tempfile
 from collections.abc import Iterable
 from enum import IntEnum
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
 from bitcoin_safe_lib.util import time_logger
 from bitcoin_safe_lib.util_os import webopen
@@ -81,9 +81,6 @@ from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.tx import short_tx_id
 
 from ...i18n import translate
@@ -151,7 +148,7 @@ class HistList(MyTreeView[str]):
         **BaseSaveableClass.known_classes,
     }
 
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
+    signal_tag_dropped = cast(SignalProtocol[[AddressDragInfo]], pyqtSignal(AddressDragInfo))
 
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
@@ -837,7 +834,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
         HistList.__name__: HistList,
     }
 
-    signal_export_pdf_statement: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  #  wallet_id
+    signal_export_pdf_statement = cast(SignalProtocol[[str]], pyqtSignal(str))  #  wallet_id
 
     def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget | None = None) -> None:
         """Initialize instance."""

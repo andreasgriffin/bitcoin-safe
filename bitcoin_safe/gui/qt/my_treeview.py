@@ -65,7 +65,6 @@ from collections.abc import Callable, Iterable, Sequence
 from decimal import Decimal
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Generic,
     NamedTuple,
@@ -73,6 +72,7 @@ from typing import (
     cast,
 )
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import str_to_qbytearray
 from bitcoin_safe_lib.util import unique_elements
 from PyQt6 import QtCore
@@ -133,9 +133,6 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from .util import do_copy
 
 logger = logging.getLogger(__name__)
@@ -553,9 +550,9 @@ class DropRule(NamedTuple):
 
 
 class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
-    signal_selection_changed: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_update: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_finished_update: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_selection_changed = cast(SignalProtocol[[]], pyqtSignal())
+    signal_update = cast(SignalProtocol[[]], pyqtSignal())
+    signal_finished_update = cast(SignalProtocol[[]], pyqtSignal())
 
     filter_columns: Iterable[int]
     column_alignments: dict[int, Qt.AlignmentFlag] = {}

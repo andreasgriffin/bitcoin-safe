@@ -29,7 +29,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
@@ -42,7 +42,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
     is_valid_descriptor,
 )
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import QLocale, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QShowEvent
@@ -66,9 +66,6 @@ from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWid
 from bitcoin_safe.gui.qt.util import Message, MessageType, center_on_screen, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import SignalsMin, WalletFunctions
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.wallet import Wallet
 
 from ...pdfrecovery import make_and_open_pdf
@@ -78,7 +75,7 @@ logger = logging.getLogger(__name__)
 
 
 class DescriptorExport(QDialog):
-    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    aboutToClose = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,
@@ -124,7 +121,7 @@ class DescriptorInputField(AnalyzerTextEdit):
 
 
 class DescriptorEdit(QWidget):
-    signal_descriptor_change: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_descriptor_change = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
@@ -132,7 +129,7 @@ class DescriptorEdit(QWidget):
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         wallet: Wallet | None = None,
-        signal_update: TypedPyQtSignalNo | None = None,
+        signal_update: SignalProtocol[[]] | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__()
@@ -212,7 +209,9 @@ class DescriptorEdit(QWidget):
         self.import_export_widget_layout.addStretch()
 
         # signals
-        self.signal_tracker.connect(self.edit.input_field.textChanged, self.on_input_field_textChanged)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit.input_field.textChanged), self.on_input_field_textChanged
+        )
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)

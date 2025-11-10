@@ -29,11 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QKeyEvent, QKeySequence, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
@@ -56,9 +57,6 @@ from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import center_on_screen, set_no_margins, svg_tools
 from bitcoin_safe.mempool_manager import MempoolManager
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from ...descriptors import get_address_bip32_path
 from ...signals import SignalsMin, WalletFunctions
 from ...wallet import Wallet
@@ -76,7 +74,7 @@ class AddressDetailsAdvanced(QWidget):
         address_index: int,
         network: bdk.Network,
         address_path_str: str,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread | None,
         parent: QWidget | None,
@@ -176,7 +174,7 @@ class QRAddress(QRCodeWidgetSVG):
 
 
 class AddressDialog(QWidget):
-    aboutToClose: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    aboutToClose = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,

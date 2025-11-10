@@ -32,9 +32,11 @@ import asyncio
 import logging
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import requests
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
@@ -45,19 +47,15 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-
 from bitcoin_safe.util_os import show_file_in_explorer
 
 logger = logging.getLogger(__name__)
 
 
 class DownloadWorker(QObject):
-    progress: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_finished: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    aborted: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    progress = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_finished = cast(SignalProtocol[[]], pyqtSignal())
+    aborted = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, url, destination_dir, proxies: dict | None) -> None:
         """Initialize instance."""
@@ -114,7 +112,7 @@ class DownloadWorker(QObject):
 
 
 class Downloader(QWidget):
-    finished: TypedPyQtSignal[DownloadWorker] = cast(Any, pyqtSignal(DownloadWorker))
+    finished = cast(SignalProtocol[[DownloadWorker]], pyqtSignal(DownloadWorker))
 
     def __init__(self, url, destination_dir, proxies: dict | None) -> None:
         """Initialize instance."""

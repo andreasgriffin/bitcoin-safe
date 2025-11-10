@@ -56,11 +56,11 @@ import enum
 import logging
 from enum import IntEnum
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
@@ -118,10 +118,6 @@ from .util import (
     do_copy,
     sort_id_to_icon,
 )
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 
 logger = logging.getLogger(__name__)
 
@@ -302,7 +298,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class AddressList(MyTreeView[str]):
-    signal_tag_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
+    signal_tag_dropped = cast(SignalProtocol[[AddressDragInfo]], pyqtSignal(AddressDragInfo))
 
     class Columns(MyTreeView.BaseColumnsEnum):
         NUM_TXS = enum.auto()

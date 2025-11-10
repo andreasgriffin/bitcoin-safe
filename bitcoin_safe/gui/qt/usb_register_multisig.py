@@ -29,12 +29,13 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import (
     address_descriptor_from_multipath_descriptor,
 )
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -53,9 +54,6 @@ from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 from ...signals import WalletFunctions
 from .util import Message, MessageType, generate_help_button
@@ -95,10 +93,9 @@ class USBValidateAddressWidget(QWidget):
         self._layout.addWidget(self.button_box)
         self._layout.setAlignment(self.button_box, Qt.AlignmentFlag.AlignCenter)
 
-        signal_end_hwi_blocker: TypedPyQtSignalNo = cast(Any, self.usb_gui.signal_end_hwi_blocker)
         self.button_validate_address = SpinningButton(
             text="",
-            enable_signal=signal_end_hwi_blocker,
+            enable_signal=self.usb_gui.signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
@@ -152,7 +149,7 @@ class USBValidateAddressWidget(QWidget):
 
 
 class USBRegisterMultisigWidget(USBValidateAddressWidget):
-    signal_end_hwi_blocker: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_end_hwi_blocker = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

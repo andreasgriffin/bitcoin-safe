@@ -57,12 +57,11 @@ from PyQt6.QtGui import QIcon, QResizeEvent
 
 from typing import Any, TYPE_CHECKING, cast
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 
 
 class My(QObject):
-    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
 
 
 @pytest.fixture()

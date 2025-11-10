@@ -37,7 +37,6 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Literal,
 )
@@ -48,6 +47,7 @@ import PIL.Image as PilImage
 from bitcoin_qr_tools.data import ConverterAddress
 from bitcoin_safe_lib.caching import register_cache
 from bitcoin_safe_lib.gui.qt.icons import SvgTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from bitcoin_safe_lib.util import hash_string
 from PyQt6.QtCore import (
@@ -98,9 +98,6 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import resource_path
 
 logger = logging.getLogger(__name__)
@@ -574,7 +571,7 @@ class Message:
             return False
         return False
 
-    def emit_with(self, notification_signal: TypedPyQtSignal[Message]):
+    def emit_with(self, notification_signal: SignalProtocol[Message]):
         """Emit with."""
         logger.debug(str(self.__dict__))
         return notification_signal.emit(self)
@@ -730,7 +727,7 @@ class BlockingWaitingDialog(WindowModalDialog):
             self.accept()
 
 
-def one_time_signal_connection(signal: TypedPyQtSignalNo | TypedPyQtSignal, f: Callable):
+def one_time_signal_connection(signal: SignalProtocol, f: Callable):
     """One time signal connection."""
 
     def f_wrapper(*args, **kwargs):

@@ -39,15 +39,14 @@ from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
 from typing import Any, TYPE_CHECKING, cast
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
 
 class MySignalclass(QObject):
-    signal: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal = cast(SignalProtocol[[]], pyqtSignal())
 
 
 def chained_one_time_signal_connections(

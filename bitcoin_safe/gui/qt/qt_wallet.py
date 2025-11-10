@@ -39,7 +39,6 @@ from concurrent.futures import Future
 from datetime import timedelta
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     Any,
     TypeVar,
     cast,
@@ -49,7 +48,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QLocale, Qt, QTimer, pyqtSignal
@@ -94,9 +93,6 @@ from bitcoin_safe.pythonbdk_types import (
     python_utxo_balance,
 )
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 from bitcoin_safe.util import filename_clean
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
@@ -133,8 +129,8 @@ MINIMUM_INTERVAL_SYNC_REGULARLY = (
 
 
 class QTProtoWallet(QtWalletBase):
-    signal_create_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    signal_close_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_create_wallet = cast(SignalProtocol[[str]], pyqtSignal(str))
+    signal_close_wallet = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
@@ -220,7 +216,7 @@ class QTProtoWallet(QtWalletBase):
 
 
 class ProgressSignal:
-    def __init__(self, signal_settext_balance_label: TypedPyQtSignal[str]) -> None:
+    def __init__(self, signal_settext_balance_label: SignalProtocol[[str]]) -> None:
         """Initialize instance."""
         self.signal_settext_balance_label = signal_settext_balance_label
 
@@ -241,14 +237,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         PluginManager.__name__: PluginManager,
     }
 
-    signal_settext_balance_label: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    signal_progress_info: TypedPyQtSignal[ProgressInfo] = cast(Any, pyqtSignal(ProgressInfo))
-    signal_show_manage_categories: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_client_log_info: TypedPyQtSignal[bdk.Info] = cast(Any, pyqtSignal(bdk.Info))
-    signal_client_log_warning: TypedPyQtSignal[bdk.Warning] = cast(Any, pyqtSignal(bdk.Warning))
-    signal_client_log_str: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    signal_wallet_update: TypedPyQtSignal[UpdateInfo] = cast(Any, pyqtSignal(UpdateInfo))
-    signal_sync_status: TypedPyQtSignal[SyncStatus] = cast(Any, pyqtSignal(SyncStatus))
+    signal_settext_balance_label = cast(SignalProtocol[[str]], pyqtSignal(str))
+    signal_progress_info = cast(SignalProtocol[[ProgressInfo]], pyqtSignal(ProgressInfo))
+    signal_show_manage_categories = cast(SignalProtocol[[]], pyqtSignal())
+    signal_client_log_info = cast(SignalProtocol[[bdk.Info]], pyqtSignal(bdk.Info))
+    signal_client_log_warning = cast(SignalProtocol[[bdk.Warning]], pyqtSignal(bdk.Warning))
+    signal_client_log_str = cast(SignalProtocol[[str]], pyqtSignal(str))
+    signal_wallet_update = cast(SignalProtocol[[UpdateInfo]], pyqtSignal(UpdateInfo))
+    signal_refresh_sync_status = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -368,6 +364,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_signals.import_electrum_wallet_labels.connect(
             self.import_electrum_wallet_labels,
         )
+
         self.signal_tracker.connect(self.signals.language_switch, self.wallet_signals.language_switch)
         self.signal_tracker.connect(self.signals.currency_switch, self.wallet_signals.currency_switch)
         self.signal_tracker.connect(self.signals.currency_switch, self.update_display_balance)
@@ -378,7 +375,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signal_client_log_warning, self._handle_client_log_warning)
         self.signal_tracker.connect(self.signal_client_log_str, self._handle_client_log_str)
         self.signal_tracker.connect(self.signal_wallet_update, self._handle_client_update)
-        self.signal_tracker.connect(self.signal_sync_status, self.update_sync_status)
+        self.signal_tracker.connect(self.signal_refresh_sync_status, self.update_sync_status)
 
         self._start_progress_update_timer()
         self._start_sync_retry_timer()
@@ -1147,15 +1144,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         self.wallet_signals.updated.connect(self.wallet.on_addresses_updated)
         self.signal_tracker.connect(
-            self.wallet_functions.get_wallets, self.get_wallet, slot_name=self.wallet.id
+            cast(SignalProtocol, self.wallet_functions.get_wallets), self.get_wallet, self.wallet.id
         )
         self.signal_tracker.connect(
-            self.wallet_functions.get_qt_wallets, self.get_qt_wallet, slot_name=self.wallet.id
+            cast(SignalProtocol, self.wallet_functions.get_qt_wallets), self.get_qt_wallet, self.wallet.id
         )
         self.signal_tracker.connect(
-            self.wallet_signals.get_category_infos,
+            cast(SignalProtocol, self.wallet_signals.get_category_infos),
             self.get_category_infos,
-            slot_name=self.wallet.id,
+            self.wallet.id,
         )
         return wallet
 
@@ -1422,11 +1419,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.init_blockchain()
         if self.wallet.client:
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.signal_sync_status.emit(self.wallet.client.sync_status)
+            self.signal_refresh_sync_status.emit()
         self.wallet.trigger_sync()
         if self.wallet.client:
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.signal_sync_status.emit(self.wallet.client.sync_status)
+            self.signal_refresh_sync_status.emit()
         return None
 
     def _sync_on_done(self, result) -> None:
@@ -1443,7 +1440,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_error(self, packed_error_info) -> None:
         """Sync on error."""
-        self.signal_sync_status.emit(SyncStatus.error)
+        if self.wallet.client:
+            self.wallet.client.set_sync_status(SyncStatus.error)
+        self.signal_refresh_sync_status.emit()
         logger.info(f"Could not sync. SynStatus set to {SyncStatus.error.name} for wallet {self.wallet.id}")
         logger.error(str(packed_error_info))
         # custom_exception_handler(*packed_error_info)
@@ -1500,7 +1499,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         if self.wallet.client.should_update_progress():
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.signal_sync_status.emit(SyncStatus.syncing)
+            self.signal_refresh_sync_status.emit()
 
     def _handle_client_log_warning(self, warning: bdk.Warning):
         """Handle client log warning."""
@@ -1509,7 +1508,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet.client.handle_log_warning(warning)
         if self.wallet.client.should_update_progress():
             self.signal_progress_info.emit(self.wallet.client.progress_info)
-            self.signal_sync_status.emit(SyncStatus.syncing)
+            self.signal_refresh_sync_status.emit()
 
     def _handle_client_log_str(self, message: str):
         """Handle client log str."""
@@ -1520,7 +1519,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not self.wallet.client:
             return
         self.signal_progress_info.emit(self.wallet.client.progress_info)
-        self.signal_sync_status.emit(self.wallet.client.sync_status)
+        self.signal_refresh_sync_status.emit()
         self.on_update(update_info)
 
     def _cancel_client_tasks(self) -> None:
@@ -1545,7 +1544,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def _add_bridge_tasks(
         self,
         coro: Callable[[], Coroutine[Any, Any, T | None]],
-        signal: TypedPyQtSignal[T],
+        signal: SignalProtocol[[T]],
         loop: LoopInThread,
     ) -> None:
         """Add bridge tasks."""
@@ -1554,7 +1553,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     async def _convert_to_signal(
         self,
         coro: Callable[[], Coroutine[Any, Any, T | None]],
-        signal: TypedPyQtSignal[T],
+        signal: SignalProtocol[[T]],
     ) -> None:
         """Convert to signal."""
         try:
@@ -1575,7 +1574,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             return
 
         self._cancel_client_tasks()
-        self.signal_sync_status.emit(client.sync_status)
+        self.signal_refresh_sync_status.emit()
         self._start_bridges()
 
     def is_in_cbf_ibd(self) -> bool:
@@ -1629,7 +1628,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             return
         self.wallet.client.sync(self.wallet.bdkwallet.start_sync_with_revealed_spks().build())
         self.signal_progress_info.emit(self.wallet.client.progress_info)
-        self.signal_sync_status.emit(self.wallet.client.sync_status)
+        self.signal_refresh_sync_status.emit()
         return None
 
     def get_editable_protowallet(self) -> ProtoWallet:
