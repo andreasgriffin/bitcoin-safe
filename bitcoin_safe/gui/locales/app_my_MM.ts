@@ -2726,7 +2726,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Gap limit may be too low</source>
-			<translation/>
+			<translation>ကြား ဟန့် လီမစ် နည်းစွာ ဖြစ်နိုင်သည်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2843,7 +2843,7 @@ The serializations of both differ, which could be caused by different collected 
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation/>
+			<translation>အိတ် ငွေ ထဲမှ input မပါဘဲ change output ပါသော လုပ်ငန်းများ တွေ့ရှိသည်: {txids}  သင်အိတ်ကို gap အကန့်အသတ် {new_gap} ဖြင့် ထပ်မံစစ်ဆေးလိုပါသလား?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

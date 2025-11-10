@@ -2747,7 +2747,7 @@ Die Serialisierungen beider unterscheiden sich; das kann durch unterschiedliche 
 		<name>QTWallet</name>
 		<message>
 			<source>Gap limit may be too low</source>
-			<translation/>
+			<translation>Die Lückenbegrenzung könnte zu niedrig sein</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2867,7 +2867,7 @@ im Wallet '{wallet}' wurden aus der Historie entfernt!!!</translation>
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation/>
+			<translation>Es wurden Transaktionen mit Wechsel-Ausgängen, aber ohne Wallet-Eingänge erkannt: {txids}  Möchten Sie das Wallet mit einem erhöhten Lückenlimit von {new_gap} erneut scannen?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

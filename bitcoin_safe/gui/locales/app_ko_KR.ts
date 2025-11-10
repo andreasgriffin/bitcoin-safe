@@ -2726,7 +2726,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Gap limit may be too low</source>
-			<translation/>
+			<translation>갭 한도가 너무 낮을 수 있습니다</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2843,7 +2843,7 @@ The serializations of both differ, which could be caused by different collected 
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation/>
+			<translation>지갑 입력 없이 변경 출력만 있는 거래가 감지되었습니다: {txids}  증가된 갭 한도 {new_gap} 로 지갑을 다시 스캔하시겠습니까?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

@@ -2727,7 +2727,7 @@ The serializations of both differ, which could be caused by different collected 
 		<name>QTWallet</name>
 		<message>
 			<source>Gap limit may be too low</source>
-			<translation/>
+			<translation>El límit de gap podria ser massa baix</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2844,7 +2844,7 @@ The serializations of both differ, which could be caused by different collected 
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation/>
+			<translation>S’han detectat transaccions amb sortides de canvi però sense entrades de cartera: {txids}  Voleu tornar a escanejar la cartera amb un límit de gap augmentat de {new_gap} ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

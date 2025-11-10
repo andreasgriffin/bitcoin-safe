@@ -2747,7 +2747,7 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		<name>QTWallet</name>
 		<message>
 			<source>Gap limit may be too low</source>
-			<translation/>
+			<translation>Limit różnicy („gap”) może być zbyt niski</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2867,7 +2867,7 @@ w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation/>
+			<translation>Wykryto transakcje ze zwrotem „change”, ale bez wejść z portfela: {txids}  Czy chcesz przeskanować portfel ponownie z podwyższonym limitem różnicy {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
