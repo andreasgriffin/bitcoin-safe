@@ -34,9 +34,10 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
 from math import ceil
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -66,9 +67,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.util import create_button_box
 from bitcoin_safe.signals import SignalsMin
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 from .util import set_margins, svg_tools
 
 logger = logging.getLogger(__name__)
@@ -83,7 +81,7 @@ def height_of_str(text, widget: QWidget, max_width: float) -> float:
 
 class StepProgressBar(QWidget):
     # Define a new signal that emits the number of the index clicked
-    signal_index_clicked: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_index_clicked = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
         self,
@@ -487,9 +485,9 @@ class AutoResizingStackedWidget(QWidget):
 
 
 class StepProgressContainer(QWidget):
-    signal_set_current_widget: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
-    signal_widget_focus: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
-    signal_widget_unfocus: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    signal_set_current_widget = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
+    signal_widget_focus = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
+    signal_widget_unfocus = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,

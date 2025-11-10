@@ -32,8 +32,9 @@ import logging
 import sys
 from collections.abc import Callable
 from functools import partial
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
+from typing import Generic, TypeVar, cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import is_dark_mode
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QIcon, QKeySequence, QPalette, QShortcut
@@ -63,9 +64,6 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
     to_color_name,
 )
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -220,11 +218,11 @@ class SidebarNode(QFrame, Generic[TT]):
     """
 
     # PyQt only supports built-ins; use 'object' here to carry the node itself.
-    closeClicked: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    hideClicked: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    nodeSelected: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    nodeUnSelected: TypedPyQtSignal[object] = cast(Any, pyqtSignal(object))
-    nodeToggled: TypedPyQtSignal[object, bool] = cast(Any, pyqtSignal(object, bool))
+    closeClicked = cast(SignalProtocol[[object]], pyqtSignal(object))
+    hideClicked = cast(SignalProtocol[[object]], pyqtSignal(object))
+    nodeSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
+    nodeUnSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
+    nodeToggled = cast(SignalProtocol[[object, bool]], pyqtSignal(object, bool))
 
     hide_icon_name = "close.svg"
 
@@ -812,12 +810,12 @@ class SidebarTree(QWidget, Generic[TT]):
     - currentChanged(node)
     """
 
-    nodeToggled: TypedPyQtSignal[SidebarNode[TT], bool] = cast(Any, pyqtSignal(object, bool))
-    nodeSelected: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
-    nodeUnSelected: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
-    closeClicked: TypedPyQtSignal[SidebarNode[TT]] = cast(Any, pyqtSignal(object))
-    currentChanged: TypedPyQtSignal[SidebarNode[TT]] = cast(
-        Any, pyqtSignal(object)
+    nodeToggled = cast(SignalProtocol[[SidebarNode[TT], bool]], pyqtSignal(object, bool))
+    nodeSelected = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
+    nodeUnSelected = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
+    closeClicked = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
+    currentChanged = cast(
+        SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object)
     )  # emits the SidebarNode (or None) for the new current page
 
     nodeContextMenuRequested = pyqtSignal(object, object)  # (node: SidebarNode|None, global_pos: QPoint)

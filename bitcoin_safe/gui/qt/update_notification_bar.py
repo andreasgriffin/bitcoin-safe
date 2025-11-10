@@ -34,9 +34,10 @@ import platform
 import shutil
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
@@ -56,14 +57,11 @@ from ...signature_manager import (
 from ...util import fast_version
 from .util import Message, MessageType, set_margins
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
-
 logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar):
-    signal_on_success: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_on_success = cast(SignalProtocol[[]], pyqtSignal())
 
     key = KnownGPGKeys.andreasgriffin
 

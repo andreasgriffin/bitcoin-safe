@@ -51,16 +51,15 @@ if TYPE_CHECKING:
     from .gui.qt.util import (
         Message,
     )
+    from .wallet import Wallet
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.pythonbdk_types import OutPoint
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -219,24 +218,24 @@ class SingularSignalFunction(Generic[T]):
 
 
 class SignalsMin(NostrSignalsMin):
-    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    currency_switch: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
+    currency_switch = cast(SignalProtocol[[]], pyqtSignal())
 
 
 class WalletSignals(SignalsMin):
-    updated: TypedPyQtSignal[UpdateFilter] = cast(Any, pyqtSignal(UpdateFilter))
-    completions_updated: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    updated = cast(SignalProtocol[[UpdateFilter]], pyqtSignal(UpdateFilter))
+    completions_updated = cast(SignalProtocol[[]], pyqtSignal())
 
-    show_address: TypedPyQtSignal[str, str] = cast(Any, pyqtSignal(str, str))  # address, wallet_id
-    show_utxo: TypedPyQtSignal[OutPoint] = cast(Any, pyqtSignal(object))
+    show_address = cast(SignalProtocol[[str, str]], pyqtSignal(str, str))  # address, wallet_id
+    show_utxo = cast(SignalProtocol[[OutPoint]], pyqtSignal(object))
 
-    export_bip329_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    export_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    import_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    import_bip329_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    import_electrum_wallet_labels: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    export_bip329_labels = cast(SignalProtocol[[]], pyqtSignal())
+    export_labels = cast(SignalProtocol[[]], pyqtSignal())
+    import_labels = cast(SignalProtocol[[]], pyqtSignal())
+    import_bip329_labels = cast(SignalProtocol[[]], pyqtSignal())
+    import_electrum_wallet_labels = cast(SignalProtocol[[]], pyqtSignal())
 
-    finished_psbt_creation: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    finished_psbt_creation = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self) -> None:
         """Initialize instance."""
@@ -262,31 +261,29 @@ class Signals(SignalsMin):
     I immediately break the rule however for pyqtSignal, which is a function call
     """
 
-    open_file_path: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    open_tx_like: TypedPyQtSignal[Any] = cast(Any, pyqtSignal(object))
-    event_wallet_tab_closed: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    event_wallet_tab_added: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    open_file_path = cast(SignalProtocol[[str]], pyqtSignal(str))
+    open_tx_like = cast(SignalProtocol[[Any]], pyqtSignal(object))
+    event_wallet_tab_closed = cast(SignalProtocol[[]], pyqtSignal())
+    event_wallet_tab_added = cast(SignalProtocol[[]], pyqtSignal())
 
-    chain_data_changed: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # the string is the reason
-    notification: TypedPyQtSignal[Message] = cast(Any, pyqtSignal(object))
+    chain_data_changed = cast(SignalProtocol[[str]], pyqtSignal(str))  # the string is the reason
+    notification: SignalProtocol[[Message]] = pyqtSignal(object)  # type: ignore
 
-    show_network_settings: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    open_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # str= filepath
-    add_qt_wallet: TypedPyQtSignal[QTWallet, str | None, str | None] = cast(
-        Any, pyqtSignal(object, object, object)
-    )  # object = qt_wallet, file_path, password
-    close_qt_wallet: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))  # str = wallet_id
-    signal_set_tab_properties: TypedPyQtSignal[object, str, str, str] = cast(
-        Any, pyqtSignal(object, str, str, str)
+    show_network_settings = cast(SignalProtocol[[]], pyqtSignal())
+    open_wallet = cast(SignalProtocol[[str]], pyqtSignal(str))  # str= filepath
+    add_qt_wallet: SignalProtocol[[QTWallet, str | None, str | None]] = pyqtSignal(object, object, object)  # type: ignore  # object = qt_wallet, file_path, password
+    close_qt_wallet = cast(SignalProtocol[[str]], pyqtSignal(str))  # str = wallet_id
+    signal_set_tab_properties = cast(
+        SignalProtocol[[object, str, str, str]], pyqtSignal(object, str, str, str)
     )  # tab:QWidget, wallet_id, icon: icon_name, tooltip: str | None
 
-    request_manual_sync: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_broadcast_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
-    apply_txs_to_wallets: TypedPyQtSignal[list[bdk.Transaction]] = cast(Any, pyqtSignal(object))
-    signal_close_tabs_with_txids: TypedPyQtSignal[list[str]] = cast(Any, pyqtSignal(list))
+    request_manual_sync = cast(SignalProtocol[[]], pyqtSignal())
+    signal_broadcast_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    apply_txs_to_wallets = cast(SignalProtocol[[list[bdk.Transaction]]], pyqtSignal(object))
+    signal_close_tabs_with_txids = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
 
     # this is for non-wallet bound objects like UitxViewer
-    any_wallet_updated: TypedPyQtSignal[UpdateFilter] = cast(Any, pyqtSignal(UpdateFilter))
+    any_wallet_updated = cast(SignalProtocol[[UpdateFilter]], pyqtSignal(UpdateFilter))
 
     def __init__(self) -> None:
         """Initialize instance."""
@@ -299,6 +296,6 @@ class WalletFunctions:
     def __init__(self, signals: Signals) -> None:
         """Initialize instance."""
         self.signals = signals
-        self.get_wallets = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
-        self.get_qt_wallets = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
+        self.get_wallets: SignalFunction[Wallet] = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
+        self.get_qt_wallets: SignalFunction[QTWallet] = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
         self.wallet_signals: defaultdict[str, WalletSignals] = defaultdict(WalletSignals)

@@ -29,11 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 from urllib.parse import urlparse
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import unit_fee_str
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import age
 from PyQt6.QtCore import QDateTime, QLocale, QObject, QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -70,9 +71,6 @@ from ..util import (
     center_in_widget,
     set_no_margins,
 )
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 SIZE_MEMPOOL_BLOCK = 100
@@ -313,12 +311,12 @@ class EditWithFeeIcon(FlatSquareButton):
 
 
 class BlockButton(QPushButton):
-    signal_click: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_click = cast(SignalProtocol[[int]], pyqtSignal(int))
 
-    signal_rbf_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_cpfp_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_edit_with_fee_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_explorer_explorer_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_rbf_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_cpfp_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_edit_with_fee_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_explorer_explorer_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
         self,
@@ -568,11 +566,11 @@ class MempoolScheduler(QObject):
 class MempoolButtons(VerticalButtonGroup):
     "Showing multiple buttons of the next, the 2. and the 3. block templates according to the mempool"
 
-    signal_click_median_fee: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_rbf_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_cpfp_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_edit_with_fee_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
-    signal_explorer_explorer_icon: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    signal_click_median_fee = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_rbf_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_cpfp_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_edit_with_fee_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_explorer_explorer_icon = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
         self,

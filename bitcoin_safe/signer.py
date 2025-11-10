@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -38,6 +38,7 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import (
     BitcoinVideoWidget,
     DecodingException,
 )
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
 from bitcoin_usb.software_signer import SoftwareSigner
@@ -48,9 +49,6 @@ from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_mess
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PartialSig
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from .gui.qt.dialog_import import ImportDialog
 from .keystore import KeyStoreImporterTypes
 from .wallet import Wallet
@@ -59,8 +57,8 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractSignatureImporter(QObject):
-    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = cast(Any, pyqtSignal(bdk.Psbt))
-    signal_final_tx_received: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
+    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
+    signal_final_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
     keystore_type = KeyStoreImporterTypes.clipboard
 
     def __init__(
@@ -240,7 +238,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -295,7 +293,7 @@ class SignatureImporterFile(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -337,7 +335,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -378,7 +376,7 @@ class SignatureImporterUSB(SignatureImporterQR):
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",

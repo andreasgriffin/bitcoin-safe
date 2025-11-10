@@ -34,11 +34,12 @@ import enum
 import logging
 from dataclasses import dataclass
 from math import ceil
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import aiohttp
 import numpy as np
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.config import MIN_RELAY_FEE
@@ -46,9 +47,6 @@ from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 
 from .network_utils import ProxyInfo
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +202,7 @@ class BlockInfo:
 
 
 class MempoolManager(QObject):
-    signal_data_updated: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,

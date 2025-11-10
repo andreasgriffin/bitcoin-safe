@@ -30,8 +30,9 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6 import QtGui
 from PyQt6.QtCore import QEvent, QObject, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent
@@ -56,16 +57,13 @@ from bitcoin_safe.wallet import (
     get_wallets,
 )
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
-
 logger = logging.getLogger(__name__)
 
 
 class LabelLineEdit(QLineEdit):
-    signal_enterPressed: TypedPyQtSignalNo = cast(Any, pyqtSignal())  # Signal for Enter key
-    signal_textEditedAndFocusLost: TypedPyQtSignalNo = cast(
-        Any, pyqtSignal()
+    signal_enterPressed = cast(SignalProtocol[[]], pyqtSignal())  # Signal for Enter key
+    signal_textEditedAndFocusLost = cast(
+        SignalProtocol[[]], pyqtSignal()
     )  # Signal for text edited and focus lost
 
     def __init__(self, parent=None):

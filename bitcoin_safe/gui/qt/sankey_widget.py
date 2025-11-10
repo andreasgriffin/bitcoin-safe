@@ -35,8 +35,9 @@ import sys
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QAction,
@@ -60,9 +61,6 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.util import ColorScheme
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -82,7 +80,7 @@ class FlowIndex:
 
 
 class SankeyWidget(QWidget):
-    signal_on_label_click: TypedPyQtSignal[FlowIndex] = cast(Any, pyqtSignal(FlowIndex))
+    signal_on_label_click = cast(SignalProtocol[[FlowIndex]], pyqtSignal(FlowIndex))
 
     center_color = ColorScheme.Purple.as_color()
     border_color = ColorScheme.Purple.as_color()

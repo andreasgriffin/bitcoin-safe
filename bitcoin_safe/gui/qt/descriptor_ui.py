@@ -29,12 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -59,9 +59,6 @@ from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
 from bitcoin_safe.signals import WalletFunctions
 
 from ...descriptors import AddressType, get_default_address_type
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
 
@@ -69,9 +66,9 @@ logger = logging.getLogger(__name__)
 
 
 class DescriptorUI(QWidget):
-    signal_qtwallet_apply_setting_changes: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_qtwallet_cancel_setting_changes: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_qtwallet_cancel_wallet_creation: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_qtwallet_apply_setting_changes = cast(SignalProtocol[[]], pyqtSignal())
+    signal_qtwallet_cancel_setting_changes = cast(SignalProtocol[[]], pyqtSignal())
+    signal_qtwallet_cancel_wallet_creation = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -398,12 +395,11 @@ class DescriptorUI(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         self.horizontalLayout_4 = QVBoxLayout(self.groupBox_wallet_descriptor)
-        language_switch: TypedPyQtSignalNo = cast(Any, self.wallet_functions.signals.language_switch)
         self.edit_descriptor = DescriptorEdit(
             network=self.protowallet.network,
             wallet_functions=self.wallet_functions,
             wallet=self.wallet,
-            signal_update=language_switch,
+            signal_update=self.wallet_functions.signals.language_switch,
             loop_in_thread=loop_in_thread,
         )
         self.edit_descriptor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

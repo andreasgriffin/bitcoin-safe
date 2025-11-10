@@ -29,12 +29,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -52,9 +52,6 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from ....config import MIN_RELAY_FEE, UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
@@ -92,8 +89,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         TxUiInfos.__name__: TxUiInfos,
     }
 
-    signal_input_changed: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_create_tx: TypedPyQtSignal[TxUiInfos] = cast(Any, pyqtSignal(TxUiInfos))
+    signal_input_changed = cast(SignalProtocol[[]], pyqtSignal())
+    signal_create_tx = cast(SignalProtocol[[TxUiInfos]], pyqtSignal(TxUiInfos))
 
     def __init__(
         self,

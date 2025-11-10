@@ -463,9 +463,7 @@ class NetworkConfig(BaseSaveableClass):
         """Initialize instance."""
         super().__init__()
         self.network = network
-        self.server_type: BlockchainType = (
-            BlockchainType.Esplora if network == bdk.Network.BITCOIN else BlockchainType.Electrum
-        )
+        self.server_type: BlockchainType = BlockchainType.Electrum
         electrum_config = get_electrum_configs(network)["default"]
         self.electrum_url: str = electrum_config.url
         self.electrum_use_ssl: bool = electrum_config.use_ssl

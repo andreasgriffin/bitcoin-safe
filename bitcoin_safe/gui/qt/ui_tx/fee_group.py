@@ -29,7 +29,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import (
@@ -38,6 +38,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import (
     format_fee_rate_splitted,
     unit_fee_str,
 )
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QWidget
@@ -52,9 +53,6 @@ from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import WalletFunctions
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
 from ....config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
@@ -201,7 +199,7 @@ class FeeWarningBar(NotificationBar):
 
 
 class FeeGroup(QObject):
-    signal_fee_rate_change: TypedPyQtSignal[float] = cast(Any, pyqtSignal(float))
+    signal_fee_rate_change = cast(SignalProtocol[[float]], pyqtSignal(float))
 
     def __init__(
         self,

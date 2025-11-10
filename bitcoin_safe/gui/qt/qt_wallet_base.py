@@ -30,19 +30,16 @@ from __future__ import annotations
 
 import logging
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.client import SyncStatus
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.wizard_base import WizardBase
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 from ...config import UserConfig
 from ...signals import WalletFunctions
@@ -59,7 +56,7 @@ class WrapperQWidget(QWidget):
 
 
 class QtWalletBase(WrapperQWidget):
-    signal_after_sync: TypedPyQtSignal[SyncStatus] = cast(Any, pyqtSignal(SyncStatus))  # SyncStatus
+    signal_after_sync = cast(SignalProtocol[[SyncStatus]], pyqtSignal(SyncStatus))  # SyncStatus
     wizard: WizardBase | None = None
     wallet_descriptor_ui: DescriptorUI
 

@@ -31,12 +31,12 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DecodingException
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent, QTextCharFormat
@@ -69,10 +69,6 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
 )
 from bitcoin_safe.i18n import translate
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 
 logger = logging.getLogger(__name__)
 
@@ -197,16 +193,16 @@ class ButtonsField(QWidget):
 
 
 class ButtonEdit(QWidget):
-    signal_data: TypedPyQtSignal[Data] = cast(Any, pyqtSignal(Data))
+    signal_data = cast(SignalProtocol[[Data]], pyqtSignal(Data))
 
     def __init__(
         self,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         text="",
         button_vertical_align: Qt.AlignmentFlag | None = None,
         parent=None,
         input_field: AnalyzerTextEdit | AnalyzerLineEdit | None = None,
-        signal_update: TypedPyQtSignalNo | None = None,
+        signal_update: SignalProtocol[[]] | None = None,
         **kwargs,
     ) -> None:
         """Initialize instance."""
@@ -520,7 +516,7 @@ if __name__ == "__main__":
     import sys
 
     class My(QObject):
-        close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+        close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
 
     def example_callback() -> None:
         """Example callback."""

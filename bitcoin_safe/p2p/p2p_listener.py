@@ -32,16 +32,14 @@ import asyncio
 import logging
 import random
 import time
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import TypeVar, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.network_utils import ProxyInfo
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .p2p_client import Inventory, InventoryType, P2PClient, Peer, Peers
 from .peer_discovery import PeerDiscovery
@@ -52,10 +50,10 @@ T = TypeVar("T", bound=list)
 
 
 class P2pListener(QObject):
-    signal_tx: TypedPyQtSignal[bdk.Transaction] = cast(Any, pyqtSignal(bdk.Transaction))
-    signal_block: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
-    signal_break_current_connection: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_disconnected_to: TypedPyQtSignal[Peer] = cast(Any, pyqtSignal(Peer))
+    signal_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))
+    signal_break_current_connection = cast(SignalProtocol[[]], pyqtSignal())
+    signal_disconnected_to = cast(SignalProtocol[[Peer]], pyqtSignal(Peer))
 
     def __init__(
         self,

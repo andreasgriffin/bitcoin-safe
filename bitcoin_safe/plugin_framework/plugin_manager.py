@@ -29,9 +29,10 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
@@ -47,9 +48,6 @@ from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraph
 from bitcoin_safe.signals import T, WalletFunctions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -64,7 +62,7 @@ class PluginManager(BaseSaveableClass):
     }
     VERSION = "0.0.1"
 
-    signal_client_action: TypedPyQtSignal[PluginClient] = cast(Any, pyqtSignal(PluginClient))
+    signal_client_action = cast(SignalProtocol[[PluginClient]], pyqtSignal(PluginClient))
     client_classes: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
 
     def __init__(

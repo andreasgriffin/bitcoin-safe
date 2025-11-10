@@ -33,8 +33,9 @@ import os
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util_os import show_file_in_explorer
 from PyQt6.QtCore import QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QMouseEvent, QPainter
@@ -53,9 +54,6 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +83,7 @@ class ButtonStyleDelegate(QStyledItemDelegate):
 
 
 class ButtonList(QListWidget):
-    signal_clicked: TypedPyQtSignal[QListWidgetItem] = cast(Any, pyqtSignal(QListWidgetItem))
+    signal_clicked = cast(SignalProtocol[[QListWidgetItem]], pyqtSignal(QListWidgetItem))
 
     def __init__(self, *args, **kwargs):
         """Initialize instance."""
@@ -134,7 +132,7 @@ class ButtonList(QListWidget):
 
 
 class WalletList(ButtonList):
-    signal_file_path_clicked: TypedPyQtSignal[str] = cast(Any, pyqtSignal(str))
+    signal_file_path_clicked = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(self, hide_extension=True, *args, **kwargs):
         """Initialize instance."""
@@ -161,8 +159,8 @@ class WalletList(ButtonList):
 class RecentlyOpenedWalletsGroup(QGroupBox):
     def __init__(
         self,
-        signal_open_wallet: TypedPyQtSignal,
-        signal_recently_open_wallet_changed: TypedPyQtSignal[list[str]],
+        signal_open_wallet: SignalProtocol[[str]],
+        signal_recently_open_wallet_changed: SignalProtocol[list[str]],
         hide_extension=True,
     ):
         """Initialize instance."""

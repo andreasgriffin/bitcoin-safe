@@ -29,16 +29,14 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
+from typing import Generic, TypeVar, cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget
 
 from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +45,7 @@ T2 = TypeVar("T2")
 
 
 class DataTabWidget(HistTabWidget, Generic[T]):
-    signal_on_tab_change: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_on_tab_change = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, parent=None) -> None:
         """Initialize instance."""

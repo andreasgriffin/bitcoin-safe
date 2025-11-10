@@ -29,19 +29,17 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QVBoxLayout, QWidget
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
 
 logger = logging.getLogger(__name__)
 
 
 class SignalEmitter(QObject):
-    change_tab: TypedPyQtSignal[int] = cast(Any, pyqtSignal(int))
+    change_tab = cast(SignalProtocol[[int]], pyqtSignal(int))
 
 
 class GroupSignalManager:

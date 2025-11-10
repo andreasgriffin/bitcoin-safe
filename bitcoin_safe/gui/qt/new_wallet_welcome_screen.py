@@ -29,9 +29,10 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QGroupBox,
@@ -49,25 +50,22 @@ from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.signals import Signals
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-
 from .util import svg_widget_hardware_signer
 
 logger = logging.getLogger(__name__)
 
 
 class NewWalletWelcomeScreen(QWidget):
-    signal_onclick_multisig_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_onclick_single_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_onclick_custom_signature: TypedPyQtSignalNo = cast(Any, pyqtSignal())
-    signal_remove_me: TypedPyQtSignal[QWidget] = cast(Any, pyqtSignal(QWidget))
+    signal_onclick_multisig_signature = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_single_signature = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_custom_signature = cast(SignalProtocol[[]], pyqtSignal())
+    signal_remove_me = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
     def __init__(
         self,
         network: bdk.Network,
         signals: Signals,
-        signal_recently_open_wallet_changed: TypedPyQtSignal,
+        signal_recently_open_wallet_changed: SignalProtocol[[list[str]]],
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -107,6 +105,9 @@ class NewWalletWelcomeScreen(QWidget):
 
     def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
         """Add new wallet welcome tab."""
+        if node := main_tabs.root.findNodeByWidget(self):
+            node.select()
+            return
         main_tabs.root.addChildNode(
             SidebarNode(
                 icon=svg_tools.get_QIcon("file.svg"),

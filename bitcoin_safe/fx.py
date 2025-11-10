@@ -30,27 +30,25 @@ from __future__ import annotations
 
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.mempool_manager import fetch_from_url
 from bitcoin_safe.network_utils import ProxyInfo
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
-
 logger = logging.getLogger(__name__)
 
 
 class FX(QObject):
-    signal_data_updated: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, config: UserConfig) -> None:
         """Initialize instance."""
-        super().__init__()  # type: ignore
+        super().__init__()
         self.loop_in_thread = LoopInThread()
         self.config = config
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()

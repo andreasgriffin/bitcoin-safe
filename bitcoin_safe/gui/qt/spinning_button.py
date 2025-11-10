@@ -29,17 +29,14 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QRectF, QSize, QTimer
 from PyQt6.QtGui import QIcon, QPainter, QPaintEvent
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
 
 from .util import get_icon_path
 
@@ -48,7 +45,7 @@ class SpinningButton(QPushButton):
     def __init__(
         self,
         text: str,
-        enable_signal: TypedPyQtSignalNo | None = None,
+        enable_signal: SignalProtocol[[]] | None = None,
         enabled_icon: QIcon | None = None,
         spinning_svg_path=None,
         parent=None,
@@ -92,7 +89,7 @@ class SpinningButton(QPushButton):
         self.setEnabled(True)
         self.timeout_timer.stop()
 
-    def set_enable_signal(self, enable_signal: TypedPyQtSignal | TypedPyQtSignalNo) -> None:
+    def set_enable_signal(self, enable_signal: SignalProtocol) -> None:
         """Set enable signal."""
         if enable_signal:
             enable_signal.connect(self.enable_button)

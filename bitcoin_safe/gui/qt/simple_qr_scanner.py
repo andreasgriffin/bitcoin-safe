@@ -29,16 +29,13 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import bdkpython as bdk
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.util import center_on_screen
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 
 from .util import do_copy
 
@@ -49,7 +46,7 @@ class SimpleQrScanner(BitcoinVideoWidget):
     def __init__(
         self,
         network: bdk.Network,
-        close_all_video_widgets: TypedPyQtSignalNo,
+        close_all_video_widgets: SignalProtocol[[]],
         title: str,
         label_description: str = "",
     ) -> None:

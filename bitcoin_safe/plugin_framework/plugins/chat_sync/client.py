@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from typing import TYPE_CHECKING
 
 import bdkpython as bdk
 import nostr_sdk
@@ -39,6 +38,7 @@ from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QColor
@@ -59,9 +59,6 @@ from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
 from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.signals import Signals
-
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
 from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
@@ -165,7 +162,7 @@ class SyncClient(PluginClient):
         """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
         self.server: SyncServer | None = None
-        self.close_all_video_widgets: TypedPyQtSignalNo | None = None
+        self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
 
         self.signals = signals

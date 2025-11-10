@@ -44,8 +44,7 @@ from pytestqt.qtbot import QtBot
 
 from typing import Any, TYPE_CHECKING, cast
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe.signer import SignatureImporterClipboard
 
 logger = logging.getLogger(__name__)
@@ -154,7 +153,7 @@ romance slush habit speed type also grace coffee grape inquiry receive filter"""
 
 
 class My(QObject):
-    close_all_video_widgets: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
 
 
 @pytest.fixture()

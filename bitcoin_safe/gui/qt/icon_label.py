@@ -29,8 +29,9 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QMouseEvent
@@ -40,15 +41,12 @@ from bitcoin_safe.gui.qt.util import svg_tools
 
 from .util import set_no_margins
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignalNo
-
 logger = logging.getLogger(__name__)
 
 
 class ClickableLabel(QLabel):
     # define a new signal
-    clicked: TypedPyQtSignalNo = cast(Any, pyqtSignal())
+    clicked = cast(SignalProtocol[[]], pyqtSignal())
 
     def mouseReleaseEvent(self, ev: QMouseEvent | None) -> None:
         # only emit on left-click

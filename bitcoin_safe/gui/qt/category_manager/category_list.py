@@ -30,9 +30,10 @@ from __future__ import annotations
 
 import enum
 import logging
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QDropEvent, QStandardItem
@@ -54,9 +55,6 @@ from bitcoin_safe.gui.qt.my_treeview import (
 from bitcoin_safe.gui.qt.util import category_color, create_color_circle
 from bitcoin_safe.storage import BaseSaveableClass
 
-if TYPE_CHECKING:
-    from bitcoin_safe.stubs.typestubs import TypedPyQtSignal
-
 from ....signals import Signals, UpdateFilter, UpdateFilterReason
 
 logger = logging.getLogger(__name__)
@@ -69,7 +67,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         MyTreeView.__name__: MyTreeView,
     }
 
-    signal_addresses_dropped: TypedPyQtSignal[AddressDragInfo] = cast(Any, pyqtSignal(AddressDragInfo))
+    signal_addresses_dropped = cast(SignalProtocol[[AddressDragInfo]], pyqtSignal(AddressDragInfo))
 
     class Columns(MyTreeView.BaseColumnsEnum):
         ADDRESS_COUNT = enum.auto()
