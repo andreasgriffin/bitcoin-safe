@@ -2725,6 +2725,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>ကြား ဟန့် လီမစ် နည်းစွာ ဖြစ်နိုင်သည်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>သမိုင်း  </translation>
 		</message>
@@ -2830,6 +2835,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>အိတ် ငွေ ထဲမှ input မပါဘဲ change output ပါသော လုပ်ငန်းများ တွေ့ရှိသည်: {txids}  သင်အိတ်ကို gap အကန့်အသတ် {new_gap} ဖြင့် ထပ်မံစစ်ဆေးလိုပါသလား?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

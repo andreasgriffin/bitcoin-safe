@@ -398,7 +398,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>خرید {number} امضاکننده سخت‌افزاری                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe از تمام امضاکنندگان سخت‌افزاری اصلی پشتیبانی می‌کند: &lt;a href="{url}"&gt;مشاهده فهرست کامل&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>خرید {number} امضاکننده سخت‌افزاری                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe از تمام امضاکنندگان سخت‌افزاری اصلی پشتیبانی می‌کند: &lt;a href="{url}"&gt;مشاهده فهرست کامل&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        </translation>
 		</message>
 	</context>
 	<context>
@@ -2725,6 +2726,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>حد شکاف ممکن است بسیار پایین باشد</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>تاریخچه</translation>
 		</message>
@@ -2830,6 +2836,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>تراکنش‌هایی با خروجی «تغییر» اما بدون ورودی کیف پول شناسایی شدند: {txids}  آیا می‌خواهید کیف پول را با حد شکاف افزایش‌یافته به {new_gap} مجدداً اسکن کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

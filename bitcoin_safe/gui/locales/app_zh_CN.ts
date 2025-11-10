@@ -2731,6 +2731,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>间隙限额可能过低</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>历史记录</translation>
 		</message>
@@ -2836,6 +2841,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>钱包 '{wallet}' 中的交易 {txs} 已从历史记录中删除！！！</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>检测到带有找零输出但没有钱包输入的交易：{txids}  是否要使用增加至 {new_gap} 的间隙限额重新扫描钱包？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

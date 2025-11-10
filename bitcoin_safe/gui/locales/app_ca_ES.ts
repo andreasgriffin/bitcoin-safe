@@ -398,7 +398,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Compra {number} signants de maquinari                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe admet tots els principals signants de maquinari: &lt;a href="{url}"&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>Compra {number} signants de maquinari                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe admet tots els principals signants de maquinari: &lt;a href="{url}"&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        </translation>
 		</message>
 	</context>
 	<context>
@@ -2725,6 +2726,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>El límit de gap podria ser massa baix</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>Historial</translation>
 		</message>
@@ -2830,6 +2836,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Les transaccions {txs} de la cartera '{wallet}' s'han eliminat de l'historial!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>S’han detectat transaccions amb sortides de canvi però sense entrades de cartera: {txids}  Voleu tornar a escanejar la cartera amb un límit de gap augmentat de {new_gap} ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

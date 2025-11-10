@@ -398,7 +398,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Comprar {number} assinantes de hardware                              &lt;ul&gt;         {different_hint}          &lt;li&gt;O Bitcoin Safe suporta todos os principais assinantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>Comprar {number} assinantes de hardware                              &lt;ul&gt;         {different_hint}          &lt;li&gt;O Bitcoin Safe suporta todos os principais assinantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        </translation>
 		</message>
 	</context>
 	<context>
@@ -2728,6 +2729,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>O limite de gap pode estar demasiado baixo</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>Histórico</translation>
 		</message>
@@ -2833,6 +2839,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>As transações {txs} na carteira '{wallet}' foram removidas do histórico!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Foram detetadas transacções com saídas de troco mas sem entradas da carteira: {txids}  Pretende reexaminar a carteira com um limite de gap aumentado para {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

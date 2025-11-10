@@ -398,7 +398,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} donanım imzalayıcı satın al                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe tüm büyük donanım imzalayıcılarını destekler: &lt;a href="{url}"&gt;Tam listeyi gör&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>{number} donanım imzalayıcı satın al                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe tüm büyük donanım imzalayıcılarını destekler: &lt;a href="{url}"&gt;Tam listeyi gör&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        </translation>
 		</message>
 	</context>
 	<context>
@@ -2725,6 +2726,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>Gap limiti çok düşük olabilir</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>Geçmiş</translation>
 		</message>
@@ -2830,6 +2836,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>'{wallet}' cüzdanındaki {txs} işlemleri geçmişten silindi!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Değişim çıktılarına sahip fakat cüzdan girdi içermeyen işlemler tespit edildi: {txids}  Cüzdanı {new_gap} olarak artırılmış bir gap limitiyle yeniden taramak ister misiniz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

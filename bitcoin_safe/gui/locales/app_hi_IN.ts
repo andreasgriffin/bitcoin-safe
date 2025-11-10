@@ -2728,6 +2728,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>गैप लिमिट बहुत कम हो सकती है</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>इतिहास</translation>
 		</message>
@@ -2833,6 +2838,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>वॉलेट '{wallet}' में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>ऐसी लेन-देनों का पता चला है जिनमें चेंज ऑउटपुट तो हैं लेकिन वॉलेट इनपुट नहीं हैं: {txids}  क्या आप वॉलेट को {new_gap} की बढ़ी हुई गैप लिमिट के साथ पुनः स्कैन करना चाहेंगे?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

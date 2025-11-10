@@ -398,7 +398,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        </translation>
 		</message>
 	</context>
 	<context>
@@ -2725,6 +2726,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Gap limit may be too low</source>
+			<translation>Batas gap mungkin terlalu rendah</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>History</source>
 			<translation>Riwayat</translation>
 		</message>
@@ -2830,6 +2836,15 @@ The serializations of both differ, which could be caused by different collected 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Transaksi {txs} di dompet '{wallet}' dihapus dari riwayat!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Transactions with change outputs but no wallet inputs were detected:
+
+{txids}
+
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Transaksi dengan output perubahan tetapi tanpa input dompet terdeteksi: {txids}  Apakah Anda ingin memindai ulang dompet dengan batas gap yang ditingkatkan menjadi {new_gap} ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
