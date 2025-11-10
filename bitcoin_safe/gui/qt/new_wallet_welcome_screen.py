@@ -105,6 +105,9 @@ class NewWalletWelcomeScreen(QWidget):
 
     def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
         """Add new wallet welcome tab."""
+        if node := main_tabs.root.findNodeByWidget(self):
+            node.select()
+            return
         main_tabs.root.addChildNode(
             SidebarNode(
                 icon=svg_tools.get_QIcon("file.svg"),
