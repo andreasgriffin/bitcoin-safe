@@ -2010,7 +2010,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Please select the wallet</source>
-        <translation>Veuillez sélectionner le portefeuille  </translation>
+        <translation>Veuillez sélectionner le portefeuille</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2020,7 +2020,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>QR &amp;Scanner</source>
-        <translation>Scanner QR  </translation>
+        <translation>Scanner QR</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2030,7 +2030,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Re&amp;fresh</source>
-        <translation>Rafraîchir  </translation>
+        <translation>Rafraîchir</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2050,7 +2050,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Selected file: {file_path}</source>
-        <translation>Fichier sélectionné : {file_path}  </translation>
+        <translation>Fichier sélectionné&#xa0;: {file_path}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2085,7 +2085,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>There is no such file: {file_path}</source>
-        <translation>Il n&apos;y a pas de fichier : {file_path}  </translation>
+        <translation>Il n&apos;y a pas de fichier&#xa0;: {file_path}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2111,12 +2111,12 @@ Do you want to keep the wallet open?</source>
     <name>MainWindow</name>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
-        <translation>Fichiers de portefeuille (*.wallet);;Tous les fichiers (*)  </translation>
+        <translation>Fichiers de portefeuille (*.wallet);;Tous les fichiers (*)</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Wallet already open</source>
-        <translation>Portefeuille déjà ouvert  </translation>
+        <translation>Portefeuille déjà ouvert</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2147,7 +2147,7 @@ Do you want to hide to tray instead?</source>
     <name>MainWindow</name>
     <message>
         <source>new</source>
-        <translation>nouveau  </translation>
+        <translation>nouveau</translation>
     </message>
 </context>
 <context>
@@ -2174,46 +2174,46 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>Next Block</source>
-        <translation>Bloc Suivant  </translation>
+        <translation>Bloc Suivant</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
         <source>{n}. Block</source>
-        <translation>{n}. Bloc  </translation>
+        <translation>{n}. Bloc</translation>
     </message>
 </context>
 <context>
     <name>MyTreeView</name>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
-        <translation>Tous les fichiers (*);;Fichiers Texte (*.csv)  </translation>
+        <translation>Tous les fichiers (*);;Fichiers Texte (*.csv)</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>Copy</source>
-        <translation>Copier  </translation>
+        <translation>Copier</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
-        <translation>Copier en CSV  </translation>
+        <translation>Copier en CSV</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>Export csv</source>
-        <translation>Exporter en CSV  </translation>
+        <translation>Exporter en CSV</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>No file selected</source>
-        <translation>Aucun fichier sélectionné  </translation>
+        <translation>Aucun fichier sélectionné</translation>
     </message>
 </context>
 <context>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Apply &amp;&amp; Shutdown</source>
-        <translation>Appliquer &amp; Éteindre  </translation>
+        <translation>Appliquer &amp; Éteindre</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2233,7 +2233,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Blockchain data source</source>
-        <translation>Source de données de la blockchain  </translation>
+        <translation>Source de données de la blockchain</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2258,7 +2258,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Enable SSL</source>
-        <translation>Activer SSL  </translation>
+        <translation>Activer SSL</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2281,7 +2281,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Mempool Instance URL</source>
-        <translation>URL de l&apos;instance Mempool  </translation>
+        <translation>URL de l&apos;instance Mempool</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2291,7 +2291,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Network Settings</source>
-        <translation>Paramètres Réseau  </translation>
+        <translation>Paramètres Réseau</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
