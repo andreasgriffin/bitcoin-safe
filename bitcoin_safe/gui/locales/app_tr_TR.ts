@@ -187,8 +187,8 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
-			<translation>Yeni Adres Oluştur</translation>
+			<source>Create new address</source>
+			<translation>Yeni adres oluştur</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>Yardım</translation>
+			<source>Device instructions</source>
+			<translation>Cihaz talimatları</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>Ben</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>Alım adresleri</translation>
 		</message>
 	</context>
 	<context>
@@ -2505,20 +2512,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>Etkinleştir</translation>
+			<source>Activate and shutdown</source>
+			<translation>Etkinleştir ve kapat</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>p2p senkronizasyonu için Kompakt Blok Filtreleri artık mevcut</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>Bitcoin düğümlerine (p2p) bağlanın ve ilgili blokları onlardan indirin.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>Ağ Ayarlarını Aç</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>İşlemler için anında bildirim alın</translation>
 		</message>
 	</context>
 	<context>
@@ -2649,6 +2661,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>Adresler</translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2794,11 +2811,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>Devam etmek tüm cüzdan adreslerini potansiyel olarak değiştirecek.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>Al</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

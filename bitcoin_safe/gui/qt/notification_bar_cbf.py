@@ -95,7 +95,7 @@ class NotificationBarCBF(NotificationBar):
         self.optionalButton.setText(self.tr("Open Network Settings"))
         tooltip = self.tr("""Connect to bitcoin nodes (p2p) and download relevant blocks from them.""")
         self.icon_label.textLabel.setToolTip(tooltip)
-        self.icon_label.textLabel.setText(self.tr("Compact Block Filters for p2p syncing is now availbale"))
+        self.icon_label.textLabel.setText(self.tr("Compact Block Filters for p2p syncing is now available"))
 
         lang_code_short = QLocale.languageToCode(QLocale().language())
         self.learn_more_button.set_icon_as_help(

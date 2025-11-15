@@ -187,7 +187,7 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
+			<source>Create new address</source>
 			<translation>Створити нову адресу</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>Довідка</translation>
+			<source>Device instructions</source>
+			<translation>Інструкції пристрою</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>Я</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>Адреси для отримання</translation>
 		</message>
 	</context>
 	<context>
@@ -2505,20 +2512,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>Увімкнути</translation>
+			<source>Activate and shutdown</source>
+			<translation>Активувати та вимкнути</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>Компактні фільтри блоків для p2p-синхронізації тепер доступні</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>Підключіться до вузлів Bitcoin (p2p) і завантажте відповідні блоки з них.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>Відкрити налаштування мережі</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>Отримувати миттєві сповіщення про транзакції</translation>
 		</message>
 	</context>
 	<context>
@@ -2649,6 +2661,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>Адреси</translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2794,11 +2811,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>Продовження потенційно змінить усі адреси гаманця.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>Отримати</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
