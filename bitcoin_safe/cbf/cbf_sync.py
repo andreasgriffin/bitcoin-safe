@@ -109,6 +109,13 @@ class CbfSync:
         if not self.node_running():
             logger.info("CBF node was shutdown. Rebuilding")
             await asyncio.sleep(1)
+            try:
+                if self.client:
+                    self.client.shutdown()
+            except bdk.CbfError.NodeStopped:
+                pass
+            except Exception:
+                pass
             self.build_node()
 
     async def next_info(self) -> bdk.Info | None:
@@ -216,8 +223,8 @@ class CbfSync:
 
         components = builder.build(self.wallet)
         self.client = components.client
-        self.node = components.node
-        self.node.run()
+        node = components.node
+        node.run()
         logger.info("Started node")
 
     def shutdown_node(self):
