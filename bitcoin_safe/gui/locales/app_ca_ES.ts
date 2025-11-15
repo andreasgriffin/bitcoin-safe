@@ -187,8 +187,8 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
-			<translation>Crear una adreça nova</translation>
+			<source>Create new address</source>
+			<translation>Crea una nova adreça</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>Ajuda</translation>
+			<source>Device instructions</source>
+			<translation>Instruccions del dispositiu</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>Jo</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>Adreces de recepció</translation>
 		</message>
 	</context>
 	<context>
@@ -2505,20 +2512,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>Habilita</translation>
+			<source>Activate and shutdown</source>
+			<translation>Activa i apaga</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>Els filtres de blocs compactes per a la sincronització p2p ja estan disponibles</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>Connecta’t als nodes de Bitcoin (p2p) i descarrega els blocs rellevants d’aquests.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>Obre la configuració de xarxa</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>Rep notificacions instantànies de les transaccions</translation>
 		</message>
 	</context>
 	<context>
@@ -2649,6 +2661,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>Adreces</translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2794,11 +2811,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>Continuar pot canviar totes les adreces de la cartera.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>Rebre</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

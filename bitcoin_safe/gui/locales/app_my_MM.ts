@@ -187,8 +187,8 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
-			<translation>လိပ်စာအသစ် ဖန်တီးရန်</translation>
+			<source>Create new address</source>
+			<translation>လိပ်စာအသစ် ဖန်တီးပါ</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>အကူအညီ  </translation>
+			<source>Device instructions</source>
+			<translation>စက်အညွှန်းများ</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>ငါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>လက်ခံလိပ်စာများ</translation>
 		</message>
 	</context>
 	<context>
@@ -2504,20 +2511,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>ဖွင့်ပါ  </translation>
+			<source>Activate and shutdown</source>
+			<translation>ဖွင့်ပြီး ပိတ်ပါ</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>p2p သုံး အပြန်အလှန် ချိတ်ဆက်မှုအတွက် Compact Block Filter များကို အသုံးပြုနိုင်ပါပြီ</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>Bitcoin node များ (p2p) နှင့် ချိတ်ဆက်ပြီး သက်ဆိုင်ရာ block များကို ဒေါင်းလုဒ်လုပ်ပါ။</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>Network ဆက်တင်များကို ဖွင့်ရန်</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>လင်ဒင်းများအတွက် ချက်ချင်း အသိပေးချက်များ လက်ခံရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -2648,6 +2660,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>လိပ်စာများ  </translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2793,11 +2810,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>ဆက်လုပ်ပါက ပိုက်ဆံအိတ် လိပ်စာများ အားလုံး ပြောင်းလဲနိုင်ပါသည်။</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>လက်ခံပါ  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

@@ -187,7 +187,7 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
+			<source>Create new address</source>
 			<translation>Utwórz nowy adres</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>Pomoc</translation>
+			<source>Device instructions</source>
+			<translation>Instrukcje urządzenia</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>Ja</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>Adresy do odbioru</translation>
 		</message>
 	</context>
 	<context>
@@ -2524,20 +2531,25 @@ Instancja Mempool: {server}</translation>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>Włącz</translation>
+			<source>Activate and shutdown</source>
+			<translation>Aktywuj i wyłącz</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>Kompaktowe filtry bloków do synchronizacji p2p są już dostępne</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>Połącz się z węzłami Bitcoina (p2p) i pobierz z nich odpowiednie bloki.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>Otwórz ustawienia sieci</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>Otrzymuj natychmiastowe powiadomienia o transakcjach</translation>
 		</message>
 	</context>
 	<context>
@@ -2669,6 +2681,11 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>Adresy</translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2815,11 +2832,6 @@ Serializacje obu różnią się, co może wynikać z różnych zebranych podpis�
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>Kontynuacja może spowodować zmianę wszystkich adresów portfela.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>Odbierz</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

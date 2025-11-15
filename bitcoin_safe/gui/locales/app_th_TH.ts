@@ -187,7 +187,7 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
+			<source>Create new address</source>
 			<translation>สร้างที่อยู่ใหม่</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>ช่วยเหลือ  </translation>
+			<source>Device instructions</source>
+			<translation>คำแนะนำของอุปกรณ์</translation>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>ฉัน</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation>ที่อยู่รับเงิน</translation>
 		</message>
 	</context>
 	<context>
@@ -2504,20 +2511,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>เปิดใช้งาน  </translation>
+			<source>Activate and shutdown</source>
+			<translation>เปิดใช้งานและปิดระบบ</translation>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now available</source>
+			<translation>ตัวกรองบล็อกแบบกะทัดรัดสำหรับการซิงค์ p2p พร้อมใช้งานแล้ว</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation>เชื่อมต่อกับโหนดบิตคอยน์ (p2p) และดาวน์โหลดบล็อกที่เกี่ยวข้องจากพวกมัน.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>เปิดการตั้งค่าเครือข่าย</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>รับการแจ้งเตือนธุรกรรมแบบทันที</translation>
 		</message>
 	</context>
 	<context>
@@ -2648,6 +2660,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>ที่อยู่  </translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2793,11 +2810,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>การดำเนินการต่ออาจเปลี่ยนที่อยู่ทั้งหมดของกระเป๋าได้</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>รับ  </translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
