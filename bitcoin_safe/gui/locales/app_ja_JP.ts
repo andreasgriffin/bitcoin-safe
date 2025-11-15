@@ -187,8 +187,8 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
-			<translation>新しいアドレスを作成</translation>
+			<source>Create new address</source>
+			<translation/>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>ヘルプ  </translation>
+			<source>Device Instructions</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>私</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
@@ -2507,20 +2514,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>有効にする  </translation>
+			<source>Activate and shutdown</source>
+			<translation/>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now availbale</source>
+			<translation/>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation/>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>ネットワーク設定を開く</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>取引の即時通知を受け取る</translation>
 		</message>
 	</context>
 	<context>
@@ -2651,6 +2663,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>アドレス  </translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2796,11 +2813,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>続行するとウォレットの全アドレスが変更される可能性があります。</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>受信</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

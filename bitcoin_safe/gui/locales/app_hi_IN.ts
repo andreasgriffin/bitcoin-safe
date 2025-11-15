@@ -187,8 +187,8 @@
 	<context>
 		<name>AddressListWithToolbar</name>
 		<message>
-			<source>Create new Address</source>
-			<translation>नया पता बनाएं</translation>
+			<source>Create new address</source>
+			<translation/>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -323,8 +323,8 @@
 	<context>
 		<name>BaseHardwareSignerInteractionWidget</name>
 		<message>
-			<source>Help</source>
-			<translation>मदद  </translation>
+			<source>Device Instructions</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
@@ -354,6 +354,13 @@
 		<message>
 			<source>Me</source>
 			<translation>मैं</translation>
+		</message>
+	</context>
+	<context>
+		<name>BitcoinQuickReceive</name>
+		<message>
+			<source>Receive addresses</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
@@ -2507,20 +2514,25 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
 		<message>
-			<source>Enable</source>
-			<translation>सक्षम करें  </translation>
+			<source>Activate and shutdown</source>
+			<translation/>
 		</message>
-		<name>NotificationBarP2P</name>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters for p2p syncing is now availbale</source>
+			<translation/>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+			<translation/>
+		</message>
+		<name>NotificationBarCBF</name>
 		<message>
 			<source>Open Network Settings</source>
 			<translation>नेटवर्क सेटिंग्स खोलें</translation>
-		</message>
-		<name>NotificationBarP2P</name>
-		<message>
-			<source>Receive instant notifications for transactions</source>
-			<translation>लेन-देन के लिए तात्कालिक सूचनाएँ प्राप्त करें</translation>
 		</message>
 	</context>
 	<context>
@@ -2651,6 +2663,11 @@ The serializations of both differ, which could be caused by different collected 
 		</message>
 	</context>
 	<context>
+		<name>QTWallet</name>
+		<message>
+			<source>Addresses</source>
+			<translation>पते  </translation>
+		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
@@ -2796,11 +2813,6 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Proceeding will potentially change all wallet addresses.</source>
 			<translation>आगे बढ़ने से वॉलेट के सभी पते बदल सकते हैं।</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Receive</source>
-			<translation>प्राप्त करें</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
