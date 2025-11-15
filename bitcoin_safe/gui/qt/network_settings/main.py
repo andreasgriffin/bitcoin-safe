@@ -58,7 +58,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.notification_bar_activate_p2p import get_p2p_tooltip_text
+from bitcoin_safe.gui.qt.notification_bar_cbf import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
     Message,
     adjust_bg_color_for_darkmode,

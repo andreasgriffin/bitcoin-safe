@@ -140,7 +140,7 @@ class BaseHardwareSignerInteractionWidget(QWidget):
     def updateUi(self) -> None:
         """UpdateUi."""
         if self.help_button:
-            self.help_button.setText(self.tr("Help"))
+            self.help_button.setText(self.tr("Device Instructions"))
 
     def closeEvent(self, a0: QCloseEvent | None):
         """CloseEvent."""

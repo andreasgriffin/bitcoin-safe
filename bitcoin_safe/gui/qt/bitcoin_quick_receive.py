@@ -63,9 +63,6 @@ class BitcoinQuickReceive(
         self._pending_update = False
         self._forced_update = False
 
-        # fixed height
-        self.label_title.setVisible(False)
-
         # signals
         self.wallet_signals.updated.connect(self.update_content)
         self.wallet_signals.language_switch.connect(self.refresh_all)
@@ -198,3 +195,7 @@ class BitcoinQuickReceive(
             )
 
         self.updateUi()
+
+    def updateUi(self):
+        super().updateUi()
+        self.label_title.setText(self.tr("Receive addresses"))

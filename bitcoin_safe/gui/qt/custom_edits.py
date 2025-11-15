@@ -180,6 +180,7 @@ class AnalyzerTextEdit(QTextEdit):
         """Initialize instance."""
         super().__init__(text, parent)
         self._smart_state: BaseAnalyzer | None = None
+        self.setAcceptRichText(False)
         self.display_name = ""
 
     def setAnalyzer(self, smart_state: BaseAnalyzer):

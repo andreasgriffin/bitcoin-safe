@@ -84,8 +84,8 @@ from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
-from bitcoin_safe.gui.qt.my_treeview import needs_frequent_flag
-from bitcoin_safe.gui.qt.notification_bar_activate_p2p import NotificationBarP2P
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, needs_frequent_flag
+from bitcoin_safe.gui.qt.notification_bar_cbf import NotificationBarCBF
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.password_cache import PasswordCache
@@ -201,7 +201,7 @@ class MainWindow(QMainWindow):
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network)
         self.hwi_tool_gui.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
-        self.setupUi()
+        self.setupUi(config_present=bool(config_present))
 
         self.mempool_manager = MempoolManager(
             network_config=self.config.network_config,
@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
         # connect the listeners
         self.signals.open_file_path.connect(self.open_file_path)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
-        self.signals.apply_txs_to_wallets.connect(self.apply_txs_to_wallets)
+        self.signals.apply_txs_to_wallets.connect(self.apply_txs_to_wallets_and_highlight)
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
 
@@ -337,7 +337,7 @@ class MainWindow(QMainWindow):
         for file_path in self.open_files_at_startup:
             self.open_file_path(file_path=file_path)
 
-        self.tab_wallets.root.set_current_tab_by_text(self.config.last_tab_title)
+        self.tab_wallets.root.select_by_titles(self.config.last_tab_title)
 
     def open_file_path(self, file_path: str):
         """Open file path."""
@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
             title += f" - {qt_wallet.wallet.id}"
         self.setWindowTitle(title)
 
-    def setupUi(self) -> None:
+    def setupUi(self, config_present: bool) -> None:
         """SetupUi."""
         logger.debug("start setupUi")
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
@@ -412,20 +412,19 @@ class MainWindow(QMainWindow):
         if self.config.network != bdk.Network.BITCOIN:
             vbox.addWidget(self.notification_bar_testnet)
 
-        self.notification_bar_p2p = NotificationBarP2P(
+        self.notification_bar_cbf = NotificationBarCBF(
             callback_open_network_setting=self.open_network_settings,
-            callback_enable_button=self.enable_and_start_p2p_listening_for_migrating_users,
+            callback_enable_button=self.enable_cbf_and_shutdown,
             network_config=self.config.network_config,
             signals_min=self.signals,
         )
-        if (
-            (_conf_version := self.config.network_config._version_from_dump)
-            and fast_version(_conf_version) < fast_version("0.2.2")
-            and self.config.network_config.p2p_listener_type == P2pListenerType.deactive
+        if not config_present or (
+            (_dump_version := self.config._version_from_dump)
+            and fast_version(_dump_version) < fast_version("0.2.4")
         ):
             # only show this for migrating users.
             # for new users this is enabled anyway
-            vbox.addWidget(self.notification_bar_p2p)
+            vbox.addWidget(self.notification_bar_cbf)
 
         self.update_notification_bar = UpdateNotificationBar(
             signals_min=self.signals,
@@ -529,11 +528,11 @@ class MainWindow(QMainWindow):
         """P2p listening update lists."""
         if not self.p2p_listener:
             return
-        address_filter = []
-        outpoint_filter = []
+        address_filter: set[str] = set()
+        outpoint_filter: set[str] = set()
         for qt_wallet in self.qt_wallets.values():
-            address_filter += qt_wallet.wallet.get_addresses()
-            outpoint_filter += qt_wallet.wallet.bdkwallet.list_unspent_outpoints(include_spent=False)
+            address_filter.update(qt_wallet.wallet.get_address_dict_with_peek().keys())
+            outpoint_filter.update(qt_wallet.wallet.bdkwallet.list_unspent_outpoints(include_spent=False))
         self.p2p_listener.set_address_filter(address_filter=address_filter)
         self.p2p_listener.set_outpoint_filter(outpoint_filter=outpoint_filter)
         self.p2p_listener.client.signal_current_peer_change.connect(self.on_p2p_listener_current_peer_change)
@@ -551,7 +550,6 @@ class MainWindow(QMainWindow):
                 tooltip = self.tr("Try connecting to: {ip}").format(ip=connection_info.peer)
         status_labels: list[QLabel] = [
             self.settings.network_settings_ui.p2p_listener_status_label,
-            self.notification_bar_p2p.icon_label.textLabel,
         ]
         for label in status_labels:
             label.setToolTip(tooltip)
@@ -582,7 +580,6 @@ class MainWindow(QMainWindow):
 
         status_labels: list[QLabel] = [
             self.settings.network_settings_ui.p2p_listener_status_label,
-            self.notification_bar_p2p.icon_label.textLabel,
         ]
         for label in status_labels:
             label.setText(text)
@@ -596,15 +593,13 @@ class MainWindow(QMainWindow):
                     if root.data.txid() == item:
                         self.close_tab(root)
 
-    def enable_and_start_p2p_listening_for_migrating_users(self):
-        # remove this method after most have migrated to the Version 1.5
-        """Enable and start p2p listening for migrating users."""
-        self.notification_bar_p2p.enable_button.setHidden(True)
-        if self.p2p_listener:
-            return
-        self.config.network_config.p2p_listener_type = P2pListenerType.automatic
-        self.settings.network_settings_ui.update_ui_from_config()
-        self.init_p2p_listening()
+    def enable_cbf_and_shutdown(self):
+        # remove this method after most have migrated to the Version 1.6
+        self.settings.network_settings_ui.server_type = BlockchainType.CompactBlockFilter
+        if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
+            self.settings.network_settings_ui.p2p_listener_type = P2pListenerType.automatic
+
+        self.settings.network_settings_ui.on_apply_click()
 
     def init_p2p_listening(self):
         """Init p2p listening."""
@@ -900,8 +895,16 @@ class MainWindow(QMainWindow):
     def close_current_tab(self):
         """Close current tab."""
         current_node = self.tab_wallets.currentNode()
-        if current_node:
+        if not current_node:
+            return
+
+        if current_node.closable:
             self.close_tab(current_node)
+            return
+
+        if current_node.hidable:
+            current_node.hideClicked.emit(current_node)
+            current_node.setVisible(False)
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         """ShowEvent."""
@@ -963,6 +966,7 @@ class MainWindow(QMainWindow):
 
         self.notification_bar_testnet.updateUi()
         self.update_notification_bar.updateUi()
+        self.notification_bar_cbf.updateUi()
 
         self.search_box.updateUi()
 
@@ -1226,16 +1230,29 @@ class MainWindow(QMainWindow):
         return None
 
     def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN) -> None:
-        """Apply txs to wallets."""
         for qt_wallet in self.qt_wallets.values():
             qt_wallet.apply_txs(txs, last_seen=last_seen)
 
+    def apply_txs_to_wallets_and_highlight(
+        self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
+    ) -> None:
+        """Apply txs to wallets."""
+
+        self.apply_txs_to_wallets(txs=txs, last_seen=last_seen)
+
         for qt_wallet in self.qt_wallets.values():
-            for tx in txs:
-                txid = str(tx.compute_txid())
+            txids = [str(tx.compute_txid()) for tx in txs]
+            for txid in txids:
                 if qt_wallet.wallet.get_tx(txid=txid):
                     self.tab_wallets.setCurrentWidget(qt_wallet)
-                    return
+                    qt_wallet.hist_node.select()
+
+                    qt_wallet.history_list.select_rows(
+                        txids,
+                        qt_wallet.history_list.key_column,
+                        role=MyItemDataRole.ROLE_KEY,
+                        scroll_to_last=True,
+                    )
 
     def open_tx_like_in_tab(
         self,
@@ -1760,7 +1777,7 @@ class MainWindow(QMainWindow):
 
         self.config.opened_txlike[str(self.config.network)] = txs
         if current_node := self.tab_wallets.currentNode():
-            self.config.last_tab_title = current_node.title
+            self.config.last_tab_title = current_node.get_nested_titles()
 
     def click_create_single_signature_wallet(self) -> None:
         """Click create single signature wallet."""

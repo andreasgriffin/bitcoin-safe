@@ -31,6 +31,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 
+from PyQt6.QtCore import QLocale
 from PyQt6.QtWidgets import QPushButton
 
 from bitcoin_safe.gui.qt.icon_label import IconLabel
@@ -55,7 +56,7 @@ def get_p2p_tooltip_text() -> str:
     )
 
 
-class NotificationBarP2P(NotificationBar):
+class NotificationBarCBF(NotificationBar):
     def __init__(
         self,
         callback_open_network_setting: Callable,
@@ -90,12 +91,14 @@ class NotificationBarP2P(NotificationBar):
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
-        self.enable_button.setText(self.tr("Enable"))
+        self.enable_button.setText(self.tr("Activate and shutdown"))
         self.optionalButton.setText(self.tr("Open Network Settings"))
-        self.icon_label.textLabel.setToolTip(get_p2p_tooltip_text())
-        self.icon_label.textLabel.setText(self.tr("Receive instant notifications for transactions"))
+        tooltip = self.tr("""Connect to bitcoin nodes (p2p) and download relevant blocks from them.""")
+        self.icon_label.textLabel.setToolTip(tooltip)
+        self.icon_label.textLabel.setText(self.tr("Compact Block Filters for p2p syncing is now availbale"))
 
+        lang_code_short = QLocale.languageToCode(QLocale().language())
         self.learn_more_button.set_icon_as_help(
-            tooltip=get_p2p_tooltip_text(),
-            click_url="https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/",
+            tooltip=tooltip,
+            click_url=f"https://bitcoin-safe.org/{lang_code_short}/knowledge/compact-block-filters",
         )

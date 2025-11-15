@@ -65,7 +65,7 @@ RECENT_WALLET_MAXLEN = 15
 
 class UserConfig(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes, NetworkConfigs.__name__: NetworkConfigs}
-    VERSION = "0.2.3"
+    VERSION = "0.2.5"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -95,7 +95,7 @@ class UserConfig(BaseSaveableClass):
         self.language_code: str = DEFAULT_LANG_CODE
         self.currency: str = "USD"
         self.rates: dict[str, dict[str, Any]] = {}
-        self.last_tab_title: str = ""
+        self.last_tab_title: list[str] = []
 
     def clean_recently_open_wallet(self):
         """Clean recently open wallet."""
@@ -230,6 +230,9 @@ class UserConfig(BaseSaveableClass):
             if old_path.exists():
                 os.makedirs(cls.window_properties_config_file.parent, exist_ok=True)
                 shutil.move(old_path, str(cls.window_properties_config_file))
+
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.5"):
+            dct["last_tab_title"] = []
 
         return super().from_dump_migration(dct=dct)
 

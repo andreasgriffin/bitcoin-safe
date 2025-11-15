@@ -1034,7 +1034,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             if isinstance(sub, (ExportLabelMenu, ImportLabelMenu, LabelSnapshotMenu)):
                 sub.updateUi()
 
-        self.button_create_address.setText(self.tr("Create new Address"))
+        self.button_create_address.setText(self.tr("Create new address"))
         self.button_create_address_label.setText(self.tr("for"))
         self.action_manage_categories.setText(self.tr("Manage Categories"))
         if self.snapshot_menu:
