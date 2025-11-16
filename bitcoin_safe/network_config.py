@@ -191,8 +191,8 @@ def get_esplora_urls(network: bdk.Network) -> dict[str, str]:
     """Get esplora urls."""
     d = {
         bdk.Network.BITCOIN: {
-            "default": "https://blockstream.info/api/",
-            "blockstream": "https://blockstream.info/api/",
+            "default": "",
+            "blockstream": "",
         },
         bdk.Network.REGTEST: {
             "default": "http://127.0.0.1:3000",
