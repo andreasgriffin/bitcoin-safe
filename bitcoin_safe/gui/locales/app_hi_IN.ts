@@ -2534,6 +2534,11 @@ Do you want to hide to tray instead?</source>
 			<source>Open Network Settings</source>
 			<translation>नेटवर्क सेटिंग्स खोलें</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>अपने नेटवर्क सेटिंग्स अपडेट करें (वर्तमान सर्वर अविश्वसनीय है)! आप p2p सिंकिंग के लिए Compact Block Filters आज़मा सकते हैं</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

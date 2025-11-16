@@ -2532,6 +2532,11 @@ Do you want to hide to tray instead?</source>
 			<source>Open Network Settings</source>
 			<translation>Obre la configuració de xarxa</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>Actualitzeu la configuració de xarxa (el servidor actual no és fiable)! Podeu provar els Compact Block Filters per a la sincronització p2p</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

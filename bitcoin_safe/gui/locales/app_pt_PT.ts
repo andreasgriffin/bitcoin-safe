@@ -2535,6 +2535,11 @@ Deseja prosseguir mesmo assim?</translation>
 			<source>Open Network Settings</source>
 			<translation>Abrir definições de rede</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>Atualize as suas definições de rede (o servidor atual é pouco fiável)! Pode experimentar os Compact Block Filters para sincronização p2p</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

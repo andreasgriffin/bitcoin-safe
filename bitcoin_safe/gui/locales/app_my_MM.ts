@@ -2531,6 +2531,11 @@ Do you want to hide to tray instead?</source>
 			<source>Open Network Settings</source>
 			<translation>Network ဆက်တင်များကို ဖွင့်ရန်</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>သင့် network setting များကို update လုပ်ပါ (လက်ရှိ server သည် ယုံကြည်စိတ်ချရမည် မဟုတ်ပါ)! p2p syncing အတွက် Compact Block Filters ကို စမ်းသုံးနိုင်ပါတယ်</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

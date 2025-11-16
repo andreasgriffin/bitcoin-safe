@@ -2551,6 +2551,11 @@ Mempool-Instanz: {server}</translation>
 			<source>Open Network Settings</source>
 			<translation>Netzwerkeinstellungen öffnen</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>Aktualisieren Sie Ihre Netzwerkeinstellungen (der aktuelle Server ist unzuverlässig)! Sie können Compact Block Filters für die p2p-Synchronisierung ausprobieren</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

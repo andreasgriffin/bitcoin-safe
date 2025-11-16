@@ -38,6 +38,7 @@ from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.network_config import NetworkConfig
+from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import SignalsMin
 
 from .util import svg_tools
@@ -95,7 +96,19 @@ class NotificationBarCBF(NotificationBar):
         self.optionalButton.setText(self.tr("Open Network Settings"))
         tooltip = self.tr("""Connect to bitcoin nodes (p2p) and download relevant blocks from them.""")
         self.icon_label.textLabel.setToolTip(tooltip)
-        self.icon_label.textLabel.setText(self.tr("Compact Block Filters for p2p syncing is now available"))
+        if (
+            self.network_config.server_type == BlockchainType.Esplora
+            and "blockstream" in self.network_config.esplora_url
+        ):
+            self.icon_label.textLabel.setText(
+                self.tr(
+                    "Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing"
+                )
+            )
+        else:
+            self.icon_label.textLabel.setText(
+                self.tr("Compact Block Filters for p2p syncing is now available")
+            )
 
         lang_code_short = QLocale.languageToCode(QLocale().language())
         self.learn_more_button.set_icon_as_help(
