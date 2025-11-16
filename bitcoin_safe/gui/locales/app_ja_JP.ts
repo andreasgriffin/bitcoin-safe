@@ -2534,6 +2534,11 @@ Do you want to hide to tray instead?</source>
 			<source>Open Network Settings</source>
 			<translation>ネットワーク設定を開く</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>ネットワーク設定を更新してください（現在のサーバーは信頼できません）！P2P 同期には Compact Block Filters を試すことができます</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>

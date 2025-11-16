@@ -2531,6 +2531,11 @@ Do you want to hide to tray instead?</source>
 			<source>Open Network Settings</source>
 			<translation>네트워크 설정 열기</translation>
 		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+			<translation>네트워크 설정을 업데이트하세요 (현재 서버는 신뢰할 수 없습니다)! P2P 동기화를 위해 Compact Block Filters를 사용해볼 수 있습니다</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarRecipient</name>
