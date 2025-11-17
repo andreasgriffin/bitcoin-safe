@@ -578,6 +578,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Downloaded {count} blocks</source>
+			<translation>{count} بلوک دانلود شد</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Syncing via Electrum</source>
 			<translation>همگام‌سازی از طریق Electrum</translation>
 		</message>
@@ -2861,7 +2866,7 @@ The serializations of both differ, which could be caused by different collected 
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>تراکنش‌هایی با خروجی «تغییر» اما بدون ورودی کیف پول شناسایی شدند: {txids}  آیا می‌خواهید کیف پول را با حد شکاف افزایش‌یافته به {new_gap} مجدداً اسکن کنید؟</translation>
+			<translation>تراکنش‌هایی با خروجی «تغییر» اما بدون ورودی کیف پول شناسایی شدند: {txids} آیا می‌خواهید کیف پول را با حد شکاف افزایش‌یافته به {new_gap} مجدداً اسکن کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

@@ -578,6 +578,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Downloaded {count} blocks</source>
+			<translation>İndirilen {count} blok</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Syncing via Electrum</source>
 			<translation>Electrum aracılığıyla senkronize ediliyor</translation>
 		</message>
@@ -2861,7 +2866,7 @@ The serializations of both differ, which could be caused by different collected 
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Değişim çıktılarına sahip fakat cüzdan girdi içermeyen işlemler tespit edildi: {txids}  Cüzdanı {new_gap} olarak artırılmış bir gap limitiyle yeniden taramak ister misiniz?</translation>
+			<translation>Değişim çıktılarına sahip fakat cüzdan girdi içermeyen işlemler tespit edildi: {txids} Cüzdanı {new_gap} olarak artırılmış bir gap limitiyle yeniden taramak ister misiniz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

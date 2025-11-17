@@ -52,6 +52,7 @@ class ProgressInfo:
     passed_time: timedelta
     remaining_time: timedelta
     status_msg: str
+    sync_status: SyncStatus
 
 
 @dataclass

@@ -580,6 +580,11 @@ mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Downloaded {count} blocks</source>
+			<translation>Pobrano {count} bloków</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Syncing via Electrum</source>
 			<translation>Synchronizowanie przez Electrum</translation>
 		</message>
@@ -2884,7 +2889,7 @@ w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Wykryto transakcje ze zwrotem „change”, ale bez wejść z portfela: {txids}  Czy chcesz przeskanować portfel ponownie z podwyższonym limitem różnicy {new_gap}?</translation>
+			<translation>Wykryto transakcje ze zwrotem „change”, ale bez wejść z portfela: {txids} Czy chcesz przeskanować portfel ponownie z podwyższonym limitem różnicy {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
