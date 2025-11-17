@@ -103,7 +103,7 @@ class Client:
         """Handle log info and returns if the sync_status was changed ."""
         if isinstance(info, bdk.Info.PROGRESS):
             new_progress = info.filters_downloaded_percent / 100
-            if new_progress == 1 and self.sync_status == SyncStatus.synced:
+            if self.sync_status == SyncStatus.synced:
                 # do not downgrade the sync status, merely on a Info.PROGRESS
                 return False
             self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, new_progress)
