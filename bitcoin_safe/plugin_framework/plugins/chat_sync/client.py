@@ -199,8 +199,6 @@ class SyncClient(PluginClient):
 
         self.updateUi()
 
-        self.publish_key()
-
     def import_nsec(self):
         """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
@@ -295,6 +293,9 @@ class SyncClient(PluginClient):
     def publish_key(self):
         # just in case the relay lost the publish key message. I republish here
         """Publish key."""
+        if not self.enabled:
+            return
+
         my_key = short_key(
             self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.public_key().to_bech32()
         )
