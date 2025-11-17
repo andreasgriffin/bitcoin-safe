@@ -577,6 +577,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Downloaded {count} blocks</source>
+			<translation>{count} ဘ್ಲોકများ ဒေါင်းလုပ်ပြီးပါပြီ</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Syncing via Electrum</source>
 			<translation>Electrum ဖြင့် သင်ခန်းစာချိန်ညှိနေသည်</translation>
 		</message>

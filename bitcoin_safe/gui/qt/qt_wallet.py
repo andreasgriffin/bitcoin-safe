@@ -1495,9 +1495,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Handle client log info."""
         if not self.wallet.client:
             return
-        self.wallet.client.handle_log_info(info)
 
-        if self.wallet.client.should_update_progress():
+        if self.wallet.client.handle_log_info(info):
             self.signal_progress_info.emit(self.wallet.client.progress_info)
             self.signal_refresh_sync_status.emit()
 
@@ -1505,8 +1504,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Handle client log warning."""
         if not self.wallet.client:
             return
-        self.wallet.client.handle_log_warning(warning)
-        if self.wallet.client.should_update_progress():
+
+        if self.wallet.client.handle_log_warning(warning):
             self.signal_progress_info.emit(self.wallet.client.progress_info)
             self.signal_refresh_sync_status.emit()
 
@@ -1518,6 +1517,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Handle client update."""
         if not self.wallet.client:
             return
+        self.wallet.client.set_sync_status(SyncStatus.synced)
         self.signal_progress_info.emit(self.wallet.client.progress_info)
         self.signal_refresh_sync_status.emit()
         self.on_update(update_info)

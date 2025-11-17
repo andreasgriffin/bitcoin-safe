@@ -580,6 +580,11 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du s
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Downloaded {count} blocks</source>
+			<translation>{count} Blöcke heruntergeladen</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Syncing via Electrum</source>
 			<translation>Synchronisierung über Electrum</translation>
 		</message>
@@ -2884,7 +2889,7 @@ im Wallet '{wallet}' wurden aus der Historie entfernt!!!</translation>
 {txids}
 
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Es wurden Transaktionen mit Wechsel-Ausgängen, aber ohne Wallet-Eingänge erkannt: {txids}  Möchten Sie das Wallet mit einem erhöhten Lückenlimit von {new_gap} erneut scannen?</translation>
+			<translation>Es wurden Transaktionen mit Wechsel-Ausgängen, aber ohne Wallet-Eingänge erkannt: {txids} Möchten Sie das Wallet mit einem erhöhten Lückenlimit von {new_gap} erneut scannen?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>

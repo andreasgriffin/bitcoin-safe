@@ -62,7 +62,7 @@ class CBFProgressBar(QProgressBar):
 
         text = (
             progress_info.status_msg
-            if progress_info.progress == 0 and progress_info.status_msg
+            if progress_info.status_msg
             else self.tr("{percent}% - Finished {remaining_time}").format(
                 percent=int(progress_info.progress * 100),
                 remaining_time=age(from_date=progress_info.remaining_time),

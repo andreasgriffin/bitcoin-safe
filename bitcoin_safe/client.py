@@ -47,6 +47,8 @@ logger = logging.getLogger(__name__)
 
 
 class Client:
+    MAX_PROGRESS_WHILE_SYNC = 0.99
+
     def __init__(
         self,
         client: bdk.ElectrumClient | bdk.EsploraClient | CbfSync,
@@ -63,6 +65,7 @@ class Client:
         self.start_time = datetime.now()
         self.progress: float = 0  # a number   "Between 0 and 1"
         self.status_msg = ""
+        self._downloaded_blocks: set[str] = set()
         self._sync_status: SyncStatus = SyncStatus.unknown
         self._update_queue: asyncio.Queue[UpdateInfo] = asyncio.Queue()
 
@@ -76,37 +79,48 @@ class Client:
         """Sync status."""
         return self._sync_status
 
-    def set_sync_status(self, status: SyncStatus) -> None:
-        """Set sync status."""
+    def set_sync_status(self, status: SyncStatus) -> bool:
+        """Set sync status and returns if it was changed."""
+        if status == self._sync_status:
+            return False
         self._sync_status = status
+        if self._sync_status == SyncStatus.synced:
+            self.progress = 1
+            self.status_msg = ""
+        return True
 
-    def handle_log_warning(self, warning: bdk.Warning):
-        """Handle log warning."""
+    def handle_log_warning(self, warning: bdk.Warning) -> bool:
+        """Handle log warning and returns and returns if the sync_status was changed."""
         if isinstance(warning, (bdk.Warning.NEED_CONNECTIONS, bdk.Warning.COULD_NOT_CONNECT)):
             self.status_msg = translate("Client", "Connecting to nodes")
         else:
             self.status_msg = warning.__class__.__name__
         if isinstance(self.client, CbfSync) and not self.client.node_running():
-            self.set_sync_status(SyncStatus.error)
+            return self.set_sync_status(SyncStatus.error)
+        return False
 
-    def should_update_progress(self):
-        """Should update progress."""
-        if isinstance(self.client, CbfSync):
-            # kyoto update is the only reliable way to know it is fully synced.
-            # any warning or info message dies not reflect the sync status
-            # therefore, once synced (an update was received) i do not go back to syncing
-            # TODO: this should be enhanced with detection of internet connectivity
-            # or once synced with connections_met, need_connections change.
-            # The problem is connections_met does not imply it is synced
-            return self.sync_status != SyncStatus.synced
-        # for electrum/esplora I should always update the status
-        return True
-
-    def handle_log_info(self, info: bdk.Info):
-        """Handle log info."""
+    def handle_log_info(self, info: bdk.Info) -> bool:
+        """Handle log info and returns if the sync_status was changed ."""
         if isinstance(info, bdk.Info.PROGRESS):
-            self.progress = info.filters_downloaded_percent / 100
-            self.status_msg = translate("Client", "Chain height {height}").format(height=info.chain_height)
+            new_progress = info.filters_downloaded_percent / 100
+            if new_progress == 1 and self.sync_status == SyncStatus.synced:
+                # do not downgrade the sync status, merely on a Info.PROGRESS
+                return False
+            self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, new_progress)
+            self.status_msg = (
+                translate("Client", "Chain height {height}").format(height=info.chain_height)
+                if info.filters_downloaded_percent == 0
+                else ""
+            )
+
+        if isinstance(info, bdk.Info.BLOCK_RECEIVED):
+            self.progress = min(self.progress, self.MAX_PROGRESS_WHILE_SYNC)
+            self._downloaded_blocks.update([str(v) for v in info._values])
+            self.status_msg = translate("Client", "Downloaded {count} blocks").format(
+                count=len(self._downloaded_blocks)
+            )
+
+        return self.set_sync_status(SyncStatus.syncing if self.progress < 1 else SyncStatus.synced)
 
     @property
     def passed_time(self):
@@ -132,10 +146,11 @@ class Client:
             passed_time=self.passed_time,
             remaining_time=self.remaining_time,
             status_msg=self.status_msg,
+            sync_status=self.sync_status,
         )
 
-    def on_update(self, update_info: UpdateInfo) -> None:
-        """On update."""
+    def on_update(self, update_info: UpdateInfo):
+        """On update  and returns if the sync_status was changed ."""
         self.progress = 1
         self.status_msg = ""
         self.set_sync_status(SyncStatus.synced)
