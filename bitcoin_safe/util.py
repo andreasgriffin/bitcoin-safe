@@ -256,3 +256,11 @@ def filename_clean(id: str, file_extension: str = ".wallet", replace_spaces_by=N
         return "".join(c for c in basename if c in valid_chars) + file_extension
 
     return create_valid_filename(id)
+
+
+def short_address(address: str, prefix: int = 6, suffix: int = 4) -> str:
+    """Return an abbreviated representation of an address for logging."""
+
+    if len(address) <= prefix + suffix:
+        return address
+    return f"{address[:prefix]}...{address[-suffix:]}"

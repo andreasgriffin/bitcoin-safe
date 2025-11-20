@@ -126,8 +126,12 @@ class Storage:
         with open(filename, "rb") as f:
             token = f.read()
 
-        if token.decode()[0] == "{":
-            return False
+        try:
+            if token.startswith(b"{") and token.endswith(b"}"):
+                return False
+        except Exception as e:
+            logger.exception(str(e))
+            return True
 
         return True
 

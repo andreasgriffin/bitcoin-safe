@@ -229,7 +229,7 @@ class WalletGraphClient(PluginClient):
         """On wallet updated."""
         if not self.enabled:
             return
-        logger.debug("WalletGraphClient refreshing after wallet update %s", update_filter)
+        logger.debug("WalletGraphClient refreshing after wallet update")
         if self.graph_view.is_drawing:
             return
         self.refresh_graph()

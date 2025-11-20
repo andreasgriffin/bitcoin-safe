@@ -133,7 +133,7 @@ class CbfSync:
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            logger.error("Failed to fetch info message: %s", exc)
+            logger.error(f"Failed to fetch info message: {exc}")
             return None
         if info is not None:
             self._handle_log_info(info)
@@ -154,7 +154,7 @@ class CbfSync:
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            logger.error("Failed to fetch warning message: %s", exc)
+            logger.error(f"Failed to fetch warning message: {exc}")
             return None
         if warning is not None:
             self._handle_log_warning(warning)
@@ -175,7 +175,7 @@ class CbfSync:
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            logger.error("Failed to fetch update: %s", exc)
+            logger.error(f"Failed to fetch update: {exc}")
             return None
         update_info = UpdateInfo(update=update, update_type=UpdateInfo.UpdateType.full_sync)
         self._handle_update(update_info)

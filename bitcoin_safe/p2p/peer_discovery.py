@@ -104,10 +104,9 @@ DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
 
 
 class PeerDiscovery:
-    def __init__(self, network: bdk.Network, timeout: int = 200) -> None:
+    def __init__(self, network: bdk.Network) -> None:
         """Initialize instance."""
         self.network = network
-        self.timeout = timeout
         self._loop_in_thread = LoopInThread()
 
     def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
@@ -159,7 +158,12 @@ class PeerDiscovery:
 
         return peers
 
-    async def _get_bitcoin_peers_async(self, lower_bound, required_services):
+    async def _get_bitcoin_peers_async(
+        self,
+        lower_bound: int | None,
+        required_services: int | None,
+        timeout: int = 5,
+    ):
         """Get bitcoin peers async."""
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
@@ -184,10 +188,17 @@ class PeerDiscovery:
             unique_peers = {peer for batch in results for peer in batch}
             return len(unique_peers) >= lower_bound
 
-        batches = await self._loop_in_thread.gather(
-            [resolve(seed) for seed in dns_seeds],
-            early_finish_criteria_function=enough,
-        )
+        try:
+            batches = await asyncio.wait_for(
+                self._loop_in_thread.gather(
+                    [resolve(seed) for seed in dns_seeds],
+                    early_finish_criteria_function=enough,
+                ),
+                timeout=timeout,
+            )
+        except asyncio.TimeoutError:
+            logger.warning(f"Peer discovery timed out after {timeout} seconds")
+            return set()
 
         return {peer for batch in batches for peer in batch}
 
@@ -199,7 +210,10 @@ class PeerDiscovery:
     ) -> set[Peer]:
         """Get bitcoin peers."""
         return self._loop_in_thread.run_foreground(
-            self._get_bitcoin_peers_async(lower_bound=lower_bound, required_services=required_services)
+            self._get_bitcoin_peers_async(
+                lower_bound=lower_bound,
+                required_services=required_services,
+            )
         )
 
     def get_bitcoin_peer(self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS) -> None | Peer:

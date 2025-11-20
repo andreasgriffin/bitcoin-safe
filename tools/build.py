@@ -35,6 +35,7 @@ import os
 import platform
 import shutil
 import subprocess
+import tarfile
 from collections.abc import Callable
 from pathlib import Path
 from typing import Literal
@@ -345,6 +346,10 @@ class Builder:
         for target in targets:
             f_map[target](build_commit=build_commit)
 
+        if "appimage" in targets:
+            # must be done after all builds are finished
+            self.package_appimage_tarball()
+
         # calc hashes
         hashes = calc_hashes_of_files(Path(".") / "dist")
         print("Resulting hashes:")
@@ -352,6 +357,26 @@ class Builder:
             print(f"{file.name}: {hash}")
 
         print(f"Packaging completed for version {self.version}.")
+
+    def package_appimage_tarball(self):
+        """Ensure AppImage binaries are executable and provide a tarball version."""
+
+        dist_dir = Path("dist")
+        if not dist_dir.exists():
+            logger.info("No dist directory found. Skipping AppImage tarball packaging.")
+            return
+
+        for appimage_path in dist_dir.glob("*.AppImage"):
+            logger.info(f"Ensuring executable flag for {appimage_path}")
+            appimage_path.chmod(appimage_path.stat().st_mode | 0o111)
+
+            tarball_path = appimage_path.with_suffix(appimage_path.suffix + ".tar.gz")
+            logger.info(f"Creating tarball {tarball_path}")
+            with tarfile.open(tarball_path, "w:gz") as tar:
+                tar.add(appimage_path, arcname=appimage_path.name)
+
+            logger.info(f"Removing original AppImage {appimage_path}")
+            appimage_path.unlink()
 
     def sign(self):
         """Sign."""
