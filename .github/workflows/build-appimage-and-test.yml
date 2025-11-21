@@ -125,6 +125,26 @@ jobs:
           name: dist
           path: artifacts
 
+      - name: Unpack AppImage archive
+        if: ${{ matrix.package == 'appimage' && github.event.inputs.skip_build_and_test_release_tag == '' }}
+        run: |
+          set -euo pipefail
+          shopt -s globstar nullglob
+          for archive in artifacts/**/*.AppImage.*; do
+            case "$archive" in
+              *.tar.gz|*.tgz)
+                tar -xzf "$archive" -C "$(dirname "$archive")"
+                ;;
+              *.zip)
+                unzip -o "$archive" -d "$(dirname "$archive")"
+                ;;
+            esac
+          done
+          if ! find artifacts -type f -name '*.AppImage' -print -quit | grep -q .; then
+            echo "No AppImage found after extraction"
+            exit 1
+          fi
+
       - name: Download release artifacts
         if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
         env:
