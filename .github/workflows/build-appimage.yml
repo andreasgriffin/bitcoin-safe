@@ -75,7 +75,7 @@ jobs:
 
       - name: Check for AppImage file
         run: |
-          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
+          if [ -z "$(find dist -type f -name '*.AppImage.*')" ]; then
             echo "AppImage file is missing"
             exit 1
           fi

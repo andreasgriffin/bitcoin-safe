@@ -84,7 +84,7 @@ jobs:
       - name: Check for AppImage file
         if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
-          if [ -z "$(find dist -type f -name '*.AppImage')" ]; then
+          if [ -z "$(find dist -type f -name '*.AppImage.*')" ]; then
             echo "AppImage file is missing"
             exit 1
           fi
