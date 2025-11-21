@@ -31,6 +31,7 @@ from __future__ import annotations
 import base64
 import logging
 import os
+import platform
 import signal as syssignal
 import sys
 from collections.abc import Iterable
@@ -1630,7 +1631,12 @@ class MainWindow(QMainWindow):
     def open_last_opened_wallets(self) -> list[QTWallet]:
         """Open last opened wallets."""
         opened_wallets: list[QTWallet] = []
-        for file_path in self.config.last_wallet_files.get(str(self.config.network), []):
+        wallet_files = self.config.last_wallet_files.get(str(self.config.network), [])
+        if platform.system().lower() == "darwin" and len(wallet_files) > 1:
+            logger.info("macOS detected. Limiting restored wallets on startup to 1 to avoid thread limits.")
+            wallet_files = wallet_files[:1]
+
+        for file_path in wallet_files:
             qt_wallet = self.open_wallet(file_path=str(rel_home_path_to_abs_path(file_path)), focus=False)
             if qt_wallet:
                 opened_wallets.append(qt_wallet)
@@ -1643,12 +1649,21 @@ class MainWindow(QMainWindow):
 
     def open_wallets(self, focus=True):
         """Open wallets."""
-        file_paths, _ = QFileDialog.getOpenFileNames(
-            self,
-            self.tr("Open Wallet"),
-            self.config.wallet_dir,
-            self.tr("Wallet Files (*.wallet);;All Files (*)"),
-        )
+        if platform.system().lower() == "darwin":
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                self.tr("Open Wallet"),
+                self.config.wallet_dir,
+                self.tr("Wallet Files (*.wallet);;All Files (*)"),
+            )
+            file_paths = [file_path] if file_path else []
+        else:
+            file_paths, _ = QFileDialog.getOpenFileNames(
+                self,
+                self.tr("Open Wallet"),
+                self.config.wallet_dir,
+                self.tr("Wallet Files (*.wallet);;All Files (*)"),
+            )
         if not file_paths:
             logger.info(self.tr("No file selected"))
             return None
