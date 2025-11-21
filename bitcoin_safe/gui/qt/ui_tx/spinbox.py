@@ -373,7 +373,7 @@ if __name__ == "__main__":
     import sys
 
     config = UserConfig()
-    fx = FX(config=config)
+    fx = FX(config=config, loop_in_thread=None)
 
     app = QApplication(sys.argv)
     window = QWidget()

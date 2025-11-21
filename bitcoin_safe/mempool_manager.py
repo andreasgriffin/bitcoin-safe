@@ -208,11 +208,13 @@ class MempoolManager(QObject):
         self,
         network_config: NetworkConfig,
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread | None,
     ) -> None:
         """Initialize instance."""
         super().__init__()
         self.signals_min = signals_min
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
 
         self.network_config = network_config
         self.data = network_config.mempool_data
@@ -277,7 +279,8 @@ class MempoolManager(QObject):
 
     def close(self):
         """Close."""
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         logger.debug(f"{self.__class__.__name__} close")
 
     def set_data_from_mempoolspace(self, force=False) -> None:
@@ -289,7 +292,9 @@ class MempoolManager(QObject):
             )
             return None
 
-        self._task_set_data = self.loop_in_thread.run_background(self._set_data_from_mempoolspace())
+        self._task_set_data = self.loop_in_thread.run_background(
+            self._set_data_from_mempoolspace(), key=f"{id(self)}"
+        )
 
     async def _set_data_from_mempoolspace(self) -> None:
         """Set data from mempoolspace."""
