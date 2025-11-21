@@ -184,7 +184,7 @@ class MainWindow(QMainWindow):
         self.wallet_functions = WalletFunctions(self.signals)
         self.loop_in_thread = LoopInThread()
 
-        self.fx = FX(config=self.config)
+        self.fx = FX(config=self.config, loop_in_thread=self.loop_in_thread)
         self.fx.signal_data_updated.connect(self.update_fx_rate_in_config)
         self.language_chooser = LanguageChooser(
             config=self.config,
@@ -208,6 +208,7 @@ class MainWindow(QMainWindow):
         self.mempool_manager = MempoolManager(
             network_config=self.config.network_config,
             signals_min=self.signals,
+            loop_in_thread=self.loop_in_thread,
         )
         self.mempool_manager.set_data_from_mempoolspace()
 

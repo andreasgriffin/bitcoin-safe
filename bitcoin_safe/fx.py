@@ -46,10 +46,11 @@ logger = logging.getLogger(__name__)
 class FX(QObject):
     signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())
 
-    def __init__(self, config: UserConfig) -> None:
+    def __init__(self, config: UserConfig, loop_in_thread: LoopInThread | None) -> None:
         """Initialize instance."""
         super().__init__()
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
         self.config = config
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()
         self.sanitize_rates()
@@ -110,7 +111,8 @@ class FX(QObject):
 
     def close(self):
         """Close."""
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         logger.debug(f"{self.__class__.__name__} close")
 
     def update_if_needed(self) -> None:
@@ -219,7 +221,7 @@ class FX(QObject):
 
     def update(self) -> None:
         """Update."""
-        self._task_set_data = self.loop_in_thread.run_background(self._update())
+        self._task_set_data = self.loop_in_thread.run_background(self._update(), key=f"{id(self)}")
 
     def add_additional_rates(self, rates: dict):
         # gold entry: {'name': 'Gold - Troy Ounce', 'unit': 'XAU', 'value': 35.399, 'type': 'commodity'}
