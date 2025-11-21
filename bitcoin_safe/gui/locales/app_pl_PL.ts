@@ -1985,6 +1985,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>W systemie macOS można jednocześnie otworzyć tylko 2 portfele</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>Otwórz &amp;ostatnie</translation>
 		</message>
