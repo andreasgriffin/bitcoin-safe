@@ -129,18 +129,6 @@ def get_electrum_configs(network: bdk.Network) -> dict[str, ElectrumConfig]:
     return d[network]
 
 
-def get_default_electrum_use_ssl(network: bdk.Network) -> bool:
-    """Get default electrum use ssl."""
-    d = {
-        bdk.Network.BITCOIN: False,
-        bdk.Network.REGTEST: False,
-        bdk.Network.TESTNET: True,
-        bdk.Network.TESTNET4: True,
-        bdk.Network.SIGNET: False,
-    }
-    return d[network]
-
-
 def get_default_rpc_hosts(network: bdk.Network) -> dict[str, str]:
     """Get default rpc hosts."""
     return {"default": "127.0.0.1", "umbrel": "umbrel.local"}

@@ -97,18 +97,17 @@ class DownloadWorker(QObject):
         response.raise_for_status()
         content_length = response.headers.get("content-length")
 
-        if content_length is None:  # no content length header
-            self.progress.emit(100)
-            self.filename.write_bytes(response.content)
-            return
-
         with open(self.filename, "wb") as f:
             dl = 0
-            total = int(content_length)
+            total = int(content_length) if content_length is not None else None
             for data in response.iter_content(chunk_size=4096):
                 dl += len(data)
                 f.write(data)
-                self.progress.emit(int(100 * dl / total))
+                if total:
+                    self.progress.emit(int(100 * dl / total))
+            # For unknown content-length, only update once the download completes
+            if total is None:
+                self.progress.emit(100)
 
 
 class Downloader(QWidget):

@@ -1563,9 +1563,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     continue
                 signal.emit(result)
         except asyncio.CancelledError:
-            logger.debug("Cancelled bridge for %s", coro)
+            logger.debug(f"Cancelled bridge for {coro}")
         except Exception:
-            logger.exception("Error while bridging coroutine %s", coro)
+            logger.exception(f"Error while bridging coroutine {coro}")
 
     def init_blockchain(self):
         """Init blockchain."""

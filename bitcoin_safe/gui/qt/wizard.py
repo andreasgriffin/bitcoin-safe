@@ -1437,16 +1437,21 @@ class SendTest(BaseTab):
 
     def set_visibilities(self, should_be_visible: bool):
         """Set visibilities."""
-        if self.refs.qt_wallet and not should_be_visible:
-            self.refs.qt_wallet.send_node.setWidget(self.refs.qt_wallet.uitx_creator)
+        if self.refs.qt_wallet:
+            if should_be_visible:
+                self.widget_layout.addWidget(self.refs.qt_wallet.uitx_creator)
+                # without setVisible(True) it doesnt appear (clear why)
+                self.refs.qt_wallet.uitx_creator.setVisible(True)
+            else:
+                self.refs.qt_wallet.send_node.setWidget(self.refs.qt_wallet.uitx_creator)
+                self.refs.qt_wallet.uitx_creator.clear_ui()
 
     def _callback(self) -> None:
         """Callback."""
         if not self.refs.qt_wallet:
             return
 
-        self.widget_layout.addWidget(self.refs.qt_wallet.uitx_creator)
-        self.refs.qt_wallet.uitx_creator.setVisible(True)
+        self.set_visibilities(True)
         if self.refs.qt_wallet.wallet.client and self.refs.qt_wallet.wallet.client.sync_status in [
             SyncStatus.unknown,
             SyncStatus.unsynced,
@@ -1677,6 +1682,8 @@ class Wizard(WizardBase):
             self.qtwalletbase.tutorial_index = None
 
         self.set_visibilities()
+        if self.should_be_visible:
+            self.node.select()
 
     def guess_current_step(self) -> TutorialStep:
         """Guess current step."""
@@ -1933,7 +1940,8 @@ class Wizard(WizardBase):
         txinfos.hide_UTXO_selection = True
         txinfos.recipient_read_only = True
 
-        self.qtwalletbase.signals.open_tx_like.emit(txinfos)
+        self.qt_wallet.uitx_creator.initial_tx_ui_infos = txinfos
+        self.qt_wallet.uitx_creator.set_ui(txinfos)
 
     def fill_tx(self) -> None:
         """Fill tx."""

@@ -278,7 +278,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
             try:
                 utxo_label = wallet.get_label_for_address(python_utxo.address)
             except Exception:  # pragma: no cover - defensive
-                logger.exception("Failed to fetch label for address %s", python_utxo.address)
+                logger.exception(f"Failed to fetch label for address {python_utxo.address}")
                 utxo_label = ""
             utxo_label_value = utxo_label.strip() if utxo_label else ""
             display_utxo_label = elide_text(utxo_label_value, label_max_chars) if utxo_label_value else ""
@@ -828,7 +828,7 @@ class TransactionItem(QGraphicsRectItem):
             try:
                 return bool(has_method(txid))
             except Exception:  # pragma: no cover - defensive against unexpected view types
-                logger.exception("Failed to determine if view has transaction %s", txid)
+                logger.exception(f"Failed to determine if view has transaction {txid}")
         return False
 
     @staticmethod
@@ -841,7 +841,7 @@ class TransactionItem(QGraphicsRectItem):
             try:
                 tx_label = wallet.get_label_for_txid(detail.txid)
             except Exception:  # pragma: no cover - defensive: label lookup should not crash UI
-                logger.exception("Failed to fetch label for txid %s", detail.txid)
+                logger.exception(f"Failed to fetch label for txid {detail.txid}")
                 tx_label = ""
             label_value = tx_label.strip() if tx_label else ""
         display_label = elide_text(label_value, label_max_chars) if label_value else ""

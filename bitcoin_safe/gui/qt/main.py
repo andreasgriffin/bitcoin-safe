@@ -659,19 +659,19 @@ class MainWindow(QMainWindow):
             menu.addSeparator()
             self.context_menu_action_rename_wallet = menu.add_action(
                 self.menu_action_rename_wallet.text(),
-                slot=self.change_wallet_id,
+                slot=partial(self.change_wallet_id, qt_wallet),
                 icon=self.menu_action_rename_wallet.icon(),
             )
             self.context_menu_action_rename_wallet = menu.add_action(
                 self.menu_action_change_password.text(),
-                slot=self.change_wallet_password,
+                slot=partial(self.change_wallet_password, qt_wallet),
                 icon=self.menu_action_change_password.icon(),
             )
 
             menu.addSeparator()
             self.context_menu_action_toggle_tutorial = menu.add_action(
                 self.menu_action_toggle_tutorial.text(),
-                slot=self.toggle_tutorial,
+                slot=partial(self.toggle_tutorial, qt_wallet),
                 icon=self.menu_action_toggle_tutorial.icon(),
             )
 
@@ -992,9 +992,9 @@ class MainWindow(QMainWindow):
             action = partial(self.signals.open_file_path.emit, filepath)
             self.menu_wallet_recent.add_action(os.path.basename(filepath), action)
 
-    def change_wallet_id(self) -> str | None:
+    def change_wallet_id(self, qt_wallet: QTWallet | None = None) -> str | None:
         """Change wallet id."""
-        qt_wallet = self.get_qt_wallet()
+        qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
             Message(self.tr("Please select the wallet"))
             return None
@@ -1019,9 +1019,9 @@ class MainWindow(QMainWindow):
         self.set_title()
         return new_wallet_id
 
-    def change_wallet_password(self) -> None:
+    def change_wallet_password(self, qt_wallet: QTWallet | None = None) -> None:
         """Change wallet password."""
-        qt_wallet = self.get_qt_wallet()
+        qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
             Message(self.tr("Please select the wallet"))
             return
@@ -2067,6 +2067,7 @@ class MainWindow(QMainWindow):
             qt_wallet.wizard.set_current_index(qt_wallet.tutorial_index)
 
         if qt_wallet.wizard.should_be_visible:
+            qt_wallet.wizard.set_visibilities()
             qt_wallet.wizard.node.select()
 
         self.language_chooser.add_signal_language_switch(self.signals.language_switch)
@@ -2079,9 +2080,9 @@ class MainWindow(QMainWindow):
         self.last_qtwallet = qt_wallet
         return qt_wallet
 
-    def toggle_tutorial(self) -> None:
+    def toggle_tutorial(self, qt_wallet: QTWallet | None = None) -> None:
         """Toggle tutorial."""
-        qt_wallet = self.get_qt_wallet()
+        qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
             Message(self.tr("Please complete the wallet setup."))
             return
@@ -2327,8 +2328,7 @@ class MainWindow(QMainWindow):
             self.config.network = self.new_startup_network
             self.config.save()
 
-        SignalTools.disconnect_all_signals_from(self.signals)
-        SignalTools.disconnect_all_signals_from(self)
+        self._disconnect_all_signals_safely()
         self.tray.hide()
 
         # 3) On close, save both geometry and (optionally) window state
@@ -2340,6 +2340,19 @@ class MainWindow(QMainWindow):
         super().closeEvent(a0)
         QApplication.closeAllWindows()
         QCoreApplication.quit()
+
+    def _disconnect_all_signals_safely(self) -> None:
+        """Disconnect Qt signals while ignoring already deleted Qt objects."""
+
+        try:
+            SignalTools.disconnect_all_signals_from(self.signals)
+        except RuntimeError:
+            logger.exception("Failed to disconnect signals from self.signals during shutdown")
+
+        try:
+            SignalTools.disconnect_all_signals_from(self)
+        except RuntimeError:
+            logger.exception("Failed to disconnect signals from self during shutdown")
 
     def restart(self, new_startup_network: bdk.Network | None = None) -> None:
         """Currently only works in Linux and then it seems that it freezes. So do not

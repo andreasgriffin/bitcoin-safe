@@ -234,7 +234,7 @@ class P2PClient(QObject):
         if debug:
             for name, sig in self.__class__.__dict__.items():
                 if isinstance(sig, pyqtSignal):
-                    getattr(self, name).connect(lambda *a, n=name: logger.debug("%s %s", n, a))
+                    getattr(self, name).connect(lambda *a, n=name: logger.debug(f"{n} {a}"))
 
         # signals
         self.signal_addrv2.connect(self._on_addrv2)  # incoming peers
@@ -492,7 +492,7 @@ class P2PClient(QObject):
         try:
             raw = bytes.fromhex(raw_hex)
         except ValueError:
-            logger.debug("Invalid hex in broadcast_tx: %r", raw_hex)
+            logger.debug(f"Invalid hex in broadcast_tx: {raw_hex!r}")
             return
         await self._send_raw("tx", raw)
 
@@ -562,11 +562,11 @@ class P2PClient(QObject):
             # ──────────────────────────────────────────────────────────────
             await asyncio.wait_for(self.writer.drain(), timeout=self.timeout)
         except asyncio.TimeoutError:
-            logger.debug("→ %s timed-out after %s s during drain()", cmd, self.timeout)
+            logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
             await self.disconnect()
             return
 
-        logger.debug("→ %s (%d bytes)", cmd, len(payload))
+        logger.debug(f"-> {cmd} ({len(payload)} bytes)")
 
     async def _read_exact(self, n: int) -> bytes:
         """Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting) if
@@ -582,7 +582,7 @@ class P2PClient(QObject):
                 # ──────────────────────────────────────────────────────────
                 chunk = await asyncio.wait_for(self.reader.readexactly(n - len(data)), timeout=self.timeout)
             except asyncio.TimeoutError:
-                logger.debug("← read timed-out after %s s", self.timeout)
+                logger.debug(f"<- read timed-out after {self.timeout} s")
                 await self.disconnect()
                 raise
             except asyncio.exceptions.IncompleteReadError as e:
@@ -617,11 +617,7 @@ class P2PClient(QObject):
 
         if len(dq) > max_per_sec:
             logger.debug(
-                "Peer exceeded %s rate limit (%d > %d in %.1fs) – disconnecting",
-                label,
-                len(dq),
-                max_per_sec,
-                RATE_WINDOW_SEC,
+                f"Peer exceeded {label} rate limit ({len(dq)} > {max_per_sec} in {RATE_WINDOW_SEC:.1f}s) – disconnecting"
             )
             # schedule an async disconnect without blocking
             asyncio.create_task(self.disconnect())
@@ -645,7 +641,7 @@ class P2PClient(QObject):
         magic_recv = struct.unpack(">L", header[0:4])[0]
         expected_magic = MAGIC_VALUES[self.network]
         if magic_recv != expected_magic:
-            logger.debug("Wrong magic %08x ≠ %08x – disconnecting", magic_recv, expected_magic)
+            logger.debug(f"Wrong magic {magic_recv:08x} ≠ {expected_magic:08x} – disconnecting")
             await self.disconnect()
             return
 
@@ -655,12 +651,7 @@ class P2PClient(QObject):
 
         # ── HARDENING: reject over-large payloads
         if length > MAX_PAYLOAD_LEN:
-            logger.debug(
-                "Payload %d bytes for %s exceeds %d – disconnecting",
-                length,
-                cmd,
-                MAX_PAYLOAD_LEN,
-            )
+            logger.debug(f"Payload {length} bytes for {cmd} exceeds {MAX_PAYLOAD_LEN} – disconnecting")
             await self.disconnect()
             return
 
@@ -671,11 +662,11 @@ class P2PClient(QObject):
         checksum_recv = header[20:24]
         checksum_calc = double_sha256(payload)[:4]
         if checksum_recv != checksum_calc:
-            logger.debug("Bad checksum for %s – disconnecting", cmd)
+            logger.debug(f"Bad checksum for {cmd} – disconnecting")
             await self.disconnect()
             return
 
-        logger.debug("← %s (%d bytes)", cmd, length)
+        logger.debug(f"<- {cmd} ({length} bytes)")
 
         # 4) Generic rate limiter
         self._enforce_rate_limit(self._msg_times, MAX_MSGS_PER_SEC, "message")
@@ -740,14 +731,14 @@ class P2PClient(QObject):
             try:
                 self.signal_unknown.emit(safe_cmd, payload)
             except Exception as e:
-                logger.debug("Error emitting unknown for %s: %s", safe_cmd, e)
+                logger.debug(f"Error emitting unknown for {safe_cmd}: {e}")
                 await self.disconnect()
             return
 
         try:
             await handler(payload)
         except Exception as e:
-            logger.debug("Error handling %s: %s – disconnecting", safe_cmd, e)
+            logger.debug(f"Error handling {safe_cmd}: {e} – disconnecting")
             await self.disconnect()
 
     # Individual handlers ------------------------------------------------------------------
@@ -967,16 +958,14 @@ class P2PClient(QObject):
 
         # ── HARDENING: cap and log
         if count > MAX_ADDR_ITEMS:
-            logger.debug("addr list claims %d entries; truncating to %d", count, MAX_ADDR_ITEMS)
+            logger.debug(f"addr list claims {count} entries; truncating to {MAX_ADDR_ITEMS}")
         count = min(count, MAX_ADDR_ITEMS)
 
         # ── HARDENING: ensure we have enough bytes for all entries
         expected_len = off + count * 30
         if len(p) < expected_len:
             logger.debug(
-                "addr payload too short: need %d bytes, have %d; parsing what we can",
-                expected_len,
-                len(p),
+                f"addr payload too short: need {expected_len} bytes, have {len(p)}; parsing what we can"
             )
             # reduce count to whatever fits
             count = max((len(p) - off) // 30, 0)
@@ -1027,7 +1016,7 @@ class P2PClient(QObject):
         ua_len, varint_len = decode_varint(p[off:])
         MAX_UA_LEN = 256
         if ua_len > MAX_UA_LEN:
-            logger.debug("User-Agent too long (%d > %d), truncating", ua_len, MAX_UA_LEN)
+            logger.debug(f"User-Agent too long ({ua_len} > {MAX_UA_LEN}), truncating")
             ua_len = MAX_UA_LEN
         off += varint_len
         user_agent = p[off : off + ua_len].decode(errors="replace")
@@ -1068,12 +1057,12 @@ class P2PClient(QObject):
         try:
             count, off = decode_varint(payload)
         except Exception as exc:
-            logger.debug("Malformed addrv2 varint: %s", exc)
+            logger.debug(f"Malformed addrv2 varint: {exc}")
             return received_peers
 
         # ── HARDENING: cap reported count
         if count > MAX_ADDR_ITEMS:
-            logger.debug("addrv2 claims %d entries; truncating to %d", count, MAX_ADDR_ITEMS)
+            logger.debug(f"addrv2 claims {count} entries; truncating to {MAX_ADDR_ITEMS}")
             count = MAX_ADDR_ITEMS
 
         for _ in range(count):

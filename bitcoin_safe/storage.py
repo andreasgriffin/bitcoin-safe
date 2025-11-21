@@ -126,8 +126,20 @@ class Storage:
         with open(filename, "rb") as f:
             token = f.read()
 
-        if token.decode()[0] == "{":
-            return False
+        # WHITESPACE contains all standard ASCII whitespace bytes:
+        #  - space        (0x20)
+        #  - tab          (\t)
+        #  - newline      (\n)
+        #  - carriage rtn (\r)
+        #  - form feed    (\f)
+        #  - vertical tab (\v)
+        strip_char = b" \t\n\r\f\v"
+        try:
+            if token.lstrip(strip_char).startswith(b"{") and token.rstrip(strip_char).endswith(b"}"):
+                return False
+        except Exception as e:
+            logger.exception(str(e))
+            return True
 
         return True
 

@@ -71,8 +71,8 @@ def linux_env():
 
     # Set LD_LIBRARY_PATH to prefer system libraries.
     paths = ["/usr/lib", "/usr/lib/x86_64-linux-gnu"]
-    if env["LD_LIBRARY_PATH"]:
-        paths += env["LD_LIBRARY_PATH"]
+    if _ldpath := env.get("LD_LIBRARY_PATH"):
+        paths += _ldpath
     env["LD_LIBRARY_PATH"] = ":".join(paths)
     return env
 
@@ -138,19 +138,19 @@ def open_mailto_link(mailto_link: str) -> None:
     elif sys.platform.startswith("darwin"):
         # macOS: Use open command to handle the mailto link
         subprocess.run(["open", mailto_link], check=True)
-    elif sys.platform.startswith("win32"):
-        # Windows: Use start command to handle the mailto link
-        subprocess.run(["cmd", "/c", "start", "", mailto_link], check=True, shell=True)
+    elif sys.platform == "win32":
+        # Windows: Use shell execute to handle the mailto link without invoking a shell
+        os.startfile(mailto_link)
 
 
 def xdg_open_file(filename: Path, is_text_file=False):
     """Xdg open file."""
     system_name = platform.system()
-    if system_name == "Windows":
+    if sys.platform == "win32":
         if is_text_file:
-            subprocess.call(shlex.split(f'start notepad "{filename}"'), shell=True)
+            subprocess.run(["notepad", str(filename)], check=False)
         else:
-            subprocess.call(shlex.split(f'start "" /max "{filename}"'), shell=True)
+            os.startfile(str(filename))
     elif system_name == "Darwin":  # macOS
         subprocess.call(shlex.split(f'open "{filename}"'))
     elif system_name == "Linux":  # Linux

@@ -100,7 +100,7 @@ from .pythonbdk_types import (
 from .signals import UpdateFilter, WalletFunctions
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache
+from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache, short_address
 
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker
 
@@ -631,21 +631,29 @@ class BdkWallet(bdk.Wallet, CacheManager):
             new = new_dict.get(txid)
             if not new:
                 continue
+
+            recognized_change = None
             if old.fee != new.fee:
-                entry.modified.append(new)
-                continue
-            if type(old.chain_position) is not type(new.chain_position):
-                entry.modified.append(new)
-                continue
-            if (
+                recognized_change = f"fee changed from {old.fee} to {new.fee}"
+            elif type(old.chain_position) is not type(new.chain_position):
+                recognized_change = (
+                    f"chain position type changed from {old.chain_position} to {new.chain_position}"
+                )
+            elif (
                 (is_local(old.chain_position) or is_local(new.chain_position))
                 and isinstance(old.chain_position, bdk.ChainPosition.UNCONFIRMED)
                 and isinstance(new.chain_position, bdk.ChainPosition.UNCONFIRMED)
                 and old.chain_position.timestamp != new.chain_position.timestamp
             ):
+                recognized_change = (
+                    "unconfirmed timestamp changed from "
+                    f"{old.chain_position.timestamp} to {new.chain_position.timestamp}"
+                )
+
+            if recognized_change:
+                logger.info(f"Transaction {short_tx_id(txid)} {recognized_change}")
                 entry.modified.append(new)
-                continue
-        logger.info(entry.modified)
+
         return entry
 
     @instance_lru_cache(always_keep=True)
@@ -1635,7 +1643,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     continue
                 category = categories[0]
                 self.labels.set_addr_category(ref=utxo.address, category=category, timestamp="old")
-                logger.info(f"Set {category=} for {utxo.address=}")
+                logger.info(f"Set {category=} for address {short_address(utxo.address)}")
 
     @instance_lru_cache()
     @time_logger
