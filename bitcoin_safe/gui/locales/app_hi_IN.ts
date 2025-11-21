@@ -1970,6 +1970,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>macOS पर एक ही समय में केवल 2 वॉलेट खोले जा सकते हैं</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>हाल का खोलें</translation>
 		</message>

@@ -1985,6 +1985,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>Unter macOS können nur 2 Wallets gleichzeitig geöffnet werden</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>Kürzlich öffnen</translation>
 		</message>

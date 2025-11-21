@@ -1970,6 +1970,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>บน macOS สามารถเปิดกระเป๋าสตางค์ได้พร้อมกันเพียง 2 ใบเท่านั้น</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>เปิด &amp;ล่าสุด  </translation>
 		</message>

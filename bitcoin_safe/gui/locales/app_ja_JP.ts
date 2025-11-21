@@ -1970,6 +1970,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>macOS では同時に開けるウォレットは 2 つまでです</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>現在のウォレットを&amp;保存</translation>
 		</message>

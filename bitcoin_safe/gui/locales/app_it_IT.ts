@@ -1972,6 +1972,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>On macOS only 2 wallets can be opened at the same time</source>
+			<translation>Su macOS è possibile aprire solo 2 wallet contemporaneamente</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Open &amp;Recent</source>
 			<translation>Apri &amp;Recente</translation>
 		</message>

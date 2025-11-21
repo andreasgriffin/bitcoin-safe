@@ -1632,9 +1632,11 @@ class MainWindow(QMainWindow):
         """Open last opened wallets."""
         opened_wallets: list[QTWallet] = []
         wallet_files = self.config.last_wallet_files.get(str(self.config.network), [])
-        if platform.system().lower() == "darwin" and len(wallet_files) > 1:
-            logger.info("macOS detected. Limiting restored wallets on startup to 1 to avoid thread limits.")
-            wallet_files = wallet_files[:1]
+        if platform.system().lower() == "darwin" and len(wallet_files) > 2:
+            logger.info(
+                "macOS detected. Limiting restored wallets on startup to 2 to avoid file descriptor limits."
+            )
+            wallet_files = wallet_files[:2]
 
         for file_path in wallet_files:
             qt_wallet = self.open_wallet(file_path=str(rel_home_path_to_abs_path(file_path)), focus=False)
@@ -1672,6 +1674,13 @@ class MainWindow(QMainWindow):
 
     def open_wallet(self, file_path: str | None = None, focus=True) -> QTWallet | None:
         """Open wallet."""
+        if platform.system().lower() == "darwin" and len(self.qt_wallets) >= 2:
+            Message(
+                self.tr("On macOS only 2 wallets can be opened at the same time"),
+                type=MessageType.Warning,
+            )
+            return None
+
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
