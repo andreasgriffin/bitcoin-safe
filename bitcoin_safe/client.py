@@ -208,9 +208,9 @@ class Client:
         if initial_peer:
             peers.add(initial_peer)
 
-        discovered_peers = PeerDiscovery(network=bdkwallet.network()).get_bitcoin_peers(
-            required_services=CBF_REQUIRED_SERVICE_FLAGS, lower_bound=200
-        )
+        discovered_peers = PeerDiscovery(
+            network=bdkwallet.network(), loop_in_thread=loop_in_thread
+        ).get_bitcoin_peers(required_services=CBF_REQUIRED_SERVICE_FLAGS, lower_bound=200)
         peers = peers.union(discovered_peers)
 
         client = CbfSync(

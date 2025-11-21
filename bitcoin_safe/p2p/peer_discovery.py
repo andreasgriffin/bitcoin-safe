@@ -104,10 +104,23 @@ DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
 
 
 class PeerDiscovery:
-    def __init__(self, network: bdk.Network) -> None:
-        """Initialize instance."""
+    def __init__(self, network: bdk.Network, loop_in_thread: LoopInThread | None = None) -> None:
+        """Initialize instance.
+
+        Parameters
+        ----------
+        network : bdk.Network
+            Network to discover peers for.
+        loop_in_thread : LoopInThread | None
+            Optional event loop to reuse instead of creating a new one. Sharing an existing
+            loop avoids spawning extra threads and file descriptors (socketpairs on macOS),
+            which can exhaust the default file descriptor limit when opening multiple
+            wallets.
+        """
+
         self.network = network
-        self._loop_in_thread = LoopInThread()
+        self._loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
 
     def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
         """Seed with service bits."""
@@ -222,3 +235,9 @@ class PeerDiscovery:
         if not peers:
             return None
         return list(peers)[0]
+
+    def stop(self) -> None:
+        """Stop the internally managed loop, if we created it."""
+
+        if self._owns_loop_in_thread:
+            self._loop_in_thread.stop()

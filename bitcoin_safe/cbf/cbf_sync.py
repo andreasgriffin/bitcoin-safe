@@ -34,7 +34,6 @@ from pathlib import Path
 from typing import cast
 
 import bdkpython as bdk
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import DescriptorInfo
 
 from bitcoin_safe.client_helpers import UpdateInfo
@@ -66,7 +65,6 @@ class CbfSync:
     ):
         """Initialize instance."""
         self.client: bdk.CbfClient | None = None
-        self.loop_in_thread = LoopInThread()
         self._height: int = 0
         self.wallet_id = wallet_id
         self.gap = gap
@@ -244,4 +242,3 @@ class CbfSync:
     def close(self):
         """Close."""
         self.shutdown_node()
-        self.loop_in_thread.stop()
