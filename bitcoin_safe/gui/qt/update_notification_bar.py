@@ -254,7 +254,7 @@ class UpdateNotificationBar(NotificationBar):
             on_done=on_done,
             on_success=on_success,
             on_error=on_error,
-            key=f"{id(self)}lazy_load_qr",
+            key=f"{id(self)}notificationbar",
             multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
         )
 
