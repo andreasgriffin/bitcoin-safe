@@ -235,7 +235,13 @@ class Client:
             return self.client.broadcast(tx)
         elif isinstance(self.client, CbfSync):
             assert self.client.client, "Not initialized"
-            return self.loop_in_thread.run_foreground(self.client.client.broadcast(tx))
+            try:
+                return self.loop_in_thread.run_foreground(
+                    asyncio.wait_for(self.client.client.broadcast(tx), timeout=3)
+                )
+            except asyncio.TimeoutError:
+                logger.error("Broadcast timed out after 3 seconds")
+                raise
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
 
