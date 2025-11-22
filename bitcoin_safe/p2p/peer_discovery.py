@@ -32,13 +32,11 @@ import asyncio
 import logging
 import random
 import socket
-from collections.abc import Sequence
 from ipaddress import ip_address
 from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.util import time_logger
 
 from .p2p_client import Peer
 
@@ -171,13 +169,12 @@ class PeerDiscovery:
 
         return peers
 
-    async def _get_bitcoin_peers_async(
+    async def get_bitcoin_peers(
         self,
         lower_bound: int | None,
         required_services: int | None,
         timeout: int = 5,
     ):
-        """Get bitcoin peers async."""
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
 
@@ -185,21 +182,23 @@ class PeerDiscovery:
             DEFAULT_REQUIRED_SERVICE_FLAGS if required_services is None else required_services
         )
 
+        partial_results: list[list[Peer]] = []
+
         async def resolve(seed_host: str) -> list[Peer]:
-            """Resolve."""
             seed_info = Peer.parse(seed_host, self.network)
             candidate_seed = self._seed_with_service_bits(
                 seed_info.host,
                 effective_required_services if effective_required_services else None,
             )
-            return await self._resolve_dns_seed(candidate_seed, seed_info.port)
+            peers = await self._resolve_dns_seed(candidate_seed, seed_info.port)
+            partial_results.append(peers)
+            return peers
 
-        def enough(results: Sequence[list[Peer]]) -> bool:
-            """Enough."""
+        def enough(results):
             if lower_bound is None:
                 return False
-            unique_peers = {peer for batch in results for peer in batch}
-            return len(unique_peers) >= lower_bound
+            unique = {peer for batch in results for peer in batch}
+            return len(unique) >= lower_bound
 
         try:
             batches = await asyncio.wait_for(
@@ -211,30 +210,25 @@ class PeerDiscovery:
             )
         except asyncio.TimeoutError:
             logger.warning(f"Peer discovery timed out after {timeout} seconds")
-            return set()
+            return {peer for batch in partial_results for peer in batch}
 
         return {peer for batch in batches for peer in batch}
 
-    @time_logger
-    def get_bitcoin_peers(
-        self,
-        lower_bound: int | None = None,
-        required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS,
-    ) -> set[Peer]:
-        """Get bitcoin peers."""
-        return self._loop_in_thread.run_foreground(
-            self._get_bitcoin_peers_async(
-                lower_bound=lower_bound,
-                required_services=required_services,
-            )
-        )
-
-    def get_bitcoin_peer(self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS) -> None | Peer:
+    async def get_bitcoin_peer(
+        self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS
+    ) -> None | Peer:
         """Get bitcoin peer."""
-        peers = self.get_bitcoin_peers(lower_bound=1, required_services=required_services)
+
+        # the limit may not be 1 , otherwise 127.0.0.1 will always be returned
+        peers = await self.get_bitcoin_peers(
+            lower_bound=10,
+            required_services=required_services,
+        )
         if not peers:
             return None
-        return list(peers)[0]
+        peer_list = list(peers)
+        random.shuffle(peer_list)
+        return peer_list[0]
 
     def stop(self) -> None:
         """Stop the internally managed loop, if we created it."""

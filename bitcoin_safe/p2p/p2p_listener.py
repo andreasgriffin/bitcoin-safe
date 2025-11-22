@@ -102,7 +102,7 @@ class P2pListener(QObject):
             self.signal_tx.emit(tx)
             return
 
-    def random_select_peer(
+    async def random_select_peer(
         self,
         weight_getaddr: float = 0.7,
         weight_dns: float = 0.3,
@@ -128,7 +128,7 @@ class P2pListener(QObject):
 
         # Fast paths -------------------------------------------------
         if not self.discovered_peers:
-            peer = self.peer_discovery.get_bitcoin_peer()  # may be None
+            peer = await self.peer_discovery.get_bitcoin_peer()  # may be None
             logger.debug(f"Picked {peer=} from DNS seed")
             return peer
         if weight_dns == 0:
@@ -147,7 +147,7 @@ class P2pListener(QObject):
             logger.debug(f"Picked {peer=} from discovered_peers")
             return peer
 
-        peer = self.peer_discovery.get_bitcoin_peer()  # may be None
+        peer = await self.peer_discovery.get_bitcoin_peer()  # may be None
         logger.debug(f"Picked {peer=} from DNS seed")
         return peer
 
@@ -175,7 +175,7 @@ class P2pListener(QObject):
             # 1. Select the next peer (and avoid repeating the last one immediately)
             # ------------------------------------------------------------------
             if peer is None:
-                peer = self.random_select_peer()
+                peer = await self.random_select_peer()
                 if peer is None:
                     # no peers at all? wait then retry
                     await asyncio.sleep(retry_delay)
