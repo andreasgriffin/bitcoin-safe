@@ -182,3 +182,62 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         # end
         shutter.save(main_window)
+
+
+def test_open_same_wallet_twice(
+    qapp: QApplication,
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Ensure reopening the same wallet shows an info message."""
+
+    frame = inspect.currentframe()
+    assert frame
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        QTest.qWaitForWindowExposed(main_window)  # type: ignore
+
+        temp_dir = Path(tempfile.mkdtemp()) / "0.2.0.wallet"
+        wallet_path = Path("tests") / "data" / "0.2.0.wallet"
+        shutil.copy(str(wallet_path), str(temp_dir))
+
+        first_wallet = main_window.open_wallet(str(temp_dir))
+        assert first_wallet
+
+        messages: list[str] = []
+
+        class MessageRecorder:
+            def __init__(self, msg: str, *args, **kwargs) -> None:  # noqa: ANN001, D401
+                """Record message invocations."""
+
+                messages.append(msg)
+
+            def show(self) -> None:  # noqa: D401
+                """Do not display message boxes during tests."""
+
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.main.Message",
+            MessageRecorder,
+        )
+
+        reopened_wallet = main_window.open_wallet(str(temp_dir))
+        assert reopened_wallet is None
+        assert messages == [f"The wallet {temp_dir} is already open."]
+        messages.clear()
+
+        # copy the wallet do a different dir and try again to open it
+
+        different_dir = Path(tempfile.mkdtemp()) / f"{first_wallet.wallet.id}.wallet"
+        shutil.copy(str(wallet_path), str(different_dir))
+
+        reopened_duplicate = main_window.open_wallet(str(different_dir))
+        assert reopened_duplicate is None
+        assert messages == [
+            f"A wallet with id {first_wallet.wallet.id} is already open. Please close it first.",
+        ]
+
+        shutter.save(main_window)
