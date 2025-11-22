@@ -82,8 +82,8 @@ class DescriptorExport(QDialog):
         descriptor: bdk.Descriptor,
         signals_min: SignalsMin,
         network: bdk.Network,
+        loop_in_thread: LoopInThread | None,
         parent=None,
-        loop_in_thread: LoopInThread | None = None,
         wallet_id: str = "MultiSig",
     ):
         super().__init__(parent)
