@@ -1763,6 +1763,14 @@ class MainWindow(QMainWindow):
                 return None, password
             return None, password  # type: ignore[unreachable]
 
+        if (_guess_wallet_id := Path(file_path).stem) in self.qt_wallets:
+            Message(
+                self.tr("A wallet with id {name} is already open. Please close it first.").format(
+                    name=_guess_wallet_id
+                )
+            )
+            return None
+
         qt_wallet, password = try_load(file_path=file_path)
         if not qt_wallet:
             return None
@@ -1770,14 +1778,6 @@ class MainWindow(QMainWindow):
         if qt_wallet and password:
             # successfuly load, then cache the password
             self.password_cache.set_password("wallet", password)
-
-        if qt_wallet.wallet.id in self.qt_wallets:
-            Message(
-                self.tr("A wallet with id {name} is already open. Please close it first.").format(
-                    name=qt_wallet.wallet.id
-                )
-            )
-            return None
 
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
         QApplication.processEvents()
