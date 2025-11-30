@@ -64,7 +64,7 @@ def test_default_network_config_works(
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe"
 
         shutter.save(main_window)

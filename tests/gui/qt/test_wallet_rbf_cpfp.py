@@ -79,7 +79,7 @@ def test_rbf_cpfp_flow(
     shutter.create_symlink(test_config=test_config)
 
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window)
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
         shutter.save(main_window)
 

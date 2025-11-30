@@ -659,6 +659,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         data: Data,
         signals_min: SignalsMin,
         network: bdk.Network,
+        loop_in_thread: LoopInThread | None,
         sync_client: dict[str, SyncClient] | None = None,
         usb_signer_ui: SignerUI | None = None,
         layout: QBoxLayout | None = None,
@@ -666,7 +667,6 @@ class ExportDataSimple(HorizontalImportExportGroups):
         enable_file=True,
         enable_usb=True,
         enable_clipboard=True,
-        loop_in_thread: LoopInThread | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
         """Initialize instance."""

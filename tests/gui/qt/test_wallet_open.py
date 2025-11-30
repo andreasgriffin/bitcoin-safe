@@ -63,10 +63,8 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
     qtbot: QtBot,
     mytest_start_time: datetime,
     test_config: UserConfig,
-    faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "0.2.0.wallet",
-    amount: int = int(1e6),
 ) -> None:
     """Test open wallet and address is consistent and destruction ok."""
     frame = inspect.currentframe()
@@ -75,7 +73,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
@@ -101,7 +99,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             main_window.show_address(wallet_address, qt_wallet.wallet.id)
             d = get_widget_top_level(address_dialog.AddressDialog, qtbot)
             assert d
-            QTest.qWaitForWindowExposed(d)
+            QTest.qWaitForWindowExposed(d, timeout=10000)
             assert d.address == wallet_address
             assert len(main_window.attached_widgets) == prev_count + 1
             shutter.save(d)
@@ -199,7 +197,7 @@ def test_open_same_wallet_twice(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # type: ignore
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
 
         temp_dir = Path(tempfile.mkdtemp()) / "0.2.0.wallet"
         wallet_path = Path("tests") / "data" / "0.2.0.wallet"

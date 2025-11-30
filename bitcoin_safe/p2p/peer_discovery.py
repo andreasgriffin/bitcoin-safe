@@ -102,7 +102,7 @@ DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
 
 
 class PeerDiscovery:
-    def __init__(self, network: bdk.Network, loop_in_thread: LoopInThread | None = None) -> None:
+    def __init__(self, network: bdk.Network, loop_in_thread: LoopInThread | None) -> None:
         """Initialize instance.
 
         Parameters
