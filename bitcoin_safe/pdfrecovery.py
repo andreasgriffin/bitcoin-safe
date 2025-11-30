@@ -231,6 +231,81 @@ class BasePDF:
             logger.info(translate("pdf", "File not found!"))
 
 
+class DataExportPDF(BasePDF):
+    def create_pdf(
+        self,
+        title: str,
+        txid: str | None,
+        serialized: str,
+        data_label: str,
+        qr_images: list[PilImage],
+        ur_qr_images: list[PilImage] | None = None,
+    ) -> None:
+        """Create a PDF that captures serialized data and its QR codes."""
+
+        self.elements.append(Paragraph(title, style=self.style_heading))
+        self.elements.append(
+            Paragraph(
+                translate("pdf", "Created with", no_translate=self.no_translate)
+                + f" Bitcoin Safe: {white_space * 5} www.bitcoin-safe.org",
+                self.style_paragraph,
+            )
+        )
+        self.elements.append(Spacer(1, 12))
+
+        if txid:
+            self.elements.append(
+                Paragraph(
+                    translate("pdf", "Transaction ID: {txid}", no_translate=self.no_translate).format(
+                        txid=txid
+                    ),
+                    self.style_paragraph_left,
+                )
+            )
+            self.elements.append(Spacer(1, 6))
+
+        self.elements.append(
+            Paragraph(
+                translate("pdf", "Serialized {label}:", no_translate=self.no_translate).format(
+                    label=data_label
+                ),
+                self.style_paragraph_left,
+            )
+        )
+        self.elements.append(Paragraph(serialized, self.style_paragraph_left))
+        self.elements.append(Spacer(1, 12))
+
+        def _append_qr_section(title: str, images: list[PilImage]):
+            if not images:
+                return
+
+            self.elements.append(Paragraph(title, self.style_paragraph))
+            for idx, image in enumerate(images):
+                self.elements.append(
+                    Paragraph(
+                        translate(
+                            "pdf",
+                            "{title}: Fragment {index} of {total}",
+                            no_translate=self.no_translate,
+                        ).format(index=idx + 1, total=len(images), title=title),
+                        self.style_paragraph,
+                    )
+                )
+                self.elements.append(pilimage_to_reportlab(image, width=200, height=200))
+                self.elements.append(Spacer(1, 6))
+
+        _append_qr_section(translate("pdf", "BBQr QR", no_translate=self.no_translate), qr_images)
+        _append_qr_section(translate("pdf", "UR QR", no_translate=self.no_translate), ur_qr_images or [])
+
+        if not qr_images and not ur_qr_images:
+            self.elements.append(
+                Paragraph(
+                    translate("pdf", "No QR data available", no_translate=self.no_translate),
+                    self.style_paragraph_left,
+                )
+            )
+
+
 class BitcoinWalletRecoveryPDF(BasePDF):
     @property
     def TEXT_24_WORDS(self):

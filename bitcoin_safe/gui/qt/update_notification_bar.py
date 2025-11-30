@@ -31,6 +31,7 @@ from __future__ import annotations
 import logging
 import os
 import platform
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -61,6 +62,31 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateNotificationBar(NotificationBar):
+    Linux_Recognized_endings = [
+        "AppImage",
+        "deb",
+        "rpm",
+        "flatpak",
+        "snap",
+        "pkg.tar.zst",  # Arch
+        "apk",  # Alpine
+        "eopkg",  # Solus
+        "tar.gz",
+        "tar.xz",
+        "tar.bz2",
+    ]
+    Mac_Recognized_endings = [
+        "dmg",
+        "pkg",
+    ]
+    Win_Recognized_endings = [
+        "exe",
+        "msi",
+        "msix",
+        "appx",
+        "zip",  # common for portable apps
+    ]
+
     signal_on_success = cast(SignalProtocol[[]], pyqtSignal())
 
     key = KnownGPGKeys.andreasgriffin
@@ -202,28 +228,44 @@ class UpdateNotificationBar(NotificationBar):
     def get_filtered_assets(self, assets: list[Asset]) -> list[Asset]:
         """Get filtered assets."""
         filtered_assets: list[Asset] = []
+
+        system = platform.system()
+        machine = platform.machine().lower()
+
+        # Normalize architecture
+        current_arch_aliases = ["arm64", "aarch64"] if "arm" in machine else ["x86_64", "amd64"]
+
         for asset in assets:
-            if platform.system() == "Windows" and not any(
-                [asset.name.endswith(ending) for ending in ["exe", "msi"]]
-            ):
-                continue
-            elif platform.system() == "Linux" and not any(
-                [
-                    asset.name.endswith(ending)
-                    for ending in ["AppImage", "deb", "rpm", "flatpak", "snap", "pkg.tar.zst"]
-                ]
-            ):
-                continue
-            elif platform.system() == "Darwin" and not any(
-                [asset.name.endswith(ending) for ending in ["dmg"]]
+            # --- OS FORMAT FILTERING ---
+            if system == "Windows" and not any(
+                asset.name.endswith(ending) for ending in self.Win_Recognized_endings
             ):
                 continue
 
-            # check if the asset can be recognized
+            elif system == "Linux" and not any(
+                asset.name.endswith(ending) for ending in self.Linux_Recognized_endings
+            ):
+                continue
+
+            elif system == "Darwin":
+                if not any(asset.name.endswith(ending) for ending in self.Mac_Recognized_endings):
+                    continue
+
+                lower_name = asset.name.lower()
+
+                # Extract arch tags found in filename
+                arch_tags = re.findall(r"(arm64|aarch64|x86_64|amd64)", lower_name)
+
+                if arch_tags and current_arch_aliases:  # only enforce filtering if tags exist
+                    if not any(tag in current_arch_aliases for tag in arch_tags):
+                        continue
+
+            # --- CHECK IF ASSET BELONGS TO THIS KEY ---
             if not self.key.get_tag_if_mine(asset.name):
                 continue
 
             filtered_assets.append(asset)
+
         return filtered_assets
 
     def check(self) -> None:

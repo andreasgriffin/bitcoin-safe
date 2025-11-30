@@ -355,16 +355,16 @@ def main() -> None:
         upload_release_asset(token, owner, repo, release_result["id"], file_path)
         print(f"Asset {file_path.name} uploaded successfully. ({round(i / len(files) * 100)}%)")
 
-    if (
-        get_input_with_default(
-            "Do you want to update the website now (publish release first): (y/n) ", "y"
-        ).lower()
-        == "y"
-    ):
-        update_website(website_dir="../andreasgriffin.github.io", version=__version__)
+    # if (
+    #     get_input_with_default(
+    #         "Do you want to update the website now (publish release first): (y/n) ", "n"
+    #     ).lower()
+    #     == "y"
+    # ):
+    #     update_website(website_dir="../andreasgriffin.github.io", version=__version__)
 
-    if get_input_with_default("Publish pypi package? (y/n): ", "n").lower() == "y":
-        publish_pypi_wheel(dist_dir=str(directory))
+    # if get_input_with_default("Publish pypi package? (y/n): ", "n").lower() == "y":
+    #     publish_pypi_wheel(dist_dir=str(directory))
 
     print("Update features in \n    https://github.com/thebitcoinhole/software-wallets")
 

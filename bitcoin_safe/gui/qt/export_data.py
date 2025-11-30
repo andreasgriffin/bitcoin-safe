@@ -45,7 +45,7 @@ from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, Unifie
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
-from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
+from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
@@ -64,6 +64,7 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.pdfrecovery import DataExportPDF
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.util import filename_clean
@@ -243,6 +244,47 @@ class FileToolButton(QToolButton):
         self.data.write_to_filedescriptor(fd)
         return filename
 
+    def export_to_pdf(self) -> str | None:
+        """Export the serialized data into a PDF with BBQr codes."""
+        if self.data.data_type not in [DataType.Tx, DataType.PSBT]:
+            Message(self.tr("PDF export is only available for transactions or PSBTs."))
+            return None
+
+        if not self.serialized:
+            Message(self.tr("Not available"))
+            return None
+
+        default_filename = f"{short_tx_id(self.txid)}.pdf" if self.txid else None
+        if not default_filename:
+            default_filename = f"transaction_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        elif not default_filename.lower().endswith(".pdf"):
+            default_filename = f"{default_filename}.pdf"
+
+        filepath = Path.home() / default_filename
+
+        qr_fragments = UnifiedEncoder.generate_fragments_for_qr(
+            data=self.data, qr_export_type=QrExportTypes.bbqr
+        )
+        qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in qr_fragments]
+
+        ur_fragments = UnifiedEncoder.generate_fragments_for_qr(
+            data=self.data, qr_export_type=QrExportTypes.ur
+        )
+        ur_qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in ur_fragments]
+
+        pdf = DataExportPDF(lang_code=QLocale().name())
+        pdf.create_pdf(
+            title=self.tr("Transaction export"),
+            txid=self.txid,
+            serialized=self.serialized,
+            data_label=pretty_name(self.data.data_type),
+            qr_images=qr_images,
+            ur_qr_images=ur_qr_images,
+        )
+        pdf.save_pdf(str(filepath))
+        pdf.open_pdf(str(filepath))
+        return str(filepath)
+
     def updateUi(self) -> None:
         """UpdateUi."""
         self.setText(self.button_prefix + self.tr("Export"))
@@ -326,6 +368,13 @@ class FileToolButton(QToolButton):
                 self.export_to_file,
                 icon=file_icon,
             )
+
+            self.action_pdf_export = menu.add_action(
+                self.tr("PDF Export"),
+                self.export_to_pdf,
+                icon=svg_tools.get_QIcon("bi--filetype-pdf.svg"),
+            )
+            self.action_pdf_export.setVisible(self.data.data_type in [DataType.Tx, DataType.PSBT])
 
             menu.addSeparator()
 

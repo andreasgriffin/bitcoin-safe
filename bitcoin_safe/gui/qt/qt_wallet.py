@@ -93,7 +93,7 @@ from bitcoin_safe.pythonbdk_types import (
     python_utxo_balance,
 )
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.util import filename_clean
+from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
 from ...config import UserConfig
@@ -587,6 +587,21 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         balance_total = Satoshis(self.wallet.get_balance().total, self.config.network)
         self.balance_label.setText(balance_total.str_with_unit())
         self.fiat_value_label.setText(self.fx.btc_to_fiat_str(amount=balance_total.value))
+        self._update_fiat_price_tooltip()
+
+    def _update_fiat_price_tooltip(self) -> None:
+        """Update tooltip with current fiat price per bitcoin."""
+        btc_price_text = self.fx.btc_to_fiat_str(amount=SATOSHIS_PER_BTC)
+        currency_iso = self.fx.get_currency_iso()
+        if btc_price_text:
+            tooltip = self.tr("Current price per bitcoin: {price} ({currency})").format(
+                price=btc_price_text, currency=currency_iso
+            )
+        else:
+            tooltip = self.tr("Current price per bitcoin is unavailable.")
+
+        self.fiat_value_label_title.setToolTip(tooltip)
+        self.fiat_value_label.setToolTip(tooltip)
 
     def stop_sync_timer(self) -> None:
         """Stop sync timer."""

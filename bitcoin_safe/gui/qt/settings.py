@@ -34,6 +34,7 @@ from PyQt6.QtWidgets import QTabWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.about_tab import AboutTab, LicenseDialog
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.language_settings_ui import InterfaceSettingsUi
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
@@ -52,10 +53,15 @@ class Settings(QTabWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.signals = signals
         self.language_chooser = language_chooser
+        self._license_dialog = LicenseDialog(self)
 
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+
+        self.about_tab = AboutTab(license_dialog=self._license_dialog, parent=self)
+        self.addTab(self.about_tab, "")
 
         # lannguage ui
         self.langauge_ui = InterfaceSettingsUi(config=config, fx=fx, language_chooser=language_chooser)
@@ -111,6 +117,7 @@ class Settings(QTabWidget):
         self.langauge_ui.updateUi()
         self.setTabText(self.indexOf(self.network_settings_ui), self.tr("Network"))
         self.setTabText(self.indexOf(self.langauge_ui), self.tr("General"))
+        self.setTabText(self.indexOf(self.about_tab), self.tr("About"))
         # self.setTabText(self.indexOf(self.category_tab), self.tr("Category Manager"))
 
     def keyPressEvent(self, a0: QKeyEvent | None):
@@ -125,3 +132,9 @@ class Settings(QTabWidget):
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
         center_on_screen(self)
+
+    def open_about_tab(self) -> None:
+        """Open the About tab and focus the settings window."""
+        self.setCurrentWidget(self.about_tab)
+        self.show()
+        self.raise_()
