@@ -56,7 +56,7 @@ def test_011(config: UserConfig):
 
     assert not Storage().has_password(file_path)
 
-    wallet = Wallet.from_file(file_path, config, password)
+    wallet = Wallet.from_file(file_path, config, password=password, loop_in_thread=None)
 
     assert wallet
 

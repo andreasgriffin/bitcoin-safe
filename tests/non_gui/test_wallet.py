@@ -118,7 +118,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
         == "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
     )
 
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
 
     assert [keystore.__dict__ for keystore in protowallet.keystores] == expected_keystores
     assert [keystore.__dict__ for keystore in wallet.keystores] == expected_keystores
@@ -141,7 +141,7 @@ def test_protowallet_import_export_descriptor(test_config: UserConfig):
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
     assert str(multipath_descriptor) == expected_descriptor
 
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
 
     assert str(wallet.multipath_descriptor) == expected_descriptor
 
@@ -164,6 +164,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
     ## and now via protowallet
@@ -175,7 +176,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
         wallet_id=wallet_id,
         network=test_config.network,
     )
-    wallet2 = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    wallet2 = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
 
     # compare
     assert (
@@ -210,6 +211,7 @@ def test_is_multisig(test_config: UserConfig):
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
 
@@ -231,6 +233,7 @@ def test_is_multisig2(test_config: UserConfig):
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
     assert wallet.is_multisig()
@@ -254,12 +257,13 @@ def test_dump(test_config: UserConfig):
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
     dct = wallet.dump()
     walllet_restored = Wallet.from_dump(
         dct=dct,
-        class_kwargs={"Wallet": {"config": test_config}},
+        class_kwargs={"Wallet": {"config": test_config, "loop_in_thread": wallet.loop_in_thread}},
     )
 
     assert walllet_restored.derives_identical_addresses(wallet)
@@ -283,6 +287,7 @@ def test_correct_addresses(test_config: UserConfig):
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
     assert wallet.get_receiving_addresses()[0] == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
@@ -316,6 +321,7 @@ def test_inconsistent_key_origins(test_config: UserConfig):
             keystores=keystores,
             network=network,
             config=test_config,
+            loop_in_thread=None,
         )
 
 
@@ -339,6 +345,7 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
             keystores=keystores,
             network=network,
             config=test_config,
+            loop_in_thread=None,
         )
 
 
@@ -360,6 +367,7 @@ def test_mixed_keystores_is_consistent(test_config: UserConfig):
         keystores=keystores,
         network=network,
         config=test_config,
+        loop_in_thread=None,
     )
 
     assert wallet.is_multisig()
@@ -376,10 +384,12 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
         wallet_id="some id",
         network=network,
     )
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
     dump = wallet.dump()
 
-    restored_wallet = Wallet.from_dump(dct=dump, class_kwargs={"Wallet": {"config": test_config}})
+    restored_wallet = Wallet.from_dump(
+        dct=dump, class_kwargs={"Wallet": {"config": test_config, "loop_in_thread": wallet.loop_in_thread}}
+    )
 
     assert wallet.derives_identical_addresses(restored_wallet)
 
@@ -403,6 +413,7 @@ def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
         keystores=[keystore],
         network=test_config_main_chain.network,
         config=test_config_main_chain,
+        loop_in_thread=None,
     )
 
     assert not wallet.is_multisig()

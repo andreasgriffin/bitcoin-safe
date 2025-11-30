@@ -74,6 +74,7 @@ def make_test_wallet() -> Wallet:
         keystores=[keystore],
         network=network,
         config=config,
+        loop_in_thread=None,
     )
 
 
@@ -148,7 +149,7 @@ def test_as_protowallet_roundtrip():
     """Test as protowallet roundtrip."""
     wallet = make_test_wallet()
     proto = wallet.as_protowallet()
-    restored = Wallet.from_protowallet(proto, config=DummyConfig(proto.network))
+    restored = Wallet.from_protowallet(proto, config=DummyConfig(proto.network), loop_in_thread=None)
     assert restored.id == wallet.id
     assert restored.network == wallet.network
     assert restored.get_mn_tuple() == wallet.get_mn_tuple()
@@ -174,8 +175,8 @@ def test_get_differences_descriptor_change():
         network=config.network,
     )
 
-    wallet1 = Wallet.from_protowallet(protowallet=protowallet1, config=config)
-    wallet2 = Wallet.from_protowallet(protowallet=protowallet2, config=config)
+    wallet1 = Wallet.from_protowallet(protowallet=protowallet1, config=config, loop_in_thread=None)
+    wallet2 = Wallet.from_protowallet(protowallet=protowallet2, config=config, loop_in_thread=None)
 
     diffs = wallet1.get_differences(wallet2)
     assert any(
@@ -203,6 +204,7 @@ def test_get_differences_gap_change():
         network=config.network,
         config=config,
         gap=20,
+        loop_in_thread=None,
     )
     wallet2 = Wallet(
         id="id",
@@ -211,6 +213,7 @@ def test_get_differences_gap_change():
         network=config.network,
         config=config,
         gap=42,
+        loop_in_thread=None,
     )
 
     diffs = wallet1.get_differences(wallet2)
@@ -228,6 +231,6 @@ def test_get_mn_tuple():
         key_origins=key_origins,
         network=config.network,
     )
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config)
+    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
 
     assert wallet.get_mn_tuple() == (2, 3)

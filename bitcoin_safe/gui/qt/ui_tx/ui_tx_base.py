@@ -71,6 +71,7 @@ class UITx_Base(SearchableTab):
         self.fx = fx
         self.signal_tracker = SignalTracker()
         self.loop_in_thread = mempool_manager.loop_in_thread
+        self._owns_loop_in_thread = False
         self.wallet_functions = wallet_functions
         self.signals = wallet_functions.signals
         self.mempool_manager = mempool_manager
@@ -225,5 +226,6 @@ class UITx_Base(SearchableTab):
 
     def close(self) -> bool:
         """Close."""
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         return super().close()

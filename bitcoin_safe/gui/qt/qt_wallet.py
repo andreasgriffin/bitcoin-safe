@@ -137,6 +137,7 @@ class QTProtoWallet(QtWalletBase):
         protowallet: ProtoWallet,
         config: UserConfig,
         wallet_functions: WalletFunctions,
+        loop_in_thread: LoopInThread | None,
         tutorial_index: int | None = None,
         parent=None,
     ) -> None:
@@ -146,6 +147,7 @@ class QTProtoWallet(QtWalletBase):
             wallet_functions=wallet_functions,
             tutorial_index=tutorial_index,
             parent=parent,
+            loop_in_thread=loop_in_thread,
         )
 
         self.tabs.setTitle(protowallet.id)
@@ -253,6 +255,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         wallet_functions: WalletFunctions,
         mempool_manager: MempoolManager,
         fx: FX,
+        loop_in_thread: LoopInThread | None,
         password: str | None = None,
         file_path: str | None = None,
         notified_tx_ids: Iterable[str] | None = None,
@@ -271,6 +274,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             config=config,
             tutorial_index=tutorial_index,
             parent=parent,
+            loop_in_thread=loop_in_thread,
         )
         self.last_tab_title = last_tab_title
         self.mempool_manager = mempool_manager
@@ -408,6 +412,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         wallet_functions: WalletFunctions,
         mempool_manager: MempoolManager,
         fx: FX,
+        loop_in_thread: LoopInThread | None,
         password: str | None = None,
     ) -> QTWallet:
         """From file."""
@@ -417,6 +422,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             class_kwargs={
                 Wallet.__name__: {
                     "config": config,
+                    "loop_in_thread": loop_in_thread,
                 },
                 QTWallet.__name__: {
                     "config": config,
@@ -424,6 +430,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     "mempool_manager": mempool_manager,
                     "fx": fx,
                     "file_path": file_path,
+                    "loop_in_thread": loop_in_thread,
                 },
                 HistList.__name__: {
                     "config": config,
@@ -725,6 +732,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             file_path=self.file_path,
             password=self.password,
             parent=self.parent(),
+            loop_in_thread=self.loop_in_thread,
         )
 
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)
@@ -741,6 +749,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             config=self.config,
             labels=self.wallet.labels,
             default_category=self.wallet.labels.default_category,
+            loop_in_thread=self.loop_in_thread,
         )
         # compare if something change
         worst = self.wallet.get_differences(new_wallet).worst()
@@ -1797,6 +1806,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # crucial is to explicitly close everything that has a wallet attached
         """Close."""
         self.stop_sync_timer()
+        self._cancel_client_tasks()
         if self.plugin_manager:
             self.plugin_manager.disconnect_all()
         self.quick_receive.close()

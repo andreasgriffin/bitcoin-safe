@@ -57,7 +57,7 @@ def test_chained_label_timestamp_updates() -> None:
 
     config = UserConfig()
     config.network = bdk.Network.REGTEST
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config)
+    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
 
     addr = str(wallet.get_force_new_address(is_change=False).address)
 

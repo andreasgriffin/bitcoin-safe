@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from concurrent.futures import Future
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -68,11 +69,13 @@ class Client:
         self._downloaded_blocks: set[str] = set()
         self._sync_status: SyncStatus = SyncStatus.unknown
         self._update_queue: asyncio.Queue[UpdateInfo] = asyncio.Queue()
+        self._cbf_update_task: Future[None] | None = None
+        self._stop_event: asyncio.Event = asyncio.Event()
 
         if isinstance(client, CbfSync):
             self.status_msg = translate("Client", "Connecting to nodes")
             self._sync_status = SyncStatus.syncing
-            self.loop_in_thread.run_background(self._cbf_update_to_update_queue())
+            self._cbf_update_task = self.loop_in_thread.run_background(self._cbf_update_to_update_queue())
 
     @property
     def sync_status(self) -> SyncStatus:
@@ -331,18 +334,26 @@ class Client:
         """Next info."""
         if isinstance(self.client, CbfSync):
             return await self.client.next_info()
-        await asyncio.get_running_loop().create_future()  # waits until cancelled
+        await self._stop_event.wait()
         return None
 
     async def next_warning(self) -> bdk.Warning | None:
         """Next warning."""
         if isinstance(self.client, CbfSync):
             return await self.client.next_warning()
-        await asyncio.get_running_loop().create_future()  # waits until cancelled
+        await self._stop_event.wait()
         return None
+
+    def stop(self) -> None:
+        """Stop background tasks."""
+        self._stop_event.set()
+        if self._cbf_update_task and not self._cbf_update_task.done():
+            self._cbf_update_task.cancel()
+        self._cbf_update_task = None
 
     def close(self):
         """Close."""
+        self.stop()
         if isinstance(self.client, bdk.ElectrumClient):
             pass
         elif isinstance(self.client, bdk.EsploraClient):

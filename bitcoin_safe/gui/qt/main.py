@@ -1968,6 +1968,7 @@ class MainWindow(QMainWindow):
                     wallet_functions=self.wallet_functions,
                     mempool_manager=self.mempool_manager,
                     fx=self.fx,
+                    loop_in_thread=self.loop_in_thread,
                 )
             except Exception as e:
                 return e, sys.exc_info()
@@ -2098,6 +2099,7 @@ class MainWindow(QMainWindow):
             self.config,
             default_category=CategoryCore.get_default_categories()[0],
             is_new_wallet=is_new_wallet,
+            loop_in_thread=self.loop_in_thread,
         )
         file_path = None
         password = None
@@ -2111,6 +2113,7 @@ class MainWindow(QMainWindow):
             password=password,
             tutorial_index=tutorial_index,
             parent=self,
+            loop_in_thread=self.loop_in_thread,
         )
 
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
@@ -2183,6 +2186,7 @@ class MainWindow(QMainWindow):
             config=self.config,
             wallet_functions=self.wallet_functions,
             protowallet=protowallet,
+            loop_in_thread=self.loop_in_thread,
         )
 
         qt_protowallet.tabs.setIcon(svg_tools.get_QIcon("file.svg"))

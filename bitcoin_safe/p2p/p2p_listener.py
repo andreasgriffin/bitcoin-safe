@@ -70,6 +70,7 @@ class P2pListener(QObject):
         self.fetch_txs = fetch_txs
         self.client = P2PClient(network=network, debug=debug, timeout=timeout, parent=self)
         self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
         self.address_filter: set[str] | None = None
         self.outpoint_filter: set[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network, loop_in_thread=self.loop_in_thread)
@@ -239,7 +240,8 @@ class P2pListener(QObject):
     def stop(self):
         """Stop."""
         self.peer_discovery.stop()
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
 
     def do_fetch_txs(self, inventory: Inventory):
         """Do fetch txs."""
