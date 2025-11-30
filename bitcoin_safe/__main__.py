@@ -12,12 +12,16 @@ set_os_env_ssl_certs()
 ensure_pyzbar_works()
 
 
+import logging  # noqa: E402
+
 from PyQt6.QtWidgets import QApplication  # noqa: E402
 
 from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
 from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette  # noqa: E402
 from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
 from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
+
+logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
@@ -27,6 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
     )
+    parser.add_argument("--log_tread_spawning", action="store_true", help="Logs the spawning of threads")
     parser.add_argument(
         "open_files_at_startup",
         metavar="FILE",
@@ -38,9 +43,26 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def log_tread_spawning():
+    import threading
+    import traceback
+
+    _original_init = threading.Thread.__init__
+
+    def traced_init(self, *args, **kwargs):
+        logger.debug(f"\n[THREAD CREATED] name={kwargs.get('name', None) or self.name}")
+        logger.debug("".join(traceback.format_stack(limit=50)))
+        _original_init(self, *args, **kwargs)
+
+    threading.Thread.__init__ = traced_init  # type: ignore
+
+
 def main() -> None:
     """Main."""
     args = parse_args()
+
+    if args.log_tread_spawning:
+        log_tread_spawning()
 
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
