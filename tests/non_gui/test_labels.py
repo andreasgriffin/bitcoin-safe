@@ -283,7 +283,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
         network=test_config.network,
     )
 
-    w_org = Wallet.from_protowallet(protowallet=protowallet, config=test_config)
+    w_org = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
     for i in range(4):
         w_org.get_force_new_address(is_change=False)
 
@@ -304,7 +304,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
         wallet_id="w 2",
         network=test_config.network,
     )
-    w_copy = Wallet.from_protowallet(protowallet=protowallet2, config=test_config)
+    w_copy = Wallet.from_protowallet(protowallet=protowallet2, config=test_config, loop_in_thread=None)
     for i in range(4):
         w_copy.get_force_new_address(is_change=False)
 
