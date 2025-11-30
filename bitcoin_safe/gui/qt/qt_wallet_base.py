@@ -64,6 +64,7 @@ class QtWalletBase(WrapperQWidget):
         self,
         config: UserConfig,
         wallet_functions: WalletFunctions,
+        loop_in_thread: LoopInThread | None,
         tutorial_index: int | None = None,
         parent=None,
         **kwargs,
@@ -71,7 +72,8 @@ class QtWalletBase(WrapperQWidget):
         """Initialize instance."""
         super().__init__(parent=parent, **kwargs)
         self.signal_tracker = SignalTracker()
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
 
         self.config = config
         self.wallet_functions = wallet_functions
@@ -114,7 +116,8 @@ class QtWalletBase(WrapperQWidget):
         """Close."""
         SignalTools.disconnect_all_signals_from(self)
         self.signal_tracker.disconnect_all()
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         if self.wizard:
             self.wizard.close()
             self.wizard = None

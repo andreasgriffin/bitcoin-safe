@@ -85,6 +85,7 @@ def test_funded_seed_wallet(
         keystores=[keystore],
         network=test_config_session.network,
         config=test_config_session,
+        loop_in_thread=None,
     )
 
     # fund the wallet

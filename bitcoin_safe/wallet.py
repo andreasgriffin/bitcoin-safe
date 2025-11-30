@@ -713,6 +713,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         keystores: list[KeyStore],
         network: bdk.Network,
         config: UserConfig,
+        loop_in_thread: LoopInThread | None,
         gap=20,
         labels: Labels | None = None,
         initialization_tips: list[int] | None = None,
@@ -732,7 +733,8 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.id = id
         self.is_new_wallet = is_new_wallet
         self.network = network if network else config.network
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
         # prevent loading a wallet into different networks
         assert self.network == config.network, (
             f"Cannot load a wallet for {self.network}, when the network {config.network} is configured"
@@ -898,6 +900,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         cls,
         protowallet: ProtoWallet,
         config: UserConfig,
+        loop_in_thread: LoopInThread | None,
         labels: Labels | None = None,
         initialization_tips: list[int] | None = None,
         refresh_wallet=False,
@@ -932,6 +935,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             refresh_wallet=refresh_wallet,
             default_category=default_category,
             is_new_wallet=is_new_wallet,
+            loop_in_thread=loop_in_thread,
         )
 
     def get_differences(self, other_wallet: Wallet) -> WalletDifferences:
@@ -1118,11 +1122,7 @@ class Wallet(BaseSaveableClass, CacheManager):
     def clone_without_peristence(
         self,
     ) -> Self:
-        class_kwargs = {
-            Wallet.__name__: {
-                "config": self.config,
-            }
-        }
+        class_kwargs = {Wallet.__name__: {"config": self.config, "loop_in_thread": self.loop_in_thread}}
         dump = self.dump(exclude_keys=["serialize_persistence"])
         return self.from_dump(dump, class_kwargs=class_kwargs)
 
@@ -2598,7 +2598,8 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def close(self) -> None:
         """Shutdown the wallet and release background resources."""
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         if self.client:
             self.client.close()
 

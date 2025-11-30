@@ -127,7 +127,7 @@ class DescriptorEdit(QWidget):
         self,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
-        loop_in_thread: LoopInThread,
+        loop_in_thread: LoopInThread | None,
         wallet: Wallet | None = None,
         signal_update: SignalProtocol[[]] | None = None,
     ) -> None:
@@ -141,7 +141,8 @@ class DescriptorEdit(QWidget):
             close_all_video_widgets=wallet_functions.signals.close_all_video_widgets,
             parent=self,
         )
-        self.loop_in_thread = loop_in_thread
+        self.loop_in_thread = loop_in_thread or LoopInThread()
+        self._owns_loop_in_thread = loop_in_thread is None
         self._dialog: QWidget | None = None
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
 
@@ -335,7 +336,8 @@ class DescriptorEdit(QWidget):
 
     def close(self):
         """Close."""
-        self.loop_in_thread.stop()
+        if self._owns_loop_in_thread:
+            self.loop_in_thread.stop()
         self.edit.close()
         self.signal_tracker.disconnect_all()
         if self._temp_bitcoin_video_widget:
