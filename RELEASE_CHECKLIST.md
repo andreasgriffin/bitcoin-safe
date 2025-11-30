@@ -12,11 +12,12 @@
 ## After version tagging
 
 * Build for all platforms
+* Check the screenshots in the workflow logs
 * Test for all platforms
-* Check the log, that zbar was loaded successfully (in Mac this is tested automatically)
 * Sign all binaries
-* `python tools/release.py`
+* `python tools/release.py`  (as draft)
+  * For the upgrade from 1.6.0 to next version: additionally upload the appimage on the release page
 * Create release notes for github, nostr, X
 * Publish release on github
-* Update website with newest release
-* Update features in https://github.com/thebitcoinhole/software-wallets
+* `bash fetch_release.sh` in website repo
+* Update features in https://github.com/thebitcoinhole/software-wallets  and check in https://github.com/bitcoin-dot-org/Bitcoin.org/

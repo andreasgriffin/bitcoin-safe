@@ -46,7 +46,7 @@ from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
+from bitcoin_safe.gui.qt.about_tab import LicenseDialog
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
@@ -455,7 +455,7 @@ def test_wallet_features_multisig(
                     dialog.close()
 
                 do_modal_click(
-                    main_window.menu_settings,
+                    main_window.menu_action_settings_ui,
                     callback,
                     qtbot,
                     cls=Settings,
@@ -481,16 +481,16 @@ def test_wallet_features_multisig(
             def menu_action_license() -> None:
                 """Menu action license."""
 
-                def callback(dialog: LicenseDialog) -> None:
+                def callback(dialog: Settings) -> None:
                     """Callback."""
                     shutter.save(dialog)
                     dialog.close()
 
                 do_modal_click(
-                    main_window.menu_action_license,
+                    main_window.menu_action_about,
                     callback,
                     qtbot,
-                    cls=LicenseDialog,
+                    cls=Settings,
                 )
 
             menu_action_license()

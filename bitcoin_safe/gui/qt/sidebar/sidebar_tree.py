@@ -78,7 +78,7 @@ class SidebarRow(QWidget):
 
     def __init__(
         self,
-        sidebar_btn: QPushButton,
+        sidebar_btn: SidebarButton,
         hover_color: str | None | QPalette.ColorRole,
         selected_color: str | None | QPalette.ColorRole,
         selected_hover_color: str | None | QPalette.ColorRole,
@@ -115,7 +115,7 @@ class SidebarRow(QWidget):
 
         # Mirror the main button's checked state onto the row
         if self.sidebar_btn.isCheckable():
-            self.sidebar_btn.toggled.connect(self._on_main_toggled)
+            self.sidebar_btn.toggled.connect(self.set_selected)
 
     def is_selected(self) -> bool:
         """Is selected."""
@@ -125,6 +125,9 @@ class SidebarRow(QWidget):
         """Set or clear selection on this row."""
         if self.property("selected") == selected:
             return
+
+        self.set_focus(False)
+
         self.setProperty("selected", selected)
         if style := self.style():
             style.unpolish(self)
@@ -155,13 +158,9 @@ class SidebarRow(QWidget):
         """Style widget."""
         self.setStyleSheet(self.get_css(widget=widget))
 
-    def _on_main_toggled(self, selected: bool) -> None:
-        # Update dynamic property and repolish so QSS re-evaluates selectors
-        """On main toggled."""
-        if self.property("selected") == selected:
-            return
-
-        self.setProperty("selected", selected)
+    def set_focus(self, focused: bool) -> None:
+        """Mirror focus state onto the parent row for custom styling."""
+        self.setProperty("kbd_focus", focused)
         if style := self.style():
             style.unpolish(self)
             style.polish(self)
@@ -192,11 +191,7 @@ class SidebarButton(QPushButton):
         while parent and not isinstance(parent, SidebarRow):
             parent = parent.parentWidget()
         if isinstance(parent, SidebarRow):
-            parent.setProperty("kbd_focus", focused)
-            if style := parent.style():
-                style.unpolish(parent)
-                style.polish(parent)
-            parent.update()
+            parent.set_focus(focused)
 
     def focusInEvent(self, a0: QFocusEvent | None) -> None:
         super().focusInEvent(a0)
@@ -640,7 +635,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def _uncheck_all_recursively(self) -> None:
         """Uncheck all recursively."""
-        self.header_row.set_selected(False)  # CHANGED
+        self.header_row.set_selected(False)
         for child in self.child_nodes:
             child._uncheck_all_recursively()
 

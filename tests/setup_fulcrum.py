@@ -42,6 +42,8 @@ import bdkpython as bdk
 import pytest
 import requests
 
+from bitcoin_safe.util import SATOSHIS_PER_BTC
+
 from .setup_bitcoin_core import (
     BITCOIN_HOST,
     BITCOIN_RPC_PORT,
@@ -266,7 +268,7 @@ class Faucet:
         )
         self.initial_mine()
 
-    def send(self, destination_address: str, amount=100_000_000, fee_rate=1):
+    def send(self, destination_address: str, amount=SATOSHIS_PER_BTC, fee_rate=1):
         """Send."""
         psbt_for_signing = make_psbt(
             bdk_wallet=self.bdk_wallet,

@@ -40,6 +40,7 @@ from bitcoin_safe.gui.qt.util import one_time_signal_connection
 from typing import Any, TYPE_CHECKING, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
+from bitcoin_safe.util import SATOSHIS_PER_BTC
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
@@ -71,7 +72,11 @@ def chained_one_time_signal_connections(
 
 
 def make_psbt(
-    bdk_wallet: bdk.Wallet, network: bdk.Network, destination_address: str, amount=100_000_000, fee_rate=1
+    bdk_wallet: bdk.Wallet,
+    network: bdk.Network,
+    destination_address: str,
+    amount=SATOSHIS_PER_BTC,
+    fee_rate=1,
 ):
     """Make psbt."""
     txbuilder = bdk.TxBuilder()

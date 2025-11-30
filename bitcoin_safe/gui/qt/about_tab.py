@@ -31,6 +31,7 @@ from __future__ import annotations
 import sys
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -41,7 +42,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe import __version__
+from bitcoin_safe.gui.qt.util import get_icon_path, svg_tools
 from bitcoin_safe.html_utils import link
 
 
@@ -147,6 +149,58 @@ SOFTWARE.</p>
         layout.addWidget(button_box)
 
         self.setLayout(layout)
+
+
+class AboutTab(QWidget):
+    def __init__(self, license_dialog: LicenseDialog, parent: QWidget | None = None) -> None:
+        super().__init__(parent=parent)
+
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout.setSpacing(10)
+
+        logo_label = QLabel(parent=self)
+        logo_label.setPixmap(QPixmap(get_icon_path("logo.png")))
+        logo_label.setFixedSize(96, 96)
+        logo_label.setScaledContents(True)
+
+        title_label = QLabel(self.tr("Bitcoin-Safe"), parent=self)
+        title_font = QFont()
+        title_font.setPointSize(20)
+        title_font.setBold(True)
+        title_label.setFont(title_font)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        tagline_label = QLabel(self.tr("A secure bitcoin savings wallet for everyone."), parent=self)
+        tagline_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        tagline_label.setWordWrap(True)
+
+        version_label = QLabel(
+            self.tr("Version {version}").format(version=__version__),
+            parent=self,
+        )
+        version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        foss_label = QLabel(self.tr("FOSS - Free & Open Source Software"), parent=self)
+        foss_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        licence_label = QLabel(f'<a href="#">{self.tr("Licence")}</a>', parent=self)
+        licence_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        licence_label.setTextFormat(Qt.TextFormat.RichText)
+        licence_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        licence_label.setCursor(Qt.CursorShape.PointingHandCursor)
+        licence_label.linkActivated.connect(license_dialog.exec)
+
+        layout.addStretch()
+        layout.addWidget(logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title_label)
+        layout.addWidget(tagline_label)
+        layout.addSpacing(6)
+        layout.addWidget(version_label)
+        layout.addSpacing(6)
+        layout.addWidget(foss_label)
+        layout.addWidget(licence_label)
+        layout.addStretch()
 
 
 if __name__ == "__main__":

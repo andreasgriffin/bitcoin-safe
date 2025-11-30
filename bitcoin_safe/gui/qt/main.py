@@ -61,14 +61,16 @@ from PyQt6.QtCore import (
     QTimer,
     pyqtSignal,
 )
-from PyQt6.QtGui import QCloseEvent, QKeySequence, QPalette, QShortcut, QShowEvent
+from PyQt6.QtGui import QAction, QCloseEvent, QKeySequence, QPalette, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
     QFileDialog,
+    QHBoxLayout,
     QLabel,
     QMainWindow,
     QMessageBox,
+    QPushButton,
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
@@ -76,10 +78,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe import __version__
 from bitcoin_safe.client import Client
 from bitcoin_safe.execute_config import DEMO_MODE, DONATION_ADDRESS, IS_PRODUCTION
-from bitcoin_safe.gui.qt.about_dialog import LicenseDialog
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
@@ -102,7 +102,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
-from bitcoin_safe.logging_handlers import mail_feedback
+from bitcoin_safe.logging_handlers import mail_contact, mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import P2pListenerType
 from bitcoin_safe.network_utils import ProxyInfo
@@ -172,6 +172,7 @@ class MainWindow(QMainWindow):
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
         self.new_startup_network: bdk.Network | None = None
+        self._was_maximized_before_fullscreen = False
         # i need to keep references of open windows attached
         # to the mainwindow to avoid memory issues
         # however I need to clear them again with signal_remove_attached_widget
@@ -351,6 +352,7 @@ class MainWindow(QMainWindow):
     def on_currentChanged(self, node: SidebarNode[TT]):
         """On currentChanged."""
         self.set_title()
+        self.rebuild_current_wallet_tab_menu()
 
     def set_title(self) -> None:
         """Set title."""
@@ -671,9 +673,8 @@ class MainWindow(QMainWindow):
 
             menu.addSeparator()
             self.context_menu_action_toggle_tutorial = menu.add_action(
-                self.menu_action_toggle_tutorial.text(),
+                self.tr("&Show/Hide Wizard"),
                 slot=partial(self.toggle_tutorial, qt_wallet),
-                icon=self.menu_action_toggle_tutorial.icon(),
             )
 
         menu.exec(position)
@@ -705,6 +706,37 @@ class MainWindow(QMainWindow):
     def init_menubar(self) -> None:
         """Init menubar."""
         self.menubar = MenuBar()
+
+        # menu Bitcoin Safe
+        self.menu_bitcoin_Safe = self.menubar.add_menu("")
+        self.menu_action_about = self.menu_bitcoin_Safe.add_action("", self.open_about_tab)
+        self.menu_action_check_update = self.menu_bitcoin_Safe.add_action(
+            "",
+            self.update_notification_bar.check_and_make_visible,
+            icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+        )
+
+        self.menu_action_settings_ui = self.menu_bitcoin_Safe.add_action(
+            "",
+            self.open_settings,
+            icon=svg_tools.get_QIcon("bi--gear.svg"),
+        )
+        self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
+
+        self.menu_action_settings_network = self.menu_bitcoin_Safe.add_action(
+            "",
+            self.open_network_settings,
+            icon=svg_tools.get_QIcon("bi--gear.svg"),
+        )
+        self.menu_action_settings_network.setShortcut(QKeySequence("CTRL+."))
+
+        self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
+
+        self.menu_action_quit = self.menu_bitcoin_Safe.add_action("", self.quit_application)
+        self.menu_action_quit.setShortcut(QKeySequence.StandardKey.Quit)
+
+        self.menu_action_donate = self.menu_bitcoin_Safe.add_action("", self.show_donate_dialog)
+
         # menu wallet
         self.menu_wallet = self.menubar.add_menu("")
         self.menu_action_new_wallet = self.menu_wallet.add_action("", self.new_wallet)
@@ -721,63 +753,7 @@ class MainWindow(QMainWindow):
 
         self.menu_wallet_recent = self.menu_wallet.add_menu("")
 
-        self.menu_action_save_current_wallet = self.menu_wallet.add_action("", self.save_qt_wallet)
-        self.menu_action_save_current_wallet.setShortcut(QKeySequence("CTRL+S"))
-        self.menu_action_save_current_wallet.setIcon(svg_tools.get_QIcon("bi--download.svg"))
-        self.menu_wallet.addSeparator()
-
-        self.menu_action_search = self.menu_wallet.add_action("", self.focus_search_box)
-        self.menu_action_search.setShortcut(QKeySequence("CTRL+F"))
-        self.menu_action_search.setIcon(svg_tools.get_QIcon("bi--search.svg"))
-
-        # change wallet
-        self.menu_wallet_change = self.menu_wallet.add_menu("")
-        self.menu_wallet_change.setIcon(svg_tools.get_QIcon("bi--input-cursor-text.svg"))
-        self.menu_action_rename_wallet = self.menu_wallet_change.add_action("", self.change_wallet_id)
-        self.menu_action_rename_wallet.setIcon(svg_tools.get_QIcon("bi--input-cursor-text.svg"))
-        self.menu_action_change_password = self.menu_wallet_change.add_action("", self.change_wallet_password)
-        self.menu_action_change_password.setIcon(svg_tools.get_QIcon("ic--outline-password.svg"))
-
-        self.menu_action_category_manager = self.menu_wallet.add_action(
-            "",
-            self.open_category_manager,
-        )
-
-        # export wallet
-        self.menu_wallet_export = self.menu_wallet.add_menu("")
-        self.menu_action_export_pdf = self.menu_wallet_export.add_action(
-            "", self.export_wallet_pdf, icon=svg_tools.get_QIcon("descriptor-backup.svg")
-        )
-        self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
-            "", self.show_descriptor_export_window
-        )
-        self.menu_action_register_multisig = self.menu_wallet_export.add_action(
-            "", self.show_register_multisig
-        )
-        self.menu_action_pdf_statement = self.menu_wallet_export.add_action("", self.export_pdf_statement)
-
-        self.menu_wallet.addSeparator()
-        self.menu_action_refresh_wallet = self.menu_wallet.add_action(
-            "", self.signals.request_manual_sync.emit
-        )
-        self.menu_action_refresh_wallet.setShortcut(QKeySequence("F5"))
-        self.menu_action_refresh_wallet.setIcon(svg_tools.get_QIcon("bi--arrow-clockwise.svg"))
-
-        # menu tools
-        self.menu_tools = self.menubar.add_menu("")
-
-        self.menu_action_open_hwi_manager = self.menu_tools.add_action(
-            "",
-            self.show_usb_gui,
-            icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
-        )
-        self.menu_action_open_qr_scanner = self.menu_tools.add_action(
-            "",
-            self.dialog_open_qr_scanner,
-            icon=svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename),
-        )
-
-        self.menu_load_transaction = self.menu_tools.add_menu("")
+        self.menu_load_transaction = self.menu_wallet.add_menu("")
         self.menu_action_open_tx_file = self.menu_load_transaction.add_action(
             "",
             self.open_tx_file,
@@ -794,47 +770,161 @@ class MainWindow(QMainWindow):
             "", self.load_tx_like_from_qr, icon=svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename)
         )
 
-        # menu settings
-        self.menu_settings = self.menubar.add_menu("")
-        self.menu_action_settings_ui = self.menu_settings.add_action(
-            "",
-            self.open_settings,
-            icon=svg_tools.get_QIcon("bi--gear.svg"),
+        self.menu_action_save_current_wallet = self.menu_wallet.add_action("", self.save_qt_wallet)
+        self.menu_action_save_current_wallet.setShortcut(QKeySequence("CTRL+S"))
+        self.menu_action_save_current_wallet.setIcon(svg_tools.get_QIcon("bi--download.svg"))
+
+        # export wallet
+        self.menu_wallet_export = self.menu_wallet.add_menu("")
+        self.menu_action_export_pdf = self.menu_wallet_export.add_action(
+            "", self.export_wallet_pdf, icon=svg_tools.get_QIcon("descriptor-backup.svg")
         )
-        self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
-        self.menu_action_toggle_tutorial = self.menu_settings.add_action(
-            text="", slot=self.toggle_tutorial, icon=svg_tools.get_QIcon("stars4.svg")
+        self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
+            "", self.show_descriptor_export_window
+        )
+        self.menu_action_register_multisig = self.menu_wallet_export.add_action(
+            "", self.show_register_multisig
         )
 
-        # menu about
-        self.menu_about = self.menubar.add_menu("")
-        self.menu_action_version = self.menu_about.add_action(
-            "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/releases")
+        self.menu_action_open_pdf = self.menu_wallet.add_action(
+            "", self.open_pdf, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
         )
-        self.menu_action_check_update = self.menu_about.add_action(
-            "",
-            self.update_notification_bar.check_and_make_visible,
-            icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
-        )
-        self.menu_show_logs = self.menu_about.add_action("", self.menu_action_show_log)
-        self._license_dialog = LicenseDialog()
-        self.menu_action_license = self.menu_about.add_action("", self._license_dialog.exec)
-        self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
+        self.menu_action_open_pdf.setShortcut(QKeySequence("CTRL+P"))
 
-        self.menu_knowledge = self.menu_about.add_menu("")
-        self.add_menu_knowledge_items(self.menu_knowledge)
-        self.menu_feedback = self.menu_about.add_menu("")
-        self.add_feedback_menu_items(self.menu_feedback)
-        self.menu_donate = self.menu_about.add_menu("")
-        self.add_menu_donate_items(self.menu_donate)
+        self.menu_action_close_wallet = self.menu_wallet.add_action("", self.close_current_tab)
+        self.key_sequence_close_tab = "Ctrl+W"
+        self.menu_action_close_wallet.setShortcut(QKeySequence(self.key_sequence_close_tab))
+
+        # menu edit
+        self.menu_edit = self.menubar.add_menu("")
+
+        # change wallet
+        self.menu_action_rename_wallet = self.menu_edit.add_action("", self.change_wallet_id)
+        self.menu_action_rename_wallet.setIcon(svg_tools.get_QIcon("bi--input-cursor-text.svg"))
+        self.menu_action_change_password = self.menu_edit.add_action("", self.change_wallet_password)
+        self.menu_action_change_password.setIcon(svg_tools.get_QIcon("ic--outline-password.svg"))
+
+        self.menu_action_category_manager = self.menu_edit.add_action(
+            "",
+            self.open_category_manager,
+        )
+
+        self.menu_edit.addSeparator()
+
+        self.menu_action_search = self.menu_edit.add_action("", self.focus_search_box)
+        self.menu_action_search.setShortcut(QKeySequence("CTRL+F"))
+        self.menu_action_search.setIcon(svg_tools.get_QIcon("bi--search.svg"))
+
+        self.menu_action_search_next = self.menu_edit.add_action(
+            "", self.search_box.shortcut_next.activated.emit
+        )
+        self.menu_action_search_next.setIcon(svg_tools.get_QIcon("bi--search.svg"))
+
+        self.menu_action_search_previous = self.menu_edit.add_action(
+            "", self.search_box.shortcut_next.activated.emit
+        )
+        self.menu_action_search_previous.setIcon(svg_tools.get_QIcon("bi--search.svg"))
+
+        # menu tools
+        self.menu_tools = self.menubar.add_menu("")
+
+        self.menu_action_open_qr_scanner = self.menu_tools.add_action(
+            "",
+            self.dialog_open_qr_scanner,
+            icon=svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename),
+        )
+        self.menu_action_open_qr_scanner.setShortcut(QKeySequence("CTRL+Y"))
+        self.menu_action_open_hwi_manager = self.menu_tools.add_action(
+            "",
+            self.show_usb_gui,
+            icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+        )
+        self.menu_action_open_hwi_manager.setShortcut(QKeySequence("CTRL+M"))
+
+        self.menu_tools.addSeparator()
+
+        self.menu_action_current_wallet = self.menu_tools.add_action(
+            "",
+            partial(self.select_wallet_tab, title=None),
+        )
+        self.menu_action_current_wallet.setShortcut(QKeySequence("CTRL+0"))
+
+        self.menu_current_wallet_tabs = Menu(parent=self.menu_tools)
+        self.menu_action_current_wallet.setMenu(self.menu_current_wallet_tabs)
+        self.wallet_tab_shortcut_actions: list[QAction] = []
+
+        self.menu_action_next_tab = self.menu_tools.add_action(
+            "",
+            partial(self.select_relative_tab, delta=1),
+        )
+        self.menu_action_next_tab.setShortcut(QKeySequence("CTRL+D"))
+
+        self.menu_action_previous_tab = self.menu_tools.add_action(
+            "",
+            partial(self.select_relative_tab, delta=-1),
+        )
+        self.menu_action_previous_tab.setShortcut(QKeySequence("CTRL+SHIFT+D"))
+
+        self.menu_tools.addSeparator()
+
+        self.menu_action_minimize_to_tray = self.menu_tools.add_action(
+            "",
+            self.minimize_to_tray_from_menu,
+        )
+        self.menu_action_minimize_to_tray.setShortcut(QKeySequence("CTRL+H"))
+        self.menu_action_toggle_fullscreen = self.menu_tools.add_action(
+            "",
+            self.toggle_fullscreen,
+        )
+        self.menu_action_toggle_fullscreen.setShortcut(QKeySequence("F11"))
+
+        # menu help
+        self.menu_help = self.menubar.add_menu("")
+
+        self.action_knowledge_website = self.menu_help.add_action(
+            "", partial(webopen, "https://bitcoin-safe.org/en/knowledge/")
+        )
+        self.action_knowledge_website.setShortcut(QKeySequence("F1"))
+        self.menu_show_logs = self.menu_help.add_action("", self.menu_action_show_log)
+
+        self.menu_feedback = self.menu_help.add_menu("")
+        self.action_chorus = self.menu_feedback.add_action(
+            "",
+            partial(
+                webopen,
+                "https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki",
+            ),
+        )
+        self.action_mail_feedback = self.menu_feedback.add_action("", mail_feedback)
+        self.action_open_issue_github = self.menu_feedback.add_action(
+            "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/issues/new")
+        )
+
+        self.menu_contact = self.menu_help.add_menu("")
+        self.action_contact_email = self.menu_contact.add_action(
+            "",
+            mail_contact,
+        )
+        self.action_contact_via_nostr = self.menu_contact.add_action(
+            "",
+            partial(
+                webopen,
+                "https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g",
+            ),
+        )
+
+        self.action_contact_via_X = self.menu_contact.add_action(
+            "",
+            partial(
+                webopen,
+                "https://x.com/BitcoinSafeOrg",
+            ),
+        )
 
         # assigning menu bar
         self.setMenuBar(self.menubar)
 
         # other shortcuts (not in menu)
-        self.key_sequence_close_tab = "Ctrl+W"
-        self.shortcut_close_tab = QShortcut(self.key_sequence_close_tab, self)
-        self.shortcut_close_tab.activated.connect(self.close_current_tab)
 
         self.key_sequence_reveral_wallet_in_file_explorer = "Ctrl+Alt+R"
         self.shortcut_reveral_wallet_in_file_explorer = QShortcut(
@@ -861,45 +951,81 @@ class MainWindow(QMainWindow):
         """Menu action show log."""
         xdg_open_file(get_log_file(), is_text_file=True)
 
-    def add_menu_knowledge_items(self, menu_knowledge: Menu):
-        """Add menu knowledge items."""
-        self.action_knowledge_website = menu_knowledge.add_action(
-            "", partial(webopen, "https://bitcoin-safe.org/en/knowledge/")
-        )
+    def quit_application(self) -> None:
+        """Quit the application and terminate all processes."""
+        self.close()
+        QCoreApplication.quit()
 
-    def add_menu_donate_items(self, menu: Menu):
-        """Add menu donate items."""
-        self.action_donate_lightning = menu.add_action(
-            "", partial(webopen, "https://bitcoin-safe.org/en/donate/")
+    def show_donate_dialog(self) -> None:
+        """Show donate dialog with available options."""
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Support Bitcoin Safe"))
+        dialog.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        dialog.setMinimumWidth(420)
+
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(14)
+
+        logo_label = QLabel()
+        logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        logo_label.setPixmap(svg_tools.get_QIcon("logo.svg").pixmap(96, 96))
+        layout.addWidget(logo_label)
+
+        title_label = QLabel(self.tr("Help Bitcoin Safe grow as Free and Open Source Software."))
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setWordWrap(True)
+        title_label.setStyleSheet("font-weight: 600; font-size: 14pt;")
+        layout.addWidget(title_label)
+
+        description = QLabel(
+            self.tr(
+                "Bitcoin Safe is community funded. Your support keeps development independent, "
+                "lets us ship new features, and improves security reviews. Larger supporters "
+                "can be featured on our <a href='https://bitcoin-safe.org/en/donate/'>supporters page</a>."
+            )
         )
-        self.action_donate_onchain = menu.add_action("", self.prefill_donate_onchain)
+        description.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        description.setWordWrap(True)
+        description.setOpenExternalLinks(True)
+        layout.addWidget(description)
+
+        contact_label = QLabel(
+            self.tr(
+                "Want to discuss a larger contribution or partnership? Use the contact button "
+                "below to reach us."
+            )
+        )
+        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        contact_label.setWordWrap(True)
+        layout.addWidget(contact_label)
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+
+        lightning_button = QPushButton(self.tr("Donate with Lightning"))
+        lightning_button.clicked.connect(partial(webopen, "https://bitcoin-safe.org/en/donate/"))
+        button_layout.addWidget(lightning_button)
+
+        onchain_button = QPushButton(self.tr("Donate on-chain"))
+        onchain_button.clicked.connect(self.prefill_donate_onchain)
+        button_layout.addWidget(onchain_button)
+
+        contact_button = QPushButton(self.tr("Email us"))
+        contact_button.clicked.connect(mail_contact)
+        button_layout.addWidget(contact_button)
+
+        button_layout.addStretch()
+        layout.addLayout(button_layout)
+
+        center_on_screen(dialog)
+        dialog.exec()
 
     def prefill_donate_onchain(self):
         """Prefill donate onchain."""
         txinfos = TxUiInfos()
         txinfos.recipients.append(Recipient(DONATION_ADDRESS, 0, label="Donation to Bitcoin Safe"))
         self.signals.open_tx_like.emit(txinfos)
-
-    def add_feedback_menu_items(self, menu_feedback: Menu):
-        """Add feedback menu items."""
-        self.action_chorus = menu_feedback.add_action(
-            "",
-            partial(
-                webopen,
-                "https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki",
-            ),
-        )
-        self.action_mail_feedback = menu_feedback.add_action("", mail_feedback)
-        self.action_open_issue_github = menu_feedback.add_action(
-            "", partial(webopen, "https://github.com/andreasgriffin/bitcoin-safe/issues/new")
-        )
-        self.action_contact_via_nostr = menu_feedback.add_action(
-            "",
-            partial(
-                webopen,
-                "https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g",
-            ),
-        )
 
     def close_current_tab(self):
         """Close current tab."""
@@ -914,6 +1040,11 @@ class MainWindow(QMainWindow):
         if current_node.hidable:
             current_node.hideClicked.emit(current_node)
             current_node.setVisible(False)
+            return
+
+        if qt_wallet := self.get_qt_wallet(if_none_serve_last_active=False):
+            self._remove_qt_wallet(qt_wallet)
+            return
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         """ShowEvent."""
@@ -923,55 +1054,70 @@ class MainWindow(QMainWindow):
     def updateUI(self) -> None:
         # menu
         """UpdateUI."""
-        self.menu_wallet.setTitle(self.tr("&Wallet"))
+        self.menu_wallet.setTitle(self.tr("&File"))
         self.menu_action_new_wallet.setText(self.tr("&New Wallet"))
         self.menu_action_open_wallet.setText(self.tr("&Open Wallet"))
         self.menu_wallet_recent.setTitle(self.tr("Open &Recent"))
-        self.menu_action_save_current_wallet.setText(self.tr("&Save Current Wallet"))
+        self.menu_action_save_current_wallet.setText(self.tr("&Save"))
         self.menu_action_search.setText(self.tr("&Search"))
-        self.menu_wallet_change.setTitle(self.tr("&Change"))
+        self.menu_action_search_next.setText(
+            self.tr("Search &next\t{shortcut}").format(
+                shortcut=self.search_box.shortcut_next.key().toString()
+            )
+        )
+        self.menu_action_search_previous.setText(
+            self.tr("Search &previous\t{shortcut}").format(
+                shortcut=self.search_box.shortcut_prev.key().toString()
+            )
+        )
+        self.menu_edit.setTitle(self.tr("&Edit"))
         self.menu_wallet_export.setTitle(self.tr("&Export"))
-        self.menu_action_rename_wallet.setText(self.tr("&Rename Wallet"))
-        self.menu_action_change_password.setText(self.tr("&Change Password"))
-        self.menu_action_export_pdf.setText(self.tr("&Export Wallet PDF"))
-        self.menu_action_pdf_statement.setText(self.tr("&Generate PDF balance Statement"))
-        self.menu_action_pdf_statement.setShortcut(QKeySequence("CTRL+P"))
-        self.menu_action_export_descriptor.setText(self.tr("Export &Descriptor for hardware signers"))
+        self.menu_action_rename_wallet.setText(self.tr("&Wallet name"))
+        self.menu_action_change_password.setText(self.tr("&Wallet password"))
+        self.menu_action_export_pdf.setText(self.tr("&PDF Wallet"))
+        self.menu_action_open_pdf.setText(self.tr("Print"))
+        self.menu_action_close_wallet.setText(self.tr("&Close"))
+        self.menu_action_export_descriptor.setText(self.tr("&Descriptor for hardware signers"))
         self.menu_action_register_multisig.setText(self.tr("&Register Multisig with hardware signers"))
-        self.menu_action_refresh_wallet.setText(self.tr("Re&fresh"))
         self.menu_tools.setTitle(self.tr("&Tools"))
         self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
+        self.menu_action_minimize_to_tray.setText(self.tr("&Minimize to tray"))
+        self.update_fullscreen_action_text()
         self.menu_load_transaction.setTitle(self.tr("&Load Transaction or PSBT"))
         self.menu_action_open_tx_file.setText(self.tr("From &file"))
         self.menu_action_open_qr_scanner.setText(self.tr("QR &Scanner"))
         self.menu_action_open_tx_from_str.setText(self.tr("From &text"))
         self.menu_action_load_tx_from_qr.setText(self.tr("From &QR Code"))
-        self.menu_settings.setTitle(self.tr("&Settings"))
         self.menu_action_settings_ui.setText(self.tr("&Settings"))
+        self.menu_action_settings_network.setText(self.tr("&Network"))
         self.menu_action_category_manager.setText(self.tr("&Manage Categories"))
-        self.menu_action_toggle_tutorial.setText(self.tr("&Show/Hide Wizard"))
+        self.menu_action_current_wallet.setText(self.tr("&Current Wallet"))
+        self.rebuild_current_wallet_tab_menu()
+        self.menu_action_next_tab.setText(self.tr("&Next Wallet/Tab"))
+        self.menu_action_previous_tab.setText(self.tr("&Previous Wallet/Tab"))
         languages = "&Languages"
         local_languages = self.tr("&Languages")
         if local_languages != languages:
             languages += f" - {local_languages}"
-        self.menu_about.setTitle(self.tr("&About"))
-        self.menu_action_version.setText(self.tr("&Version: {}").format(__version__))
+        self.menu_bitcoin_Safe.setTitle(self.tr("&Bitcoin Safe"))
+        self.menu_action_about.setText(self.tr("&About"))
         self.menu_action_check_update.setText(self.tr("&Check for update"))
-        self.menu_action_license.setText(self.tr("&License"))
         self.menu_show_logs.setText(self.tr("&Show Logs"))
+        self.menu_action_quit.setText(self.tr("Quit"))
 
-        self.menu_feedback.setTitle(self.tr("&Feedback / Contact"))
+        self.menu_feedback.setTitle(self.tr("&Feedback"))
+        self.menu_contact.setTitle(self.tr("&Contact"))
         self.action_chorus.setText(self.tr("&Community forum"))
-        self.action_contact_via_nostr.setText(self.tr("&Contact via Nostr"))
+        self.action_contact_email.setText(self.tr("&Send Email"))
+        self.action_contact_via_nostr.setText(self.tr("&Nostr DM"))
+        self.action_contact_via_X.setText(self.tr("&X/Twitter DM"))
         self.action_open_issue_github.setText(self.tr("&Open issue in github"))
-        self.action_mail_feedback.setText(self.tr("&Mail feedback"))
+        self.action_mail_feedback.setText(self.tr("&Send via Email"))
 
-        self.menu_knowledge.setTitle(self.tr("&Documentation"))
-        self.action_knowledge_website.setText(self.tr("&Knowledge"))
+        self.menu_help.setTitle(self.tr("&Help"))
+        self.action_knowledge_website.setText(self.tr("&Documentation"))
 
-        self.menu_donate.setTitle(self.tr("&Donate"))
-        self.action_donate_lightning.setText(self.tr("&Lightning"))
-        self.action_donate_onchain.setText(self.tr("&Onchain"))
+        self.menu_action_donate.setText(self.tr("&Donate"))
 
         self.notification_bar_testnet.updateUi()
         self.update_notification_bar.updateUi()
@@ -982,6 +1128,82 @@ class MainWindow(QMainWindow):
     def focus_search_box(self):
         """Focus search box."""
         self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+    def toggle_fullscreen(self) -> None:
+        """Toggle between full screen and the previous window state."""
+
+        if self.isFullScreen():
+            self.showNormal()
+            if self._was_maximized_before_fullscreen:
+                self.showMaximized()
+        else:
+            self._was_maximized_before_fullscreen = self.isMaximized()
+            self.showFullScreen()
+
+    def rebuild_current_wallet_tab_menu(self) -> None:
+        """Rebuild the Current Wallet submenu from the active wallet's tabs."""
+
+        self.menu_current_wallet_tabs.clear()
+        self.wallet_tab_shortcut_actions = []
+
+        if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
+            return
+
+        tab_nodes = [node for node in qt_wallet.tabs.child_nodes if node.widget and not node.isHidden()]
+
+        for idx, node in enumerate(tab_nodes, start=1):
+            action = self.menu_current_wallet_tabs.add_action(
+                node.title,
+                partial(self.select_wallet_tab, title=node.title),
+            )
+            action.setShortcut(QKeySequence(f"CTRL+{idx}"))
+            self.wallet_tab_shortcut_actions.append(action)
+
+    def select_wallet_tab(self, title: str | None) -> None:
+        """Select a tab for the currently active wallet."""
+
+        if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
+            return
+
+        if title is None:
+            qt_wallet.hist_node.select()
+            return
+
+        qt_wallet.tabs.set_current_tab_by_text(title)
+
+    def select_relative_tab(self, delta: int) -> None:
+        """Select the next or previous *top-level* tab."""
+
+        roots = self.tab_wallets.roots
+        if not roots:
+            return
+
+        current = self.tab_wallets.currentNode()
+        top_level = current
+
+        # Climb to the immediate child of the hidden master root
+        while top_level and top_level.parent_node and top_level.parent_node.parent_node:
+            top_level = top_level.parent_node
+
+        try:
+            current_idx = roots.index(top_level) if top_level else -1
+        except ValueError:
+            current_idx = -1
+
+        if current_idx < 0:
+            roots[0].select()
+            return
+
+        new_idx = (current_idx + delta) % len(roots)
+        roots[new_idx].select()
+
+    def update_fullscreen_action_text(self) -> None:
+        """Update the label for the full screen menu action."""
+
+        if hasattr(self, "menu_action_toggle_fullscreen"):
+            self.menu_action_toggle_fullscreen.setText(
+                self.tr("&Exit Full Screen") if self.isFullScreen() else self.tr("&Full Screen")
+            )
 
     def populate_recent_wallets_menu(self, recently_open_wallets: Iterable[str]) -> None:
         """Populate recent wallets menu."""
@@ -1131,6 +1353,14 @@ class MainWindow(QMainWindow):
         self._tray_visible_windows = []
         self._tray_prev_active = None
 
+    def minimize_to_tray_from_menu(self) -> None:
+        """Minimize to tray via the Tools menu, with a fallback if tray is unavailable."""
+        if QSystemTrayIcon.isSystemTrayAvailable():
+            self.minimize_to_tray()
+            return
+
+        self.showMinimized()
+
     def show_message_as_tray_notification(self, message: Message) -> None:
         """Show message as tray notification."""
         icon, _ = message.get_icon_and_title()
@@ -1156,6 +1386,10 @@ class MainWindow(QMainWindow):
     def open_network_settings(self) -> None:
         self.open_settings()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
+
+    def open_about_tab(self) -> None:
+        """Open the About tab in settings."""
+        self.settings.open_about_tab()
 
     def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:
         """Show descriptor export window."""
@@ -1196,8 +1430,13 @@ class MainWindow(QMainWindow):
         if widget in self.attached_widgets:
             self.attached_widgets.remove(widget)
 
-    def export_pdf_statement(self, wallet: Wallet | None = None) -> None:
-        """Export pdf statement."""
+    def open_pdf(self, wallet: Wallet | None = None) -> None:
+        """Open a PDF export for the active view."""
+        current_widget = self.tab_wallets.currentWidget()
+        if isinstance(current_widget, UITx_Viewer):
+            current_widget.export_data_simple.button_export_file.export_to_pdf()
+            return
+
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
             Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
@@ -2170,10 +2409,11 @@ class MainWindow(QMainWindow):
         if not self.tab_wallets.count():
             self.welcome_screen.add_new_wallet_welcome_tab(self.tab_wallets)
         # necessary to remove old qt_wallets from memory
+        self.rebuild_current_wallet_tab_menu()
 
     def event_wallet_tab_added(self) -> None:
         """Event wallet tab added."""
-        pass
+        self.rebuild_current_wallet_tab_menu()
 
     def remove_qt_wallet_by_id(self, wallet_id: str) -> None:
         """Remove qt wallet by id."""

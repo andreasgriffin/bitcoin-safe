@@ -112,6 +112,15 @@ def mail_feedback() -> None:
     return compose_email(email, subject, body)
 
 
+def mail_contact() -> None:
+    """Mail feedback."""
+    email = "andreasgriffin@proton.me"
+    subject = "Contact"
+    body = ""
+
+    return compose_email(email, subject, body)
+
+
 class RelativePathFormatter(logging.Formatter):
     def formatException(
         self, ei: tuple[type[BaseException], BaseException, TracebackType | None] | tuple[None, None, None]

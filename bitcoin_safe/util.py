@@ -49,7 +49,7 @@ import numpy as np
 from packaging.version import Version
 
 OptExcInfo = tuple[type[BaseException] | None, BaseException | None, TracebackType | None]
-
+SATOSHIS_PER_BTC = 100_000_000
 
 logger = logging.getLogger(__name__)
 
