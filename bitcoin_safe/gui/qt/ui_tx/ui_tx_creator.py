@@ -41,6 +41,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QSplitter, QWidget
 
+from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
@@ -53,7 +54,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
-from ....config import MIN_RELAY_FEE, UserConfig
+from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
 from ....psbt_util import FeeInfo
 from ....pythonbdk_types import OutPoint, PythonUtxo, TransactionDetails, UtxosForInputs
@@ -531,7 +532,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.additional_outpoints.clear()
             self.utxo_list.set_outpoints(self.get_outpoints())
             self.set_ui(TxUiInfos())
-            self.reset_fee_rate()
             self.utxo_list.update_content()
         self.category_list.select_row_by_clipboard(
             self.wallet.labels.get_default_category(), scroll_to_last=True
@@ -572,10 +572,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             if question_dialog(
                 self.tr(
                     "Please change the fee rate to be at least {minimum},\n"
-                    "otherwise you will not be able to broadcast it."
+                    "otherwise you may not be able to broadcast it."
                 ).format(minimum=format_fee_rate(MIN_RELAY_FEE, network=self.config.network)),
                 true_button=self.tr("Change fee rate"),
                 false_button=self.tr("Keep fee rate"),
+                title=self.tr("Fee rate too low"),
             ):
                 self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
                 return
@@ -980,8 +981,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.handle_conflicting_utxo(txinfos=tx_ui_infos)
         self.handle_cpfp(tx_ui_infos)
 
-        if tx_ui_infos.fee_rate:
+        if tx_ui_infos.fee_rate is not None:
             self.column_fee.fee_group.set_spin_fee_value(tx_ui_infos.fee_rate)
+        else:
+            self.reset_fee_rate()
 
         # do first tab_changed, because it will set the utxo_list.select_rows
         if tx_ui_infos.hide_UTXO_selection is not None:

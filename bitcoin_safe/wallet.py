@@ -73,7 +73,8 @@ from bitcoin_safe.wallet_util import (
     signer_name,
 )
 
-from .config import MIN_RELAY_FEE, UserConfig
+from .config import UserConfig
+from .constants import MIN_RELAY_FEE
 from .descriptors import (
     AddressType,
     descriptor_from_keystores,

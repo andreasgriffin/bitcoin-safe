@@ -284,7 +284,7 @@ class FeeGroup(QObject):
         )
         self.spin_fee_rate.setReadOnly(not allow_edit)
         self.spin_fee_rate.setDecimals(decimal_precision)  # Set the number of decimal places
-        if fee_rate:
+        if fee_rate is not None:
             self.set_spin_fee_value(fee_rate)
         self.update_spin_fee_range()
 

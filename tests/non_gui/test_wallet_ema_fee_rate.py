@@ -33,8 +33,9 @@ import logging
 import pytest
 from bitcoin_usb.address_types import AddressTypes, DescriptorInfo, SimplePubKeyProvider
 from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_safe.config import UserConfig
 
-from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.wallet import Wallet
 
 from ..non_gui.test_wallet import create_test_seed_keystores

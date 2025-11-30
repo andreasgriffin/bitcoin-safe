@@ -72,7 +72,8 @@ from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 from typing_extensions import Self
 
-from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
+from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
