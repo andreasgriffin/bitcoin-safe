@@ -29,9 +29,8 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Iterable, Sequence
 
-from PyQt6.QtWidgets import QComboBox, QFormLayout, QLabel, QWidget
+from PyQt6.QtWidgets import QFormLayout, QLabel, QWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.language_chooser import (
@@ -40,148 +39,9 @@ from bitcoin_safe.gui.qt.language_chooser import (
 )
 
 from ...fx import FX
+from .currency_combobox import CurrencyComboBox, CurrencyGroup, CurrencyGroupFormatting
 
 logger = logging.getLogger(__name__)
-
-TOP_CURRENCY_CODES: Sequence[str] = (
-    "USD",
-    "EUR",
-    "JPY",
-    "GBP",
-    "CHF",
-    "CNY",
-)
-
-BITCOIN_CURRENCY_CODES: Sequence[str] = (
-    "btc",
-    "bits",
-    "sats",
-)
-
-
-def _format_currency_label(code_upper: str, symbol: str, name: str) -> str:
-    """Format currency label."""
-    display_symbol = symbol or code_upper
-    return f"{code_upper} - {display_symbol.ljust(4)} - {name}"
-
-
-def _available_codes(rates: dict[str, dict], codes: Iterable[str]) -> list[str]:
-    """Available codes."""
-    return [code.lower() for code in codes if rates.get(code.lower())]
-
-
-def _add_currency_item(combo: QComboBox, fx: FX, code_lower: str) -> None:
-    """Add currency item."""
-    data = fx.rates.get(code_lower)
-    if not data:
-        return
-
-    code_upper = code_lower.upper()
-    currency_locale = fx.get_currency_locale(currency_iso_code=code_upper)
-
-    symbol = ""
-    if currency_locale:
-        symbol = fx.get_currency_symbol(currency_loc=currency_locale) or ""
-    if not symbol:
-        symbol = data.get("unit") or code_upper
-    name = data.get("name")
-    if not name and currency_locale:
-        name = fx.get_currency_name(currency_loc=currency_locale)
-    if not name:
-        name = code_upper
-
-    combo.addItem(_format_currency_label(code_upper, str(symbol), str(name)), code_lower)
-
-
-def populate_currency_combobox(
-    combo: QComboBox,
-    fx: FX,
-    *,
-    selected_currency: str | None = None,
-) -> None:
-    """Populate currency combobox."""
-    combo.blockSignals(True)
-    try:
-        combo.clear()
-
-        rates = fx.rates
-        if not rates:
-            return
-
-        selected_lower = (selected_currency or fx.config.currency).lower()
-
-        groups: list[list[str]] = []
-        grouped_codes: set[str] = set()
-
-        top_group = _available_codes(rates, TOP_CURRENCY_CODES)
-        if top_group:
-            groups.append(top_group)
-            grouped_codes.update(top_group)
-
-        bitcoin_group = _available_codes(rates, BITCOIN_CURRENCY_CODES)
-        if bitcoin_group:
-            groups.append(bitcoin_group)
-            grouped_codes.update(bitcoin_group)
-
-        types = sorted(
-            {
-                currency_type
-                for currency_data in rates.values()
-                if isinstance(currency_type := currency_data.get("type"), str)
-            },
-            reverse=True,
-        )
-
-        for currency_type in types:
-            type_codes = [
-                code
-                for code, data in sorted(rates.items())
-                if data.get("type") == currency_type and code not in grouped_codes
-            ]
-            if not type_codes:
-                continue
-            groups.append(type_codes)
-            grouped_codes.update(type_codes)
-
-        for group_index, group in enumerate(groups):
-            if group_index > 0:
-                combo.insertSeparator(combo.count())
-            for code in group:
-                _add_currency_item(combo, fx, code)
-
-        def _find_index(currency: str) -> int:
-            """Find index."""
-            currency_lower = currency.lower()
-            for index in range(combo.count()):
-                data = combo.itemData(index)
-                if isinstance(data, str) and data.lower() == currency_lower:
-                    return index
-            return -1
-
-        target_index = _find_index(selected_lower)
-        if target_index < 0:
-            target_index = _find_index(fx.config.currency)
-        if target_index < 0:
-            target_index = _find_index("btc")
-        if target_index < 0 and combo.count():
-            target_index = 0
-
-        if target_index >= 0:
-            combo.setCurrentIndex(target_index)
-    finally:
-        combo.blockSignals(False)
-
-
-def create_currency_combobox(
-    fx: FX,
-    *,
-    selected_currency: str | None = None,
-    parent: QWidget | None = None,
-) -> QComboBox:
-    """Create currency combobox."""
-    combo = QComboBox(parent)
-    populate_currency_combobox(combo, fx, selected_currency=selected_currency)
-    return combo
 
 
 class InterfaceSettingsUi(QWidget):
@@ -199,8 +59,15 @@ class InterfaceSettingsUi(QWidget):
                 self.language_combo.setCurrentIndex(idx)
 
         # 2) Currency combo
-        self.currency_combo = create_currency_combobox(
-            self.fx, selected_currency=self.config.currency, parent=self
+        self.currency_combo = CurrencyComboBox(
+            self.fx,
+            groups=[
+                CurrencyGroup.TOP_FIAT,
+                CurrencyGroup.FIAT,
+                CurrencyGroup.Commodity,
+                CurrencyGroup.BITCOIN_OTHER,
+            ],
+            formatting=CurrencyGroupFormatting.Full,
         )
 
         # 3) Layout
@@ -222,7 +89,9 @@ class InterfaceSettingsUi(QWidget):
         """Data updated."""
         current_data = self.currency_combo.currentData()
         selected = current_data if isinstance(current_data, str) else self.config.currency
-        populate_currency_combobox(self.currency_combo, self.fx, selected_currency=selected)
+        self.currency_combo.populate(
+            selected_currency=selected,
+        )
 
     def _on_currency_changed(self, idx: int):
         """On currency changed."""
