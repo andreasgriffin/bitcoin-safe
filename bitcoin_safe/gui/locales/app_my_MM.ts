@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>မည်သည့်သူမဆို အသုံးပြုနိုင်သည့် လုံခြုံသော Bitcoin စုဆောင်းပိုက်ဆံအိတ်။</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - အခမဲ့နှင့် ဖွင့်လှစ်ရင်းမြစ် ဆော့ဖ်ဝဲ</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>လိုင်စင်</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>ဗားရှင်း {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1065,6 +1092,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>မရရှိနိုင်  </translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>PDF ထုတ်ယူ</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>PDF ထုတ်ယူခြင်းသည် لین‌ဒန်ဆောင်ရွက်မှုများ သို့မဟုတ် PSBT များအတွက်သာ ရရှိနိုင်သည်။</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>لین‌ဒန်ထုတ်ယူခြင်း</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1655,13 +1697,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;ပြောင်းပါ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;စကားဝှက်ပြောင်းပါ  </translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1670,13 +1707,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;ပိတ်မည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;အသိုင်းအဝိုင်း ဖိုရမ်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>Nostr မှတဆင့် ဆက်သွယ်ရန်</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;ဆက်သွယ်ရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;လက်ရှိပိုက်ဆံအိတ်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;စက်ပစ္စည်း လက်မှတ်ရေးထိုးသူများအတွက် descriptor</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1690,8 +1742,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;တည်းသွင်း</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;ပိတ်ရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;ပြည့်မျက်နှာပြင်မှ ထွက်မည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1700,23 +1762,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;ပိုက်ဆံအိတ် PDF ထုတ်ပို့ပါ  </translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;တုံ့ပြန်ချက်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>တုံ့ပြန်ချက် / ဆက်သွယ်ရန်</translation>
+			<source>&amp;File</source>
+			<translation>&amp;ဖိုင်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;PDF လက်ကျန်စာရင်း ထုတ်ပေးပါ</translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;ပြည့်မျက်နှာပြင်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>အသိပညာအချက်အလက်</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;tray သို့ချုံ့မည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1725,23 +1787,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;လိုင်စင်  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;လိုက်တနင်း</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>ငွေလွှဲသို့မဟုတ် PSBT တင်ပါ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>အီးမေးလ်ဖြင့် တုံ့ပြန်ချက်ပေးရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1750,13 +1797,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;ကွန်ရက်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;နောက်ပိုက်ဆံအိတ်/တပ်ဗ်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>ပိုက်ဆံအိတ်အသစ်  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;အွန်ချိန်း</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;Nostr DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;PDF ပိုက်ဆံအိတ်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1770,23 +1832,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;ယခင်ပိုက်ဆံအိတ်/တပ်ဗ်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;သိမ်းဆည်းမည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများနှင့် &amp;မဲ့လ်တီဆစ်ကိုမှတ်ပုံတင်ပါ  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;ပိုက်ဆံအိတ်အမည်ပြောင်းပါ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>လက်ရှိပိုက်ဆံအိတ်ကိုသိမ်းပါ  </translation>
+			<source>&amp;Save</source>
+			<translation>&amp;အီးမေးလ်ပို့မည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;ရှာဖွေပါ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;အီးမေးလ်ဖြင့်ပို့မည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;ပိုက်ဆံအိတ်အမည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1815,13 +1892,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;ဗားရှင်း: {}  </translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;ပိုက်ဆံအိတ်စကားဝှက်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;ပိုက်ဆံအိတ်  </translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>Bitcoin Safe ကို ಸಮುದಾಯမှ ငွေပေးကြေးမြေပေးထောက်ပံ့ထားသည်။ သင့်ထောက်ပံ့မှုက ဖwicklungကို လွတ်လပ်စွာ ဆောင်ရွက်နိုင်စေပြီး လက္ခဏာအသစ်များ ထုတ်လုပ်နိုင်ခြင်းနှင့် လုံခြုံရေးပြန်လည်စစ်ဆေးမှုများကို မြှင့်တင်ပေးသည်။ အထောက်အပံ့အများဆုံးပေးသူများကို ကျွန်ုပ်တို့၏ &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;အထောက်အပံ့ပေးသူများ စာမျက်နှာ&lt;/a&gt;တွင် ဖော်ပြနိုင်သည်။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1837,6 +1919,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>ဖိုင်အားလုံး (*);;PSBT (*.psbt);;ငွေလွှဲ (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>On-chain လှူဒါန်းရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1910,8 +1997,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများအတွက် &amp;Descriptor ထုတ်ပို့ပါ  </translation>
+			<source>Donate on-chain</source>
+			<translation>Lightning ဖြင့် လှူဒါန်းရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>အီးမေးလ် ပို့ရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1927,6 +2024,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>စာသားမှ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ပုံနှိပ်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2035,6 +2137,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>ထွက်ရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR စကင်နာ  </translation>
 		</message>
@@ -2045,8 +2152,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>အသစ်တက်လှိုင်းပါ  </translation>
+			<source>Quit</source>
+			<translation>ရှာဖွေ &amp;နောက်တစ်ခု {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2062,6 +2169,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>PSBT သိမ်းပါ?  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>ရှာဖွေ &amp;ယခင်တစ်ခု {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>Bitcoin Safe ကို ထောက်ပံ့ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2087,6 +2204,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>အခြေအနေ: ချိတ်ဆက်ဖြုတ်ထားသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2149,6 +2271,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ပိုက်ဆံအိတ်များ သို့မဟုတ် လည်းကောင်း ဆက်လက်တင်ဆက်နေဆဲဖြစ်သည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2574,14 +2701,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>ဤ လင်ဒင်း {txid} သည် ရေးထိုးပြီးပြီ ဖြစ်ပြီး {wallet} ပိုက်ဆံအိတ်တွင် ရှိနေသည်</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>ဤအလုပ်ငွေ {txid} သည် {wallet} ပိုက်ဆံအိတ်တွင် ရှိပြီး နှစ်ဖက်စလုံး၏ စီးရီးအလိုက်ပြုလုပ်မှုများ မတူကွာခြားပါသည်။</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>ဤ လင်ဒင်း {txid} သည် ရေးထိုးပြီးပြီ ဖြစ်ပြီး {wallet} ပိုက်ဆံအိတ်တွင် ရှိနေသည်။ နှစ်ခု၏ စီရီယလိုင်ဇေးရှင်းများ ကွာခြားနေပြီး၊ စုဆောင်းထားသော လက်မှတ်များ ကွာခြားမှုကြောင့် ဖြစ်နိုင်သည်။</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>ဤ လင်ဒင်း {txid} သည် ရေးထိုးပြီးပြီ ဖြစ်ပြီး {wallet} ပိုက်ဆံအိတ်တွင် ရှိနေသည်</translation>
 		</message>
 	</context>
 	<context>
@@ -2729,6 +2855,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>Bitcoin တစ်ခုလျှင် လက်ရှိဈေးနှုန်း: {price} ({currency})</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>အကြောင်းအရာ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3299,6 +3435,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>ကြေးနှုန်း အလွန်နည်းနေသည်</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>အထွေထွေ</translation>
 		</message>
@@ -3717,6 +3858,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>ကျေးဇူးပြု၍ ကြေးနှုန်းကို အနည်းဆုံး {minimum} အထိ ပြောင်းပါ၊ ဒါမဟုတ်လျှင် ထုတ်လွှင့်၍ မရနိုင်ပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>ကြေးနှုန်း အတိုင်းထားရန်</translation>
 		</message>
@@ -3728,8 +3874,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>ကျေးဇူးပြု၍ ကြေးနှုန်းကို အနည်းဆုံး {minimum} ဖြစ်အောင် ပြောင်းပါ၊ မဟုတ်လျှင် ၎င်းကို ပို့မနိုင်ပါ။</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>BBQr QR</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4885,6 +5031,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>QR ဒေတာ မရှိပါ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>လက်ကျန်ငွေ  </translation>
 		</message>
@@ -4940,6 +5091,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>Serialised {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>hardware signer မည်သူမှ ထိန်းသိမ်းခြင်းမပြုထားပါ။</translation>
 		</message>
@@ -4965,6 +5121,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>ငွေလွှဲ ID: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>ပိုက်ဆံအိတ် အညွှန်း (QR ကုဒ်) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; သည် သင်၏လက်ကျန်ငွေကိုကြည့်ရန် အကြည့်သာပိုက်ဆံအိတ်တစ်ခုပြုလုပ်နိုင်စေသည်။ ထိုနေရာမှအသုံးပြုရန်အတွက် သင်သည် လျှို့ဝှက် {number} စကားလုံး (Seed) လိုအပ်သည်။</translation>
 		</message>
@@ -4980,6 +5141,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>{title}: စိတ်ခွဲ {index} / {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}။ {m} လက်မှတ်သား Multi-Sig ပိုက်ဆံအိတ်၏ {threshold} အတွက်မျိုးစေ့အရန်: "{id}"  </translation>
 		</message>
@@ -4992,6 +5163,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: လက်ဗွေ: {keystore_fingerprint}, အခြေခံမူ: {keystore_key_origin}, {keystore_xpub}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>सभी के लिए एक सुरक्षित बिटकॉइन बचत वॉलेट।</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - मुक्त और मुक्त स्रोत सॉफ़्टवेयर</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>लाइसेंस</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>संस्करण {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1065,6 +1092,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>उपलब्ध नहीं</translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>PDF निर्यात</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>PDF निर्यात केवल लेनदेन या PSBT के लिए उपलब्ध है।</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>लेनदेन निर्यात</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1655,13 +1697,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;बदलें  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;पासवर्ड बदलें</translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1670,13 +1707,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;बंद करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;समुदाय मंच</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>Nostr के माध्यम से संपर्क करें</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;संपर्क</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;वर्तमान वॉलेट</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;हार्डवेयर साइनरों के लिए डिस्क्रिप्टर</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1690,8 +1742,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;संपादित करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;बाहर निकलें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;पूर्ण स्क्रीन से बाहर निकलें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1700,23 +1762,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;वॉलेट PDF निर्यात करें  </translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;प्रतिक्रिया</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>प्रतिक्रिया / संपर्क करें</translation>
+			<source>&amp;File</source>
+			<translation>&amp;फ़ाइल</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;PDF बैलेंस स्टेटमेंट जेनरेट करें  </translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;पूर्ण स्क्रीन</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>ज्ञानकोष</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;सहायता</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1725,23 +1787,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;लाइसेंस</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;लाइटनिंग</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;लोड ट्रांजैक्शन या PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>मेल द्वारा प्रतिक्रिया दें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1750,13 +1797,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;ट्रे में न्यूनतम करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;नेटवर्क</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;नया वॉलेट</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;ऑनचेन</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;अगला वॉलेट/टैब</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1770,23 +1832,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;PDF वॉलेट</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;पिछला वॉलेट/टैब</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;हार्डवेयर साइनर्स के साथ मल्टीसिग रजिस्टर करें  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;वॉलेट का नाम बदलें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;मौजूदा वॉलेट सहेजें</translation>
+			<source>&amp;Save</source>
+			<translation>&amp;सहेजें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;खोजें  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;ईमेल भेजें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;ईमेल द्वारा भेजें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1815,13 +1892,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;संस्करण: {}</translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;वॉलेट नाम</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;वॉलेट</translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;वॉलेट पासवर्ड</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1837,6 +1919,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>सभी फ़ाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe समुदाय द्वारा वित्तपोषित है। आपका समर्थन विकास को स्वतंत्र रखता है, हमें नई सुविधाएँ जारी करने देता है और सुरक्षा समीक्षा में सुधार करता है। बड़े समर्थकों को हमारी &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;समर्थक पेज&lt;/a&gt; पर दिखाया जा सकता है।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1910,8 +1997,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>हार्डवेयर साइनर्स के लिए &amp;डिस्क्रिप्टर निर्यात करें  </translation>
+			<source>Donate on-chain</source>
+			<translation>ऑन-चेन दान करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>Lightning से दान करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>हमें ईमेल करें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1927,6 +2024,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>टेक्स्ट से</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe को मुक्त और ओपन सोर्स सॉफ़्टवेयर के रूप में बढ़ने में मदद करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2035,6 +2137,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>प्रिंट</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR &amp;स्कैनर  </translation>
 		</message>
@@ -2045,8 +2152,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>ताज़ा करें</translation>
+			<source>Quit</source>
+			<translation>बंद करें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2062,6 +2169,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>PSBT सहेजें?  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>खोजें &amp;अगला {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>खोजें &amp;पिछला {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2087,6 +2204,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>स्थिति: डिस्कनेक्टेड</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe का समर्थन करें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2149,6 +2271,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>वॉलेट अभी भी सिंक हो रहे हैं</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>क्या आप बड़े योगदान या साझेदारी पर चर्चा करना चाहते हैं? हमसे संपर्क करने के लिए नीचे दिए गए बटन का उपयोग करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2577,14 +2704,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>यह लेन-देन {txid} पहले ही साइन किया जा चुका है और वॉलेट {wallet} में है</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>यह लेन-देन {txid} वॉलेट {wallet} में मौजूद है और दोनों की सीरियलाइज़ेशन अलग-अलग हैं।</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>यह लेन-देन {txid} पहले ही साइन किया जा चुका है और वॉलेट {wallet} में है। दोनों की सिरियलाइज़ेशन अलग है, जो विभिन्न एकत्रित हस्ताक्षरों के कारण हो सकता है।</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>यह लेन-देन {txid} पहले ही साइन किया जा चुका है और वॉलेट {wallet} में है</translation>
 		</message>
 	</context>
 	<context>
@@ -2732,6 +2858,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>{server} से जुड़ा हुआ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>बिटकॉइन की वर्तमान कीमत उपलब्ध नहीं है।</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>प्रति बिटकॉइन वर्तमान कीमत: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3302,6 +3438,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>बारे में</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>सामान्य</translation>
 		</message>
@@ -3720,6 +3861,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>शुल्क दर बहुत कम है</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>शुल्क दर बनाए रखें</translation>
 		</message>
@@ -3731,8 +3877,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>कृपया शुल्क दर को कम से कम {minimum} तक बदलें, नहीं तो आप इसे प्रसारित नहीं कर पाएँगे।</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>कृपया शुल्क दर को कम से कम {minimum} कर दें, अन्यथा आप इसे प्रसारित नहीं कर पाएंगे।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4888,6 +5034,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>बैलेंस</translation>
 		</message>
@@ -4943,6 +5094,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>कोई QR डेटा उपलब्ध नहीं</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>अब तक कोई हार्डवेयर साइनर कॉन्फ़िगर नहीं है।</translation>
 		</message>
@@ -4968,6 +5124,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>सिरीयलाइज़्ड {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>वॉलेट डेस्क्रिप्टर (QR कोड) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; आपको केवल-बैलेंस देखने वाला वॉलेट बनाने की अनुमति देता है। इससे खर्च करने के लिए आपको {number} गुप्त शब्दों (सीड) की आवश्यकता होती है।</translation>
 		</message>
@@ -4983,6 +5144,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>ट्रांज़ैक्शन ID: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}. {threshold} का {m} मल्टी-सिग वॉलेट का सीड बैकअप: "{id}"  </translation>
 		</message>
@@ -4995,6 +5166,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: फिंगरप्रिंट: {keystore_fingerprint}, की ओरिजिन: {keystore_key_origin}, {keystore_xpub}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: {total} में से {index}वाँ खंड</translation>
 		</message>
 	</context>
 	<context>

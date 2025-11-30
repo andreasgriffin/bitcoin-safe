@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>誰もが使える安全なビットコイン貯蓄ウォレット。</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - 自由でオープンソースのソフトウェア</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>ライセンス</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>バージョン {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1065,6 +1092,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>利用不可</translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>PDF エクスポート</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>PDF エクスポートは取引または PSBT のみ利用可能です。</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>取引エクスポート</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1655,13 +1697,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;変更  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>Coldcard用に&amp;エクスポート</translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1670,13 +1707,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;閉じる</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;コミュニティフォーラム</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>Nostrで連絡する</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;連絡先</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;現在のウォレット</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;ハードウェア署名者用デスクリプタ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1690,8 +1742,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;編集</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;終了</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;フルスクリーン終了</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1700,23 +1762,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;ウォレットPDFをエクスポート  </translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;フィードバック</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>フィードバック / お問い合わせ</translation>
+			<source>&amp;File</source>
+			<translation>&amp;ファイル</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;PDF残高明細書を生成  </translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;フルスクリーン</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>ナレッジベース</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;ヘルプ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1725,23 +1787,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>ウォレットを選んでください</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;ライトニング</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;トランザクションまたはPSBTをロード</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>メールでフィードバックする</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1750,13 +1797,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;トレイに最小化</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;ネットワーク</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;ウォレットを開く</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;オンチェーン</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;次のウォレット/タブ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1770,23 +1832,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;PDF ウォレット</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;前のウォレット/タブ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;ハードウェア署名者とのマルチシグの登録  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;パスワードを変更</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;変更/エクスポート</translation>
+			<source>&amp;Save</source>
+			<translation>&amp;保存</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;検索  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;メール送信</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;メールで送信</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1815,13 +1892,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;アップデートを確認</translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;ウォレット名</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;新しいウォレット</translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;ウォレットパスワード</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1837,6 +1919,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>すべてのファイル (*);;PSBT (*.psbt);;トランザクション (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1910,8 +1997,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>ハードウェア署名者用に&amp;ディスクリプタをエクスポート  </translation>
+			<source>Donate on-chain</source>
+			<translation>オンチェーンで寄付</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>Lightning で寄付</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>メールを送る</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1927,6 +2024,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>QRコード&amp;から</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2035,6 +2137,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>印刷</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR &amp;スキャナ  </translation>
 		</message>
@@ -2045,8 +2152,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>&amp;トランザクション</translation>
+			<source>Quit</source>
+			<translation>終了</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2062,6 +2169,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>PSBTを保存しますか？  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>検索 &amp;次 {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>検索 &amp;前 {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2087,6 +2204,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>ステータス: 切断</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe を支援する</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2149,6 +2271,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ウォレットはまだ同期中</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2577,14 +2704,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>このトランザクション {txid} は既に署名され、ウォレット {wallet} にあります</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>この取引 {txid} はウォレット {wallet} に存在し、両方のシリアライズ結果が異なります。</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>このトランザクション {txid} は既に署名され、ウォレット {wallet} にあります。両者のシリアライズが異なります。収集された署名の違いが原因の可能性があります。</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>このトランザクション {txid} は既に署名され、ウォレット {wallet} にあります</translation>
 		</message>
 	</context>
 	<context>
@@ -2732,6 +2858,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>{server} に接続しました  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>現在のビットコイン価格は取得できません。</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>1 ビットコインあたりの現在価格: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3302,6 +3438,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>概要</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>一般</translation>
 		</message>
@@ -3720,6 +3861,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>手数料率が低すぎます</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>手数料レートを維持</translation>
 		</message>
@@ -3731,8 +3877,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>手数料レートを少なくとも {minimum} に変更してください。そうしないとブロードキャストできません。</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>手数料率を最低でも {minimum} に変更してください。変更しないと、ブロードキャストできない可能性があります。</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4888,6 +5034,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>残高</translation>
 		</message>
@@ -4943,6 +5094,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>利用可能な QR データがありません</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>まだハードウェア署名機が構成されていません。</translation>
 		</message>
@@ -4968,6 +5124,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>シリアライズされた {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>ウォレットデスクリプタ（QRコード） &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; により、残高を確認するための閲覧専用ウォレットを作成できます。そこから支出するには、秘密の {number} 語（シード）が必要です。</translation>
 		</message>
@@ -4983,6 +5144,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>トランザクション ID: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}。{threshold}の{m}マルチシグウォレットのシードバックアップ："{id}"  </translation>
 		</message>
@@ -4995,6 +5166,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}：フィンガープリント：{keystore_fingerprint}, キー起源：{keystore_key_origin}, {keystore_xpub}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: {total} のうち {index} 番目の断片</translation>
 		</message>
 	</context>
 	<context>

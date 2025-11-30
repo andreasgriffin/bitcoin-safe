@@ -46,7 +46,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleSt
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtSignal
-from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
+from PyQt6.QtGui import QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
     QComboBox,
@@ -244,7 +244,7 @@ class FileToolButton(QToolButton):
         self.data.write_to_filedescriptor(fd)
         return filename
 
-    def export_to_pdf(self) -> str | None:
+    def export_to_pdf(self, filepath: Path | None = None) -> str | None:
         """Export the serialized data into a PDF with BBQr codes."""
         if self.data.data_type not in [DataType.Tx, DataType.PSBT]:
             Message(self.tr("PDF export is only available for transactions or PSBTs."))
@@ -260,7 +260,7 @@ class FileToolButton(QToolButton):
         elif not default_filename.lower().endswith(".pdf"):
             default_filename = f"{default_filename}.pdf"
 
-        filepath = Path.home() / default_filename
+        filepath = filepath if filepath else Path.home() / default_filename
 
         qr_fragments = UnifiedEncoder.generate_fragments_for_qr(
             data=self.data, qr_export_type=QrExportTypes.bbqr
@@ -421,8 +421,6 @@ class SyncChatToolButton(QToolButton):
         super().__init__(parent)
         self.sync_clients = sync_client
         self.network = network
-        self.action_share_with_all_devices: dict[str, QAction] = {}
-        self.menu_share_with_single_devices: dict[str, Menu] = {}
         self.button_prefix = button_prefix
         self._set_data(data=data, sync_clients=sync_client)
 
@@ -430,18 +428,11 @@ class SyncChatToolButton(QToolButton):
         self._menu = Menu(self)
         self.setMenu(self._menu)
         self._menu.aboutToShow.connect(self._fill_menu)
-        self._menu.aboutToHide.connect(self._clear_menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
         self.setIcon(svg_tools.get_QIcon("bi--cloud.svg"))
 
         self.updateUi()
-
-    def _clear_menu(self) -> None:
-        with QSignalBlocker(self._menu):
-            self._menu.clear()
-        self.action_share_with_all_devices.clear()
-        self.menu_share_with_single_devices.clear()
 
     def _share_with_device(
         self, wallet_id: str, sync_client: SyncClient, receiver_public_key_bech32: str | None = None
@@ -460,33 +451,34 @@ class SyncChatToolButton(QToolButton):
     def _fill_menu(self):
         """Fill menu."""
         menu = self._menu
-        self._clear_menu()
+        menu.clear()
         if not self.sync_clients:
             return
 
-        with QSignalBlocker(self._menu):
-            # Create a menu for the button
-            for wallet_id, sync_client in self.sync_clients.items():
-                action_alldevices = partial(
+        # Create a menu for the button
+        for wallet_id, sync_client in self.sync_clients.items():
+            action_alldevices = partial(
+                self._share_with_device,
+                wallet_id=wallet_id,
+                sync_client=sync_client,
+                receiver_public_key_bech32=None,
+            )
+            menu.add_action(
+                self.tr("Share with all devices in {wallet_id}").format(wallet_id=wallet_id),
+                action_alldevices,
+            )
+
+            sub_menu = menu.add_menu(self.tr("Share with single device"))
+            for member in sync_client.nostr_sync.group_chat.members:
+                action = partial(
                     self._share_with_device,
                     wallet_id=wallet_id,
                     sync_client=sync_client,
-                    receiver_public_key_bech32=None,
+                    receiver_public_key_bech32=member.to_bech32(),
                 )
-                self.action_share_with_all_devices[wallet_id] = menu.add_action("", action_alldevices)
+                sub_menu.add_action(f"{sync_client.nostr_sync.chat.get_alias(member)}", action)
 
-                self.menu_share_with_single_devices[wallet_id] = menu.add_menu("")
-                for member in sync_client.nostr_sync.group_chat.members:
-                    action = partial(
-                        self._share_with_device,
-                        wallet_id=wallet_id,
-                        sync_client=sync_client,
-                        receiver_public_key_bech32=member.to_bech32(),
-                    )
-                    self.menu_share_with_single_devices[wallet_id].add_action(
-                        f"{sync_client.nostr_sync.chat.get_alias(member)}", action
-                    )
-                menu.addSeparator()
+            menu.addSeparator()
 
         self.updateUi()
 
@@ -498,17 +490,12 @@ class SyncChatToolButton(QToolButton):
     def set_data(self, data: Data, sync_clients: dict[str, SyncClient] | None):
         """Set data."""
         self._set_data(data=data, sync_clients=sync_clients)
-        self._clear_menu()
+        self._menu.clear()
         self.updateUi()
 
     def updateUi(self) -> None:
         """UpdateUi."""
         self.setText(self.button_prefix + self.tr("Share with trusted devices"))
-
-        for wallet_id, action in self.action_share_with_all_devices.items():
-            action.setText(self.tr("Share with all devices in {wallet_id}").format(wallet_id=wallet_id))
-        for menu in self.menu_share_with_single_devices.values():
-            menu.setTitle(self.tr("Share with single device"))
 
     def on_nostr_share_with_member(
         self, receiver_public_key: PublicKey, wallet_id: str, sync_client: SyncClient

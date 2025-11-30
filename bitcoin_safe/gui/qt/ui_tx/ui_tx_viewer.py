@@ -157,9 +157,7 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
                 self.setHidden(False)
                 self.icon_label.setText(
                     self.tr(
-                        "This transaction {txid} was already signed and is in wallet {wallet}."
-                        "\nThe serializations of both differ, which could be "
-                        "caused by different collected signatures."
+                        "This transaction {txid} exists is in wallet {wallet} and the serializations of both differ."
                     ).format(txid=short_tx_id(wallet_tx_details.txid), wallet=html_f(wallet.id, bf=True))
                 )
                 return

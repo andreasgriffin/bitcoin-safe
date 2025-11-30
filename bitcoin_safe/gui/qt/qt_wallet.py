@@ -1795,11 +1795,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         make_and_open_pdf_statement(
             self.wallet,
             lang_code=QLocale().name() or DEFAULT_LANG_CODE,
-            label_sync_nsec=(
-                sync_client.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32()
-                if sync_client.enabled
-                else None
-            ),
         )
 
     def close(self) -> bool:

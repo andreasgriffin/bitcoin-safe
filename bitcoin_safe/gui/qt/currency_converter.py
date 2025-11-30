@@ -64,7 +64,7 @@ class CurrencyConverter(QObject):
         self.fiat_spin.valueChanged.connect(self._on_fiat_changed)
 
     def _target_currency(self) -> str | None:
-        return self.fx.get_currency_symbol(currency_loc=self.fiat_spin.locale()) if self.fx else None
+        return self.fx.get_currency_iso(currency_loc=self.fiat_spin.locale()) if self.fx else None
 
     def _on_bitcoin_changed(self, value: float):
         """On bitcoin changed."""
