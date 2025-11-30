@@ -42,7 +42,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from bitcoin_safe.config import MIN_RELAY_FEE
+from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 

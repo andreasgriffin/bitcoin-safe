@@ -55,7 +55,6 @@ from .util import fast_version
 
 logger = logging.getLogger(__name__)
 
-MIN_RELAY_FEE = 1
 FEE_RATIO_HIGH_WARNING = 0.05  # warn user if fee/amount for on-chain tx is higher than this
 NO_FEE_WARNING_BELOW = 10  # sat/vB
 
@@ -74,7 +73,7 @@ class UserConfig(BaseSaveableClass):
     window_properties_config_file = config_dir / (app_name + "_window_properties.conf")
 
     fee_ranges = {
-        bdk.Network.BITCOIN: [1.0, 1000],
+        bdk.Network.BITCOIN: [0.1, 1000],
         bdk.Network.REGTEST: [0.0, 1000],
         bdk.Network.SIGNET: [0.0, 1000],
         bdk.Network.TESTNET: [0.0, 1000],

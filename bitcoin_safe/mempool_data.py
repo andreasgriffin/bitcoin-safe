@@ -31,9 +31,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-
-MIN_RELAY_FEE = 1
 
 logger = logging.getLogger(__name__)
 
@@ -47,13 +46,13 @@ class MempoolData(BaseSaveableClass):
     def __init__(
         self,
         mempool_blocks: list[dict[str, Any]] | None = None,
-        recommended: dict[str, int] | None = None,
+        recommended: dict[str, float] | None = None,
         mempool_dict: dict[str, Any] | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__()
         self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
-        self.recommended: dict[str, int] = (
+        self.recommended: dict[str, float] = (
             recommended
             if recommended
             else {
