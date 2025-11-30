@@ -263,7 +263,7 @@ def test_dump(test_config: UserConfig):
     dct = wallet.dump()
     walllet_restored = Wallet.from_dump(
         dct=dct,
-        class_kwargs={"Wallet": {"config": test_config}},
+        class_kwargs={"Wallet": {"config": test_config, "loop_in_thread": wallet.loop_in_thread}},
     )
 
     assert walllet_restored.derives_identical_addresses(wallet)
@@ -387,7 +387,9 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
     dump = wallet.dump()
 
-    restored_wallet = Wallet.from_dump(dct=dump, class_kwargs={"Wallet": {"config": test_config}})
+    restored_wallet = Wallet.from_dump(
+        dct=dump, class_kwargs={"Wallet": {"config": test_config, "loop_in_thread": wallet.loop_in_thread}}
+    )
 
     assert wallet.derives_identical_addresses(restored_wallet)
 

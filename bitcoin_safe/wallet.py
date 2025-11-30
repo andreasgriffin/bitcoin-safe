@@ -1052,12 +1052,18 @@ class Wallet(BaseSaveableClass, CacheManager):
         return d
 
     @classmethod
-    def from_file(cls, filename: str, config: UserConfig, password: str | None = None) -> Wallet:
+    def from_file(
+        cls,
+        filename: str,
+        config: UserConfig,
+        loop_in_thread: LoopInThread | None,
+        password: str | None = None,
+    ) -> Wallet:
         """Load a wallet from a serialized file on disk."""
         return super()._from_file(
             filename=filename,
             password=password,
-            class_kwargs={"Wallet": {"config": config}},
+            class_kwargs={"Wallet": {"config": config, "loop_in_thread": loop_in_thread}},
         )
 
     @classmethod
