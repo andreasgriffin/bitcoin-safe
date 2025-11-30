@@ -58,6 +58,7 @@ class P2pListener(QObject):
     def __init__(
         self,
         network: bdk.Network,
+        loop_in_thread: LoopInThread | None,
         debug=False,
         fetch_txs=True,
         timeout: int = 200,
@@ -68,7 +69,7 @@ class P2pListener(QObject):
         super().__init__(parent)
         self.fetch_txs = fetch_txs
         self.client = P2PClient(network=network, debug=debug, timeout=timeout, parent=self)
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = loop_in_thread or LoopInThread()
         self.address_filter: set[str] | None = None
         self.outpoint_filter: set[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network, loop_in_thread=self.loop_in_thread)

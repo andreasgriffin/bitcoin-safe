@@ -58,7 +58,7 @@ network = bdk.Network.BITCOIN
 proxy_info = ProxyInfo.parse("socks5h://127.0.0.1:9050")
 
 
-client = P2pListener(network=network)
+client = P2pListener(network=network, loop_in_thread=None)
 # client.set_address_filter(None)
 
 

@@ -620,7 +620,9 @@ class MainWindow(QMainWindow):
             return
         initial_peer = self.config.network_config.get_p2p_initial_peer()
         self.p2p_listener = P2pListener(
-            network=self.config.network, discovered_peers=self.config.network_config.discovered_peers
+            network=self.config.network,
+            discovered_peers=self.config.network_config.discovered_peers,
+            loop_in_thread=self.loop_in_thread,
         )
         self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)

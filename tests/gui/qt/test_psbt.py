@@ -61,7 +61,7 @@ def test_psbt_warning_poision_mainnet(
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe"
 
         shutter.save(main_window)
@@ -145,7 +145,7 @@ def test_psbt_warning_poision(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window)  # type: ignore  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)

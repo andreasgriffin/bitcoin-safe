@@ -32,7 +32,6 @@ import logging
 from collections import defaultdict
 
 import bdkpython as bdk
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from PyQt6.QtWidgets import QVBoxLayout
 
@@ -71,7 +70,7 @@ class UITx_Base(SearchableTab):
         super().__init__(parent=parent, **kwargs)
         self.fx = fx
         self.signal_tracker = SignalTracker()
-        self.loop_in_thread = LoopInThread()
+        self.loop_in_thread = mempool_manager.loop_in_thread
         self.wallet_functions = wallet_functions
         self.signals = wallet_functions.signals
         self.mempool_manager = mempool_manager
