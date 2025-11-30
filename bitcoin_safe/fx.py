@@ -52,6 +52,7 @@ class FX(QObject):
         self.loop_in_thread = LoopInThread()
         self.config = config
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()
+        self.sanitize_rates()
         self.update()
         logger.debug(f"initialized {self.__class__.__name__}")
 
@@ -69,14 +70,14 @@ class FX(QObject):
             if country == QLocale.Country.AnyCountry:
                 continue
             currency_loc = QLocale(QLocale.Language.AnyLanguage, country)
-            if FX._get_currency_iso(currency_loc) == currency_iso_code.upper():
+            if FX.sanitize_key(FX._get_currency_iso(currency_loc)) == FX.sanitize_key(currency_iso_code):
                 return currency_loc
         return None
 
     @staticmethod
     def _get_currency_iso(currency_loc: QLocale):
         """Get currency iso."""
-        return currency_loc.currencySymbol(QLocale.CurrencySymbolFormat.CurrencyIsoCode).upper()
+        return FX.sanitize_key(currency_loc.currencySymbol(QLocale.CurrencySymbolFormat.CurrencyIsoCode))
 
     def get_currency_locale(self, currency_iso_code: str | None = None) -> QLocale | None:
         """Get currency locale."""
@@ -86,14 +87,14 @@ class FX(QObject):
         """Get currency iso."""
         currency_loc = currency_loc if currency_loc else self.get_currency_locale()
         if not currency_loc:
-            return self.config.currency.upper()
+            return FX.sanitize_key(self.config.currency)
         return self._get_currency_iso(currency_loc)
 
     def get_currency_symbol(self, currency_loc: QLocale | None = None):
         """Get currency symbol."""
         currency_loc = currency_loc if currency_loc else self.get_currency_locale()
         if not currency_loc:
-            return self.config.currency.upper()
+            return FX.sanitize_key(self.config.currency)
         return currency_loc.currencySymbol(
             QLocale.CurrencySymbolFormat.CurrencySymbol
         ) or self.get_currency_iso(currency_loc=currency_loc)
@@ -102,7 +103,7 @@ class FX(QObject):
         """Get currency name."""
         currency_loc = currency_loc if currency_loc else self.get_currency_locale()
         if not currency_loc:
-            return self.config.currency.upper()
+            return FX.sanitize_key(self.config.currency)
         return currency_loc.currencySymbol(
             QLocale.CurrencySymbolFormat.CurrencyDisplayName
         ) or self.get_currency_iso(currency_loc=currency_loc)
@@ -181,14 +182,22 @@ class FX(QObject):
 
     def fiat_to_btc(self, fiat: float, currency: str | None = None) -> int | None:
         """Fiat to btc."""
-        if not (rate := self.rates.get(currency.lower() if currency else self.config.currency.lower())):
+        if not (
+            rate := self.rates.get(
+                self.sanitize_key(currency) if currency else self.sanitize_key(self.config.currency)
+            )
+        ):
             return None
 
         return int(1e8 * fiat / rate["value"])
 
     def btc_to_fiat(self, amount: int, currency: str | None = None) -> float | None:
         """Btc to fiat."""
-        if not (rate := self.rates.get(currency.lower() if currency else self.config.currency.lower())):
+        if not (
+            rate := self.rates.get(
+                self.sanitize_key(currency) if currency else self.sanitize_key(self.config.currency)
+            )
+        ):
             return None
 
         fiat_amount = rate["value"] / 1e8 * amount
@@ -270,5 +279,18 @@ class FX(QObject):
             return
         self.rates = data.get("rates", {})
         self.add_additional_rates(self.rates)
+        self.sanitize_rates()
         if self.rates:
             self.signal_data_updated.emit()
+
+    @staticmethod
+    def sanitize_key(key: str):
+        return key.upper()
+
+    def sanitize_rates(self):
+        for key in list(self.rates.keys()):
+            upper = self.sanitize_key(key)
+            if key == upper:
+                continue
+            self.rates[upper] = self.rates[key]
+            del self.rates[key]
