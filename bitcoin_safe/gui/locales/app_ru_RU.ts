@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>Надёжный биткоин-кошелёк для сбережений для всех.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS — Свободное и Открытое ПО</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>Лицензия</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Версия {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1066,6 +1093,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>Недоступно</translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>Экспорт PDF</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>Экспорт PDF доступен только для транзакций или PSBT.</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>Экспорт транзакций</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1656,13 +1698,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;Изменить</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;Изменить пароль</translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1671,13 +1708,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;Закрыть</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;Форум сообщества</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>Связаться через Nostr</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;Контакты</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;Текущий кошелёк</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;Дескриптор для аппаратных подписантов</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1691,8 +1743,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;Редактировать</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;Выйти</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;Выйти из полноэкранного режима</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1701,23 +1763,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Экспорт кошелька в PDF</translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;Обратная связь</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>Обратная связь / Контакты</translation>
+			<source>&amp;File</source>
+			<translation>&amp;Файл</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Создать PDF выписки по балансу</translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;Полноэкранный режим</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>База знаний</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;Помощь</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1726,23 +1788,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;Лицензия</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;Молния</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;Загрузить транзакцию или PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>Отправить отзыв по почте</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1751,13 +1798,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;Свернуть в трей</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;Сеть</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Новый кошелек</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;Ончейн</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;Следующий кошелёк/вкладка</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1771,23 +1833,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;PDF-кошелёк</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;Предыдущий кошелёк/вкладка</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;Регистрация мультисигнатуры на аппаратных подписантах</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;Переименовать кошелек</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;Сохранить текущий кошелек</translation>
+			<source>&amp;Save</source>
+			<translation>&amp;Сохранить</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;Поиск</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;Отправить email</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;Отправить по email</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1816,13 +1893,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;Версия: {}</translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;Имя кошелька</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;Кошелек</translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;Пароль кошелька</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1838,6 +1920,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Все файлы (*);;PSBT (*.psbt);;Транзакция (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe финансируется сообществом. Ваша поддержка сохраняет независимость разработки, позволяет выпускать новые функции и улучшает проверки безопасности. Крупные спонсоры могут быть размещены на нашей &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;странице спонсоров&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1911,8 +1998,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>Экспорт &amp;дескриптора для аппаратных подписантов</translation>
+			<source>Donate on-chain</source>
+			<translation>Пожертвовать on-chain</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>Пожертвовать через Lightning</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>Написать нам</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1928,6 +2025,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Из &amp;текста</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Помогите Bitcoin Safe развиваться как свободному и открытому ПО.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2036,6 +2138,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>Печать</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR &amp;Сканер</translation>
 		</message>
@@ -2046,8 +2153,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>Об&amp;новить</translation>
+			<source>Quit</source>
+			<translation>Выход</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2063,6 +2170,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>Сохранить PSBT?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>Поиск &amp;следующий {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>Поиск &amp;предыдущий {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2088,6 +2205,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>Статус: Отключено</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Поддержать Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2150,6 +2272,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Кошельки всё ещё синхронизируются</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Хотите обсудить крупное пожертвование или партнёрство? Используйте кнопку контакта ниже.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2578,14 +2705,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>Транзакция {txid} уже подписана и находится в кошельке {wallet}</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>Эта транзакция {txid} существует в кошельке {wallet}, и сериализации обеих отличаются.</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>Транзакция {txid} уже подписана и находится в кошельке {wallet}. Сериализации обеих отличаются, что может быть вызвано различием в собранных подписях.</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>Транзакция {txid} уже подписана и находится в кошельке {wallet}</translation>
 		</message>
 	</context>
 	<context>
@@ -2733,6 +2859,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>Подключено к {server}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>Текущая цена биткоина недоступна.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>Текущая цена за биткоин: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3304,6 +3440,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>О программе</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>Общее</translation>
 		</message>
@@ -3725,6 +3866,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>Слишком низкая комиссия</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>Сохранить ставку комиссии</translation>
 		</message>
@@ -3736,8 +3882,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>Пожалуйста, измените ставку комиссии как минимум до {minimum}, иначе вы не сможете её отправить.</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>Пожалуйста, установите комиссию не ниже {minimum}, иначе транзакция может не быть опубликована.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4895,6 +5041,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>Баланс</translation>
 		</message>
@@ -4950,6 +5101,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>Нет данных QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>Аппаратные подписчики ещё не настроены.</translation>
 		</message>
@@ -4975,6 +5131,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>Сериализованный {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>Дескриптор кошелька (QR-код) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; позволяет создать кошелёк только для просмотра, чтобы видеть баланс. Чтобы потратить, нужны секретные {number} слов (Seed).</translation>
 		</message>
@@ -4990,6 +5151,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>ID транзакции: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}. Резервная копия семени для мультиподписного кошелька {threshold} из {m}: "{id}"</translation>
 		</message>
@@ -5002,6 +5173,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: Отпечаток: {keystore_fingerprint}, Происхождение ключа: {keystore_key_origin}, {keystore_xpub}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: Фрагмент {index} из {total}</translation>
 		</message>
 	</context>
 	<context>

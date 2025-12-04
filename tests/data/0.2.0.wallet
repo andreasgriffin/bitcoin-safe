@@ -10,7 +10,7 @@
                 "VERSION": "0.0.2",
                 "__class__": "SyncClient",
                 "auto_open_psbts": true,
-                "enabled": true,
+                "enabled": false,
                 "nostr_sync_dump": {
                     "debug": false,
                     "group_chat": {

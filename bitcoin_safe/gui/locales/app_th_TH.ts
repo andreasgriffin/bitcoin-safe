@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>กระเป๋าเงินออมบิตคอยน์ที่ปลอดภัยสำหรับทุกคน</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - ซอฟต์แวร์เสรีและโอเพ่นซอร์ส</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>สัญญาอนุญาต</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>เวอร์ชัน {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1065,6 +1092,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>ไม่พร้อมใช้งาน  </translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>ส่งออก PDF</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>การส่งออก PDF ใช้ได้เฉพาะกับธุรกรรมหรือ PSBT เท่านั้น</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>ส่งออกธุรกรรม</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1655,13 +1697,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;เปลี่ยนแปลง  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;เปลี่ยนรหัสผ่าน  </translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1670,13 +1707,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;ปิด</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;ฟอรัมชุมชน</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>ติดต่อผ่าน Nostr</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;ติดต่อ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;กระเป๋าปัจจุบัน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;ตัวอธิบายสำหรับฮาร์ดแวร์เซ็นเนอร์</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1690,8 +1742,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;แก้ไข</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;ออก</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;ออกจากโหมดเต็มหน้าจอ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1700,23 +1762,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;ส่งออกกระเป๋าเงิน PDF  </translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;คำติชม</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>ข้อเสนอแนะ / ติดต่อ</translation>
+			<source>&amp;File</source>
+			<translation>&amp;ไฟล์</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;สร้างคำแถลงยอดคงเหลือ PDF  </translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;เต็มหน้าจอ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>ฐานความรู้</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;ช่วยเหลือ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1725,23 +1787,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;ใบอนุญาต  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;ไลท์นิง</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;โหลดธุรกรรมหรือ PSBT  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>ส่งข้อเสนอแนะทางอีเมล</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1750,13 +1797,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;ย่อไปที่ถาด</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;เครือข่าย</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;กระเป๋าเงินใหม่  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;ออนเชน</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;กระเป๋า/แท็บถัดไป</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1770,23 +1832,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;กระเป๋า PDF</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;กระเป๋า/แท็บก่อนหน้า</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;ลงทะเบียน Multisig กับผู้ลงนามฮาร์ดแวร์  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;เปลี่ยนชื่อกระเป๋าเงิน  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;บันทึกกระเป๋าเงินปัจจุบัน  </translation>
+			<source>&amp;Save</source>
+			<translation>&amp;บันทึก</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;ค้นหา  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;ส่งอีเมล</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;ส่งทางอีเมล</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1815,13 +1892,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;เวอร์ชัน: {}  </translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;ชื่อกระเป๋า</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;กระเป๋าเงิน  </translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;รหัสผ่านกระเป๋า</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1837,6 +1919,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>ไฟล์ทั้งหมด (*);;PSBT (*.psbt);;ธุรกรรม (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1910,8 +1997,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>ส่งออก &amp;Descriptor สำหรับผู้ลงนามฮาร์ดแวร์  </translation>
+			<source>Donate on-chain</source>
+			<translation>บริจาคแบบ on-chain</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>บริจาคผ่าน Lightning</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>ส่งอีเมลถึงเรา</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1927,6 +2024,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>จาก &amp;ข้อความ  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2035,6 +2137,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>พิมพ์</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR &amp;สแกนเนอร์  </translation>
 		</message>
@@ -2045,8 +2152,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>&amp;รีเฟรช  </translation>
+			<source>Quit</source>
+			<translation>ออก</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2062,6 +2169,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>บันทึก PSBT?  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>ค้นหา &amp;ถัดไป {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>ค้นหา &amp;ก่อนหน้า {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2087,6 +2204,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>สถานะ: ตัดการเชื่อมต่อ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>สนับสนุน Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2149,6 +2271,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>กระเป๋าเงินยังคงกำลังซิงค์</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2574,14 +2701,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>ธุรกรรม {txid} นี้ถูกลงนามแล้วและอยู่ในกระเป๋า {wallet}</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>ธุรกรรม {txid} นี้มีอยู่ในกระเป๋าเงิน {wallet} และการซีเรียลไลซ์ของทั้งสองนั้นแตกต่างกัน</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>ธุรกรรม {txid} นี้ถูกลงนามแล้วและอยู่ในกระเป๋า {wallet} การซีเรียไลซ์ของทั้งสองแตกต่างกัน ซึ่งอาจเกิดจากลายเซ็นที่รวบรวมต่างกัน</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>ธุรกรรม {txid} นี้ถูกลงนามแล้วและอยู่ในกระเป๋า {wallet}</translation>
 		</message>
 	</context>
 	<context>
@@ -2729,6 +2855,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>เชื่อมต่อกับ {server}  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>ไม่สามารถแสดงราคาปัจจุบันของบิตคอยน์ได้</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>ราคาปัจจุบันต่อบิตคอยน์: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3299,6 +3435,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>เกี่ยวกับ</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>ทั่วไป</translation>
 		</message>
@@ -3717,6 +3858,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>อัตราค่าธรรมเนียมต่ำเกินไป</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>คงอัตราค่าธรรมเนียมไว้</translation>
 		</message>
@@ -3728,8 +3874,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>โปรดเปลี่ยนอัตราค่าธรรมเนียมให้ไม่น้อยกว่า {minimum} มิฉะนั้นคุณจะไม่สามารถกระจายธุรกรรมนั้นได้</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>กรุณาเปลี่ยนอัตราค่าธรรมเนียมให้ไม่น้อยกว่า {minimum} มิฉะนั้นคุณอาจไม่สามารถกระจายธุรกรรมได้</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4885,6 +5031,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>ยอดเงิน  </translation>
 		</message>
@@ -4940,6 +5091,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>ไม่มีข้อมูล QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>ยังไม่มีการตั้งค่าผู้รับรองฮาร์ดแวร์</translation>
 		</message>
@@ -4965,6 +5121,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>ข้อมูลที่ซีเรียลไลซ์ {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>ตัวบรรยายกระเป๋าเงิน (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; ช่วยให้คุณสร้างกระเป๋าแบบดูอย่างเดียวเพื่อดูยอดเงินของคุณได้ หากต้องการใช้จ่ายจากกระเป๋านี้คุณต้องใช้ {number} คำลับ (Seed)</translation>
 		</message>
@@ -4980,6 +5141,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>รหัสธุรกรรม: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}. การสำรองข้อมูลเมล็ดพันธุ์ของกระเป๋าเงิน Multi-Sig ที่ {threshold} จาก {m}: "{id}"  </translation>
 		</message>
@@ -4992,6 +5163,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: ลายนิ้วมือ: {keystore_fingerprint}, ต้นกำเนิดคีย์: {keystore_key_origin}, {keystore_xpub}  </translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: ชิ้นส่วน {index} จากทั้งหมด {total}</translation>
 		</message>
 	</context>
 	<context>

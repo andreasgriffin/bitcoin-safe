@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>محفظة ادخار بيتكوين آمنة للجميع.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - برمجيات حرة ومفتوحة المصدر</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>الترخيص</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>الإصدار {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1065,6 +1092,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>غير متوفر</translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>تصدير PDF</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>تصدير PDF متاح فقط للمعاملات أو PSBT.</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>تصدير المعاملة</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1655,13 +1697,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;تغيير  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;تغيير كلمة المرور</translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1670,13 +1707,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;إغلاق</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;منتدى المجتمع</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>التواصل عبر Nostr</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;اتصال</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;المحفظة الحالية</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;واصف لموقّعي الأجهزة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1690,8 +1742,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;تعديل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;خروج</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;الخروج من ملء الشاشة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1700,23 +1762,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;تصدير ملف PDF للمحفظة  </translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;ملاحظات</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>ملاحظات / تواصل</translation>
+			<source>&amp;File</source>
+			<translation>&amp;ملف</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;إنشاء كشف حساب الرصيد PDF  </translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;ملء الشاشة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>قاعدة المعرفة</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;مساعدة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1725,23 +1787,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;رخصة الاستخدام</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>&amp;تحميل المعاملة أو PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>إرسال ملاحظات عبر البريد</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1750,13 +1797,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;تصغير إلى الشريط</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;الشبكة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;محفظة جديدة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;Onchain</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;المحفظة/علامة التبويب التالية</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1770,23 +1832,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;محفظة PDF</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;المحفظة/علامة التبويب السابقة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;تسجيل Multisig مع الموقعين بالأجهزة  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;إعادة تسمية المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;حفظ المحفظة الحالية</translation>
+			<source>&amp;Save</source>
+			<translation>&amp;حفظ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;بحث  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;إرسال بريد إلكتروني</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;إرسال عبر البريد الإلكتروني</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1815,13 +1892,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;الإصدار: {}</translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;اسم المحفظة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;المحفظة</translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;كلمة مرور المحفظة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1837,6 +1919,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>يتم تمويل Bitcoin Safe من قِبل المجتمع. دعمك يحافظ على استقلالية التطوير، ويسمح لنا بإطلاق ميزات جديدة، ويحسّن مراجعات الأمان. يمكن عرض الداعمين الكبار في &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحة الداعمين&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1910,8 +1997,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>تصدير &amp;الوصف للموقعين بالأجهزة  </translation>
+			<source>Donate on-chain</source>
+			<translation>تبرّع على السلسلة (On-chain)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>تبرّع عبر Lightning</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>راسلنا عبر البريد الإلكتروني</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1927,6 +2024,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>من &amp;نص</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ساعد Bitcoin Safe على النمو كمشروع برمجي حر ومفتوح المصدر.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2035,6 +2137,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>طباعة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>QR &amp;ماسح ضوئي  </translation>
 		</message>
@@ -2045,8 +2152,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>تحديث</translation>
+			<source>Quit</source>
+			<translation>إنهاء</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2062,6 +2169,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>حفظ PSBT؟  </translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>بحث &amp;التالي {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>بحث &amp;السابق {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2087,6 +2204,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>الحالة: غير متصل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>ادعم Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2149,6 +2271,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>المحافظ لا تزال تُزامن</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>هل ترغب في مناقشة مساهمة أكبر أو شراكة؟ استخدم زر التواصل أدناه للوصول إلينا.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2577,14 +2704,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>هذه المعاملة {txid} تم توقيعها بالفعل وهي في المحفظة {wallet}</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>هذه المعاملة {txid} موجودة في المحفظة {wallet} وتسلسلاتهما مختلفة.</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>هذه المعاملة {txid} تم توقيعها بالفعل وهي في المحفظة {wallet}. تختلف تسلسلات التمثيل بينهما، وقد يكون السبب اختلاف التواقيع المجمَّعة.</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>هذه المعاملة {txid} تم توقيعها بالفعل وهي في المحفظة {wallet}</translation>
 		</message>
 	</context>
 	<context>
@@ -2732,6 +2858,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>متصل بـ {server}  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>سعر البيتكوين الحالي غير متاح.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>السعر الحالي لكل بيتكوين: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3302,6 +3438,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>حول</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>عام</translation>
 		</message>
@@ -3720,6 +3861,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>معدل الرسوم منخفض جدًا</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>الإبقاء على معدل الرسوم</translation>
 		</message>
@@ -3731,8 +3877,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>يُرجى تغيير معدل الرسوم ليكون على الأقل {minimum}، وإلا فلن تتمكن من بثّها.</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>يرجى تغيير معدل الرسوم ليكون على الأقل {minimum}، وإلا قد لا تتمكن من بثّ المعاملة.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4888,6 +5034,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>الرصيد</translation>
 		</message>
@@ -4943,6 +5094,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>لا توجد بيانات QR متاحة</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>لم يتم تكوين جهاز توقيع مادي بعد.</translation>
 		</message>
@@ -4968,6 +5124,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>{label} المتسلسل:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>مُعرّف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لعرض رصيدك. للإنفاق منها تحتاج إلى {number} كلمات سرية (Seed).</translation>
 		</message>
@@ -4983,6 +5144,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>معرّف المعاملة: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}. نسخة احتياطية لبذور محفظة متعددة التواقيع من {threshold} من {m}: "{id}"  </translation>
 		</message>
@@ -4995,6 +5166,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: بصمة: {keystore_fingerprint}, أصل المفتاح: {keystore_key_origin}, {keystore_xpub}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: الجزء {index} من {total}</translation>
 		</message>
 	</context>
 	<context>

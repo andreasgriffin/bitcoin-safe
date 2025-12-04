@@ -42,8 +42,8 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt import address_dialog
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...setup_fulcrum import Faucet
 from .helpers import (
@@ -85,6 +85,25 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
+
+        waiting_icon = svg_tools.get_QIcon("status_waiting.svg")
+        connected_icon = svg_tools.get_QIcon("status_connected.svg")
+
+        # QIcon.cacheKey() uniquely identifies the rendered icon, so matching cache keys
+        # verifies that the expected asset is set on the tab.
+        qtbot.waitUntil(
+            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))
+            and _node.icon
+            and _node.icon.cacheKey() == waiting_icon.cacheKey(),
+            timeout=10000,
+        )
+
+        qtbot.waitUntil(
+            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))
+            and _node.icon
+            and _node.icon.cacheKey() == connected_icon.cacheKey(),
+            timeout=10000,
+        )
 
         qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 

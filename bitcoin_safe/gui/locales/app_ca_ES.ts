@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
 	<context>
+		<name>AboutTab</name>
+		<message>
+			<source>A secure bitcoin savings wallet for everyone.</source>
+			<translation>Una cartera d’estalvi Bitcoin segura per a tothom.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Bitcoin-Safe</source>
+			<translation>Bitcoin-Safe</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>FOSS - Free &amp; Open Source Software</source>
+			<translation>FOSS - Programari Lliure i de Codi Obert</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Licence</source>
+			<translation>Llicència</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Versió {version}</translation>
+		</message>
+	</context>
+	<context>
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
@@ -1066,6 +1093,21 @@ the sending value {sent}</source>
 			<source>Not available</source>
 			<translation>No disponible</translation>
 		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF Export</source>
+			<translation>Exportació PDF</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>PDF export is only available for transactions or PSBTs.</source>
+			<translation>L’exportació PDF només està disponible per a transaccions o PSBT.</translation>
+		</message>
+		<name>FileToolButton</name>
+		<message>
+			<source>Transaction export</source>
+			<translation>Exportació de transacció</translation>
+		</message>
 	</context>
 	<context>
 		<name>FingerprintAnalyzer</name>
@@ -1656,13 +1698,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Change</source>
-			<translation>&amp;Canvia</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Change Password</source>
-			<translation>&amp;Canvia contrasenya</translation>
+			<source>&amp;Bitcoin Safe</source>
+			<translation>&amp;Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1671,13 +1708,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Close</source>
+			<translation>&amp;Tanca</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Community forum</source>
 			<translation>&amp;Fòrum de la comunitat</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Contact via Nostr</source>
-			<translation>&amp;Contacta via Nostr</translation>
+			<source>&amp;Contact</source>
+			<translation>&amp;Contacte</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Current Wallet</source>
+			<translation>&amp;Cartera Actual</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Descriptor for hardware signers</source>
+			<translation>&amp;Descriptor per a signants de maquinari</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1691,8 +1743,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Edit</source>
+			<translation>&amp;Edita</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Exit</source>
 			<translation>&amp;Sortir</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Exit Full Screen</source>
+			<translation>&amp;Surt de Pantalla Completa</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1701,23 +1763,23 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Export Wallet PDF</source>
-			<translation>&amp;Exporta PDF de la cartera</translation>
+			<source>&amp;Feedback</source>
+			<translation>&amp;Comentaris</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Feedback / Contact</source>
-			<translation>&amp;Comentaris / Contacte</translation>
+			<source>&amp;File</source>
+			<translation>&amp;Fitxer</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;Genera estat PDF de saldo</translation>
+			<source>&amp;Full Screen</source>
+			<translation>&amp;Pantalla Completa</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Knowledge</source>
-			<translation>&amp;Coneixement</translation>
+			<source>&amp;Help</source>
+			<translation>&amp;Ajuda</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1726,23 +1788,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;License</source>
-			<translation>&amp;Llicència</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lightning</source>
-			<translation>&amp;Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Load Transaction or PSBT</source>
 			<translation>Carrega transacció o &amp;PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Mail feedback</source>
-			<translation>&amp;Envia comentaris per correu</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1751,13 +1798,28 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Minimize to tray</source>
+			<translation>&amp;Minimitza a la safata</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Network</source>
+			<translation>&amp;Xarxa</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Nova cartera</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Onchain</source>
-			<translation>&amp;Onchain</translation>
+			<source>&amp;Next Wallet/Tab</source>
+			<translation>&amp;Següent Cartera/Pestanya</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Nostr DM</source>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1771,23 +1833,38 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;PDF Wallet</source>
+			<translation>&amp;Cartera PDF</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Previous Wallet/Tab</source>
+			<translation>&amp;Cartera/Pestanya Anterior</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
 			<translation>&amp;Registra multisig amb signadors de maquinari</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Rename Wallet</source>
-			<translation>&amp;Reanomena cartera</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save Current Wallet</source>
-			<translation>&amp;Desa la cartera actual</translation>
+			<source>&amp;Save</source>
+			<translation>&amp;Desa</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
 			<translation>&amp;Cerca</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send Email</source>
+			<translation>&amp;Envia Correu</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;Send via Email</source>
+			<translation>&amp;Envia per Correu</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1816,13 +1893,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Version: {}</source>
-			<translation>&amp;Versió: {}</translation>
+			<source>&amp;Wallet name</source>
+			<translation>&amp;Nom de la cartera</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Wallet</source>
-			<translation>&amp;Cartera</translation>
+			<source>&amp;Wallet password</source>
+			<translation>&amp;Contrasenya de la cartera</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>&amp;X/Twitter DM</source>
+			<translation>&amp;X/Twitter DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1838,6 +1920,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1911,8 +1998,18 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Export &amp;Descriptor for hardware signers</source>
-			<translation>Exporta &amp;descriptor per a signadors de maquinari</translation>
+			<source>Donate on-chain</source>
+			<translation>Donar on-chain</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Donate with Lightning</source>
+			<translation>Donar amb Lightning</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Email us</source>
+			<translation>Envieu-nos un correu electrònic</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1928,6 +2025,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Des de &amp;text</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2036,6 +2138,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Print</source>
+			<translation>Imprimeix</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>QR &amp;Scanner</source>
 			<translation>Lector &amp;QR</translation>
 		</message>
@@ -2046,8 +2153,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Re&amp;fresh</source>
-			<translation>Actu&amp;alitza</translation>
+			<source>Quit</source>
+			<translation>Surt</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2063,6 +2170,16 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Save PSBT?</source>
 			<translation>Desar PSBT?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;next	{shortcut}</source>
+			<translation>Cerca &amp;següent {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Search &amp;previous	{shortcut}</source>
+			<translation>Cerca &amp;anterior {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2088,6 +2205,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>Estat: Desconnectat</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Donar suport a Bitcoin Safe</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2150,6 +2272,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Els moneders encara s’estan sincronitzant</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2575,14 +2702,13 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>Aquesta transacció {txid} ja s’ha signat i és a la cartera {wallet}</translation>
+			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+			<translation>Aquesta transacció {txid} existeix a la cartera {wallet} i les serialitzacions de totes dues són diferents.</translation>
 		</message>
 		<name>PSBTAlreadyBroadcastedBar</name>
 		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}.
-The serializations of both differ, which could be caused by different collected signatures.</source>
-			<translation>Aquesta transacció {txid} ja s’ha signat i és a la cartera {wallet}. Les serialitzacions de totes dues difereixen, possiblement per signatures recollides diferents.</translation>
+			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+			<translation>Aquesta transacció {txid} ja s’ha signat i és a la cartera {wallet}</translation>
 		</message>
 	</context>
 	<context>
@@ -2730,6 +2856,16 @@ The serializations of both differ, which could be caused by different collected 
 		<message>
 			<source>Connected to {server}</source>
 			<translation>Connectat a {server}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin is unavailable.</source>
+			<translation>El preu actual del bitcoin no està disponible.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Current price per bitcoin: {price} ({currency})</source>
+			<translation>Preu actual per bitcoin: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3301,6 +3437,11 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>Settings</name>
 		<message>
+			<source>About</source>
+			<translation>Quant a</translation>
+		</message>
+		<name>Settings</name>
+		<message>
 			<source>General</source>
 			<translation>General</translation>
 		</message>
@@ -3722,6 +3863,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Fee rate too low</source>
+			<translation>Taxa de comissió massa baixa</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Keep fee rate</source>
 			<translation>Mantén la taxa de comissió</translation>
 		</message>
@@ -3733,8 +3879,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
-otherwise you will not be able to broadcast it.</source>
-			<translation>Si us plau, canvia la taxa de comissió perquè sigui com a mínim {minimum}, en cas contrari no la podràs transmetre.</translation>
+otherwise you may not be able to broadcast it.</source>
+			<translation>Canvieu la taxa de comissió a almenys {minimum}, en cas contrari potser no podreu transmetre-la.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4892,6 +5038,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>BBQr QR</source>
+			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Balance</source>
 			<translation>Saldo</translation>
 		</message>
@@ -4947,6 +5098,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>No QR data available</source>
+			<translation>No hi ha dades QR disponibles</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>No hardware signers configured yet.</source>
 			<translation>Cap signant de maquinari configurat encara.</translation>
 		</message>
@@ -4972,6 +5128,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Serialized {label}:</source>
+			<translation>{label} serialitzat:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
 			<translation>El descriptor de la cartera (Codi QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; et permet crear una cartera només de visualització per veure el teu saldo. Per gastar-ne, necessites les {number} paraules secretes (Seed).</translation>
 		</message>
@@ -4987,6 +5148,16 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction ID: {txid}</source>
+			<translation>ID de transacció: {txid}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>UR QR</source>
+			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
 			<translation>{i}. Còpia de seguretat de la seed d'una cartera multisig de {threshold} de {m}: "{id}"</translation>
 		</message>
@@ -4999,6 +5170,11 @@ Click here to learn more.</source>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
 			<translation>{keystore_label}: Empremta digital: {keystore_fingerprint}, Origen de clau: {keystore_key_origin}, {keystore_xpub}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title}: Fragment {index} of {total}</source>
+			<translation>{title}: Fragment {index} de {total}</translation>
 		</message>
 	</context>
 	<context>
