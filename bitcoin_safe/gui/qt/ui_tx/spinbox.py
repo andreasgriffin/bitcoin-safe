@@ -174,16 +174,20 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             return self.fx.config.currency.upper()
         return None
 
+    def get_code_symbol_locale(self, fx: FX):
+        currency_code = self.get_currency_code() or fx.get_currency_iso()
+        currency_symbol = fx.get_currency_symbol_from_iso(currency_code)
+        locale = fx.get_currency_locale(currency_code) or fx.get_locale()
+
+        return currency_code, currency_symbol, locale
+
     def update_currency(self):
         """Update currency."""
         if not self.fx:
             return
 
-        currency_code = self.get_currency_code()
-        currency_locale = self.fx.get_currency_locale(currency_code)
-        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+        currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
 
-        locale = currency_locale or self.fx.get_locale()
         self.setLocale(locale)
 
         # clear any old prefix/suffix
@@ -249,9 +253,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         if not self.fx:
             return ""
 
-        currency_code = self.get_currency_code()
-        currency_locale = self.fx.get_currency_locale(currency_code)
-        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+        currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
 
         fiat_str = self.fx.fiat_to_str_custom(
             fiat_value, use_currency_symbol=False, locale=self.locale(), currency_symbol=currency_symbol
@@ -266,10 +268,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             return 0
         if not self.fx:
             return 0
-
-        currency_code = self.get_currency_code()
-        currency_locale = self.fx.get_currency_locale(currency_code)
-        currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
+        currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
 
         value = self.fx.parse_fiat_custom(
             formatted=text if text else "0", locale=self.locale(), currency_symbol=currency_symbol
