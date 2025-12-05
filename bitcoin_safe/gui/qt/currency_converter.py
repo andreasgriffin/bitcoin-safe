@@ -31,7 +31,8 @@ from __future__ import annotations
 import logging
 
 from PyQt6.QtCore import QObject
-from PyQt6.QtWidgets import QDoubleSpinBox
+
+from bitcoin_safe.gui.qt.ui_tx.spinbox import BTCSpinBox, FiatSpinBox
 
 from ...fx import FX
 
@@ -42,8 +43,8 @@ class CurrencyConverter(QObject):
     def __init__(
         self,
         fx: FX | None,
-        btc_spin_box: QDoubleSpinBox,
-        fiat_spin_box: QDoubleSpinBox,
+        btc_spin_box: BTCSpinBox,
+        fiat_spin_box: FiatSpinBox,
     ):
         """
         fx: your FX instance
@@ -64,7 +65,7 @@ class CurrencyConverter(QObject):
         self.fiat_spin.valueChanged.connect(self._on_fiat_changed)
 
     def _target_currency(self) -> str | None:
-        return self.fx.get_currency_iso(currency_loc=self.fiat_spin.locale()) if self.fx else None
+        return self.fiat_spin.get_currency_code()
 
     def _on_bitcoin_changed(self, value: float):
         """On bitcoin changed."""
