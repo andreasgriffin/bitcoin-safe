@@ -43,7 +43,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from tests.setup_fulcrum import Faucet
-
+from .test_wallet_send import SEND_TEST_WALLET_FUND_AMOUNT
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -65,8 +65,6 @@ def test_print_existing_transaction(
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
 ) -> None:
-    """Open an existing transaction and trigger print via Ctrl+P."""
-
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
@@ -83,9 +81,11 @@ def test_print_existing_transaction(
         qt_wallet = main_window.open_wallet(str(temp_wallet_path))
         assert qt_wallet
 
-        fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=1000000)
+        if not qt_wallet.wallet.sorted_delta_list_transactions():
+            fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT)
 
         tx_history = qt_wallet.wallet.sorted_delta_list_transactions()
+
         assert tx_history, "Expected at least one transaction in the wallet history"
         tx_details = tx_history[0]
 
