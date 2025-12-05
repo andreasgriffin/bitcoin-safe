@@ -157,6 +157,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         # signals
         signal_currency_changed.connect(self.update_currency)
         signal_language_switch.connect(self.update_currency)
+        self.valueChanged.connect(self._set_btc_from_fiat)
 
     def setCurrencyCode(self, currency_code: str | None) -> None:
         """SetCurrencyCode."""
@@ -238,11 +239,6 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         """Set btc from fiat."""
         if self.fx:
             self._btc_amount = self.fx.fiat_to_btc(val, currency=self.get_currency_code()) or 0
-
-    def setValue(self, val: float) -> None:
-        """SetValue."""
-        self._set_btc_from_fiat(val)
-        super().setValue(val)
 
     def value(self) -> float:
         """Value."""
