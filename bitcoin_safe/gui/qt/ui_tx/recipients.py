@@ -157,7 +157,7 @@ class RecipientWidget(QWidget):
         self.fiat_spin_box.setFixedWidth(w)
 
         self._currency_converter = CurrencyConverter(
-            fx=fx, btc_spin_box=self.amount_spin_box, fiat_spin_box=self.fiat_spin_box
+            btc_spin_box=self.amount_spin_box, fiat_spin_box=self.fiat_spin_box
         )
 
         self.form_layout.addRow(self.address_label, self.address_edit)

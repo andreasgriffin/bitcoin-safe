@@ -154,6 +154,9 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self.update_currency()
         self.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
+        # simple guard so we don't recurse
+        self._prevent_update_btc_amount = False
+
         # signals
         signal_currency_changed.connect(self.update_currency)
         signal_language_switch.connect(self.update_currency)
@@ -233,11 +236,13 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             self.fx
             and (fiat_value := self.fx.btc_to_fiat(btc_amount, currency=self.get_currency_code())) is not None
         ):
+            self._prevent_update_btc_amount = True
             self.setValue(fiat_value)
+            self._prevent_update_btc_amount = False
 
     def _set_btc_from_fiat(self, val: float):
         """Set btc from fiat."""
-        if self.fx:
+        if not self._prevent_update_btc_amount and self.fx:
             self._btc_amount = self.fx.fiat_to_btc(val, currency=self.get_currency_code()) or 0
 
     def value(self) -> float:
