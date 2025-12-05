@@ -56,6 +56,8 @@ from .helpers import (
     main_window_context,
 )
 
+SEND_TEST_WALLET_FUND_AMOUNT = 10000000
+
 logger = logging.getLogger(__name__)
 
 
@@ -98,7 +100,10 @@ def test_wallet_send(
             # check wallet address
             assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
 
-            fund_wallet(qt_wallet=qt_wallet, amount=10000000, qtbot=qtbot, faucet=faucet)
+            if not qt_wallet.wallet.sorted_delta_list_transactions():
+                fund_wallet(
+                    qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT, qtbot=qtbot, faucet=faucet
+                )
 
             def import_recipients() -> None:
                 """Import recipients."""
