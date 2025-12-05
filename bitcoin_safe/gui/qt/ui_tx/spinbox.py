@@ -166,7 +166,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self._currency_code = normalized
         self.update_currency()
 
-    def _get_currency_code(self) -> str | None:
+    def get_currency_code(self) -> str | None:
         """Get currency code."""
         if self._currency_code:
             return self._currency_code
@@ -179,7 +179,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         if not self.fx:
             return
 
-        currency_code = self._get_currency_code()
+        currency_code = self.get_currency_code()
         currency_locale = self.fx.get_currency_locale(currency_code)
         currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
 
@@ -219,22 +219,21 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         """Fiat value."""
         if not self.fx:
             return None
-        return self.fx.btc_to_fiat(self.btc_value(), currency=self._get_currency_code())
+        return self.fx.btc_to_fiat(self.btc_value(), currency=self.get_currency_code())
 
     def setBtcValue(self, btc_amount: int) -> None:
         """SetBtcValue."""
         self._btc_amount = btc_amount
         if (
             self.fx
-            and (fiat_value := self.fx.btc_to_fiat(btc_amount, currency=self._get_currency_code()))
-            is not None
+            and (fiat_value := self.fx.btc_to_fiat(btc_amount, currency=self.get_currency_code())) is not None
         ):
             self.setValue(fiat_value)
 
     def _set_btc_from_fiat(self, val: float):
         """Set btc from fiat."""
         if self.fx:
-            self._btc_amount = self.fx.fiat_to_btc(val, currency=self._get_currency_code()) or 0
+            self._btc_amount = self.fx.fiat_to_btc(val, currency=self.get_currency_code()) or 0
 
     def setValue(self, val: float) -> None:
         """SetValue."""
@@ -250,7 +249,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         if not self.fx:
             return ""
 
-        currency_code = self._get_currency_code()
+        currency_code = self.get_currency_code()
         currency_locale = self.fx.get_currency_locale(currency_code)
         currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
 
@@ -268,7 +267,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         if not self.fx:
             return 0
 
-        currency_code = self._get_currency_code()
+        currency_code = self.get_currency_code()
         currency_locale = self.fx.get_currency_locale(currency_code)
         currency_symbol = self.fx.get_currency_symbol(currency_loc=currency_locale)
 

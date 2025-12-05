@@ -142,3 +142,24 @@ def test_currency_change_updates_fiat(
 
     assert fiat_spin.value() == pytest.approx(btc_value / 1e8 * fx.rate)
     assert fx.last_currency == "EUR"
+
+
+def test_sats_currency_conversion(qtbot: QtBot, spin_boxes: Tuple[DummyFX, BTCSpinBox, FiatSpinBox]) -> None:
+    fx, btc_spin, fiat_spin = spin_boxes
+    fx.rate = 100_000_000  # 1 BTC = 100,000,000 sats
+    fx.config.currency = "SATS"
+    converter = CurrencyConverter(fx, btc_spin, fiat_spin)
+
+    sats_value = 12_345
+    btc_spin.setValue(sats_value)
+    converter._on_bitcoin_changed(btc_spin.value())
+
+    assert fiat_spin.value() == pytest.approx(sats_value)
+    assert fx.last_currency == "SATS"
+
+    fiat_value = 54_321
+    fiat_spin.setValue(fiat_value)
+    converter._on_fiat_changed(fiat_spin.value())
+
+    assert btc_spin.value() == fiat_value
+    assert fx.last_currency == "SATS"
