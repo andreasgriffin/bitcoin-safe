@@ -39,6 +39,7 @@ from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.mempool_manager import fetch_from_url
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.util import SATOSHIS_PER_BTC
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ logger = logging.getLogger(__name__)
 class FX(QObject):
     signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())
 
-    def __init__(self, config: UserConfig, loop_in_thread: LoopInThread | None) -> None:
+    def __init__(self, config: UserConfig, loop_in_thread: LoopInThread | None, update_rates=True) -> None:
         """Initialize instance."""
         super().__init__()
         self.loop_in_thread = loop_in_thread or LoopInThread()
@@ -54,7 +55,8 @@ class FX(QObject):
         self.config = config
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()
         self.sanitize_rates()
-        self.update()
+        if update_rates:
+            self.update()
         logger.debug(f"initialized {self.__class__.__name__}")
 
     @staticmethod
@@ -99,6 +101,38 @@ class FX(QObject):
         return currency_loc.currencySymbol(
             QLocale.CurrencySymbolFormat.CurrencySymbol
         ) or self.get_currency_iso(currency_loc=currency_loc)
+
+    def get_currency_symbol_from_iso(self, currency_iso: str) -> str:
+        symbol = ""
+        currency_iso = FX.sanitize_key(currency_iso)
+        currency_locale = self.get_currency_locale(currency_iso_code=currency_iso)
+
+        if currency_locale:
+            symbol = self.get_currency_symbol(currency_loc=currency_locale) or ""
+
+        if symbol:
+            return symbol
+
+        data = self.rates.get(currency_iso)
+        if data:
+            symbol = str(data.get("unit", "")) or currency_iso
+
+        return symbol
+
+    def get_currency_name_from_iso(self, currency_iso: str) -> str:
+        name = ""
+        currency_iso = FX.sanitize_key(currency_iso)
+
+        currency_locale = self.get_currency_locale(currency_iso_code=currency_iso)
+
+        data = self.rates.get(currency_iso)
+        if data:
+            name = str(data.get("name"))
+
+        if not name and currency_locale:
+            name = self.get_currency_name(currency_loc=currency_locale)
+
+        return name or currency_iso
 
     def get_currency_name(self, currency_loc: QLocale | None = None):
         """Get currency name."""
@@ -191,7 +225,7 @@ class FX(QObject):
         ):
             return None
 
-        return int(1e8 * fiat / rate["value"])
+        return int(SATOSHIS_PER_BTC * fiat / rate["value"])
 
     def btc_to_fiat(self, amount: int, currency: str | None = None) -> float | None:
         """Btc to fiat."""
@@ -202,7 +236,7 @@ class FX(QObject):
         ):
             return None
 
-        fiat_amount = rate["value"] / 1e8 * amount
+        fiat_amount = rate["value"] * amount / SATOSHIS_PER_BTC
         return fiat_amount
 
     def btc_to_fiat_str(self, amount: int, use_currency_symbol=True) -> str:

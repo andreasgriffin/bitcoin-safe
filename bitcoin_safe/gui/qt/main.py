@@ -305,6 +305,7 @@ class MainWindow(QMainWindow):
 
     def update_fx_rate_in_config(self):
         """Update fx rate in config."""
+        self.config.rates.clear()
         self.config.rates.update(self.fx.rates)
 
     def on_new_wallet_welcome_screen_remove_me(self, tab: QWidget):

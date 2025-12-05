@@ -94,25 +94,10 @@ class CurrencyComboBox(QComboBox):
     def _add_currency_item(self, code: str) -> None:
         """Add a currency entry to the combo box if data for the code exists."""
         code = FX.sanitize_key(code)
-        data = self.fx.rates.get(code)
-        if not data:
-            return
-
-        currency_locale = self.fx.get_currency_locale(currency_iso_code=code)
-
-        symbol = ""
-        if currency_locale:
-            symbol = self.fx.get_currency_symbol(currency_loc=currency_locale) or ""
-        if not symbol:
-            symbol = data.get("unit") or code
-        name = data.get("name")
-        if not name and currency_locale:
-            name = self.fx.get_currency_name(currency_loc=currency_locale)
-        if not name:
-            name = code
-
         self.addItem(
-            self._format_currency_label(code, str(symbol), str(name)),
+            self._format_currency_label(
+                code, (self.fx.get_currency_symbol_from_iso(code)), (self.fx.get_currency_name_from_iso(code))
+            ),
             code,
         )
 
