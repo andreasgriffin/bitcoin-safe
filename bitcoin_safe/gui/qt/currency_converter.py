@@ -34,26 +34,21 @@ from PyQt6.QtCore import QObject
 
 from bitcoin_safe.gui.qt.ui_tx.spinbox import BTCSpinBox, FiatSpinBox
 
-from ...fx import FX
-
 logger = logging.getLogger(__name__)
 
 
 class CurrencyConverter(QObject):
     def __init__(
         self,
-        fx: FX | None,
         btc_spin_box: BTCSpinBox,
         fiat_spin_box: FiatSpinBox,
     ):
         """
-        fx: your FX instance
         crypto_spin_box: the spinbox showing the crypto amount
         fiat_spin_box: the spinbox showing the fiat amount
         crypto_currency: currency code passed to FX (defaults to "BTC")
         """
         super().__init__()
-        self.fx = fx
         self.crypto_spin = btc_spin_box
         self.fiat_spin = fiat_spin_box
 
@@ -71,32 +66,14 @@ class CurrencyConverter(QObject):
         """On bitcoin changed."""
         if self._updating:
             return
-        if not self.fx:
-            return
         self._updating = True
-        try:
-            # convert to fiat
-            fiat_val = self.fx.btc_to_fiat(int(round(value)), currency=self._target_currency())
-            if fiat_val is not None:
-                # this will emit fiat_spin.valueChanged,
-                # but _on_fiat_changed will early‐return
-                self.fiat_spin.setValue(fiat_val)
-        finally:
-            self._updating = False
+        self.fiat_spin.setBtcValue(int(value))
+        self._updating = False
 
     def _on_fiat_changed(self, value: float):
         """On fiat changed."""
         if self._updating:
             return
-        if not self.fx:
-            return
         self._updating = True
-        try:
-            # convert back to crypto (int!)
-            btc_value = self.fx.fiat_to_btc(value, currency=self._target_currency())
-            if btc_value is not None:
-                # emits crypto_spin.valueChanged,
-                # but _on_crypto_changed will early‐return
-                self.crypto_spin.setValue(btc_value)
-        finally:
-            self._updating = False
+        self.crypto_spin.setValue(self.fiat_spin.btc_value())
+        self._updating = False

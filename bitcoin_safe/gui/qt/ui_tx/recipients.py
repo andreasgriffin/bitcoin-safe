@@ -157,7 +157,7 @@ class RecipientWidget(QWidget):
         self.fiat_spin_box.setFixedWidth(w)
 
         self._currency_converter = CurrencyConverter(
-            fx=fx, btc_spin_box=self.amount_spin_box, fiat_spin_box=self.fiat_spin_box
+            btc_spin_box=self.amount_spin_box, fiat_spin_box=self.fiat_spin_box
         )
 
         self.form_layout.addRow(self.address_label, self.address_edit)
@@ -172,7 +172,6 @@ class RecipientWidget(QWidget):
         self.address_edit.signal_text_change.connect(self.on_address_change)
         self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
         wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
-        self.amount_spin_box.valueChanged.connect(self.set_fiat_value)
         self.wallet_functions.signals.language_switch.connect(self.updateUi)
         self.wallet_functions.signals.currency_switch.connect(self.updateUi)
 

@@ -154,7 +154,7 @@ def test_conversions(
     qtbot.addWidget(btc_spin)
     qtbot.addWidget(fiat_spin)
 
-    converter = CurrencyConverter(fx, btc_spin, fiat_spin)
+    converter = CurrencyConverter(btc_spin, fiat_spin)
 
     btc_value = 123456
     btc_spin.setValue(btc_value)
