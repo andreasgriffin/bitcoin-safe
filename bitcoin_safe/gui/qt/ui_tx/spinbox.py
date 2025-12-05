@@ -237,8 +237,10 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             and (fiat_value := self.fx.btc_to_fiat(btc_amount, currency=self.get_currency_code())) is not None
         ):
             self._prevent_update_btc_amount = True
-            self.setValue(fiat_value)
-            self._prevent_update_btc_amount = False
+            try:
+                self.setValue(fiat_value)
+            finally:
+                self._prevent_update_btc_amount = False
 
     def _set_btc_from_fiat(self, val: float):
         """Set btc from fiat."""
