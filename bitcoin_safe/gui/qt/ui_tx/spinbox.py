@@ -149,13 +149,14 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         self._btc_amount: int = 0
         self._is_max = False
         self._currency_code: str | None = None
+
+        # simple guard so we don't recurse
+        self._prevent_update_btc_amount = False
+
         self.setDecimals(2)  # Set the number of decimal places
         self.setRange(0, 1e12)
         self.update_currency()
         self.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-
-        # simple guard so we don't recurse
-        self._prevent_update_btc_amount = False
 
         # signals
         signal_currency_changed.connect(self.update_currency)
