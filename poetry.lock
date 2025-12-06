@@ -2334,14 +2334,14 @@ files = [
 
 [[package]]
 name = "pbs-installer"
-version = "2025.12.2"
+version = "2025.12.5"
 description = "Installer for Python Build Standalone"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "pbs_installer-2025.12.2-py3-none-any.whl", hash = "sha256:906cb5346515a0e92ba1d37f4065d9229d6c0675c329e0a455396e01a796be71"},
-    {file = "pbs_installer-2025.12.2.tar.gz", hash = "sha256:ca26271b5643c6f2d0a378f99e4b410ef43728049f939b339abb042158d90ff8"},
+    {file = "pbs_installer-2025.12.5-py3-none-any.whl", hash = "sha256:1cc1977bbb8367bb3ce03a7954f58d6e765e184fd873b73674076f9e8788cd08"},
+    {file = "pbs_installer-2025.12.5.tar.gz", hash = "sha256:3d03347d73f4a58ddfbe26473b622065476633e57de44fb025527c8852e4efa7"},
 ]
 
 [package.dependencies]
@@ -2495,14 +2495,14 @@ testing = ["pytest", "pytest-cov", "wheel"]
 
 [[package]]
 name = "platformdirs"
-version = "4.5.0"
+version = "4.5.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "platformdirs-4.5.0-py3-none-any.whl", hash = "sha256:e578a81bb873cbb89a41fcc904c7ef523cc18284b7e3b3ccf06aca1403b7ebd3"},
-    {file = "platformdirs-4.5.0.tar.gz", hash = "sha256:70ddccdd7c99fc5942e9fc25636a8b34d04c24b335100223152c2803e4063312"},
+    {file = "platformdirs-4.5.1-py3-none-any.whl", hash = "sha256:d03afa3963c806a9bed9d5125c8f4cb2fdaf74a55ab60e5d59b3fde758104d31"},
+    {file = "platformdirs-4.5.1.tar.gz", hash = "sha256:61d5cdcc6065745cdd94f0f878977f8de9437be93de97c1c12f853c9c0cdcbda"},
 ]
 
 [package.extras]
@@ -3738,14 +3738,14 @@ files = [
 
 [[package]]
 name = "translate-toolkit"
-version = "3.17.3"
+version = "3.17.4"
 description = "Tools and API for translation and localization engineering."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "translate_toolkit-3.17.3-py3-none-any.whl", hash = "sha256:bac531311d25178aab4a6a2dc34bd278cff6c9500aa1e1c330b6b54a4643215c"},
-    {file = "translate_toolkit-3.17.3.tar.gz", hash = "sha256:05601dc3027096b3b0de831bb44b602eb923c4483bcc5a19cc82d55785bc8416"},
+    {file = "translate_toolkit-3.17.4-py3-none-any.whl", hash = "sha256:70101c691d8221f15494a1b2ee0339fc2b4f3d61cb7f7c9b3ea30c382c7557dc"},
+    {file = "translate_toolkit-3.17.4.tar.gz", hash = "sha256:4f01267918cd20c866f71f8b8acaeb5288c054793d9ba135339f59707e49a124"},
 ]
 
 [package.dependencies]
@@ -3881,21 +3881,21 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.5.0"
+version = "2.6.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "urllib3-2.5.0-py3-none-any.whl", hash = "sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc"},
-    {file = "urllib3-2.5.0.tar.gz", hash = "sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760"},
+    {file = "urllib3-2.6.0-py3-none-any.whl", hash = "sha256:c90f7a39f716c572c4e3e58509581ebd83f9b59cced005b7db7ad2d22b0db99f"},
+    {file = "urllib3-2.6.0.tar.gz", hash = "sha256:cb9bcef5a4b345d5da5d145dc3e30834f58e8018828cbc724d30b4cb7d4d49f1"},
 ]
 
 [package.extras]
-brotli = ["brotli (>=1.0.9) ; platform_python_implementation == \"CPython\"", "brotlicffi (>=0.8.0) ; platform_python_implementation != \"CPython\""]
+brotli = ["brotli (>=1.2.0) ; platform_python_implementation == \"CPython\"", "brotlicffi (>=1.2.0.0) ; platform_python_implementation != \"CPython\""]
 h2 = ["h2 (>=4,<5)"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
-zstd = ["zstandard (>=0.18.0)"]
+zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [[package]]
 name = "virtualenv"
