@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import platform
 import shutil
 import subprocess
@@ -67,6 +68,15 @@ FULCRUM_HOST = BITCOIN_HOST
 FULCRUM_PORT = "51001"
 FULCRUM_BIN_DIR = FULCRUM_DIR / f"Fulcrum-{FULCRUM_VERSION}"
 
+
+def _fulcrum_process_name() -> str:
+    return "Fulcrum.exe" if platform.system() == "Windows" else "Fulcrum"
+
+
+def _fulcrum_executable_path() -> Path:
+    return FULCRUM_BIN_DIR / _fulcrum_process_name()
+
+
 # -------------------------------------------------------------------------
 # Example content for fulcrum.conf (adjust as needed for your environment)
 # -------------------------------------------------------------------------
@@ -94,22 +104,21 @@ def download_fulcrum():
     system = platform.system()
 
     if system == "Windows":
-        raise NotImplementedError("Killing and starting fulcrum is not implemented on windows")
         archive_extension = "zip"
-        # Example Windows link; update to the actual release artifact name
         name = f"Fulcrum-{FULCRUM_VERSION}-win64"
         extension = ".zip"
+        build_from_source = False
     elif system == "Darwin":  # macOS
-        raise NotImplementedError("Fulcrum is not available for mac")
         archive_extension = "tar.gz"
-        # Example macOS link; update to the actual release artifact name
-        name = f"Fulcrum-{FULCRUM_VERSION}-macos"
-        extension = ".tgz"
+        name = f"Fulcrum-{FULCRUM_VERSION}-src"
+        extension = ".tar.gz"
+        build_from_source = True
     else:  # Assume Linux
         archive_extension = "tar.gz"
         # Example Linux link; update to the actual release artifact name
         name = f"Fulcrum-{FULCRUM_VERSION}-x86_64-linux"
         extension = ".tar.gz"
+        build_from_source = False
 
     url = f"https://github.com/cculianu/Fulcrum/releases/download/v{FULCRUM_VERSION}/{name}{extension}"
     fulcrum_archive = FULCRUM_DIR / f"fulcrum-{FULCRUM_VERSION}.{archive_extension}"
@@ -139,20 +148,81 @@ def download_fulcrum():
         shutil.rmtree(FULCRUM_BIN_DIR)
         shutil.move(FULCRUM_DIR / name, FULCRUM_BIN_DIR)
 
+    if system == "Darwin" and build_from_source:
+        _build_fulcrum_from_source()
+
     logger.info(f"Fulcrum {FULCRUM_VERSION} is ready to use.")
 
 
+def _build_fulcrum_from_source() -> None:
+    build_dir = FULCRUM_DIR / "build"
+    build_dir.mkdir(parents=True, exist_ok=True)
+
+    qmake_path = _locate_qmake()
+    logger.info("Configuring Fulcrum build for macOS using %s...", qmake_path)
+
+    # Fulcrum ships a qmake project (Fulcrum.pro). Configure into a build directory to
+    # keep the extracted sources pristine.
+    subprocess.run(
+        [str(qmake_path), str(FULCRUM_BIN_DIR / "Fulcrum.pro")],
+        cwd=build_dir,
+        check=True,
+    )
+
+    logger.info("Building Fulcrum from source for macOS...")
+    subprocess.run(
+        [
+            "make",
+            "-j",
+            str(os.cpu_count() or 2),
+        ],
+        cwd=build_dir,
+        check=True,
+    )
+
+    candidate_paths = [
+        build_dir / "Fulcrum",
+        build_dir / "bin" / "Fulcrum",
+    ]
+    for candidate in candidate_paths:
+        if candidate.exists():
+            shutil.copy2(candidate, FULCRUM_BIN_DIR / "Fulcrum")
+            break
+    else:
+        raise FileNotFoundError("Fulcrum binary not found after building from source on macOS.")
+
+
+def _locate_qmake() -> Path:
+    """Locate a qmake binary provided by Homebrew or the PATH on macOS."""
+
+    candidates = [
+        Path("/usr/local/opt/qt@5/bin/qmake"),
+        Path("/opt/homebrew/opt/qt@5/bin/qmake"),
+        Path(shutil.which("qmake") or ""),
+    ]
+    for candidate in candidates:
+        if candidate and candidate.exists():
+            return candidate
+
+    raise FileNotFoundError("qmake not found. Ensure Qt5 is installed (e.g. brew install qt@5).")
+
+
 def is_fulcrum_running() -> bool:
-    """Checks if Fulcrum is running by looking for a matching process name in the
-    process list on Linux using pgrep.
+    """Checks if Fulcrum is running by looking for a matching process name.
 
     Returns:
         bool: True if Fulcrum is running, False otherwise.
     """
-    # We use pgrep with the -f option to match against the entire command line,
-    # and -x to ensure an exact match if you want to precisely match the command "fulcrum".
-    # Adjust the pattern if needed (e.g. path to fulcrum, or script name).
-    result = subprocess.run(["pgrep", "-x", "Fulcrum"], capture_output=True)
+    process_name = _fulcrum_process_name()
+    if platform.system() == "Windows":
+        result = subprocess.run(
+            ["tasklist", "/FI", f"IMAGENAME eq {process_name}"],
+            capture_output=True,
+            text=True,
+        )
+        return process_name.lower() in result.stdout.lower()
+
+    result = subprocess.run(["pgrep", "-x", process_name], capture_output=True)
     return result.returncode == 0  # 0 means a match was found
 
 
@@ -161,8 +231,11 @@ def stop_fulcrum():
     pkill."""
     if is_fulcrum_running():
         logger.info("Stopping Fulcrum...")
-        # pkill will send SIGTERM by default, which should gracefully stop Fulcrum.
-        subprocess.run(["pkill", "-x", "Fulcrum"], check=False)
+        if platform.system() == "Windows":
+            subprocess.run(["taskkill", "/IM", _fulcrum_process_name(), "/F"], check=False)
+        else:
+            # pkill will send SIGTERM by default, which should gracefully stop Fulcrum.
+            subprocess.run(["pkill", "-x", _fulcrum_process_name()], check=False)
         logger.info("Fulcrum has been stopped.")
     else:
         logger.info("Fulcrum is not running.")
@@ -176,7 +249,7 @@ def start_fulcrum():
     FULCRUM_CONF.write_text(FULCRUM_CONF_CONTENT)
 
     # Example: Adjust command, config file path, arguments, etc.
-    fulcrum_executable = FULCRUM_BIN_DIR / "Fulcrum"
+    fulcrum_executable = _fulcrum_executable_path()
     # TODO: tailor command to your environment
     cmd = [
         str(fulcrum_executable),
