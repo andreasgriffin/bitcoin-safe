@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.12']
-        os: [  ubuntu-22.04  ]  # [macos-latest, ubuntu-22.04, windows-latest]
+        os: [macos-latest, ubuntu-22.04, windows-latest]
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
@@ -29,6 +29,14 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Install macOS build dependencies
+      if: runner.os == 'macOS'
+      run: |
+        brew update
+        brew install qt@5 boost openssl@3 zeromq pkg-config
+        echo "$(brew --prefix qt@5)/bin" >> $GITHUB_PATH
+        echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig" >> $GITHUB_ENV
 
     - name: Setup xvfb (Linux)
       if: runner.os == 'Linux'
