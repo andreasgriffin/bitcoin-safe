@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="7f2ae63f703ae27955722eac4891678b546d513a" # ~ v6.16.0
+PYINSTALLER_COMMIT="3f596f66feebe3a7d247248f95f76c071d08b832" # ~ v6.17.0
 
 PYTHON_VERSION=3.12.3
 
