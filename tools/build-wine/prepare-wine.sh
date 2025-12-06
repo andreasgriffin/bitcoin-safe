@@ -48,8 +48,7 @@ done
 break_legacy_easy_install
 
 info "Installing build dependencies"
-do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt"  
-do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt"  
+do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build.txt"
 
 
 info "Installing build dependencies using poetry"

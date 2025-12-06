@@ -1,9 +1,0 @@
-cleo==2.1.0
-colorama==0.4.6
-crashtest==0.4.1
-poetry==2.2.1
-poetry-core==2.2.1
-pywin32-ctypes==0.2.3
-requests==2.32.3
-requests-toolbelt==1.0.0
-xattr==1.2.0

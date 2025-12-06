@@ -103,8 +103,7 @@ function do_pip() {
         --cache-dir "$PIP_CACHE_DIR" "$@" \
         || fail "Could not install the specified packages due to a failure in: $@"
 }
-do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-build-base.txt  
-do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-poetry.txt 
+do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-build.txt
 
 
 info "Installing build dependencies using poetry"

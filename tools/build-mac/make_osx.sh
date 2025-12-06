@@ -96,8 +96,7 @@ function do_pip() {
 }
 
 info "Installing required pip packages for building..."
-do_pip -Ir ./tools/deterministic-build/requirements-build-base.txt  
-do_pip -Ir ./tools/deterministic-build/requirements-poetry.txt 
+do_pip -Ir ./tools/deterministic-build/requirements-build.txt
 
 info "Installing some Brew tools for compilation"
 brew install autoconf automake libtool gettext coreutils pkgconfig
