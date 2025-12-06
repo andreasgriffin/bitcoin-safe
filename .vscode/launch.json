@@ -99,6 +99,18 @@
       "preLaunchTask": "Poetry Install",
     },
     {
+      "name": "thread logging",
+      "type": "python",
+      "request": "launch",
+      "module": "bitcoin_safe",
+      "console": "integratedTerminal",
+      "args": [
+        "--log_tread_spawning",  
+      ],
+      "preLaunchTask": "Poetry Install",
+      "justMyCode": false
+    },
+    {
       "name": "p2p",
       "type": "python",
       "request": "launch",
