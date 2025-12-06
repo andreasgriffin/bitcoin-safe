@@ -192,17 +192,17 @@ cleo==2.1.0 \
     --hash=sha256:0b2c880b5d13660a7ea651001fb4acb527696c01f15c9ee650f377aa543fd523 \
     --hash=sha256:4a31bd4dd45695a64ee3c4758f583f134267c2bc518d8ae9a29cf237d009b07e
     # via
-    #   -r tools/deterministic-build/requirements-poetry.in
+    #   -r requirements-poetry.in
     #   poetry
 colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
-    # via -r tools/deterministic-build/requirements-poetry.in
+    # via -r requirements-poetry.in
 crashtest==0.4.1 \
     --hash=sha256:80d7b1f316ebfbd429f648076d6275c877ba30ba48979de4191714a75266f0ce \
     --hash=sha256:8d23eac5fa660409f57472e3851dab7ac18aba459a8d19cbbba86d3d5aecd2a5
     # via
-    #   -r tools/deterministic-build/requirements-poetry.in
+    #   -r requirements-poetry.in
     #   cleo
 cryptography==44.0.0 \
     --hash=sha256:1923cb251c04be85eec9fda837661c67c1049063305d6be5721643c22dd4e2b7 \
@@ -441,12 +441,12 @@ platformdirs==4.3.6 \
 poetry==2.1.4 \
     --hash=sha256:0019b64d33fed9184a332f7fad60ca47aace4d6a0e9c635cdea21b76e96f32ce \
     --hash=sha256:bed4af5fc87fb145258ac5b1dae77de2cd7082ec494e3b2f66bca0f477cbfc5c
-    # via -r tools/deterministic-build/requirements-poetry.in
+    # via -r requirements-poetry.in
 poetry-core==2.1.3 \
     --hash=sha256:0522a015477ed622c89aad56a477a57813cace0c8e7ff2a2906b7ef4a2e296a4 \
     --hash=sha256:2c704f05016698a54ca1d327f46ce2426d72eaca6ff614132c8477c292266771
     # via
-    #   -r tools/deterministic-build/requirements-poetry.in
+    #   -r requirements-poetry.in
     #   poetry
 pycparser==2.22 \
     --hash=sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6 \
@@ -461,7 +461,7 @@ pyproject-hooks==1.2.0 \
 pywin32-ctypes==0.2.3 \
     --hash=sha256:8a1513379d709975552d202d942d9837758905c8d01eb82b8bcc30918929e7b8 \
     --hash=sha256:d162dc04946d704503b2edc4d55f3dba5c1d539ead017afa00142c38b9885755
-    # via -r tools/deterministic-build/requirements-poetry.in
+    # via -r requirements-poetry.in
 rapidfuzz==3.11.0 \
     --hash=sha256:0b488b244931d0291412917e6e46ee9f6a14376625e150056fe7c4426ef28225 \
     --hash=sha256:1315cd2a351144572e31fe3df68340d4b83ddec0af8b2e207cd32930c6acd037 \
@@ -556,7 +556,7 @@ requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
     --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
     # via
-    #   -r tools/deterministic-build/requirements-poetry.in
+    #   -r requirements-poetry.in
     #   cachecontrol
     #   poetry
     #   requests-toolbelt
@@ -564,7 +564,7 @@ requests-toolbelt==1.0.0 \
     --hash=sha256:7681a0a3d047012b5bdc0ee37d7f8f07ebe76ab08caeccfc3921ce23c88d5bc6 \
     --hash=sha256:cccfdd665f0a24fcf4726e690f65639d272bb0637b9b92dfd91a5568ccf6bd06
     # via
-    #   -r tools/deterministic-build/requirements-poetry.in
+    #   -r requirements-poetry.in
     #   poetry
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
@@ -590,9 +590,9 @@ typing-extensions==4.14.0 \
     --hash=sha256:8676b788e32f02ab42d9e7c61324048ae4c6d844a399eebace3d4979d75ceef4 \
     --hash=sha256:a1514509136dd0b477638fc68d6a91497af5076466ad0fa6c338e44e359944af
     # via anyio
-urllib3==2.3.0 \
-    --hash=sha256:1cee9ad369867bfdbbb48b7dd50374c0967a0bb7710050facf0dd6911440e3df \
-    --hash=sha256:f8c5449b3cf0861679ce7e0503c7b44b5ec981bec0d1d3795a07f1ba96f0204d
+urllib3==2.6.0 \
+    --hash=sha256:c90f7a39f716c572c4e3e58509581ebd83f9b59cced005b7db7ad2d22b0db99f \
+    --hash=sha256:cb9bcef5a4b345d5da5d145dc3e30834f58e8018828cbc724d30b4cb7d4d49f1
     # via
     #   dulwich
     #   requests
@@ -671,7 +671,7 @@ xattr==1.2.0 \
     --hash=sha256:ea7cf8afd717853ad78eba8ca83ff66a53484ba2bb2a4283462bc5c767518174 \
     --hash=sha256:f5eec248976bbfa6c23df25d4995413df57dccf4161f6cbae36f643e99dbc397 \
     --hash=sha256:fafecfdedf7e8d455443bec2c3edab8a93d64672619cd1a4ee043a806152e19c
-    # via -r tools/deterministic-build/requirements-poetry.in
+    # via -r requirements-poetry.in
 zstandard==0.23.0 \
     --hash=sha256:034b88913ecc1b097f528e42b539453fa82c3557e414b3de9d5632c80439a473 \
     --hash=sha256:0a7f0804bb3799414af278e9ad51be25edf67f78f916e08afdb983e74161b916 \
