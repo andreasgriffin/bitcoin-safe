@@ -96,8 +96,7 @@ function do_pip() {
 }
 
 info "Installing required pip packages for building..."
-do_pip -Ir ./tools/deterministic-build/requirements-build-base.txt  
-do_pip -Ir ./tools/deterministic-build/requirements-poetry.txt 
+do_pip -Ir ./tools/deterministic-build/requirements-build.txt
 
 info "Installing some Brew tools for compilation"
 brew install autoconf automake libtool gettext coreutils pkgconfig
@@ -139,7 +138,7 @@ export ARCHFLAGS="-arch $arch"
 
 info "Building PyInstaller"
 PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
-PYINSTALLER_COMMIT="7f2ae63f703ae27955722eac4891678b546d513a" # ~ v6.16.0
+PYINSTALLER_COMMIT="3f596f66feebe3a7d247248f95f76c071d08b832" # ~ v6.17.0
 
 (
     if [ -f "$CACHEDIR/pyinstaller/PyInstaller/bootloader/Darwin-64bit/runw" ]; then
