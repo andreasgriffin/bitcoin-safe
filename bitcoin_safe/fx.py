@@ -174,7 +174,8 @@ class FX(QObject):
         use_currency_symbol=True,
     ) -> str:
         """Fiat to str custom."""
-        formatted_amount = (locale or self.get_locale()).toCurrencyString(fiat_amount)
+        locale = locale or self.get_locale()
+        formatted_amount = locale.toCurrencyString(fiat_amount)
         locale_symbol = self.get_currency_symbol(currency_loc=locale)
         new_symbol = currency_symbol if use_currency_symbol else ""
         if len(new_symbol) >= 3:
