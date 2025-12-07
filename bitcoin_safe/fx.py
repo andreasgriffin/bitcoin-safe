@@ -32,6 +32,7 @@ import logging
 from functools import lru_cache
 from typing import Any, cast
 
+import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
@@ -63,6 +64,16 @@ class FX(QObject):
     def get_locale() -> QLocale:
         """Get locale."""
         return QLocale()
+
+    @staticmethod
+    def is_btc(currency_iso: str, network: bdk.Network) -> bool:
+        if FX.sanitize_key(currency_iso) == "BTC":
+            return True
+
+        if network == bdk.Network.BITCOIN:
+            return FX.sanitize_key(currency_iso) == "BTC"
+        else:
+            return FX.sanitize_key(currency_iso) in ["BTC", "TBTC"]
 
     @staticmethod
     @lru_cache(maxsize=200_000)
@@ -156,9 +167,14 @@ class FX(QObject):
         self.update()
 
     def fiat_to_str_custom(
-        self, fiat_amount: float, locale: QLocale, currency_symbol: str, use_currency_symbol=True
+        self,
+        fiat_amount: float,
+        currency_symbol: str,
+        locale: QLocale | None = None,
+        use_currency_symbol=True,
     ) -> str:
         """Fiat to str custom."""
+        locale = locale or self.get_locale()
         formatted_amount = locale.toCurrencyString(fiat_amount)
         locale_symbol = self.get_currency_symbol(currency_loc=locale)
         new_symbol = currency_symbol if use_currency_symbol else ""
@@ -172,10 +188,8 @@ class FX(QObject):
 
     def fiat_to_str(self, fiat_amount: float, use_currency_symbol=True) -> str:
         """Fiat to str."""
-        locale = self.get_locale()
         currency_symbol = self.get_currency_symbol()
         return self.fiat_to_str_custom(
-            locale=locale,
             currency_symbol=currency_symbol,
             fiat_amount=fiat_amount,
             use_currency_symbol=use_currency_symbol,
@@ -196,7 +210,9 @@ class FX(QObject):
         currency_symbol = self.get_currency_symbol()
         return self.parse_fiat_custom(formatted=formatted, locale=locale, currency_symbol=currency_symbol)
 
-    def parse_fiat_custom(self, formatted: str, locale: QLocale, currency_symbol: str) -> float | None:
+    def parse_fiat_custom(
+        self, formatted: str, currency_symbol: str, locale: QLocale | None = None
+    ) -> float | None:
         """Parse a string like '$1,234.56' (or '1,234.56') back into a float.
 
         Returns None if parsing fails.
@@ -204,6 +220,7 @@ class FX(QObject):
         text = formatted.strip()
 
         # get the locale’s thousands‐separator character
+        locale = locale or self.get_locale()
         sep = locale.groupSeparator()
 
         # default "0" if text is None, then strip out all group‐separators
