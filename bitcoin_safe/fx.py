@@ -32,6 +32,7 @@ import logging
 from functools import lru_cache
 from typing import Any, cast
 
+import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
@@ -63,6 +64,16 @@ class FX(QObject):
     def get_locale() -> QLocale:
         """Get locale."""
         return QLocale()
+
+    @staticmethod
+    def is_btc(currency_iso: str, network: bdk.Network) -> bool:
+        if FX.sanitize_key(currency_iso) == "BTC":
+            return True
+
+        if network == bdk.Network.BITCOIN:
+            return FX.sanitize_key(currency_iso) == "BTC"
+        else:
+            return (FX.sanitize_key(currency_iso) == "TBTC") or (FX.sanitize_key(currency_iso) == "BTC")
 
     @staticmethod
     @lru_cache(maxsize=200_000)
