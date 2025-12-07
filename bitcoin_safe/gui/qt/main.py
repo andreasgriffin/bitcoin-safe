@@ -224,7 +224,7 @@ class MainWindow(QMainWindow):
             config=self.config, signals=self.signals, fx=self.fx, language_chooser=self.language_chooser
         )
         self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.shutdown)
-        self.signals.show_network_settings.connect(self.open_settings)
+        self.signals.show_network_settings.connect(self.open_settings_ui)
 
         self.welcome_screen = NewWalletWelcomeScreen(
             network=self.config.network,
@@ -722,7 +722,7 @@ class MainWindow(QMainWindow):
 
         self.menu_action_settings_ui = self.menu_bitcoin_Safe.add_action(
             "",
-            self.open_settings,
+            self.open_settings_ui,
             icon=svg_tools.get_QIcon("bi--gear.svg"),
         )
         self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
@@ -1382,18 +1382,22 @@ class MainWindow(QMainWindow):
         ):
             self.restore_from_tray()
 
-    def open_settings(self) -> None:
+    def open_settings_ui(self) -> None:
         """Open settings."""
         self.settings.show()
         self.settings.raise_()
+        self.settings.setCurrentWidget(self.settings.langauge_ui)
 
     def open_network_settings(self) -> None:
-        self.open_settings()
+        self.settings.show()
+        self.settings.raise_()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
     def open_about_tab(self) -> None:
         """Open the About tab in settings."""
-        self.settings.open_about_tab()
+        self.settings.show()
+        self.settings.raise_()
+        self.settings.setCurrentWidget(self.settings.about_tab)
 
     def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:
         """Show descriptor export window."""
