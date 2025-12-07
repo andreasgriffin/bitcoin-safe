@@ -73,7 +73,7 @@ class FX(QObject):
         if network == bdk.Network.BITCOIN:
             return FX.sanitize_key(currency_iso) == "BTC"
         else:
-            return (FX.sanitize_key(currency_iso) == "TBTC") or (FX.sanitize_key(currency_iso) == "BTC")
+            return FX.sanitize_key(currency_iso) in ["BTC", "TBTC"]
 
     @staticmethod
     @lru_cache(maxsize=200_000)
