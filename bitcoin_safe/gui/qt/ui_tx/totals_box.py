@@ -52,6 +52,7 @@ class CurrencySection(QWidget):
         self.fx = fx
         self.mark_fiat_red_when_exceeding = mark_fiat_red_when_exceeding
         self.network = network
+        self.currency_iso: str | None = None
 
         self._layout = QHBoxLayout(self)
         set_no_margins(self._layout)
@@ -79,21 +80,34 @@ class CurrencySection(QWidget):
             self.l2_currency, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
 
+    def set_currency(self, currency_iso: str | None):
+        """Set fiat currency override."""
+        self.currency_iso = FX.sanitize_key(currency_iso) if currency_iso else None
+
     def set_amount(self, amount: int | None):
         """Set amount."""
         l1 = self.l1
         l2 = self.l2
         l1_currency = self.l1_currency
         l2_currency = self.l2_currency
+        currency_iso = self.currency_iso
 
         l1.setHidden(amount is None)
         l2.setHidden(amount is None)
         if amount is not None:
-            fiat_amount = self.fx.btc_to_fiat(amount=amount)
+            fiat_amount = self.fx.btc_to_fiat(amount=amount, currency=currency_iso)
             l1.setHidden(fiat_amount is None)
             l1_currency.setHidden(fiat_amount is None)
             if fiat_amount is not None:
-                fiat, fiat_symbol = self.fx.fiat_to_splitted(fiat_amount=fiat_amount)
+                if currency_iso:
+                    fiat_symbol = self.fx.get_currency_symbol_from_iso(currency_iso)
+                    fiat = self.fx.fiat_to_str_custom(
+                        fiat_amount=fiat_amount,
+                        currency_symbol=fiat_symbol,
+                        use_currency_symbol=False,
+                    )
+                else:
+                    fiat, fiat_symbol = self.fx.fiat_to_splitted(fiat_amount=fiat_amount)
                 if (
                     self.mark_fiat_red_when_exceeding is not None
                     and fiat_amount >= self.mark_fiat_red_when_exceeding

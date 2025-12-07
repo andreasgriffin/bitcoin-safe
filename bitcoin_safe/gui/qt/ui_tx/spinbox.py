@@ -260,7 +260,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
 
         fiat_str = self.fx.fiat_to_str_custom(
-            fiat_value, use_currency_symbol=False, locale=self.locale(), currency_symbol=currency_symbol
+            fiat_value, use_currency_symbol=False, currency_symbol=currency_symbol
         )
         if self._is_max:
             return self.tr("Max ≈ {amount}").format(amount=fiat_str)
@@ -274,9 +274,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
             return 0
         currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
 
-        value = self.fx.parse_fiat_custom(
-            formatted=text if text else "0", locale=self.locale(), currency_symbol=currency_symbol
-        )
+        value = self.fx.parse_fiat_custom(formatted=text if text else "0", currency_symbol=currency_symbol)
         if value is None:
             raise ValueError()
         return value
