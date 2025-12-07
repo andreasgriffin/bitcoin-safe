@@ -170,7 +170,7 @@ class SidebarRow(QWidget):
 class SidebarButton(QPushButton):
     """Checkable sidebar button with instance-scoped styles and adjustable indent."""
 
-    def __init__(self, text: str, icon: QIcon | None = None, indent: int = 0, bf=False):
+    def __init__(self, text: str, icon: QIcon | None = None, indent: float = 0, bf=False):
         """Initialize instance."""
         super().__init__(text)
         self._bold = bf
@@ -201,7 +201,7 @@ class SidebarButton(QPushButton):
         super().focusOutEvent(a0)
         self._update_row_focus(False)
 
-    def setIndent(self, indent: int, bf=False) -> None:
+    def setIndent(self, indent: float, bf=False) -> None:
         """SetIndent."""
         self._indent = indent
         self._bold = bf
@@ -265,7 +265,8 @@ class SidebarNode(QFrame, Generic[TT]):
         selected_color: str | None | QPalette.ColorRole = QPalette.ColorRole.Base,
         hover_color: str | None | QPalette.ColorRole = QPalette.ColorRole.Midlight,
         selected_hover_color: str | None | QPalette.ColorRole = None,
-        indent: int = 0,
+        indent: float = 0,
+        indent_factor: float = 1,
         bf_top_level: bool = True,
         parent_node: SidebarNode[TT] | None = None,
         parent: QWidget | None = None,
@@ -285,6 +286,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.auto_collapse_siblings = auto_collapse_siblings
         self.show_expand_button = show_expand_button
         self.initially_collapsed = initially_collapsed
+        self.indent_factor = indent_factor
 
         self.background_color = background_color
         self.selected_color = selected_color
@@ -372,7 +374,7 @@ class SidebarNode(QFrame, Generic[TT]):
         """InsertChildNode."""
         node.setParent(self)
         node.parent_node = self
-        node.indent = self.indent + 1
+        node._indent_me(parent_indent=self.indent)
 
         # If the parent is already attached, attach the whole subtree to the stack.
         if self.stack is not None:
@@ -422,11 +424,14 @@ class SidebarNode(QFrame, Generic[TT]):
         for child in list(self.child_nodes):
             self.removeChildNode(child)
 
+    def _indent_me(self, parent_indent: float):
+        self.indent = parent_indent + 1 * self.indent_factor
+
     def _recompute_indents_from_here(self) -> None:
         """Apply this node's current indent to itself and all descendants."""
         self.header_btn.setIndent(self.indent, bf=self.bf_top_level and self.indent <= 0)
         for child in self.child_nodes:
-            child.indent = self.indent + 1
+            child._indent_me(parent_indent=self.indent)
             child._recompute_indents_from_here()
 
     def _ensure_stack_link(self) -> bool:
