@@ -22,13 +22,13 @@ jobs:
     strategy:
       matrix:
         # Building on macos-14 produces an arm64 DMG,
-        # and building on macos-13 produces an x86 DMG.
+        # and building on macos-14-large produces an x86 DMG.
         # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
         include:
           - os: macos-14
             artifact_name: dmgs-arm64
             arch: arm64
-          - os: macos-13
+          - os: macos-14-large
             artifact_name: dmgs-x86_64
             arch: x86_64
     steps:
@@ -87,7 +87,7 @@ jobs:
             runner: macos-15  # This runner must be an arm64 machine
             artifact_name: dmgs-arm64
           - arch: x86_64
-            runner: macos-13    # This runner must be an x86 machine
+            runner: macos-14-large    # This runner must be an x86 machine
             artifact_name: dmgs-x86_64
     runs-on: ${{ matrix.runner }}
     steps:
