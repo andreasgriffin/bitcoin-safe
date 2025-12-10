@@ -92,7 +92,7 @@ class NotificationBarCBF(NotificationBar):
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
-        self.enable_button.setText(self.tr("Activate and shutdown"))
+        self.enable_button.setText(self.tr("Activate and restart"))
         self.optionalButton.setText(self.tr("Open Network Settings"))
         tooltip = self.tr("""Connect to bitcoin nodes (p2p) and download relevant blocks from them.""")
         self.icon_label.textLabel.setToolTip(tooltip)

@@ -469,7 +469,7 @@ class NetworkSettingsUI(QWidget):
             click_url="https://bitcoin-safe.org/en/knowledge/tor-config/",
         )
         if ok_button := self.button_box.button(QDialogButtonBox.StandardButton.Ok):
-            ok_button.setText(self.tr("Apply && Shutdown"))
+            ok_button.setText(self.tr("Apply and restart"))
         self.proxy_warning_label.updateUi()
         self.p2p_listener_icon_label_help.set_icon_as_help(
             tooltip=get_p2p_tooltip_text(),

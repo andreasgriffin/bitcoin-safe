@@ -55,7 +55,6 @@ from PyQt6.QtCore import (
     QCoreApplication,
     QLocale,
     QPoint,
-    QProcess,
     QSettings,
     Qt,
     QTimer,
@@ -110,6 +109,7 @@ from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
+from bitcoin_safe.pyqt6_restart import restart_application
 from bitcoin_safe.util import OptExcInfo
 
 from ...config import UserConfig
@@ -172,6 +172,7 @@ class MainWindow(QMainWindow):
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
         self.new_startup_network: bdk.Network | None = None
+        self._before_close_was_run = False
         self._was_maximized_before_fullscreen = False
         # i need to keep references of open windows attached
         # to the mainwindow to avoid memory issues
@@ -223,7 +224,7 @@ class MainWindow(QMainWindow):
         self.settings = Settings(
             config=self.config, signals=self.signals, fx=self.fx, language_chooser=self.language_chooser
         )
-        self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.shutdown)
+        self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.restart)
         self.signals.show_network_settings.connect(self.open_settings_ui)
 
         self.welcome_screen = NewWalletWelcomeScreen(
@@ -2571,18 +2572,10 @@ class MainWindow(QMainWindow):
         )
         return bool(res)
 
-    def closeEvent(self, a0: QCloseEvent | None) -> None:
-        """CloseEvent."""
-        if not a0:
+    def _before_close(self):
+        if self._before_close_was_run:
+            # don't save the config twice
             return
-        if a0.spontaneous() and not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
-            # event.spontaneous() == True → originated from the window system (user click, Alt+F4, OS session end).
-            # if i close it via the tray (hidden), then it shouldnt ask this question
-            if self.ask_to_minimize_only_because_cbf_sync():
-                a0.ignore()
-                self.minimize_to_tray()
-                return
-
         self.config.last_wallet_files[str(self.config.network)] = [
             qt_wallet.file_path for qt_wallet in self.qt_wallets.values()
         ]
@@ -2613,6 +2606,22 @@ class MainWindow(QMainWindow):
         self.qsettings.sync()
 
         logger.info(f"Finished close handling of {self.__class__.__name__}")
+        self._before_close_was_run = True
+
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
+        """CloseEvent."""
+        if not a0:
+            return
+        if a0.spontaneous() and not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
+            # event.spontaneous() == True → originated from the window system (user click, Alt+F4, OS session end).
+            # if i close it via the tray (hidden), then it shouldnt ask this question
+            if self.ask_to_minimize_only_because_cbf_sync():
+                a0.ignore()
+                self.minimize_to_tray()
+                return
+
+        self._before_close()
+
         super().closeEvent(a0)
         QApplication.closeAllWindows()
         QCoreApplication.quit()
@@ -2637,13 +2646,12 @@ class MainWindow(QMainWindow):
         Args:
             new_startup_network (bdk.Network | None, optional): _description_. Defaults to None.
         """
+
         args: list[str] = []  #  sys.argv[1:]
         self.new_startup_network = new_startup_network
-        QCoreApplication.quit()
 
-        status = QProcess.startDetached(sys.executable, ["-m", "bitcoin_safe"] + args)
-        if not status:
-            sys.exit(-1)
+        self._before_close()
+        restart_application(args)
 
     def shutdown(self, new_startup_network: bdk.Network | None = None) -> None:
         """Shutdown."""
