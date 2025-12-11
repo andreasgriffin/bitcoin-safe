@@ -2689,6 +2689,11 @@ class MainWindow(QMainWindow):
         args: list[str] = []  #  sys.argv[1:]
         self.new_startup_network = new_startup_network
 
+        if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
+            if self.ask_to_minimize_only_because_cbf_sync():
+                self.minimize_to_tray()
+                return
+
         self._before_close()
         restart_application(args)
 
