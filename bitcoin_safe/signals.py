@@ -176,9 +176,6 @@ class SignalFunction(Generic[T]):
                     )
                     delete_slots.append(slot)
                     continue
-            logger.debug(
-                f"SignalFunction {self.name if self.name else ''}.emit() --> Got {len(responses)} responses"
-            )
 
         for slot in delete_slots:
             self.disconnect(slot)
