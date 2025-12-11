@@ -130,10 +130,11 @@ from ...wallet import LOCAL_TX_LAST_SEEN, ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
-from .dialogs import PasswordQuestion, WalletIdDialog
+from .dialogs import PasswordQuestion, WalletIdDialog, show_textedit_message
 from .loading_wallet_tab import LoadingWalletTab
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
+from .sign_message import SignAndVerifyMessage
 from .util import (
     ELECTRUM_SERVER_DELAY_BLOCK,
     ELECTRUM_SERVER_DELAY_MEMPOOL_TX,
@@ -142,6 +143,7 @@ from .util import (
     caught_exception_message,
     center_on_screen,
     delayed_execution,
+    do_copy,
 )
 from .utxo_list import UTXOList, UtxoListWithToolbar
 
@@ -839,6 +841,9 @@ class MainWindow(QMainWindow):
             icon=svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename),
         )
         self.menu_action_open_qr_scanner.setShortcut(QKeySequence("CTRL+Y"))
+        self.menu_action_message_signatures = self.menu_tools.add_action(
+            "", self.show_message_signatures, icon=svg_tools.get_QIcon("material-symbols--signature.svg")
+        )
         self.menu_action_open_hwi_manager = self.menu_tools.add_action(
             "",
             self.show_usb_gui,
@@ -944,6 +949,37 @@ class MainWindow(QMainWindow):
         center_on_screen(self.hwi_tool_gui)
         self.hwi_tool_gui.show()
         self.hwi_tool_gui.raise_()
+
+    def show_message_signatures(self):
+        """Open the combined message signing and verification tool."""
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Message Signatures"))
+        dialog.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        dialog.setMinimumWidth(520)
+
+        layout = QVBoxLayout(dialog)
+        widget = SignAndVerifyMessage(
+            network=self.config.network,
+            signals_min=self.signals,
+            close_all_video_widgets=self.signals.close_all_video_widgets,
+            loop_in_thread=self.loop_in_thread,
+            wallet_functions=self.wallet_functions,
+            parent=dialog,
+        )
+        layout.addWidget(widget)
+
+        dialog.setLayout(layout)
+        center_on_screen(dialog)
+        dialog.show()
+        dialog.raise_()
+        self._message_signature_dialog = dialog
+
+    def on_signed_message_created(self, signed_message: str) -> None:
+        """Display and copy a newly signed message."""
+
+        do_copy(signed_message, title=self.tr("Signed Message"))
+        show_textedit_message(text=signed_message, label_description="", title=self.tr("Signed Message"))
 
     def open_category_manager(self):
         """Open category manager."""
@@ -1091,6 +1127,7 @@ class MainWindow(QMainWindow):
         self.menu_load_transaction.setTitle(self.tr("&Load Transaction or PSBT"))
         self.menu_action_open_tx_file.setText(self.tr("From &file"))
         self.menu_action_open_qr_scanner.setText(self.tr("QR &Scanner"))
+        self.menu_action_message_signatures.setText(self.tr("&Message Signatures"))
         self.menu_action_open_tx_from_str.setText(self.tr("From &text"))
         self.menu_action_load_tx_from_qr.setText(self.tr("From &QR Code"))
         self.menu_action_settings_ui.setText(self.tr("&Settings"))
