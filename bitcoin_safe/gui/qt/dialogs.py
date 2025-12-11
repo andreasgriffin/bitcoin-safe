@@ -90,9 +90,12 @@ class PasswordQuestion(QDialog):
         self.toggle_action.triggered.connect(self.toggle_password_visibility)
         self.password_input.addAction(self.toggle_action, QLineEdit.ActionPosition.TrailingPosition)
 
-        self.submit_button = QPushButton(self.tr("Submit"), self)
-        self.submit_button.clicked.connect(self.accept)
-        self._layout.addWidget(self.submit_button)
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self._layout.addWidget(self.button_box)
 
     def toggle_password_visibility(self):
         """Toggle password visibility."""
@@ -107,10 +110,10 @@ class PasswordQuestion(QDialog):
 
     def ask_for_password(self) -> str | None:
         """Ask for password."""
+        self.password_input.clear()
         if self.exec() == QDialog.DialogCode.Accepted:
             return self.password_input.text()
-        else:
-            return None
+        return None
 
 
 def create_icon_from_unicode(unicode_char, font_name="Arial", size=18) -> QIcon:
