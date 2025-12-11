@@ -47,7 +47,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSizePolicy,
-    QSplitter,
     QStackedWidget,
     QStyle,
     QVBoxLayout,
@@ -923,23 +922,9 @@ class SidebarTree(QWidget, Generic[TT]):
         main_layout = QHBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-        splitter = QSplitter()
-        main_layout.addWidget(splitter)
-        splitter.addWidget(self.left_panel)
-        splitter.addWidget(self.stack)
-        for i in range(1, splitter.count()):
-            handle = splitter.handle(i)
-            if not handle:
-                continue
-            handle.setPalette(pal)
-            handle.setAutoFillBackground(True)
-
-        splitter.setSizes([200, max(self.width() - 260, 300)])
-        splitter.setStretchFactor(0, 0)  # index 0 = left
-        splitter.setStretchFactor(1, 1)  # index 1 = right
-        for i in range(splitter.count()):
-            splitter.setCollapsible(i, False)
-        self.left_panel.setMinimumWidth(160)
+        self.left_panel.setFixedWidth(200)
+        main_layout.addWidget(self.left_panel)
+        main_layout.addWidget(self.stack, 1)
 
         # Create master root (no header shown)
         self.root = SidebarNode[TT](
