@@ -2018,36 +2018,38 @@ class MainWindow(QMainWindow):
 
         def try_load(file_path: str) -> tuple[QTWallet | None, str | None]:
             """Try load."""
-            password = None
-            if (
-                not Storage().has_password(file_path)
-                and (result := try_load_without_error(password=password))
-                and isinstance(result, QTWallet)
-            ):
-                return result, password
-            if (
-                (password := self.password_cache.get_password("wallet"))
-                and (result := try_load_without_error(password=password))
-                and isinstance(result, QTWallet)
-            ):
-                return result, password
 
-            # ask
-            direcory, filename = os.path.split(file_path)
+            password = None
+            if not Storage().has_password(file_path):
+                result = try_load_without_error(password=None)
+                if isinstance(result, QTWallet):
+                    return result, password
+
+            if password := self.password_cache.get_password("wallet"):
+                result = try_load_without_error(password=password)
+                if isinstance(result, QTWallet):
+                    return result, password
+
+            directory, filename = os.path.split(file_path)
             ui_password_question = PasswordQuestion(
                 label_text=self.tr("Please enter the password for {filename}:").format(filename=filename)
             )
-            password = ui_password_question.ask_for_password()
-            result = try_load_without_error(password=password)
-            if isinstance(result, QTWallet):
-                return result, password
-            elif isinstance(result, tuple) and isinstance(result[0], Exception):
-                e, exc_info = result
-                # the file could also be corrupted, but the "wrong password" is by far the likliest
-                caught_exception_message(e, "Wrong password. Wallet could not be loaded.", exc_info=exc_info)
-                QTWallet.remove_lockfile(Path(file_path))
-                return None, password
-            return None, password  # type: ignore[unreachable]
+            while True:
+                password = ui_password_question.ask_for_password()
+                if password is None:
+                    return None, None
+
+                result = try_load_without_error(password=password)
+                if isinstance(result, QTWallet):
+                    return result, password
+                if isinstance(result, tuple):
+                    e, exc_info = result
+                    # the file could also be corrupted, but the "wrong password" is by far the likliest
+                    caught_exception_message(
+                        e, "Wrong password. Wallet could not be loaded.", exc_info=exc_info
+                    )
+                    continue
+                return None, password  # type: ignore[unreachable]
 
         if (_guess_wallet_id := Path(file_path).stem) in self.qt_wallets:
             Message(

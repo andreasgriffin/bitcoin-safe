@@ -903,7 +903,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if self.password:
             ui_password_question = PasswordQuestion(label_text="Your current password:")
             password = ui_password_question.ask_for_password()
-            password = password if password else None
+            if password is None:
+                return None
             if password != self.password:
                 Message(self.tr("Password incorrect"), type=MessageType.Warning)
                 return None
