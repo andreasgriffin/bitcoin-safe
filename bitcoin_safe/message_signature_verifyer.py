@@ -188,6 +188,107 @@ class MessageSignatureVerifyer:
         normalized = stripped_message if stripped_message != message else message
         return MessageVerificationResult(False, warnings, normalized, error)
 
+    def verify_message_asciguarded(self, armored_block: str) -> MessageVerificationResult:
+        """Verify a message encoded with the *BIP-0137* ASCII-armored format.
+
+        BIP-0137 (see https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki)
+        standardizes the *QR-friendly* text block that some wallets (e.g., Coldcard)
+        display. The format wraps the message, address, and Base64 signature between
+        sentinel lines:
+
+        ``-----BEGIN BITCOIN SIGNED MESSAGE-----``
+        ``<message lines>``
+        ``-----BEGIN BITCOIN SIGNATURE-----``
+        ``<address>``
+        ``<base64 recoverable signature>``
+        ``-----END BITCOIN SIGNATURE-----``
+
+        We parse this structure, reconstruct the original message (joining any
+        intermediate lines with ``"\n"`` as defined in BIP-0137), and reuse the
+        existing :py:meth:`verify_message` implementation to perform the actual
+        cryptographic checks.
+        """
+
+        try:
+            address, message, signature = self._parse_bip137_block(armored_block)
+        except Exception as e:
+            return MessageVerificationResult(
+                False,
+                [],
+                str(e),
+                """Could not identify the entries (address, message, signature). Example format: 
+-----BEGIN BITCOIN SIGNED MESSAGE-----
+Test
+-----BEGIN SIGNATURE-----
+1BqtNgMrDXnCek3cdDVSer4BK7knNTDTSR
+ILoOBJK9kVKsdUOnJPPoDtrDtRSQw2pyMo+2r5bdUlNkSLDZLqMs8h9mfDm/alZo3DK6rKvTO0xRPrl6DPDpEik=
+-----END BITCOIN SIGNED MESSAGE-----""",
+            )
+
+        return self.verify_message(address, message, signature)
+
+    def _parse_bip137_block(self, armored_block: str) -> tuple[str, str, str]:
+        """Parse a BIP-0137 ASCII-armored message block.
+
+        This helper performs *format* validation only—it does not attempt any
+        cryptographic verification. It mirrors the minimal structure described in
+        https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki, rejecting
+        malformed layouts early so callers can surface human-friendly errors.
+        """
+
+        # Strip leading/trailing whitespace so callers can pass multi-line strings
+        # that include incidental indentation or newlines from source formatting.
+        lines = [line.strip() for line in armored_block.strip().splitlines()]
+
+        begin_messages = ["-----BEGIN BITCOIN SIGNED MESSAGE-----"]
+        begin_signatures = ["-----BEGIN BITCOIN SIGNATURE-----", "-----BEGIN SIGNATURE-----"]
+        end_signatures = [
+            "-----END BITCOIN SIGNATURE-----",
+            "-----END SIGNATURE-----",
+            "-----END BITCOIN SIGNED MESSAGE-----",
+        ]
+
+        def find_first_match(lines, options):
+            """
+            Return the index of the first line in `lines` that matches
+            any entry in `options`. Raise ValueError if none match.
+            """
+            for opt in options:
+                if opt in lines:
+                    return lines.index(opt)
+            raise ValueError(f"No matching sentinel found for: {options}")
+
+        try:
+            begin_msg_index = find_first_match(lines, begin_messages)
+            begin_sig_index = find_first_match(lines, begin_signatures)
+            end_sig_index = find_first_match(lines, end_signatures)
+        except ValueError as exc:
+            raise MessageVerificationError(
+                translate("signatures", "Message is not valid BIP-0137 armored text.")
+            ) from exc
+
+        if not (begin_msg_index < begin_sig_index < end_sig_index):
+            raise MessageVerificationError(translate("signatures", "BIP-0137 block order is invalid."))
+
+        # The message can span multiple lines; BIP-0137 concatenates them using
+        # newlines exactly as shown in the armored block.
+        message_lines = lines[begin_msg_index + 1 : begin_sig_index]
+        if not message_lines:
+            raise MessageVerificationError(
+                translate("signatures", "BIP-0137 block is missing the message body.")
+            )
+        message = "\n".join(message_lines)
+
+        # After the signature header we expect exactly two lines: address and signature.
+        signature_section = lines[begin_sig_index + 1 : end_sig_index]
+        if len(signature_section) != 2:
+            raise MessageVerificationError(
+                translate("signatures", "BIP-0137 block must contain address and signature lines.")
+            )
+
+        address, signature = signature_section
+        return address, message, signature
+
     def _verify_once(self, address: str, message: str, signature: str) -> bool:
         """Single-pass verification of ``message`` against ``signature`` and
         ``address``.
@@ -285,15 +386,28 @@ class MessageSignatureVerifyer:
             raise MessageVerificationError(translate("signatures", "Signature must be 65 bytes long."))
 
         header = decoded[0]
-        if header < 27 or header > 34:
+        # BIP-0137 extends the classic header range (27..34) with additional values
+        # to indicate the intended address type. The ranges are:
+        #   * 27..30 : legacy P2PKH using an **uncompressed** pubkey (historic)
+        #   * 31..34 : P2PKH using a **compressed** pubkey
+        #   * 35..38 : P2SH-P2WPKH (compressed pubkey, nested SegWit)
+        #   * 39..42 : Bech32 P2WPKH (compressed pubkey, native SegWit)
+        # See https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki for the
+        # decoding steps. We normalize these ranges back to 27..30 so the recovery id
+        # (lowest two bits) remains consistent with the classic format.
+        if header < 27 or header > 42:
             raise MessageVerificationError(translate("signatures", "Signature header byte is invalid."))
 
-        # Recovery id is encoded in the low 2 bits; +4 indicates compressed key.
-        recovery_id = header - 27
-        compressed = False
-        if recovery_id >= 4:
-            compressed = True
-            recovery_id -= 4
+        compressed = header >= 31  # all modern encodings imply compressed pubkeys
+        normalized_header = header
+        if header >= 39:
+            normalized_header -= 12
+        elif header >= 35:
+            normalized_header -= 8
+        elif header >= 31:
+            normalized_header -= 4
+
+        recovery_id = normalized_header - 27
 
         if recovery_id > 3:
             # Defensive check: after removing +4, id must be 0..3.

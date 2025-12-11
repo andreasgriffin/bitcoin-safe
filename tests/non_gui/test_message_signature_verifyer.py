@@ -193,7 +193,7 @@ def invalidate_s(signature_b64: str) -> str:
     return _bytes_to_b64(sig)
 
 
-def test_static():
+def test_static_legacy_signatures():
     """Test static."""
 
     def check_all(verifyer: MessageSignatureVerifyer, address, message, signature):
@@ -209,6 +209,11 @@ def test_static():
 
         result = verifyer.verify_message(address, message, invalidate_s(signature))
         assert not result.match
+
+    def check_all_asciguarded(verifyer: MessageSignatureVerifyer, message):
+        """Check all."""
+        result = verifyer.verify_message_asciguarded(message)
+        assert result.match
 
     # signet
     message = "test1"
@@ -249,6 +254,89 @@ def test_static():
     message = "test1"
     address = "mtEjYNFGEPryCQwNbBmHRTjrvdkPYw71gE"
     signature = "IDUagVRDc3ApRRIrRccMsWbYOu9Aj8Eq4cRIXFzBGfT7UZAq3+XnoZI/tw6EehSHD/52KuA+q+gy5ilnzIrTwQI="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # coldcard
+    check_all_asciguarded(
+        verifyer,
+        """
+-----BEGIN BITCOIN SIGNED MESSAGE-----
+test
+-----BEGIN BITCOIN SIGNATURE-----
+bcrt1qznp9gqwteevnnyf8gsq5x7vjkd67ccmx0f9j55
+KHtJPcAxgXox0oi6N9u+E3Bt1aWPo9DriQoCcnd/9c/0BxWozkTte2FQ+R20+ZTKQWUW17rGjNBww9qq8XX5usI=
+-----END BITCOIN SIGNATURE-----
+""",
+    )
+
+    # splitted into parts
+    check_all(
+        verifyer,
+        "bcrt1qznp9gqwteevnnyf8gsq5x7vjkd67ccmx0f9j55",
+        "test",
+        "KHtJPcAxgXox0oi6N9u+E3Bt1aWPo9DriQoCcnd/9c/0BxWozkTte2FQ+R20+ZTKQWUW17rGjNBww9qq8XX5usI=",
+    )
+
+    # test vectors from other sources
+    # https://bitcoin.stackexchange.com/questions/77324/how-are-bitcoin-signed-messages-generated
+    message = "Test"
+    address = "1BqtNgMrDXnCek3cdDVSer4BK7knNTDTSR"
+    signature = "ILoOBJK9kVKsdUOnJPPoDtrDtRSQw2pyMo+2r5bdUlNkSLDZLqMs8h9mfDm/alZo3DK6rKvTO0xRPrl6DPDpEik="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # https://bitcoin.stackexchange.com/questions/77324/how-are-bitcoin-signed-messages-generated
+    check_all_asciguarded(
+        verifyer,
+        """
+-----BEGIN BITCOIN SIGNED MESSAGE-----
+Test
+-----BEGIN SIGNATURE-----
+1BqtNgMrDXnCek3cdDVSer4BK7knNTDTSR
+ILoOBJK9kVKsdUOnJPPoDtrDtRSQw2pyMo+2r5bdUlNkSLDZLqMs8h9mfDm/alZo3DK6rKvTO0xRPrl6DPDpEik=
+-----END BITCOIN SIGNED MESSAGE-----
+""",
+    )
+
+    # https://bitcoin.stackexchange.com/questions/92406/how-to-verify-a-signed-message-by-bitcoin-core
+    message = ""
+    address = "1CwKH9PQPkFPjQagEv483FUM5ngk57L3Pp"
+    signature = "H2wp/+5N2+OQwP6a5GFRbt8S+EfML1Szx4uhWPfiO0e/QcY2rZQOkLOR+unknNl4NgDWBacRRXOLjr+m53V0xic="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # https://app.readthedocs.org/projects/bitcoinlib/downloads/pdf/stable/
+    message = "Bitcoinlib is cool!"
+    address = "bc1qed0dq6a7gshfvap4j946u44kk73gs3a0d5p3sw"
+    signature = "ILtL9qkUb+2nfxY3bUqfoWsVSwhMSos+DVY7p3EqmzQ6qF2gHNPvILwrsZ2AKlIqPmJjln4OKpW+d86wBn27yJw="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # mainnet
+    message = "test passport"
+    address = "bc1qznp9gqwteevnnyf8gsq5x7vjkd67ccmx8x8vcw"
+    signature = "INJQTU2xESd0qMmTIgUO6owmT+D9TAXsginq2Zknz5FCXQnMDDWprBANhx1GDV9TRs5P9w2YliUkMDnZPeMS8fc="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # testnet
+    message = "test passport"
+    address = "tb1qr0p938uhar3sn2a2t337t5qt2eftq3hgk2vp26"
+    signature = "H1bfXZ8Mf2+GBT+vd3DebPSaNUANxTS5Fqdop07KsE3gJoZeHTCnSvUOM4MyRyLLtZASKl4mpo9QUUNaGe+fGJw="
+
+    verifyer = MessageSignatureVerifyer()
+    check_all(verifyer, address, message, signature)
+
+    # testnet
+    message = "test trezor"
+    address = "n16qfiGHBpeRpxHK5f1cZe7ckQ9HF25jzV"
+    signature = "H6kKiqBwH0vCiEJaM8lBm8ABcJHF7heFXdU01HQJfcAZPv/YiM3BWLMxNzQpCtkNGd3ABM6uFMTzgrajsfa7tD4="
 
     verifyer = MessageSignatureVerifyer()
     check_all(verifyer, address, message, signature)

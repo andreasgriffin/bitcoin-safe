@@ -69,6 +69,7 @@ class AddressEdit(ButtonEdit):
         text="",
         allow_edit: bool = True,
         button_vertical_align: QtCore.Qt.AlignmentFlag | None = None,
+        ask_to_replace_if_was_used=True,
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -76,6 +77,7 @@ class AddressEdit(ButtonEdit):
         self.signals = wallet_functions.signals
         self.network = network
         self.allow_edit = allow_edit
+        self.ask_to_replace_if_was_used = ask_to_replace_if_was_used
         super().__init__(
             text=text,
             button_vertical_align=button_vertical_align,
@@ -169,7 +171,12 @@ class AddressEdit(ButtonEdit):
 
         self.format_address_field(wallet=wallet)
 
-        if wallet and wallet.address_is_used(self.address) and self.allow_edit:
+        if (
+            self.ask_to_replace_if_was_used
+            and wallet
+            and wallet.address_is_used(self.address)
+            and self.allow_edit
+        ):
             self.ask_to_replace_address(wallet, self.address)
 
         self.signal_text_change.emit(self.address)
