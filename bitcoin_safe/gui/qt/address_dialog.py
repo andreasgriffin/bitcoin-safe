@@ -76,7 +76,7 @@ class AddressDetailsAdvanced(QWidget):
         address_path_str: str,
         close_all_video_widgets: SignalProtocol[[]],
         signals_min: SignalsMin,
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         parent: QWidget | None,
     ) -> None:
         """Initialize instance."""
@@ -143,6 +143,7 @@ class AddressValidateTab(QWidget):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         parent: QWidget | None,
+        loop_in_thread: LoopInThread,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -150,7 +151,9 @@ class AddressValidateTab(QWidget):
 
         self._layout = QHBoxLayout(self)
 
-        edit_addr_descriptor = USBValidateAddressWidget(network=network, wallet_functions=wallet_functions)
+        edit_addr_descriptor = USBValidateAddressWidget(
+            network=network, wallet_functions=wallet_functions, loop_in_thread=loop_in_thread
+        )
         edit_addr_descriptor.set_descriptor(
             descriptor=wallet_descriptor,
             expected_address=str(bdk_address),
@@ -184,7 +187,7 @@ class AddressDialog(QWidget):
         wallet: Wallet,
         address: str,
         mempool_manager: MempoolManager,
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -258,6 +261,7 @@ class AddressDialog(QWidget):
                 kind=address_info.keychain,
                 address_index=address_info.index,
                 parent=self,
+                loop_in_thread=loop_in_thread,
             )
             if address_info
             else None

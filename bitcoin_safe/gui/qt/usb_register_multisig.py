@@ -35,6 +35,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.multipath_descriptor import (
     address_descriptor_from_multipath_descriptor,
 )
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -66,6 +67,7 @@ class USBValidateAddressWidget(QWidget):
         self,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
+        loop_in_thread: LoopInThread,
     ) -> None:
         """Initialize instance."""
         super().__init__()
@@ -75,7 +77,9 @@ class USBValidateAddressWidget(QWidget):
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
-        self.usb_gui = USBGui(self.network, allow_emulators_only_for_testnet_works=True)
+        self.usb_gui = USBGui(
+            self.network, allow_emulators_only_for_testnet_works=True, loop_in_thread=loop_in_thread
+        )
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._layout = QVBoxLayout(self)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
@@ -155,12 +159,13 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
         self,
         network: bdk.Network,
         wallet_functions: WalletFunctions,
+        loop_in_thread: LoopInThread,
     ) -> None:
         """Initialize instance."""
         screenshots = ScreenshotsRegisterMultisig()
         self.button_help = generate_help_button(screenshots, title="Help")
 
-        super().__init__(network, wallet_functions=wallet_functions)
+        super().__init__(network, wallet_functions=wallet_functions, loop_in_thread=loop_in_thread)
 
         self.button_box.addButton(self.button_help, QDialogButtonBox.ButtonRole.HelpRole)
 

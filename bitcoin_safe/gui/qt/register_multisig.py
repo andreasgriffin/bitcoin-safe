@@ -90,6 +90,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             self.usb_widget = USBRegisterMultisigWidget(
                 network=self.wallet.network,
                 wallet_functions=self.wallet_functions,
+                loop_in_thread=loop_in_thread,
             )
             self.usb_widget.set_descriptor(
                 keystores=self.wallet.keystores,

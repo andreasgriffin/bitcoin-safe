@@ -27,11 +27,15 @@
 # SOFTWARE.
 
 from __future__ import annotations
+from typing import cast
+from PyQt6.QtCore import QLocale, QObject, pyqtSignal
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from pytestqt.qtbot import QtBot
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 
 from bitcoin_safe.psbt_util import SimpleOutput, SimplePSBT
 from bitcoin_safe.pythonbdk_types import TxOut
@@ -209,6 +213,12 @@ def test_tr_psbt():
 def test_p2sh_2of3_fully_signed(
     qtbot: QtBot,
 ):
+    class B(QObject):
+        close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
+        pass
+
+    b = B()
+
     """Test p2sh 2of3 fully signed."""
     network = bdk.Network.REGTEST
     psbt = SimplePSBT.from_psbt(p2sh_2_2of3)
@@ -216,7 +226,9 @@ def test_p2sh_2of3_fully_signed(
     assert len(input_.partial_sigs) == 2, "Expected 2 signatures for fully signed 2of3"
     # assert   input_.is_fully_signed(), "PSBT should be fully signed"
 
-    signer = AbstractSignatureImporter(network=network)
+    signer = AbstractSignatureImporter(
+        network=network, loop_in_thread=LoopInThread(), close_all_video_widgets=b.close_all_video_widgets
+    )
 
     with qtbot.waitSignal(signer.signal_final_tx_received, timeout=1000) as blocker:
         # expect to finish the psbt

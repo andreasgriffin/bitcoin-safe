@@ -986,6 +986,7 @@ class UITx_Viewer(UITx_Base):
                             key_label=fingerprint,
                             label=self.tr("Import file"),
                             close_all_video_widgets=self.signals.close_all_video_widgets,
+                            loop_in_thread=self.loop_in_thread,
                         )
                     )
                     continue
@@ -1002,22 +1003,26 @@ class UITx_Viewer(UITx_Base):
                             self.network,
                             signature_available=False,
                             key_label=wallet_id,
+                            loop_in_thread=self.loop_in_thread,
+                            close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
                     )
                     # 1 seed signer is enough
                     break
 
-                for cls in [
+                classes: list[type[AbstractSignatureImporter]] = [
                     SignatureImporterQR,
                     SignatureImporterFile,
                     SignatureImporterClipboard,
                     SignatureImporterUSB,
-                ]:
+                ]
+                for cls in classes:
                     signer_list.append(
                         cls(
                             self.network,
                             signature_available=False,
                             key_label=wallet_id,
+                            loop_in_thread=self.loop_in_thread,
                             close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
                     )
