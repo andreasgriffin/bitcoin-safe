@@ -39,6 +39,7 @@ from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction, QColor
@@ -126,6 +127,7 @@ class SyncTab(ControlledGroupbox):
         network: bdk.Network,
         signals: Signals,
         nostr_sync_dump: dict,
+        loop_in_thread: LoopInThread | None,
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
@@ -145,7 +147,9 @@ class SyncTab(ControlledGroupbox):
         self.nostr_sync = (
             nostr_sync
             if nostr_sync
-            else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=parent)
+            else NostrSync.from_dump(
+                d=nostr_sync_dump, signals_min=self.signals, parent=parent, loop_in_thread=loop_in_thread
+            )
         )
         assert self.nostr_sync.network == network, (
             f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
@@ -290,6 +294,7 @@ class SyncTab(ControlledGroupbox):
         multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         signals: Signals,
+        loop_in_thread: LoopInThread | None,
         parent: QObject | None = None,
     ) -> SyncTab:
         """From descriptor new device keys."""
@@ -316,10 +321,16 @@ class SyncTab(ControlledGroupbox):
             individual_chats_visible=False,
             signals_min=signals,
             parent=parent,
+            loop_in_thread=loop_in_thread,
         )
 
         return SyncTab(
-            nostr_sync_dump={}, nostr_sync=nostr_sync, network=network, signals=signals, parent=parent
+            nostr_sync_dump={},
+            nostr_sync=nostr_sync,
+            network=network,
+            signals=signals,
+            parent=parent,
+            loop_in_thread=loop_in_thread,
         )
 
     def dump(self) -> dict[str, Any]:

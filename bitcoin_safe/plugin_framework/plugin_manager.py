@@ -32,6 +32,7 @@ import logging
 from typing import Any, cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
@@ -71,6 +72,7 @@ class PluginManager(BaseSaveableClass):
         wallet_functions: WalletFunctions,
         config: UserConfig,
         fx: FX,
+        loop_in_thread: LoopInThread | None,
         clients: list[PluginClient] | None = None,
         parent: QWidget | None = None,
     ) -> None:
@@ -80,6 +82,7 @@ class PluginManager(BaseSaveableClass):
         self.parent = parent
         self.wallet_functions = wallet_functions
         self.config = config
+        self.loop_in_thread = loop_in_thread
         self.fx = fx
         self.clients = [client for client in clients if isinstance(client, PluginClient)] if clients else []
         for client in self.clients:
@@ -118,6 +121,7 @@ class PluginManager(BaseSaveableClass):
                             signals=self.wallet_functions.signals,
                             network=self.network,
                             multipath_descriptor=descriptor,
+                            loop_in_thread=self.loop_in_thread,
                         )
                     )
                 elif cls == WalletGraphClient:
