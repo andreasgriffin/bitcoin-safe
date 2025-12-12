@@ -37,7 +37,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, cast
 
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
@@ -279,15 +279,17 @@ class UpdateNotificationBar(NotificationBar):
             """On done."""
             pass
 
-        def on_success(assets: list[Asset]) -> None:
+        def on_success(assets: list[Asset] | None) -> None:
             # filter the assets, by recognized and for the platform
 
             """On success."""
+            if not assets:
+                return
             self.assets = self.get_filtered_assets(assets)
             self.refresh()
             self.signal_on_success.emit()
 
-        def on_error(packed_error_info) -> None:
+        def on_error(packed_error_info: ExcInfo | None) -> None:
             """On error."""
             logger.error(f"error in fetching update info {packed_error_info}")
 

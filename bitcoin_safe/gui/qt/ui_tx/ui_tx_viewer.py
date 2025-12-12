@@ -35,7 +35,7 @@ from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_safe_lib.async_tools.loop_in_thread import MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -51,7 +51,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.address_comparer import AddressComparer
+from bitcoin_safe.address_comparer import AddressComparer, FuzzyMatch
 from bitcoin_safe.client import Client
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.fx import FX
@@ -1166,7 +1166,7 @@ class UITx_Viewer(UITx_Base):
                     continue
                 all_addresses.add(address)
 
-        async def do() -> Any:
+        async def do() -> list[tuple[str, str, FuzzyMatch]]:
             """Do."""
             start_time = time()
             poisonous_matches = AddressComparer.poisonous(all_addresses)
@@ -1175,15 +1175,19 @@ class UITx_Viewer(UITx_Base):
             )
             return poisonous_matches
 
-        def on_done(poisonous_matches) -> None:
+        def on_done(poisonous_matches: list[tuple[str, str, FuzzyMatch]] | None) -> None:
             """On done."""
+            if not poisonous_matches:
+                return
             logger.debug(f"finished AddressComparer, found {len(poisonous_matches)=}")
 
-        def on_success(poisonous_matches) -> None:
+        def on_success(poisonous_matches: list[tuple[str, str, FuzzyMatch]] | None) -> None:
             """On success."""
+            if not poisonous_matches:
+                return
             self.address_poisoning_warning_bar.set_poisonous_matches(poisonous_matches)
 
-        def on_error(packed_error_info) -> None:
+        def on_error(packed_error_info: ExcInfo | None) -> None:
             """On error."""
             logger.error(f"AddressComparer error {packed_error_info}")
 
@@ -1332,17 +1336,17 @@ class UITx_Viewer(UITx_Base):
                 logger.warning(str(e))
             return False
 
-        def on_done(success) -> None:
+        def on_done(success: bool | None) -> None:
             """On done."""
             pass
 
-        def on_success(success) -> None:
+        def on_success(success: bool | None) -> None:
             """On success."""
             self.fill_button_group()
             if not success:
                 self.set_tab_focus(UiElements.default)
 
-        def on_error(packed_error_info) -> None:
+        def on_error(packed_error_info: ExcInfo | None) -> None:
             """On error."""
             logger.warning(str(packed_error_info))
 
