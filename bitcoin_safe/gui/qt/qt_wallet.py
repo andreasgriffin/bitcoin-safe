@@ -334,6 +334,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     wallet_functions=self.wallet_functions,
                     config=self.config,
                     fx=self.fx,
+                    loop_in_thread=self.loop_in_thread,
                 )
             )
             self.plugin_manager_widget = PluginListWidget()
@@ -462,10 +463,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     "network": config.network,
                     "config": config,
                     "fx": fx,
+                    "loop_in_thread": loop_in_thread,
                 },
                 SyncClient.__name__: {
                     "signals": wallet_functions.signals,
                     "network": config.network,
+                    "loop_in_thread": loop_in_thread,
                 },
                 UITx_Creator.__name__: {
                     "wallet_functions": wallet_functions,

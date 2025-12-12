@@ -38,6 +38,7 @@ from bitcoin_nostr_chat.nostr_sync import NostrSync
 from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import Qt
@@ -155,6 +156,7 @@ class SyncClient(PluginClient):
         network: bdk.Network,
         signals: Signals,
         nostr_sync_dump: dict,
+        loop_in_thread: LoopInThread | None,
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
@@ -172,7 +174,9 @@ class SyncClient(PluginClient):
         self.nostr_sync = (
             nostr_sync
             if nostr_sync
-            else NostrSync.from_dump(d=nostr_sync_dump, signals_min=self.signals, parent=self)
+            else NostrSync.from_dump(
+                d=nostr_sync_dump, signals_min=self.signals, parent=self, loop_in_thread=loop_in_thread
+            )
         )
         assert self.nostr_sync.network == network, (
             f"Network inconsistency. {network=} != {self.nostr_sync.network=}"
@@ -244,6 +248,7 @@ class SyncClient(PluginClient):
         multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         signals: Signals,
+        loop_in_thread: LoopInThread | None,
         parent: QWidget | None = None,
     ) -> SyncClient:
         """From descriptor."""
@@ -270,6 +275,7 @@ class SyncClient(PluginClient):
             individual_chats_visible=False,
             signals_min=signals,
             parent=parent,
+            loop_in_thread=loop_in_thread,
         )
 
         return SyncClient(
@@ -277,6 +283,7 @@ class SyncClient(PluginClient):
             nostr_sync=nostr_sync,
             network=network,
             signals=signals,
+            loop_in_thread=loop_in_thread,
         )
 
     def load(self):
