@@ -34,7 +34,7 @@ import os
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
@@ -42,7 +42,7 @@ from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, UnifiedEncoder
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtSignal
@@ -863,28 +863,30 @@ class ExportDataSimple(HorizontalImportExportGroups):
     def lazy_load_qr(self, data: Data) -> None:
         """Lazy load qr."""
 
-        async def do() -> Any:
+        async def do() -> list[str | None]:
             """Do."""
             fragments = self.generate_qr_fragments(data=data)
             images = [QRGenerator.create_qr_svg(fragment) for fragment in fragments]
             return images
 
-        def on_done(result) -> None:
+        def on_done(result: list[str | None] | None) -> None:
             """On done."""
             pass
 
-        def on_error(packed_error_info) -> None:
+        def on_error(packed_error_info: ExcInfo) -> None:
             """On error."""
-            Message(packed_error_info, type=MessageType.Error)
+            if not packed_error_info:
+                return
+            Message(str(packed_error_info), type=MessageType.Error)
 
-        def on_success(result) -> None:
+        def on_success(result: list[str | None] | None) -> None:
             """On success."""
             if result:
                 if any([(item is None) for item in result]):
                     return self.signal_set_qr_images.emit([])
                 # here i must use a signal, and not set the image directly, because
                 # self.qr_label can reference a destroyed c++ object
-                self.signal_set_qr_images.emit(result)
+                self.signal_set_qr_images.emit([r for r in result if r])
 
         if self.loop_in_thread:
             self.loop_in_thread.run_task(

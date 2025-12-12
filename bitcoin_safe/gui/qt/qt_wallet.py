@@ -46,7 +46,7 @@ from typing import (
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
@@ -1105,7 +1105,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 logger.debug(f"{self.__class__.__name__}: {e}")
                 return e
 
-        def on_done(builder_infos: TxBuilderInfos | Exception) -> None:
+        def on_done(builder_infos: TxBuilderInfos | Exception | None) -> None:
             """On done."""
             if not builder_infos:
                 self.wallet_signals.finished_psbt_creation.emit()
@@ -1145,7 +1145,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             """On success."""
             pass
 
-        def on_error(packed_error_info) -> None:
+        def on_error(packed_error_info: ExcInfo | None) -> None:
             """On error."""
             self.wallet_signals.finished_psbt_creation.emit()
 
