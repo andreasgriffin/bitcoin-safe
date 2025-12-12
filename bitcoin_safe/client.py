@@ -117,6 +117,9 @@ class Client:
             )
 
         if isinstance(info, bdk.Info.BLOCK_RECEIVED):
+            if self._sync_status is SyncStatus.synced:
+                return False
+
             self.progress = min(self.progress, self.MAX_PROGRESS_WHILE_SYNC)
             self._downloaded_blocks.update([str(v) for v in info._values])
             self.status_msg = translate("Client", "Downloaded {count} blocks").format(
