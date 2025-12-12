@@ -108,9 +108,14 @@ class CategoryComboBox(QComboBox):
                 icon = create_color_circle(category_color(info.category))
                 self.addItem(icon, info.category, info)
 
-            # use the sentinel here (not None!)
-            plus_icon = svg_tools.get_QIcon("bi--plus-lg.svg")
-            self.addItem(plus_icon, self.tr("Add category"), self.ADD_CATEGORY_DATA)
+            self.addItem(
+                svg_tools.get_QIcon("bi--plus-lg.svg"), self.tr("Add category"), self.ADD_CATEGORY_DATA
+            )
+
+            if len(infos) == 1:
+                first_category_index = 1  # "All" is at index 0
+                super().setCurrentIndex(first_category_index)
+                self._last_valid_index = first_category_index
 
     def _on_activated(self, index: int):
         """On activated."""
