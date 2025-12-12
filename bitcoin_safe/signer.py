@@ -38,6 +38,7 @@ from bitcoin_qr_tools.gui.bitcoin_video_widget import (
     BitcoinVideoWidget,
     DecodingException,
 )
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
@@ -64,6 +65,8 @@ class AbstractSignatureImporter(QObject):
     def __init__(
         self,
         network: bdk.Network,
+        loop_in_thread: LoopInThread,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -74,6 +77,8 @@ class AbstractSignatureImporter(QObject):
         self.signatures = signatures
         self.signature_available = signature_available
         self.key_label = key_label
+        self.close_all_video_widgets = close_all_video_widgets
+        self.loop_in_thread = loop_in_thread
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         """Sign."""
@@ -173,6 +178,8 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         self,
         wallet: Wallet,
         network: bdk.Network,
+        loop_in_thread: LoopInThread,
+        close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -183,6 +190,8 @@ class SignatureImporterWallet(AbstractSignatureImporter):
             signature_available=signature_available,
             signatures=signatures,
             key_label=key_label,
+            loop_in_thread=loop_in_thread,
+            close_all_video_widgets=close_all_video_widgets,
         )
         self.wallet_id = wallet.id
 
@@ -238,6 +247,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
     def __init__(
         self,
         network: bdk.Network,
+        loop_in_thread: LoopInThread,
         close_all_video_widgets: SignalProtocol[[]],
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
@@ -250,10 +260,11 @@ class SignatureImporterQR(AbstractSignatureImporter):
             signature_available=signature_available,
             signatures=signatures,
             key_label=key_label,
+            loop_in_thread=loop_in_thread,
+            close_all_video_widgets=close_all_video_widgets,
         )
         self._label = label if label else self.tr("Scan QR code")
         self._temp_bitcoin_video_widget: BitcoinVideoWidget | None = None
-        self.close_all_video_widgets = close_all_video_widgets
 
         self.close_all_video_widgets.connect(self.close_video_widget)
 
@@ -294,6 +305,7 @@ class SignatureImporterFile(SignatureImporterQR):
         self,
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
+        loop_in_thread: LoopInThread,
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -307,6 +319,7 @@ class SignatureImporterFile(SignatureImporterQR):
             key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
+            loop_in_thread=loop_in_thread,
         )
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
@@ -336,6 +349,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
         self,
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
+        loop_in_thread: LoopInThread,
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -349,6 +363,7 @@ class SignatureImporterClipboard(SignatureImporterFile):
             key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
+            loop_in_thread=loop_in_thread,
         )
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
@@ -377,6 +392,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         self,
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
+        loop_in_thread: LoopInThread,
         signature_available: bool = False,
         signatures: dict[int, PartialSig] | None = None,
         key_label: str = "",
@@ -391,8 +407,9 @@ class SignatureImporterUSB(SignatureImporterQR):
             key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
+            loop_in_thread=loop_in_thread,
         )
-        self.usb_gui = USBGui(self.network)
+        self.usb_gui = USBGui(self.network, loop_in_thread=loop_in_thread)
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         """Sign."""

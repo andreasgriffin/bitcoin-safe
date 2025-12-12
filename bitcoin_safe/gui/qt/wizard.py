@@ -579,7 +579,7 @@ class StickerTheHardware(BaseTab):
 class GenerateSeed(BaseTab):
     def create(self) -> TutorialWidget:
         """Create."""
-        self.usb_gui = USBGui(self.refs.qtwalletbase.config.network)
+        self.usb_gui = USBGui(self.refs.qtwalletbase.config.network, loop_in_thread=self.loop_in_thread)
 
         widget = QWidget()
         widget_layout = QVBoxLayout(widget)
@@ -750,6 +750,7 @@ class ImportXpubs(BaseTab):
                 get_address_type=self.get_address_type,
                 signals_min=self.refs.qtwalletbase.signals,
                 slow_hwi_listing=True,
+                loop_in_thread=self.loop_in_thread,
             )
             self.set_current_signer(0)
             self.keystore_uis.setMovable(False)

@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
             )
             self.config.currency = self.fx.get_currency_iso(QLocale(self.config.language_code))
         self.language_chooser.set_language(self.config.language_code)
-        self.hwi_tool_gui = ToolGui(self.config.network)
+        self.hwi_tool_gui = ToolGui(self.config.network, loop_in_thread=self.loop_in_thread)
         self.hwi_tool_gui.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.setupUi(config_present=bool(config_present))
 

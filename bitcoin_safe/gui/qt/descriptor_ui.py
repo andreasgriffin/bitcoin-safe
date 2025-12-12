@@ -85,6 +85,7 @@ class DescriptorUI(QWidget):
         self.protowallet = protowallet
         self.wallet = wallet
         self.wallet_functions = wallet_functions
+        self.loop_in_thread = loop_in_thread
 
         self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
 
@@ -99,6 +100,7 @@ class DescriptorUI(QWidget):
             get_address_type=self.get_address_type_from_ui,
             signals_min=wallet_functions.signals,
             slow_hwi_listing=True,
+            loop_in_thread=self.loop_in_thread,
         )
         self._layout.addWidget(self.keystore_uis)
 

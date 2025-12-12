@@ -73,7 +73,7 @@ class SignMessageBase(QWidget):
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: SignalProtocol[[]],
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
     ) -> None:
@@ -86,7 +86,9 @@ class SignMessageBase(QWidget):
 
         self.grid_layout = grid_layout if grid_layout else QGridLayout(self)
 
-        self.usb_gui = USBGui(network, allow_emulators_only_for_testnet_works=True)
+        self.usb_gui = USBGui(
+            network, allow_emulators_only_for_testnet_works=True, loop_in_thread=loop_in_thread
+        )
 
         self.sign_usb_button = SpinningButton(
             "",
@@ -180,7 +182,7 @@ class SignMessage(SignMessageBase):
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: SignalProtocol[[]],
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
     ) -> None:
@@ -232,7 +234,7 @@ class _SignTab(SignMessageBase):
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: SignalProtocol[[]],
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         wallet_functions: WalletFunctions,
         parent: QWidget | None = None,
     ) -> None:
@@ -308,7 +310,7 @@ class SignAndVerifyMessage(QWidget):
         network: bdk.Network,
         signals_min: SignalsMin,
         close_all_video_widgets: SignalProtocol[[]],
-        loop_in_thread: LoopInThread | None,
+        loop_in_thread: LoopInThread,
         wallet_functions: WalletFunctions,
         parent: QWidget | None = None,
     ) -> None:

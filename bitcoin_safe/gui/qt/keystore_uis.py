@@ -33,6 +33,7 @@ from collections.abc import Callable
 from typing import cast
 
 from bitcoin_qr_tools.data import SignerInfo
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import pyqtSignal
@@ -89,6 +90,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         get_editable_protowallet: Callable[[], ProtoWallet],
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         slow_hwi_listing=True,
     ) -> None:
         """Initialize instance."""
@@ -99,6 +101,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         self.signal_tracker = SignalTracker()
         self.signals_min = signals_min
         self.slow_hwi_listing = slow_hwi_listing
+        self.loop_in_thread = loop_in_thread
 
         self.get_editable_protowallet = get_editable_protowallet
         self.get_address_type = get_address_type
@@ -111,6 +114,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 signals_min=signals_min,
                 hardware_signer_label=self.protowallet.sticker_name(i),
                 slow_hwi_listing=self.slow_hwi_listing,
+                loop_in_thread=loop_in_thread,
             )
             keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
             self.addTab(
@@ -300,6 +304,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     signals_min=self.signals_min,
                     hardware_signer_label=self.protowallet.sticker_name(i),
                     slow_hwi_listing=self.slow_hwi_listing,
+                    loop_in_thread=self.loop_in_thread,
                 )
                 keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
                 self.addTab(

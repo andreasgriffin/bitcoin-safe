@@ -35,6 +35,7 @@ from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
@@ -227,6 +228,7 @@ class KeyStoreUI(QWidget):
         network: bdk.Network,
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
+        loop_in_thread: LoopInThread,
         label: str = "",
         hardware_signer_label="",
         parent: QWidget | None = None,
@@ -330,7 +332,9 @@ class KeyStoreUI(QWidget):
 
         self.button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
 
-        self.usb_gui = USBGui(self.network, initalization_label=self.hardware_signer_label)
+        self.usb_gui = USBGui(
+            self.network, initalization_label=self.hardware_signer_label, loop_in_thread=loop_in_thread
+        )
         button_hwi = self.hardware_signer_interaction.add_hwi_button(
             signal_end_hwi_blocker=self.usb_gui.signal_end_hwi_blocker
         )
