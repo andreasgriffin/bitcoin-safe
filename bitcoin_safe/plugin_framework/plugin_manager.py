@@ -36,7 +36,6 @@ import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
@@ -49,6 +48,7 @@ from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.signals import T, WalletFunctions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class PluginManager(BaseSaveableClass):
         WalletGraphClient.__name__: WalletGraphClient,
         PluginPermission.__name__: PluginPermission,
     }
-    VERSION = "0.0.3"
+    VERSION = "0.0.4"
 
     signal_client_action = cast(SignalProtocol[[PluginClient]], pyqtSignal(PluginClient))
     client_classes: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
@@ -229,8 +229,7 @@ class PluginManager(BaseSaveableClass):
         d = super().dump()
         d["clients"] = self.clients
         d["plugin_permissions"] = {
-            plugin_id: sorted(permission.name for permission in permissions)
-            for plugin_id, permissions in self.plugin_permissions.items()
+            plugin_id: list(permissions) for plugin_id, permissions in self.plugin_permissions.items()
         }
         return d
 
@@ -239,27 +238,18 @@ class PluginManager(BaseSaveableClass):
         """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        plugin_permissions: dict[str, set[PluginPermission]] = {}
-        for plugin_id, permission_names in dct.get("plugin_permissions", {}).items():
-            for permission_name in permission_names:
-                if plugin_id not in plugin_permissions:
-                    plugin_permissions[plugin_id] = set()
-
-                try:
-                    plugin_permissions[plugin_id].add(PluginPermission[permission_name])
-                except Exception:
-                    logger.error(f"Could not map {permission_name=}")
-                    continue
-        dct["plugin_permissions"] = plugin_permissions
+        plugin_permissions: dict[str, set[PluginPermission]] = dct.get("plugin_permissions", {})
+        for plugin_id in plugin_permissions.keys():
+            plugin_permissions[plugin_id] = set(plugin_permissions[plugin_id])
 
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             dct.setdefault("plugin_permissions", {})
             for client in dct.get("clients", []):
                 if not isinstance(client, PluginClient):
@@ -279,7 +269,7 @@ class PluginManager(BaseSaveableClass):
                 else:
                     dct["plugin_permissions"].setdefault(plugin_id, set())
 
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.2"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.4"):
             dct.setdefault("plugin_permissions", {})
             for client in dct.get("clients", []):
                 if not isinstance(client, PluginClient):

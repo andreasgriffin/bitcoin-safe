@@ -33,7 +33,6 @@ from abc import abstractmethod
 from typing import Any, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
@@ -42,6 +41,7 @@ from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.util import fast_version
 
 logger = logging.getLogger(__name__)
 
@@ -117,9 +117,9 @@ class PluginClient(BaseSaveableClass, QWidget):
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
-        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
             dct["tab_text"] = dct["title"]
 
         # now the version is newest, so it can be deleted from the dict
