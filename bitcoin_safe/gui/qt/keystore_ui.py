@@ -399,7 +399,6 @@ class KeyStoreUI(QWidget):
             text_instruction_label=self.tr("Please paste the exported file (like sparrow-export.json):"),
             text_placeholder=self.tr("Please paste the exported file (like sparrow-export.json)"),
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
-            parent=self,
         )
         self._attached_import_dialog.show()
 
