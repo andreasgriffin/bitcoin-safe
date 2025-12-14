@@ -1798,6 +1798,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;Assinaturas de Mensagem</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;Minimizar para a bandeja</translation>
 		</message>
@@ -2043,6 +2048,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>Assinaturas de Mensagem</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>A monitorizar a rede bitcoin p2p</translation>
 		</message>
@@ -2073,8 +2083,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>No macOS, apenas 2 carteiras podem ser abertas ao mesmo tempo</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>No macOS apenas {n} carteiras podem ser abertas ao mesmo tempo</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2190,6 +2200,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>Mostrar/Ocultar</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Mensagem Assinada</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2356,8 +2371,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>Aplicar &amp;&amp; Encerrar</translation>
+			<source>Apply and restart</source>
+			<translation>Aplicar e reiniciar</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2654,8 +2669,8 @@ Deseja prosseguir mesmo assim?</translation>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>Ativar e desligar</translation>
+			<source>Activate and restart</source>
+			<translation>Ativar e reiniciar</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2776,11 +2791,6 @@ Deseja prosseguir mesmo assim?</translation>
 		<message>
 			<source>Show Password</source>
 			<translation>Mostrar Senha</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>Enviar</translation>
 		</message>
 	</context>
 	<context>
@@ -3455,6 +3465,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>É necessária uma mensagem blindada em ASCII.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>Endereço</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>Endereço usado para assinar a mensagem</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>Endereço, mensagem e assinatura são necessários para verificação.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>A mensagem blindada é válida.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>Assinatura Base64</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>Introduzir mensagem</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>Mensagem</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>Assinar</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>Assinatura</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>A assinatura corresponde ao endereço fornecido.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>A verificação falhou.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>Verificar</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>Verificar Armadura ASCII</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3462,20 +3544,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>Assinar mensagem</translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>Não foi possível determinar o caminho de derivação para o endereço fornecido.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>Mensagem muito curta.</translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>Assinar</translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>Assinar mensagem</translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>Mensagem Assinada</translation>
@@ -4546,6 +4635,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>Endereço</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>Endereço usado para assinar a mensagem</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>Introduzir mensagem</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>Mensagem</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5181,6 +5292,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>Criar novos endereços de receção a partir da sua carteira.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>Acesso completo de leitura e escrita a esta carteira, incluindo saldos, transações e UTXOs.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>Ler e atualizar as etiquetas e categorias da sua carteira.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>Ler o descritor da carteira (estrutura da chave pública, caminhos).</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>Subscrever eventos de atividade da carteira, como novas transações ou sincronização da blockchain. Também permite abrir transações e PSBTs.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>Ver a configuração do limiar multisig (m-of-n) da carteira.</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5192,6 +5335,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>O endereço não corresponde à chave pública recuperada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>O bloco BIP-0137 não contém o corpo da mensagem.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>O bloco BIP-0137 deve conter linhas de endereço e assinatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>A ordem do bloco BIP-0137 é inválida.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5207,6 +5365,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>A mensagem tinha espaços em redor. A verificação foi bem-sucedida após fazer o trimming da mensagem.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>A mensagem não é um texto blindado BIP-0137 válido.</translation>
 		</message>
 		<name>signatures</name>
 		<message>

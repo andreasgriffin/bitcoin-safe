@@ -31,7 +31,6 @@ from __future__ import annotations
 import logging
 import sys
 from collections.abc import Sequence
-from functools import partial
 from typing import Protocol, cast, runtime_checkable
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
@@ -59,7 +58,8 @@ class PluginProtocol(Protocol):
     description: str
     provider: str
     icon: QIcon
-    signal_set_enabled: SignalProtocol[bool]
+    signal_request_enabled: SignalProtocol[bool]
+    signal_enabled_changed: SignalProtocol[bool]
     enabled: bool
     node: SidebarNode
 
@@ -117,19 +117,36 @@ class PluginWidget(QWidget):
 
         # Enable/disable checkbox
         self.enable_checkbox = QCheckBox(self.tr("Enable/Disable"))
-        self.enable_checkbox.toggled.connect(partial(self._on_toggled, plugin))
+        self.enable_checkbox.stateChanged.connect(self._on_checkbox_try_change)
         self._layout.addWidget(self.enable_checkbox, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.plugin.signal_enabled_changed.connect(self._on_enabled_changed)
 
         # Initialize UI state
         self.updateUi()
 
-    def _on_toggled(self, plugin: PluginProtocol, enabled: bool) -> None:
-        """On toggled."""
-        plugin.signal_set_enabled.emit(enabled)
+    def _on_enabled_changed(self, enabled: bool) -> None:
+        self.updateUi()
+
+    def _on_checkbox_try_change(self, state_int: int):
+        # Temporarily disconnect to prevent recursion
+        self.enable_checkbox.blockSignals(True)
+
+        state = Qt.CheckState(state_int)
+
+        # Revert state change, since be need to send signal_request_enabled first
+        previous = Qt.CheckState.Checked if state == Qt.CheckState.Unchecked else Qt.CheckState.Unchecked
+        self.enable_checkbox.setCheckState(previous)
+
+        self.enable_checkbox.blockSignals(False)
+
+        self.plugin.signal_request_enabled.emit(state == Qt.CheckState.Checked)
 
     def updateUi(self) -> None:
         """Refreshes the checkbox to match the plugin's current enabled state."""
+        self.enable_checkbox.blockSignals(True)
         self.enable_checkbox.setChecked(self.plugin.enabled)
+        self.enable_checkbox.blockSignals(False)
 
 
 class PluginListWidget(QWidget):
@@ -184,7 +201,8 @@ class PluginListWidget(QWidget):
 
 # Example usage with a dummy plugin implementation
 class DummyPlugin(QObject):
-    signal_set_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+    signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+    signal_enabled_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(self, title, icon, description, provider):
         """Initialize instance."""

@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from typing import cast
 
 import bdkpython as bdk
 import nostr_sdk
@@ -57,8 +58,8 @@ from bitcoin_safe.html_utils import link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
+from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
-from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import filename_clean
 
@@ -126,7 +127,15 @@ class BackupNsecNotificationBar(NotificationBar):
 
 
 class SyncClient(PluginClient):
+    known_classes = {**PluginClient.known_classes, PluginPermission.__name__: PluginPermission}
     plugin_conditions = PluginConditions()
+    required_permissions: set[PluginPermission] = {
+        PluginPermission.LABELS,
+        PluginPermission.WALLET_SIGNALS,
+        PluginPermission.MN_TUPLE,
+        PluginPermission.ADDRESS,
+        PluginPermission.DESCRIPTOR,
+    }
     title = translate("SyncClient", "Sync & Chat")
     description = translate(
         "SyncClient",
@@ -163,7 +172,6 @@ class SyncClient(PluginClient):
     ):
         """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
-        self.server: SyncServer | None = None
         self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
 
@@ -196,10 +204,12 @@ class SyncClient(PluginClient):
         self.nostr_sync.ui.menu.addAction(self.checkbox_auto_open_psbts)
 
         # signals
-        self.nostr_sync.chat.signal_attachement_clicked.connect(self.open_file_object)
-        self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
-        self.signals.language_switch.connect(self.updateUi)
-        self.backup_nsec_notificationbar.import_button.clicked.connect(self.import_nsec)
+        self.signal_tracker.connect(self.nostr_sync.chat.signal_attachement_clicked, self.open_file_object)
+        self.signal_tracker.connect(self.nostr_sync.group_chat.signal_dm, self.on_dm)
+        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.backup_nsec_notificationbar.import_button.clicked), self.import_nsec
+        )
 
         self.updateUi()
 
@@ -207,11 +217,11 @@ class SyncClient(PluginClient):
         """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
 
-    def on_set_enabled(self, value: bool):
+    def set_enabled(self, value: bool):
         """On set enabled."""
         if self.enabled == value:
             return
-        super().on_set_enabled(value=value)
+        super().set_enabled(value=value)
         if value and self.server:
             self.backup_nsec_notificationbar.set_nsec(
                 nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
@@ -224,15 +234,16 @@ class SyncClient(PluginClient):
         """Get widget."""
         return self
 
-    def save_connection_details(
+    def set_server_view(
         self,
-        server: SyncServer,
+        server: PluginServerView,
     ):
         """Save connection details."""
-        logger.debug("save_connection_details")
-        self.server = server
+        super().set_server_view(server=server)
 
         labels = server.get_labels()
+        if not self.server:
+            return
         wallet_signals = self.server.get_wallet_signals()
         if labels and wallet_signals:
             self.label_syncer = LabelSyncer(
@@ -324,12 +335,6 @@ class SyncClient(PluginClient):
         self.backup_nsec_notificationbar.updateUi()
         super().updateUi()
 
-    def close(self) -> bool:
-        """Close."""
-        self.nostr_sync.unsubscribe()
-        self.nostr_sync.ui.close()
-        return super().close()
-
     def subscribe(self) -> None:
         """Subscribe."""
         self.nostr_sync.subscribe()
@@ -395,3 +400,11 @@ class SyncClient(PluginClient):
         if not file_object or not file_object.data:
             return
         self.signals.open_tx_like.emit(file_object.data.data)
+
+    def close(self) -> bool:
+        """Close."""
+        self.nostr_sync.unsubscribe()
+        self.nostr_sync.ui.close()
+        if self.label_syncer:
+            self.label_syncer.close()
+        return super().close()

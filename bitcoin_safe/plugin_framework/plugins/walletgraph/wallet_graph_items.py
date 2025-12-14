@@ -36,6 +36,7 @@ from typing import Protocol
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtGui import QBrush, QColor, QPen, QTextCharFormat, QTextCursor
 from PyQt6.QtWidgets import (
@@ -230,7 +231,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         detail: FullTxDetail,
         outpoint_str: str,
         python_utxo: PythonUtxo,
-        transaction_signal: pyqtBoundSignal,
+        transaction_signal: SignalProtocol[[str]],
         network: bdk.Network,
         wallet: Wallet | None,
         wallet_signals: WalletSignals,
@@ -253,7 +254,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
             detail.txid,
             python_utxo.is_spent_by_txid,
             radius,
-            transaction_signal=transaction_signal,
+            transaction_signal=transaction_signal,  # type: ignore
             value_text=label_text,
             value_label_color=ColorScheme.DEFAULT,
         )
@@ -308,7 +309,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
         cls,
         outpoint_str: str,
         python_utxo: PythonUtxo | None,
-        transaction_signal: pyqtBoundSignal,
+        transaction_signal: SignalProtocol[[str]],
         axis_y: float,
         tx_item: TransactionItem,
         tx_width: float,
@@ -326,7 +327,7 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
             creating_txid,
             python_utxo.is_spent_by_txid if python_utxo else None,
             min_radius,
-            transaction_signal=transaction_signal,
+            transaction_signal=transaction_signal,  # type: ignore
             value_text=label_text,
             value_label_color=ColorScheme.GRAY,
             value_label_offset=offset,
@@ -641,7 +642,7 @@ class TransactionItem(QGraphicsRectItem):
         detail: FullTxDetail,
         width: float,
         height: float,
-        transaction_signal: pyqtBoundSignal,
+        transaction_signal: SignalProtocol[[str]],
         timestamp: datetime.datetime,
         position_x: float,
         axis_y: float,
@@ -679,7 +680,7 @@ class TransactionItem(QGraphicsRectItem):
         self.label_item = TransactionLabelItem(
             detail.txid,
             label_text,
-            transaction_signal=transaction_signal,
+            transaction_signal=transaction_signal,  # type: ignore
             vertical_offset=label_offset,
             color=label_color,
             parent=self,

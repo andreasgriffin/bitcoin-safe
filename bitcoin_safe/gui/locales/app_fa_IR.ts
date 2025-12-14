@@ -1798,6 +1798,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;امضاهای پیام</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;کمینه‌سازی به سینی</translation>
 		</message>
@@ -2043,6 +2048,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>امضاهای پیام</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>پایش شبکه p2p بیت‌کوین</translation>
 		</message>
@@ -2073,8 +2083,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>در macOS فقط می‌توان همزمان ۲ کیف پول را باز کرد</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>در macOS فقط {n} کیف پول می‌توانند به‌طور هم‌زمان باز شوند</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2190,6 +2200,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>نمایش/مخفی</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>پیام امضاشده</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2356,8 +2371,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>اعمال و خاموش کردن</translation>
+			<source>Apply and restart</source>
+			<translation>اعمال و راه‌اندازی مجدد</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2651,8 +2666,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>فعال‌سازی و خاموش کردن</translation>
+			<source>Activate and restart</source>
+			<translation>فعال‌سازی و راه‌اندازی مجدد</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2773,11 +2788,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Show Password</source>
 			<translation>نمایش گذرواژه</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>ارسال</translation>
 		</message>
 	</context>
 	<context>
@@ -3452,6 +3462,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>پیام زرهی ASCII الزامی است.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>آدرس</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>آدرسی که برای امضای پیام استفاده شده است</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>برای تأیید، آدرس، پیام و امضا الزامی است.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>پیام زرهی معتبر است.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>امضای Base64</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>پیام را وارد کنید</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>پیام</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>امضا</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>امضا</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>امضا با آدرس ارائه‌شده مطابقت دارد.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>تأیید ناموفق بود.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>تأیید</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>تأیید زره ASCII</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3459,20 +3541,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>امضای پیام</translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>مسیر اشتقاق برای آدرس ارائه‌شده قابل تعیین نیست.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>پیام خیلی کوتاه است.</translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>امضا</translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>امضای پیام</translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>پیام امضاشده</translation>
@@ -4543,6 +4632,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>آدرس</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>آدرسی که برای امضای پیام استفاده شده است</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>پیام را وارد کنید</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>پیام</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5178,6 +5289,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>ایجاد آدرس‌های دریافت جدید از کیف پول شما.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>دسترسی کامل خواندن و نوشتن به این کیف پول، شامل موجودی‌ها، تراکنش‌ها و UTXOها.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>خواندن و به‌روزرسانی برچسب‌ها و دسته‌بندی‌های کیف پول شما.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>خواندن توصیف‌گر کیف پول (ساختار کلید عمومی، مسیرها).</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>اشتراک در رویدادهای فعالیت کیف پول مانند تراکنش‌های جدید یا همگام‌سازی بلاکچین. همچنین امکان باز کردن تراکنش‌ها و PSBTها را فراهم می‌کند.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>مشاهده پیکربندی آستانه چندامضایی (m-of-n) کیف پول.</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5189,6 +5332,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>آدرس با کلید عمومی بازیابی‌شده مطابقت ندارد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>بدنه پیام در بلوک BIP-0137 وجود ندارد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>بلوک BIP-0137 باید شامل خطوط آدرس و امضا باشد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>ترتیب بلوک BIP-0137 نامعتبر است.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5204,6 +5362,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>پیام دارای فاصله در اطراف بود. پس از بریدن پیام، تأیید موفق بود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>پیام یک متن زرهی معتبر BIP-0137 نیست.</translation>
 		</message>
 		<name>signatures</name>
 		<message>

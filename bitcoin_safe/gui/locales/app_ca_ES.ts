@@ -1798,6 +1798,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;Signatures de missatge</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;Minimitza a la safata</translation>
 		</message>
@@ -2043,6 +2048,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>Signatures de missatge</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>Monitoratge de la xarxa bitcoin p2p</translation>
 		</message>
@@ -2073,8 +2083,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>A macOS, només es poden obrir 2 carteres al mateix temps</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>A macOS només es poden obrir {n} carteres al mateix temps</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2190,6 +2200,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>Mostra/Amaga</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Missatge signat</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2356,8 +2371,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>Aplica &amp;&amp; Apaga</translation>
+			<source>Apply and restart</source>
+			<translation>Aplicar i reiniciar</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2651,8 +2666,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>Activa i apaga</translation>
+			<source>Activate and restart</source>
+			<translation>Activar i reiniciar</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2773,11 +2788,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Show Password</source>
 			<translation>Mostra contrasenya</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>Envia</translation>
 		</message>
 	</context>
 	<context>
@@ -3452,6 +3462,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>Es requereix un missatge blindat ASCII.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>Adreça</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>Adreça utilitzada per signar el missatge</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>L’adreça, el missatge i la signatura són necessaris per a la verificació.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>El missatge blindat és vàlid.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>Signatura Base64</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>Introduïu el missatge</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>Missatge</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>Signa</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>Signatura</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>La signatura coincideix amb l’adreça proporcionada.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>La verificació ha fallat.</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>Verificar</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>Verificar armadura ASCII</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3459,20 +3541,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>Signa missatge</translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>No s’ha pogut determinar el camí de derivació per a l’adreça proporcionada.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>Missatge massa curt.</translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>Signa</translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>Signa missatge</translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>Missatge signat</translation>
@@ -4543,6 +4632,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>Adreça</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>Adreça utilitzada per signar el missatge</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>Introduïu el missatge</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>Missatge</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5178,6 +5289,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>Creeu noves adreces de recepció des de la vostra cartera.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>Accés complet de lectura i escriptura a aquesta cartera, incloent saldos, transaccions i UTXO.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>Llegiu i actualitzeu les etiquetes i categories de la vostra cartera.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>Llegiu el descriptor de la cartera (estructura de clau pública, camins).</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>Subscriviu-vos als esdeveniments d’activitat de la cartera, com ara noves transaccions o sincronització de la cadena de blocs. També permet obrir transaccions i PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>Visualitzeu la configuració del llindar multisig (m-of-n) de la cartera.</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5189,6 +5332,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>L’adreça no coincideix amb la clau pública recuperada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>Al bloc BIP-0137 li falta el cos del missatge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>El bloc BIP-0137 ha de contenir línies d’adreça i signatura.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>L’ordre del bloc BIP-0137 no és vàlid.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5204,6 +5362,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>El missatge tenia espais al voltant. La verificació va tenir èxit després de retallar el missatge.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>El missatge no és un text blindat BIP-0137 vàlid.</translation>
 		</message>
 		<name>signatures</name>
 		<message>

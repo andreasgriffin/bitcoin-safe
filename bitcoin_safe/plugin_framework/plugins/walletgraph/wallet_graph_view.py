@@ -32,8 +32,10 @@ import datetime
 import logging
 import time
 from collections.abc import Iterable
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util import time_logger
 from PyQt6.QtCore import QPointF, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QWheelEvent
@@ -56,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 
 class WalletGraphView(QGraphicsView):
-    transactionClicked = pyqtSignal(str)
+    transactionClicked = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     MIN_TX_SPACING = 180.0
     MIN_SCENE_WIDTH = 900.0

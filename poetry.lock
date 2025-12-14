@@ -316,7 +316,7 @@ files = [
 
 [[package]]
 name = "bitcoin-nostr-chat"
-version = "2.1.1"
+version = "2.1.2"
 description = "A Nostr Chat with participant discovery"
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -336,7 +336,7 @@ requests = "^2.31.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
 reference = "main"
-resolved_reference = "9d2daca01b163872c58d0c814e7f7e6f8048cfdf"
+resolved_reference = "f189721f635a08f24972c6e19ad959373b5ba3d6"
 
 [[package]]
 name = "bitcoin-qr-tools"

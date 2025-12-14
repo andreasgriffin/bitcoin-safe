@@ -1797,6 +1797,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;メッセージ署名</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;トレイに最小化</translation>
 		</message>
@@ -2042,6 +2047,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>メッセージ署名</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>p2p bitcoin ネットワークを監視</translation>
 		</message>
@@ -2072,8 +2082,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>macOS では同時に開けるウォレットは 2 つまでです</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>macOS では同時に {n} 個のウォレットのみ開くことができます</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2189,6 +2199,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>表示/非表示</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>署名されたメッセージ  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2355,8 +2370,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>適用 &amp;&amp; シャットダウン  </translation>
+			<source>Apply and restart</source>
+			<translation>適用して再起動</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2653,8 +2668,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>有効化とシャットダウン</translation>
+			<source>Activate and restart</source>
+			<translation>有効化して再起動</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2774,11 +2789,6 @@ Do you want to hide to tray instead?</source>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Show Password</source>
-			<translation>送信</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
 			<translation>送信</translation>
 		</message>
 	</context>
@@ -3453,6 +3463,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>ASCII アーマードメッセージが必要です。</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>アドレス</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>メッセージの署名に使用されたアドレス</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>検証にはアドレス、メッセージ、署名が必要です。</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>アーマードメッセージは有効です。</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>Base64 署名</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>メッセージを入力</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>メッセージ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>署名  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>署名</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>署名は提供されたアドレスと一致します。</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>検証に失敗しました。</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>検証</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>ASCII アーマーを検証</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3460,20 +3542,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>メッセージを署名する  </translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>提供されたアドレスの派生パスを特定できませんでした。</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>メッセージが短すぎます。  </translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>署名  </translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>メッセージを署名する  </translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>署名されたメッセージ  </translation>
@@ -4541,6 +4630,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>アドレス</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>メッセージの署名に使用されたアドレス</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>メッセージを入力</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>メッセージ</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5174,6 +5285,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>ウォレットから新しい受信アドレスを作成します。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>残高、取引、UTXO を含む、このウォレットへの完全な読み取りおよび書き込みアクセス。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>ウォレットのラベルとカテゴリを読み取り、更新します。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>ウォレットのディスクリプタ（公開鍵構造、パス）を読み取ります。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>新しい取引やブロックチェーン同期などのウォレット活動イベントを購読します。取引や PSBT を開くことも可能になります。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>ウォレットのマルチシグしきい値（m-of-n）構成を表示します。</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5185,6 +5328,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>アドレスが回復された公開鍵と一致しません。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>BIP-0137 ブロックにメッセージ本文がありません。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>BIP-0137 ブロックにはアドレス行と署名行が含まれている必要があります。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>BIP-0137 ブロックの順序が無効です。</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5200,6 +5358,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>メッセージの前後に空白がありました。トリミング後の検証は成功しました。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>メッセージは有効な BIP-0137 アーマードテキストではありません。</translation>
 		</message>
 		<name>signatures</name>
 		<message>

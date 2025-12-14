@@ -33,8 +33,10 @@ import logging
 import time
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QFileDialog,
@@ -50,7 +52,7 @@ from bitcoin_safe.gui.qt.util import ColorScheme, Message, MessageType, svg_tool
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
-from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraphServer
+from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
 from bitcoin_safe.plugin_framework.plugins.walletgraph.wallet_graph_items import (
     ENABLE_WALLET_GRAPH_TOOLTIPS,
 )
@@ -66,6 +68,10 @@ logger = logging.getLogger(__name__)
 
 class WalletGraphClient(PluginClient):
     plugin_conditions = PluginConditions()
+    required_permissions: set[PluginPermission] = {
+        PluginPermission.WALLET,
+        PluginPermission.WALLET_SIGNALS,
+    }
     title = translate("WalletGraphClient", "Wallet Graph")
     description = translate(
         "WalletGraphClient",
@@ -83,9 +89,7 @@ class WalletGraphClient(PluginClient):
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("wallet-graph-icon.svg"))
         self.signals = signals
         self.network = network
-        self.server: WalletGraphServer | None = None
         self.wallet_id: str | None = None
-        self._wallet_signal_connected = False
 
         self._forced_update = False
         self._pending_update = False
@@ -93,11 +97,9 @@ class WalletGraphClient(PluginClient):
         self.graph_view = WalletGraphView(network=network)
 
         self.refresh_button = QPushButton()
-        self.refresh_button.clicked.connect(self.refresh_graph)
         self.refresh_button.setEnabled(enabled)
 
         self.export_button = QPushButton()
-        self.export_button.clicked.connect(self.on_export_graph)
         self.export_button.setEnabled(False)
 
         self.instructions_label = QLabel(
@@ -118,26 +120,26 @@ class WalletGraphClient(PluginClient):
         layout.addLayout(controls)
         layout.addWidget(self.graph_view)
 
-        self.graph_view.transactionClicked.connect(self._on_transaction_clicked)
-
+        self.signal_tracker.connect(self.graph_view.transactionClicked, self._on_transaction_clicked)
+        self.signal_tracker.connect(cast(SignalProtocol[[]], self.refresh_button.clicked), self.refresh_graph)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.export_button.clicked), self.on_export_graph
+        )
         self.updateUi()
 
     def get_widget(self) -> QWidget:
         """Get widget."""
         return self
 
-    def save_connection_details(self, server: WalletGraphServer) -> None:
+    def set_server_view(self, server: PluginServerView) -> None:
         """Save connection details."""
-        self.server = server
+        super().set_server_view(server=server)
         self.wallet_id = server.wallet_id
-        server.set_enabled(self.enabled)
         if self.enabled:
             self.refresh_graph()
 
     def load(self) -> None:
         """Load."""
-        if self.server:
-            self.server.set_enabled(True)
         self._connect_wallet_signal()
         self.refresh_graph()
         logger.debug("WalletGraphClient loaded")
@@ -145,18 +147,13 @@ class WalletGraphClient(PluginClient):
     def unload(self) -> None:
         """Unload."""
         self._disconnect_wallet_signal()
-        if self.server:
-            self.server.set_enabled(False)
         self.graph_view.clear()
-        self.export_button.setEnabled(False)
         logger.debug("WalletGraphClient unloaded")
 
-    def on_set_enabled(self, value: bool) -> None:
+    def set_enabled(self, value: bool) -> None:
         """On set enabled."""
-        super().on_set_enabled(value)
+        super().set_enabled(value)
         self.refresh_button.setEnabled(value)
-        if self.server:
-            self.server.set_enabled(value)
 
     def maybe_defer_update(self) -> bool:
         """Returns whether we should defer an update/refresh."""
@@ -176,7 +173,7 @@ class WalletGraphClient(PluginClient):
     def refresh_graph(self) -> None:
         """Refresh graph."""
 
-        if not self.enabled or not self.server:
+        if not self.enabled or not self.server or not self.server.wallet_signals:
             return
 
         if self.maybe_defer_update():
@@ -210,20 +207,18 @@ class WalletGraphClient(PluginClient):
 
     def _connect_wallet_signal(self) -> None:
         """Connect wallet signal."""
-        if not self.server or self._wallet_signal_connected or not self.wallet_id:
+        if not self.server or not self.wallet_id or not self.server.wallet_signals:
             return
-        self.server.wallet_signals.updated.connect(self.on_wallet_updated)
-        self._wallet_signal_connected = True
+        self.signal_tracker.connect(self.server.wallet_signals.updated, self.on_wallet_updated)
 
     def _disconnect_wallet_signal(self) -> None:
         """Disconnect wallet signal."""
-        if not self.server or not self._wallet_signal_connected or not self.wallet_id:
+        if not self.server or not self.server.wallet_signals:
             return
         try:
             self.server.wallet_signals.updated.disconnect(self.on_wallet_updated)
         except TypeError:
             pass
-        self._wallet_signal_connected = False
 
     def on_wallet_updated(self, update_filter: UpdateFilter) -> None:
         """On wallet updated."""
@@ -399,7 +394,7 @@ class WalletGraphClient(PluginClient):
 
     def _create_utxo_node(self, graph: ET.Element, utxo: PythonUtxo) -> None:
         """Create utxo node."""
-        if not self.server:
+        if not self.server or not self.server.wallet_signals:
             return
         node_id = str(utxo.outpoint)
         node = ET.SubElement(graph, "node", id=node_id)
@@ -522,3 +517,6 @@ class WalletGraphClient(PluginClient):
             )
         )
         super().updateUi()
+
+    def close(self) -> bool:
+        return super().close()
