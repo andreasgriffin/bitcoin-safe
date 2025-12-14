@@ -33,8 +33,10 @@ import logging
 import time
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QFileDialog,
@@ -88,7 +90,6 @@ class WalletGraphClient(PluginClient):
         self.signals = signals
         self.network = network
         self.wallet_id: str | None = None
-        self._wallet_signal_connected = False
 
         self._forced_update = False
         self._pending_update = False
@@ -96,11 +97,9 @@ class WalletGraphClient(PluginClient):
         self.graph_view = WalletGraphView(network=network)
 
         self.refresh_button = QPushButton()
-        self.refresh_button.clicked.connect(self.refresh_graph)
         self.refresh_button.setEnabled(enabled)
 
         self.export_button = QPushButton()
-        self.export_button.clicked.connect(self.on_export_graph)
         self.export_button.setEnabled(False)
 
         self.instructions_label = QLabel(
@@ -121,8 +120,11 @@ class WalletGraphClient(PluginClient):
         layout.addLayout(controls)
         layout.addWidget(self.graph_view)
 
-        self.graph_view.transactionClicked.connect(self._on_transaction_clicked)
-
+        self.signal_tracker.connect(self.graph_view.transactionClicked, self._on_transaction_clicked)
+        self.signal_tracker.connect(cast(SignalProtocol[[]], self.refresh_button.clicked), self.refresh_graph)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.export_button.clicked), self.on_export_graph
+        )
         self.updateUi()
 
     def get_widget(self) -> QWidget:
@@ -206,30 +208,18 @@ class WalletGraphClient(PluginClient):
 
     def _connect_wallet_signal(self) -> None:
         """Connect wallet signal."""
-        if (
-            not self.server
-            or self._wallet_signal_connected
-            or not self.wallet_id
-            or not self.server.wallet_signals
-        ):
+        if not self.server or not self.wallet_id or not self.server.wallet_signals:
             return
-        self.server.wallet_signals.updated.connect(self.on_wallet_updated)
-        self._wallet_signal_connected = True
+        self.signal_tracker.connect(self.server.wallet_signals.updated, self.on_wallet_updated)
 
     def _disconnect_wallet_signal(self) -> None:
         """Disconnect wallet signal."""
-        if (
-            not self.server
-            or not self._wallet_signal_connected
-            or not self.wallet_id
-            or not self.server.wallet_signals
-        ):
+        if not self.server or not self.server.wallet_signals:
             return
         try:
             self.server.wallet_signals.updated.disconnect(self.on_wallet_updated)
         except TypeError:
             pass
-        self._wallet_signal_connected = False
 
     def on_wallet_updated(self, update_filter: UpdateFilter) -> None:
         """On wallet updated."""
@@ -528,3 +518,6 @@ class WalletGraphClient(PluginClient):
             )
         )
         super().updateUi()
+
+    def close(self) -> bool:
+        return super().close()

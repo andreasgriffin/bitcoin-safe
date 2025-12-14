@@ -1807,8 +1807,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Close."""
         self.stop_sync_timer()
         self._cancel_client_tasks()
-        if self.plugin_manager:
-            self.plugin_manager.disconnect_all()
         self.quick_receive.close()
         self.address_tab.close()
         self.address_list_with_toolbar.close()

@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from typing import cast
 
 import bdkpython as bdk
 import nostr_sdk
@@ -203,10 +204,12 @@ class SyncClient(PluginClient):
         self.nostr_sync.ui.menu.addAction(self.checkbox_auto_open_psbts)
 
         # signals
-        self.nostr_sync.chat.signal_attachement_clicked.connect(self.open_file_object)
-        self.nostr_sync.group_chat.signal_dm.connect(self.on_dm)
-        self.signals.language_switch.connect(self.updateUi)
-        self.backup_nsec_notificationbar.import_button.clicked.connect(self.import_nsec)
+        self.signal_tracker.connect(self.nostr_sync.chat.signal_attachement_clicked, self.open_file_object)
+        self.signal_tracker.connect(self.nostr_sync.group_chat.signal_dm, self.on_dm)
+        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.backup_nsec_notificationbar.import_button.clicked), self.import_nsec
+        )
 
         self.updateUi()
 
@@ -332,12 +335,6 @@ class SyncClient(PluginClient):
         self.backup_nsec_notificationbar.updateUi()
         super().updateUi()
 
-    def close(self) -> bool:
-        """Close."""
-        self.nostr_sync.unsubscribe()
-        self.nostr_sync.ui.close()
-        return super().close()
-
     def subscribe(self) -> None:
         """Subscribe."""
         self.nostr_sync.subscribe()
@@ -403,3 +400,11 @@ class SyncClient(PluginClient):
         if not file_object or not file_object.data:
             return
         self.signals.open_tx_like.emit(file_object.data.data)
+
+    def close(self) -> bool:
+        """Close."""
+        self.nostr_sync.unsubscribe()
+        self.nostr_sync.ui.close()
+        if self.label_syncer:
+            self.label_syncer.close()
+        return super().close()

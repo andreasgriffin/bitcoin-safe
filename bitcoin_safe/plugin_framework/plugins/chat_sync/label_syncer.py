@@ -35,6 +35,7 @@ from time import sleep
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_nostr_chat.nostr_sync import Data, DataType, NostrSync
 from bitcoin_nostr_chat.ui.ui import short_key
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QObject
 
@@ -54,17 +55,18 @@ class LabelSyncer(QObject):
         self.enabled = enabled
         self.nostr_sync = nostr_sync
         self.wallet_signals = wallet_signals
-
+        self.signal_tracker = SignalTracker()
         self.apply_own_labels = True
 
-        self.nostr_sync.label_connector.signal_label_bip329_received.connect(
-            self.on_nostr_label_bip329_received
+        self.signal_tracker.connect(
+            self.nostr_sync.label_connector.signal_label_bip329_received, self.on_nostr_label_bip329_received
         )
         self.nostr_sync.signal_add_trusted_device.connect(self.on_add_trusted_device)
-        self.nostr_sync.signal_trusted_device_published_trust_me_back.connect(
-            self.on_trusted_device_published_trust_me_back
+        self.signal_tracker.connect(
+            self.nostr_sync.signal_trusted_device_published_trust_me_back,
+            self.on_trusted_device_published_trust_me_back,
         )
-        self.wallet_signals.updated.connect(self.on_labels_updated)
+        self.signal_tracker.connect(self.wallet_signals.updated, self.on_labels_updated)
 
     def is_enabled(self) -> bool:
         """Is enabled."""
@@ -253,3 +255,6 @@ class LabelSyncer(QObject):
             f"{len(update_filter.txids)} txids to "
             f"{[short_key(m.to_bech32()) for m in self.nostr_sync.group_chat.members]}"
         )
+
+    def close(self):
+        self.signal_tracker.disconnect_all()

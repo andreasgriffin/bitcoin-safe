@@ -32,7 +32,7 @@ import logging
 from abc import abstractmethod
 from typing import Any, cast
 
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
@@ -65,6 +65,7 @@ class PluginClient(BaseSaveableClass, QWidget):
         """Initialize instance."""
         super().__init__()
         self.server: PluginServerView | None = None
+        self.signal_tracker = SignalTracker()
         self.icon = icon
         self.node = SidebarNode[object](data=self, widget=self, title=self.title, icon=icon)
         self.enabled = enabled
@@ -129,6 +130,7 @@ class PluginClient(BaseSaveableClass, QWidget):
 
     def close(self) -> bool:
         """Close."""
+        self.signal_tracker.disconnect_all()
         return super().close()
 
     def updateUi(self):

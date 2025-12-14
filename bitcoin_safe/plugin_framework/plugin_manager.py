@@ -34,7 +34,7 @@ from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
@@ -91,6 +91,7 @@ class PluginManager(BaseSaveableClass):
         self.plugin_permissions: dict[str, set[PluginPermission]] = (
             plugin_permissions if plugin_permissions else {}
         )
+        self.signal_tracker = SignalTracker()
         for client in self.clients:
             self._register_client(client=client)
 
@@ -107,7 +108,9 @@ class PluginManager(BaseSaveableClass):
         client: PluginClient,
     ):
         """Register client and observe permission changes."""
-        client.signal_request_enabled.connect(partial(self._on_client_enabled_changed, client))
+        self.signal_tracker.connect(
+            client.signal_request_enabled, partial(self._on_client_enabled_changed, client)
+        )
 
         if client not in self.clients:
             self.clients.append(client)
@@ -180,8 +183,9 @@ class PluginManager(BaseSaveableClass):
 
             client.set_enabled(enabled and permissions_match)
         else:
-            self.plugin_permissions[plugin_id] = set()
+            # set_enabled has to be done first, since it needs plugin_permissions to unload
             client.set_enabled(False)
+            self.plugin_permissions[plugin_id] = set()
 
     def _request_permission(self, plugin_id: str, client: PluginClient) -> bool:
         """Ensure permissions are cached, prompting the user on first request."""
@@ -288,6 +292,7 @@ class PluginManager(BaseSaveableClass):
 
     def close(self):
         """Close."""
+        self.signal_tracker.disconnect_all()
         for client in self.clients:
             client.close()
 
