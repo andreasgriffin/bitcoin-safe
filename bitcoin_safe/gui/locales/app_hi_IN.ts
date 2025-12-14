@@ -1797,6 +1797,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;संदेश हस्ताक्षर</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;ट्रे में न्यूनतम करें</translation>
 		</message>
@@ -2042,6 +2047,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>संदेश हस्ताक्षर</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>बिटकॉइन p2p नेटवर्क की निगरानी</translation>
 		</message>
@@ -2072,8 +2082,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>macOS पर एक ही समय में केवल 2 वॉलेट खोले जा सकते हैं</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>macOS पर एक समय में केवल {n} वॉलेट खोले जा सकते हैं</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2189,6 +2199,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>दिखाएँ/छिपाएँ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>हस्ताक्षरित संदेश  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2355,8 +2370,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>लागू करें &amp;&amp; बंद करें  </translation>
+			<source>Apply and restart</source>
+			<translation>लागू करें और पुनः आरंभ करें</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2653,8 +2668,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>सक्रिय करें और बंद करें</translation>
+			<source>Activate and restart</source>
+			<translation>सक्रिय करें और पुनः आरंभ करें</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2775,11 +2790,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Show Password</source>
 			<translation>पासवर्ड दिखाएं</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>सबमिट करें</translation>
 		</message>
 	</context>
 	<context>
@@ -3453,6 +3463,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>ASCII आर्मर्ड संदेश आवश्यक है।</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>पता</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>संदेश पर हस्ताक्षर करने के लिए उपयोग किया गया पता</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>सत्यापन के लिए पता, संदेश और हस्ताक्षर आवश्यक हैं।</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>आर्मर्ड संदेश मान्य है।</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>Base64 हस्ताक्षर</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>संदेश दर्ज करें</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>संदेश</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>हस्ताक्षर करें  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>हस्ताक्षर</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>हस्ताक्षर प्रदान किए गए पते से मेल खाता है।</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>सत्यापन विफल हुआ।</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>सत्यापित करें</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>ASCII आर्मर सत्यापित करें</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3460,20 +3542,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>संदेश हस्ताक्षर करें  </translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>प्रदान किए गए पते के लिए व्युत्पत्ति पथ निर्धारित नहीं किया जा सका।</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>संदेश बहुत छोटा है।  </translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>हस्ताक्षर करें  </translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>संदेश हस्ताक्षर करें  </translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>हस्ताक्षरित संदेश  </translation>
@@ -4541,6 +4630,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>पता</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>संदेश पर हस्ताक्षर करने के लिए उपयोग किया गया पता</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>संदेश दर्ज करें</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>संदेश</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5174,6 +5285,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>अपने वॉलेट से नए प्राप्ति पते बनाएँ।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>इस वॉलेट के लिए पूर्ण पढ़ने और लिखने की पहुँच, जिसमें बैलेंस, लेनदेन और UTXO शामिल हैं।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>अपने वॉलेट के लेबल और श्रेणियाँ पढ़ें और अपडेट करें।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>वॉलेट का डिस्क्रिप्टर पढ़ें (सार्वजनिक कुंजी संरचना, पथ)।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>नए लेनदेन या ब्लॉकचेन सिंक जैसी वॉलेट गतिविधि घटनाओं की सदस्यता लें। यह लेनदेन और PSBT खोलने को भी सक्षम करता है।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>वॉलेट की मल्टीसिग थ्रेशोल्ड (m-of-n) कॉन्फ़िगरेशन देखें।</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5185,6 +5328,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>पता पुनर्प्राप्त सार्वजनिक कुंजी से मेल नहीं खाता।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>BIP-0137 ब्लॉक में संदेश बॉडी गायब है।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>BIP-0137 ब्लॉक में पता और हस्ताक्षर पंक्तियाँ होनी चाहिए।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>BIP-0137 ब्लॉक क्रम अमान्य है।</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5200,6 +5358,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>संदेश के चारों ओर अतिरिक्त रिक्त स्थान था। संदेश को ट्रिम करने के बाद सत्यापन सफल हुआ।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>संदेश मान्य BIP-0137 आर्मर्ड टेक्स्ट नहीं है।</translation>
 		</message>
 		<name>signatures</name>
 		<message>

@@ -1797,6 +1797,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;ลายเซ็นข้อความ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;ย่อไปที่ถาด</translation>
 		</message>
@@ -2042,6 +2047,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>ลายเซ็นข้อความ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>กำลังตรวจสอบเครือข่าย bitcoin แบบ p2p</translation>
 		</message>
@@ -2072,8 +2082,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>บน macOS สามารถเปิดกระเป๋าสตางค์ได้พร้อมกันเพียง 2 ใบเท่านั้น</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>บน macOS สามารถเปิดกระเป๋าเงินได้พร้อมกันสูงสุด {n} ใบ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2189,6 +2199,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>แสดง/ซ่อน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>ข้อความที่ลงนามแล้ว  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2355,8 +2370,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>นำไปใช้แล้วปิด</translation>
+			<source>Apply and restart</source>
+			<translation>ใช้และเริ่มต้นใหม่</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2650,8 +2665,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>เปิดใช้งานและปิดระบบ</translation>
+			<source>Activate and restart</source>
+			<translation>เปิดใช้งานและเริ่มต้นใหม่</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2772,11 +2787,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Show Password</source>
 			<translation>แสดงรหัสผ่าน  </translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>ส่ง  </translation>
 		</message>
 	</context>
 	<context>
@@ -3450,6 +3460,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>จำเป็นต้องใช้ข้อความแบบหุ้มเกราะ ASCII</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>ที่อยู่  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>ที่อยู่ที่ใช้ลงนามข้อความ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>จำเป็นต้องมีที่อยู่ ข้อความ และลายเซ็นสำหรับการตรวจสอบ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>ข้อความแบบหุ้มเกราะถูกต้อง</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>ลายเซ็น Base64</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>ป้อนข้อความ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>ข้อความ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>เซ็น  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>ลายเซ็น</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>ลายเซ็นตรงกับที่อยู่ที่ระบุ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>การตรวจสอบล้มเหลว</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>ตรวจสอบ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>ตรวจสอบเกราะ ASCII</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3457,20 +3539,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>ลงนามข้อความ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>ไม่สามารถระบุเส้นทางการอนุพันธ์สำหรับที่อยู่ที่ระบุได้</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>ข้อความสั้นเกินไป  </translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>เซ็น  </translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>ลงนามข้อความ  </translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>ข้อความที่ลงนามแล้ว  </translation>
@@ -4538,6 +4627,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>ที่อยู่  </translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>ที่อยู่ที่ใช้ลงนามข้อความ</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>ป้อนข้อความ</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>ข้อความ</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5171,6 +5282,38 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>สร้างที่อยู่รับใหม่จากกระเป๋าเงินของคุณ</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>การเข้าถึงแบบอ่านและเขียนเต็มรูปแบบสำหรับกระเป๋าเงินนี้ รวมถึงยอดคงเหลือ ธุรกรรม และ UTXO</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>อ่านและอัปเดตป้ายกำกับและหมวดหมู่ของกระเป๋าเงินของคุณ</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>อ่านตัวอธิบายกระเป๋าเงิน (โครงสร้างกุญแจสาธารณะ เส้นทาง)</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>สมัครรับเหตุการณ์กิจกรรมของกระเป๋าเงิน เช่น ธุรกรรมใหม่หรือการซิงค์บล็อกเชน รวมถึงเปิดธุรกรรมและ PSBT</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>ดูการกำหนดค่าเกณฑ์มัลติซิก (m-of-n) ของกระเป๋าเงิน</translation>
+		</message>
+	</context>
+	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -5182,6 +5325,21 @@ Click here to learn more.</source>
 		<message>
 			<source>Address does not match recovered public key.</source>
 			<translation>ที่อยู่ไม่ตรงกับคีย์สาธารณะที่กู้คืนได้</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>บล็อก BIP-0137 ขาดเนื้อหาข้อความ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>บล็อก BIP-0137 ต้องมีบรรทัดที่อยู่และลายเซ็น</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>ลำดับบล็อก BIP-0137 ไม่ถูกต้อง</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5197,6 +5355,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>ข้อความมีช่องว่างรอบๆ การตรวจสอบสำเร็จหลังจากตัดข้อความแล้ว</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation>ข้อความไม่ใช่ข้อความหุ้มเกราะ BIP-0137 ที่ถูกต้อง</translation>
 		</message>
 		<name>signatures</name>
 		<message>

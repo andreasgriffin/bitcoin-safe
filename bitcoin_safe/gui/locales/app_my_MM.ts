@@ -1797,6 +1797,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Message Signatures</source>
+			<translation>&amp;စာတိုလက်မှတ်များ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Minimize to tray</source>
 			<translation>&amp;ကွန်ရက်</translation>
 		</message>
@@ -2042,6 +2047,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Message Signatures</source>
+			<translation>စာတိုလက်မှတ်များ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Monitoring the p2p bitcoin network</source>
 			<translation>p2p bitcoin ကွန်ယက် စောင့်ကြည့်နေသည်</translation>
 		</message>
@@ -2072,8 +2082,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>On macOS only 2 wallets can be opened at the same time</source>
-			<translation>macOS တွင် တစ်ပြိုင်နက် 2 wallet ပဲ ဖွင့်နိုင်ပါသည်</translation>
+			<source>On macOS only {n} wallets can be opened at the same time</source>
+			<translation>macOS တွင် တစ်ချိန်တည်း {n} လုံးသာ wallet များကို ဖွင့်နိုင်သည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2189,6 +2199,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Show/Hide</source>
 			<translation>ပြ/ဖျောက်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2355,8 +2370,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Apply &amp;&amp; Shutdown</source>
-			<translation>လက်ခံပြီးပိတ်ပါ  </translation>
+			<source>Apply and restart</source>
+			<translation>အသုံးချပြီး ပြန်လည်စတင်ပါ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2650,8 +2665,8 @@ Do you want to hide to tray instead?</source>
 	<context>
 		<name>NotificationBarCBF</name>
 		<message>
-			<source>Activate and shutdown</source>
-			<translation>ဖွင့်ပြီး ပိတ်ပါ</translation>
+			<source>Activate and restart</source>
+			<translation>ဖွင့်ပြီး ပြန်လည်စတင်ပါ</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -2772,11 +2787,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Show Password</source>
 			<translation>တင်ပါ  </translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Submit</source>
-			<translation>စကားဝှက်ဖုံးပါ  </translation>
 		</message>
 	</context>
 	<context>
@@ -3450,6 +3460,78 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>ASCII armored message is required.</source>
+			<translation>ASCII ကာကွယ်ထားသော စာတိုလိုအပ်ပါသည်။</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address</source>
+			<translation>လိပ်စာ  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>စာတိုကို လက်မှတ်ရေးထိုးရန် အသုံးပြုသော လိပ်စာ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Address, message and signature are required for verification.</source>
+			<translation>အတည်ပြုရန် လိပ်စာ၊ စာတိုနှင့် လက်မှတ် လိုအပ်ပါသည်။</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Armored message is valid.</source>
+			<translation>ကာကွယ်ထားသော စာတိုသည် မှန်ကန်ပါသည်။</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Base64 signature</source>
+			<translation>Base64 လက်မှတ်</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Enter message</source>
+			<translation>စာတို ထည့်ပါ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Message</source>
+			<translation>စာတို</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Sign</source>
+			<translation>လက်မှတ်ထိုးပါ  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature</source>
+			<translation>လက်မှတ်</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Signature matches the provided address.</source>
+			<translation>လက်မှတ်သည် ပေးထားသော လိပ်စာနှင့် ကိုက်ညီပါသည်။</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verification failed.</source>
+			<translation>အတည်ပြုမှု မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify</source>
+			<translation>အတည်ပြုပါ</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify ASCII Armour</source>
+			<translation>ASCII ကာကွယ်မှု အတည်ပြုပါ</translation>
+		</message>
+	</context>
+	<context>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
@@ -3457,20 +3539,27 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignMessage</name>
 		<message>
+			<source>Sign message</source>
+			<translation>စာတစ်စောင်လက်မှတ်ထိုးပါ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Could not determine the derivation path for the provided address.</source>
+			<translation>ပေးထားသော လိပ်စာအတွက် မျိုးဆက်လမ်းကြောင်းကို မသတ်မှတ်နိုင်ပါ။</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Message too short.</source>
 			<translation>စာကြောင့်ရှုပ်ထွေးနေသည်။  </translation>
 		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
 			<translation>လက်မှတ်ထိုးပါ  </translation>
 		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>စာတစ်စောင်လက်မှတ်ထိုးပါ  </translation>
-		</message>
-		<name>SignMessage</name>
+		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
 			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
@@ -4538,6 +4627,28 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>_SignTab</name>
+		<message>
+			<source>Address</source>
+			<translation>လိပ်စာ  </translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Address used to sign the message</source>
+			<translation>စာတိုကို လက်မှတ်ရေးထိုးရန် အသုံးပြုသော လိပ်စာ</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Enter message</source>
+			<translation>စာတို ထည့်ပါ</translation>
+		</message>
+		<name>_SignTab</name>
+		<message>
+			<source>Message</source>
+			<translation>စာတို</translation>
+		</message>
+	</context>
+	<context>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
@@ -5167,7 +5278,39 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
-			<translation/>
+			<translation>သင့် wallet မှ လက်ခံရယူရန် လိပ်စာအသစ်များ ဖန်တီးပါ။</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugins</name>
+		<message>
+			<source>Create new receiving addresses from your wallet.</source>
+			<translation>လက်ကျန်ငွေများ၊ လွှဲပြောင်းမှုများနှင့် UTXO များ အပါအဝင် ဤ wallet ကို အပြည့်အဝ ဖတ်ရှုရေးသားခွင့် ရရှိပါသည်။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
+			<translation>သင့် wallet ၏ အညွှန်းများနှင့် အမျိုးအစားများကို ဖတ်ရှု၍ ပြင်ဆင်ပါ။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read and update your wallet's labels and categories.</source>
+			<translation>wallet ၏ ဖော်ပြချက် (အများပြည်သူ သော့ဖွဲ့စည်းပုံ၊ လမ်းကြောင်းများ) ကို ဖတ်ရှုပါ။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Read the wallet's descriptor (public key structure, paths).</source>
+			<translation>လွှဲပြောင်းမှုအသစ်များ သို့မဟုတ် blockchain ချိတ်ဆက်မှုကဲ့သို့ wallet လုပ်ဆောင်မှု ဖြစ်ရပ်များကို စာရင်းသွင်းပါ။ လွှဲပြောင်းမှုများနှင့် PSBT များကို ဖွင့်နိုင်စေပါသည်။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
+			<translation>wallet ၏ multisig အနိမ့်အမြင့် (m-of-n) ပြင်ဆင်မှုကို ကြည့်ရှုပါ။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
+			<translation>BIP-0137 block တွင် စာတိုအကြောင်းအရာ မပါရှိပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5185,6 +5328,21 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>BIP-0137 block is missing the message body.</source>
+			<translation>BIP-0137 block တွင် လိပ်စာနှင့် လက်မှတ် စာကြောင်းများ ပါဝင်ရပါမည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block must contain address and signature lines.</source>
+			<translation>BIP-0137 block အစီအစဉ် မမှန်ကန်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>BIP-0137 block order is invalid.</source>
+			<translation>စာတိုသည် မှန်ကန်သော BIP-0137 ကာကွယ်ထားသော စာသား မဟုတ်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>bech32 လိပ်စာမရှိနိုင်ပါ။</translation>
 		</message>
@@ -5197,6 +5355,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
 			<translation>စာမှာ ညာဘက်/ဘယ်ဘက်အားဖြင့် ရွှေ့မှု ရှိခဲ့သည်။ စာကို စတဲ့ ချိန်တွင် ရှင်းလိုက်ပြီး စစ်ဆေးမှုအောင်မြင်ခဲ့သည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Message is not valid BIP-0137 armored text.</source>
+			<translation/>
 		</message>
 		<name>signatures</name>
 		<message>
