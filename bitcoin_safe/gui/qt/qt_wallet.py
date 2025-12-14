@@ -1041,6 +1041,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 title=self.tr("Gap limit may be too low"),
                 true_button=QMessageBox.StandardButton.Yes,
                 false_button=QMessageBox.StandardButton.No,
+                default_is_true_button=False,
             ):
                 new_wallet = self.wallet.clone_without_peristence()
                 new_wallet.set_gap(new_gap)
