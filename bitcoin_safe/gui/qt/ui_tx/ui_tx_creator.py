@@ -233,14 +233,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.button_ok.setDefault(True)
             self.button_ok.clicked.connect(self.create_tx)
 
-        self.button_clear = self.button_box.addButton(QDialogButtonBox.StandardButton.Reset)
-        if self.button_clear:
-            self.button_clear.clicked.connect(self.clear_ui)
-
         self.button_back = QPushButton()
         self.button_back.setIcon(svg_tools.get_QIcon("bi--arrow-left-short.svg"))
         self.button_box.addButton(self.button_back, QDialogButtonBox.ButtonRole.ResetRole)
         self.button_back.clicked.connect(self.navigate_tab_history_backward)
+
+        self.button_clear = self.button_box.addButton(QDialogButtonBox.StandardButton.Reset)
+        if self.button_clear:
+            self.button_clear.clicked.connect(self.clear_ui)
 
         self._layout.addWidget(HLine())
         self._layout.addWidget(self.button_box)

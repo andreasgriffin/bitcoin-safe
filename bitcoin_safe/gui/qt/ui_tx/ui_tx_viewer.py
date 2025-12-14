@@ -1414,7 +1414,11 @@ class UITx_Viewer(UITx_Base):
         self.button_next.setVisible(self.data.data_type == DataType.PSBT)
         self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
 
-        self.button_edit_tx.setVisible(TxTools.can_edit_safely(tx_status=tx_status))
+        edit_button_visible = TxTools.can_edit_safely(tx_status=tx_status)
+        self.button_edit_tx.setVisible(edit_button_visible)
+        # having a back button next to the edit button is confusing
+        self.button_back.setVisible(not edit_button_visible)
+
         self.button_rbf.setVisible(
             bool(tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status))
         )
