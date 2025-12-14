@@ -1363,7 +1363,7 @@ class LabelBackup(BaseTab):
             and self.refs.qt_wallet.plugin_manager
             and (sync_client := self.refs.qt_wallet.plugin_manager.get_instance(SyncClient))
         ):
-            sync_client.signal_set_enabled.emit(self.checkbox.isChecked())
+            sync_client.signal_request_enabled.emit(self.checkbox.isChecked())
 
     def updateUi(self) -> None:
         """UpdateUi."""

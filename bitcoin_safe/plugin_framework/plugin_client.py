@@ -40,6 +40,7 @@ from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
+from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 logger = logging.getLogger(__name__)
@@ -48,30 +49,33 @@ logger = logging.getLogger(__name__)
 class PluginClient(BaseSaveableClass, QWidget):
     known_classes = {
         **BaseSaveableClass.known_classes,
+        PluginPermission.__name__: PluginPermission,
     }
     VERSION = "0.0.2"
     plugin_conditions = PluginConditions()
+    required_permissions: set[PluginPermission] = set()
     title = "Base Plugin"
     description = ""
     provider = ""
 
-    signal_set_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+    signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+    signal_enabled_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(self, enabled: bool, icon: QIcon) -> None:
         """Initialize instance."""
         super().__init__()
+        self.server: PluginServerView | None = None
         self.icon = icon
         self.node = SidebarNode[object](data=self, widget=self, title=self.title, icon=icon)
         self.enabled = enabled
         self.node.setVisible(enabled)
-        self.signal_set_enabled.connect(self.on_set_enabled)
 
     @abstractmethod
     def get_widget(self) -> QWidget:
         """Get widget."""
         pass
 
-    def on_set_enabled(self, value: bool):
+    def set_enabled(self, value: bool):
         """On set enabled."""
         if self.enabled == value:
             return
@@ -84,6 +88,8 @@ class PluginClient(BaseSaveableClass, QWidget):
             self.load()
         else:
             self.unload()
+
+        self.signal_enabled_changed.emit(value)
 
     @abstractmethod
     def load(self):
@@ -105,6 +111,7 @@ class PluginClient(BaseSaveableClass, QWidget):
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
         """From dump."""
+        super()._from_dump(dct, class_kwargs=class_kwargs)
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
@@ -127,3 +134,11 @@ class PluginClient(BaseSaveableClass, QWidget):
     def updateUi(self):
         """UpdateUi."""
         pass
+
+    def save_connection_details(
+        self,
+        server: PluginServerView,
+    ):
+        """Save connection details."""
+        logger.debug("save_connection_details")
+        self.server = server

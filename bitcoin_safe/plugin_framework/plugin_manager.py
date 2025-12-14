@@ -29,11 +29,13 @@
 from __future__ import annotations
 
 import logging
+from functools import partial
 from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
@@ -42,10 +44,9 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
+from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServer
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
-from bitcoin_safe.plugin_framework.plugins.walletgraph.server import WalletGraphServer
 from bitcoin_safe.signals import T, WalletFunctions
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
@@ -56,15 +57,15 @@ class PluginManager(BaseSaveableClass):
     known_classes = {
         **BaseSaveableClass.known_classes,
         SyncClient.__name__: SyncClient,
-        SyncServer.__name__: SyncServer,
         PluginClient.__name__: PluginClient,
         WalletGraphClient.__name__: WalletGraphClient,
-        WalletGraphServer.__name__: WalletGraphServer,
+        PluginPermission.__name__: PluginPermission,
     }
-    VERSION = "0.0.1"
+    VERSION = "0.0.3"
 
     signal_client_action = cast(SignalProtocol[[PluginClient]], pyqtSignal(PluginClient))
     client_classes: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
+    auto_allow_permissions: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
 
     def __init__(
         self,
@@ -74,6 +75,7 @@ class PluginManager(BaseSaveableClass):
         fx: FX,
         loop_in_thread: LoopInThread | None,
         clients: list[PluginClient] | None = None,
+        plugin_permissions: dict[str, set[PluginPermission]] | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
@@ -85,6 +87,10 @@ class PluginManager(BaseSaveableClass):
         self.loop_in_thread = loop_in_thread
         self.fx = fx
         self.clients = [client for client in clients if isinstance(client, PluginClient)] if clients else []
+        self.plugin_server: PluginServer | None = None
+        self.plugin_permissions: dict[str, set[PluginPermission]] = (
+            plugin_permissions if plugin_permissions else {}
+        )
         for client in self.clients:
             self._register_client(client=client)
 
@@ -100,16 +106,18 @@ class PluginManager(BaseSaveableClass):
         self,
         client: PluginClient,
     ):
-        """Register client."""
+        """Register client and observe permission changes."""
+        client.signal_request_enabled.connect(partial(self._on_client_enabled_changed, client))
+
         if client not in self.clients:
             self.clients.append(client)
 
-    def _register_all_clients(
+    def _create_missing_clients(
         self,
         descriptor: bdk.Descriptor,
     ):
-        """Register all clients."""
         existing_clients = self.clients.copy()
+        # ensure correct ordering, by clearing list first
         self.clients.clear()
         for cls in self.client_classes:
             if client := self.get_instance(cls, clients=existing_clients):
@@ -132,47 +140,78 @@ class PluginManager(BaseSaveableClass):
                         )
                     )
 
-    def _create_and_connect_ChatSyncClient(
-        self,
-        client: SyncClient,
-        wallet_id: str,
-    ):
-        """Create and connect ChatSyncClient."""
-        server = SyncServer(
-            wallet_id=wallet_id,
-            wallet_functions=self.wallet_functions,
-            network=self.network,
-        )
-        client.save_connection_details(server=server)
-
     def create_and_connect_clients(
         self, descriptor: bdk.Descriptor, wallet_id: str, category_core: CategoryCore
     ):
         """Create and connect clients."""
-        self._register_all_clients(
+        self.plugin_server = PluginServer(
+            wallet_id=wallet_id,
+            network=self.network,
+            wallet_functions=self.wallet_functions,
+            plugin_permissions=self.plugin_permissions,
+        )
+        self._create_missing_clients(
             descriptor=descriptor,
         )
 
         for client in self.clients:
-            if isinstance(client, SyncClient):
-                self._create_and_connect_ChatSyncClient(
-                    client=client,
-                    wallet_id=wallet_id,
-                )
-            elif isinstance(client, WalletGraphClient):
-                self._create_and_connect_wallet_graph_client(
-                    client=client,
-                    wallet_id=wallet_id,
-                )
+            plugin_id = self._plugin_id(client)
+            if plugin_id not in self.plugin_permissions:
+                self.plugin_permissions[plugin_id] = set()
 
-    def _create_and_connect_wallet_graph_client(self, client: WalletGraphClient, wallet_id: str) -> None:
-        """Create and connect wallet graph client."""
-        server = WalletGraphServer(
-            wallet_id=wallet_id,
-            network=self.network,
-            wallet_functions=self.wallet_functions,
+            scoped_server = self.plugin_server.view_for(plugin_id)
+            if not scoped_server.request_access(client.required_permissions):
+                client.set_enabled(False)
+                continue
+            client.save_connection_details(server=scoped_server)
+
+    def _plugin_id(self, client: PluginClient) -> str:
+        """Return a stable identifier for storing plugin permissions."""
+
+        return client.__class__.__name__
+
+    def _on_client_enabled_changed(self, client: PluginClient, enabled: bool) -> None:
+        """Update stored permissions when a plugin is disabled or re-enabled."""
+
+        plugin_id = self._plugin_id(client)
+        if enabled:
+            granted_permissions = self._request_permission(plugin_id, client)
+            permissions_match = bool(granted_permissions)
+
+            client.set_enabled(enabled and permissions_match)
+        else:
+            self.plugin_permissions[plugin_id] = set()
+            client.set_enabled(False)
+
+    def _request_permission(self, plugin_id: str, client: PluginClient) -> bool:
+        """Ensure permissions are cached, prompting the user on first request."""
+
+        not_yet_granted_permissions = set(client.required_permissions) - self.plugin_permissions.get(
+            plugin_id, set()
         )
-        client.save_connection_details(server=server)
+        if not not_yet_granted_permissions:
+            # all granted
+            return True
+
+        permission_lines = "\n".join(
+            f"- {permission.name}: {permission.description}"
+            for permission in sorted(not_yet_granted_permissions, key=lambda p: p.name)
+        )
+        response = (client.__class__ in self.auto_allow_permissions) or question_dialog(
+            text=(
+                f"{client.title} requests access to:\n{permission_lines}\n\n"
+                "Allow this plugin to access these features?"
+            ),
+            title="Plugin permission request",
+            true_button="Allow",
+            false_button="Deny",
+        )
+
+        if response:
+            self.plugin_permissions[plugin_id].update(not_yet_granted_permissions)
+            return True
+        else:
+            return False
 
     def load_all_enabled(self):
         """Load all enabled."""
@@ -189,11 +228,30 @@ class PluginManager(BaseSaveableClass):
         """Dump."""
         d = super().dump()
         d["clients"] = self.clients
+        d["plugin_permissions"] = {
+            plugin_id: sorted(permission.name for permission in permissions)
+            for plugin_id, permissions in self.plugin_permissions.items()
+        }
         return d
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
         """From dump."""
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        plugin_permissions: dict[str, set[PluginPermission]] = {}
+        for plugin_id, permission_names in dct.get("plugin_permissions", {}).items():
+            for permission_name in permission_names:
+                if plugin_id not in plugin_permissions:
+                    plugin_permissions[plugin_id] = set()
+
+                try:
+                    plugin_permissions[plugin_id].add(PluginPermission[permission_name])
+                except Exception:
+                    logger.error(f"Could not map {permission_name=}")
+                    continue
+        dct["plugin_permissions"] = plugin_permissions
+
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
@@ -201,6 +259,37 @@ class PluginManager(BaseSaveableClass):
         """From dump migration."""
         if version.parse(str(dct["VERSION"])) <= version.parse("0.0.0"):
             pass
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.1"):
+            dct.setdefault("plugin_permissions", {})
+            for client in dct.get("clients", []):
+                if not isinstance(client, PluginClient):
+                    continue
+
+                plugin_id = client.__class__.__name__
+                if plugin_id in dct["plugin_permissions"]:
+                    continue
+
+                required_permissions: set[PluginPermission] = set()
+                if hasattr(client, "required_permissions"):
+                    required_permissions = set(client.required_permissions)
+
+                enabled = hasattr(client, "enabled") and bool(client.enabled)
+                if enabled:
+                    dct["plugin_permissions"][plugin_id] = set(required_permissions)
+                else:
+                    dct["plugin_permissions"].setdefault(plugin_id, set())
+
+        if version.parse(str(dct["VERSION"])) <= version.parse("0.0.2"):
+            dct.setdefault("plugin_permissions", {})
+            for client in dct.get("clients", []):
+                if not isinstance(client, PluginClient):
+                    continue
+
+                plugin_id = client.__class__.__name__
+                if not client.enabled:
+                    continue
+
+                dct["plugin_permissions"][plugin_id] = set(client.required_permissions)
 
         # now the version is newest, so it can be deleted from the dict
         if "VERSION" in dct:

@@ -57,8 +57,8 @@ from bitcoin_safe.html_utils import link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
+from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
-from bitcoin_safe.plugin_framework.plugins.chat_sync.server import SyncServer
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import filename_clean
 
@@ -126,7 +126,15 @@ class BackupNsecNotificationBar(NotificationBar):
 
 
 class SyncClient(PluginClient):
+    known_classes = {**PluginClient.known_classes, PluginPermission.__name__: PluginPermission}
     plugin_conditions = PluginConditions()
+    required_permissions: set[PluginPermission] = {
+        PluginPermission.LABELS,
+        PluginPermission.WALLET_SIGNALS,
+        PluginPermission.MN_TUPLE,
+        PluginPermission.ADDRESS,
+        PluginPermission.DESCRIPTOR,
+    }
     title = translate("SyncClient", "Sync & Chat")
     description = translate(
         "SyncClient",
@@ -163,7 +171,6 @@ class SyncClient(PluginClient):
     ):
         """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
-        self.server: SyncServer | None = None
         self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
 
@@ -207,11 +214,11 @@ class SyncClient(PluginClient):
         """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
 
-    def on_set_enabled(self, value: bool):
+    def set_enabled(self, value: bool):
         """On set enabled."""
         if self.enabled == value:
             return
-        super().on_set_enabled(value=value)
+        super().set_enabled(value=value)
         if value and self.server:
             self.backup_nsec_notificationbar.set_nsec(
                 nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
@@ -226,13 +233,14 @@ class SyncClient(PluginClient):
 
     def save_connection_details(
         self,
-        server: SyncServer,
+        server: PluginServerView,
     ):
         """Save connection details."""
-        logger.debug("save_connection_details")
-        self.server = server
+        super().save_connection_details(server=server)
 
         labels = server.get_labels()
+        if not self.server:
+            return
         wallet_signals = self.server.get_wallet_signals()
         if labels and wallet_signals:
             self.label_syncer = LabelSyncer(
