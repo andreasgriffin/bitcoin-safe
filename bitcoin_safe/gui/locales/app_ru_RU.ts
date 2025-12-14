@@ -2596,13 +2596,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Создать пользовательский кошелек</translation>
+			<source>Create new wallet</source>
+			<translation>Создать новый кошелек</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Создать новый кошелек</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Создать или импортировать пользовательский кошелёк</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

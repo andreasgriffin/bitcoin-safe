@@ -2598,13 +2598,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>创建自定义钱包</translation>
+			<source>Create new wallet</source>
+			<translation>创建新钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>创建新钱包</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>创建或导入自定义钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

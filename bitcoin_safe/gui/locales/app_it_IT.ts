@@ -2597,13 +2597,14 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Crea portafoglio personalizzato</translation>
+			<source>Create new wallet</source>
+			<translation>Crea nuovo portafoglio</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Crea nuovo portafoglio</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Crea o importa un portafoglio personalizzato</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

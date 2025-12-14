@@ -2596,13 +2596,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Crear cartera personalizada</translation>
+			<source>Create new wallet</source>
+			<translation>Crear cartera nueva</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Crear cartera nueva</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Crear o importar una cartera personalizada</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

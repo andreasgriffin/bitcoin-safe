@@ -2595,13 +2595,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>कस्टम वॉलेट बनाएं</translation>
+			<source>Create new wallet</source>
+			<translation>नया वॉलेट बनाएं</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>नया वॉलेट बनाएं</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>कस्टम वॉलेट बनाएं या आयात करें</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
