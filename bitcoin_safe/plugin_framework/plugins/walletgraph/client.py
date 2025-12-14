@@ -148,7 +148,6 @@ class WalletGraphClient(PluginClient):
         """Unload."""
         self._disconnect_wallet_signal()
         self.graph_view.clear()
-        self.export_button.setEnabled(False)
         logger.debug("WalletGraphClient unloaded")
 
     def set_enabled(self, value: bool) -> None:

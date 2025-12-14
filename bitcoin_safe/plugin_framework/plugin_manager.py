@@ -165,7 +165,6 @@ class PluginManager(BaseSaveableClass):
             scoped_server = self.plugin_server.view_for(plugin_id)
             if not scoped_server.request_access(client.required_permissions):
                 client.set_enabled(False)
-                continue
             client.save_connection_details(server=scoped_server)
 
     def _plugin_id(self, client: PluginClient) -> str:
