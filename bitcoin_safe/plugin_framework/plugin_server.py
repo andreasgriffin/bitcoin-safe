@@ -33,6 +33,7 @@ from enum import Enum, auto
 
 import bdkpython as bdk
 
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.labels import Labels
 from bitcoin_safe.signals import WalletFunctions, WalletSignals
 from bitcoin_safe.wallet import Wallet
@@ -54,17 +55,28 @@ class PluginPermission(Enum):
     def description(self) -> str:
         """Human-readable description of what the permission grants."""
 
-        return _PLUGIN_PERMISSION_DESCRIPTIONS[self]
-
-
-_PLUGIN_PERMISSION_DESCRIPTIONS: dict[PluginPermission, str] = {
-    PluginPermission.LABELS: "Read and update your wallet's labels and categories.",
-    PluginPermission.WALLET_SIGNALS: "Subscribe to wallet activity events such as new transactions or blockchain sync.",
-    PluginPermission.MN_TUPLE: "View the wallet's multisig threshold (m-of-n) configuration.",
-    PluginPermission.ADDRESS: "Create new receiving addresses from your wallet.",
-    PluginPermission.DESCRIPTOR: "Read the wallet's descriptor details (public key structure, paths).",
-    PluginPermission.WALLET: "Read wallet contents like balances, transactions, and UTXOs.",
-}
+        return {
+            PluginPermission.LABELS: translate(
+                "plugins", "Read and update your wallet's labels and categories."
+            ),
+            PluginPermission.WALLET_SIGNALS: translate(
+                "plugins",
+                "Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.",
+            ),
+            PluginPermission.MN_TUPLE: translate(
+                "plugins", "View the wallet's multisig threshold (m-of-n) configuration."
+            ),
+            PluginPermission.ADDRESS: translate(
+                "plugins", "Create new receiving addresses from your wallet."
+            ),
+            PluginPermission.DESCRIPTOR: translate(
+                "plugins", "Read the wallet's descriptor (public key structure, paths)."
+            ),
+            PluginPermission.WALLET: translate(
+                "plugins",
+                "Full read and write access to this wallet, including balances, transactions, and UTXOs.",
+            ),
+        }[self]
 
 
 class PluginServer:
