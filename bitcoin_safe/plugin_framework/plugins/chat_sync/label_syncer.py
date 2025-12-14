@@ -28,6 +28,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from datetime import datetime
 from time import sleep
@@ -57,6 +58,7 @@ class LabelSyncer(QObject):
         self.wallet_signals = wallet_signals
         self.signal_tracker = SignalTracker()
         self.apply_own_labels = True
+        self._last_trust_me_back_signature: dict[str, str] = {}
 
         self.signal_tracker.connect(
             self.nostr_sync.label_connector.signal_label_bip329_received, self.on_nostr_label_bip329_received
@@ -151,11 +153,38 @@ class LabelSyncer(QObject):
         # than blocking the wallet from closing
         sleep(0.2)
 
+    def _get_trust_me_back_signature(self, pub_key_bech32: str) -> str:
+        """Return fingerprint for avoiding duplicate trust-me-back sends."""
+        labels_state = self.labels.dumps_data_jsonlines()
+        relays = getattr(self.nostr_sync, "relays", None)
+        if relays is None:
+            relays = getattr(self.nostr_sync.group_chat, "relays", None)
+        if isinstance(relays, dict):
+            relay_ids: tuple[str, ...] = tuple(sorted(str(key) for key in relays.keys()))
+        else:
+            try:
+                relay_ids = tuple(sorted(str(relay) for relay in relays)) if relays else ()
+            except TypeError:
+                relay_ids = ()
+
+        base_hash = hashlib.sha256(labels_state.encode("utf-8")).hexdigest()
+        combined = base_hash + "|" + "|".join(relay_ids)
+        return hashlib.sha256(combined.encode("utf-8")).hexdigest()
+
     def on_trusted_device_published_trust_me_back(self, pub_key_bech32: str) -> None:
         """On trusted device published trust me back."""
         if not self.enabled:
             return
         logger.debug("on_add_trusted_device")
+
+        signature = self._get_trust_me_back_signature(pub_key_bech32)
+        if self._last_trust_me_back_signature.get(pub_key_bech32) == signature:
+            logger.debug(
+                "on_trusted_device_published_trust_me_back: skip sending labels, no relevant changes detected"
+            )
+            return
+
+        self._last_trust_me_back_signature[pub_key_bech32] = signature
 
         self.send_all_labels(pub_key_bech32)
 
