@@ -360,6 +360,13 @@ class UITx_Viewer(UITx_Base):
             on_clicked=self.cpfp,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
+        self.button_back = add_to_buttonbox(
+            self.buttonBox,
+            "",
+            icon_name=svg_tools.get_QIcon("bi--arrow-left-short.svg"),
+            on_clicked=self.navigate_tab_history_backward,
+            role=QDialogButtonBox.ButtonRole.ResetRole,
+        )
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -530,6 +537,7 @@ class UITx_Viewer(UITx_Base):
             edit.setText(button_info(info_type).text)
             edit.setToolTip(button_info(info_type).tooltip)
 
+        self.button_back.setText(self.tr("Back"))
         self.button_previous.setText(self.tr("Previous step"))
         self.button_next.setText(self.tr("Next step"))
         self.button_send.setText(self.tr("Send"))
@@ -591,6 +599,11 @@ class UITx_Viewer(UITx_Base):
         self.button_previous.setEnabled(prev_enabled)
         self.button_next.setHidden(not next_enabled and not prev_enabled)
         self.button_previous.setHidden(not next_enabled and not prev_enabled)
+
+    def navigate_tab_history_backward(self) -> None:
+        """Return to the previously active tab."""
+
+        self.signals.tab_history_backward.emit()
 
     def go_to_next_index(self) -> None:
         """Go to next index."""

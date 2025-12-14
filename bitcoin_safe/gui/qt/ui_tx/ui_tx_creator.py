@@ -39,7 +39,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QShowEvent
-from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QSplitter, QWidget
+from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QPushButton, QSplitter, QWidget
 
 from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
@@ -237,6 +237,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if self.button_clear:
             self.button_clear.clicked.connect(self.clear_ui)
 
+        self.button_back = QPushButton()
+        self.button_back.setIcon(svg_tools.get_QIcon("bi--arrow-left-short.svg"))
+        self.button_box.addButton(self.button_back, QDialogButtonBox.ButtonRole.ResetRole)
+        self.button_back.clicked.connect(self.navigate_tab_history_backward)
+
         self._layout.addWidget(HLine())
         self._layout.addWidget(self.button_box)
 
@@ -428,6 +433,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_recipients.updateUi()
         self.column_fee.updateUi()
         self.button_ok.setText(self.tr("Create"))
+        self.button_back.setText(self.tr("Back"))
 
         # non-output dependent  values
         self.update_opportunistic_checkbox()
@@ -449,6 +455,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 "Additional inputs may be added \nbelow {rate} to consolidate UTXOs and reduce future fees"
             ).format(rate=format_fee_rate(opportunistic_merging_threshold, self.config.network))
         )
+
+    def navigate_tab_history_backward(self):
+        """Return to the previously active tab."""
+
+        self.signals.tab_history_backward.emit()
 
     def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
         """On signal clicked send max button."""
