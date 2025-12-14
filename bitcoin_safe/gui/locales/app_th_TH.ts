@@ -2592,13 +2592,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>สร้างกระเป๋าเงินที่กำหนดเอง  </translation>
+			<source>Create new wallet</source>
+			<translation>สร้างกระเป๋าเงินใหม่  </translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>สร้างกระเป๋าเงินใหม่  </translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>สร้างหรือ นำเข้า กระเป๋าเงินแบบกำหนดเอง</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

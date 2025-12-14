@@ -2595,13 +2595,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>接続を完了するために、他のデバイス{other}で私の{id}のリクエストを受け入れてください。</translation>
+			<source>Create new wallet</source>
+			<translation>中規模資金に最適</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>中規模資金に最適</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>カスタムウォレットを作成またはインポート</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

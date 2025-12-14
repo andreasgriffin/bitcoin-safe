@@ -2592,13 +2592,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Créer un portefeuille personnalisé  </translation>
+			<source>Create new wallet</source>
+			<translation>Créer un nouveau portefeuille  </translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Créer un nouveau portefeuille  </translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Créer ou importer un portefeuille personnalisé</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

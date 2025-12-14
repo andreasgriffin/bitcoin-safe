@@ -158,6 +158,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.verticalLayout.addWidget(self.groupBox_1signingdevice)
 
         self.pushButton_singlesig = QPushButton(self.groupBox_singlesig)
+        self.apply_style_to_buttons(self.pushButton_singlesig)
 
         self.verticalLayout.addWidget(self.pushButton_singlesig)
 
@@ -195,6 +196,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         self.pushButton_multisig = QPushButton(self.groupBox_multisig)
+        self.apply_style_to_buttons(self.pushButton_multisig)
 
         self.verticalLayout_multisig.addWidget(self.pushButton_multisig)
 
@@ -209,6 +211,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.verticalLayout_2.addWidget(self.label_custom)
 
         self.pushButton_custom_wallet = QPushButton(self.groupBox_3)
+        self.apply_style_to_buttons(self.pushButton_custom_wallet)
 
         self.verticalLayout_2.addWidget(self.pushButton_custom_wallet)
 
@@ -240,6 +243,7 @@ class NewWalletWelcomeScreen(QWidget):
         )
         self.groupBox_1signingdevice.setTitle(self.tr("1 signing devices"))
         self.pushButton_singlesig.setText(self.tr("Choose Single Signature"))
+
         self.label_multisig.setText(
             f"""<h1>{self.tr("2 of 3 Multi-Signature Wal")}let</h1>
 <ul>
@@ -266,4 +270,12 @@ class NewWalletWelcomeScreen(QWidget):
                 add_html_and_body=True,
             )
         )
-        self.pushButton_custom_wallet.setText(self.tr("Create custom wallet"))
+        self.pushButton_custom_wallet.setText(self.tr("Create or\nimport custom wallet"))
+
+    def apply_style_to_buttons(self, bnt: QPushButton):
+        bnt.setObjectName(str(id(bnt)))
+        bnt.setStyleSheet(f"""
+    #{bnt.objectName()} {{
+        padding: 15px 20px;  /* top/bottom, left/right */
+    }}
+""")

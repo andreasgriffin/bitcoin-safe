@@ -2612,13 +2612,14 @@ Mempool-Instanz: {server}</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Benutzerdefiniertes Wallet erstellen</translation>
+			<source>Create new wallet</source>
+			<translation>Neues Wallet erstellen</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Neues Wallet erstellen</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Benutzerdefinierte Wallet erstellen oder importieren</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

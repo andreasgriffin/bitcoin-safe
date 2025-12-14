@@ -2593,13 +2593,14 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Buat dompet khusus</translation>
+			<source>Create new wallet</source>
+			<translation>Buat dompet baru</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Buat dompet baru</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Buat atau impor dompet khusus</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>

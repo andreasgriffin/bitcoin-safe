@@ -2612,13 +2612,14 @@ Instancja Mempool: {server}</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create custom wallet</source>
-			<translation>Utwórz niestandardowy portfel</translation>
+			<source>Create new wallet</source>
+			<translation>Utwórz nowy portfel</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create new wallet</source>
-			<translation>Utwórz nowy portfel</translation>
+			<source>Create or
+import custom wallet</source>
+			<translation>Utwórz lub zaimportuj niestandardowy portfel</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
