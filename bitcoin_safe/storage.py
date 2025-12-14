@@ -194,10 +194,10 @@ class ClassSerializer:
                     )
             elif dct.get("__enum__"):
                 obj_cls = known_classes.get(dct["name"])
-                if obj_cls:
+                if obj_cls and hasattr(obj_cls, dct["value"]):
                     return getattr(obj_cls, dct["value"])
                 else:
-                    logger.exception(f"Could not deserialize {obj_cls}({dct.get('value')})")
+                    logger.exception(f"Could not deserialize {obj_cls}({dct.get('value')}).")
 
             # For normal cases, json.loads will handle default JSON data types
             # No need to use json.Decoder here, just return the dictionary as-is
