@@ -133,15 +133,10 @@ class PluginWidget(QWidget):
         self.enable_checkbox.blockSignals(True)
 
         state = Qt.CheckState(state_int)
-        approved = False
 
-        if approved:
-            # Apply state as requested
-            self.enable_checkbox.setCheckState(state)
-        else:
-            # Revert state
-            previous = Qt.CheckState.Checked if state == Qt.CheckState.Unchecked else Qt.CheckState.Unchecked
-            self.enable_checkbox.setCheckState(previous)
+        # Revert state change, since be need to send signal_request_enabled first
+        previous = Qt.CheckState.Checked if state == Qt.CheckState.Unchecked else Qt.CheckState.Unchecked
+        self.enable_checkbox.setCheckState(previous)
 
         self.enable_checkbox.blockSignals(False)
 

@@ -167,7 +167,8 @@ class PluginManager(BaseSaveableClass):
                 client.set_enabled(False)
             client.set_server_view(server=scoped_server)
 
-    def _plugin_id(self, client: PluginClient) -> str:
+    @staticmethod
+    def _plugin_id(client: PluginClient) -> str:
         """Return a stable identifier for storing plugin permissions."""
 
         return client.__class__.__name__
