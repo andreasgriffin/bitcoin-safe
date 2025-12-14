@@ -244,7 +244,11 @@ class PluginManager(BaseSaveableClass):
 
         plugin_permissions: dict[str, set[PluginPermission]] = dct.get("plugin_permissions", {})
         for plugin_id in plugin_permissions.keys():
-            plugin_permissions[plugin_id] = set(plugin_permissions[plugin_id])
+            # forward/backward compatibility
+            # only allow correctly recognized PluginPermission
+            plugin_permissions[plugin_id] = set(
+                [entry for entry in plugin_permissions[plugin_id] if isinstance(entry, PluginPermission)]
+            )
 
         return cls(**filtered_for_init(dct, cls))
 
