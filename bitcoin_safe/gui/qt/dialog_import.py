@@ -188,14 +188,14 @@ class ImportDialog(QWidget):
         close_all_video_widgets: SignalProtocol[[]],
         window_title="Open Transaction or PSBT",
         on_open=None,
-        parent=None,
         text_button_ok="OK",
         text_instruction_label="Please paste your Bitcoin Transaction or PSBT in here, or drop a file",
         instruction_widget: QWidget | None = None,
         text_placeholder="Paste your Bitcoin Transaction or PSBT in here or drop a file",
     ) -> None:
         """Initialize instance."""
-        super().__init__(parent)
+        super().__init__()
+
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
         self.on_open = on_open
 
