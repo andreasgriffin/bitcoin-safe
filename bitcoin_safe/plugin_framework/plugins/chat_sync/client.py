@@ -234,12 +234,12 @@ class SyncClient(PluginClient):
         """Get widget."""
         return self
 
-    def save_connection_details(
+    def set_server_view(
         self,
         server: PluginServerView,
     ):
         """Save connection details."""
-        super().save_connection_details(server=server)
+        super().set_server_view(server=server)
 
         labels = server.get_labels()
         if not self.server:

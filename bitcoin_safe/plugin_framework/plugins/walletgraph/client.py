@@ -131,9 +131,9 @@ class WalletGraphClient(PluginClient):
         """Get widget."""
         return self
 
-    def save_connection_details(self, server: PluginServerView) -> None:
+    def set_server_view(self, server: PluginServerView) -> None:
         """Save connection details."""
-        super().save_connection_details(server=server)
+        super().set_server_view(server=server)
         self.wallet_id = server.wallet_id
         if self.enabled:
             self.refresh_graph()

@@ -137,10 +137,8 @@ class PluginClient(BaseSaveableClass, QWidget):
         """UpdateUi."""
         pass
 
-    def save_connection_details(
+    def set_server_view(
         self,
         server: PluginServerView,
     ):
-        """Save connection details."""
-        logger.debug("save_connection_details")
         self.server = server
