@@ -79,6 +79,13 @@ class WalletGraphClient(PluginClient):
     )
     provider = "Bitcoin Safe"
 
+    @staticmethod
+    def cls_kwargs(signals: Signals, network: bdk.Network):
+        return {
+            "signals": signals,
+            "network": network,
+        }
+
     def __init__(
         self,
         signals: Signals,

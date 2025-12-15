@@ -160,6 +160,18 @@ class SyncClient(PluginClient):
     )
     provider = "Bitcoin Safe (via Nostr)"
 
+    @staticmethod
+    def cls_kwargs(
+        signals: Signals,
+        network: bdk.Network,
+        loop_in_thread: LoopInThread | None,
+    ):
+        return {
+            "signals": signals,
+            "network": network,
+            "loop_in_thread": loop_in_thread,
+        }
+
     def __init__(
         self,
         network: bdk.Network,
@@ -386,6 +398,9 @@ class SyncClient(PluginClient):
 
         total_string = default_key_origin + "".join(sorted(xpubs))
         return hashlib.sha256(total_string.encode()).hexdigest()
+
+    def drop_wallet_specific_things(self) -> bool:
+        return False
 
     def dump(self) -> dict:
         """Dump."""

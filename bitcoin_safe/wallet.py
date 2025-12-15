@@ -706,6 +706,16 @@ class Wallet(BaseSaveableClass, CacheManager):
         SerializePersistence.__name__: SerializePersistence,
     }
 
+    @staticmethod
+    def cls_kwargs(
+        config: UserConfig,
+        loop_in_thread: LoopInThread | None,
+    ):
+        return {
+            "config": config,
+            "loop_in_thread": loop_in_thread,
+        }
+
     def __init__(
         self,
         id,

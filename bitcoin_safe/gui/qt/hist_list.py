@@ -154,6 +154,20 @@ class HistList(MyTreeView[str]):
     show_change: AddressTypeFilter
     show_used: AddressUsageStateFilter
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+        mempool_manager: MempoolManager,
+    ):
+        return {
+            "config": config,
+            "wallet_functions": wallet_functions,
+            "mempool_manager": mempool_manager,
+            "fx": fx,
+        }
+
     class Columns(MyTreeView.BaseColumnsEnum):
         TXID = enum.auto()
         WALLET_ID = enum.auto()
@@ -834,6 +848,14 @@ class HistListWithToolbar(TreeViewWithToolbar):
         **BaseSaveableClass.known_classes,
         HistList.__name__: HistList,
     }
+
+    @staticmethod
+    def cls_kwargs(
+        config: UserConfig,
+    ):
+        return {
+            "config": config,
+        }
 
     signal_export_pdf_statement = cast(SignalProtocol[[str]], pyqtSignal(str))  #  wallet_id
 

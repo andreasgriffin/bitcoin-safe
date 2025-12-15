@@ -102,6 +102,10 @@ class PluginClient(BaseSaveableClass, QWidget):
         """Unload."""
         pass
 
+    def drop_wallet_specific_things(self) -> bool:
+        "Returns if dropping was successful"
+        return True
+
     def dump(self) -> dict[str, Any]:
         """Dump."""
         d = super().dump()

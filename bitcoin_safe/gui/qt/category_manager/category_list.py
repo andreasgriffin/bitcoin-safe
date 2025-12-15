@@ -96,6 +96,16 @@ class CategoryList(MyTreeView[CategoryInfo]):
     stretch_column = Columns.CATEGORY
     key_column = Columns.CATEGORY
 
+    @staticmethod
+    def cls_kwargs(
+        signals: Signals,
+        config: UserConfig,
+    ):
+        return {
+            "signals": signals,
+            "config": config,
+        }
+
     def __init__(
         self,
         config: UserConfig,

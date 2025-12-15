@@ -338,6 +338,18 @@ class AddressList(MyTreeView[str]):
         Columns.FIAT_BALANCE: 110,
     }
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+    ):
+        return {
+            "config": config,
+            "wallet_functions": wallet_functions,
+            "fx": fx,
+        }
+
     def __init__(
         self,
         fx: FX,
@@ -928,6 +940,14 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         **BaseSaveableClass.known_classes,
         AddressList.__name__: AddressList,
     }
+
+    @staticmethod
+    def cls_kwargs(
+        config: UserConfig,
+    ):
+        return {
+            "config": config,
+        }
 
     def __init__(
         self,
