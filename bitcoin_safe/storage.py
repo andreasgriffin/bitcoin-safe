@@ -221,6 +221,10 @@ class BaseSaveableClass:
     VERSION = "0.0.0"
     _version_from_dump: str | None = None
 
+    @staticmethod
+    def cls_kwargs(*args, **kwargs):
+        return {}
+
     @abstractmethod
     def dump(self) -> dict:
         "Returns the dict"
@@ -259,6 +263,9 @@ class BaseSaveableClass:
         if "VERSION" in dct:
             del dct["VERSION"]
 
+        if class_kwargs:
+            dct.update(class_kwargs)
+
     @classmethod
     @abstractmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None) -> Self:
@@ -267,7 +274,7 @@ class BaseSaveableClass:
 
     def clone(self, class_kwargs: dict | None = None) -> Self:
         """Clone."""
-        return self.from_dump(self.dump(), class_kwargs=class_kwargs)
+        return self._from_dumps(self.dumps(), class_kwargs=class_kwargs)
 
     @time_logger
     def save(self, filename: Path | str, password: str | None = None):
@@ -312,6 +319,16 @@ class BaseSaveableClass:
 
     @classmethod
     @time_logger
+    def _from_dumps(cls, json_string: str, class_kwargs: dict | None = None):
+        return json.loads(
+            json_string,
+            object_hook=ClassSerializer.general_deserializer(
+                cls.get_known_classes(), class_kwargs=class_kwargs if class_kwargs else {}
+            ),
+        )
+
+    @classmethod
+    @time_logger
     def _from_file(cls, filename: str, password: str | None = None, class_kwargs: dict | None = None):
         """Loads the class from a file. This offers the option of add class_kwargs args.
 
@@ -326,16 +343,9 @@ class BaseSaveableClass:
         Returns:
             _type_: _description_
         """
-        class_kwargs = class_kwargs if class_kwargs else {}
         storage = Storage()
-
         json_string = cls.file_migration(storage.load(filename, password=password))
-
-        instance = json.loads(
-            json_string,
-            object_hook=ClassSerializer.general_deserializer(cls.get_known_classes(), class_kwargs),
-        )
-        return instance
+        return cls._from_dumps(json_string=json_string, class_kwargs=class_kwargs)
 
     @classmethod
     def file_migration(cls, file_content: str):

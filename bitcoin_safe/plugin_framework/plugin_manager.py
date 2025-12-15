@@ -67,9 +67,45 @@ class PluginManager(BaseSaveableClass):
     client_classes: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
     auto_allow_permissions: list[type[PluginClient]] = [SyncClient, WalletGraphClient]
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+        loop_in_thread: LoopInThread | None,
+    ):
+        return {
+            "wallet_functions": wallet_functions,
+            "config": config,
+            "fx": fx,
+            "loop_in_thread": loop_in_thread,
+        }
+
+    @classmethod
+    def class_kwargs(
+        cls,
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+        loop_in_thread: LoopInThread | None,
+    ):
+        return {
+            cls.__name__: cls.cls_kwargs(
+                wallet_functions=wallet_functions, config=config, fx=fx, loop_in_thread=loop_in_thread
+            ),
+            SyncClient.__name__: SyncClient.cls_kwargs(
+                signals=wallet_functions.signals,
+                network=config.network,
+                loop_in_thread=loop_in_thread,
+            ),
+            WalletGraphClient.__name__: WalletGraphClient.cls_kwargs(
+                signals=wallet_functions.signals,
+                network=config.network,
+            ),
+        }
+
     def __init__(
         self,
-        network: bdk.Network,
         wallet_functions: WalletFunctions,
         config: UserConfig,
         fx: FX,
@@ -80,7 +116,7 @@ class PluginManager(BaseSaveableClass):
     ) -> None:
         """Initialize instance."""
         super().__init__()
-        self.network = network
+        self.network = config.network
         self.parent = parent
         self.wallet_functions = wallet_functions
         self.config = config
@@ -227,6 +263,24 @@ class PluginManager(BaseSaveableClass):
         """Disconnect all."""
         for client in self.clients:
             client.unload()
+
+    def drop_wallet_specific_things(self) -> bool:
+        for client in list(self.clients):
+            if not client.drop_wallet_specific_things():
+                self.clients.remove(client)
+        return True
+
+    def clone(self, class_kwargs: dict | None = None):
+        class_kwargs = class_kwargs if class_kwargs else {}
+        class_kwargs.update(
+            self.class_kwargs(
+                wallet_functions=self.wallet_functions,
+                config=self.config,
+                fx=self.fx,
+                loop_in_thread=self.loop_in_thread,
+            )
+        )
+        return super().clone(class_kwargs=class_kwargs)
 
     def dump(self) -> dict[str, Any]:
         """Dump."""

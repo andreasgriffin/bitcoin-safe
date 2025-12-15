@@ -85,7 +85,6 @@ from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.plugin_framework.plugin_list_widget import PluginListWidget
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManager
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.pythonbdk_types import (
     Balance,
     BlockchainType,
@@ -248,6 +247,24 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     signal_wallet_update = cast(SignalProtocol[[UpdateInfo]], pyqtSignal(UpdateInfo))
     signal_refresh_sync_status = cast(SignalProtocol[[]], pyqtSignal())
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+        mempool_manager: MempoolManager,
+        loop_in_thread: LoopInThread | None,
+        file_path: str | None,
+    ):
+        return {
+            "config": config,
+            "wallet_functions": wallet_functions,
+            "mempool_manager": mempool_manager,
+            "fx": fx,
+            "file_path": file_path,
+            "loop_in_thread": loop_in_thread,
+        }
+
     def __init__(
         self,
         wallet: Wallet,
@@ -330,7 +347,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 plugin_manager
                 if plugin_manager
                 else PluginManager(
-                    network=self.config.network,
                     wallet_functions=self.wallet_functions,
                     config=self.config,
                     fx=self.fx,
@@ -417,75 +433,59 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         password: str | None = None,
     ) -> QTWallet:
         """From file."""
-        return super()._from_file(
-            filename=file_path,
-            password=password,
-            class_kwargs={
-                Wallet.__name__: {
-                    "config": config,
-                    "loop_in_thread": loop_in_thread,
-                },
-                QTWallet.__name__: {
-                    "config": config,
-                    "wallet_functions": wallet_functions,
-                    "mempool_manager": mempool_manager,
-                    "fx": fx,
-                    "file_path": file_path,
-                    "loop_in_thread": loop_in_thread,
-                },
-                HistList.__name__: {
-                    "config": config,
-                    "wallet_functions": wallet_functions,
-                    "mempool_manager": mempool_manager,
-                    "fx": fx,
-                },
-                HistListWithToolbar.__name__: {
-                    "config": config,
-                },
-                UTXOList.__name__: {
-                    "config": config,
-                    "wallet_functions": wallet_functions,
-                    "fx": fx,
-                },
-                UtxoListWithToolbar.__name__: {
-                    "config": config,
-                },
-                AddressList.__name__: {
-                    "config": config,
-                    "wallet_functions": wallet_functions,
-                    "fx": fx,
-                },
-                AddressListWithToolbar.__name__: {
-                    "config": config,
-                },
-                PluginManager.__name__: {
-                    "wallet_functions": wallet_functions,
-                    "network": config.network,
-                    "config": config,
-                    "fx": fx,
-                    "loop_in_thread": loop_in_thread,
-                },
-                SyncClient.__name__: {
-                    "signals": wallet_functions.signals,
-                    "network": config.network,
-                    "loop_in_thread": loop_in_thread,
-                },
-                UITx_Creator.__name__: {
-                    "wallet_functions": wallet_functions,
-                    "config": config,
-                    "mempool_manager": mempool_manager,
-                    "fx": fx,
-                },
-                CategoryList.__name__: {
-                    "signals": wallet_functions.signals,
-                    "config": config,
-                },
-                WalletGraphClient.__name__: {
-                    "signals": wallet_functions.signals,
-                    "network": config.network,
-                },
-            },
+
+        class_kwargs = {
+            Wallet.__name__: Wallet.cls_kwargs(config=config, loop_in_thread=loop_in_thread),
+            QTWallet.__name__: QTWallet.cls_kwargs(
+                wallet_functions=wallet_functions,
+                config=config,
+                fx=fx,
+                loop_in_thread=loop_in_thread,
+                file_path=file_path,
+                mempool_manager=mempool_manager,
+            ),
+            HistList.__name__: HistList.cls_kwargs(
+                wallet_functions=wallet_functions, config=config, fx=fx, mempool_manager=mempool_manager
+            ),
+            HistListWithToolbar.__name__: HistListWithToolbar.cls_kwargs(
+                config=config,
+            ),
+            UTXOList.__name__: UTXOList.cls_kwargs(
+                wallet_functions=wallet_functions,
+                config=config,
+                fx=fx,
+            ),
+            UtxoListWithToolbar.__name__: HistListWithToolbar.cls_kwargs(
+                config=config,
+            ),
+            AddressList.__name__: AddressList.cls_kwargs(
+                wallet_functions=wallet_functions,
+                config=config,
+                fx=fx,
+            ),
+            AddressListWithToolbar.__name__: AddressListWithToolbar.cls_kwargs(
+                config=config,
+            ),
+            UITx_Creator.__name__: UITx_Creator.cls_kwargs(
+                wallet_functions=wallet_functions,
+                config=config,
+                fx=fx,
+                mempool_manager=mempool_manager,
+            ),
+            CategoryList.__name__: CategoryList.cls_kwargs(
+                signals=wallet_functions.signals,
+                config=config,
+            ),
+        }
+        class_kwargs.update(
+            PluginManager.class_kwargs(
+                wallet_functions=wallet_functions,
+                config=config,
+                fx=fx,
+                loop_in_thread=loop_in_thread,
+            ),
         )
+        return super()._from_file(filename=file_path, password=password, class_kwargs=class_kwargs)
 
     @classmethod
     def file_migration(cls, file_content: str):
@@ -726,6 +726,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # i have to close it first, to ensure the wallet is shut down completely
         self.signals.close_qt_wallet.emit(self.wallet.id)
 
+        if self.plugin_manager and not self.wallet.bdkwallet.addresses_identical(new_wallet.bdkwallet):
+            # if the wallet/addresses have changed, then
+            self.plugin_manager.drop_wallet_specific_things()
         qt_wallet = QTWallet(
             new_wallet,
             self.config,
@@ -736,6 +739,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             password=self.password,
             parent=self.parent(),
             loop_in_thread=self.loop_in_thread,
+            plugin_manager=self.plugin_manager.clone() if self.plugin_manager else None,
         )
 
         self.signals.add_qt_wallet.emit(qt_wallet, self._file_path, self.password)

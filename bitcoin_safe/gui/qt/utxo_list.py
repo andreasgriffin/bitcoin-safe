@@ -158,6 +158,18 @@ class UTXOList(MyTreeView[OutPoint]):
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        fx: FX,
+    ):
+        return {
+            "config": config,
+            "wallet_functions": wallet_functions,
+            "fx": fx,
+        }
+
     def __init__(
         self,
         config: UserConfig,
@@ -577,6 +589,14 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
         **BaseSaveableClass.known_classes,
         UTXOList.__name__: UTXOList,
     }
+
+    @staticmethod
+    def cls_kwargs(
+        config: UserConfig,
+    ):
+        return {
+            "config": config,
+        }
 
     def __init__(self, utxo_list: UTXOList, config: UserConfig, parent: QWidget | None = None) -> None:
         """Initialize instance."""

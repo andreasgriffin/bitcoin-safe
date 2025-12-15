@@ -93,6 +93,20 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
     signal_input_changed = cast(SignalProtocol[[]], pyqtSignal())
     signal_create_tx = cast(SignalProtocol[[TxUiInfos]], pyqtSignal(TxUiInfos))
 
+    @staticmethod
+    def cls_kwargs(
+        wallet_functions: WalletFunctions,
+        config: UserConfig,
+        mempool_manager: MempoolManager,
+        fx: FX,
+    ):
+        return {
+            "wallet_functions": wallet_functions,
+            "config": config,
+            "mempool_manager": mempool_manager,
+            "fx": fx,
+        }
+
     def __init__(
         self,
         mempool_manager: MempoolManager,
