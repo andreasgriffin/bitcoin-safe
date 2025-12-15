@@ -503,6 +503,15 @@ class BdkWallet(bdk.Wallet, CacheManager):
         self._address_cache: dict[tuple[str, int], str | None] = {}
         self._delta_cache: dict[str, DeltaCacheListTransactions] = {}
 
+    def addresses_identical(self, other_wallet: BdkWallet):
+        return all(
+            [
+                str(self.peek_address(keychain=keychain, index=0).address)
+                == str(other_wallet.peek_address(keychain=keychain, index=0).address)
+                for keychain in bdk.KeychainKind
+            ]
+        )
+
     @classmethod
     def load(
         cls,

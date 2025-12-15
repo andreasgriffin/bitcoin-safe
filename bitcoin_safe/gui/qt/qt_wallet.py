@@ -726,7 +726,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # i have to close it first, to ensure the wallet is shut down completely
         self.signals.close_qt_wallet.emit(self.wallet.id)
 
-        if self.plugin_manager:
+        if self.plugin_manager and not self.wallet.bdkwallet.addresses_identical(new_wallet.bdkwallet):
+            # if the wallet/addresses have changed, then
             self.plugin_manager.drop_wallet_specific_things()
         qt_wallet = QTWallet(
             new_wallet,
