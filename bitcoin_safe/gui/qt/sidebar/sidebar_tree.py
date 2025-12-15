@@ -875,6 +875,8 @@ class SidebarTree(QWidget, Generic[TT]):
         super().__init__(parent)
         self.stack = QStackedWidget(self)
         self._selection_history: list[SidebarNode[TT]] = []
+        self._navigation_index = -1
+        self._navigating_history = False
         self._current_node: SidebarNode[TT] | None = None
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
@@ -1001,16 +1003,83 @@ class SidebarTree(QWidget, Generic[TT]):
             self.currentChanged.emit(node)
 
     def _select_previous_from_history(self, excluding: SidebarNode[TT] | None = None) -> bool:
-        """Select previous from history."""
-        while self._selection_history:
-            candidate = self._selection_history.pop()
+        """Select the most recent valid node from history, ignoring exclusions."""
+
+        # Walk the history from newest to oldest, pruning hidden/invalid entries as we go.
+        idx = len(self._selection_history) - 1
+        while idx >= 0:
+            candidate = self._selection_history[idx]
             if candidate is excluding:
+                idx -= 1
                 continue
+
             if candidate.widget is None or candidate.isHidden():
+                # Drop stale entries and shift the navigation index left when we remove
+                # an element at or before the current navigation position.
+                self._selection_history.pop(idx)
+                if idx <= self._navigation_index:
+                    self._navigation_index -= 1
+                idx -= 1
                 continue
-            if candidate.select():
-                return True
+
+            # Keep the navigation index aligned with the candidate we select and avoid
+            # adding new history entries while we revisit past selections.
+            self._navigating_history = True
+            try:
+                if candidate.select():
+                    self._navigation_index = idx
+                    return True
+            finally:
+                self._navigating_history = False
+
+            idx -= 1
+
+        self._navigation_index = len(self._selection_history) - 1
         return False
+
+    def _navigate_history(self, step: int) -> bool:
+        """Navigate forward/backward through the selection history."""
+
+        if not self._selection_history:
+            return False
+
+        # Start one step away from the current navigation index and advance until we find
+        # a selectable node or exhaust history in the chosen direction.
+        target_index = self._navigation_index + step
+        while 0 <= target_index < len(self._selection_history):
+            target_node = self._selection_history[target_index]
+            if target_node.widget is None or target_node.isHidden():
+                # Remove hidden/invalid entries and adjust the index when they sit at or
+                # before the current navigation position.
+                self._selection_history.pop(target_index)
+                if target_index <= self._navigation_index:
+                    self._navigation_index -= 1
+                continue
+
+            # Temporarily suppress history mutation while re-selecting past nodes so we
+            # don't append duplicates or truncate future entries mid-navigation.
+            self._navigating_history = True
+            try:
+                if target_node.select():
+                    self._navigation_index = target_index
+                    return True
+            finally:
+                self._navigating_history = False
+
+            target_index += step
+
+        self._navigation_index = min(self._navigation_index, len(self._selection_history) - 1)
+        return False
+
+    def navigate_history_backward(self) -> bool:
+        """Select the previous tab from the navigation history."""
+
+        return self._navigate_history(step=-1)
+
+    def navigate_history_forward(self) -> bool:
+        """Select the next tab from the navigation history."""
+
+        return self._navigate_history(step=1)
 
     def nodeAtGlobalPos(self, global_pos: QPoint) -> SidebarNode[TT] | None:
         """NodeAtGlobalPos."""
@@ -1060,17 +1129,27 @@ class SidebarTree(QWidget, Generic[TT]):
 
     def _append_to_slection_history(self, node: SidebarNode):
         """Append to slection history."""
+        if 0 <= self._navigation_index < len(self._selection_history):
+            self._selection_history = self._selection_history[: self._navigation_index + 1]
+
         self._selection_history = [n for n in self._selection_history if n is not node]
         self._selection_history.append(node)
+        self._navigation_index = len(self._selection_history) - 1
 
     def _on_node_selected(self, node: object) -> None:
         """On node selected."""
         if not isinstance(node, SidebarNode):
             return
-        prev = self._current_node
-        if prev is not None and prev is not node:
-            self._append_to_slection_history(prev)
-        self._append_to_slection_history(node)
+        if not self._navigating_history:
+            prev = self._current_node
+            if prev is not None and prev is not node:
+                self._append_to_slection_history(prev)
+            self._append_to_slection_history(node)
+        else:
+            try:
+                self._navigation_index = self._selection_history.index(node)
+            except ValueError:
+                self._append_to_slection_history(node)
         self._current_node = node
         self.nodeSelected.emit(node)
 

@@ -407,6 +407,8 @@ class MainWindow(QMainWindow):
         # Connect signals to slots
         self.tab_wallets.closeClicked.connect(self.close_tab)
         self.tab_wallets.currentChanged.connect(self.on_currentChanged)
+        self.signals.tab_history_backward.connect(self.tab_wallets.navigate_history_backward)
+        self.signals.tab_history_forward.connect(self.tab_wallets.navigate_history_forward)
 
         # central_widget
         central_widget = QWidget(self)
@@ -806,6 +808,8 @@ class MainWindow(QMainWindow):
 
         # menu edit
         self.menu_edit = self.menubar.add_menu("")
+        self.tab_history_back_shortcut = QKeySequence("Alt+Left")
+        self.tab_history_forward_shortcut = QKeySequence("Alt+Right")
 
         # change wallet
         self.menu_action_rename_wallet = self.menu_edit.add_action("", self.change_wallet_id)
@@ -819,7 +823,6 @@ class MainWindow(QMainWindow):
         )
 
         self.menu_edit.addSeparator()
-
         self.menu_action_search = self.menu_edit.add_action("", self.focus_search_box)
         self.menu_action_search.setShortcut(QKeySequence("CTRL+F"))
         self.menu_action_search.setIcon(svg_tools.get_QIcon("bi--search.svg"))
@@ -833,6 +836,58 @@ class MainWindow(QMainWindow):
             "", self.search_box.shortcut_next.activated.emit
         )
         self.menu_action_search_previous.setIcon(svg_tools.get_QIcon("bi--search.svg"))
+
+        # menu view
+        self.menu_view = self.menubar.add_menu("")
+
+        self.menu_action_tab_history_backward = self.menu_view.add_action(
+            "", self.signals.tab_history_backward.emit, icon=svg_tools.get_QIcon("bi--arrow-left-short.svg")
+        )
+        self.menu_action_tab_history_backward.setShortcut(self.tab_history_back_shortcut)
+
+        self.menu_action_tab_history_forward = self.menu_view.add_action(
+            "", self.signals.tab_history_forward.emit, icon=svg_tools.get_QIcon("bi--arrow-right-short.svg")
+        )
+        self.menu_action_tab_history_forward.setShortcut(self.tab_history_forward_shortcut)
+
+        self.menu_view.addSeparator()
+
+        self.menu_action_current_wallet = self.menu_view.add_action(
+            "",
+            partial(self.select_wallet_tab, title=None),
+        )
+        self.menu_action_current_wallet.setShortcut(QKeySequence("CTRL+0"))
+
+        self.menu_current_wallet_tabs = Menu(parent=self.menu_view)
+        self.menu_action_current_wallet.setMenu(self.menu_current_wallet_tabs)
+        self.wallet_tab_shortcut_actions: list[QAction] = []
+
+        self.menu_action_next_tab = self.menu_view.add_action(
+            "",
+            partial(self.select_relative_tab, delta=1),
+            icon=svg_tools.get_QIcon("bi--arrow-down-short.svg"),
+        )
+        self.menu_action_next_tab.setShortcut(QKeySequence("CTRL+D"))
+
+        self.menu_action_previous_tab = self.menu_view.add_action(
+            "",
+            partial(self.select_relative_tab, delta=-1),
+            icon=svg_tools.get_QIcon("bi--arrow-up-short.svg"),
+        )
+        self.menu_action_previous_tab.setShortcut(QKeySequence("CTRL+SHIFT+D"))
+
+        self.menu_view.addSeparator()
+
+        self.menu_action_minimize_to_tray = self.menu_view.add_action(
+            "",
+            self.minimize_to_tray_from_menu,
+        )
+        self.menu_action_minimize_to_tray.setShortcut(QKeySequence("CTRL+H"))
+        self.menu_action_toggle_fullscreen = self.menu_view.add_action(
+            "",
+            self.toggle_fullscreen,
+        )
+        self.menu_action_toggle_fullscreen.setShortcut(QKeySequence("F11"))
 
         # menu tools
         self.menu_tools = self.menubar.add_menu("")
@@ -852,43 +907,6 @@ class MainWindow(QMainWindow):
             icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
         )
         self.menu_action_open_hwi_manager.setShortcut(QKeySequence("CTRL+M"))
-
-        self.menu_tools.addSeparator()
-
-        self.menu_action_current_wallet = self.menu_tools.add_action(
-            "",
-            partial(self.select_wallet_tab, title=None),
-        )
-        self.menu_action_current_wallet.setShortcut(QKeySequence("CTRL+0"))
-
-        self.menu_current_wallet_tabs = Menu(parent=self.menu_tools)
-        self.menu_action_current_wallet.setMenu(self.menu_current_wallet_tabs)
-        self.wallet_tab_shortcut_actions: list[QAction] = []
-
-        self.menu_action_next_tab = self.menu_tools.add_action(
-            "",
-            partial(self.select_relative_tab, delta=1),
-        )
-        self.menu_action_next_tab.setShortcut(QKeySequence("CTRL+D"))
-
-        self.menu_action_previous_tab = self.menu_tools.add_action(
-            "",
-            partial(self.select_relative_tab, delta=-1),
-        )
-        self.menu_action_previous_tab.setShortcut(QKeySequence("CTRL+SHIFT+D"))
-
-        self.menu_tools.addSeparator()
-
-        self.menu_action_minimize_to_tray = self.menu_tools.add_action(
-            "",
-            self.minimize_to_tray_from_menu,
-        )
-        self.menu_action_minimize_to_tray.setShortcut(QKeySequence("CTRL+H"))
-        self.menu_action_toggle_fullscreen = self.menu_tools.add_action(
-            "",
-            self.toggle_fullscreen,
-        )
-        self.menu_action_toggle_fullscreen.setShortcut(QKeySequence("F11"))
 
         # menu help
         self.menu_help = self.menubar.add_menu("")
@@ -1114,6 +1132,17 @@ class MainWindow(QMainWindow):
             )
         )
         self.menu_edit.setTitle(self.tr("&Edit"))
+        self.menu_view.setTitle(self.tr("&View"))
+        self.menu_action_tab_history_backward.setText(
+            self.tr("Tab history: &Backward\t{shortcut}").format(
+                shortcut=self.tab_history_back_shortcut.toString()
+            )
+        )
+        self.menu_action_tab_history_forward.setText(
+            self.tr("Tab history: &Forward\t{shortcut}").format(
+                shortcut=self.tab_history_forward_shortcut.toString()
+            )
+        )
         self.menu_wallet_export.setTitle(self.tr("&Export"))
         self.menu_action_rename_wallet.setText(self.tr("&Wallet name"))
         self.menu_action_change_password.setText(self.tr("&Wallet password"))

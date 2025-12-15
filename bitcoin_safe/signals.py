@@ -263,6 +263,9 @@ class Signals(SignalsMin):
     event_wallet_tab_closed = cast(SignalProtocol[[]], pyqtSignal())
     event_wallet_tab_added = cast(SignalProtocol[[]], pyqtSignal())
 
+    tab_history_backward = cast(SignalProtocol[[]], pyqtSignal())
+    tab_history_forward = cast(SignalProtocol[[]], pyqtSignal())
+
     chain_data_changed = cast(SignalProtocol[[str]], pyqtSignal(str))  # the string is the reason
     notification: SignalProtocol[[Message]] = pyqtSignal(object)  # type: ignore
 
