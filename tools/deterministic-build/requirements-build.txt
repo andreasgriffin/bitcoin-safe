@@ -329,9 +329,9 @@ fastjsonschema==2.21.2 \
     --hash=sha256:1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463 \
     --hash=sha256:b1eb43748041c880796cd077f1a07c3d94e93ae84bba5ed36800a33554ae05de
     # via poetry
-filelock==3.20.0 \
-    --hash=sha256:339b4732ffda5cd79b13f4e2711a31b0365ce445d95d243bb996273d072546a2 \
-    --hash=sha256:711e943b4ec6be42e1d4e6690b48dc175c822967466bb31c0c293f34334c13f4
+filelock==3.20.1 \
+    --hash=sha256:15d9e9a67306188a44baa72f569d2bfd803076269365fdea0934385da4dc361a \
+    --hash=sha256:b8360948b351b80f420878d8516519a2204b07aefcdcfd24912a5d33127f188c
     # via
     #   cachecontrol
     #   virtualenv
@@ -479,7 +479,7 @@ platformdirs==4.5.1 \
 poetry==2.2.1 \
     --hash=sha256:bef9aa4bb00ce4c10b28b25e7bac724094802d6958190762c45df6c12749b37c \
     --hash=sha256:f5958b908b96c5824e2acbb8b19cdef8a3351c62142d7ecff2d705396c8ca34c
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
 poetry-core==2.2.1 \
     --hash=sha256:97e50d8593c8729d3f49364b428583e044087ee3def1e010c6496db76bd65ac5 \
     --hash=sha256:bdfce710edc10bfcf9ab35041605c480829be4ab23f5bc01202cfe5db8f125ab
@@ -623,7 +623,7 @@ virtualenv==20.35.4 \
 wheel==0.45.1 \
     --hash=sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729 \
     --hash=sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
 zstandard==0.25.0 \
     --hash=sha256:011d388c76b11a0c165374ce660ce2c8efa8e5d87f34996aa80f9c0816698b64 \
     --hash=sha256:01582723b3ccd6939ab7b3a78622c573799d5d8737b534b86d0e06ac18dbde4a \
@@ -730,8 +730,8 @@ zstandard==0.25.0 \
 pip==25.3 \
     --hash=sha256:8d0538dbbd7babbd207f261ed969c65de439f6bc9e5dbd3b3b9a77f25d95f343 \
     --hash=sha256:9655943313a94722b7774661c21049070f6bbb0a1516bf02f7c8d5d9201514cd
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
 setuptools==80.9.0 \
     --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
     --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
