@@ -1039,7 +1039,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             new_gap = max(100, self.wallet.gap * 2)
             if question_dialog(
                 self.tr(
-                    "Transactions with change outputs but no wallet inputs were detected:\n\n{txids}\n"
+                    "An indication for a low gap limit was detected (received Bitcoin to change addresses)."
                     "\nDo you want to rescan the wallet with an increased gap limit of {new_gap}"
                 ).format(txids="\n".join(new_tx_warnings), new_gap=new_gap),
                 title=self.tr("Gap limit may be too low"),
