@@ -749,6 +749,7 @@ class SignerUI(QWidget):
                     enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
                     timeout=60,
                     parent=self,
+                    svg_tools=svg_tools,
                 )
             else:
                 button = QPushButton(button_prefix + signer.label, parent=self)

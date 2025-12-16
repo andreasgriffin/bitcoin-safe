@@ -855,6 +855,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
             parent=self,
             timeout=60 * 60,
             text="",
+            svg_tools=svg_tools,
         )
         self.sync_button.setFixedWidth(self.sync_button.height())
         self.sync_button.clicked.connect(self._on_sync_button_clicked)

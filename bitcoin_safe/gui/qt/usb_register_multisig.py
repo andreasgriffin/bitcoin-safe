@@ -103,6 +103,7 @@ class USBValidateAddressWidget(QWidget):
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
+            svg_tools=svg_tools,
         )
         self.button_validate_address.clicked.connect(self.on_button_click)
         self.button_box.addButton(self.button_validate_address, QDialogButtonBox.ButtonRole.AcceptRole)

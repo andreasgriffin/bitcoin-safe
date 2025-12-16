@@ -96,6 +96,7 @@ class SignMessageBase(QWidget):
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
+            svg_tools=svg_tools,
         )
         self.sign_usb_button.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
         self.sign_usb_button.clicked.connect(self.on_sign_usb_message_button)
