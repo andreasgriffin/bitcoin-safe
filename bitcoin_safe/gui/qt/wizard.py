@@ -1050,7 +1050,7 @@ class ReceiveTest(BaseTab):
         self.next_button = QPushButton()
         self.next_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.next_button, QDialogButtonBox.ButtonRole.AcceptRole)
-        self.check_button = SpinningButton("")
+        self.check_button = SpinningButton("", timeout=20)
         buttonbox.addButton(self.check_button, QDialogButtonBox.ButtonRole.AcceptRole)
         self.cancel_button = QPushButton()
         self.cancel_button.clicked.connect(self.refs.go_to_previous_index)

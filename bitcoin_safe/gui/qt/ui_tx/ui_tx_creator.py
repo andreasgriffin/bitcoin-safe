@@ -227,6 +227,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 else None
             ),
             enabled_icon=svg_tools.get_QIcon("checkmark.svg"),
+            timeout=20,
         )
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
