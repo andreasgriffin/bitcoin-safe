@@ -1253,9 +1253,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_list_with_toolbar.hist_list.signal_selection_changed.connect(
             self.on_hist_list_selection_changed
         )
-        self.signal_tracker.connect(
-            self.signal_progress_info, history_list_with_toolbar.cbf_progress_bar._set_progress_info
-        )
+        self.signal_tracker.connect(self.signal_progress_info, history_list_with_toolbar._set_progress_info)
         history_list_with_toolbar.signal_export_pdf_statement.connect(self.export_pdf_statement)
 
         list_widget = self.create_list_tab(history_list_with_toolbar, tabs)
@@ -1425,7 +1423,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         tooltip = ""
         if sync_status == SyncStatus.syncing:
             icon_text = "status_waiting.svg"
-            self.history_list_with_toolbar.sync_button.set_icon_is_syncing()
+            self.history_list_with_toolbar.sync_button.start_spin()
             tooltip = self.tr("Syncing with {server}").format(
                 server=self.config.network_config.description_short()
             )
@@ -1437,13 +1435,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             tooltip = self.tr("Connected to {server}").format(
                 server=self.config.network_config.description_short()
             )
-            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
+            self.history_list_with_toolbar.sync_button.enable_button()
         else:
             icon_text = "status_disconnected.svg"
             tooltip = self.tr("Disconnected from {server}").format(
                 server=self.config.network_config.description_short()
             )
-            self.history_list_with_toolbar.sync_button.set_icon_allow_refresh()
+            self.history_list_with_toolbar.sync_button.enable_button()
 
         self.signals.signal_set_tab_properties.emit(self, self.wallet.id, icon_text, tooltip)
 

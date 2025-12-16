@@ -37,6 +37,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
@@ -71,7 +72,6 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerTextEdit,
     QCompleterLineEdit,
 )
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -196,7 +196,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
         """Add hwi button."""
         button_hwi = SpinningButton(
             text="",
-            enable_signal=signal_end_hwi_blocker,
+            signal_stop_spinning=signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
@@ -745,7 +745,7 @@ class SignerUI(QWidget):
                 signal_end_hwi_blocker = cast(SignalProtocol[[]], signer.usb_gui.signal_end_hwi_blocker)
                 button = SpinningButton(
                     text=button_prefix + signer.label,
-                    enable_signal=signal_end_hwi_blocker,
+                    signal_stop_spinning=signal_end_hwi_blocker,
                     enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
                     timeout=60,
                     parent=self,

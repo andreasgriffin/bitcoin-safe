@@ -64,14 +64,16 @@ from typing import Any, cast
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
 from bitcoin_safe_lib.util import time_logger
 from bitcoin_safe_lib.util_os import webopen
-from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QBrush, QColor, QFont, QFontMetrics, QStandardItem
-from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
+from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QBrush, QColor, QFont, QStandardItem
+from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QWidget
 from typing_extensions import Self
 
+from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.fx import FX
@@ -822,26 +824,6 @@ class HistList(MyTreeView[str]):
         return super().close()
 
 
-class RefreshButton(QPushButton):
-    def __init__(self, parent=None, height=20) -> None:
-        """Initialize instance."""
-        super().__init__(parent)
-        self.setText("")
-        # Use the standard pixmap for the button icon
-        self.setIconSize(QSize(height, height))  # Icon size can be adjusted as needed
-        self.set_icon_allow_refresh()
-
-    def set_icon_allow_refresh(self) -> None:
-        """Set icon allow refresh."""
-        icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
-        self.setIcon(icon)
-
-    def set_icon_is_syncing(self) -> None:
-        """Set icon is syncing."""
-        icon = svg_tools.get_QIcon("status_waiting.svg")
-        self.setIcon(icon)
-
-
 class HistListWithToolbar(TreeViewWithToolbar):
     VERSION = "0.0.0"
     known_classes = {
@@ -858,6 +840,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
         }
 
     signal_export_pdf_statement = cast(SignalProtocol[[str]], pyqtSignal(str))  #  wallet_id
+    signal_disable_spinning_button = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, hist_list: HistList, config: UserConfig, parent: QWidget | None = None) -> None:
         """Initialize instance."""
@@ -866,7 +849,13 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.hist_list = hist_list
         self.create_layout()
 
-        self.sync_button = RefreshButton(height=QFontMetrics(self.balance_label.font()).height())
+        self.sync_button = SpinningButton(
+            signal_stop_spinning=self.signal_disable_spinning_button,
+            enabled_icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+            parent=self,
+            timeout=60 * 60,
+            text="",
+        )
         self.sync_button.clicked.connect(self._on_sync_button_clicked)
         self.toolbar.insertWidget(0, self.sync_button)
 
@@ -905,6 +894,14 @@ class HistListWithToolbar(TreeViewWithToolbar):
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
             self.balance_label.setText(balance_total.format_as_balance())
         self.action_export_pdf_statement.setText(self.tr("&Generate PDF balance Statement"))
+
+    def _set_progress_info(self, progress_info: ProgressInfo) -> None:
+        """Update progress information and the sync button animation."""
+        self.cbf_progress_bar._set_progress_info(progress_info)
+        if progress_info.sync_status == SyncStatus.syncing:
+            self.sync_button.start_spin()
+        else:
+            self.sync_button.enable_button()
 
     def create_toolbar_with_menu(self, title) -> None:
         """Create toolbar with menu."""
