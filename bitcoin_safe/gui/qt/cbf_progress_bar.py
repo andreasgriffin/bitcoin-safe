@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from datetime import timedelta
 
 from bitcoin_safe_lib.gui.qt.util import age
@@ -96,5 +97,10 @@ class CBFProgressBar(QProgressBar):
         if progress is not None:
             self.setValue(progress)
         self._set_visibility()
-        self.setFormat(text)
-        self.setToolTip(tooltip)
+
+        if sys.platform.startswith("darwin"):
+            self.setFormat(text)  # not visible
+            self.setToolTip(text + "\n" + tooltip)
+        else:
+            self.setFormat(text)
+            self.setToolTip(tooltip)

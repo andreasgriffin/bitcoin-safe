@@ -35,6 +35,7 @@ import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -47,7 +48,6 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.ui_tx.columns import ColumnFee, ColumnInputs, ColumnRecipients
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -220,13 +220,15 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.button_box = QDialogButtonBox()
         self.button_ok = SpinningButton(
             "",
-            enable_signal=(
+            signal_stop_spinning=(
                 _wallet_signal.finished_psbt_creation
                 if self.wallet
                 and (_wallet_signal := self.wallet_functions.wallet_signals.get(self.wallet.id))
                 else None
             ),
             enabled_icon=svg_tools.get_QIcon("checkmark.svg"),
+            timeout=20,
+            svg_tools=svg_tools,
         )
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
@@ -312,7 +314,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self._signal_tracker_wallet_signals.connect(_wallet_signals.updated, self.update_with_filter)
 
         if self.wallet and (_wallet_signal := self.wallet_functions.wallet_signals.get(self.wallet.id)):
-            self.button_ok.set_enable_signal(enable_signal=(_wallet_signal.finished_psbt_creation))
+            self.button_ok.set_enable_signal(signal_stop_spinning=(_wallet_signal.finished_psbt_creation))
 
     def get_tx_status(self) -> TxStatus:
         """Get tx status."""

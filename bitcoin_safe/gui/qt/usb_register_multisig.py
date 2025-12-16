@@ -37,6 +37,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
 )
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -51,7 +52,6 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
@@ -99,10 +99,11 @@ class USBValidateAddressWidget(QWidget):
 
         self.button_validate_address = SpinningButton(
             text="",
-            enable_signal=self.usb_gui.signal_end_hwi_blocker,
+            signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
+            svg_tools=svg_tools,
         )
         self.button_validate_address.clicked.connect(self.on_button_click)
         self.button_box.addButton(self.button_validate_address, QDialogButtonBox.ButtonRole.AcceptRole)

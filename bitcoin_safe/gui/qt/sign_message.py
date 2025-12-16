@@ -36,6 +36,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType, SignMessageRequest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -54,7 +55,6 @@ from bitcoin_safe.descriptors import get_address_bip32_path
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.export_data import QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
-from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 
@@ -92,10 +92,11 @@ class SignMessageBase(QWidget):
 
         self.sign_usb_button = SpinningButton(
             "",
-            enable_signal=self.usb_gui.signal_end_hwi_blocker,
+            signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
             enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
+            svg_tools=svg_tools,
         )
         self.sign_usb_button.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
         self.sign_usb_button.clicked.connect(self.on_sign_usb_message_button)

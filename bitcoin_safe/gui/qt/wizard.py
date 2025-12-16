@@ -41,6 +41,7 @@ import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.usb_gui import USBGui
@@ -86,7 +87,6 @@ from ...pythonbdk_types import PythonUtxo, Recipient
 from ...signals import Signals
 from ...tx import TxUiInfos
 from .cbf_progress_bar import CBFProgressBar
-from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
     AspectRatioSvgWidget,
@@ -1050,7 +1050,7 @@ class ReceiveTest(BaseTab):
         self.next_button = QPushButton()
         self.next_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.next_button, QDialogButtonBox.ButtonRole.AcceptRole)
-        self.check_button = SpinningButton("")
+        self.check_button = SpinningButton("", timeout=20, svg_tools=svg_tools)
         buttonbox.addButton(self.check_button, QDialogButtonBox.ButtonRole.AcceptRole)
         self.cancel_button = QPushButton()
         self.cancel_button.clicked.connect(self.refs.go_to_previous_index)
