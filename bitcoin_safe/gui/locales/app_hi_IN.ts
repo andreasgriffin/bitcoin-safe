@@ -888,6 +888,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe समुदाय द्वारा वित्तपोषित है। आपका समर्थन विकास को स्वतंत्र रखता है, हमें नई सुविधाएँ जारी करने देता है और सुरक्षा समीक्षा में सुधार करता है। बड़े समर्थकों को हमारी &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;समर्थक पेज&lt;/a&gt; पर दिखाया जा सकता है।</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>दान</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>दान सफल रहा। Bitcoin Safe का समर्थन करने के लिए आपका बहुत धन्यवाद!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>हमें ईमेल करें</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe को मुक्त और ओपन सोर्स सॉफ़्टवेयर के रूप में बढ़ने में मदद करें।</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe का समर्थन करें</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>क्या आप बड़े योगदान या साझेदारी पर चर्चा करना चाहते हैं? हमसे संपर्क करने के लिए नीचे दिए गए बटन का उपयोग करें।</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>एक राशि चुनें और दान चालान बनाएं।</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>मान</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>दान पूरा करें</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>क्या आप भुगतान रद्द करना चाहते हैं?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1897,6 +1958,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;दृश्य</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;वॉलेट नाम</translation>
 		</message>
@@ -1924,11 +1990,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>सभी फ़ाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe समुदाय द्वारा वित्तपोषित है। आपका समर्थन विकास को स्वतंत्र रखता है, हमें नई सुविधाएँ जारी करने देता है और सुरक्षा समीक्षा में सुधार करता है। बड़े समर्थकों को हमारी &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;समर्थक पेज&lt;/a&gt; पर दिखाया जा सकता है।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2002,21 +2063,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>ऑन-चेन दान करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Lightning से दान करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>हमें ईमेल करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>QR कोड से</translation>
 		</message>
@@ -2029,11 +2075,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>टेक्स्ट से</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe को मुक्त और ओपन सोर्स सॉफ़्टवेयर के रूप में बढ़ने में मदद करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2222,8 +2263,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe का समर्थन करें</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>टैब इतिहास: &amp;पीछे {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>टैब इतिहास: &amp;आगे {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2286,11 +2332,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>वॉलेट अभी भी सिंक हो रहे हैं</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>क्या आप बड़े योगदान या साझेदारी पर चर्चा करना चाहते हैं? हमसे संपर्क करने के लिए नीचे दिए गए बटन का उपयोग करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +2835,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>एक राशि चुनें और दान चालान बनाएं।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>चालान नहीं बनाया जा सका। कृपया पुनः प्रयास करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>चालान बनाएँ</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>चालान तैयार है। खुली हुई विंडो में भुगतान पूरा करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>चालान सेवा ने एक त्रुटि लौटाई ({code})।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>भुगतान रद्द किया गया।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>भुगतान की पुष्टि हो गई। धन्यवाद!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>कृपया दान राशि और मुद्रा चुनें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>चालान का अनुरोध किया जा रहा है...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>दान सर्वर से संपर्क नहीं हो सका। आप इस पते पर दान कर सकते हैं: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2839,6 +2932,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>सभी फ़ाइलें (*);;वॉलेट फ़ाइलें (*.wallet)  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>कम gap limit का संकेत पाया गया (चेंज पतों पर Bitcoin प्राप्त हुआ)। क्या आप gap limit को {new_gap} तक बढ़ाकर वॉलेट को फिर से स्कैन करना चाहते हैं?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3012,15 +3111,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>वॉलेट '{wallet}' में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>ऐसी लेन-देनों का पता चला है जिनमें चेंज ऑउटपुट तो हैं लेकिन वॉलेट इनपुट नहीं हैं: {txids}  क्या आप वॉलेट को {new_gap} की बढ़ी हुई गैप लिमिट के साथ पुनः स्कैन करना चाहेंगे?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3936,6 +4026,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>वापस</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>शुल्क दर बदलें</translation>
 		</message>
@@ -4008,6 +4103,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>वापस</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

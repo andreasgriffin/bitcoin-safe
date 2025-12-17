@@ -3120,6 +3120,44 @@ files = [
 ]
 
 [[package]]
+name = "pyqt6-webengine"
+version = "6.10.0"
+description = "Python bindings for the Qt WebEngine framework"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pyqt6_webengine-6.10.0-1-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:95dc3c0c36c0e4eb4024e4fdbcfa1c5593a88e16de1563431a422084bec26974"},
+    {file = "pyqt6_webengine-6.10.0-cp39-abi3-macosx_10_14_universal2.whl", hash = "sha256:13d25cb332f553f7e811532e34bd82c811590b5fef553926b13c854548523112"},
+    {file = "pyqt6_webengine-6.10.0-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:9911b7b3995bc1cff8fec142c2817ee0bbdbaea18b94aebaa6bc23e13941d0b2"},
+    {file = "pyqt6_webengine-6.10.0-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:cd2c24ab5ee9142fc34b8a21e12255dcf61bdc15aff3eccd00b1cb91a1b1fbf8"},
+    {file = "pyqt6_webengine-6.10.0-cp39-abi3-win_amd64.whl", hash = "sha256:3794edbefd62ae95cd5e760b7a91b7b6473e83b635ad3f3c4a78e58c95e1e460"},
+    {file = "pyqt6_webengine-6.10.0-cp39-abi3-win_arm64.whl", hash = "sha256:65e74dbe7a3a0c746e7ec68718f1937368cb10c1f8a242335577f6710f8f94bd"},
+    {file = "pyqt6_webengine-6.10.0.tar.gz", hash = "sha256:267d27275d0c79ae270bca4b03520a41fa7e85c2a4d9632da8cb9cc233a55ad1"},
+]
+
+[package.dependencies]
+PyQt6 = ">=6.2.0"
+PyQt6-sip = ">=13.8,<14"
+PyQt6-WebEngine-Qt6 = ">=6.10.0,<6.11.0"
+
+[[package]]
+name = "pyqt6-webengine-qt6"
+version = "6.10.1"
+description = "The subset of a Qt installation needed by PyQt6-WebEngine."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:2709583bc9be99dd523fe7157ce018a35e1e4206a7e0008274f126c12ecd79d1"},
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:e1d5f46e90259d02e809dbf9c3e57f58c64da260f8abdad9530e5b5444184306"},
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-manylinux_2_34_x86_64.whl", hash = "sha256:ca1404eb035e3343fc1b88bd418f47fed4fe907012812788902598783c582901"},
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:76545e9b104802140db344c7bb513a8d732e80f68dc16d158f7fb11feaa28eaa"},
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-win_amd64.whl", hash = "sha256:5a572b7f96edc98e457e652c380f9c605e1112532723932fa01d2625f331121e"},
+    {file = "pyqt6_webengine_qt6-6.10.1-py3-none-win_arm64.whl", hash = "sha256:50b8f2be23b4989abb6f62b19f7ca80dd4f1d48e46e954ba63fd4d5de3ef856e"},
+]
+
+[[package]]
 name = "pyserial"
 version = "3.5"
 description = "Python Serial Port Extension"
@@ -4278,4 +4316,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "7a8e402681682c4b54b33092a36879767b49f0ccd1c38ed5f89f7226b26107c1"
+content-hash = "7d78a0c4b94bff8ddfb14c898af0776c688fdeadc64b3dab53cdf3a9f9f32556"

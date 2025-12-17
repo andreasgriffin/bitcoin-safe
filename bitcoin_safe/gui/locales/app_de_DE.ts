@@ -893,6 +893,67 @@ zu entdecken Standard 20</translation>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe wird von der Community finanziert. Ihre Unterstützung hält die Entwicklung unabhängig, ermöglicht neue Funktionen und verbessert Sicherheitsüberprüfungen. Größere Unterstützer können auf unserer &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;Unterstützerseite&lt;/a&gt; vorgestellt werden.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Spende</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Spende erfolgreich abgeschlossen. Vielen Dank für Ihre Unterstützung von Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Uns eine E-Mail senden</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Helfen Sie Bitcoin Safe, als Freie und Open-Source-Software zu wachsen.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe unterstützen</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Möchten Sie eine größere Spende oder Partnerschaft besprechen? Nutzen Sie die Kontakt-Schaltfläche unten.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Wählen Sie einen Betrag und erstellen Sie eine Spendenrechnung.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Wert</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>Spende abschließen</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>Möchten Sie die Zahlung abbrechen?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1912,6 +1973,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Ansicht</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Wallet-Name</translation>
 		</message>
@@ -1939,11 +2005,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Alle Dateien (*);;PSBT (*.psbt);;Transaktion (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe wird von der Community finanziert. Ihre Unterstützung hält die Entwicklung unabhängig, ermöglicht neue Funktionen und verbessert Sicherheitsüberprüfungen. Größere Unterstützer können auf unserer &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;Unterstützerseite&lt;/a&gt; vorgestellt werden.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2017,21 +2078,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>On-Chain spenden</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Mit Lightning spenden</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Uns eine E-Mail senden</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Von QR-Code</translation>
 		</message>
@@ -2044,11 +2090,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Von Text</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Helfen Sie Bitcoin Safe, als Freie und Open-Source-Software zu wachsen.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2237,8 +2278,13 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe unterstützen</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Tab-Verlauf: &amp;Zurück {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Tab-Verlauf: &amp;Vorwärts {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2301,11 +2347,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Wallets werden noch synchronisiert</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Möchten Sie eine größere Spende oder Partnerschaft besprechen? Nutzen Sie die Kontakt-Schaltfläche unten.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2811,6 +2852,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Wählen Sie einen Betrag und erstellen Sie eine Spendenrechnung.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Rechnung erstellen</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>Rechnung bereit. Schließen Sie die Zahlung im geöffneten Fenster ab.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Der Rechnungsdienst hat einen Fehler zurückgegeben ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>Zahlung abgebrochen.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>Zahlung bestätigt. Vielen Dank!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Bitte wählen Sie einen Spendenbetrag und eine Währung.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Rechnung wird angefordert...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>Der Spendenserver konnte nicht erreicht werden. Sie können an folgende Adresse spenden: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2856,6 +2949,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>Alle Dateien (*);;Wallet-Dateien (*.wallet)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Ein Hinweis auf ein niedriges Gap-Limit wurde erkannt (Bitcoin-Empfang auf Wechselgeldadressen). Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scannen?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3032,15 +3131,6 @@ import custom wallet</source>
 			<translation>Die Transaktionen
 {txs}
 im Wallet '{wallet}' wurden aus der Historie entfernt!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Es wurden Transaktionen mit Wechsel-Ausgängen, aber ohne Wallet-Eingänge erkannt: {txids} Möchten Sie das Wallet mit einem erhöhten Lückenlimit von {new_gap} erneut scannen?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3970,6 +4060,11 @@ um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Zurück</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Gebührensatz ändern</translation>
 		</message>
@@ -4043,6 +4138,11 @@ txid:outpoint ein</translation>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Zurück</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

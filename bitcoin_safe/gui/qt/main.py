@@ -65,11 +65,9 @@ from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
     QFileDialog,
-    QHBoxLayout,
     QLabel,
     QMainWindow,
     QMessageBox,
-    QPushButton,
     QSizePolicy,
     QStyle,
     QSystemTrayIcon,
@@ -89,6 +87,7 @@ from bitcoin_safe.gui.qt.notification_bar_cbf import NotificationBarCBF
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.password_cache import PasswordCache
+from bitcoin_safe.gui.qt.payment_widget import DonateDialog
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.gui.qt.sidebar.search_sidebar_tree import SearchSidebarTree
 from bitcoin_safe.gui.qt.sidebar.search_wallets import SearchWallets
@@ -1018,69 +1017,20 @@ class MainWindow(QMainWindow):
         QCoreApplication.quit()
 
     def show_donate_dialog(self) -> None:
-        """Show donate dialog with available options."""
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("Support Bitcoin Safe"))
-        dialog.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
-        dialog.setMinimumWidth(420)
-
-        layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(14)
-
-        logo_label = QLabel()
-        logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo_label.setPixmap(svg_tools.get_QIcon("logo.svg").pixmap(96, 96))
-        layout.addWidget(logo_label)
-
-        title_label = QLabel(self.tr("Help Bitcoin Safe grow as Free and Open Source Software."))
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setWordWrap(True)
-        title_label.setStyleSheet("font-weight: 600; font-size: 14pt;")
-        layout.addWidget(title_label)
-
-        description = QLabel(
-            self.tr(
-                "Bitcoin Safe is community funded. Your support keeps development independent, "
-                "lets us ship new features, and improves security reviews. Larger supporters "
-                "can be featured on our <a href='https://bitcoin-safe.org/en/donate/'>supporters page</a>."
-            )
+        d = DonateDialog(
+            fx=self.fx,
+            loop_in_thread=self.loop_in_thread,
+            signal_currency_changed=self.signals.currency_switch,
+            signal_language_switch=self.signals.language_switch,
+            close_webview_on_successful_payment=True,
+            on_about_to_close=self.signal_remove_attached_widget,
         )
-        description.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        description.setWordWrap(True)
-        description.setOpenExternalLinks(True)
-        layout.addWidget(description)
 
-        contact_label = QLabel(
-            self.tr(
-                "Want to discuss a larger contribution or partnership? Use the contact button "
-                "below to reach us."
-            )
-        )
-        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        contact_label.setWordWrap(True)
-        layout.addWidget(contact_label)
-
-        button_layout = QHBoxLayout()
-        button_layout.addStretch()
-
-        lightning_button = QPushButton(self.tr("Donate with Lightning"))
-        lightning_button.clicked.connect(partial(webopen, "https://bitcoin-safe.org/en/donate/"))
-        button_layout.addWidget(lightning_button)
-
-        onchain_button = QPushButton(self.tr("Donate on-chain"))
-        onchain_button.clicked.connect(self.prefill_donate_onchain)
-        button_layout.addWidget(onchain_button)
-
-        contact_button = QPushButton(self.tr("Email us"))
-        contact_button.clicked.connect(mail_contact)
-        button_layout.addWidget(contact_button)
-
-        button_layout.addStretch()
-        layout.addLayout(button_layout)
-
-        center_on_screen(dialog)
-        dialog.exec()
+        self._register_attached_widget(d)
+        d.aboutToClose.connect(self.signal_remove_attached_widget)
+        d.show()
+        d.raise_()
+        center_on_screen(d)
 
     def prefill_donate_onchain(self):
         """Prefill donate onchain."""

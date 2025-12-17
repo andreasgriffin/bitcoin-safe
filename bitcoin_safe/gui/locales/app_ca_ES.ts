@@ -889,6 +889,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Donació</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Donació completada correctament. Moltes gràcies per donar suport a Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Envieu-nos un correu electrònic</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Donar suport a Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Trieu un import i creeu una factura de donació.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Valor</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>Completa la donació</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>Voleu cancel·lar el pagament?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1898,6 +1959,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Visualització</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Nom de la cartera</translation>
 		</message>
@@ -1925,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Tots els fitxers (*);;PSBT (*.psbt);;Transacció (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2003,21 +2064,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Donar on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Donar amb Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Envieu-nos un correu electrònic</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Des de codi &amp;QR</translation>
 		</message>
@@ -2030,11 +2076,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Des de &amp;text</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,8 +2264,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Donar suport a Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Historial de pestanyes: &amp;Enrere {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Historial de pestanyes: &amp;Endavant {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2287,11 +2333,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Els moneders encara s’estan sincronitzant</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2792,6 +2833,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Trieu un import i creeu una factura de donació.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>No s’ha pogut crear la factura. Si us plau, torneu-ho a provar.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Crear factura</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>Factura llesta. Completeu el pagament a la finestra oberta.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>El servei de factures ha retornat un error ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>Pagament cancel·lat.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>Pagament confirmat. Gràcies!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Si us plau, trieu un import de donació i una moneda.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Sol·licitant factura...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>No es pot contactar amb el servidor de donacions. Podeu fer una donació a: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2837,6 +2930,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>Tots els fitxers (*);;Fitxers de cartera (*.wallet)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>S’ha detectat una indicació d’un gap limit baix (recepció de Bitcoin a adreces de canvi). Voleu tornar a escanejar la cartera amb un gap limit augmentat a {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3010,15 +3109,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Les transaccions {txs} de la cartera '{wallet}' s'han eliminat de l'historial!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>S’han detectat transaccions amb sortides de canvi però sense entrades de cartera: {txids} Voleu tornar a escanejar la cartera amb un límit de gap augmentat de {new_gap} ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +4028,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Enrere</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Canvia la taxa de comissió</translation>
 		</message>
@@ -4010,6 +4105,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Enrere</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

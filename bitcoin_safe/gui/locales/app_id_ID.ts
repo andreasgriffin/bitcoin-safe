@@ -889,6 +889,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe didanai oleh komunitas. Dukungan Anda menjaga pengembangan tetap independen, memungkinkan kami merilis fitur baru, dan meningkatkan peninjauan keamanan. Pendukung besar dapat ditampilkan di &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;halaman pendukung&lt;/a&gt; kami.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Donasi</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Donasi berhasil. Terima kasih banyak telah mendukung Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Email kami</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bantu Bitcoin Safe berkembang sebagai Perangkat Lunak Bebas dan Sumber Terbuka.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Dukung Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Ingin mendiskusikan kontribusi lebih besar atau kemitraan? Gunakan tombol kontak di bawah untuk menghubungi kami.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Pilih jumlah dan buat faktur donasi.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Nilai</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>Selesaikan Donasi</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>Apakah Anda ingin membatalkan pembayaran?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1898,6 +1959,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Tampilan</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Nama dompet</translation>
 		</message>
@@ -1925,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Semua File (*);;PSBT (*.psbt);;Transaksi (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe didanai oleh komunitas. Dukungan Anda menjaga pengembangan tetap independen, memungkinkan kami merilis fitur baru, dan meningkatkan peninjauan keamanan. Pendukung besar dapat ditampilkan di &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;halaman pendukung&lt;/a&gt; kami.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2003,21 +2064,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Donasi on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Donasi dengan Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Email kami</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Dari &amp;Kode QR</translation>
 		</message>
@@ -2030,11 +2076,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Dari &amp;teks</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bantu Bitcoin Safe berkembang sebagai Perangkat Lunak Bebas dan Sumber Terbuka.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,8 +2264,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Dukung Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Riwayat tab: &amp;Mundur {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Riwayat tab: &amp;Maju {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2287,11 +2333,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Dompet masih dalam proses sinkronisasi</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Ingin mendiskusikan kontribusi lebih besar atau kemitraan? Gunakan tombol kontak di bawah untuk menghubungi kami.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2792,6 +2833,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Pilih jumlah dan buat faktur donasi.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Tidak dapat membuat faktur. Silakan coba lagi.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Buat faktur</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>Faktur siap. Selesaikan pembayaran di jendela yang terbuka.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Layanan faktur mengembalikan kesalahan ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>Pembayaran dibatalkan.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>Pembayaran dikonfirmasi. Terima kasih!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Silakan pilih jumlah donasi dan mata uang.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Meminta faktur...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>Tidak dapat menjangkau server donasi. Anda dapat berdonasi ke: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2837,6 +2930,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>Semua File (*);;File Dompet (*.wallet)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Indikasi batas gap rendah terdeteksi (menerima Bitcoin ke alamat kembalian). Apakah Anda ingin memindai ulang dompet dengan batas gap yang ditingkatkan menjadi {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3010,15 +3109,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Transaksi {txs} di dompet '{wallet}' dihapus dari riwayat!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Transaksi dengan output perubahan tetapi tanpa input dompet terdeteksi: {txids} Apakah Anda ingin memindai ulang dompet dengan batas gap yang ditingkatkan menjadi {new_gap} ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +4028,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Kembali</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Ubah tarif biaya</translation>
 		</message>
@@ -4010,6 +4105,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Kembali</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

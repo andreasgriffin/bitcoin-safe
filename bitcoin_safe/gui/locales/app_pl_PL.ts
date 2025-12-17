@@ -893,6 +893,67 @@ Domyślnie 20</translation>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe jest finansowany przez społeczność. Twoje wsparcie utrzymuje niezależny rozwój, pozwala nam wprowadzać nowe funkcje i usprawnia przeglądy bezpieczeństwa. Więksi darczyńcy mogą zostać wyróżnieni na naszej &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;stronie wspierających&lt;/a&gt;.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Darowizna</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Darowizna została pomyślnie zakończona. Dziękujemy bardzo za wsparcie Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Napisz do nas</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Pomóż Bitcoin Safe rozwijać się jako Wolne i Otwarte Oprogramowanie.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Wspieraj Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Chcesz omówić większy wkład lub partnerstwo? Skorzystaj z przycisku kontaktu poniżej.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Wybierz kwotę i utwórz fakturę darowizny.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Wartość</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>Zakończ darowiznę</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>Czy chcesz anulować płatność?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1912,6 +1973,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Widok</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Nazwa portfela</translation>
 		</message>
@@ -1939,11 +2005,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>Wszystkie pliki (*);;PSBT (*.psbt);;Transakcja (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe jest finansowany przez społeczność. Twoje wsparcie utrzymuje niezależny rozwój, pozwala nam wprowadzać nowe funkcje i usprawnia przeglądy bezpieczeństwa. Więksi darczyńcy mogą zostać wyróżnieni na naszej &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;stronie wspierających&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2017,21 +2078,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Wpłać on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Wpłać Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Napisz do nas</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Z kodu &amp;QR</translation>
 		</message>
@@ -2044,11 +2090,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Z &amp;tekstu</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Pomóż Bitcoin Safe rozwijać się jako Wolne i Otwarte Oprogramowanie.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2237,8 +2278,13 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Wspieraj Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Historia kart: &amp;Wstecz {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Historia kart: &amp;Dalej {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2301,11 +2347,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Portfele nadal się synchronizują</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Chcesz omówić większy wkład lub partnerstwo? Skorzystaj z przycisku kontaktu poniżej.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2811,6 +2852,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Wybierz kwotę i utwórz fakturę darowizny.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Nie udało się utworzyć faktury. Spróbuj ponownie.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Utwórz fakturę</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>Faktura gotowa. Dokończ płatność w otwartym oknie.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Usługa faktur zwróciła błąd ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>Płatność anulowana.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>Płatność potwierdzona. Dziękujemy!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Wybierz kwotę darowizny i walutę.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Żądanie faktury...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>Nie można połączyć się z serwerem darowizn. Możesz przekazać darowiznę na adres: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2856,6 +2949,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>Wszystkie pliki (*);;Pliki portfela (*.wallet)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Wykryto wskazanie niskiego gap limit (otrzymano Bitcoin na adresy reszty). Czy chcesz ponownie przeskanować portfel z podniesionym gap limit do {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3032,15 +3131,6 @@ import custom wallet</source>
 			<translation>Transakcje
 {txs}
 w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Wykryto transakcje ze zwrotem „change”, ale bez wejść z portfela: {txids} Czy chcesz przeskanować portfel ponownie z podwyższonym limitem różnicy {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3969,6 +4059,11 @@ poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Wstecz</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Zmień stawkę opłaty</translation>
 		</message>
@@ -4042,6 +4137,11 @@ txid:outpoint</translation>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Wstecz</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

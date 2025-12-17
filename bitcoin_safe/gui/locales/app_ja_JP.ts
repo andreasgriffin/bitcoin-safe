@@ -888,6 +888,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>寄付</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>寄付が正常に完了しました。Bitcoin Safe をご支援いただき、誠にありがとうございます！</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>メールを送る</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe を支援する</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>金額を選択して寄付の請求書を作成してください。</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>値</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>寄付を完了</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>支払いをキャンセルしますか？</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1897,6 +1958,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;表示</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;ウォレット名</translation>
 		</message>
@@ -1924,11 +1990,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>すべてのファイル (*);;PSBT (*.psbt);;トランザクション (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2002,21 +2063,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>オンチェーンで寄付</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Lightning で寄付</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>メールを送る</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>&amp;設定</translation>
 		</message>
@@ -2029,11 +2075,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>QRコード&amp;から</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2222,8 +2263,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe を支援する</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>タブ履歴: &amp;戻る {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>タブ履歴: &amp;進む {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2286,11 +2332,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ウォレットはまだ同期中</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +2835,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>金額を選択して寄付の請求書を作成してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>請求書を作成できませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>請求書を作成</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>請求書の準備ができました。開いているウィンドウで支払いを完了してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>請求書サービスがエラーを返しました（{code}）。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>支払いがキャンセルされました。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>支払いが確認されました。ありがとうございます！</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>寄付金額と通貨を選択してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>請求書を要求しています...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>寄付サーバーに接続できません。次のアドレスに寄付できます: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2839,6 +2932,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>すべてのファイル (*);;ウォレットファイル (*.wallet)  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>低い gap limit の兆候が検出されました（おつり用アドレスへの Bitcoin 受信）。gap limit を {new_gap} に増やしてウォレットを再スキャンしますか？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3012,15 +3111,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>ウォレット '{wallet}' のトランザクション {txs} が履歴から削除されました!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>ウォレット入力なしでチェンジ出力を伴うトランザクションが検出されました：{txids}  ギャップリミットを {new_gap} に増やしてウォレットを再スキャンしますか？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3936,6 +4026,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>戻る</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>手数料レートを変更</translation>
 		</message>
@@ -4008,6 +4103,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>戻る</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

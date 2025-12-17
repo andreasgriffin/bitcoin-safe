@@ -889,6 +889,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>اهداء</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>اهداء با موفقیت انجام شد. از حمایت شما از Bitcoin Safe بسیار سپاسگزاریم!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>برای ما ایمیل بفرستید</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>به رشد Bitcoin Safe به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>حمایت از Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>می‌خواهید درباره کمک مالی بزرگ‌تر یا همکاری صحبت کنید؟ از دکمه تماس زیر استفاده کنید.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>یک مبلغ انتخاب کنید و یک فاکتور اهداء ایجاد کنید.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>مقدار</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>تکمیل اهداء</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>آیا می‌خواهید پرداخت را لغو کنید؟</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1898,6 +1959,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;نمایش</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;نام کیف‌پول</translation>
 		</message>
@@ -1925,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>همهٔ فایل‌ها (*);;PSBT (*.psbt);;تراکنش (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2003,21 +2064,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>اهدا به‌صورت on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>اهدا با Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>برای ما ایمیل بفرستید</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>از &amp;کد QR</translation>
 		</message>
@@ -2030,11 +2076,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>از &amp;متن</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>به رشد Bitcoin Safe به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,8 +2264,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>حمایت از Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>تاریخچه تب: &amp;عقب {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>تاریخچه تب: &amp;جلو {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2287,11 +2333,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>کیف‌پول‌ها هنوز همگام‌سازی می‌شوند</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>می‌خواهید درباره کمک مالی بزرگ‌تر یا همکاری صحبت کنید؟ از دکمه تماس زیر استفاده کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2792,6 +2833,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>یک مبلغ انتخاب کنید و یک فاکتور اهداء ایجاد کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>امکان ایجاد فاکتور وجود ندارد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>ایجاد فاکتور</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>فاکتور آماده است. پرداخت را در پنجره بازشده تکمیل کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>سرویس فاکتور خطایی را بازگرداند ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>پرداخت لغو شد.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>پرداخت تأیید شد. سپاسگزاریم!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>لطفاً مبلغ اهداء و واحد پول را انتخاب کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>در حال درخواست فاکتور...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>امکان دسترسی به سرور اهداء وجود ندارد. می‌توانید به این آدرس اهداء کنید: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2837,6 +2930,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>تمام فایل‌ها (*);;فایل‌های کیف پول (*.wallet)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>نشانه‌ای از gap limit پایین شناسایی شد (دریافت Bitcoin به آدرس‌های باقیمانده). آیا می‌خواهید کیف پول را با gap limit افزایش‌یافته به {new_gap} دوباره اسکن کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3010,15 +3109,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>تراکنش‌هایی با خروجی «تغییر» اما بدون ورودی کیف پول شناسایی شدند: {txids} آیا می‌خواهید کیف پول را با حد شکاف افزایش‌یافته به {new_gap} مجدداً اسکن کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +4028,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>بازگشت</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>تغییر نرخ کارمزد</translation>
 		</message>
@@ -4010,6 +4105,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>بازگشت</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

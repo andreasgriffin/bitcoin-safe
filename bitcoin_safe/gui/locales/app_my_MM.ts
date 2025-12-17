@@ -888,6 +888,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>On-chain လှူဒါန်းရန်</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>လှူဒါန်းမှု</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>လှူဒါန်းမှု အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါသည်။ Bitcoin Safe ကို ထောက်ပံ့ပေးသည့်အတွက် အလွန်ကျေးဇူးတင်ပါသည်။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ပုံနှိပ်ရန်</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>ပမာဏတစ်ခုကို ရွေးချယ်ပြီး လှူဒါန်းမှု ဘီလ်တစ်ခု ဖန်တီးပါ။</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>တန်ဖိုး</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>လှူဒါန်းမှု ပြီးဆုံးပါ</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>ငွေပေးချေမှုကို ပယ်ဖျက်လိုပါသလား။</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1897,6 +1958,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;ကြည့်ရှုရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;ပိုက်ဆံအိတ်စကားဝှက်</translation>
 		</message>
@@ -1924,11 +1990,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>ဖိုင်အားလုံး (*);;PSBT (*.psbt);;ငွေလွှဲ (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>On-chain လှူဒါန်းရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2002,21 +2063,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Lightning ဖြင့် လှူဒါန်းရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>အီးမေးလ် ပို့ရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>QR ကုဒ်မှ  </translation>
 		</message>
@@ -2029,11 +2075,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>စာသားမှ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ပုံနှိပ်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2222,8 +2263,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>တက်ဘ်မှတ်တမ်း: &amp;နောက်သို့ {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>တက်ဘ်မှတ်တမ်း: &amp;ရှေ့သို့ {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2286,11 +2332,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ပိုက်ဆံအိတ်များ သို့မဟုတ် လည်းကောင်း ဆက်လက်တင်ဆက်နေဆဲဖြစ်သည်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2791,6 +2832,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>ပမာဏတစ်ခုကို ရွေးချယ်ပြီး လှူဒါန်းမှု ဘီလ်တစ်ခု ဖန်တီးပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ဘီလ်ကို မဖန်တီးနိုင်ပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>ဘီလ် ဖန်တီးပါ</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>ဘီလ် အဆင်သင့်ဖြစ်ပါပြီ။ ဖွင့်ထားသော ဝင်းဒိုးတွင် ငွေပေးချေမှုကို ပြီးဆုံးပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>ဘီလ် ဝန်ဆောင်မှုမှ အမှားတစ်ခု ပြန်ပို့ခဲ့သည် ({code})။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>ငွေပေးချေမှုကို ပယ်ဖျက်လိုက်ပါသည်။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>ငွေပေးချေမှုကို အတည်ပြုလိုက်ပါသည်။ ကျေးဇူးတင်ပါသည်!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>လှူဒါန်းမှု ပမာဏနှင့် ငွေကြေးကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>ဘီလ်ကို တောင်းဆိုနေပါသည်...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>လှူဒါန်းမှု ဆာဗာသို့ မရောက်နိုင်ပါ။ အောက်ပါ လိပ်စာသို့ လှူဒါန်းနိုင်ပါသည်: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2836,6 +2929,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>ဖိုင်များအားလုံး (*);; ပိုက်ဆံအိတ်ဖိုင်များ (*.wallet)  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>gap limit နိမ့်နေကြောင်း ပြသချက်ကို တွေ့ရှိခဲ့ပါသည် (အပြောင်းလဲ လိပ်စာများသို့ Bitcoin လက်ခံရရှိခြင်း)။ gap limit ကို {new_gap} သို့ တိုးမြှင့်ပြီး ပိုက်ဆံအိတ်ကို ပြန်လည် စကန်လုပ်လိုပါသလား။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3009,15 +3108,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>အိတ် ငွေ ထဲမှ input မပါဘဲ change output ပါသော လုပ်ငန်းများ တွေ့ရှိသည်: {txids}  သင်အိတ်ကို gap အကန့်အသတ် {new_gap} ဖြင့် ထပ်မံစစ်ဆေးလိုပါသလား?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3933,6 +4023,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>နောက်သို့</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>ကြေးနှုန်း ပြောင်းရန်</translation>
 		</message>
@@ -4005,6 +4100,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>နောက်သို့</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

@@ -209,17 +209,17 @@ rm -rf "$PYDIR"/site-packages/{psutil,qrcode,websocket}/tests
 #     rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/translations/qt${component}_*
 #     rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/resources/qt${component}_*
 # done
-rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/{qml,libexec}
+# Keep QtWebEngineProcess (and related helpers) by preserving libexec, which PyQt6
+# uses to spin up the web engine subprocess. Also keep QtQuick/QML content which
+# QtWebEngine relies on for rendering.
 rm -rf "$PYDIR"/site-packages/PyQt6/{pyrcc*.so,pylupdate*.so,uic}
-rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/plugins/{bearer,gamepads,geometryloaders,geoservices,playlistformats,position,renderplugins,sceneparsers,sensors,sqldrivers,texttospeech,webview}
+rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/plugins/{bearer,gamepads,geometryloaders,geoservices,playlistformats,renderplugins,sceneparsers,sensors,sqldrivers,texttospeech}
 # for component in Bluetooth Concurrent Designer Help Location NetworkAuth Nfc Positioning PositioningQuick Qml Quick Sensors SerialPort Sql Test Web Xml Labs ShaderTools SpatialAudio ; do
 #     rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/lib/libQt6${component}*
 #     rm -rf "$PYDIR"/site-packages/PyQt6/Qt${component}*
 #     rm -rf "$PYDIR"/site-packages/PyQt6/bindings/Qt${component}*
 # done
-for component in Qml Quick ; do
-    rm -rf "$PYDIR"/site-packages/PyQt6/Qt6/lib/libQt6*${component}.so*
-done
+# keep Quick/Qml libs for QtWebEngine
 # rm -rf "$PYDIR"/site-packages/PyQt6/Qt.so
 
 

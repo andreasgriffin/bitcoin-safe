@@ -888,6 +888,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>يتم تمويل Bitcoin Safe من قِبل المجتمع. دعمك يحافظ على استقلالية التطوير، ويسمح لنا بإطلاق ميزات جديدة، ويحسّن مراجعات الأمان. يمكن عرض الداعمين الكبار في &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحة الداعمين&lt;/a&gt;.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>تبرع</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>تمت عملية التبرع بنجاح. شكرًا جزيلاً لدعمك Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>راسلنا عبر البريد الإلكتروني</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ساعد Bitcoin Safe على النمو كمشروع برمجي حر ومفتوح المصدر.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>ادعم Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>هل ترغب في مناقشة مساهمة أكبر أو شراكة؟ استخدم زر التواصل أدناه للوصول إلينا.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>اختر مبلغًا وأنشئ فاتورة تبرع.</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>القيمة</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>إكمال التبرع</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>هل تريد إلغاء الدفع؟</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1897,6 +1958,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;عرض</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;اسم المحفظة</translation>
 		</message>
@@ -1924,11 +1990,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>يتم تمويل Bitcoin Safe من قِبل المجتمع. دعمك يحافظ على استقلالية التطوير، ويسمح لنا بإطلاق ميزات جديدة، ويحسّن مراجعات الأمان. يمكن عرض الداعمين الكبار في &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحة الداعمين&lt;/a&gt;.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2002,21 +2063,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>تبرّع على السلسلة (On-chain)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>تبرّع عبر Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>راسلنا عبر البريد الإلكتروني</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>من &amp;رمز الاستجابة السريعة</translation>
 		</message>
@@ -2029,11 +2075,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>من &amp;نص</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ساعد Bitcoin Safe على النمو كمشروع برمجي حر ومفتوح المصدر.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2222,8 +2263,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>ادعم Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>سجل علامات التبويب: &amp;للخلف {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>سجل علامات التبويب: &amp;للأمام {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2286,11 +2332,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>المحافظ لا تزال تُزامن</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>هل ترغب في مناقشة مساهمة أكبر أو شراكة؟ استخدم زر التواصل أدناه للوصول إلينا.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +2835,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>اختر مبلغًا وأنشئ فاتورة تبرع.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>تعذر إنشاء الفاتورة. يرجى المحاولة مرة أخرى.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>إنشاء فاتورة</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>الفاتورة جاهزة. أكمل الدفع في النافذة المفتوحة.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>أعادَت خدمة الفواتير خطأً ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>تم إلغاء الدفع.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>تم تأكيد الدفع. شكرًا لك!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>يرجى اختيار مبلغ التبرع والعملة.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>جارٍ طلب الفاتورة...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>تعذر الوصول إلى خادم التبرعات. يمكنك التبرع إلى: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2839,6 +2932,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>كل الملفات (*);;ملفات المحفظة (*.wallet)  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>تم اكتشاف مؤشر لحد فجوة منخفض (استلام Bitcoin إلى عناوين الفكة). هل تريد إعادة فحص المحفظة مع زيادة حد الفجوة إلى {new_gap}؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3012,15 +3111,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>المعاملات {txs} في المحفظة '{wallet}' تم إزالتها من التاريخ!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>تم الكشف عن معاملات بها مخرجات تغيير ولكن دون مدخلات من المحفظة: {txids}  هل تريد إعادة فحص المحفظة بحد فجوة مُعزّز قدره {new_gap}؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3936,6 +4026,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>رجوع</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>غيّر معدل الرسوم</translation>
 		</message>
@@ -4008,6 +4103,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>رجوع</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

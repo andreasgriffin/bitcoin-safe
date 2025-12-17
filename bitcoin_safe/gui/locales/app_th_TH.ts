@@ -888,6 +888,67 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>การบริจาค</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>การบริจาคสำเร็จแล้ว ขอบคุณมากที่สนับสนุน Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>ส่งอีเมลถึงเรา</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>สนับสนุน Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>เลือกจำนวนเงินและสร้างใบแจ้งหนี้การบริจาค</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Complete Donation</source>
+			<translation>ทำการบริจาคให้เสร็จสิ้น</translation>
+		</message>
+		<name>DonationWebDialog</name>
+		<message>
+			<source>Do you want to cancel the payment?</source>
+			<translation>คุณต้องการยกเลิกการชำระเงินหรือไม่?</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1897,6 +1958,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;มุมมอง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;ชื่อกระเป๋า</translation>
 		</message>
@@ -1924,11 +1990,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
 			<translation>ไฟล์ทั้งหมด (*);;PSBT (*.psbt);;ธุรกรรม (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2002,21 +2063,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>บริจาคแบบ on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>บริจาคผ่าน Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>ส่งอีเมลถึงเรา</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>จาก &amp;QR Code  </translation>
 		</message>
@@ -2029,11 +2075,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>จาก &amp;ข้อความ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2222,8 +2263,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>สนับสนุน Bitcoin Safe</translation>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>ประวัติแท็บ: &amp;ย้อนกลับ {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>ประวัติแท็บ: &amp;ไปข้างหน้า {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2286,11 +2332,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>กระเป๋าเงินยังคงกำลังซิงค์</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2791,6 +2832,58 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>เลือกจำนวนเงินและสร้างใบแจ้งหนี้การบริจาค</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ไม่สามารถสร้างใบแจ้งหนี้ได้ กรุณาลองใหม่อีกครั้ง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>สร้างใบแจ้งหนี้</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in the opened window.</source>
+			<translation>ใบแจ้งหนี้พร้อมแล้ว โปรดทำการชำระเงินในหน้าต่างที่เปิดอยู่</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>บริการใบแจ้งหนี้ส่งคืนข้อผิดพลาด ({code})</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment cancelled.</source>
+			<translation>ยกเลิกการชำระเงินแล้ว</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed. Thank you!</source>
+			<translation>ยืนยันการชำระเงินแล้ว ขอบคุณ!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>กรุณาเลือกจำนวนเงินบริจาคและสกุลเงิน</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>กำลังร้องขอใบแจ้งหนี้...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>ไม่สามารถติดต่อเซิร์ฟเวอร์การบริจาคได้ คุณสามารถบริจาคไปที่: {address}</translation>
+		</message>
+	</context>
+	<context>
 		<name>PluginWidget</name>
 		<message>
 			<source>Enable/Disable</source>
@@ -2836,6 +2929,12 @@ import custom wallet</source>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
 			<translation>ไฟล์ทั้งหมด (*);;ไฟล์กระเป๋าเงิน (*.wallet)  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>ตรวจพบตัวบ่งชี้ของ gap limit ต่ำ (ได้รับ Bitcoin ไปยังที่อยู่เงินทอน) คุณต้องการสแกนกระเป๋าเงินใหม่ด้วย gap limit ที่เพิ่มเป็น {new_gap} หรือไม่?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3009,15 +3108,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>ธุรกรรม {txs} ในกระเป๋าเงิน '{wallet}' ถูกลบออกจากประวัติ!!!  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>ตรวจพบธุรกรรมที่มีเอาต์พุตทอนแต่ไม่มีอินพุตของกระเป๋าเงิน: {txids}  คุณต้องการสแกนกระเป๋าเงินอีกครั้งด้วยขีด จำกัด gap ที่เพิ่มขึ้นเป็น {new_gap} หรือไม่?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3933,6 +4023,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>ย้อนกลับ</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>เปลี่ยนอัตราค่าธรรมเนียม</translation>
 		</message>
@@ -4005,6 +4100,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>ย้อนกลับ</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>

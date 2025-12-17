@@ -21,6 +21,11 @@ if not cmdline_name:
 hiddenimports = []
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
 hiddenimports += collect_submodules('hwilib') # otherwise hwilib doesnt get packaged
+hiddenimports += [
+    "PyQt6.QtWebEngineCore",
+    "PyQt6.QtWebEngineWidgets",
+    "PyQt6.QtWebEngineGui",
+]
 
 
 packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs", "cv2"]
@@ -84,16 +89,11 @@ print(f"Included datas: {datas}")
 
 # Strip out parts of Qt that we never use. Reduces binary size by tens of MBs. see #4815
 qt_bins2remove=(
-    r'pyqt6\qt6\qml',
-    r'pyqt6\qt6\bin\qt6quick',
-    r'pyqt6\qt6\bin\qt6qml',
     r'pyqt6\qt6\bin\qt6multimediaquick',
     r'pyqt6\qt6\bin\qt6pdfquick',
-    r'pyqt6\qt6\bin\qt6positioning',
     r'pyqt6\qt6\bin\qt6spatialaudio',
     r'pyqt6\qt6\bin\qt6shadertools',
     r'pyqt6\qt6\bin\qt6sensors',
-    r'pyqt6\qt6\bin\qt6web',
     r'pyqt6\qt6\bin\qt6test',
 )
 print("Removing Qt binaries:", *qt_bins2remove)
@@ -103,10 +103,7 @@ for x in a.binaries.copy():
             a.binaries.remove(x)
             print('----> Removed x =', x)
 
-qt_data2remove=(
-    r'pyqt6\qt6\translations\qtwebengine_locales',
-    r'pyqt6\qt6\qml',
-)
+qt_data2remove=()
 print("Removing Qt datas:", *qt_data2remove)
 for x in a.datas.copy():
     for r in qt_data2remove:
