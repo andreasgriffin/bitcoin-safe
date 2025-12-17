@@ -50,6 +50,7 @@ from PyQt6.QtCore import (
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import (
+    QDialog,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -78,7 +79,7 @@ DONATION_INVOICE_ENDPOINT = "https://pay.bitcoin-safe.org/api/v1/invoices"
 INVOICE_TIMEOUT = timedelta(minutes=15)
 
 
-class DonationWebDialog(QWidget):
+class DonationWebDialog(QDialog):
     signal_cancelled = cast(SignalProtocol[[object]], pyqtSignal(object))  # DonationWebDialog
     signal_url_changed = cast(
         SignalProtocol[[object, str]], pyqtSignal(object, str)
@@ -88,6 +89,7 @@ class DonationWebDialog(QWidget):
         self, callback_ok_to_close: Callable[[object, str], bool], parent: QWidget | None = None
     ) -> None:
         super().__init__(parent)
+        self.setModal(False)
         self.callback_ok_to_close = callback_ok_to_close
         self.creation_time = datetime.now()
         self.invoice_url = ""
@@ -106,7 +108,7 @@ class DonationWebDialog(QWidget):
         layout.addWidget(self.web_view)
 
     def _on_url_changed(self, url: QUrl | None):
-        if not url:
+        if not isinstance(url, QUrl):
             return
         self.signal_url_changed.emit(self, url.toString())
 
@@ -272,7 +274,7 @@ class PaymentButton(QPushButton):
         return url in self.url_infos[web_dialog.invoice_url].success_urls
 
     def _show_web_dialog(self, url: str) -> None:
-        dlg = DonationWebDialog(callback_ok_to_close=self.url_is_successful_payment)
+        dlg = DonationWebDialog(callback_ok_to_close=self.url_is_successful_payment, parent=self)
         dlg.signal_url_changed.connect(self._on_url_changed)
         dlg.signal_cancelled.connect(self._on_user_cancelled_payment)
 
@@ -483,9 +485,9 @@ class DonateDialog(QWidget):
         self.donation_widget.payment_completed.connect(self._on_payment_complete)
         layout.addWidget(self.donation_widget)
 
-        contact_button = QPushButton(self.tr("Email us"))
-        contact_button.clicked.connect(mail_contact)
-        layout.addWidget(contact_button, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.contact_button = QPushButton(self.tr("Email us"))
+        self.contact_button.clicked.connect(mail_contact)
+        layout.addWidget(self.contact_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def _on_payment_complete(self, success: bool) -> None:
         if not success:
