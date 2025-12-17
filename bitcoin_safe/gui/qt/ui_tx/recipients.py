@@ -36,7 +36,7 @@ from typing import Any, cast
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.gui.qt.satoshis import unit_sat_str, unit_str
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -97,6 +97,7 @@ class RecipientWidget(QWidget):
         self.fx = fx
         self.allow_edit = allow_edit
         self.allow_label_edit = allow_label_edit
+        self.signal_tracker = SignalTracker()
 
         self.form_layout = QFormLayout()
         self.setLayout(self.form_layout)
@@ -125,7 +126,9 @@ class RecipientWidget(QWidget):
         self.amount_spin_box.setAnalyzer(amount_analyzer)
         self.label_unit = QLabel(unit_str(network=network))
         self.send_max_checkbox = QCheckBox()
-        self.send_max_checkbox.clicked.connect(self.on_send_max_button_click)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.send_max_checkbox.clicked), self.on_send_max_button_click
+        )
         self.amount_layout.addWidget(self.amount_spin_box)
         self.amount_layout.addWidget(self.label_unit)
         self.amount_layout.addWidget(self.send_max_checkbox)
@@ -169,11 +172,11 @@ class RecipientWidget(QWidget):
         self.label_line_edit.set_label_readonly(not allow_label_edit)
 
         # signals
-        self.address_edit.signal_text_change.connect(self.on_address_change)
-        self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
-        wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
-        self.wallet_functions.signals.language_switch.connect(self.updateUi)
-        self.wallet_functions.signals.currency_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.address_edit.signal_text_change, self.on_address_change)
+        self.signal_tracker.connect(self.address_edit.signal_bip21_input, self.on_address_bip21_input)
+        self.signal_tracker.connect(wallet_functions.signals.any_wallet_updated, self.update_with_filter)
+        self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(self.wallet_functions.signals.currency_switch, self.updateUi)
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         """Update with filter."""
@@ -334,6 +337,10 @@ class RecipientWidget(QWidget):
         self.label_line_edit.set_label_readonly(not state)
         self.amount_spin_box.setReadOnly(not state)
         self.send_max_checkbox.setEnabled(state)
+
+    def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        return super().close()
 
 
 class NotificationBarRecipient(NotificationBar):
@@ -513,10 +520,14 @@ class RecipientBox(QWidget):
         )
         self.notification_bar.set_wallet_id(wallet.id if wallet else None)
 
+    def close(self) -> bool:
+        self.recipient_widget.close()
+        return super().close()
+
 
 class Recipients(QWidget):
     signal_added_recipient = cast(SignalProtocol[[RecipientBox]], pyqtSignal(RecipientBox))
-    signal_removed_recipient = cast(SignalProtocol[[RecipientBox]], pyqtSignal(RecipientBox))
+    signal_removed_recipient = cast(SignalProtocol[[]], pyqtSignal())
     signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
     signal_amount_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
 
@@ -762,7 +773,8 @@ class Recipients(QWidget):
 
                 widget.hide()
                 widget.setParent(None)
-                self.signal_removed_recipient.emit(widget)
+                self.signal_removed_recipient.emit()
+                widget.close()
                 self._count -= 1
                 break
         self.update_recipient_title()
@@ -797,3 +809,8 @@ class Recipients(QWidget):
     def count(self) -> int:
         """Count."""
         return self._count
+
+    def close(self) -> bool:
+        for box in self.get_recipient_group_boxes():
+            box.close()
+        return super().close()
