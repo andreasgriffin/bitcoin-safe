@@ -11,22 +11,19 @@ on:
       - synchronize
       - labeled
 
-env:
-  BUILD_LABEL: Build-Relevant
-
 jobs:
   mac:
     # Allow manual dispatch, or PR events where the Build-Relevant label is present (including on subsequent commits).
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-and-test-mac.yml
     secrets: inherit
 
   linux:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-appimage-and-test.yml
     secrets: inherit
 
   windows:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-windows-and-test.yml
     secrets: inherit
