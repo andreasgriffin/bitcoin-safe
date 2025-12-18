@@ -96,6 +96,10 @@ class BaseColumn(QWidget):
         """Is available."""
         return True
 
+    def close(self) -> bool:
+        self.totals.close()
+        return super().close()
+
 
 class ColumnInputs(BaseColumn):
     def __init__(
@@ -219,6 +223,10 @@ class ColumnRecipients(BaseColumn):
         """UpdateUi."""
         self.recipients.updateUi()
         self.totals.c0.l2.setText(self.tr("Sending total:"))
+
+    def close(self) -> bool:
+        self.recipients.close()
+        return super().close()
 
 
 class ColumnSankey(BaseColumn):

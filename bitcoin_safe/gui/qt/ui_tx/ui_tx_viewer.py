@@ -1518,6 +1518,7 @@ class UITx_Viewer(UITx_Base):
     def close(self):
         """Close."""
         self.column_sankey.close()
+        self.column_recipients.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)

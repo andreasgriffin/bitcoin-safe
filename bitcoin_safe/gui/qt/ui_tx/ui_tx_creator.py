@@ -489,7 +489,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
         self.on_input_changed_and_categories()
 
-    def on_recipients_removed(self, recipient_box: RecipientBox):
+    def on_recipients_removed(self):
         """On recipients removed."""
         self.on_input_changed_and_categories()
 
@@ -1064,6 +1064,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self._signal_tracker_wallet_signals.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
 
+        self.column_recipients.close()
         self.category_list.close()
         self.utxo_list_with_toolbar.close()
         self.setParent(None)
