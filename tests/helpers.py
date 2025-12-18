@@ -55,7 +55,7 @@ def test_config(fulcrum: str) -> TestConfig:
     config.network_config.server_type = BlockchainType.Electrum
     config.network_config.electrum_url = fulcrum
     config.network_config.electrum_use_ssl = False
-
+    config.auto_label_change_addresses = True
     return config
 
 

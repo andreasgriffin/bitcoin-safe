@@ -95,6 +95,7 @@ class UserConfig(BaseSaveableClass):
         self.currency: str = "USD"
         self.rates: dict[str, dict[str, Any]] = {}
         self.last_tab_title: list[str] = []
+        self.auto_label_change_addresses: bool = False
 
     def clean_recently_open_wallet(self):
         """Clean recently open wallet."""

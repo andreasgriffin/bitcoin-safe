@@ -1014,8 +1014,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.reset_fee_rate()
 
         # do first tab_changed, because it will set the utxo_list.select_rows
-        if tx_ui_infos.hide_UTXO_selection is not None:
-            self.column_inputs.checkBox_manual_coin_select.setChecked(not tx_ui_infos.hide_UTXO_selection)
+        hide_UTXO_selection = tx_ui_infos.hide_UTXO_selection in [True, None]
+        self.column_inputs.checkBox_manual_coin_select.setChecked(not hide_UTXO_selection)
 
         self.reset_splitter_sizes()
         self.utxo_list.update_content()
@@ -1043,9 +1043,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 role=MyItemDataRole.ROLE_KEY,
                 scroll_to_last=True,
             )
-
-        if tx_ui_infos.hide_UTXO_selection:
-            self.splitter.setSizes([0, 1, 1])
 
         # do the recipients after the utxo list setting. otherwise setting the uxtos,
         # will reduce the sent amount to what is maximally possible, by the selected utxos

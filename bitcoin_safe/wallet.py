@@ -2256,7 +2256,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                 continue
             if not self.is_my_address(address):
                 continue
-            if self.is_change(address):
+            if self.config.auto_label_change_addresses and self.is_change(address):
                 change_label = translate("wallet", "Change of:") + " " + ", ".join(labels)
                 self.labels.set_addr_label(address, change_label, timestamp="now")
 
