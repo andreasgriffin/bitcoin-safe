@@ -476,12 +476,12 @@ class DonateDialog(QWidget):
 
     def __init__(
         self,
-        fx,
-        loop_in_thread,
-        signal_currency_changed,
-        signal_language_switch,
-        on_about_to_close=None,
-        parent=None,
+        fx: FX,
+        loop_in_thread: LoopInThread,
+        signal_currency_changed: SignalProtocol[[]] | pyqtBoundSignal,
+        signal_language_switch: SignalProtocol[[]] | pyqtBoundSignal,
+        parent: QWidget | None = None,
+        on_about_to_close: SignalProtocol[[QWidget]] | None = None,
     ):
         super().__init__(parent)
 
@@ -527,7 +527,7 @@ class DonateDialog(QWidget):
         layout.addWidget(contact_label)
 
         self.donation_widget = DonationInvoiceWidget(
-            amount=10.00,
+            amount=fx.btc_to_fiat(fx.fiat_to_btc(10, "USD") or 10_000) or 10,
             fx=fx,
             loop_in_thread=loop_in_thread,
             signal_currency_changed=signal_currency_changed,
