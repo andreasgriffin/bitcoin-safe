@@ -9,3 +9,4 @@
 - [ ] Update all translations
 - [ ] Appropriate pytests were added
 - [ ] Documentation is updated
+- [ ] If this PR affects builds or install artifacts, set the `Build-Relevant` label to trigger build workflows

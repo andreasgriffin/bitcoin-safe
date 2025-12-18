@@ -1,0 +1,23 @@
+name: Run All Builds
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  run-builds:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'Build-Relevant') }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Trigger macOS build and tests
+        uses: ./.github/workflows/build-and-test-mac.yml
+
+      - name: Trigger Linux build and tests
+        uses: ./.github/workflows/build-appimage-and-test.yml
+
+      - name: Trigger Windows build and tests
+        uses: ./.github/workflows/build-windows-and-test.yml
