@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>पते कॉपी करें</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>सीएसवी के रूप में कॉपी करें</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>प्राप्ति पता</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>{n} पते कॉपी किए गए</translation>
 		</message>
 	</context>
 	<context>
@@ -945,6 +955,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>छवि के रूप में सहेजें</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>{name} फ़ाइल सहेजें</translation>
 		</message>
 	</context>
 	<context>
@@ -1897,6 +1912,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;देखें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;वॉलेट नाम</translation>
 		</message>
@@ -2059,6 +2079,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>प्रॉक्सी {proxy} के माध्यम से बिटकॉइन p2p नेटवर्क की निगरानी</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>नया टैब {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2227,6 +2252,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>टैब इतिहास: &amp;पीछे {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>टैब इतिहास: &amp;आगे {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>वॉलेट {file_path} पहले से खुला है।</translation>
 		</message>
@@ -2365,6 +2400,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>कोई फ़ाइल नहीं चुनी गई  </translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n} पंक्तियाँ पाठ के रूप में कॉपी की गईं</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n} पंक्तियाँ csv के रूप में कॉपी की गईं</translation>
 		</message>
 	</context>
 	<context>
@@ -2842,6 +2887,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>कम गैप सीमा का संकेत पाया गया (चेंज पतों पर बिटकॉइन प्राप्त हुए)। क्या आप गैप सीमा को {new_gap} तक बढ़ाकर वॉलेट को पुनः स्कैन करना चाहते हैं</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
 		</message>
@@ -3012,15 +3063,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>वॉलेट '{wallet}' में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>ऐसी लेन-देनों का पता चला है जिनमें चेंज ऑउटपुट तो हैं लेकिन वॉलेट इनपुट नहीं हैं: {txids}  क्या आप वॉलेट को {new_gap} की बढ़ी हुई गैप लिमिट के साथ पुनः स्कैन करना चाहेंगे?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3936,6 +3978,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>वापस</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>शुल्क दर बदलें</translation>
 		</message>
@@ -4008,6 +4055,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>वापस</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4904,6 +4956,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>फिंगरप्रिंट अलग हैं। केवल समान फिंगरप्रिंट समर्थित हैं, यह सुनिश्चित करते हैं कि सभी व्युत्पन्न कुंजियाँ एक ही हस्ताक्षरकर्ता के हैं!  </translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>{name} के लिए वॉलेट निर्यात करें</translation>
 		</message>
 	</context>
 	<context>

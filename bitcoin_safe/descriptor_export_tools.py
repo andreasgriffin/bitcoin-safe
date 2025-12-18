@@ -38,6 +38,7 @@ from bitcoin_usb.address_types import DescriptorInfo
 
 from bitcoin_safe.gui.qt.util import save_file_dialog
 from bitcoin_safe.hardware_signers import DescriptorExportType, DescriptorExportTypes
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
@@ -105,7 +106,9 @@ class DescriptorExportTools:
             default_filename=shorten_filename(
                 filename_clean(wallet_id, file_extension=".txt", replace_spaces_by="_"), max_total_length=20
             ),
-            window_title=f"Export Wallet for {descripor_type.display_name}",
+            window_title=translate("descriptor", "Export Wallet for {name}").format(
+                name=descripor_type.display_name
+            ),
         )
         if not filename:
             return None

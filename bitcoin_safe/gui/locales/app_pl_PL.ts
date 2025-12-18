@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>Kopiuj adresy</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>Kopiuj jako CSV</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>adres odbiorczy</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>Skopiowano {n} adresów</translation>
 		</message>
 	</context>
 	<context>
@@ -950,6 +960,11 @@ Domyślnie 20</translation>
 		<message>
 			<source>Save as image</source>
 			<translation>Zapisz jako obraz</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>Zapisz plik {name}</translation>
 		</message>
 	</context>
 	<context>
@@ -1912,6 +1927,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Wyświetl</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Nazwa portfela</translation>
 		</message>
@@ -2074,6 +2094,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Monitorowanie sieci bitcoin p2p przez proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>Nowa karta {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2242,6 +2267,16 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Historia kart: &amp;Wstecz {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Historia kart: &amp;Dalej {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>Portfel {file_path} jest już otwarty.</translation>
 		</message>
@@ -2380,6 +2415,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Nie wybrano pliku</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n} wierszy skopiowano jako tekst</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n} wierszy skopiowano jako csv</translation>
 		</message>
 	</context>
 	<context>
@@ -2859,6 +2904,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Wykryto wskazanie niskiego limitu przerwy (otrzymano bitcoiny na adresy reszty). Czy chcesz ponownie przeskanować portfel ze zwiększonym limitem przerwy do {new_gap}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>Nie udało się utworzyć kopii zapasowej. Anulowanie zmian.</translation>
 		</message>
@@ -3032,15 +3083,6 @@ import custom wallet</source>
 			<translation>Transakcje
 {txs}
 w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Wykryto transakcje ze zwrotem „change”, ale bez wejść z portfela: {txids} Czy chcesz przeskanować portfel ponownie z podwyższonym limitem różnicy {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3969,6 +4011,11 @@ poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Wstecz</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Zmień stawkę opłaty</translation>
 		</message>
@@ -4042,6 +4089,11 @@ txid:outpoint</translation>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Wstecz</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4942,6 +4994,13 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>Odciski palców różnią się. Obsługiwane są tylko identyczne odciski, aby wszystkie klucze pochodziły od tego samego podpisującego!</translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>Eksportuj portfel dla {name}</translation>
 		</message>
 	</context>
 	<context>

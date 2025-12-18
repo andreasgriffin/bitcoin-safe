@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>Adresleri Kopyala</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>csv olarak kopyala</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>alım adresi</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>{n} adres kopyalandı</translation>
 		</message>
 	</context>
 	<context>
@@ -946,6 +956,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>Resim olarak kaydet</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>{name} dosyasını kaydet</translation>
 		</message>
 	</context>
 	<context>
@@ -1898,6 +1913,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Görüntüle</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Cüzdan adı</translation>
 		</message>
@@ -2060,6 +2080,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>p2p bitcoin ağı {proxy} üzerinden izleniyor</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>Yeni Sekme {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2228,6 +2253,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Sekme geçmişi: &amp;Geri {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Sekme geçmişi: &amp;İleri {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>Cüzdan {file_path} zaten açık.</translation>
 		</message>
@@ -2366,6 +2401,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Dosya seçilmedi</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n} satır metin olarak kopyalandı</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n} satır csv olarak kopyalandı</translation>
 		</message>
 	</context>
 	<context>
@@ -2840,6 +2885,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Düşük bir boşluk sınırı göstergesi algılandı (değişim adreslerine Bitcoin alındı). {new_gap} artırılmış boşluk sınırıyla cüzdanı yeniden taramak ister misiniz</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>Yedekleme başarısız. Değişiklikler iptal ediliyor.</translation>
 		</message>
@@ -3010,15 +3061,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>'{wallet}' cüzdanındaki {txs} işlemleri geçmişten silindi!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Değişim çıktılarına sahip fakat cüzdan girdi içermeyen işlemler tespit edildi: {txids} Cüzdanı {new_gap} olarak artırılmış bir gap limitiyle yeniden taramak ister misiniz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +3980,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Geri</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Ücret oranını değiştir</translation>
 		</message>
@@ -4010,6 +4057,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Geri</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4906,6 +4958,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>Parmak izleri farklı.  Yalnızca aynı parmak izleri desteklenir, böylece tüm türetilmiş anahtarların aynı imzalayıcıya ait olduğu garanti edilir!</translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>{ name } için Cüzdanı Dışa Aktar</translation>
 		</message>
 	</context>
 	<context>

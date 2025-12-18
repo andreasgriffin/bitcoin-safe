@@ -1142,7 +1142,9 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
             stream.write(
                 str(get_data(row, MyItemDataRole.ROLE_KEY)) + "\n"
             )  # append newline character after each row
-        do_copy(stream.getvalue(), title=f"{len(row_numbers)} rows have been copied as text")
+        do_copy(
+            stream.getvalue(), title=self.tr("{n} rows have been copied as text").format(n=len(row_numbers))
+        )
 
     def copyRowsToClipboardAsCSV(self, drag_keys: list[str] | None) -> None:
         """CopyRowsToClipboardAsCSV."""
@@ -1153,7 +1155,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         writer.writerows(table)
         do_copy(
             stream.getvalue(),
-            title=f"{len(table)} rows have ben copied as csv",
+            title=self.tr("{n} rows have ben copied as csv").format(n=len(table)),
         )
 
     def mouseDoubleClickEvent(self, e: QMouseEvent | None) -> None:
