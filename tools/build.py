@@ -138,6 +138,46 @@ class Builder:
             raise ValueError(f"{directory} is not a valid directory.")
         return list(dir_path.glob(f"*{extension}"))
 
+    @staticmethod
+    def stop_existing_container(container_name: str) -> None:
+        """Stop and remove a leftover docker container if it exists."""
+        try:
+            result = subprocess.run(
+                [
+                    "docker",
+                    "ps",
+                    "-a",
+                    "--format",
+                    "{{.ID}}",
+                    "--filter",
+                    f"name=^{container_name}$",
+                ],
+                stdout=subprocess.PIPE,
+                check=True,
+                text=True,
+            )
+        except FileNotFoundError:
+            logger.warning("Docker command not found. Skipping container cleanup.")
+            return
+        except subprocess.CalledProcessError as exc:
+            logger.warning("Failed to check for existing docker containers: %s", exc)
+            return
+
+        container_ids = [c for c in result.stdout.splitlines() if c]
+        for container_id in container_ids:
+            logger.info("Stopping leftover container '%s' (%s)", container_name, container_id)
+            try:
+                run_local(f"docker container stop {container_id}")
+                run_local(f"docker container rm {container_id}")
+            except subprocess.CalledProcessError:
+                logger.warning("Failed to stop container '%s'. Attempting to force remove.", container_id)
+                try:
+                    run_local(f"docker container rm -f {container_id}")
+                except subprocess.CalledProcessError as remove_error:
+                    raise RuntimeError(
+                        f"Unable to stop or remove existing container '{container_name}' ({container_id})."
+                    ) from remove_error
+
     def appimage2deb(self, **kwargs):
         """Appimage2deb."""
         for filename in self.list_files("dist/", extension=".AppImage"):
@@ -250,6 +290,7 @@ class Builder:
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / build_folder / "dist"
 
         logger.info("Building binary...")
+        self.stop_existing_container(f"{docker_image}-container")
         run_local(
             f"docker run "
             f"--name {docker_image}-container "
