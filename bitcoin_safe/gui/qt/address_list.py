@@ -824,15 +824,26 @@ class AddressList(MyTreeView[str]):
         menu.addSeparator()
         self._add_category_menu(menu, addrs)
 
+        menu.addSeparator()
         if selected and not multi_select:
-            menu.addSeparator()
             self.add_copy_menu(menu, selected[0], include_columns_even_if_hidden=[self.key_column])
+
+        address_list = [item.data(MySortModel.role_drag_key) for item in selected_items if item]
+        menu.add_action(
+            self.tr("Copy Addresses"),
+            partial(
+                do_copy,
+                "\n".join(address_list),
+                title=self.tr("{n} addresses have ben copied").format(n=len(address_list)),
+            ),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
+        )
 
         menu.add_action(
             self.tr("Copy as csv"),
             partial(
                 self.copyRowsToClipboardAsCSV,
-                [item.data(MySortModel.role_drag_key) for item in selected_items if item],
+                address_list,
             ),
             icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )

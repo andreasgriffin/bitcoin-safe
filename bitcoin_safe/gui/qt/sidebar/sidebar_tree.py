@@ -1322,7 +1322,7 @@ if __name__ == "__main__":
             self.tab_counter += 1
             title = f"{wallet.title} - New Tab {self.tab_counter}"
             new_leaf = SidebarNode[str](
-                title=f"New Tab {self.tab_counter}",
+                title=self.tr("New Tab {n}").format(n=self.tab_counter),
                 data=title,
                 widget=self._mk_page(title),
                 closable=True,

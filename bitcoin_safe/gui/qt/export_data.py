@@ -909,7 +909,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
             default_filename=shorten_filename(
                 filename_clean(self.wallet_id, file_extension=".txt"), max_total_length=20
             ),
-            window_title=f"Save {hardware_signer.display_name} file",
+            window_title=self.tr("Save {name} file").format(name=hardware_signer.display_name),
         )
         if not filename:
             return None

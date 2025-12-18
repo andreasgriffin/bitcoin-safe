@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>复制地址</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>复制为csv</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>接收地址</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>已复制 {n} 个地址</translation>
 		</message>
 	</context>
 	<context>
@@ -945,6 +955,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>保存为图片</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>保存 {name} 文件</translation>
 		</message>
 	</context>
 	<context>
@@ -1898,6 +1913,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;查看</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;钱包名称</translation>
 		</message>
@@ -2060,6 +2080,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>通过代理 {proxy} 监控比特币 p2p 网络</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>新标签页 {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2228,6 +2253,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>标签页历史：&amp;后退 {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>标签页历史：&amp;前进 {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>钱包 {file_path} 已经打开。</translation>
 		</message>
@@ -2366,6 +2401,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>未选择文件  </translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>已将 {n} 行复制为文本</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>已将 {n} 行复制为 csv</translation>
 		</message>
 	</context>
 	<context>
@@ -2845,6 +2890,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>检测到较低的间隙限制指示（向找零地址接收比特币）。是否要以增加到 {new_gap} 的间隙限制重新扫描钱包</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>备份失败。正在中止更改。</translation>
 		</message>
@@ -3015,15 +3066,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>钱包 '{wallet}' 中的交易 {txs} 已从历史记录中删除！！！</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>检测到带有找零输出但没有钱包输入的交易：{txids}  是否要使用增加至 {new_gap} 的间隙限额重新扫描钱包？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3939,6 +3981,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>返回</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>更改手续费率</translation>
 		</message>
@@ -4014,6 +4061,11 @@ txid:outpoint
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>返回</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4910,6 +4962,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>指纹不同。只支持相同的指纹，确保所有派生的密钥属于同一签名者！  </translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>导出 {name} 的钱包</translation>
 		</message>
 	</context>
 	<context>

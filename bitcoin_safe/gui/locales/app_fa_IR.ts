@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>کپی آدرس‌ها</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>کپی به‌صورت CSV</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>آدرس دریافت</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>{n} آدرس کپی شدند</translation>
 		</message>
 	</context>
 	<context>
@@ -946,6 +956,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>ذخیره به‌عنوان تصویر</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>ذخیره فایل {name}</translation>
 		</message>
 	</context>
 	<context>
@@ -1898,6 +1913,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;مشاهده</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;نام کیف‌پول</translation>
 		</message>
@@ -2060,6 +2080,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>پایش شبکه p2p بیت‌کوین از طریق پروکسی {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>تب جدید {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2228,6 +2253,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>تاریخچه تب: &amp;عقب {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>تاریخچه تب: &amp;جلو {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>کیف پول {file_path} هم‌اکنون باز است.</translation>
 		</message>
@@ -2366,6 +2401,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>فایلی انتخاب نشد</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n} ردیف به‌صورت متن کپی شد</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n} ردیف به‌صورت csv کپی شد</translation>
 		</message>
 	</context>
 	<context>
@@ -2840,6 +2885,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>نشانه‌ای از حد فاصله پایین شناسایی شد (دریافت بیت‌کوین به آدرس‌های باقی‌مانده). آیا می‌خواهید کیف پول را با حد فاصله افزایش‌یافته به {new_gap} دوباره اسکن کنید</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>پشتیبان‌گیری ناموفق. اعمال تغییرات لغو شد.</translation>
 		</message>
@@ -3010,15 +3061,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>تراکنش‌هایی با خروجی «تغییر» اما بدون ورودی کیف پول شناسایی شدند: {txids} آیا می‌خواهید کیف پول را با حد شکاف افزایش‌یافته به {new_gap} مجدداً اسکن کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +3980,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>عقب</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>تغییر نرخ کارمزد</translation>
 		</message>
@@ -4010,6 +4057,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>عقب</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4906,6 +4958,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>فینگرپرینت‌ها متفاوت‌اند. فقط فینگرپرینت‌های یکسان پشتیبانی می‌شوند تا اطمینان حاصل شود همهٔ کلیدهای مشتق‌شده متعلق به یک امضاکننده باشند!</translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>خروجی گرفتن از کیف پول برای {name}</translation>
 		</message>
 	</context>
 	<context>

@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>Копіювати адреси</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>Копіювати як CSV</translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>адреса для отримання</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>{n} адрес скопійовано</translation>
 		</message>
 	</context>
 	<context>
@@ -946,6 +956,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>Зберегти як зображення</translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>Зберегти файл {name}</translation>
 		</message>
 	</context>
 	<context>
@@ -1898,6 +1913,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;Перегляд</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;Назва гаманця</translation>
 		</message>
@@ -2060,6 +2080,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Моніторинг p2p-мережі біткоїна через проксі {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>Нова вкладка {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2228,6 +2253,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>Історія вкладок: &amp;Назад {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>Історія вкладок: &amp;Вперед {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>Гаманець {file_path} уже відкрито.</translation>
 		</message>
@@ -2366,6 +2401,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Файл не вибрано</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n} рядків скопійовано як текст</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n} рядків скопійовано як csv</translation>
 		</message>
 	</context>
 	<context>
@@ -2840,6 +2885,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>Виявлено ознаку низького ліміту розриву (отримання біткоїнів на адреси решти). Бажаєте повторно просканувати гаманець зі збільшеним лімітом розриву до {new_gap}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>Резервне копіювання не вдалося. Скасування змін.</translation>
 		</message>
@@ -3010,15 +3061,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Транзакції {txs} у гаманці «{wallet}» були видалені з історії!!!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Виявлено транзакції з виводами здачі, але без входів із гаманця: {txids} Бажаєте повторно просканувати гаманець із підвищеним лімітом розриву {new_gap}?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +3980,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>Назад</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Змінити ставку комісії</translation>
 		</message>
@@ -4010,6 +4057,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>Назад</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4906,6 +4958,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>Відбитки відрізняються.  Підтримуються лише однакові відбитки, щоб гарантувати, що всі похідні ключі належать одному підписувачу!</translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>Експортувати гаманець для {name}</translation>
 		</message>
 	</context>
 	<context>

@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>လိပ်စာများကို ကူးယူပါ</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>csv အဖြစ်ကူးယူပါ  </translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>လက်ခံရရှိသောလိပ်စာ  </translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>လိပ်စာ {n} ခုကို ကူးယူပြီးပါပြီ</translation>
 		</message>
 	</context>
 	<context>
@@ -945,6 +955,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>ပုံအဖြစ်သိမ်းပါ  </translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>{ name } ဖိုင်ကို သိမ်းဆည်းပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -1897,6 +1912,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;ကြည့်ရှုပါ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;ပိုက်ဆံအိတ်စကားဝှက်</translation>
 		</message>
@@ -2059,6 +2079,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>proxy {proxy} မှတစ်ဆင့် p2p bitcoin ကွန်ယက်ကို စောင့်ကြည့်နေသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>တැබ်အသစ် {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2227,6 +2252,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>တැබ်မှတ်တမ်း: &amp;နောက်သို့ {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>တැබ်မှတ်တမ်း: &amp;ရှေ့သို့ {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
 		</message>
@@ -2365,6 +2400,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ဖိုင်မရှိပါ  </translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>စာသားအဖြစ် အတန်း {n} ခုကို ကူးယူပြီးပါပြီ</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>csv အဖြစ် အတန်း {n} ခုကို ကူးယူပြီးပါပြီ</translation>
 		</message>
 	</context>
 	<context>
@@ -2839,6 +2884,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>အနိမ့် gap limit အညွှန်းကို တွေ့ရှိခဲ့ပါသည် (ပြန်လည်ပေးအပ်လိပ်စာများသို့ ဘစ်ကွိုင်း လက်ခံရရှိသည်)။ gap limit ကို {new_gap} အထိ တိုးမြှင့်ပြီး ပိုက်ဆံအိတ်ကို ပြန်လည် စကန်လုပ်လိုပါသလား</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
 		</message>
@@ -3009,15 +3060,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!  </translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>အိတ် ငွေ ထဲမှ input မပါဘဲ change output ပါသော လုပ်ငန်းများ တွေ့ရှိသည်: {txids}  သင်အိတ်ကို gap အကန့်အသတ် {new_gap} ဖြင့် ထပ်မံစစ်ဆေးလိုပါသလား?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3933,6 +3975,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>နောက်သို့</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>ကြေးနှုန်း ပြောင်းရန်</translation>
 		</message>
@@ -4005,6 +4052,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>နောက်သို့</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4901,6 +4953,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>လက်ဗွေများသည်ကွဲပြားနေသည်။ တူညီသောလက်ဗွေများသာထောက်ပံ့ပါ၊ ဤအရာသည်အားလုံးလက်မှတ်သားများသည်တူညီသောလက်မှတ်သားမှလာသည်ဟုအာမခံပါသည်။  </translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>{ name } အတွက် ပိုက်ဆံအိတ်ကို ထုတ်ယူပါ</translation>
 		</message>
 	</context>
 	<context>

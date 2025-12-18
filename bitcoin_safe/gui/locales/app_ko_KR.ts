@@ -137,6 +137,11 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>Copy Addresses</source>
+			<translation>주소 복사</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Copy as csv</source>
 			<translation>csv로 복사  </translation>
 		</message>
@@ -209,6 +214,11 @@
 		<message>
 			<source>receiving address</source>
 			<translation>수신 주소  </translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>{n} addresses have ben copied</source>
+			<translation>{n}개의 주소가 복사되었습니다</translation>
 		</message>
 	</context>
 	<context>
@@ -945,6 +955,11 @@ Default 20</source>
 		<message>
 			<source>Save as image</source>
 			<translation>이미지로 저장  </translation>
+		</message>
+		<name>ExportDataSimple</name>
+		<message>
+			<source>Save {name} file</source>
+			<translation>{name} 파일 저장</translation>
 		</message>
 	</context>
 	<context>
@@ -1897,6 +1912,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;View</source>
+			<translation>&amp;보기</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Wallet name</source>
 			<translation>&amp;지갑 이름</translation>
 		</message>
@@ -2059,6 +2079,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>프록시 {proxy}를 통해 비트코인 p2p 네트워크 모니터링</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>New Tab {n}</source>
+			<translation>새 탭 {n}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2227,6 +2252,16 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Tab history: &amp;Backward	{shortcut}</source>
+			<translation>탭 기록: &amp;뒤로 {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Tab history: &amp;Forward	{shortcut}</source>
+			<translation>탭 기록: &amp;앞으로 {shortcut}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>The wallet {file_path} is already open.</source>
 			<translation>지갑 {file_path}이 이미 열려 있습니다.</translation>
 		</message>
@@ -2365,6 +2400,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>No file selected</source>
 			<translation>파일이 선택되지 않았습니다  </translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have been copied as text</source>
+			<translation>{n}개의 행이 텍스트로 복사되었습니다</translation>
+		</message>
+		<name>MyTreeView</name>
+		<message>
+			<source>{n} rows have ben copied as csv</source>
+			<translation>{n}개의 행이 csv로 복사되었습니다</translation>
 		</message>
 	</context>
 	<context>
@@ -2839,6 +2884,12 @@ import custom wallet</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
+Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
+			<translation>낮은 갭 한계 표시가 감지되었습니다(잔돈 주소로 비트코인 수신). 갭 한계를 {new_gap}로 늘려 지갑을 다시 스캔하시겠습니까</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Backup failed. Aborting Changes.</source>
 			<translation>백업 실패. 변경 중단.  </translation>
 		</message>
@@ -3009,15 +3060,6 @@ import custom wallet</source>
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>트랜잭션 {txs}이 지갑 '{wallet}'의 기록에서 제거되었습니다!</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Transactions with change outputs but no wallet inputs were detected:
-
-{txids}
-
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>지갑 입력 없이 변경 출력만 있는 거래가 감지되었습니다: {txids}  증가된 갭 한도 {new_gap} 로 지갑을 다시 스캔하시겠습니까?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3933,6 +3975,11 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Back</source>
+			<translation>뒤로</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>수수료율 변경</translation>
 		</message>
@@ -4005,6 +4052,11 @@ txid:outpoint</source>
 		</message>
 	</context>
 	<context>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Back</source>
+			<translation>뒤로</translation>
+		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
@@ -4901,6 +4953,13 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
 			<translation>지문이 다릅니다. 동일한 지문만 지원되므로 모든 파생 키가 동일한 서명 기계에 속함을 보장합니다!</translation>
+		</message>
+	</context>
+	<context>
+		<name>descriptor</name>
+		<message>
+			<source>Export Wallet for {name}</source>
+			<translation>{name}에 대한 지갑 내보내기</translation>
 		</message>
 	</context>
 	<context>
