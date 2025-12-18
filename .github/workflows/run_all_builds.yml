@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Trigger macOS build and tests
-        uses: ./.github/workflows/build-and-test-mac.yml
+        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-and-test-mac.yml@main
 
       - name: Trigger Linux build and tests
-        uses: ./.github/workflows/build-appimage-and-test.yml
+        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-appimage-and-test.yml@main
 
       - name: Trigger Windows build and tests
-        uses: ./.github/workflows/build-windows-and-test.yml
+        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-windows-and-test.yml@main
