@@ -19,6 +19,7 @@ on:
         required: false
         default: ''
         type: string
+  workflow_call:
 
 jobs:
   build:
@@ -32,20 +33,22 @@ jobs:
 
       # 2) if a SHA was provided, fetch it and switch to it
       - name: Fetch and checkout custom commit
-        if: ${{ github.event.inputs.commitHash != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commitHash != '' }}
         run: |
           # this will succeed as long as the commit is reachable from ANY branch on the remote
           git fetch origin ${{ github.event.inputs.commitHash }}
           git checkout ${{ github.event.inputs.commitHash }}
 
+      # Use the build path for all non-dispatch events, or dispatch events that did not request a prebuilt release download.
+      # When skip_build_and_test_release_tag is non-empty on workflow_dispatch, the release-download path is used instead.
       - name: Set up Python environment
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Setup xvfb (Linux)
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '') && runner.os == 'Linux' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb \
@@ -71,19 +74,19 @@ jobs:
                                 osslsigncode
 
       - name: Install Python dependencies
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
 
       - name: Run build script
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: poetry run python tools/build.py --targets windows --commit None
 
 
       - name: Check for portable EXE file
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*portable.exe')" ]; then
             echo "Portable EXE file is missing"
@@ -91,7 +94,7 @@ jobs:
           fi
 
       - name: Check for setup EXE file
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*setup.exe')" ]; then
             echo "Setup EXE file is missing"
@@ -99,7 +102,7 @@ jobs:
           fi
 
       - name: Upload EXE Files from dist/
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
         with:
@@ -108,7 +111,7 @@ jobs:
 
       - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
         id: signpath-io
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -121,7 +124,7 @@ jobs:
           output-artifact-directory: 'signpath-signed'
 
       - name: Upload Signed EXE Files from signpath-signed/
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
@@ -130,7 +133,7 @@ jobs:
 
 
       - name: Compare signed and unsigned files
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         run: |
           tools/build-wine/verify_signed_executables.sh dist signpath-signed portable setup
 
@@ -139,21 +142,21 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download signed portable artifact
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         uses: actions/download-artifact@v4
         with:
           name: signpath-signed
           path: artifacts
 
       - name: Download unsigned portable artifact
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || (github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug == '') }}
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: artifacts
 
       - name: Download release artifacts
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -172,7 +175,7 @@ jobs:
           done
 
       - name: Verify downloaded Windows artifacts
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
         shell: bash
         run: |
           set -euo pipefail

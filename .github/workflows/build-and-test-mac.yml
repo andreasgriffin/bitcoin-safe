@@ -15,6 +15,7 @@ on:
         required: false
         default: ''
         type: string
+  workflow_call:
 
 jobs:
   build:
@@ -40,31 +41,33 @@ jobs:
 
       # 2) if a SHA was provided, fetch it and switch to it
       - name: Fetch and checkout custom commit
-        if: ${{ github.event.inputs.commitHash != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commitHash != '' }}
         run: |
           # this will succeed as long as the commit is reachable from ANY branch on the remote
           git fetch origin ${{ github.event.inputs.commitHash }}
           git checkout ${{ github.event.inputs.commitHash }}           
 
+      # Use the build path for all non-dispatch events, or dispatch events that did not request a prebuilt release download.
+      # When skip_build_and_test_release_tag is non-empty on workflow_dispatch, the release-download path is used instead.
       - name: Set up Python environment
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Install Python dependencies
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
 
       - name: Run build script
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: poetry run python tools/build.py --targets mac --commit None
 
       - name: Check for DMG file
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.dmg')" ]; then
             echo "DMG file is missing"
@@ -72,7 +75,7 @@ jobs:
           fi
 
       - name: Upload DMG Files from dist/
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
@@ -92,14 +95,14 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: dmgs
 
       - name: Download release DMG for ${{ matrix.arch }}
-        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
