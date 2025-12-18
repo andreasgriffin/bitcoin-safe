@@ -6,18 +6,27 @@ on:
   workflow_dispatch:
   pull_request:
     types:
+      - opened
+      - reopened
+      - synchronize
       - labeled
 
+env:
+  BUILD_LABEL: Build-Relevant
+
 jobs:
-  run-builds:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'Build-Relevant') }}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Trigger macOS build and tests
-        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-and-test-mac.yml@main
+  mac:
+    # Allow manual dispatch, or PR events where the Build-Relevant label is present (including on subsequent commits).
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    uses: ./.github/workflows/build-and-test-mac.yml
+    secrets: inherit
 
-      - name: Trigger Linux build and tests
-        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-appimage-and-test.yml@main
+  linux:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    uses: ./.github/workflows/build-appimage-and-test.yml
+    secrets: inherit
 
-      - name: Trigger Windows build and tests
-        uses: bitcoin-safe/bitcoin-safe/.github/workflows/build-windows-and-test.yml@main
+  windows:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, env.BUILD_LABEL)) }}
+    uses: ./.github/workflows/build-windows-and-test.yml
+    secrets: inherit
