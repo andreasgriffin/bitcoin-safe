@@ -281,10 +281,16 @@ class MySortModel(QSortFilterProxyModel):
         ) -> Any:
             """Get data."""
             if model == self:
-                return self.data(self.index(row, col), role=role)
+                data = self.data(self.index(row, col), role=role)
+                return (
+                    data
+                    if data is not None
+                    else self.data(self.index(row, col), role=Qt.ItemDataRole.DisplayRole)
+                )
             else:
                 if item := self._source_model.itemFromIndex(self._source_model.index(row, col)):
-                    return item.data(role)
+                    data = item.data(role)
+                    return data if data is not None else item.text()
 
         # collect data
         proxy_ordered_dict: dict[str, list[str]] = {}
