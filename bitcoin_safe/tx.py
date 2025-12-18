@@ -121,7 +121,7 @@ class TxUiInfos(BaseSaveableClass):
     main_wallet_id: str | None = None
 
     recipients: list[Recipient] = field(default_factory=list)
-    hide_UTXO_selection: bool | None = None
+    hide_UTXO_selection: bool = True
     recipient_read_only: bool = False
     utxos_read_only: bool = False
     replace_tx: bdk.Transaction | None = None
