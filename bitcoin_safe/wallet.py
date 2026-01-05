@@ -466,6 +466,7 @@ class TxoType(enum.Enum):
 
 
 BDK_DEFAULT_LOOKAHEAD = 25
+NUM_RETRIES_get_address_balances = 2
 
 
 class BdkWallet(bdk.Wallet, CacheManager):
@@ -1614,38 +1615,42 @@ class Wallet(BaseSaveableClass, CacheManager):
     def get_address_balances(self) -> defaultdict[str, Balance]:
         """Converts the known utxos into a dict of addresses and their balance."""
 
-        utxos = self.bdkwallet.list_output()
-
         balances: defaultdict[str, Balance] = defaultdict(Balance)
-        for utxo in utxos:
-            if utxo.is_spent:
-                continue
-            outpoint = OutPoint.from_bdk(utxo.outpoint)
-            txout = self.get_txout_of_outpoint(outpoint)
-            if not txout:
-                logger.warning("This should not happen. Most likely it is due to outdated caches.")
-                # this way of handeling this special case is suboptimal.
-                # Better would be to handle the caches such that the caches are always consistent
-                self.clear_instance_cache()
+        utxos = self.bdkwallet.list_output()
+        missing_outpoint: OutPoint | None = None
+
+        for _ in range(NUM_RETRIES_get_address_balances):  # initial attempt + retries with cleared caches
+            for utxo in utxos:
+                if utxo.is_spent:
+                    continue
+                outpoint = OutPoint.from_bdk(utxo.outpoint)
                 txout = self.get_txout_of_outpoint(outpoint)
                 if not txout:
-                    raise InconsistentBDKState(f"{outpoint.txid} not present in transaction details")
+                    # Stale caches (e.g. after mempool eviction) – refresh once and re-fetch.
+                    logger.warning("This should not happen. Most likely it is due to outdated caches.")
+                    missing_outpoint = outpoint
+                    self.clear_cache(clear_always_keep=True)
+                    utxos = self.bdkwallet.list_output()
+                    break
 
-            address = self.bdkwallet.get_address_of_txout(
-                txout=txout, txid=outpoint.txid_str, vout=outpoint.vout
-            )
-            if address is None:
-                continue
+                address = self.bdkwallet.get_address_of_txout(
+                    txout=txout, txid=outpoint.txid_str, vout=outpoint.vout
+                )
+                if address is None:
+                    continue
 
-            outpoint_tx_details = self.get_tx(outpoint.txid_str)
-            if outpoint_tx_details and isinstance(
-                outpoint_tx_details.chain_position, bdk.ChainPosition.CONFIRMED
-            ):
-                balances[address].confirmed += txout.value.to_sat()
+                outpoint_tx_details = self.get_tx(outpoint.txid_str)
+                if outpoint_tx_details and isinstance(
+                    outpoint_tx_details.chain_position, bdk.ChainPosition.CONFIRMED
+                ):
+                    balances[address].confirmed += txout.value.to_sat()
+                else:
+                    balances[address].untrusted_pending += txout.value.to_sat()
             else:
-                balances[address].untrusted_pending += txout.value.to_sat()
+                return balances
 
-        return balances
+        txid = missing_outpoint.txid if missing_outpoint else "unknown"
+        raise InconsistentBDKState(f"{txid} not present in transaction details")
 
     @instance_lru_cache()
     def get_addr_balance(self, address: str) -> Balance:
