@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>寄付</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>寄付が成功しました。Bitcoin Safe をご支援いただき誠にありがとうございます！</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>メールを送る</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe を支援する</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>値</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>閉じる</translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>オンチェーンで寄付</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Lightning で寄付</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>メールを送る</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>&amp;設定</translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>QRコード&amp;から</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe を支援する</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>タブ履歴: &amp;戻る {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ウォレットはまだ同期中</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2836,6 +2845,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>送信</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>請求書の有効期限後にブラウザのコールバックが届きました。もう一度お試しください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>金額を選択して寄付用の請求書を作成してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>ブラウザで支払いを完了してください。問題がある場合は、次の宛先までお気軽にご連絡ください: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>請求書を作成できませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>ブラウザを自動的に開けませんでした。請求書のリンクを手動で開いてください:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ローカルコールバックサーバーを起動できませんでした。自動確認なしでブラウザに請求書を開きます。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>請求書を作成</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>請求書の準備ができました。ブラウザで支払いを完了してください。自動確認は利用できない場合があります。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>請求書サービスがエラーを返しました（{code}）。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。寄付を再試行してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ブラウザのコールバックにより支払いが確認されました。ありがとうございます！</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>寄付金額と通貨を選択してください。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>請求書を要求しています...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>請求書を要求しています... ブラウザが開き、Bitcoin Safe がローカルでコールバックを待ち受けます。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>寄付サーバーに接続できません。次のアドレスに寄付できます: {address}</translation>
 		</message>
 	</context>
 	<context>

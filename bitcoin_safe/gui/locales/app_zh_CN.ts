@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe 由社区资助。您的支持使开发保持独立，帮助我们发布新功能，并改进安全审查。更大的支持者可以在我们的&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;支持者页面&lt;/a&gt;上展示。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>捐赠</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>捐赠成功。非常感谢您支持 Bitcoin Safe！</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>给我们发送电子邮件</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>帮助 Bitcoin Safe 作为自由和开源软件不断发展。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>支持 Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>想讨论更大额度的捐助或合作？请使用下面的联系按钮联系我们。</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>价值</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1948,11 +1992,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe 由社区资助。您的支持使开发保持独立，帮助我们发布新功能，并改进安全审查。更大的支持者可以在我们的&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;支持者页面&lt;/a&gt;上展示。</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>关闭</translation>
 		</message>
@@ -2023,21 +2062,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>链上捐赠</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>使用闪电网络捐赠</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>给我们发送电子邮件</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>来自&amp;二维码</translation>
 		</message>
@@ -2050,11 +2074,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>来自&amp;文本</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>帮助 Bitcoin Safe 作为自由和开源软件不断发展。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,11 +2267,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>支持 Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>标签页历史：&amp;后退 {shortcut}</translation>
 		</message>
@@ -2322,11 +2336,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>钱包仍在同步</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>想讨论更大额度的捐助或合作？请使用下面的联系按钮联系我们。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2839,6 +2848,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>显示密码</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>发票过期后收到了浏览器回调。请再试一次。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>选择金额并创建捐赠发票。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>请在浏览器中完成付款。如有问题，请随时通过以下方式联系我们：[andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>无法创建发票。请再试一次。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>无法自动打开您的浏览器。请手动打开发票链接：</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>无法启动本地回调服务器。将在无自动确认的情况下在浏览器中打开发票。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>创建发票</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>发票已准备好。请在浏览器中完成付款。自动确认可能不可用。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>发票服务返回错误（{code}）。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>在发票超时之前未收到浏览器回调。请重试捐赠。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>在发票超时之前未收到浏览器回调。请再试一次。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>通过浏览器回调确认付款。谢谢！</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>请选择捐赠金额和货币。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>正在请求发票...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>正在请求发票... 将打开浏览器，Bitcoin Safe 将在本地监听回调。</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>无法连接到捐赠服务器。您可以向以下地址捐赠：{address}</translation>
 		</message>
 	</context>
 	<context>

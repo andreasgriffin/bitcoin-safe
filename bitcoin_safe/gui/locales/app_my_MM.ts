@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>On-chain လှူဒါန်းရန်</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>လှူဒါန်းခြင်း</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>လှူဒါန်းမှု အောင်မြင်ပါသည်။ Bitcoin Safe ကို ပံ့ပိုးပေးသည့်အတွက် အထူးကျေးဇူးတင်ပါသည်။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ပုံနှိပ်ရန်</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>တန်ဖိုး</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>On-chain လှူဒါန်းရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>ပိတ်ပါ  </translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Lightning ဖြင့် လှူဒါန်းရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>အီးမေးလ် ပို့ရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>QR ကုဒ်မှ  </translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>စာသားမှ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ပုံနှိပ်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>တැබ်မှတ်တမ်း: &amp;နောက်သို့ {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>ပိုက်ဆံအိတ်များ သို့မဟုတ် လည်းကောင်း ဆက်လက်တင်ဆက်နေဆဲဖြစ်သည်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2833,6 +2842,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>တင်ပါ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>အင်ဗွိုက်စ် သက်တမ်းကုန်ပြီးနောက် ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်ရရှိခဲ့သည်။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>ပမာဏကို ရွေးချယ်ပြီး လှူဒါန်းမှု အင်ဗွိုက်စ် တစ်ခု ဖန်တီးပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ ပြဿနာရှိပါက [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me) သို့ ဆက်သွယ်ရန် မလှမ်းမီပါနှင့်။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>အင်ဗွိုက်စ်ကို ဖန်တီး၍ မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>သင့်ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍ မရပါ။ အင်ဗွိုက်စ် လင့်ခ်ကို လက်ဖြင့် ဖွင့်ပါ:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ဆာဗာကို စတင်၍ မရပါ။ အလိုအလျောက် အတည်ပြုခြင်း မရှိဘဲ ဘရောက်ဇာတွင် အင်ဗွိုက်စ်ကို ဖွင့်နေပါသည်။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>အင်ဗွိုက်စ် ဖန်တီးပါ</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>အင်ဗွိုက်စ် အသင့်ဖြစ်ပါသည်။ သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ အလိုအလျောက် အတည်ပြုမှု မရနိုင်ပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>အင်ဗွိုက်စ် ဝန်ဆောင်မှုမှ အမှားတစ်ခု ပြန်လည်ပေးပို့ခဲ့သည် ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ လှူဒါန်းမှုကို ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မှတစ်ဆင့် ငွေပေးချေမှုကို အတည်ပြုပြီးပါပြီ။ ကျေးဇူးတင်ပါသည်!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>လှူဒါန်းမှု ပမာဏနှင့် ငွေကြေးအမျိုးအစားကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်... ဘရောက်ဇာတစ်ခု ဖွင့်လှစ်မည်ဖြစ်ပြီး Bitcoin Safe သည် ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ကို နားထောင်ပါမည်။</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>လှူဒါန်းမှု ဆာဗာကို မရောက်ရှိနိုင်ပါ။ အောက်ပါလိပ်စာသို့ လှူဒါန်းနိုင်ပါသည်: {address}</translation>
 		</message>
 	</context>
 	<context>

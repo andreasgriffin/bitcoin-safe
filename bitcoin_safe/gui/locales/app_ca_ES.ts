@@ -899,6 +899,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Donació</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Donació completada amb èxit. Moltes gràcies per donar suport a Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Envieu-nos un correu electrònic</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Donar suport a Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Valor</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1948,11 +1992,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>Tanca</translation>
 		</message>
@@ -2023,21 +2062,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Donar on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Donar amb Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Envieu-nos un correu electrònic</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Des de codi &amp;QR</translation>
 		</message>
@@ -2050,11 +2074,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Des de &amp;text</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,11 +2267,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Donar suport a Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>Historial de pestanyes: &amp;Enrere {shortcut}</translation>
 		</message>
@@ -2322,11 +2336,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Els moneders encara s’estan sincronitzant</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2834,6 +2843,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>Mostra contrasenya</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>S’ha rebut una crida de retorn del navegador després que la factura hagués expirat. Torneu-ho a provar.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Trieu un import i creeu una factura de donació.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>Completeu el pagament al vostre navegador. Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>No s’ha pogut crear la factura. Torneu-ho a provar.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>No s’ha pogut obrir el navegador automàticament. Obriu l’enllaç de la factura manualment:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>No s’ha pogut iniciar el servidor local de crida de retorn. Obrint la factura al navegador sense confirmació automàtica.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Crear factura</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Factura llesta. Completeu el pagament al vostre navegador. La confirmació automàtica pot no estar disponible.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>El servei de factures ha retornat un error ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu a intentar la donació.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu-ho a provar.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Pagament confirmat mitjançant la crida de retorn del navegador. Gràcies!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Trieu un import de donació i una moneda.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Sol·licitant factura...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Sol·licitant factura... S’obrirà un navegador i Bitcoin Safe escoltarà la crida de retorn localment.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>No es pot arribar al servidor de donacions. Podeu donar a: {address}</translation>
 		</message>
 	</context>
 	<context>

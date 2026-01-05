@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>การบริจาค</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>การบริจาคสำเร็จ ขอบคุณมากที่สนับสนุน Bitcoin Safe!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>ส่งอีเมลถึงเรา</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>สนับสนุน Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>ปิด  </translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>บริจาคแบบ on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>บริจาคผ่าน Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>ส่งอีเมลถึงเรา</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>จาก &amp;QR Code  </translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>จาก &amp;ข้อความ  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>สนับสนุน Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>ประวัติแท็บ: &amp;ย้อนกลับ {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>กระเป๋าเงินยังคงกำลังซิงค์</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2833,6 +2842,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>แสดงรหัสผ่าน  </translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>ได้รับการเรียกกลับจากเบราว์เซอร์หลังจากใบแจ้งหนี้หมดอายุ โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>เลือกจำนวนเงินและสร้างใบแจ้งหนี้การบริจาค</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>ทำการชำระเงินให้เสร็จสิ้นในเบราว์เซอร์ของคุณ หากมีปัญหา โปรดอย่าลังเลที่จะติดต่อเราที่: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ไม่สามารถสร้างใบแจ้งหนี้ได้ โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติ โปรดเปิดลิงก์ใบแจ้งหนี้ด้วยตนเอง:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ไม่สามารถเริ่มเซิร์ฟเวอร์เรียกกลับภายในเครื่องได้ กำลังเปิดใบแจ้งหนี้ในเบราว์เซอร์โดยไม่มีการยืนยันอัตโนมัติ</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>สร้างใบแจ้งหนี้</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>ใบแจ้งหนี้พร้อมแล้ว ทำการชำระเงินให้เสร็จสิ้นในเบราว์เซอร์ของคุณ การยืนยันอัตโนมัติอาจไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>บริการใบแจ้งหนี้ส่งคืนข้อผิดพลาด ({code})</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองบริจาคอีกครั้ง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ยืนยันการชำระเงินผ่านการเรียกกลับของเบราว์เซอร์แล้ว ขอบคุณ!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>โปรดเลือกจำนวนเงินบริจาคและสกุลเงิน</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>กำลังขอใบแจ้งหนี้...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>กำลังขอใบแจ้งหนี้... เบราว์เซอร์จะเปิดขึ้นและ Bitcoin Safe จะรับฟังการเรียกกลับในเครื่อง</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>ไม่สามารถติดต่อเซิร์ฟเวอร์การบริจาคได้ คุณสามารถบริจาคไปที่: {address}</translation>
 		</message>
 	</context>
 	<context>

@@ -899,6 +899,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>اهداء</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>اهداء با موفقیت انجام شد. از حمایت شما از Bitcoin Safe بسیار سپاسگزاریم!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>برای ما ایمیل بفرستید</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>به رشد Bitcoin Safe به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>حمایت از Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>می‌خواهید درباره کمک مالی بزرگ‌تر یا همکاری صحبت کنید؟ از دکمه تماس زیر استفاده کنید.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>مقدار</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1948,11 +1992,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>بستن</translation>
 		</message>
@@ -2023,21 +2062,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>اهدا به‌صورت on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>اهدا با Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>برای ما ایمیل بفرستید</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>از &amp;کد QR</translation>
 		</message>
@@ -2050,11 +2074,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>از &amp;متن</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>به رشد Bitcoin Safe به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,11 +2267,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>حمایت از Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>تاریخچه تب: &amp;عقب {shortcut}</translation>
 		</message>
@@ -2322,11 +2336,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>کیف‌پول‌ها هنوز همگام‌سازی می‌شوند</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>می‌خواهید درباره کمک مالی بزرگ‌تر یا همکاری صحبت کنید؟ از دکمه تماس زیر استفاده کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2834,6 +2843,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>نمایش گذرواژه</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>پس از انقضای فاکتور، یک بازگشت تماس مرورگر دریافت شد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>یک مبلغ انتخاب کرده و فاکتور اهداء ایجاد کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>پرداخت را در مرورگر خود تکمیل کنید. در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ایجاد فاکتور امکان‌پذیر نیست. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>امکان باز کردن خودکار مرورگر شما وجود ندارد. لطفاً لینک فاکتور را به‌صورت دستی باز کنید:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>امکان راه‌اندازی سرور بازگشت تماس محلی وجود ندارد. فاکتور بدون تأیید خودکار در مرورگر باز می‌شود.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>ایجاد فاکتور</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>فاکتور آماده است. پرداخت را در مرورگر خود تکمیل کنید. ممکن است تأیید خودکار در دسترس نباشد.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>سرویس فاکتور خطایی را برگرداند ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً اهداء را دوباره تلاش کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>پرداخت از طریق بازگشت تماس مرورگر تأیید شد. سپاسگزاریم!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>لطفاً مبلغ اهداء و واحد پول را انتخاب کنید.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>در حال درخواست فاکتور...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>در حال درخواست فاکتور... یک مرورگر باز خواهد شد و Bitcoin Safe به‌صورت محلی منتظر بازگشت تماس خواهد بود.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>امکان دسترسی به سرور اهداء وجود ندارد. می‌توانید به این آدرس اهداء کنید: {address}</translation>
 		</message>
 	</context>
 	<context>
