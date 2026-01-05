@@ -899,6 +899,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe topluluk tarafından finanse edilmektedir. Desteğiniz geliştirmeyi bağımsız tutar, yeni özellikler sunmamıza olanak tanır ve güvenlik incelemelerini iyileştirir. Daha büyük destekçiler &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;destekçiler sayfamızda&lt;/a&gt; öne çıkarılabilir.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Bağış</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Bağış başarılı. Bitcoin Safe’i desteklediğiniz için çok teşekkür ederiz!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Bize e-posta gönderin</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe’in Özgür ve Açık Kaynak Yazılım olarak büyümesine yardımcı olun.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe’i destekle</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Daha büyük bir katkı veya ortaklığı görüşmek ister misiniz? Bize ulaşmak için aşağıdaki iletişim düğmesini kullanın.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Değer</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1948,11 +1992,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe topluluk tarafından finanse edilmektedir. Desteğiniz geliştirmeyi bağımsız tutar, yeni özellikler sunmamıza olanak tanır ve güvenlik incelemelerini iyileştirir. Daha büyük destekçiler &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;destekçiler sayfamızda&lt;/a&gt; öne çıkarılabilir.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>Kapat</translation>
 		</message>
@@ -2023,21 +2062,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Zincir üzerinde bağış yap</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Lightning ile bağış yap</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Bize e-posta gönderin</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>&amp;QR Kodundan</translation>
 		</message>
@@ -2050,11 +2074,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>&amp;metinden</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe’in Özgür ve Açık Kaynak Yazılım olarak büyümesine yardımcı olun.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,11 +2267,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe’i destekle</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>Sekme geçmişi: &amp;Geri {shortcut}</translation>
 		</message>
@@ -2322,11 +2336,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Cüzdanlar hâlâ senkronize ediliyor</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Daha büyük bir katkı veya ortaklığı görüşmek ister misiniz? Bize ulaşmak için aşağıdaki iletişim düğmesini kullanın.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2834,6 +2843,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>Şifreyi Göster</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Fatura süresi dolduktan sonra bir tarayıcı geri çağrısı alındı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Bir tutar seçin ve bir bağış faturası oluşturun.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>Ödemeyi tarayıcınızda tamamlayın. Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Fatura oluşturulamadı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen fatura bağlantısını manuel olarak açın:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Yerel geri çağrı sunucusu başlatılamadı. Otomatik onay olmadan faturayı tarayıcınızda açıyoruz.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Fatura oluştur</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Fatura hazır. Ödemeyi tarayıcınızda tamamlayın. Otomatik onay mevcut olmayabilir.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Fatura hizmeti bir hata döndürdü ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen bağışı tekrar deneyin.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Tarayıcı geri çağrısı ile ödeme onaylandı. Teşekkürler!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Lütfen bir bağış tutarı ve para birimi seçin.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Fatura isteniyor...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Fatura isteniyor... Bir tarayıcı açılacak ve Bitcoin Safe yerel olarak geri çağrıyı dinleyecek.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>Bağış sunucusuna ulaşılamıyor. Şu adrese bağış yapabilirsiniz: {address}</translation>
 		</message>
 	</context>
 	<context>

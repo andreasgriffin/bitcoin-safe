@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe est financé par la communauté. Votre soutien permet de garder le développement indépendant, d’expédier de nouvelles fonctionnalités et d’améliorer les audits de sécurité. Les plus grands soutiens peuvent être mis en avant sur notre &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;page des soutiens&lt;/a&gt;.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>Don</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>Don réussi. Merci beaucoup de soutenir Bitcoin Safe !</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>Envoyez-nous un e-mail</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Aidez Bitcoin Safe à croître en tant que logiciel libre et open source.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Soutenir Bitcoin Safe</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>Vous souhaitez discuter d’une contribution plus importante ou d’un partenariat ? Utilisez le bouton de contact ci-dessous pour nous joindre.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>Valeur</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe est financé par la communauté. Votre soutien permet de garder le développement indépendant, d’expédier de nouvelles fonctionnalités et d’améliorer les audits de sécurité. Les plus grands soutiens peuvent être mis en avant sur notre &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;page des soutiens&lt;/a&gt;.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>Fermer</translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>Faire un don on-chain</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Faire un don avec Lightning</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>Envoyez-nous un e-mail</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>Depuis &amp;Code QR</translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>Depuis &amp;texte  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Aidez Bitcoin Safe à croître en tant que logiciel libre et open source.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Soutenir Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>Historique des onglets : &amp;Précédent {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>Les portefeuilles sont encore en cours de synchronisation</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>Vous souhaitez discuter d’une contribution plus importante ou d’un partenariat ? Utilisez le bouton de contact ci-dessous pour nous joindre.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2833,6 +2842,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>Afficher le Mot de Passe  </translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Un rappel du navigateur est arrivé après l’expiration de la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Choisissez un montant et créez une facture de don.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>Finalisez le paiement dans votre navigateur. En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Impossible de créer la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>Impossible d’ouvrir automatiquement votre navigateur. Veuillez ouvrir le lien de la facture manuellement :</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Impossible de démarrer le serveur de rappel local. Ouverture de la facture dans votre navigateur sans confirmation automatique.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Créer une facture</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Facture prête. Finalisez le paiement dans votre navigateur. La confirmation automatique peut ne pas être disponible.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Le service de facturation a renvoyé une erreur ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer le don.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Paiement confirmé via le rappel du navigateur. Merci !</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>Veuillez choisir un montant de don et une devise.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Demande de facture...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Demande de facture... Un navigateur va s’ouvrir et Bitcoin Safe écoutera le rappel localement.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>Impossible d’atteindre le serveur de don. Vous pouvez faire un don à : {address}</translation>
 		</message>
 	</context>
 	<context>

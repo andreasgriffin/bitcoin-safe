@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe समुदाय द्वारा वित्तपोषित है। आपका समर्थन विकास को स्वतंत्र रखता है, हमें नई सुविधाएँ जारी करने देता है और सुरक्षा समीक्षा में सुधार करता है। बड़े समर्थकों को हमारी &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;समर्थक पेज&lt;/a&gt; पर दिखाया जा सकता है।</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>दान</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>दान सफल रहा। Bitcoin Safe का समर्थन करने के लिए आपका बहुत धन्यवाद!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>हमें ईमेल करें</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe को मुक्त और ओपन सोर्स सॉफ़्टवेयर के रूप में बढ़ने में मदद करें।</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe का समर्थन करें</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>क्या आप बड़े योगदान या साझेदारी पर चर्चा करना चाहते हैं? हमसे संपर्क करने के लिए नीचे दिए गए बटन का उपयोग करें।</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>मान</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe समुदाय द्वारा वित्तपोषित है। आपका समर्थन विकास को स्वतंत्र रखता है, हमें नई सुविधाएँ जारी करने देता है और सुरक्षा समीक्षा में सुधार करता है। बड़े समर्थकों को हमारी &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;समर्थक पेज&lt;/a&gt; पर दिखाया जा सकता है।</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>बंद करें</translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>ऑन-चेन दान करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>Lightning से दान करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>हमें ईमेल करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>QR कोड से</translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>टेक्स्ट से</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe को मुक्त और ओपन सोर्स सॉफ़्टवेयर के रूप में बढ़ने में मदद करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe का समर्थन करें</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>टैब इतिहास: &amp;पीछे {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>वॉलेट अभी भी सिंक हो रहे हैं</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>क्या आप बड़े योगदान या साझेदारी पर चर्चा करना चाहते हैं? हमसे संपर्क करने के लिए नीचे दिए गए बटन का उपयोग करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2836,6 +2845,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>पासवर्ड दिखाएं</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>इनवॉइस की समय-सीमा समाप्त होने के बाद ब्राउज़र कॉलबैक प्राप्त हुआ। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>राशि चुनें और दान इनवॉइस बनाएं।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>अपने ब्राउज़र में भुगतान पूरा करें। यदि कोई समस्या हो, तो कृपया हमसे इस पते पर संपर्क करने में संकोच न करें: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>इनवॉइस नहीं बनाया जा सका। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>आपका ब्राउज़र स्वचालित रूप से नहीं खुल सका। कृपया इनवॉइस लिंक को मैन्युअल रूप से खोलें:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>स्थानीय कॉलबैक सर्वर शुरू नहीं किया जा सका। स्वचालित पुष्टि के बिना ब्राउज़र में इनवॉइस खोला जा रहा है।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>इनवॉइस बनाएं</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>इनवॉइस तैयार है। अपने ब्राउज़र में भुगतान पूरा करें। स्वचालित पुष्टि उपलब्ध नहीं हो सकती है।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>इनवॉइस सेवा ने एक त्रुटि लौटाई ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया दान फिर से करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ब्राउज़र कॉलबैक के माध्यम से भुगतान की पुष्टि हुई। धन्यवाद!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>कृपया दान की राशि और मुद्रा चुनें।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>इनवॉइस का अनुरोध किया जा रहा है...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>इनवॉइस का अनुरोध किया जा रहा है... एक ब्राउज़र खुलेगा और Bitcoin Safe स्थानीय रूप से कॉलबैक सुनेगा।</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>दान सर्वर तक पहुंचने में असमर्थ। आप इस पते पर दान कर सकते हैं: {address}</translation>
 		</message>
 	</context>
 	<context>

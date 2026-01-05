@@ -898,6 +898,50 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonateDialog</name>
+		<message>
+			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>Bitcoin Safe는 커뮤니티의 후원으로 운영됩니다. 여러분의 지원은 개발의 독립성을 지키고, 새로운 기능을 출시하며, 보안 검토를 개선하는 데 도움이 됩니다. 더 큰 후원자는 &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;후원자 페이지&lt;/a&gt;에 소개될 수 있습니다.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation</source>
+			<translation>기부</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
+			<translation>기부가 성공적으로 완료되었습니다. Bitcoin Safe를 지원해 주셔서 정말 감사합니다!</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Email us</source>
+			<translation>이메일 보내기</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
+			<translation>Bitcoin Safe가 자유 오픈 소스 소프트웨어로 성장하도록 도와주세요.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Support Bitcoin Safe</source>
+			<translation>Bitcoin Safe 지원</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+			<translation>더 큰 기여나 파트너십을 논의하고 싶으신가요? 아래 연락 버튼을 사용해 저희에게 문의하세요.</translation>
+		</message>
+	</context>
+	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Value</source>
+			<translation>값</translation>
+		</message>
+	</context>
+	<context>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
@@ -1947,11 +1991,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe는 커뮤니티의 후원으로 운영됩니다. 여러분의 지원은 개발의 독립성을 지키고, 새로운 기능을 출시하며, 보안 검토를 개선하는 데 도움이 됩니다. 더 큰 후원자는 &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;후원자 페이지&lt;/a&gt;에 소개될 수 있습니다.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Close</source>
 			<translation>닫기  </translation>
 		</message>
@@ -2022,21 +2061,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Donate on-chain</source>
-			<translation>온체인 기부</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Donate with Lightning</source>
-			<translation>라이트닝으로 기부</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Email us</source>
-			<translation>이메일 보내기</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>From &amp;QR Code</source>
 			<translation>&amp;QR 코드에서  </translation>
 		</message>
@@ -2049,11 +2073,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>From &amp;text</source>
 			<translation>&amp;텍스트에서  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe가 자유 오픈 소스 소프트웨어로 성장하도록 도와주세요.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2247,11 +2266,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe 지원</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Tab history: &amp;Backward	{shortcut}</source>
 			<translation>탭 기록: &amp;뒤로 {shortcut}</translation>
 		</message>
@@ -2321,11 +2335,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Wallets still syncing</source>
 			<translation>지갑들이 아직 동기화 중입니다</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>더 큰 기여나 파트너십을 논의하고 싶으신가요? 아래 연락 버튼을 사용해 저희에게 문의하세요.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2833,6 +2842,89 @@ import custom wallet</source>
 		<message>
 			<source>Show Password</source>
 			<translation>비밀번호 표시  </translation>
+		</message>
+	</context>
+	<context>
+		<name>PaymentButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>청구서가 만료된 후 브라우저 콜백이 도착했습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>금액을 선택하고 기부 청구서를 생성하세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
+			<translation>브라우저에서 결제를 완료하세요. 문제가 있으면 다음 주소로 언제든지 문의해 주세요: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>청구서를 생성할 수 없습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
+			<translation>브라우저를 자동으로 열 수 없습니다. 청구서 링크를 수동으로 열어 주세요:</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>로컬 콜백 서버를 시작할 수 없습니다. 자동 확인 없이 브라우저에서 청구서를 엽니다.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>청구서 생성</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>청구서가 준비되었습니다. 브라우저에서 결제를 완료하세요. 자동 확인을 사용할 수 없을 수도 있습니다.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>청구서 서비스에서 오류가 반환되었습니다 ({code}).</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 기부를 다시 시도해 주세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>브라우저 콜백을 통해 결제가 확인되었습니다. 감사합니다!</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Please choose a donation amount and a currency.</source>
+			<translation>기부 금액과 통화를 선택해 주세요.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>청구서 요청 중...</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>청구서 요청 중... 브라우저가 열리고 Bitcoin Safe가 로컬에서 콜백을 수신합니다.</translation>
+		</message>
+		<name>PaymentButton</name>
+		<message>
+			<source>Unable to reach the donation server. You can donate to: {address}</source>
+			<translation>기부 서버에 연결할 수 없습니다. 다음 주소로 기부할 수 있습니다: {address}</translation>
 		</message>
 	</context>
 	<context>
