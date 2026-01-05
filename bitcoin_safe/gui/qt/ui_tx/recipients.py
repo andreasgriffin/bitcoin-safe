@@ -248,12 +248,17 @@ class RecipientWidget(QWidget):
     def on_address_bip21_input(self, data: Data) -> None:
         """On address bip21 input."""
         if data.data_type == DataType.Bip21:
-            if data.data.get("address"):
-                self.address_edit.address = data.data.get("address")
-            if data.data.get("amount"):
-                self.amount = data.data.get("amount")
-            if data.data.get("label"):
-                self.label_line_edit.set_label(data.data.get("label"))
+            if address := data.data.get("address"):
+                try:
+                    # overwrite address with correct formatting if possible
+                    address = str(bdk.Address(address, self.address_edit.network))
+                except Exception:
+                    pass
+                self.address_edit.address = address
+            if amount := data.data.get("amount"):
+                self.amount = amount
+            if label := data.data.get("label"):
+                self.label_line_edit.set_label(label)
 
     def updateUi(self) -> None:
         """UpdateUi."""

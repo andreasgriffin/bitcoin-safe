@@ -109,8 +109,8 @@ class AddressEdit(ButtonEdit):
     def _on_handle_input(self, data: Data) -> None:
         """On handle input."""
         if data.data_type == DataType.Bip21:
-            if data.data.get("address"):
-                self.setText(data.data.get("address"))
+            if address := data.data.get("address"):
+                self.setText(address)
             self.signal_bip21_input.emit(data)
 
     def set_allow_edit(self, allow_edit: bool):
