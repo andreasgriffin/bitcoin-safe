@@ -344,9 +344,7 @@ class ChangeSetConverter:
         try:
             local_chain_changeset = changeset.localchain_changeset()
         except SystemError:
-            logging.exception(
-                "Failed to read local chain changeset, defaulting to empty change set"
-            )
+            logging.exception("Failed to read local chain changeset, defaulting to empty change set")
             local_chain_changeset = bdk.LocalChainChangeSet(changes=[])
 
         out: dict[str, Any] = {
