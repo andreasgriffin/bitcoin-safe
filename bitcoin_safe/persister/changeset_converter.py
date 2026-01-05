@@ -341,11 +341,17 @@ class ChangeSetConverter:
                 lr[ChangeSetConverter._bytes_to_hex(did_obj.serialize())] = idx
             return {"last_revealed": lr}
 
+        try:
+            local_chain_changeset = changeset.localchain_changeset()
+        except SystemError:
+            logging.exception("Failed to read local chain changeset, defaulting to empty change set")
+            local_chain_changeset = bdk.LocalChainChangeSet(changes=[])
+
         out: dict[str, Any] = {
             "descriptor": _serialize_descriptor(changeset.descriptor()),
             "change_descriptor": _serialize_descriptor(changeset.change_descriptor()),
             "network": ChangeSetConverter._network_to_string(changeset.network()),
-            "local_chain": _serialize_local_chain(changeset.localchain_changeset()),
+            "local_chain": _serialize_local_chain(local_chain_changeset),
             "tx_graph": _serialize_tx_graph(changeset.tx_graph_changeset()),
             "indexer": _serialize_indexer(changeset.indexer_changeset()),
         }
