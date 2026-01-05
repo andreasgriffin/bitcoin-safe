@@ -396,6 +396,7 @@ class DonationInvoiceWidget(QWidget):
     def __init__(
         self,
         amount: float,
+        currency_iso: str,
         fx: FX,
         loop_in_thread: LoopInThread,
         signal_currency_changed: SignalProtocol[[]] | pyqtBoundSignal,
@@ -439,7 +440,7 @@ class DonationInvoiceWidget(QWidget):
         self.donate_row.addStretch()
 
         self.fiat_spin_box.setValue(amount)
-        self.fiat_spin_box.setCurrencyCode(self.fx.get_currency_iso())
+        self.fiat_spin_box.setCurrencyCode(currency_iso)
         self._sync_amount_to_button()
 
         layout = QVBoxLayout(self)
@@ -526,8 +527,11 @@ class DonateDialog(QWidget):
         contact_label.setWordWrap(True)
         layout.addWidget(contact_label)
 
+        currency_iso = fx.get_currency_iso()
+
         self.donation_widget = DonationInvoiceWidget(
-            amount=fx.btc_to_fiat(fx.fiat_to_btc(10, "USD") or 10_000) or 10,
+            amount=fx.btc_to_fiat(fx.fiat_to_btc(10, "USD") or 10_000, currency=currency_iso) or 10,
+            currency_iso=currency_iso,
             fx=fx,
             loop_in_thread=loop_in_thread,
             signal_currency_changed=signal_currency_changed,
