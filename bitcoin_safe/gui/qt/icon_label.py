@@ -69,6 +69,8 @@ class IconLabel(QWidget):
         self._layout = QHBoxLayout(self)
         set_no_margins(self._layout)
 
+        self.click_url: str | None = None
+
         # Icon Label
         self.icon_label = ClickableLabel()
         self.icon_label.setVisible(False)
