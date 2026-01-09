@@ -104,11 +104,15 @@ def wait_for_sync(
     timeout: float = 10_000,
 ):
     def condition() -> bool:
-        return bool(
+        res = bool(
             wallet.get_balance().total >= minimum_funds
             and (not txid or wallet.get_tx(txid))
             and len(wallet.bdkwallet.transactions()) >= tx_count
         )
+        if not res:
+            QCoreApplication.processEvents()
+            qtbot.wait(200)
+        return res
 
     def info_message():
         logger.info(f"{wallet.get_balance().total=}")
@@ -125,7 +129,6 @@ def wait_for_sync(
         # cbf node syncronization happens without any triggering in the background
         # we just have to wait
         try:
-            QCoreApplication.processEvents()
             qtbot.waitUntil(condition, timeout=int(timeout))
         except Exception:
             raise
