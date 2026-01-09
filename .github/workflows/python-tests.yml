@@ -12,12 +12,13 @@ on:
 
 jobs:
   test:
+    if: ${{ matrix.os != 'windows-latest' || (github.event_name == 'pull_request' && github.event.pull_request != null && contains(github.event.pull_request.labels.*.name, 'pytest-win')) }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10 
     strategy:
       matrix:
         python-version: ['3.12']
-        os: [  ubuntu-22.04  ]  # [macos-latest, ubuntu-22.04, windows-latest]
+        os: [ubuntu-22.04, windows-latest]
         backend: [fulcrum, cbf]
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux

@@ -95,6 +95,9 @@ BITCOIN_EXTRACT_DIR = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}"
 BITCOIN_BIN_DIR = BITCOIN_EXTRACT_DIR / "bin"
 
 
+BITCOIN_executable = "bitcoind.exe" if platform.system() == "Windows" else "bitcoind"
+
+
 def runcmd(cmd, background=False):
     """Runcmd."""
     try:
@@ -127,8 +130,7 @@ def runcmd(cmd, background=False):
 def bitcoind():
     """"""
     system = platform.system()
-    executable = "bitcoind.exe" if system == "Windows" else "bitcoind"
-    cmd = f"{BITCOIN_BIN_DIR / executable}    -conf={BITCOIN_CONF}"
+    cmd = f"{BITCOIN_BIN_DIR / BITCOIN_executable}    -conf={BITCOIN_CONF}"
 
     if system != "Windows":
         cmd += " -daemon"
@@ -245,7 +247,20 @@ def download_bitcoin():
 
 
 def is_bitcoind_running(bitcoin_bin_dir: Path) -> bool:
-    bitcoind_path = bitcoin_bin_dir / "bitcoind"
+    system = platform.system()
+    bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
+
+    if system == "Windows":
+        try:
+            result = subprocess.run(
+                ["tasklist", "/FI", f"IMAGENAME eq {bitcoind_path.name}"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            return bitcoind_path.name.lower() in result.stdout.lower()
+        except FileNotFoundError:
+            return False
 
     result = subprocess.run(
         ["pgrep", "-f", str(bitcoind_path)],
@@ -268,6 +283,8 @@ def stop_bitcoind(
     :param timeout: Seconds to wait before force-killing
     :param poll_interval: How often to poll process state
     """
+    system = platform.system()
+
     # Ask bitcoind to shut down cleanly
     bitcoin_cli("stop", bitcoin_bin_dir)
 
@@ -275,13 +292,21 @@ def stop_bitcoind(
 
     while is_bitcoind_running(bitcoin_bin_dir):
         if time.monotonic() - start_time >= timeout:
-            bitcoind_path = bitcoin_bin_dir / "bitcoind"
-            subprocess.run(
-                ["pkill", "-f", str(bitcoind_path)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False,
-            )
+            bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
+            if system == "Windows":
+                subprocess.run(
+                    ["taskkill", "/IM", bitcoind_path.name, "/F"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+            else:
+                subprocess.run(
+                    ["pkill", "-f", str(bitcoind_path)],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
             break
 
         time.sleep(poll_interval)
