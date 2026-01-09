@@ -42,6 +42,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
@@ -99,13 +100,12 @@ def test_wallet_send(
             # check wallet address
             assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
 
-            if not qt_wallet.wallet.sorted_delta_list_transactions():
-                fund_wallet(
-                    qt_wallet=qt_wallet,
-                    amount=SEND_TEST_WALLET_FUND_AMOUNT,
-                    faucet=faucet,
-                    qtbot=qtbot,
-                )
+            fund_wallet(
+                qt_wallet=qt_wallet,
+                amount=SEND_TEST_WALLET_FUND_AMOUNT,
+                faucet=faucet,
+                qtbot=qtbot,
+            )
 
             def import_recipients() -> None:
                 """Import recipients."""
@@ -232,7 +232,16 @@ def test_wallet_send(
                 qt_wallet_tab = main_window.tab_wallets.currentNode().parent_node.data
                 assert isinstance(qt_wallet_tab, QTWallet)
                 QApplication.processEvents()
-                assert qt_wallet_tab.history_list._source_model.rowCount() == 2
+
+                # check the tx is in the hist list
+                model = qt_wallet_tab.history_list._source_model
+                for row in range(model.rowCount()):
+                    index = model.index(row, model.key_column)
+                    this_content = model.data(index, MyItemDataRole.ROLE_KEY)
+                    if this_content == ui_tx_viewer.txid():
+                        break
+                else:
+                    raise Exception("tx not found in hist list")
 
             send_tx()
 
