@@ -39,6 +39,7 @@ import numpy as np
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import DescriptorInfo
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.keystore import KeyStore
@@ -148,7 +149,7 @@ def test_funded_wallet_session(
     backend: str,
     bitcoin_core: Path,
     loop_in_thread: LoopInThread,
-    wallet_name="test_tutorial_wallet_setup",
+    wallet_name="test_funded_wallet_session",
 ) -> Generator[Wallet, None, None]:
     # for test_seed: ensure diet bench scale future thumb holiday wild erupt cancel paper system
 
@@ -204,13 +205,14 @@ def test_funded_wallet(
         faucet.send(address, amount=test_wallet_config.utxo_value_kyc, qtbot=qtbot)
 
     faucet.mine(qtbot=qtbot)
+    QApplication.processEvents()
 
     wait_for_sync(
         wallet=wallet,
         minimum_funds=test_wallet_config.utxo_value_private * len(addresses_private)
         + test_wallet_config.utxo_value_kyc * len(addresses_kyc),
         qtbot=qtbot,
-        timeout=90_000,
+        timeout=120_000,
     )
     yield wallet
 

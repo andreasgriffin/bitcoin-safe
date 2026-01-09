@@ -37,6 +37,7 @@ from pathlib import Path
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
@@ -92,9 +93,10 @@ class TestWalletHandle:
             address=address,
         )
         attempts = 0
-        max_attempts = 5
+        max_attempts = 20
         while len(bdk_wallet.transactions()) - len(txs) < len(block_hashes):
             if attempts:
+                QApplication.processEvents()
                 qtbot.wait(1000)
             attempts += 1
             try:

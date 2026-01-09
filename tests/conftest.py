@@ -45,7 +45,7 @@ from .helpers import (
     test_config_main_chain,
     test_config_session,
 )
-from .non_gui.test_wallet_coin_select import test_wallet_config
+from .non_gui.test_wallet_coin_select import test_funded_wallet_session, test_wallet_config
 from .setup_bitcoin_core import bitcoin_core
 from .setup_fulcrum import fulcrum
 
