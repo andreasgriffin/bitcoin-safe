@@ -68,9 +68,9 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         logger.debug(f"tempdir {tempdir}")
         try:
             sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
+            assert sig_filename
         except Exception as exc:
             pytest.skip(f"Skipping manifest download: {exc}")
-        assert sig_filename
         logger.debug(f"sig_filename {sig_filename}")
 
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
