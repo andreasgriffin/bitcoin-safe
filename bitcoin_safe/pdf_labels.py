@@ -28,9 +28,6 @@
 
 from __future__ import annotations
 
-import logging
-import os
-from pathlib import Path
 from typing import Any
 
 from reportlab.lib import colors
@@ -40,9 +37,7 @@ from reportlab.lib.units import cm
 from reportlab.platypus import KeepInFrame, Paragraph, Spacer, Table, TableStyle
 
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.pdfrecovery import BasePDF, white_space
-
-logger = logging.getLogger(__name__)
+from bitcoin_safe.pdfrecovery import BasePDF, white_space, write_and_open_temp_pdf
 
 
 class PDFLabels(BasePDF):
@@ -166,12 +161,9 @@ def make_and_open_labels_pdf(wallet_id: str, label_pairs: list[tuple[str, str]],
     pdf_labels = PDFLabels(lang_code=lang_code)
     pdf_labels.add_labels(wallet_id=wallet_id, label_pairs=label_pairs)
 
-    filename = (
-        translate("pdf", "Hardware signer labels for {id}", no_translate=pdf_labels.no_translate).format(
-            id=wallet_id
-        )
-        + ".pdf"
-    )
-    temp_file = os.path.join(Path.home(), filename)
-    pdf_labels.save_pdf(temp_file)
-    pdf_labels.open_pdf(temp_file)
+    filename = translate(
+        "pdf",
+        "Hardware signer labels for {id}",
+        no_translate=pdf_labels.no_translate,
+    ).format(id=wallet_id)
+    write_and_open_temp_pdf(pdf_labels, filename)

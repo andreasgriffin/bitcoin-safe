@@ -30,12 +30,12 @@ from __future__ import annotations
 
 import inspect
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
 import bdkpython as bdk
+import platformdirs
 import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
@@ -321,10 +321,12 @@ def test_wizard(
                     step.custom_yes_button.click()
                     mock_open.assert_called_once()
 
-                    temp_file = os.path.join(Path.home(), f"Seed backup of {wallet_name}.pdf")
-                    assert Path(temp_file).exists()
-                    # remove the file again
-                    Path(temp_file).unlink()
+                    cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
+                    prefix = f"Seed backup of {wallet_name}".replace(" ", "_")
+                    temp_files = list(cache_dir.glob(f"{prefix}-*.pdf"))
+                    assert temp_files
+                    for temp_file in temp_files:
+                        temp_file.unlink()
 
             page_backup()
 
