@@ -28,23 +28,35 @@
 
 from __future__ import annotations
 
+import logging
 import time
+from pathlib import Path
 
 import bdkpython as bdk
 import pytest
-from bitcoin_safe_lib.tx_util import serialized_to_hex
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe import wallet as wallet_module
-from bitcoin_safe.wallet import InconsistentBDKState, Wallet
+from bitcoin_safe.keystore import KeyStore
+from bitcoin_safe.wallet import InconsistentBDKState
+
+from ..faucet import Faucet
+from ..helpers import TestConfig
+from ..util import wait_for_sync
+from ..wallet_factory import TestWalletHandle, create_test_wallet
 from .test_signers import test_seeds
 
-from ..setup_bitcoin_core import bitcoin_cli
-from ..setup_fulcrum import Faucet
-from ..util import wait_for_tx
+logger = logging.getLogger(__name__)
 
 
-def _make_single_sig_wallet(config) -> Wallet:
+def _make_single_sig_wallet(
+    config: TestConfig,
+    backend: str,
+    bitcoin_core: Path,
+    loop_in_thread: LoopInThread,
+    qtbot: QtBot,
+) -> TestWalletHandle:
     """Create a simple single-sig wallet used for regression tests."""
     # Use a stable seed from the shared test fixtures to avoid collisions with other tests.
     seed_str = test_seeds[24]
@@ -59,6 +71,7 @@ def _make_single_sig_wallet(config) -> Wallet:
         keychain_kind=bdk.KeychainKind.INTERNAL,
         network=config.network,
     )
+    assert change_descriptor
     descriptor_str = str(descriptor)
     keystore = KeyStore(
         xpub=str(descriptor).split("]")[1].split("/0/*")[0],
@@ -68,60 +81,53 @@ def _make_single_sig_wallet(config) -> Wallet:
         network=config.network,
         mnemonic=seed_str,
     )
-    return Wallet(
-        id="inconsistent-bdk-state",
+    wallet_handle = create_test_wallet(
+        wallet_id="inconsistent-bdk-state",
         descriptor_str=descriptor_str,
         keystores=[keystore],
-        network=config.network,
+        backend=backend,
         config=config,
-        loop_in_thread=None,
+        bitcoin_core=bitcoin_core,
+        loop_in_thread=loop_in_thread,
+        is_new_wallet=True,
     )
+    return wallet_handle
 
 
-def _build_rbf_psbt(
-    bdk_wallet: bdk.Wallet, utxo: bdk.LocalOutput, destination_address: str, fee_rate: float, amount_sat: int
-) -> bdk.Psbt:
-    """Build a PSBT that spends a specific UTXO with RBF enabled."""
-    builder = bdk.TxBuilder()
-    builder = builder.add_utxo(utxo.outpoint)
-    builder = builder.manually_selected_only()
-    builder = builder.set_exact_sequence(0xFFFFFFFD)
-    builder = builder.add_recipient(
-        bdk.Address(destination_address, bdk_wallet.network()).script_pubkey(),
-        bdk.Amount.from_sat(amount_sat),
-    )
-    builder = builder.fee_rate(bdk.FeeRate.from_sat_per_vb(fee_rate))
-    psbt = builder.finish(bdk_wallet)
-    return bdk.Psbt(psbt.serialize())
-
-
-def test_balance_after_replaced_receive_tx_raises(test_config_session, faucet: Faucet, bitcoin_core):  # type: ignore[annotations-typing]
+def test_balance_after_replaced_receive_tx_raises(
+    test_config_session: TestConfig,
+    faucet: Faucet,
+    bitcoin_core: Path,
+    backend: str,
+    qtbot: QtBot,
+):  # type: ignore[annotations-typing]
     """
     Reproduce an inconsistent BDK state by:
     1) receiving an unconfirmed RBF transaction,
     2) replacing it from the sender with a higher-fee double spend that drops the receive output,
     3) syncing the wallet and querying balance.
     """
-    wallet = _make_single_sig_wallet(test_config_session)
+    if backend == "cbf":
+        logger.info(
+            "Skipped test_balance_after_replaced_receive_tx_raises because this error doesnt appear in cbf"
+        )
+        return
+    wallet_handle = _make_single_sig_wallet(
+        config=test_config_session,
+        backend=faucet.backend,
+        bitcoin_core=bitcoin_core,
+        loop_in_thread=faucet.loop_in_thread,
+        qtbot=qtbot,
+    )
+    wallet = wallet_handle.wallet
     receive_address = str(wallet.get_address(force_new=True).address)
 
-    utxo = next(u for u in faucet.bdk_wallet.list_unspent() if not u.is_spent)
-    amount_sat = min(100_000, utxo.txout.value.to_sat() - 5_000)
+    amount_sat = 100_000
+    tx = faucet.send(receive_address, amount=amount_sat, fee_rate=1, qtbot=qtbot)
 
-    psbt = _build_rbf_psbt(
-        bdk_wallet=faucet.bdk_wallet,
-        utxo=utxo,
-        destination_address=receive_address,
-        fee_rate=1,
-        amount_sat=amount_sat,
+    wait_for_sync(
+        wallet=wallet, minimum_funds=amount_sat, txid=str(tx.compute_txid()), timeout=20, qtbot=qtbot
     )
-
-    faucet.bdk_wallet.sign(psbt, None)
-    tx = psbt.extract_tx()
-    bitcoin_cli(f"sendrawtransaction {serialized_to_hex(tx.serialize())}", bitcoin_core)
-    faucet.sync()
-
-    wait_for_tx(wallet, str(tx.compute_txid()))
     assert wallet.get_addr_balance(receive_address).total == amount_sat
 
     # Simulate mempool eviction of the unconfirmed receive transaction
@@ -137,10 +143,11 @@ def test_balance_after_replaced_receive_tx_raises(test_config_session, faucet: F
     try:
         wallet_module.NUM_RETRIES_get_address_balances = 1
         with pytest.raises(InconsistentBDKState):
-            wallet.get_addr_balance(receive_address).total
+            _ = wallet.get_addr_balance(receive_address).total
 
         wallet_module.NUM_RETRIES_get_address_balances = 2
         balance = wallet.get_addr_balance(receive_address)
         assert balance.total == 0
     finally:
         wallet_module.NUM_RETRIES_get_address_balances = original_retries
+        wallet.close()

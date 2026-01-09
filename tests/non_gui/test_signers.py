@@ -32,20 +32,18 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, cast
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 
 import bdkpython as bdk
 import pytest
 from _pytest.logging import LogCaptureFixture
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
-from typing import Any, TYPE_CHECKING, cast
-
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe.signer import SignatureImporterClipboard
 
 logger = logging.getLogger(__name__)

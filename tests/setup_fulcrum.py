@@ -38,21 +38,10 @@ import zipfile
 from collections.abc import Generator
 from pathlib import Path
 
-import bdkpython as bdk
 import pytest
 import requests
 
-from bitcoin_safe.util import SATOSHIS_PER_BTC
-
-from .setup_bitcoin_core import (
-    BITCOIN_HOST,
-    BITCOIN_RPC_PORT,
-    RPC_PASSWORD,
-    RPC_USER,
-    TEST_DIR,
-    mine_blocks,
-)
-from .util import make_psbt
+from .setup_bitcoin_core import BITCOIN_HOST, BITCOIN_RPC_PORT, RPC_PASSWORD, RPC_USER, TEST_DIR, mine_blocks
 
 logger = logging.getLogger(__name__)
 
@@ -199,12 +188,15 @@ def remove_fulcrum_data():
 # 2) Pytest fixture: fulcrum
 # -------------------------------------------------------------------------
 @pytest.fixture(scope="session")
-def fulcrum(bitcoin_core: Path) -> Generator[str, None, None]:
+def fulcrum(bitcoin_core: Path, backend: str) -> Generator[str | None, None, None]:
     """Ensures Bitcoin Core is running (through the bitcoin_core fixture), then
     downloads, configures, and starts Fulcrum.
 
     Yields the path to Fulcrum's binary directory for test usage, then tears it down.
     """
+    if backend != "fulcrum":
+        yield None
+        return
     # Make sure the Fulcrum directory exists
     FULCRUM_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -230,99 +222,3 @@ def fulcrum(bitcoin_core: Path) -> Generator[str, None, None]:
 
     # Stop Fulcrum after tests
     stop_fulcrum()
-
-
-class Faucet:
-    def __init__(
-        self,
-        bitcoin_core: Path,
-        fulcrum: str,
-        mnemonic="romance slush habit speed type also grace coffee grape inquiry receive filter",
-    ) -> None:
-        """Initialize instance."""
-        self.bitcoin_core = bitcoin_core
-
-        self.seed = mnemonic
-        self.mnemonic = bdk.Mnemonic.from_string(self.seed)
-
-        self.network = bdk.Network.REGTEST
-        self.client = bdk.ElectrumClient(url=fulcrum)
-
-        self.descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(self.network, self.mnemonic, ""),
-            keychain_kind=bdk.KeychainKind.EXTERNAL,
-            network=self.network,
-        )
-        self.change_descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(self.network, self.mnemonic, ""),
-            keychain_kind=bdk.KeychainKind.INTERNAL,
-            network=self.network,
-        )
-
-        self.connection = bdk.Persister.new_in_memory()
-        self.bdk_wallet = bdk.Wallet(
-            descriptor=self.descriptor,
-            change_descriptor=self.change_descriptor,
-            network=self.network,
-            persister=self.connection,
-        )
-        self.initial_mine()
-
-    def send(self, destination_address: str, amount=SATOSHIS_PER_BTC, fee_rate=1):
-        """Send."""
-        psbt_for_signing = make_psbt(
-            bdk_wallet=self.bdk_wallet,
-            network=self.network,
-            destination_address=destination_address,
-            amount=amount,
-            fee_rate=fee_rate,
-        )
-        self.bdk_wallet.sign(psbt_for_signing, None)
-        self.bdk_wallet.persist(self.connection)
-
-        tx = psbt_for_signing.extract_tx()
-        self.client.transaction_broadcast(tx)
-        # let fulcrum index the tx
-        time.sleep(2)
-        self.sync()
-        return tx
-
-    def sync(self):
-        """Sync."""
-        request = self.bdk_wallet.start_full_scan()
-        changeset = self.client.full_scan(
-            request=request.build(), stop_gap=20, batch_size=10, fetch_prev_txouts=True
-        )
-        self.bdk_wallet.apply_update(changeset)
-        self.bdk_wallet.persist(self.connection)
-
-    def mine(self, blocks=1, address=None):
-        """Mine."""
-        txs = self.bdk_wallet.transactions()
-        address = (
-            address
-            if address
-            else str(self.bdk_wallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL).address)
-        )
-        block_hashes = mine_blocks(
-            self.bitcoin_core,
-            blocks,
-            address=address,
-        )
-        while len(self.bdk_wallet.transactions()) - len(txs) < len(block_hashes):
-            time.sleep(0.5)
-            self.sync()
-        logger.debug(f"Faucet Wallet balance is: {self.bdk_wallet.balance().total.to_sat()}")
-
-    def initial_mine(self):
-        """Initial mine."""
-        self.mine(
-            blocks=200,
-            address=str(self.bdk_wallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL).address),
-        )
-
-
-@pytest.fixture(scope="session")
-def faucet(bitcoin_core: Path, fulcrum: str) -> Faucet:
-    """Faucet."""
-    return Faucet(bitcoin_core=bitcoin_core, fulcrum=fulcrum)

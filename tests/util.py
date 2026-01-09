@@ -31,15 +31,16 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections.abc import Callable
-from typing import cast, Any
+from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
+from PyQt6.QtWidgets import QApplication
+from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
-from typing import Any, TYPE_CHECKING, cast
-
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
+from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.util import SATOSHIS_PER_BTC
 from bitcoin_safe.wallet import Wallet
 
@@ -72,8 +73,7 @@ def chained_one_time_signal_connections(
 
 
 def make_psbt(
-    bdk_wallet: bdk.Wallet,
-    network: bdk.Network,
+    wallet: Wallet,
     destination_address: str,
     amount=SATOSHIS_PER_BTC,
     fee_rate=1,
@@ -82,42 +82,55 @@ def make_psbt(
     txbuilder = bdk.TxBuilder()
 
     txbuilder = txbuilder.add_recipient(
-        bdk.Address(destination_address, network).script_pubkey(), bdk.Amount.from_sat(amount)
+        bdk.Address(destination_address, wallet.network).script_pubkey(), bdk.Amount.from_sat(amount)
     )
 
     txbuilder = txbuilder.fee_rate(bdk.FeeRate.from_sat_per_vb(fee_rate))
 
-    psbt = txbuilder.finish(bdk_wallet)
+    psbt = txbuilder.finish(wallet.bdkwallet)
+    wallet.persist()
 
     logger.debug(f"psbt to {destination_address}: {psbt.serialize()}\n")
 
-    psbt_for_signing = bdk.Psbt(psbt.serialize())
-    return psbt_for_signing
+    return psbt
 
 
-def wait_for_tx(wallet: Wallet, txid: str):
-    """Wait for tx."""
+def wait_for_sync(
+    qtbot: QtBot, wallet: Wallet, minimum_funds=0, txid: str | None = None, timeout: float = 10_000
+):
+    def condition() -> bool:
+        return bool(wallet.get_balance().total >= minimum_funds and (not txid or wallet.get_tx(txid)))
 
-    async def wait_for_tx():
-        """Wait for tx."""
-        while not wallet.get_tx(txid):
-            await asyncio.sleep(1)
-            wallet.trigger_sync()
-            await wallet.update()
-            wallet.clear_cache()
+    if wallet.config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        # since p2p listenting and
+        # cbf node syncronization happens without any triggering in the background
+        # we just have to wait
+        try:
+            qtbot.waitUntil(condition, timeout=int(timeout))
+        except Exception:
+            logger.info(f"{wallet.get_balance().total=}")
+            logger.info(f"{(not txid or wallet.get_tx(txid))=}")
+            raise
 
-    asyncio.run(wait_for_tx())
-
-
-def wait_for_funds(wallet: Wallet):
-    """Wait for funds."""
-
-    async def wait_for_funds():
-        """Wait for funds."""
-        while wallet.get_balance().total == 0:
-            wallet.trigger_sync()
-            await wallet.update()
-            if wallet.get_balance().total == 0:
+    else:
+        # electrum servers need active sync triggering
+        async def wait_for_funds():
+            """Wait for funds."""
+            deadline = asyncio.get_event_loop().time() + timeout
+            while not condition():
                 await asyncio.sleep(0.5)
+                # first try to wait for incoming p2p transactions
 
-    asyncio.run(wait_for_funds())
+                # try the sync
+                QApplication.processEvents()
+                wallet.trigger_sync()
+                await wallet.update()  # this is blocking
+
+                if asyncio.get_event_loop().time() > deadline:
+                    raise TimeoutError(
+                        f"Conditions not met: {wallet.get_balance().total} >= {minimum_funds} and {wallet.get_tx(txid) if txid else ''} in {wallet.id} within {timeout}s"
+                    )
+
+            logger.info(f"{wallet.id=} received {wallet.get_balance().total} sats")
+
+        wallet.loop_in_thread.run_foreground(wait_for_funds())

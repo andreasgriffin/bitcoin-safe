@@ -37,12 +37,12 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.signer import SignatureImporterFile
 
+from ...helpers import TestConfig
 from .helpers import Shutter, do_modal_click, main_window_context
 
 logger = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ def test_signature_import_of_psbt_without_utxos(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test signature import of psbt without utxos."""

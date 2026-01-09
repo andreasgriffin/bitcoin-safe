@@ -39,10 +39,10 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from tests.gui.qt.test_setup_wallet import close_wallet
 
+from ...helpers import TestConfig
 from .helpers import Shutter, main_window_context
 
 
@@ -51,7 +51,7 @@ def test_category_manager_add_and_merge(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Ensure categories can be added and merged through the category manager."""

@@ -29,10 +29,13 @@
 from __future__ import annotations
 
 import logging
-from typing import cast, Any
-from unittest.mock import patch
+from typing import cast
+from unittest.mock import MagicMock, patch
 
 import pytest
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QIcon, QResizeEvent
 from PyQt6.QtWidgets import QApplication, QPushButton, QToolButton, QWidget
 from pytestqt.qtbot import QtBot
 
@@ -48,16 +51,6 @@ from bitcoin_safe.gui.qt.buttonedit import (
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerMessage, BaseAnalyzer
 
 logger = logging.getLogger(__name__)
-
-
-from unittest.mock import MagicMock
-
-from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QResizeEvent
-
-from typing import Any, TYPE_CHECKING, cast
-
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 
 
 class My(QObject):

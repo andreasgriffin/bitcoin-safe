@@ -660,7 +660,7 @@ class Recipients(QWidget):
                 return None
 
         table = self.as_list(recipients)
-        with open(str(file_path), "w") as file:
+        with open(str(file_path), "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(table)
 

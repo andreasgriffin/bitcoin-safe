@@ -28,12 +28,30 @@
 
 from __future__ import annotations
 
-from .setup_fulcrum import Faucet
+import pytest
 
 
-def test_faucet(faucet: Faucet):
-    """Test faucet."""
-    faucet.mine()
-    balance = faucet.bdk_wallet.balance()
+@pytest.fixture(autouse=True)
+def mock__ask_if_full_scan(monkeypatch):
+    """
+    GUI tests that create new wallets ask whether the wallet was used before.
+    Force the dialog to return False so tests consistently choose the "quick scan"/new wallet path.
+    """
 
-    assert balance.total.to_sat() > 0
+    # Patch the bound method on MainWindow so calls bypass the UI prompt
+    monkeypatch.setattr("bitcoin_safe.gui.qt.main.MainWindow._ask_if_full_scan", lambda self: True)
+    yield
+
+
+@pytest.fixture(autouse=True)
+def mock__ask_if_wallet_should_remain_open(monkeypatch):
+    """
+    GUI tests that create new wallets ask whether the wallet was used before.
+    Force the dialog to return False so tests consistently choose the "quick scan"/new wallet path.
+    """
+
+    # Patch the bound method on MainWindow so calls bypass the UI prompt
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.main.MainWindow._ask_if_wallet_should_remain_open", lambda self: False
+    )
+    yield

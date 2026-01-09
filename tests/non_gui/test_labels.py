@@ -32,11 +32,11 @@ import datetime
 import json
 from time import sleep
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.labels import AUTOMATIC_TIMESTAMP, Label, Labels, LabelType
 from bitcoin_safe.util import clean_lines
 from bitcoin_safe.wallet import Wallet
 
+from ..helpers import TestConfig
 from .utils import create_multisig_protowallet
 
 
@@ -240,7 +240,7 @@ def test_import():
     assert cleaned_s == labels.export_bip329_jsonlines()
 
 
-def test_label_timestamp_correctly(test_config: UserConfig):
+def test_label_timestamp_correctly(test_config: TestConfig):
     """Automatic category setting also sets a timestamp.
 
     It is crucial that the automatic timestamp is in the far past, such that when exchaning labels with
@@ -284,7 +284,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
     )
 
     w_org = Wallet.from_protowallet(protowallet=protowallet, config=test_config, loop_in_thread=None)
-    for i in range(4):
+    for _ in range(4):
         w_org.get_force_new_address(is_change=False)
 
     w_org.set_addresses_category_if_unused("manual", addresses=w_org.get_addresses())
@@ -305,7 +305,7 @@ def test_label_timestamp_correctly(test_config: UserConfig):
         network=test_config.network,
     )
     w_copy = Wallet.from_protowallet(protowallet=protowallet2, config=test_config, loop_in_thread=None)
-    for i in range(4):
+    for _ in range(4):
         w_copy.get_force_new_address(is_change=False)
 
     w_copy.set_addresses_category_if_unused("should_be_overwritten", addresses=w_org.get_addresses())

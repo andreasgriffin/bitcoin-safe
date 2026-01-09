@@ -36,7 +36,6 @@ import bdkpython as bdk
 import pytest
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.pythonbdk_types import BlockchainType
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +51,6 @@ def test_config() -> TestConfig:
     config = TestConfig()
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
     config.network = bdk.Network.REGTEST
-    config.network_config.server_type = BlockchainType.RPC
-    config.network_config.rpc_ip = BITCOIN_HOST
-    config.network_config.rpc_port = BITCOIN_PORT
-    config.network_config.rpc_username = RPC_USER
-    config.network_config.rpc_password = RPC_PASSWORD
-
     return config
 
 
@@ -65,6 +58,7 @@ def test_config() -> TestConfig:
 def test_config_main_chain() -> TestConfig:
     """Test config main chain."""
     config = TestConfig()
+    config.network = bdk.Network.BITCOIN
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
 
     return config

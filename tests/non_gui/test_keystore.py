@@ -34,17 +34,17 @@ import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore, sorted_keystores
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
+from ..helpers import TestConfig
 from .test_signers import test_seeds
 from .utils import create_test_seed_keystores
 
 logger = logging.getLogger(__name__)
 
 
-def test_dump(test_config: UserConfig):
+def test_dump(test_config: TestConfig):
     "Tests if dump works correctly"
     network = bdk.Network.REGTEST
 

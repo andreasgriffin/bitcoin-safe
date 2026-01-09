@@ -40,14 +40,13 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from tests.gui.qt.test_setup_wallet import close_wallet
 
-from ...setup_fulcrum import Faucet
+from ...faucet import Faucet
+from ...helpers import TestConfig
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -66,7 +65,7 @@ def test_wallet_send(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "send_test.wallet",
@@ -78,7 +77,7 @@ def test_wallet_send(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore  # This will wait until the window is fully exposed
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
@@ -102,7 +101,10 @@ def test_wallet_send(
 
             if not qt_wallet.wallet.sorted_delta_list_transactions():
                 fund_wallet(
-                    qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT, qtbot=qtbot, faucet=faucet
+                    qt_wallet=qt_wallet,
+                    amount=SEND_TEST_WALLET_FUND_AMOUNT,
+                    faucet=faucet,
+                    qtbot=qtbot,
                 )
 
             def import_recipients() -> None:
@@ -149,7 +151,7 @@ def test_wallet_send(
 
             def create_signed_tx() -> None:
                 """Create signed tx."""
-                with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+                with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                     qt_wallet.uitx_creator.button_ok.click()
                 shutter.save(main_window)
 
@@ -188,7 +190,7 @@ def test_wallet_send(
                     assert button.isVisible()
                     button.click()
 
-                    with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
+                    with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
                         button.click()
 
                 shutter.save(main_window)
@@ -223,7 +225,7 @@ def test_wallet_send(
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
 
-                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
+                with qtbot.waitSignal(qt_wallet.wallet_signals.updated, timeout=20_000):
                     ui_tx_viewer.button_send.click()
 
                 shutter.save(main_window)

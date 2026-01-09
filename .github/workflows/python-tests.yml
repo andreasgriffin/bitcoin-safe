@@ -18,6 +18,7 @@ jobs:
       matrix:
         python-version: ['3.12']
         os: [  ubuntu-22.04  ]  # [macos-latest, ubuntu-22.04, windows-latest]
+        backend: [fulcrum, cbf]
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
@@ -74,15 +75,15 @@ jobs:
 
     - name: Run General Tests
       run: |
-        poetry run pytest -m 'not marker_qt_1 and not marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+        poetry run pytest -m 'not marker_qt_1 and not marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
 
     - name: Run Tests for marker_qt_1
       run: |
-        poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+        poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
 
     - name: Run Tests for marker_qt_2
       run: |
-        poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1
+        poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
 
 
 
@@ -91,5 +92,5 @@ jobs:
       if: always()  # This ensures the step runs regardless of previous failures    
       uses: actions/upload-artifact@v4
       with:
-        name: test-output
+        name: test-output-${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}
         path: tests/output

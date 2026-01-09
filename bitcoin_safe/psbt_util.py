@@ -319,7 +319,11 @@ class PubKeyInfo:
         """Initialize instance."""
         self.fingerprint = SimplePubKeyProvider.format_fingerprint(fingerprint)
         self.pubkey = pubkey
-        self.derivation_path = derivation_path
+        self.derivation_path = (
+            (derivation_path if derivation_path.startswith("m/") else "m/" + derivation_path)
+            if derivation_path
+            else None
+        )
         self.label = label
 
 
