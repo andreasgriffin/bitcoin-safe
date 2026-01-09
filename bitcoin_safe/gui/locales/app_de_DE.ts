@@ -2879,7 +2879,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Schließen Sie die Zahlung in Ihrem Browser ab. Bei Problemen kontaktieren Sie uns bitte unter: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>Schließen Sie die Zahlung in Ihrem Browser ab.
+Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
