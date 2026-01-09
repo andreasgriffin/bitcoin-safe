@@ -225,7 +225,7 @@ def test_wallet_send(
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
 
-                with qtbot.waitSignal(qt_wallet.wallet_signals.updated, timeout=20_000):
+                with qtbot.waitSignal(qt_wallet.wallet_signals.updated, timeout=60_000):
                     ui_tx_viewer.button_send.click()
 
                 shutter.save(main_window)

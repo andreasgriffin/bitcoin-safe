@@ -68,7 +68,7 @@ def test_funded_seed_wallet_session(
     backend: str,
     bitcoin_core: Path,
     loop_in_thread,
-    wallet_name="test_tutorial_wallet_setup",
+    wallet_name="test_funded_seed_wallet_session",
 ) -> Generator[Wallet, None, None]:
     """Test funded seed wallet."""
     keystore = create_test_seed_keystores(

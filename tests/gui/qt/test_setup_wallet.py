@@ -102,11 +102,11 @@ def test_wizard(
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     backend: str,
-    wallet_name="test_tutorial_wallet_setup",
+    wallet_name="test_wizard",
     amount=int(1e6),
 ) -> None:  # bitcoin_core: Path,
     """Test wizard."""
-    logger.debug("start test_tutorial_wallet_setup")
+    logger.debug("start test_wizard")
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
