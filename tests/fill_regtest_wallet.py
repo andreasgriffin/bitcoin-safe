@@ -39,7 +39,7 @@ import requests
 
 
 class ProgressPrint:
-    def update(self, progress: "float", message: "str | None"):
+    def update(self, progress: float, message: str | None):
         """Update."""
         print(str((progress, message)))
 
@@ -124,7 +124,7 @@ def create_complex_transactions(
     rpc_ip, rpc_username, rpc_password, wallet: bdk.Wallet, blockchain, n=300, always_new_addresses=True
 ):
     """Create complex transactions."""
-    for i in range(n):
+    for _ in range(n):
         try:
             # Build the transaction
             tx_builder = bdk.TxBuilder().fee_rate(1.0)

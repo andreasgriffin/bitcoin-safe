@@ -31,19 +31,16 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from pathlib import Path
-from typing import cast, Any
+from typing import cast
 from unittest.mock import patch
 
 import bdkpython as bdk
 from _pytest.logging import LogCaptureFixture
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util import path_to_rel_home_path, rel_home_path_to_abs_path
 from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
 
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
-from typing import Any, TYPE_CHECKING, cast
-
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
-
 from bitcoin_safe.util import SATOSHIS_PER_BTC
 
 # from bitcoin_safe.logging_setup import setup_logging
@@ -172,7 +169,8 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
             instance.signal.emit()
             instance.signal.emit()
 
-        assert [record.msg for record in caplog.records] == [str(i) for i in range(n)]
+        messages = [record.msg for record in caplog.records if record.name == __name__]
+        assert messages == [str(i) for i in range(n)]
 
 
 def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture):
@@ -203,7 +201,7 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
             instance.signal.emit()
 
         # since f(0) == None, the 1. signal simply reconnects
-        assert [record.msg for record in caplog.records] == ["0", "0"]
+        assert [record.msg for record in caplog.records if record.name == __name__] == ["0", "0"]
 
 
 def make_psbt(

@@ -29,20 +29,76 @@
 from __future__ import annotations
 
 import pytest
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 
 from bitcoin_safe.logging_setup import setup_logging
-from tests.gui.qt.helpers import mytest_start_time  # type: ignore
+from tests.gui.qt.helpers import mytest_start_time
 
 setup_logging()
 
 from bitcoin_safe.gui.qt import custom_edits
 
-from .gui.qt.helpers import mytest_start_time  # type: ignore
-from .helpers import test_config_main_chain  # type: ignore
-from .helpers import test_config, test_config_session  # type: ignore
-from .non_gui.test_wallet_coin_select import test_wallet_config  # type: ignore
-from .setup_bitcoin_core import bitcoin_core  # type: ignore
-from .setup_fulcrum import Faucet, faucet, fulcrum  # type: ignore
+from .faucet import Faucet, faucet, faucet_session
+from .gui.qt.helpers import mytest_start_time
+from .helpers import (
+    test_config,
+    test_config_main_chain,
+    test_config_session,
+)
+from .non_gui.test_wallet_coin_select import test_wallet_config
+from .setup_bitcoin_core import bitcoin_core
+from .setup_fulcrum import fulcrum
+
+pytestmark = pytest.mark.usefixtures("backend_marker")
+
+
+def pytest_addoption(parser):
+    group = parser.getgroup("bitcoin-safe")
+    group.addoption(
+        "--fulcrum",
+        action="store_true",
+        default=False,
+        help="Run tests against the Fulcrum/Electrum backend",
+    )
+    group.addoption(
+        "--cbf",
+        action="store_true",
+        default=False,
+        help="Run tests against the Compact Block Filters backend",
+    )
+
+
+def _selected_backends(config) -> list[str]:
+    selected = []
+    if config.getoption("--fulcrum"):
+        selected.append("fulcrum")
+    if config.getoption("--cbf"):
+        selected.append("cbf")
+    if not selected:
+        selected = ["cbf"]
+    return selected
+
+
+def pytest_generate_tests(metafunc):
+    if "backend" in metafunc.fixturenames:
+        metafunc.parametrize("backend", _selected_backends(metafunc.config), scope="session")
+
+
+@pytest.fixture(scope="session")
+def backend(request) -> str:
+    """Selected blockchain backend for the test session."""
+    return request.param
+
+
+@pytest.fixture(scope="session")
+def backend_marker(backend: str) -> str:
+    """Ensure the backend fixture is part of every test run."""
+    return backend
+
+
+@pytest.fixture(scope="session")
+def loop_in_thread() -> LoopInThread:
+    return LoopInThread()
 
 
 @pytest.fixture(autouse=True)

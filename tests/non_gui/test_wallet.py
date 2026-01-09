@@ -34,9 +34,9 @@ import logging
 import bdkpython as bdk
 import pytest
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError
 
+from ..helpers import TestConfig
 from .test_signers import bacon_seed
 from .utils import (
     create_keystore,
@@ -47,7 +47,7 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 
-def test_protowallet_import_export_keystores(test_config: UserConfig):
+def test_protowallet_import_export_keystores(test_config: TestConfig):
     "Tests if keystores are correctly handles in Wallet.from_protowallet and wallet.as_protowallet()"
     protowallet = create_multisig_protowallet(
         threshold=2,
@@ -125,7 +125,7 @@ def test_protowallet_import_export_keystores(test_config: UserConfig):
     assert [keystore.__dict__ for keystore in wallet.as_protowallet().keystores] == expected_keystores
 
 
-def test_protowallet_import_export_descriptor(test_config: UserConfig):
+def test_protowallet_import_export_descriptor(test_config: TestConfig):
     "Tests if keystores are correctly handles in Wallet.from_protowallet and wallet.as_protowallet()"
     protowallet = create_multisig_protowallet(
         threshold=2,
@@ -146,7 +146,7 @@ def test_protowallet_import_export_descriptor(test_config: UserConfig):
     assert str(wallet.multipath_descriptor) == expected_descriptor
 
 
-def test_create_from_protowallet_and_from_descriptor_string(test_config: UserConfig):
+def test_create_from_protowallet_and_from_descriptor_string(test_config: TestConfig):
     "Tests if keystores are correctly handles in Wallet.from_protowallet and wallet.as_protowallet()"
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
@@ -190,7 +190,7 @@ def test_create_from_protowallet_and_from_descriptor_string(test_config: UserCon
     assert wallet2.derives_identical_addresses(wallet)
 
 
-def test_is_multisig(test_config: UserConfig):
+def test_is_multisig(test_config: TestConfig):
     """Test is multisig."""
     wallet_id = "some id"
     descriptor = "wpkh([5aa39a43/84'/1'/0']tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#xaf9qzlf"
@@ -213,9 +213,10 @@ def test_is_multisig(test_config: UserConfig):
         config=test_config,
         loop_in_thread=None,
     )
+    assert isinstance(wallet, Wallet)
 
 
-def test_is_multisig2(test_config: UserConfig):
+def test_is_multisig2(test_config: TestConfig):
     """Test is multisig2."""
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
@@ -239,7 +240,7 @@ def test_is_multisig2(test_config: UserConfig):
     assert wallet.is_multisig()
 
 
-def test_dump(test_config: UserConfig):
+def test_dump(test_config: TestConfig):
     "Tests if dump works correctly"
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
@@ -269,7 +270,7 @@ def test_dump(test_config: UserConfig):
     assert walllet_restored.derives_identical_addresses(wallet)
 
 
-def test_correct_addresses(test_config: UserConfig):
+def test_correct_addresses(test_config: TestConfig):
     """Test correct addresses."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
@@ -301,7 +302,7 @@ def test_correct_addresses(test_config: UserConfig):
     assert wallet.get_change_addresses()[1] == "bcrt1qgdv8n5mnwtat2ffku0m4swmcy7jmpgv4afz7rd"
 
 
-def test_inconsistent_key_origins(test_config: UserConfig):
+def test_inconsistent_key_origins(test_config: TestConfig):
     """Test inconsistent key origins."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
@@ -315,7 +316,7 @@ def test_inconsistent_key_origins(test_config: UserConfig):
     )
 
     with pytest.raises(WalletInputsInconsistentError) as exc_info:
-        wallet = Wallet(
+        Wallet(
             id=wallet_id,
             descriptor_str=expected_descriptor,
             keystores=keystores,
@@ -323,9 +324,10 @@ def test_inconsistent_key_origins(test_config: UserConfig):
             config=test_config,
             loop_in_thread=None,
         )
+    assert exc_info.value
 
 
-def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
+def test_inconsistent_seed_with_descriptor(test_config: TestConfig):
     """Test inconsistent seed with descriptor."""
     wallet_id = "some id"
     expected_descriptor = "wpkh([5aa39a43/84h/1h/0h]tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#345tvr45"
@@ -339,7 +341,7 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
     )[1:]
 
     with pytest.raises(WalletInputsInconsistentError) as exc_info:
-        wallet = Wallet(
+        Wallet(
             id=wallet_id,
             descriptor_str=expected_descriptor,
             keystores=keystores,
@@ -347,9 +349,10 @@ def test_inconsistent_seed_with_descriptor(test_config: UserConfig):
             config=test_config,
             loop_in_thread=None,
         )
+    assert exc_info.value
 
 
-def test_mixed_keystores_is_consistent(test_config: UserConfig):
+def test_mixed_keystores_is_consistent(test_config: TestConfig):
     """Test mixed keystores is consistent."""
     wallet_id = "some id"
     expected_descriptor = "wsh(sortedmulti(2,[5aa39a43/41'/1'/0'/2']tpubDDxYDzeDqFbdktXDTMAQpZPgRj3uMk784q8kHyGsC6zUNn2YUbNgZdK3GuXsPjMk8Gt7AEsAGwccd6dbcxaCWJwpRC1rKy1xPLicuNyjLaA/<0;1>/*,[5459f23b/42'/1'/0'/2']tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX/<0;1>/*,[a302d279/43'/1'/0'/2']tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1/<0;1>/*,[6627f20a/45'/1'/0'/2']tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy/<0;1>/*,[bac81685/44'/1'/0'/2']tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv/<0;1>/*))#gtzk7j0k"
@@ -373,7 +376,7 @@ def test_mixed_keystores_is_consistent(test_config: UserConfig):
     assert wallet.is_multisig()
 
 
-def test_wallet_dump_and_restore(test_config: UserConfig):
+def test_wallet_dump_and_restore(test_config: TestConfig):
     "Tests if dump works correctly"
     network = test_config.network
 
@@ -398,7 +401,7 @@ def test_wallet_dump_and_restore(test_config: UserConfig):
         assert org_keystore.is_equal(restored_keystore)
 
 
-def test_bacon_wallet_tx_are_fetched(test_config_main_chain: UserConfig):
+def test_bacon_wallet_tx_are_fetched(test_config_main_chain: TestConfig):
     """Test bacon wallet tx are fetched."""
     wallet_id = "bacon wallet"
     expected_descriptor = "wpkh([9a6a2580/84h/0h/0h]xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K/<0;1>/*)#fkxd7j3k"

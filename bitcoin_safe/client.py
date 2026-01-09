@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from concurrent.futures import Future
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -49,6 +50,7 @@ logger = logging.getLogger(__name__)
 
 class Client:
     MAX_PROGRESS_WHILE_SYNC = 0.99
+    BROADCAST_TIMEOUT = 3
 
     def __init__(
         self,
@@ -232,6 +234,7 @@ class Client:
         )
 
         client.build_node()
+        time.sleep(0.1)  # this prevents an ifinite loop of getting info messages from cbf client
         return cls(client=client, proxy_info=proxy_info, electrum_config=None, loop_in_thread=loop_in_thread)
 
     def broadcast(self, tx: bdk.Transaction):
@@ -244,7 +247,7 @@ class Client:
             assert self.client.client, "Not initialized"
             try:
                 return self.loop_in_thread.run_foreground(
-                    asyncio.wait_for(self.client.client.broadcast(tx), timeout=3)
+                    asyncio.wait_for(self.client.client.broadcast(tx), timeout=self.BROADCAST_TIMEOUT)
                 )
             except asyncio.TimeoutError:
                 logger.error("Broadcast timed out after 3 seconds")

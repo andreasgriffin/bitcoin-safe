@@ -1,7 +1,6 @@
 {
   "version": "0.1.0",
-  "configurations": [
-    {
+  "configurations": [{
       "name": "Python: Module",
       "type": "python",
       "request": "launch",
@@ -14,15 +13,35 @@
       // "justMyCode": false
     },
     {
-      "name": "Pytest",
+      "name": "Pytest cbf backend",
       "type": "python",
       "request": "launch",
       "module": "pytest",
       "args": [
         "-vvv",
+        "--cbf",
         "--ignore=coding_tests",
         "--ignore=tools",
+        "--maxfail=1",
       ],
+
+      "console": "integratedTerminal",
+      "preLaunchTask": "Poetry Install",
+      //  "justMyCode": false
+    },
+    {
+      "name": "Pytest fulcrum",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "-vvv",
+        "--fulcrum",
+        "--ignore=coding_tests",
+        "--ignore=tools",
+        "--maxfail=1",
+      ],
+
       "console": "integratedTerminal",
       "preLaunchTask": "Poetry Install",
       //  "justMyCode": false
@@ -34,9 +53,11 @@
       "module": "pytest",
       "args": [
         // "-vvv", 
+        "--cbf",
         "tests/gui",
         "--ignore=coding_tests",
         "--ignore=tools",
+        "--maxfail=1",
         // "-s",  // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
@@ -50,23 +71,43 @@
       "module": "pytest",
       "args": [
         "-vvv",
+        "--cbf",
         "--ignore=tests/gui",
         "--ignore=tools",
+        "--maxfail=1",
         "-s", // Disable all capturing of outputs        
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
       "preLaunchTask": "Poetry Install",
     }, {
-      "name": "Pytest: Current File",
+      "name": "Pytest: Current File [fulcrum]",
       "type": "python",
       "request": "launch",
       "module": "pytest",
       "args": [
         "-vvv",
+        "--fulcrum",
         "${file}",
         "-s", // Disable all capturing of outputs        
         "--ignore=tools",
+        "--maxfail=1",
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "Poetry Install",
+    }, {
+      "name": "Pytest: Current File [cbf]",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "-vvv",
+        "--cbf",
+        "${file}",
+        "-s", // Disable all capturing of outputs        
+        "--ignore=tools",
+        "--maxfail=1",
       ],
       "console": "integratedTerminal",
       "justMyCode": false,

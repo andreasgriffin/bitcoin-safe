@@ -28,37 +28,38 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import bdkpython as bdk
 import pytest
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import DescriptorInfo
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
+from ..helpers import TestConfig
+from ..wallet_factory import create_test_wallet
 from .utils import create_multisig_protowallet
 
 
-class DummyConfig:
-    """Minimal stand‑in for UserConfig used in tests."""
-
-    def __init__(self, network: bdk.Network) -> None:
-        """Initialize instance."""
-        self.network = network
-
-
-def _make_config() -> UserConfig:
+def _make_config() -> TestConfig:
     """Make config."""
-    config = UserConfig()
+    config = TestConfig()
     config.network = bdk.Network.REGTEST
     return config
 
 
-def make_test_wallet() -> Wallet:
-    """Make test wallet."""
-    network = bdk.Network.REGTEST
-    config = DummyConfig(network)
+@pytest.fixture()
+def single_sig_wallet(
+    test_config: TestConfig,
+    backend: str,
+    bitcoin_core: Path,
+    loop_in_thread: LoopInThread,
+) -> Wallet:
+    """Single-sig wallet backed by the shared test factory."""
+    network = test_config.network
     descriptor = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)"
     info = DescriptorInfo.from_str(descriptor)
     keystore = KeyStore(
@@ -68,14 +69,20 @@ def make_test_wallet() -> Wallet:
         label="test",
         network=network,
     )
-    return Wallet(
-        id="test",
+    wallet_handle = create_test_wallet(
+        wallet_id="test",
         descriptor_str=descriptor,
         keystores=[keystore],
-        network=network,
-        config=config,
-        loop_in_thread=None,
+        backend=backend,
+        config=test_config,
+        bitcoin_core=bitcoin_core,
+        loop_in_thread=loop_in_thread,
+        is_new_wallet=True,
     )
+    try:
+        yield wallet_handle.wallet
+    finally:
+        wallet_handle.close()
 
 
 def test_check_consistency_errors():
@@ -100,9 +107,9 @@ def test_check_consistency_errors():
         Wallet.check_consistency(keystores * 2, descriptor, network=config.network)
 
 
-def test_check_self_consistency():
+def test_check_self_consistency(single_sig_wallet: Wallet):
     """Test check self consistency."""
-    wallet = make_test_wallet()
+    wallet = single_sig_wallet
     descriptor = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)"
 
     Wallet.check_consistency(wallet.keystores, descriptor, network=bdk.Network.REGTEST)
@@ -123,15 +130,15 @@ def test_check_protowallet_consistency_valid():
     Wallet.check_consistency(keystores, descriptor, network=config.network)
 
 
-def test_get_mn_tuple_single_sig():
+def test_get_mn_tuple_single_sig(single_sig_wallet: Wallet):
     """Test get mn tuple single sig."""
-    wallet = make_test_wallet()
+    wallet = single_sig_wallet
     assert wallet.get_mn_tuple() == (1, 1)
 
 
-def test_mark_all_labeled_addresses_used():
+def test_mark_all_labeled_addresses_used(single_sig_wallet: Wallet):
     """Test mark all labeled addresses used."""
-    wallet = make_test_wallet()
+    wallet = single_sig_wallet
     addr_info = wallet.get_address(force_new=True)
     address_str = str(addr_info.address)
     # ensure address appears in the list of unused addresses first
@@ -145,11 +152,15 @@ def test_mark_all_labeled_addresses_used():
     assert all(address_str not in entry for entry in unused_after)
 
 
-def test_as_protowallet_roundtrip():
+def test_as_protowallet_roundtrip(single_sig_wallet: Wallet):
     """Test as protowallet roundtrip."""
-    wallet = make_test_wallet()
+    wallet = single_sig_wallet
     proto = wallet.as_protowallet()
-    restored = Wallet.from_protowallet(proto, config=DummyConfig(proto.network), loop_in_thread=None)
+    restored = Wallet.from_protowallet(
+        proto,
+        config=_make_config(),
+        loop_in_thread=wallet.loop_in_thread,
+    )
     assert restored.id == wallet.id
     assert restored.network == wallet.network
     assert restored.get_mn_tuple() == wallet.get_mn_tuple()

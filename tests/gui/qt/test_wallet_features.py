@@ -45,8 +45,6 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.about_tab import LicenseDialog
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
@@ -56,10 +54,10 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
-from tests.gui.qt.test_setup_wallet import close_wallet, save_wallet
 
+from ...faucet import Faucet
+from ...helpers import TestConfig
 from ...non_gui.test_signers import test_seeds
-from ...setup_fulcrum import Faucet
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -77,7 +75,7 @@ def test_wallet_features_multisig(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig2",
@@ -376,7 +374,7 @@ def test_wallet_features_multisig(
                                 with qtbot.waitSignal(
                                     dialog.export_qr_button.export_qr_widget.signal_set_qr_images,
                                     timeout=5000,
-                                ) as blocker:
+                                ):
                                     dialog.export_qr_button.export_qr_widget.combo_qr_type.setCurrentIndex(i)
                                 dialog.export_qr_button.export_qr_widget.button_save_qr.click()
 

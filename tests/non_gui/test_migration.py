@@ -31,24 +31,16 @@ from __future__ import annotations
 from pathlib import Path
 
 import bdkpython as bdk
-import pytest
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.storage import Storage
 from bitcoin_safe.wallet import Wallet
 
-
-@pytest.fixture
-def config() -> UserConfig:
-    """Config."""
-    config = UserConfig()
-    config.network = bdk.Network.REGTEST
-
-    return config
+from ..helpers import TestConfig
 
 
-def test_011(config: UserConfig):
+def test_011(test_config: TestConfig):
     """Test 011."""
     file_path = "tests/data/0.1.1.wallet"
 
@@ -56,7 +48,7 @@ def test_011(config: UserConfig):
 
     assert not Storage().has_password(file_path)
 
-    wallet = Wallet.from_file(file_path, config, password=password, loop_in_thread=None)
+    wallet = Wallet.from_file(file_path, test_config, password=password, loop_in_thread=None)
 
     assert wallet
 
@@ -80,9 +72,9 @@ def test_config_0_1_6_testnet3_electrum():
     assert config.network_config.network == bdk.Network.TESTNET
     assert config.network_config.server_type == BlockchainType.Electrum
     assert config.network_config.electrum_url == "blockstream.info:993"
-    assert config.network_config.electrum_use_ssl == True
+    assert config.network_config.electrum_use_ssl
 
-    assert config.network_config.proxy_url == None
+    assert config.network_config.proxy_url is None
 
 
 def test_config_0_1_6_testnet4_electrum():
@@ -94,9 +86,9 @@ def test_config_0_1_6_testnet4_electrum():
     assert config.network_config.network == bdk.Network.TESTNET4
     assert config.network_config.server_type == BlockchainType.Electrum
     assert config.network_config.electrum_url == "mempool.space:40002"
-    assert config.network_config.electrum_use_ssl == True
+    assert config.network_config.electrum_use_ssl
 
-    assert config.network_config.proxy_url == None
+    assert config.network_config.proxy_url is None
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
 
 
@@ -109,7 +101,7 @@ def test_config_0_1_6_testnet4_proxy_electrum():
     assert config.network_config.network == bdk.Network.TESTNET4
     assert config.network_config.server_type == BlockchainType.Electrum
     assert config.network_config.electrum_url == "mempool.space:40002"
-    assert config.network_config.electrum_use_ssl == True
+    assert config.network_config.electrum_use_ssl
 
     assert config.network_config.proxy_url == "127.0.0.1:9050"
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
@@ -124,7 +116,7 @@ def test_config_0_1_6_rpc():
     assert config.network_config.network == bdk.Network.BITCOIN
     assert config.network_config.server_type == BlockchainType.Electrum
     assert config.network_config.electrum_url == ""  # removed because of rpc
-    assert config.network_config.electrum_use_ssl == True
+    assert config.network_config.electrum_use_ssl
 
-    assert config.network_config.proxy_url == None
+    assert config.network_config.proxy_url is None
     assert bdk.Network.TESTNET4 in config.recently_open_wallets

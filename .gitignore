@@ -184,6 +184,8 @@ test-seed
 *.wallet
 bitcoin_core
 fulcrum
+tests/bitcoin_data/
+tests/cbf_data/
 tools-my/
 
 

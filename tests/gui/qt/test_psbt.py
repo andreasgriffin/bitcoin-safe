@@ -38,9 +38,9 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.address_comparer import AddressComparer
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
+from ...helpers import TestConfig
 from .helpers import Shutter, main_window_context
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def test_psbt_warning_poision_mainnet(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config_main_chain: UserConfig,
+    test_config_main_chain: TestConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
     """Test psbt warning poision mainnet."""
@@ -66,8 +66,9 @@ def test_psbt_warning_poision_mainnet(
 
         shutter.save(main_window)
 
-        def do_tx(tx, expected_fragments: list[str] = []):
+        def do_tx(tx, expected_fragments: list[str] | None = None):
             """Do tx."""
+            expected_fragments = expected_fragments or []
             main_window.open_tx_like_in_tab(tx)
             shutter.save(main_window)
 
@@ -135,7 +136,7 @@ def test_psbt_warning_poision(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     caplog: pytest.LogCaptureFixture,
 ) -> None:  # bitcoin_core: Path,
     """Test psbt warning poision."""

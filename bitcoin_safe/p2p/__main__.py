@@ -35,6 +35,7 @@ from time import sleep
 import bdkpython as bdk
 from PyQt6.QtCore import QCoreApplication
 
+from bitcoin_safe.network_config import Peers
 from bitcoin_safe.network_utils import ProxyInfo
 
 from .p2p_client import Peer
@@ -58,7 +59,7 @@ network = bdk.Network.BITCOIN
 proxy_info = ProxyInfo.parse("socks5h://127.0.0.1:9050")
 
 
-client = P2pListener(network=network, loop_in_thread=None)
+client = P2pListener(network=network, loop_in_thread=None, discovered_peers=Peers([initial_peer]))
 # client.set_address_filter(None)
 
 
@@ -68,7 +69,7 @@ def on_tx(tx: bdk.Transaction):
 
 
 client.signal_tx.connect(on_tx)
-client.start(proxy_info=proxy_info)
+client.start(proxy_info=proxy_info, preferred_peers=[initial_peer])
 
 
 while input("type q") != "q":

@@ -63,6 +63,7 @@ class P2pListener(QObject):
         fetch_txs=True,
         timeout: int = 200,
         discovered_peers: Peers | list[Peer] | None = None,
+        autodiscover_additional_peers: bool = True,
         parent: QObject | None = None,
     ) -> None:
         """Initialize instance."""
@@ -74,6 +75,7 @@ class P2pListener(QObject):
         self.address_filter: set[str] | None = None
         self.outpoint_filter: set[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network, loop_in_thread=self.loop_in_thread)
+        self.autodiscover_additional_peers = autodiscover_additional_peers
 
         self.discovered_peers = discovered_peers if discovered_peers else Peers()
 
@@ -115,7 +117,7 @@ class P2pListener(QObject):
         ----------
         weight_getaddr : float
             Relative chance to pick from `self.discovered_peers`
-            (addresses learned via getaddr/addrv2).
+            (addresses learned via getaddr/addrv2 or provided upfront).
         weight_dns : float
             Relative chance to call `self.peer_discovery.get_bitcoin_peer()`
             (DNS seeds, hard-coded lists, etc.).
@@ -128,8 +130,14 @@ class P2pListener(QObject):
         if weight_getaddr < 0 or weight_dns < 0:
             raise ValueError("weights must be non-negative")
 
+        if not self.autodiscover_additional_peers:
+            weight_dns = 0
+
         # Fast paths -------------------------------------------------
         if not self.discovered_peers:
+            if not self.autodiscover_additional_peers:
+                logger.debug("Peer discovery disabled; no discovered peers available")
+                return None
             peer = await self.peer_discovery.get_bitcoin_peer()  # may be None
             logger.debug(f"Picked {peer=} from DNS seed")
             return peer
@@ -156,18 +164,19 @@ class P2pListener(QObject):
     async def _start(
         self,
         proxy_info: ProxyInfo | None,
-        initial_peer: Peer | None = None,
+        preferred_peers: list[Peer] | None = None,
     ) -> None:
         """Keep the client *always* connected to **some** Bitcoin peer.
 
-        Parameters
-        ----------
-        initial_peer : Peer | None
-            A preferred first peer to try. If it is ``None`` or the connection
-            to it fails, we fall back to peers returned by ``get_bitcoin_peer()``.
+        Prefers peers passed via ``preferred_peers`` (in order), then
+        peers from ``self.discovered_peers``, and finally falls back to DNS
+        seeds when allowed.
         """
         previous_peer: Peer | None = None
-        peer = initial_peer
+        peer = None
+        queued_preferred_peers = list(preferred_peers or [])
+        if queued_preferred_peers:
+            self.add_peers(Peers(queued_preferred_peers))
         retry_delay = 5  # seconds to wait when no peer is immediately available
 
         while True:
@@ -177,7 +186,10 @@ class P2pListener(QObject):
             # 1. Select the next peer (and avoid repeating the last one immediately)
             # ------------------------------------------------------------------
             if peer is None:
-                peer = await self.random_select_peer()
+                if queued_preferred_peers:
+                    peer = queued_preferred_peers.pop(0)
+                else:
+                    peer = await self.random_select_peer()
                 if peer is None:
                     # no peers at all? wait then retry
                     await asyncio.sleep(retry_delay)
@@ -232,10 +244,12 @@ class P2pListener(QObject):
     def start(
         self,
         proxy_info: ProxyInfo | None,
-        initial_peer: Peer | None = None,
+        preferred_peers: list[Peer] | None = None,
     ):
         """Start."""
-        self.loop_in_thread.run_background(self._start(initial_peer=initial_peer, proxy_info=proxy_info))
+        self.loop_in_thread.run_background(
+            self._start(proxy_info=proxy_info, preferred_peers=preferred_peers)
+        )
 
     def stop(self):
         """Stop."""
@@ -271,6 +285,8 @@ class P2pListener(QObject):
 
     def on_disconnected_to(self, peer: Peer):
         "Do not keep peers in the list, which disconnected in the past"
+        if not self.autodiscover_additional_peers:
+            return
         if peer in self.discovered_peers:
             self.discovered_peers.remove(peer)
 
@@ -295,8 +311,7 @@ class P2pListener(QObject):
             self.discovered_peers + new_peers, max_len=maximum_total_peers
         )
         logger.debug(
-            f"Added {len(new_peers)=} peers to discovered_peers and "
-            f"shrunk the size to {len(self.discovered_peers)=}"
+            f"Added {len(new_peers)=} peers to discovered_peers and shrunk the size to {len(self.discovered_peers)=}"
         )
 
     @staticmethod

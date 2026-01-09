@@ -40,10 +40,9 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from tests.gui.qt.test_setup_wallet import close_wallet
 
+from ...helpers import TestConfig
 from .helpers import CheckedDeletionContext, Shutter, close_wallet, main_window_context
 
 logger = logging.getLogger(__name__)
@@ -53,7 +52,7 @@ def test_default_network_config_works(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config_main_chain: UserConfig,
+    test_config_main_chain: TestConfig,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "bacon.wallet",
 ) -> None:

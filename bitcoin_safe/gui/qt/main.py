@@ -102,7 +102,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_contact, mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
-from bitcoin_safe.network_config import P2pListenerType
+from bitcoin_safe.network_config import P2pListenerType, Peers
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
@@ -626,15 +626,19 @@ class MainWindow(QMainWindow):
         if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
             return
         initial_peer = self.config.network_config.get_p2p_initial_peer()
+        discovered_peers = Peers(self.config.network_config.discovered_peers)
+        if initial_peer and initial_peer not in discovered_peers:
+            discovered_peers.append(initial_peer)
         self.p2p_listener = P2pListener(
             network=self.config.network,
-            discovered_peers=self.config.network_config.discovered_peers,
+            discovered_peers=discovered_peers,
             loop_in_thread=self.loop_in_thread,
+            autodiscover_additional_peers=self.config.network_config.p2p_autodiscover_additional_peers,
         )
         self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
         self.p2p_listener.start(
-            initial_peer=initial_peer,
+            preferred_peers=[initial_peer] if initial_peer else None,
             proxy_info=(
                 ProxyInfo.parse(self.config.network_config.proxy_url)
                 if self.config.network_config.proxy_url
@@ -2105,17 +2109,20 @@ class MainWindow(QMainWindow):
         """New wallet id."""
         return f"{self.tr('new')}{len(self.qt_wallets)}"
 
+    def _ask_if_full_scan(self) -> bool | None:
+        return question_dialog(
+            text=self.tr("Was this wallet ever used before?"),
+            true_button=self.tr("Yes, full scan for transactions"),
+            false_button=self.tr("No, quick scan"),
+        )
+
     def create_qtwallet_from_protowallet(
         self, protowallet: ProtoWallet, tutorial_index: int | None
     ) -> QTWallet:
         """Create qtwallet from protowallet."""
         is_new_wallet = False
         if self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
-            answer = question_dialog(
-                text=self.tr("Was this wallet ever used before?"),
-                true_button=self.tr("Yes, full scan for transactions"),
-                false_button=self.tr("No, quick scan"),
-            )
+            answer = self._ask_if_full_scan()
             if answer is False:
                 is_new_wallet = True
             else:
@@ -2497,6 +2504,16 @@ class MainWindow(QMainWindow):
         for qt_wallet in self.qt_wallets.copy().values():
             self._remove_qt_wallet(qt_wallet)
 
+    def _ask_if_wallet_should_remain_open(self) -> bool | None:
+        return question_dialog(
+            text=self.tr(
+                "This wallet is still syncing and syncing would need to start from scratch if you close it.\nDo you want to keep the wallet open?",
+            ),
+            title=self.tr("Wallet syncing"),
+            true_button=self.tr("Keep open"),
+            false_button=self.tr("Close anyway"),
+        )
+
     def close_tab(self, node: SidebarNode[TT]) -> None:
         """Close tab."""
         if not node.closable and not node.widget == self.welcome_screen:
@@ -2504,14 +2521,7 @@ class MainWindow(QMainWindow):
         tab_data = node.data
         if isinstance(tab_data, QTWallet):
             if tab_data.is_in_cbf_ibd():
-                res = question_dialog(
-                    text=self.tr(
-                        "This wallet is still syncing and syncing would need to start from scratch if you close it.\nDo you want to keep the wallet open?",
-                    ),
-                    title=self.tr("Wallet syncing"),
-                    true_button=self.tr("Keep open"),
-                    false_button=self.tr("Close anyway"),
-                )
+                res = self._ask_if_wallet_should_remain_open()
                 if res is None:
                     return
                 elif res is True:

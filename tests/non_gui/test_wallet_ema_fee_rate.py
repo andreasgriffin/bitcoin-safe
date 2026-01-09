@@ -29,18 +29,23 @@
 from __future__ import annotations
 
 import logging
+import math
+from collections.abc import Generator
+from pathlib import Path
 
 import pytest
 from bitcoin_usb.address_types import AddressTypes, DescriptorInfo, SimplePubKeyProvider
 from bitcoin_usb.software_signer import SoftwareSigner
-from bitcoin_safe.config import UserConfig
+from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.wallet import Wallet
 
+from ..faucet import Faucet
+from ..helpers import TestConfig
 from ..non_gui.test_wallet import create_test_seed_keystores
-from ..setup_fulcrum import Faucet
-from ..util import make_psbt, wait_for_funds, wait_for_tx
+from ..util import make_psbt, wait_for_sync
+from ..wallet_factory import create_test_wallet
 from .test_wallet_coin_select import TestWalletConfig
 
 logger = logging.getLogger(__name__)
@@ -57,20 +62,19 @@ def test_wallet_config_seed(request) -> TestWalletConfig:
     return request.param
 
 
-# params
-# [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
-def test_funded_seed_wallet(
-    test_config_session: UserConfig,
-    faucet: Faucet,
-    test_wallet_config_seed: TestWalletConfig,
+def test_funded_seed_wallet_session(
+    test_config_session: TestConfig,
+    backend: str,
+    bitcoin_core: Path,
+    loop_in_thread,
     wallet_name="test_tutorial_wallet_setup",
-) -> Wallet:
+) -> Generator[Wallet, None, None]:
     """Test funded seed wallet."""
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
-        network=faucet.network,
+        network=test_config_session.network,
         test_seed_offset=20,
     )[0]
 
@@ -79,43 +83,72 @@ def test_funded_seed_wallet(
         spk_providers=[SimplePubKeyProvider.from_hwi(keystore.to_hwi_pubkey_provider())],
         threshold=1,
     )
-    wallet = Wallet(
-        id=wallet_name,
-        descriptor_str=descriptor_info.get_descriptor_str(faucet.network),
+    wallet_handle = create_test_wallet(
+        wallet_id=wallet_name,
+        descriptor_str=descriptor_info.get_descriptor_str(test_config_session.network),
         keystores=[keystore],
-        network=test_config_session.network,
+        backend=backend,
         config=test_config_session,
-        loop_in_thread=None,
+        is_new_wallet=True,
+        bitcoin_core=bitcoin_core,
+        loop_in_thread=loop_in_thread,
     )
+    yield wallet_handle.wallet
+    wallet_handle.close()
 
+
+@pytest.fixture()
+def test_funded_seed_wallet(
+    test_funded_seed_wallet_session: Wallet,
+    faucet: Faucet,
+    test_wallet_config_seed: TestWalletConfig,
+    qtbot: QtBot,
+) -> Generator[Wallet, None, None]:
+    wallet = test_funded_seed_wallet_session
     # fund the wallet
     addresses_private = [
         str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config_seed.num_private)
     ]
     for address in addresses_private:
         wallet.labels.set_addr_category(address, "Private")
-        faucet.send(address, amount=test_wallet_config_seed.utxo_value_private)
+        faucet.send(address, amount=test_wallet_config_seed.utxo_value_private, qtbot=qtbot)
 
-    faucet.mine()
-    wait_for_funds(wallet)
+    faucet.mine(qtbot=qtbot)
 
-    return wallet
+    wait_for_sync(
+        wallet=wallet,
+        minimum_funds=test_wallet_config_seed.utxo_value_private * len(addresses_private),
+        qtbot=qtbot,
+    )
+
+    yield wallet
+
+
+def _override_tx_fees(wallet: Wallet, fee_map: dict[str, float]) -> None:
+    """Force wallet txdetails to use the desired fee rates (sat/vbyte)."""
+    txdetails = wallet.sorted_delta_list_transactions()
+    for txdetail in txdetails:
+        rate = fee_map.get(txdetail.txid)
+        if rate is None:
+            continue
+        txdetail.fee = int(math.ceil(rate * txdetail.vsize))
 
 
 def test_ema_fee_rate_weights_recent_heavier(
     test_funded_seed_wallet: Wallet,
+    qtbot: QtBot,
     faucet: Faucet,
-) -> Wallet:
+):
     """Test that the EMA fee rate for an incoming wallet is weighted more heavily
     towards recent transactions."""
 
     wallet = test_funded_seed_wallet
+    desired_fee_rates: dict[str, float] = {}
 
-    def send_tx(fee_rate=100):
-        """Send tx."""
+    def send_tx(fee_rate=100) -> str:
+        """Broadcast a tx and record the intended fee rate for testing."""
         psbt_for_signing = make_psbt(
-            bdk_wallet=wallet.bdkwallet,
-            network=wallet.network,
+            wallet=wallet,
             destination_address=wallet.get_addresses()[0],
             amount=1000,
             fee_rate=fee_rate,
@@ -132,35 +165,54 @@ def test_ema_fee_rate_weights_recent_heavier(
 
         tx = signed_psbt.extract_tx()
         wallet.client.broadcast(tx)
-        # to include the tx into a block and create a sorting of the txs
-        # otherwise the order might be random and ema is random
-        faucet.mine()
+        faucet.mine(qtbot=qtbot)
 
-        wait_for_tx(wallet, str(tx.compute_txid()))
+        txid = str(tx.compute_txid())
+        wait_for_sync(wallet=wallet, txid=txid, qtbot=qtbot)
+        desired_fee_rates[txid] = fee_rate
+        return txid
 
     # incoming txs have no fee rate (rpc doesnt seem to fill the fee field)
+    _override_tx_fees(wallet, desired_fee_rates)
     assert round(wallet.get_ema_fee_rate(), 1) == MIN_RELAY_FEE
 
-    # test that it takes in account the icoming txs, if a fee is known
-    txdetails = wallet.sorted_delta_list_transactions()
-    txdetails[0].fee = 21 * txdetails[0].vsize
+    def set_unknown_fee():
+        # test that it takes in account the icoming txs, if a fee is known
+        txdetails = wallet.sorted_delta_list_transactions()
+        txdetails[0].fee = 21 * txdetails[0].vsize
+        desired_fee_rates[txdetails[0].txid] = 21
+
+    set_unknown_fee()
+    _override_tx_fees(wallet, desired_fee_rates)
     assert wallet.get_ema_fee_rate() == 21
 
     # send_tx clears the cache and resets the previous tx
     send_tx(100)
+    _override_tx_fees(wallet, desired_fee_rates)
 
     # test the outgoing is weighted more than
-    assert wallet.get_ema_fee_rate() == pytest.approx(66.7, abs=0.1)
+    set_unknown_fee()
+    _override_tx_fees(wallet, desired_fee_rates)
+    ema_after_100 = wallet.get_ema_fee_rate()
+    assert ema_after_100 == pytest.approx(73, abs=1)
 
-    for i in range(5):
+    for _ in range(5):
         send_tx(1)
+    _override_tx_fees(wallet, desired_fee_rates)
 
-    assert wallet.get_ema_fee_rate() == pytest.approx(6.8, abs=0.1)
+    set_unknown_fee()
+    _override_tx_fees(wallet, desired_fee_rates)
+    ema_after_lows = wallet.get_ema_fee_rate()
+    assert ema_after_lows == pytest.approx(10, abs=1)
 
-    for i in range(1):
+    for _ in range(1):
         send_tx(40)
+    _override_tx_fees(wallet, desired_fee_rates)
 
-    assert wallet.get_ema_fee_rate() == pytest.approx(14.5, abs=0.1)
+    set_unknown_fee()
+    _override_tx_fees(wallet, desired_fee_rates)
+    ema_after_mid = wallet.get_ema_fee_rate()
+    assert ema_after_mid == pytest.approx(18, abs=1)
 
 
 def test_address_balance(

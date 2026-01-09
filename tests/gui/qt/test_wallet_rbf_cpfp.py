@@ -38,14 +38,14 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
+from ...faucet import Faucet
+from ...helpers import TestConfig
 from ...non_gui.test_signers import test_seeds
-from ...setup_fulcrum import Faucet
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -66,7 +66,7 @@ def test_rbf_cpfp_flow(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     wallet_name: str = "test_rbf_cpfp_flow",
@@ -79,7 +79,7 @@ def test_rbf_cpfp_flow(
     shutter.create_symlink(test_config=test_config)
 
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)
+        QTest.qWaitForWindowExposed(main_window, timeout=10_000)
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
         shutter.save(main_window)
 
@@ -126,7 +126,7 @@ def test_rbf_cpfp_flow(
             box.amount = amount // 2
             qt_wallet.uitx_creator.column_fee.fee_group.spin_fee_rate.setValue(1.0)
             shutter.save(main_window)
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                 qt_wallet.uitx_creator.button_ok.click()
             viewer = main_window.tab_wallets.currentNode().data
             assert isinstance(viewer, UITx_Viewer)
@@ -135,13 +135,13 @@ def test_rbf_cpfp_flow(
         def create_RBF_transaction(viewer: UITx_Viewer, qt_wallet: QTWallet) -> tuple[UITx_Viewer, str]:
             """Create RBF transaction."""
             shutter.save(main_window)
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                 viewer.button_rbf.click()
             shutter.save(main_window)
             creator_rbf = main_window.tab_wallets.currentNode().data
             assert isinstance(creator_rbf, UITx_Creator)
             assert creator_rbf.column_fee.fee_group.rbf_fee_label.isVisible()
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                 creator_rbf.button_ok.click()
             shutter.save(main_window)
             viewer_rbf = main_window.tab_wallets.currentNode().data
@@ -156,21 +156,23 @@ def test_rbf_cpfp_flow(
                 mock_message.return_value = False
 
                 broadcast_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer_rbf)
+                qtbot.waitUntil(lambda: mock_message.call_count >= 1, timeout=10_000)
                 mock_message.assert_called_once()
 
             assert not viewer_rbf.button_cpfp_tx.isVisible()
             assert not viewer_rbf.button_rbf.isVisible()
+
             return viewer_rbf, txid_rbf
 
         def create_CPFP_transaction(viewer_rbf: UITx_Viewer, qt_wallet: QTWallet) -> tuple[UITx_Viewer, str]:
             """Create CPFP transaction."""
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                 viewer_rbf.button_cpfp_tx.click()
             shutter.save(main_window)
             creator_cpfp = main_window.tab_wallets.currentNode().data
             assert isinstance(creator_cpfp, UITx_Creator)
             creator_cpfp.column_fee.fee_group.spin_fee_rate.setValue(5.0)
-            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10000):
+            with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                 creator_cpfp.button_ok.click()
             shutter.save(main_window)
             viewer_cpfp = main_window.tab_wallets.currentNode().data
@@ -183,7 +185,7 @@ def test_rbf_cpfp_flow(
 
             return viewer_cpfp, txid_cpfp
 
-        fund_wallet(qt_wallet=qt_wallet, amount=amount, qtbot=qtbot, faucet=faucet)
+        fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
         address_info = qt_wallet.wallet.get_unused_category_address(category=None)
         viewer, txid_a = create_transaction_to_self(qt_wallet, str(address_info.address), amount)
         viewer.button_next.click()
@@ -198,10 +200,10 @@ def test_rbf_cpfp_flow(
         # focus viewer again
         qt_wallet.signals.open_tx_like.emit(txid_rbf)
         shutter.save(main_window)
-
         txids = [tx.txid for tx in qt_wallet.wallet.bdkwallet.list_transactions()]
         assert txid_a not in txids
         assert txid_rbf in txids
+
         viewer_cpfp, txid_cpfp = create_CPFP_transaction(viewer_rbf, qt_wallet)
         txids = [tx.txid for tx in qt_wallet.wallet.bdkwallet.list_transactions()]
         assert txid_cpfp in txids

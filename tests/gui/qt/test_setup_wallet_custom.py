@@ -41,14 +41,12 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from tests.gui.qt.test_setup_wallet import close_wallet, save_wallet
 
-from ...setup_fulcrum import Faucet
+from ...helpers import TestConfig
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -71,11 +69,9 @@ def test_custom_wallet_setup_custom_single_sig(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
-    faucet: Faucet,
+    test_config: TestConfig,
     caplog: pytest.LogCaptureFixture,
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig",
-    amount: int = int(1e6),
 ) -> None:
     """Test custom wallet setup custom single sig."""
     frame = inspect.currentframe()
@@ -254,7 +250,7 @@ def test_custom_wallet_setup_custom_single_sig(
         QApplication.processEvents()
         wallet_name = qt_wallet.wallet.id
 
-        def replace_descriptor() -> QTWallet:
+        def replace_descriptor(qt_wallet: QTWallet) -> QTWallet:
             """Replace descriptor."""
             descriptor = "wpkh([e53c8089/84'/1'/0']tpubDDg6DvnYDvUcRW3a5HeHoFCpKZYDm4qhKP7ccArDsSBSvBjc4d7AMdijAbekZ4c7NaP1zKWZ4qgHYzbQ6gv2Sge4MWWp96zhhAkjvge22FW/<0;1>/*)#uduv7uyw"
 
@@ -313,7 +309,7 @@ def test_custom_wallet_setup_custom_single_sig(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
-            new_wallet = replace_descriptor()
+            new_wallet = replace_descriptor(qt_wallet)
             del qt_wallet
 
         with CheckedDeletionContext(
@@ -323,6 +319,7 @@ def test_custom_wallet_setup_custom_single_sig(
             wallet_id = new_wallet.wallet.id
             del new_wallet
 
+            qtbot.wait(1000)
             close_wallet(
                 shutter=shutter,
                 test_config=test_config,

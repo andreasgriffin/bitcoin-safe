@@ -35,7 +35,7 @@ from bitcoin_usb.software_signer import SoftwareSigner
 
 from tests.util import make_psbt
 
-from ..setup_fulcrum import Faucet
+from ..faucet import Faucet
 
 logger = logging.getLogger(__name__)
 
@@ -44,12 +44,13 @@ def test_compare_software_signer_to_bdk(
     faucet: Faucet,
 ):
     """Test compare software signer to bdk."""
-    wallet = faucet.bdk_wallet
+    wallet = faucet.wallet
 
     psbt = make_psbt(
-        bdk_wallet=wallet,
-        network=faucet.network,
-        destination_address=str(wallet.reveal_next_address(keychain=bdk.KeychainKind.EXTERNAL).address),
+        wallet=wallet,
+        destination_address=str(
+            wallet.bdkwallet.reveal_next_address(keychain=bdk.KeychainKind.EXTERNAL).address
+        ),
         amount=1000,
         fee_rate=100,
     )
@@ -65,7 +66,7 @@ def test_compare_software_signer_to_bdk(
     software_tx = software_signed_psbt.extract_tx().serialize()
 
     #
-    success = faucet.bdk_wallet.sign(psbt, None)
+    success = faucet.wallet.bdkwallet.sign(psbt, None)
     assert success
     tx = psbt.extract_tx().serialize()
 

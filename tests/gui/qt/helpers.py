@@ -39,11 +39,13 @@ import shutil
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from datetime import datetime
+from functools import partial
 from pathlib import Path
 from time import sleep
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar
 from unittest.mock import patch
 
+import bdkpython as bdk
 import objgraph
 import pytest
 from PyQt6 import QtCore
@@ -70,7 +72,8 @@ from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
-from ...setup_fulcrum import Faucet
+from ...faucet import Faucet
+from ...util import wait_for_sync
 
 logger = logging.getLogger(__name__)
 
@@ -175,16 +178,8 @@ def fund_wallet(
 ) -> str:
     """Fund wallet."""
     address = address if address else str(qt_wallet.wallet.get_address().address)
-    faucet.send(address, amount=amount)
-    counter = 0
-    while qt_wallet.wallet.get_balance().total == 0:
-        with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-            qt_wallet.sync()
-        counter += 1
-        if counter > 20:
-            raise Exception(
-                f"After {counter} syncing, the wallet balance is still {qt_wallet.wallet.get_balance().total}"
-            )
+    tx = faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
+    wait_for_sync(wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=60_000, qtbot=qtbot)
     return address
 
 
@@ -213,7 +208,7 @@ def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWa
     for button in signer_ui.findChildren(QPushButton):
         assert button.text() == f"Seed of '{qt_wallet.wallet.id}'"
         assert button.isVisible()
-        with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10000):
+        with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
             button.click()
 
     assert viewer.button_send.isVisible()
@@ -227,10 +222,12 @@ def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet:
     """Broadcast tx."""
     shutter.save(viewer)
 
-    with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=10000):
-        viewer.button_send.click()
+    viewer.button_send.click()
+    if isinstance((tx := viewer.data.data), bdk.Transaction):
+        qtbot.waitUntil(lambda: bool(qt_wallet.wallet.get_tx(str(tx.compute_txid()))), timeout=40_000)
+        qtbot.wait(1000)  # to allow the ui to update
 
-        shutter.save(viewer)
+    shutter.save(viewer)
 
 
 def _get_widget_top_level(cls: type[T], title: str | None = None) -> T | None:
@@ -260,7 +257,7 @@ def _get_widget_top_level(cls: type[T], title: str | None = None) -> T | None:
 
 
 def get_widget_top_level(
-    cls: type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10000
+    cls: type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10_000
 ) -> T | None:
     """Find the top-level widget of the specified class and title among the active
     widgets.
@@ -282,7 +279,7 @@ def do_modal_click(
     on_open: Callable[[T], None],
     qtbot: QtBot,
     button: QtCore.Qt.MouseButton = QtCore.Qt.MouseButton.LeftButton,
-    cls: type[T] = Union[QMessageBox, QWidget],
+    cls: type[T] = QWidget,
     timeout=5000,
     timer_delay=500,
 ) -> None:
@@ -316,22 +313,27 @@ def do_modal_click(
         qtbot.mouseClick(click_pushbutton, button)
 
     QApplication.processEvents()
-    qtbot.waitUntil(lambda: dialog_was_opened, timeout=10000)
+    qtbot.waitUntil(lambda: dialog_was_opened, timeout=10_000)
 
 
 def get_called_args_message_box(
     patch_str: str,
     click_pushbutton: QPushButton,
     repeat_clicking_until_message_box_called=False,
+    max_attempts: int = 100,
 ) -> list[Any]:
     """Get called args message box."""
     with patch(patch_str) as mock_message:
+        attempts = 0
         while not mock_message.called:
             click_pushbutton.click()
             QApplication.processEvents()
             sleep(0.2)
             if not repeat_clicking_until_message_box_called:
                 break
+            attempts += 1
+            if attempts >= max_attempts:
+                raise TimeoutError(f"{patch_str} was not called after {attempts} attempts")
 
         called_args, called_kwargs = mock_message.call_args
         return called_args
@@ -397,7 +399,7 @@ def close_wallet(
     # check that you cannot go further without import xpub
     """Close wallet."""
 
-    def password_creation(dialog: QMessageBox) -> None:
+    def dialog(dialog: QMessageBox) -> None:
         """Password creation."""
         shutter.save(dialog)
         for button in dialog.buttons():
@@ -406,8 +408,9 @@ def close_wallet(
                 break
 
     node = main_window.tab_wallets.root.findNodeByTitle(wallet_name)
+    assert node
 
-    do_modal_click(lambda: main_window.close_tab(node), password_creation, qtbot, cls=QMessageBox)
+    do_modal_click(partial(main_window.close_tab, node), dialog, qtbot, cls=QMessageBox)
     gc.collect()
 
 
@@ -429,11 +432,13 @@ class CheckedDeletionContext:
         qtbot: QtBot,
         caplog: pytest.LogCaptureFixture,
         graph_directory: Path | None = None,
+        timeout=1_000,
         list_references=None,
     ):
         """Initialize instance."""
         self.graph_directory = graph_directory
         self.caplog = caplog
+        self.timeout = timeout
         self.qtbot = qtbot
         self.d = list_references
         self.check_for_destruction: list[QtCore.QObject] = [
@@ -499,7 +504,7 @@ class CheckedDeletionContext:
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Exit context manager."""
-        with self.qtbot.waitSignals([q.destroyed for q in self.check_for_destruction], timeout=1000):
+        with self.qtbot.waitSignals([q.destroyed for q in self.check_for_destruction], timeout=self.timeout):
             if self.graph_directory:
                 self.show_backrefs(self.check_for_destruction, self.graph_directory)
                 self.save_referrers_to_json(self.check_for_destruction, self.graph_directory)

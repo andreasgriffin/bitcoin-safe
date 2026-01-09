@@ -51,10 +51,13 @@ BITCOIN_RPC_PORT = 17143  # not the default 18443 to not get conflicts
 BITCOIN_LISTEN_PORT = 17144  # not the default 18444 to not get conflicts
 RPC_USER = "bitcoin"
 RPC_PASSWORD = "bitcoin"
+BITCOIN_DATA_DIR = Path(__file__).parent / "bitcoin_data"
 BITCOIN_CONF_CONTENT = f"""
 regtest=1
 
 [regtest]
+
+datadir={BITCOIN_DATA_DIR}
 
 
 # RPC server options
@@ -63,6 +66,7 @@ rpcbind={BITCOIN_HOST}
 rpcallowip={BITCOIN_HOST}
 rpcuser={RPC_USER}
 rpcpassword={RPC_PASSWORD}
+v2transport=1
 server=1
 port={BITCOIN_LISTEN_PORT}
 
@@ -71,6 +75,9 @@ port={BITCOIN_LISTEN_PORT}
 # Enable serving of bloom filters (useful for SPV clients)
 peerbloomfilters=1
 
+# Enable serving compact block filters to peers (BIP157/158)
+peerblockfilters=1
+
 # Enable serving compact block filters
 blockfilterindex=1
 
@@ -78,7 +85,7 @@ blockfilterindex=1
 txindex=1
 """
 
-BITCOIN_VERSION = "28.1"
+BITCOIN_VERSION = "29.2"
 # Define the Bitcoin Core directory relative to the current test directory
 TEST_DIR = Path(__file__).parent  # If this script is in the tests directory
 BITCOIN_DIR = TEST_DIR / "bitcoin_core"
@@ -154,6 +161,7 @@ def bitcoin_cli(
     executable = "bitcoin-cli.exe" if system == "Windows" else "bitcoin-cli"
     cmd = (
         str(bitcoin_core / executable)
+        + f" -datadir={BITCOIN_DATA_DIR}"
         + f" -rpcconnect={bitcoin_host} -rpcport={bitcoin_port} -chain=regtest -rpcuser={rpc_user} -rpcpassword={rpc_password} "
         + command
     )
@@ -236,33 +244,102 @@ def download_bitcoin():
     logger.info(f"Bitcoin Core {BITCOIN_VERSION} is ready to use.")
 
 
+def is_bitcoind_running(bitcoin_bin_dir: Path) -> bool:
+    bitcoind_path = bitcoin_bin_dir / "bitcoind"
+
+    result = subprocess.run(
+        ["pgrep", "-f", str(bitcoind_path)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return result.returncode == 0
+
+
+def stop_bitcoind(
+    bitcoin_bin_dir: Path,
+    timeout: float = 10.0,
+    poll_interval: float = 0.2,
+) -> None:
+    """
+    Stop bitcoind gracefully and force-kill if it does not exit.
+
+    :param bitcoin_bin_dir: Directory containing bitcoind / bitcoin-cli
+    :param timeout: Seconds to wait before force-killing
+    :param poll_interval: How often to poll process state
+    """
+    # Ask bitcoind to shut down cleanly
+    bitcoin_cli("stop", bitcoin_bin_dir)
+
+    start_time = time.monotonic()
+
+    while is_bitcoind_running(bitcoin_bin_dir):
+        if time.monotonic() - start_time >= timeout:
+            bitcoind_path = bitcoin_bin_dir / "bitcoind"
+            subprocess.run(
+                ["pkill", "-f", str(bitcoind_path)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            break
+
+        time.sleep(poll_interval)
+
+
 @pytest.fixture(scope="session")
 def bitcoin_core() -> Generator[Path, None, None]:
     # Ensure Bitcoin Core directory exists
     """Bitcoin core."""
     BITCOIN_DIR.mkdir(exist_ok=True)
+    BITCOIN_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     download_bitcoin()
     # Create bdk.conf
     BITCOIN_CONF.write_text(BITCOIN_CONF_CONTENT)
 
     # stop it if it is running
-    bitcoin_cli("stop", BITCOIN_BIN_DIR)
-    # to ensure bitcoind is stopped
-    time.sleep(1)
+    stop_bitcoind(BITCOIN_BIN_DIR)
     # remove the previous chain
-    remove_bitcoin_regtest_folder()
+    remove_bitcoin_regtest_folder(custom_datadir=BITCOIN_DATA_DIR)
 
     # Start Bitcoin Core
     bitcoind()
 
-    # Wait for Bitcoin Core to start
-    time.sleep(5)
+    # Wait for Bitcoin Core to start responding on RPC
+    def wait_for_rpc(timeout: float = 30.0, interval: float = 0.5) -> None:
+        """Poll getblockchaininfo until bitcoind responds or timeout."""
+        start = time.time()
+        while True:
+            proc = subprocess.run(
+                [
+                    str(
+                        BITCOIN_BIN_DIR
+                        / ("bitcoin-cli.exe" if platform.system() == "Windows" else "bitcoin-cli")
+                    ),
+                    f"-datadir={BITCOIN_DATA_DIR}",
+                    f"-rpcconnect={BITCOIN_HOST}",
+                    f"-rpcport={BITCOIN_RPC_PORT}",
+                    "-chain=regtest",
+                    f"-rpcuser={RPC_USER}",
+                    f"-rpcpassword={RPC_PASSWORD}",
+                    "getblockchaininfo",
+                ],
+                capture_output=True,
+                text=True,
+            )
+            if proc.returncode == 0:
+                return
+            if time.time() - start > timeout:
+                raise TimeoutError(f"bitcoind did not become ready in time: {proc.stderr.strip()}")
+            time.sleep(interval)
+
+    wait_for_rpc()
 
     yield BITCOIN_BIN_DIR
 
     # Stop Bitcoin Core
-    bitcoin_cli("stop", BITCOIN_BIN_DIR)
+    stop_bitcoind(BITCOIN_BIN_DIR)
 
 
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory

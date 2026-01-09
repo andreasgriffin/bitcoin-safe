@@ -30,21 +30,26 @@ from __future__ import annotations
 
 import logging
 import random
+from collections.abc import Generator
 from dataclasses import dataclass
+from pathlib import Path
 
 import bdkpython as bdk
 import numpy as np
 import pytest
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import DescriptorInfo
+from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.pythonbdk_types import Recipient
 from bitcoin_safe.tx import TxUiInfos, transaction_to_dict
 from bitcoin_safe.wallet import Wallet
 
-from ..setup_fulcrum import Faucet
-from ..util import wait_for_funds
+from ..faucet import Faucet
+from ..helpers import TestConfig
+from ..util import wait_for_sync
+from ..wallet_factory import create_test_wallet
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +72,7 @@ def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
         return True
 
     # Check the type of d1 and d2
-    if type(d1) != type(d2):
+    if type(d1) is not type(d2):
         logger.debug(f"Type mismatch: {type(d1)} != {type(d2)}")
         return False
 
@@ -137,15 +142,14 @@ def test_coin_control_config(request) -> TestCoinControlConfig:
     return request.param
 
 
-# params
-# [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
-def test_funded_wallet(
-    test_config_session: UserConfig,
-    faucet: Faucet,
-    test_wallet_config: TestWalletConfig,
+def test_funded_wallet_session(
+    test_config_session: TestConfig,
+    backend: str,
+    bitcoin_core: Path,
+    loop_in_thread: LoopInThread,
     wallet_name="test_tutorial_wallet_setup",
-) -> Wallet:
+) -> Generator[Wallet, None, None]:
     # for test_seed: ensure diet bench scale future thumb holiday wild erupt cancel paper system
 
     """Test funded wallet."""
@@ -159,14 +163,30 @@ def test_funded_wallet(
         label="test",
         network=test_config_session.network,
     )
-    wallet = Wallet(
-        id=wallet_name,
+    handle = create_test_wallet(
+        wallet_id=wallet_name,
         descriptor_str=descriptor_str,
         keystores=[keystore],
-        network=test_config_session.network,
+        backend=backend,
         config=test_config_session,
-        loop_in_thread=None,
+        bitcoin_core=bitcoin_core,
+        loop_in_thread=loop_in_thread,
     )
+    yield handle.wallet
+    handle.close()
+
+
+@pytest.fixture()
+def test_funded_wallet(
+    test_funded_wallet_session: Wallet,
+    faucet: Faucet,
+    qtbot: QtBot,
+    test_wallet_config: TestWalletConfig,
+) -> Generator[Wallet, None, None]:
+    wallet = test_funded_wallet_session
+    if wallet.get_balance().total:
+        yield wallet
+        return
 
     # fund the wallet
     addresses_private = [
@@ -174,19 +194,25 @@ def test_funded_wallet(
     ]
     for address in addresses_private:
         wallet.labels.set_addr_category(address, "Private")
-        faucet.send(address, amount=test_wallet_config.utxo_value_private)
+        faucet.send(address, amount=test_wallet_config.utxo_value_private, qtbot=qtbot)
 
     addresses_kyc = [
         str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config.num_kyc)
     ]
     for address in addresses_kyc:
         wallet.labels.set_addr_category(address, "KYC")
-        faucet.send(address, amount=test_wallet_config.utxo_value_kyc)
+        faucet.send(address, amount=test_wallet_config.utxo_value_kyc, qtbot=qtbot)
 
-    faucet.mine()
+    faucet.mine(qtbot=qtbot)
 
-    wait_for_funds(wallet)
-    return wallet
+    wait_for_sync(
+        wallet=wallet,
+        minimum_funds=test_wallet_config.utxo_value_private * len(addresses_private)
+        + test_wallet_config.utxo_value_kyc * len(addresses_kyc),
+        qtbot=qtbot,
+        timeout=60_000,
+    )
+    yield wallet
 
 
 ###############################

@@ -33,10 +33,10 @@ import time
 
 import bdkpython as bdk
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.labels import AUTOMATIC_TIMESTAMP
 from bitcoin_safe.wallet import Wallet
 
+from ..helpers import TestConfig
 from .utils import create_multisig_protowallet
 
 
@@ -55,7 +55,7 @@ def test_chained_label_timestamp_updates() -> None:
         network=bdk.Network.REGTEST,
     )
 
-    config = UserConfig()
+    config = TestConfig()
     config.network = bdk.Network.REGTEST
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
 

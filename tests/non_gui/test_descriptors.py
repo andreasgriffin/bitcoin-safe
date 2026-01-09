@@ -37,7 +37,6 @@ from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
 from bitcoin_safe.descriptors import from_multisig_wallet_export
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 def test_from_multisig_wallet_export():
@@ -60,6 +59,7 @@ Derivation: m/48'/0'/0'/2'
     assert data.data_type == DataType.MultisigWalletExport
     assert isinstance(data.data, ConverterMultisigWalletExport)
     descriptor = from_multisig_wallet_export(data.data, network=bdk.Network.BITCOIN)
+    assert isinstance(descriptor, bdk.Descriptor)
 
     # see also https://jlopp.github.io/xpub-converter/
     assert (
@@ -85,10 +85,11 @@ Format: P2WSH-P2SH
     assert data.data_type == DataType.MultisigWalletExport
     assert isinstance(data.data, ConverterMultisigWalletExport)
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         # https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki
         # clearly specifies
         # Nested Segwit (p2sh-p2wsh) mainnet, account 0: 1': Nested Segwit (p2sh-p2wsh) m/48'/0'/0'/1'
         # however the wallet export reverses this order of P2WSH-P2SH
         # Currently I dont have a consitent way of handling this, therefore it is better to raise an error here.
         descriptor = from_multisig_wallet_export(data.data, network=bdk.Network.REGTEST)
+        assert isinstance(descriptor, bdk.Descriptor)

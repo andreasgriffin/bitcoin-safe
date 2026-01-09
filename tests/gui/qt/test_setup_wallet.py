@@ -35,22 +35,22 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
+import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox, QWidget
+from PyQt6.QtWidgets import QDialogButtonBox, QMessageBox, QWidget
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.gui.qt.util import MessageType
+from bitcoin_safe.gui.qt.util import ColorScheme, MessageType
 from bitcoin_safe.gui.qt.wizard import (
     BackupSeed,
     BuyHardware,
@@ -64,9 +64,11 @@ from bitcoin_safe.gui.qt.wizard import (
     TutorialStep,
     Wizard,
 )
-from tests.setup_fulcrum import Faucet
+from tests.faucet import Faucet
 
+from ...helpers import TestConfig
 from ...non_gui.test_signers import test_seeds
+from ...util import wait_for_sync
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -94,13 +96,12 @@ def enter_text(text: str, widget: QWidget) -> None:
 
 @pytest.mark.marker_qt_1  # repeated gui tests let the RAM usage increase (unclear why the memory isnt freed), and to stay under the github VM limit, we split the tests
 def test_wizard(
-    qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
-    bitcoin_core: Path,
+    test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
+    backend: str,
     wallet_name="test_tutorial_wallet_setup",
     amount=int(1e6),
 ) -> None:  # bitcoin_core: Path,
@@ -133,36 +134,38 @@ def test_wizard(
 
         qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
-        wizard: Wizard = qt_protowallet.wizard
+        wizard = qt_protowallet.wizard
+        assert isinstance(wizard, Wizard)
 
-        def page1() -> None:
+        def page1(wizard: Wizard) -> None:
             """Page1."""
             shutter.save(main_window)
-            step: BuyHardware = wizard.tab_generators[TutorialStep.buy]
+            step = wizard.tab_generators[TutorialStep.buy]
+            assert isinstance(step, BuyHardware)
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
-        page1()
+        page1(wizard)
 
-        def page_sticker() -> None:
+        def page_sticker(wizard: Wizard) -> None:
             """Page sticker."""
             shutter.save(main_window)
             step: StickerTheHardware = wizard.tab_generators[TutorialStep.sticker]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
-        page_sticker()
+        page_sticker(wizard)
 
-        def page_generate() -> None:
+        def page_generate(wizard: Wizard) -> None:
             """Page generate."""
             shutter.save(main_window)
             step: GenerateSeed = wizard.tab_generators[TutorialStep.generate]
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
-        page_generate()
+        page_generate(wizard)
 
-        def page_import() -> None:
+        def page_import(wizard: Wizard) -> None:
             """Page import."""
             shutter.save(main_window)
             step: ImportXpubs = wizard.tab_generators[TutorialStep.import_xpub]
@@ -215,7 +218,9 @@ def test_wizard(
                 assert "{ background-color: #ff6c54; }" in edit.styleSheet()
 
                 # check that you cannot go further without import xpub
-                def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                def wrong_entry_xpub_try_to_proceed(
+                    dialog: QMessageBox, error_message: str = error_message
+                ) -> None:
                     """Wrong entry xpub try to proceed."""
                     shutter.save(dialog)
                     assert dialog.text() == error_message
@@ -241,7 +246,9 @@ def test_wizard(
 
             with patch("bitcoin_safe.gui.qt.main.Message") as mock_message:
                 # check that you cannot go further without import xpub
-                def wrong_entry_xpub_try_to_proceed(dialog: QMessageBox) -> None:
+                def wrong_entry_xpub_try_to_proceed(
+                    dialog: QMessageBox, error_message: str = error_message
+                ) -> None:
                     """Wrong entry xpub try to proceed."""
                     shutter.save(dialog)
                     assert dialog.text() == error_message
@@ -252,6 +259,7 @@ def test_wizard(
                 )
 
                 QTest.qWait(200)
+                assert mock_message is not None
 
             shutter.save(main_window)
             edit.clear()
@@ -259,8 +267,8 @@ def test_wizard(
             shutter.save(main_window)
 
             # correct entry
-            for edit in [keystore.edit_xpub, keystore.edit_key_origin, keystore.edit_fingerprint]:
-                edit.setText("")
+            for _edit in [keystore.edit_xpub, keystore.edit_key_origin, keystore.edit_fingerprint]:
+                _edit.setText("")
             keystore.edit_seed.setText(test_seeds[0])
             shutter.save(main_window)
             assert keystore.edit_fingerprint.text().lower() == "5aa39a43"
@@ -274,13 +282,13 @@ def test_wizard(
             keystore.textEdit_description.setText("test description")
 
             # check no error warning
-            for edit in [
+            for _edit in [
                 keystore.edit_seed,
                 keystore.edit_xpub,
                 keystore.edit_key_origin,
                 keystore.edit_fingerprint,
             ]:
-                assert "background-color" not in keystore.edit_xpub.input_field.styleSheet()
+                assert "background-color" not in _edit.input_field.styleSheet()
 
             save_wallet(
                 test_config=test_config,
@@ -288,21 +296,26 @@ def test_wizard(
                 save_button=step.button_create_wallet,
             )
 
-        page_import()
+        page_import(wizard)
 
         ######################################################
         # now that the qt wallet is created i have to reload the
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
-        assert qt_wallet
+        assert isinstance(qt_wallet, QTWallet)
         wizard = qt_wallet.wizard
+        assert isinstance(wizard, Wizard)
 
         def do_all(qt_wallet: QTWallet):
             "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
 
+            wizard = qt_wallet.wizard
+            assert isinstance(wizard, Wizard)
+
             def page_backup() -> None:
                 """Page backup."""
                 shutter.save(main_window)
-                step: BackupSeed = wizard.tab_generators[TutorialStep.backup_seed]
+                step = wizard.tab_generators[TutorialStep.backup_seed]
+                assert isinstance(step, BackupSeed)
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                     assert step.custom_yes_button.isVisible()
                     step.custom_yes_button.click()
@@ -327,7 +340,8 @@ def test_wizard(
             def page_receive() -> None:
                 """Page receive."""
                 shutter.save(main_window)
-                step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
+                step = wizard.tab_generators[TutorialStep.receive]
+                assert isinstance(step, ReceiveTest)
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
                 address_with_spaces = step.quick_receive.group_boxes[0].label.text()
                 assert address_with_spaces == insert_invisible_spaces_for_wordwrap(
@@ -335,7 +349,8 @@ def test_wizard(
                 )
                 address = step.quick_receive.group_boxes[0].address
                 assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
-                faucet.send(address, amount=amount)
+                faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
+                wait_for_sync(wallet=qt_wallet.wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
 
                 called_args_message_box = get_called_args_message_box(
                     "bitcoin_safe.gui.qt.wizard.Message",
@@ -356,7 +371,8 @@ def test_wizard(
             def page_send() -> None:
                 """Page send."""
                 shutter.save(main_window)
-                step: SendTest = wizard.tab_generators[TutorialStep.send]
+                step = wizard.tab_generators[TutorialStep.send]
+                assert isinstance(step, SendTest)
                 assert step.refs.floating_button_box.isVisible()
                 assert step.refs.floating_button_box.button_create_tx.isVisible()
                 assert not step.refs.floating_button_box.tutorial_button_prefill.isVisible()
@@ -374,7 +390,7 @@ def test_wizard(
                     box.recipient_widget.address_edit.input_field.palette()
                     .color(QtGui.QPalette.ColorRole.Base)
                     .name()
-                    == "#8af296"
+                    == ColorScheme.GREEN.as_color(background=True).name()
                 )
                 fee_info = qt_wallet.uitx_creator.estimate_fee_info(
                     qt_wallet.uitx_creator.column_fee.fee_group.spin_fee_rate.value()
@@ -402,18 +418,22 @@ def test_wizard(
                 assert round(viewer.fee_info.fee_rate(), 1) == 1.0
                 assert not viewer.column_fee.fee_group.allow_edit
                 assert viewer.column_fee.fee_group.spin_fee_rate.value() == 1.0
-                assert viewer.column_fee.fee_group.cpfp_fee_label.isVisible()
+                if backend == "cbf":
+                    # CBF backend mines blocks for the faucet so the tx is confirmed; CPFP label stays hidden
+                    assert not viewer.column_fee.fee_group.cpfp_fee_label.isVisible()
+                else:
+                    assert viewer.column_fee.fee_group.cpfp_fee_label.isVisible()
                 assert not viewer.column_fee.fee_group.approximate_fee_label.isVisible()
 
                 sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
 
                 with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
-                    with qtbot.waitSignal(
-                        main_window.wallet_functions.wallet_signals[qt_wallet.wallet.id].updated,
-                        timeout=10000,
-                    ):  # Timeout after 10 seconds
-                        viewer.button_send.click()
-                    qtbot.wait(10000)
+                    viewer.button_send.click()
+                    assert isinstance((tx := viewer.data.data), bdk.Transaction)
+                    wait_for_sync(
+                        qtbot=qtbot, wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=20_000
+                    )
+                    qtbot.wait_until(lambda: bool(mock_message.call_count), timeout=10_000)
                     mock_message.assert_called_with(
                         main_window.tr("All Send tests done successfully."), type=MessageType.Info
                     )
@@ -427,7 +447,8 @@ def test_wizard(
                 """Page10."""
                 shutter.save(main_window)
 
-                step: DistributeSeeds = wizard.tab_generators[TutorialStep.distribute]
+                step = wizard.tab_generators[TutorialStep.distribute]
+                assert isinstance(step, DistributeSeeds)
                 assert step.buttonbox_buttons[0].isVisible()
                 step.buttonbox_buttons[0].click()
 
@@ -435,22 +456,22 @@ def test_wizard(
 
             page10()
 
-            def page11() -> None:
+            def page11(wizard: Wizard) -> None:
                 """Page11."""
                 shutter.save(main_window)
 
-                step: LabelBackup = wizard.tab_generators[TutorialStep.sync]
+                step = wizard.tab_generators[TutorialStep.sync]
+                assert isinstance(step, LabelBackup)
                 assert step.buttonbox_buttons[0].isVisible()
                 step.buttonbox_buttons[0].click()
 
                 shutter.save(main_window)
 
-            page11()
+            page11(wizard)
 
         do_all(qt_wallet)
-        del wizard
 
-        def check_address_balances():
+        def check_address_balances(qt_wallet: QTWallet):
             """Check address balances."""
             wallet = qt_wallet.wallet
 
@@ -464,9 +485,9 @@ def test_wizard(
             assert total
             assert total == wallet.get_balance().total
 
-        check_address_balances()
+        check_address_balances(qt_wallet)
 
-        def check_utxo_list():
+        def check_utxo_list(qt_wallet: QTWallet):
             """Check utxo list."""
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             qt_wallet.uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
@@ -486,7 +507,8 @@ def test_wizard(
             assert total
             assert total == qt_wallet.wallet.get_balance().total
 
-        check_utxo_list()
+        check_utxo_list(qt_wallet)
+        del wizard
 
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()

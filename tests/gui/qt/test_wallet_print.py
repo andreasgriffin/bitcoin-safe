@@ -32,18 +32,17 @@ import inspect
 import shutil
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 
 import pytest
-from PyQt6.QtCore import Qt
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from tests.setup_fulcrum import Faucet
-from .test_wallet_send import SEND_TEST_WALLET_FUND_AMOUNT
+from tests.faucet import Faucet
+
+from ...helpers import TestConfig
+from ...util import wait_for_sync
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -51,6 +50,7 @@ from .helpers import (
     fund_wallet,
     main_window_context,
 )
+from .test_wallet_send import SEND_TEST_WALLET_FUND_AMOUNT
 
 
 @pytest.mark.marker_qt_2
@@ -58,7 +58,7 @@ def test_print_existing_transaction(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     faucet: Faucet,
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -82,7 +82,9 @@ def test_print_existing_transaction(
         assert qt_wallet
 
         if not qt_wallet.wallet.sorted_delta_list_transactions():
-            fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT)
+            fund_wallet(faucet=faucet, qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT, qtbot=qtbot)
+
+        wait_for_sync(wallet=qt_wallet.wallet, minimum_funds=1, qtbot=qtbot)
 
         tx_history = qt_wallet.wallet.sorted_delta_list_transactions()
 

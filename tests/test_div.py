@@ -136,7 +136,9 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
             instance.signal.emit()
             instance.signal.emit()
 
-        assert [record.msg for record in caplog.records] == [str(i) for i in range(n)]
+        assert [record.msg for record in caplog.records if record.name == __name__] == [
+            str(i) for i in range(n)
+        ]
 
 
 def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture):
@@ -167,4 +169,4 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
             instance.signal.emit()
 
         # since f(0) == None, the 1. signal simply reconnects
-        assert [record.msg for record in caplog.records] == ["0", "0"]
+        assert [record.msg for record in caplog.records if record.name == __name__] == ["0", "0"]

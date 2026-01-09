@@ -40,12 +40,12 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt import address_dialog
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.util import svg_tools
 
-from ...setup_fulcrum import Faucet
+from ...helpers import TestConfig
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -62,7 +62,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     caplog: pytest.LogCaptureFixture,
     wallet_file: str = "0.2.0.wallet",
 ) -> None:
@@ -84,7 +84,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         shutil.copy(str(wallet_path), str(temp_dir))
 
         qt_wallet = main_window.open_wallet(str(temp_dir))
-        assert qt_wallet
+        assert isinstance(qt_wallet, QTWallet)
 
         waiting_icon = svg_tools.get_QIcon("status_waiting.svg")
         connected_icon = svg_tools.get_QIcon("status_connected.svg")
@@ -92,14 +92,14 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         # QIcon.cacheKey() uniquely identifies the rendered icon, so matching cache keys
         # verifies that the expected asset is set on the tab.
         qtbot.waitUntil(
-            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))
+            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
             and _node.icon
             and _node.icon.cacheKey() == waiting_icon.cacheKey(),
             timeout=10000,
         )
 
         qtbot.waitUntil(
-            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))
+            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
             and _node.icon
             and _node.icon.cacheKey() == connected_icon.cacheKey(),
             timeout=10000,
@@ -112,7 +112,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         wallet_address = qt_wallet.wallet.get_addresses()[0]
         assert wallet_address == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
 
-        def check_open_address_dialog():
+        def check_open_address_dialog(qt_wallet: QTWallet):
             """Check open address dialog."""
             prev_count = len(main_window.attached_widgets)
             main_window.show_address(wallet_address, qt_wallet.wallet.id)
@@ -126,13 +126,13 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             QApplication.processEvents()
             qtbot.waitUntil(lambda: d not in main_window.attached_widgets)
 
-        check_open_address_dialog()
+        check_open_address_dialog(qt_wallet)
 
-        def check_empty():
+        def check_empty(qt_wallet: QTWallet):
             """Check empty."""
             assert qt_wallet.wallet.get_balance().total == 0
 
-        check_empty()
+        check_empty(qt_wallet)
 
         def open_tx() -> UITx_Viewer:
             """Open tx."""
@@ -145,7 +145,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                     return child.widget
             raise Exception("no UITx_Viewer found")
 
-        def save_tx_to_local(tx_tab: UITx_Viewer):
+        def save_tx_to_local(tx_tab: UITx_Viewer, qt_wallet: QTWallet):
             """Save tx to local."""
             assert tx_tab.button_save_local_tx.isVisible()
             tx_tab.save_local_tx()
@@ -162,12 +162,12 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                 if isinstance(child.widget, UITx_Viewer):
                     child.removeNode()
 
-        def open_and_save_tx():
+        def open_and_save_tx(qt_wallet: QTWallet):
             """Open and save tx."""
             tx_tab = open_tx()
-            save_tx_to_local(tx_tab)
+            save_tx_to_local(tx_tab, qt_wallet)
 
-        open_and_save_tx()
+        open_and_save_tx(qt_wallet)
 
         # if True:
         with CheckedDeletionContext(
@@ -205,7 +205,7 @@ def test_open_same_wallet_twice(
     qapp: QApplication,
     qtbot: QtBot,
     mytest_start_time: datetime,
-    test_config: UserConfig,
+    test_config: TestConfig,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Ensure reopening the same wallet shows an info message."""

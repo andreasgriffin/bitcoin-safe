@@ -27,15 +27,16 @@
 # SOFTWARE.
 
 from __future__ import annotations
+
 from typing import cast
-from PyQt6.QtCore import QLocale, QObject, pyqtSignal
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
-from bitcoin_safe_lib.tx_util import serialized_to_hex
-from pytestqt.qtbot import QtBot
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.tx_util import serialized_to_hex
+from PyQt6.QtCore import QObject, pyqtSignal
+from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.psbt_util import SimpleOutput, SimplePSBT
 from bitcoin_safe.pythonbdk_types import TxOut
@@ -90,7 +91,7 @@ def test_psbt_0_1of1():
     """Test psbt 0 1of1."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_1of1)
     input_ = psbt.inputs[0]
-    input_._get_m_of_n
+    assert input_._get_m_of_n
     assert len(input_.partial_sigs) == 0, "psbt_0_1of1 should have 0 signatures"
     assert not input_.is_fully_signed(), "psbt_0_1of1 should not be fully signed"
 
@@ -130,7 +131,7 @@ def test_psbt_optional_fields():
     """Test psbt optional fields."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of2)
     assert psbt.inputs[0].non_witness_utxo
-    psbt.inputs[0].non_witness_utxo.get("input", {}) == [
+    assert psbt.inputs[0].non_witness_utxo.get("input", {}) == [
         {
             "previous_output": "a873ec7d905086acf870db501cfe4b6fa6e4e9d00b68c663127f7a5f637cf5aa:0",
             "script_sig": "",
@@ -142,19 +143,23 @@ def test_psbt_optional_fields():
         }
     ]
 
-    psbt.outputs[0].value == 9999850
-    psbt.outputs[0].script_pubkey == "00206fcddedc8359bc8f6b05fea029d4132f8b6e565a71b5e6328062d2739c9efe02"
-    psbt.outputs[
-        0
-    ].witness_script == "522102729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea21029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd732878952ae"
+    assert psbt.outputs[0].value == 9999850
+    assert (
+        psbt.outputs[0].script_pubkey
+        == "00206fcddedc8359bc8f6b05fea029d4132f8b6e565a71b5e6328062d2739c9efe02"
+    )
+    assert (
+        psbt.outputs[0].witness_script
+        == "522102729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea21029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd732878952ae"
+    )
 
-    psbt.outputs[0].bip32_derivation[0].__dict__ == {
+    assert psbt.outputs[0].bip32_derivation[0].__dict__ == {
         "fingerprint": "5B3730FB",
         "pubkey": "02729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea",
         "derivation_path": "m/48'/1'/0'/2'/0/2",
         "label": "",
     }
-    psbt.outputs[0].bip32_derivation[1].__dict__ == {
+    assert psbt.outputs[0].bip32_derivation[1].__dict__ == {
         "fingerprint": "2597E429",
         "pubkey": "029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd7328789",
         "derivation_path": "m/48'/1'/0'/2'/0/2",

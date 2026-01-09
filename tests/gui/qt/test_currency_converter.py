@@ -28,23 +28,22 @@
 
 
 from __future__ import annotations
+
+import bdkpython as bdk
+import pytest
 from pytestqt.qtbot import QtBot
 
-import pytest
-import bdkpython as bdk
-from PyQt6.QtCore import QLocale, QObject, pyqtSignal
-from typing import Optional, Tuple
-from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
-
 from bitcoin_safe.gui.qt.currency_converter import CurrencyConverter
 from bitcoin_safe.gui.qt.ui_tx.spinbox import BTCSpinBox, FiatSpinBox
 from bitcoin_safe.util import SATOSHIS_PER_BTC
 
+from ...helpers import TestConfig
+
 
 def test_conversions(
     qtbot: QtBot,
-    test_config: UserConfig,
+    test_config: TestConfig,
 ):
     fx = FX(config=test_config, loop_in_thread=None, update_rates=False)
     fx.rates = {
@@ -155,6 +154,7 @@ def test_conversions(
     qtbot.addWidget(fiat_spin)
 
     converter = CurrencyConverter(btc_spin, fiat_spin)
+    assert isinstance(converter, CurrencyConverter)
 
     btc_value = 123456
     btc_spin.setValue(btc_value)

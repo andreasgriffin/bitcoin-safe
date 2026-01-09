@@ -433,7 +433,7 @@ class P2pListenerType(enum.Enum):
 
 
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.2.3"
+    VERSION = "0.2.5"
     known_classes = {
         **BaseSaveableClass.known_classes,
         BlockchainType.__name__: BlockchainType,
@@ -466,6 +466,7 @@ class NetworkConfig(BaseSaveableClass):
         self.proxy_url: str | None = None
         self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
         self.p2p_inital_url: str = get_default_p2p_node_urls(network=network)["default"]
+        self.p2p_autodiscover_additional_peers: bool = True
         self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
