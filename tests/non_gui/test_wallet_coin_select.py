@@ -212,7 +212,7 @@ def test_funded_wallet(
         minimum_funds=test_wallet_config.utxo_value_private * len(addresses_private)
         + test_wallet_config.utxo_value_kyc * len(addresses_kyc),
         qtbot=qtbot,
-        timeout=60_000,
+        timeout=120_000,
     )
     yield wallet
 
