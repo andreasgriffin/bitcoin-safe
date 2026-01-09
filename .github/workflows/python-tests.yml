@@ -92,5 +92,5 @@ jobs:
       if: always()  # This ensures the step runs regardless of previous failures    
       uses: actions/upload-artifact@v4
       with:
-        name: test-output
+        name: test-output-${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}
         path: tests/output
