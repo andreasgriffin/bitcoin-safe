@@ -468,7 +468,7 @@ def test_wallet_features_multisig(
                 assert main_window.update_notification_bar.isVisible()
 
                 with qtbot.waitSignal(
-                    main_window.update_notification_bar.signal_on_success, timeout=10000
+                    main_window.update_notification_bar.signal_on_success, timeout=10_000
                 ):  # Timeout after 10 seconds
                     main_window.update_notification_bar.check()
 
