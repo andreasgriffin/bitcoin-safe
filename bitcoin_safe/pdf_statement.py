@@ -30,8 +30,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
-from pathlib import Path
 from typing import Any
 
 import bdkpython as bdk
@@ -46,7 +44,7 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import PageBreak, Paragraph, Table, TableStyle
 
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space
+from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space, write_and_open_temp_pdf
 
 from .wallet import Wallet
 
@@ -359,6 +357,4 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
         label_sync_nsec=label_sync_nsec,
     )
 
-    temp_file = os.path.join(Path.home(), f"{file_title}.pdf")
-    pdf_statement.save_pdf(temp_file)
-    pdf_statement.open_pdf(temp_file)
+    write_and_open_temp_pdf(pdf_statement, file_title)

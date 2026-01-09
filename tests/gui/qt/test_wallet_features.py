@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import inspect
 import logging
-import os
 import platform
 import tempfile
 from datetime import datetime
@@ -38,6 +37,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import bdkpython as bdk
+import platformdirs
 import pytest
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_usb.address_types import AddressTypes
@@ -293,10 +293,12 @@ def test_wallet_features_multisig(
 
                     mock_open.assert_called_once()
 
-                    temp_file = os.path.join(Path.home(), f"Seed backup of {wallet_name}.pdf")
-                    assert Path(temp_file).exists()
-                    # remove the file again
-                    Path(temp_file).unlink()
+                    cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
+                    prefix = f"Seed backup of {wallet_name}".replace(" ", "_")
+                    temp_files = list(cache_dir.glob(f"{prefix}-*.pdf"))
+                    assert temp_files
+                    for temp_file in temp_files:
+                        temp_file.unlink()
 
             menu_action_export_pdf()
 

@@ -28,14 +28,17 @@
 
 from __future__ import annotations
 
+import atexit
 import io
 import logging
 import os
+import tempfile
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any
 
+import platformdirs
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL.Image import Image as PilImage
@@ -64,9 +67,40 @@ from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
+_TEMP_PDFS: set[Path] = set()
+
+
+def _cleanup_temp_pdfs() -> None:
+    for path in list(_TEMP_PDFS):
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            logger.warning("Could not remove temporary PDF at %s", path)
+
+
+atexit.register(_cleanup_temp_pdfs)
+
 
 TEXT_24_WORDS = translate("pdf", "12 or 24")
 DEFAULT_MARGIN = 36
+
+
+def _safe_filename_prefix(filename: str) -> str:
+    return "".join(char if char.isalnum() or char in {"-", "_"} else "_" for char in filename)
+
+
+def write_and_open_temp_pdf(pdf: BasePDF, filename: str) -> None:
+    """Write a PDF to the user cache directory and open it with the OS."""
+    safe_prefix = _safe_filename_prefix(filename)
+    cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    temp_fd, temp_file = tempfile.mkstemp(prefix=f"{safe_prefix}-", suffix=".pdf", dir=cache_dir)
+    os.close(temp_fd)
+    pdf.save_pdf(temp_file)
+    pdf.open_pdf(temp_file)
+    _TEMP_PDFS.add(Path(temp_file))
 
 
 def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
@@ -602,8 +636,5 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
             keystore_label=keystore.label,
         )
         pdf_recovery.add_page_break()
-    temp_file = os.path.join(
-        Path.home(), translate("pdf", "Seed backup of {id}").format(id=wallet.id) + ".pdf"
-    )
-    pdf_recovery.save_pdf(temp_file)
-    pdf_recovery.open_pdf(temp_file)
+    filename = translate("pdf", "Seed backup of {id}").format(id=wallet.id)
+    write_and_open_temp_pdf(pdf_recovery, filename)
