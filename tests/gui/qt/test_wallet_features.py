@@ -31,6 +31,7 @@ from __future__ import annotations
 import inspect
 import logging
 import os
+import platform
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -64,6 +65,7 @@ from .helpers import (
     close_wallet,
     do_modal_click,
     main_window_context,
+    running_on_github,
     save_wallet,
 )
 
@@ -463,6 +465,10 @@ def test_wallet_features_multisig(
 
             def menu_action_check_update() -> None:
                 """Menu action check update."""
+                if platform.system() == "Windows" and running_on_github():
+                    # github windows network is very flaky
+                    return
+
                 main_window.menu_action_check_update.trigger()
                 shutter.save(main_window)
                 assert main_window.update_notification_bar.isVisible()

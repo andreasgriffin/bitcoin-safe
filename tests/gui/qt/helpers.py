@@ -539,3 +539,7 @@ class CheckedDeletionContext:
             # runt eh line below separately
             # len(get_cell_referrers(self))
         ##### for_debug_only
+
+
+def running_on_github() -> bool:
+    return os.getenv("GITHUB_ACTIONS") == "true"
