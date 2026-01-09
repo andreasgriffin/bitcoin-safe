@@ -1,0 +1,24 @@
+name: Python Tests Matrix
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  linux-tests:
+    uses: ./.github/workflows/python-tests.yml
+    secrets: inherit
+    with:
+      os: ubuntu-22.04
+
+  windows-tests:
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pytest-win') }}
+    uses: ./.github/workflows/python-tests.yml
+    secrets: inherit
+    with:
+      os: windows-latest
