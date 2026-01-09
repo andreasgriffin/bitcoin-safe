@@ -37,7 +37,6 @@ from pathlib import Path
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
@@ -76,12 +75,11 @@ class TestWalletHandle:
         logger.info("start sync")
         wait_for_sync(qtbot=qtbot, wallet=self.wallet, timeout=timeout)
 
-    def mine(self, qtbot: QtBot, blocks=1, address=None, timeout: float = 10_000):
+    def mine(self, qtbot: QtBot, blocks=1, address=None, timeout: float = 60_000):
         """Mine to the wallet and wait until detected."""
 
         bdk_wallet = self.wallet.bdkwallet
         txs = bdk_wallet.transactions()
-        prev_balance = self.wallet.get_balance().total
         address = (
             address
             if address
@@ -92,22 +90,7 @@ class TestWalletHandle:
             blocks,
             address=address,
         )
-        attempts = 0
-        max_attempts = 20
-        while len(bdk_wallet.transactions()) - len(txs) < len(block_hashes):
-            if attempts:
-                QApplication.processEvents()
-                qtbot.wait(1000)
-            attempts += 1
-            try:
-                wait_for_sync(
-                    qtbot=qtbot, wallet=self.wallet, timeout=timeout, minimum_funds=prev_balance + 1
-                )
-            except RuntimeError as exc:
-                logger.error(f"Stopping mine wait loop: {exc}")
-                # raise
-            if attempts >= max_attempts:
-                raise RuntimeError("Test wallet sync did not detect mined blocks in time")
+        wait_for_sync(qtbot=qtbot, wallet=self.wallet, timeout=timeout, tx_count=len(block_hashes) + len(txs))
         logger.debug(f"Test Wallet balance is: {bdk_wallet.balance().total.to_sat()}")
 
 

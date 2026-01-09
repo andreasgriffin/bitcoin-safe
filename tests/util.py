@@ -96,10 +96,29 @@ def make_psbt(
 
 
 def wait_for_sync(
-    qtbot: QtBot, wallet: Wallet, minimum_funds=0, txid: str | None = None, timeout: float = 10_000
+    qtbot: QtBot,
+    wallet: Wallet,
+    minimum_funds=0,
+    txid: str | None = None,
+    tx_count: int = 0,
+    timeout: float = 10_000,
 ):
     def condition() -> bool:
-        return bool(wallet.get_balance().total >= minimum_funds and (not txid or wallet.get_tx(txid)))
+        return bool(
+            wallet.get_balance().total >= minimum_funds
+            and (not txid or wallet.get_tx(txid))
+            and len(wallet.bdkwallet.transactions()) >= tx_count
+        )
+
+    def info_message():
+        logger.info(f"{wallet.get_balance().total=}")
+        logger.info(f"{(not txid or wallet.get_tx(txid))=}")
+        logger.info(f"{len(wallet.bdkwallet.transactions())=}")
+
+    if condition():
+        logger.info("No need to wait. Condition already satisfied")
+        info_message()
+        return
 
     if wallet.config.network_config.server_type == BlockchainType.CompactBlockFilter:
         # since p2p listenting and
@@ -109,9 +128,9 @@ def wait_for_sync(
             QCoreApplication.processEvents()
             qtbot.waitUntil(condition, timeout=int(timeout))
         except Exception:
-            logger.info(f"{wallet.get_balance().total=}")
-            logger.info(f"{(not txid or wallet.get_tx(txid))=}")
             raise
+        finally:
+            info_message()
 
     else:
         # electrum servers need active sync triggering
@@ -135,3 +154,4 @@ def wait_for_sync(
             logger.info(f"{wallet.id=} received {wallet.get_balance().total} sats")
 
         wallet.loop_in_thread.run_foreground(wait_for_funds())
+        info_message()
