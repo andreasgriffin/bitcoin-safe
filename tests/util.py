@@ -35,7 +35,7 @@ from typing import cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QObject, pyqtBoundSignal, pyqtSignal
+from PyQt6.QtCore import QCoreApplication, QObject, pyqtBoundSignal, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
@@ -106,6 +106,7 @@ def wait_for_sync(
         # cbf node syncronization happens without any triggering in the background
         # we just have to wait
         try:
+            QCoreApplication.processEvents()
             qtbot.waitUntil(condition, timeout=int(timeout))
         except Exception:
             logger.info(f"{wallet.get_balance().total=}")

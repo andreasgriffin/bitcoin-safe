@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "configurations": [{
       "name": "Python: Module",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "bitcoin_safe",
       "console": "integratedTerminal",
@@ -14,7 +14,7 @@
     },
     {
       "name": "Pytest cbf backend",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -31,7 +31,7 @@
     },
     {
       "name": "Pytest fulcrum",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -48,7 +48,7 @@
     },
     {
       "name": "Pytest gui",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -66,7 +66,7 @@
     },
     {
       "name": "Pytest non-gui",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -82,7 +82,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Pytest: Current File [fulcrum]",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -98,7 +98,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Pytest: Current File [cbf]",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": [
@@ -115,7 +115,7 @@
     },
     {
       "name": "network settings",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "bitcoin_safe.gui.qt.network_settings",
       "console": "integratedTerminal",
@@ -124,7 +124,7 @@
     },
     {
       "name": "plugins demo",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "bitcoin_safe/plugin_framework/plugins/demo_client.py",
       "console": "integratedTerminal",
@@ -132,7 +132,7 @@
     },
     {
       "name": "step_progress_bar",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "bitcoin_safe.gui.qt.step_progress_bar",
       "console": "integratedTerminal",
@@ -141,7 +141,7 @@
     },
     {
       "name": "p2p",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "bitcoin_safe.p2p",
       "console": "integratedTerminal",
@@ -150,7 +150,7 @@
     },
     {
       "name": "Translation update",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -160,7 +160,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "insert_chatgpt_translations",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -171,7 +171,7 @@
     },
     {
       "name": "Translation csv to ts",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -182,7 +182,7 @@
     },
     {
       "name": "Weblate correct",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -193,7 +193,7 @@
     },
     {
       "name": "Build",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -204,7 +204,7 @@
     },
     {
       "name": "Build windows",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -215,7 +215,7 @@
     },
     {
       "name": "Build linux",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -225,7 +225,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build mac",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -236,7 +236,7 @@
     },
     {
       "name": "Build Linux (Current Files)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -247,7 +247,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build Mac (Current Files)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -258,7 +258,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Build Windows (Current Files)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -269,7 +269,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Sign",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -280,7 +280,7 @@
     },
     {
       "name": "Lock no cache",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "tools/build.py",
       "args": [
@@ -290,7 +290,7 @@
       "preLaunchTask": "Poetry Install",
     }, {
       "name": "Current File",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",

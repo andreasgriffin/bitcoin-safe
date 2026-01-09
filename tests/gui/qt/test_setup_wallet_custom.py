@@ -319,7 +319,6 @@ def test_custom_wallet_setup_custom_single_sig(
             wallet_id = new_wallet.wallet.id
             del new_wallet
 
-            qtbot.wait(1000)
             close_wallet(
                 shutter=shutter,
                 test_config=test_config,

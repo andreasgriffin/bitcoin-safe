@@ -410,7 +410,14 @@ def close_wallet(
     node = main_window.tab_wallets.root.findNodeByTitle(wallet_name)
     assert node
 
-    do_modal_click(partial(main_window.close_tab, node), dialog, qtbot, cls=QMessageBox)
+    tab_data = node.data
+    if isinstance(tab_data, QTWallet):
+        if tab_data.is_in_cbf_ibd():
+            # the dialog is mocked
+            main_window.close_tab(node)
+        else:
+            do_modal_click(partial(main_window.close_tab, node), dialog, qtbot, cls=QMessageBox)
+
     gc.collect()
 
 

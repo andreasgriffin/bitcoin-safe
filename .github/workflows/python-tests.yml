@@ -3,29 +3,29 @@ permissions:
   contents: read
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
-
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      backend:
+        required: true
+        type: string
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10 
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: 10
     strategy:
       matrix:
         python-version: ['3.12']
-        os: [  ubuntu-22.04  ]  # [macos-latest, ubuntu-22.04, windows-latest]
-        backend: [fulcrum, cbf]
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -58,7 +58,7 @@ jobs:
                                libxkbcommon-x11-dev 
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
 
-    - name: Start Xvfb  
+    - name: Start Xvfb
       if: runner.os == 'Linux'
       run: |
         export DISPLAY=:99.0
@@ -72,25 +72,21 @@ jobs:
         pip install poetry
         poetry install  
 
-
     - name: Run General Tests
       run: |
-        poetry run pytest -m 'not marker_qt_1 and not marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
+        poetry run pytest -m 'not marker_qt_1 and not marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Run Tests for marker_qt_1
       run: |
-        poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
+        poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Run Tests for marker_qt_2
       run: |
-        poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ matrix.backend }}
-
-
-
+        poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Upload output Files from tests/output
       if: always()  # This ensures the step runs regardless of previous failures    
       uses: actions/upload-artifact@v4
       with:
-        name: test-output-${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}
+        name: test-output-${{ matrix.python-version }}-${{ inputs.os }}-${{ inputs.backend }}
         path: tests/output

@@ -92,8 +92,10 @@ class TestWalletHandle:
             address=address,
         )
         attempts = 0
-        max_attempts = 40
+        max_attempts = 5
         while len(bdk_wallet.transactions()) - len(txs) < len(block_hashes):
+            if attempts:
+                qtbot.wait(1000)
             attempts += 1
             try:
                 wait_for_sync(

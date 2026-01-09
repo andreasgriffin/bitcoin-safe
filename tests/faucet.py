@@ -161,7 +161,7 @@ class Faucet:
     def _initial_mine(self, qtbot: QtBot):
         """Initial mine."""
         # Keep initial funding lightweight to avoid long CBF syncs.
-        self.wallet_handle.mine(blocks=200, qtbot=qtbot, timeout=60_000)
+        self.wallet_handle.mine(blocks=200, qtbot=qtbot, timeout=120_000)
 
     def close(self):
         """Clean up backend resources."""

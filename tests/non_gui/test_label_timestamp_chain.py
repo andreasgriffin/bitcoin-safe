@@ -87,6 +87,8 @@ def test_chained_label_timestamp_updates() -> None:
     timestamp_cat = wallet.labels.get_timestamp(addr)
     assert timestamp_cat and timestamp_cat > timestamp_new
 
+    time.sleep(0.01)
+
     # 6) Renaming the category touches the label and therefore updates timestamp.
     wallet.labels.rename_category("cat-0", "cat-1")
     timestamp_renamed = wallet.labels.get_timestamp(addr)
