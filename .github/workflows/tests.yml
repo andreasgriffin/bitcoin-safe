@@ -11,14 +11,22 @@ on:
 
 jobs:
   linux-tests:
+    strategy:
+      matrix:
+        backend: [fulcrum, cbf]
     uses: ./.github/workflows/python-tests.yml
     secrets: inherit
     with:
       os: ubuntu-22.04
+      backend: ${{ matrix.backend }}
 
   windows-tests:
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pytest-win') }}
+    strategy:
+      matrix:
+        backend: [cbf]
     uses: ./.github/workflows/python-tests.yml
     secrets: inherit
     with:
       os: windows-latest
+      backend: ${{ matrix.backend }}
