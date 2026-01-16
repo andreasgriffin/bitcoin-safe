@@ -119,10 +119,15 @@ class Faucet:
 
     def _broadcast(self, tx: bdk.Transaction):
         """Broadcast a transaction using the active backend."""
-        result = bitcoin_cli(f"sendrawtransaction {serialized_to_hex(tx.serialize())}", self.bitcoin_core)
-        logger.info(f"bitcoin_cli sendrawtransaction answer {result=}")
-        # assert self.wallet.client, "Wallet backend not initialized"
-        # return self.wallet.client.broadcast(tx)
+        for _ in range(10):
+            result = bitcoin_cli(f"sendrawtransaction {serialized_to_hex(tx.serialize())}", self.bitcoin_core)
+            logger.info(f"bitcoin_cli sendrawtransaction answer {result=}")
+            if result:
+                break
+            else:
+                time.sleep(1)
+        else:
+            raise Exception(f"Broadcasting {tx} failed.  no txid received from bitcoin_cli")
 
     def send(
         self, destination_address: str, qtbot: QtBot, amount=SATOSHIS_PER_BTC, fee_rate=1
