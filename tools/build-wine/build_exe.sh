@@ -46,9 +46,11 @@ info "Installing requirements..."
 
 
 info "Installing dependencies using uv" 
+move_and_overwrite "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.venv_org"
 $WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
   || $WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
   || { echo "uv sync failed twice"; exit 1; }
+move_and_overwrite "$PROJECT_ROOT/.venv_org" "$PROJECT_ROOT/.venv"
 
 
 info "now install the root package"
