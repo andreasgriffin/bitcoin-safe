@@ -13,6 +13,11 @@ on:
       signing-policy-slug:
         description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
         required: false
+        type: choice
+        options:
+          - ''
+          - test-signing
+          - release-signing
         default: ''
       skip_build_and_test_release_tag:
         description: 'Release tag to download prebuilt Windows artifacts instead of building (leave empty to build)'
@@ -20,6 +25,18 @@ on:
         default: ''
         type: string
   workflow_call:
+    inputs:
+      commitHash:
+        required: false
+        type: string
+      signing-policy-slug:
+        required: false
+        type: string
+        default: ''
+      skip_build_and_test_release_tag:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build:
@@ -111,7 +128,7 @@ jobs:
 
       - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
         id: signpath-io
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         uses: signpath/github-action-submit-signing-request@v1.1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -124,7 +141,7 @@ jobs:
           output-artifact-directory: 'signpath-signed'
 
       - name: Upload Signed EXE Files from signpath-signed/
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
@@ -133,7 +150,7 @@ jobs:
 
 
       - name: Compare signed and unsigned files
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         run: |
           tools/build-wine/verify_signed_executables.sh dist signpath-signed portable setup
 
@@ -142,21 +159,21 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download signed portable artifact
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         uses: actions/download-artifact@v4
         with:
           name: signpath-signed
           path: artifacts
 
       - name: Download unsigned portable artifact
-        if: ${{ github.event_name != 'workflow_dispatch' || (github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug == '') }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug == '' }}
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: artifacts
 
       - name: Download release artifacts
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -175,7 +192,7 @@ jobs:
           done
 
       - name: Verify downloaded Windows artifacts
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event.inputs.skip_build_and_test_release_tag != '' }}
         shell: bash
         run: |
           set -euo pipefail
