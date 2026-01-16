@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Install Poetry",
+            "label": "Install uv",
             "type": "process",
             "command": "${workspaceFolder}/.venv/bin/python",
             "windows": {
@@ -12,7 +12,7 @@
                 "-m",
                 "pip",
                 "install",
-                "poetry"
+                "uv"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -20,7 +20,7 @@
             "problemMatcher": []
         },
         {
-            "label": "Poetry Install",
+            "label": "uv Sync",
             "type": "process",
             "command": "${workspaceFolder}/.venv/bin/python",
             "windows": {
@@ -28,14 +28,15 @@
             },
             "args": [
                 "-m",
-                "poetry",
-                "install"
+                "uv",
+                "sync",
+                "--locked"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
-            "dependsOn": "Install Poetry"
+            "dependsOn": "Install uv"
         }
     ]
 }

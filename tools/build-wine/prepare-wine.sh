@@ -51,17 +51,14 @@ info "Installing build dependencies"
 do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build.txt"
 
 
-info "Installing build dependencies using poetry"
-# Installing via poetry directly would be better, but it seems not possible to 
-# overwrite the poetry.toml config to prevent local venv
-export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
-export POETRY_VIRTUALENVS_CREATE=false
-$WINE_PYTHON -m poetry config virtualenvs.create false
-move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
-$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
-  || $WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
-  || { echo "poetry install failed twice"; exit 1; }
-move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
+info "Installing build dependencies using uv"
+export UV_CACHE_DIR="$BUILD_CACHEDIR/uv"
+export UV_LINK_MODE=copy
+mkdir -p "$UV_CACHE_DIR"
+LOCKFILE="$PROJECT_ROOT/uv.lock"
+$WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || $WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || { echo "uv sync failed twice"; exit 1; }
 
 
 

@@ -11,8 +11,9 @@ APPDIR="$BUILDDIR/bitcoin_safe.AppDir"
 BUILD_CACHEDIR="$CONTRIB_APPIMAGE/.cache/appimage"
 export DLL_TARGET_DIR="$BUILD_CACHEDIR/dlls"
 PIP_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/pip_cache"
-POETRY_WHEEL_DIR="$CONTRIB_APPIMAGE/.cache/poetry_wheel"
-POETRY_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/poetry_cache"
+UV_WHEEL_DIR="$CONTRIB_APPIMAGE/.cache/uv_wheel"
+UV_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/uv_cache"
+LOCKFILE="$PROJECT_ROOT/uv.lock"
 
 . "$CONTRIB"/build_tools_util.sh
 
@@ -95,6 +96,8 @@ appdir_python -m ensurepip
 
 break_legacy_easy_install
 
+cd "$PROJECT_ROOT"
+
 
 info "Installing build dependencies"
 function do_pip() {
@@ -106,29 +109,26 @@ function do_pip() {
 do_pip -Ir $PROJECT_ROOT/tools/deterministic-build/requirements-build.txt
 
 
-info "Installing build dependencies using poetry"
+info "Installing build dependencies using uv"
 
 ln -s "$APPDIR/usr/bin/python${PY_VER_MAJOR}" "$APPDIR/usr/bin/python"
 export PATH="$APPDIR/usr/bin:$PATH"
-# for poetry to install into the system python environment 
-# we have to also remove the .venv folder. Otherwise it will use it
-export POETRY_VIRTUALENVS_CREATE=false
-export POETRY_CACHE_DIR
-mkdir -p "$PROJECT_ROOT/.venv"
-mv "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.original.venv" # moving this out of the may so poetry doesnt detect it
-appdir_python -m poetry install --only main --no-interaction
+export UV_CACHE_DIR
+export UV_LINK_MODE=copy
+mkdir -p "$UV_CACHE_DIR"
+appdir_python -m uv sync --frozen --no-dev \
+  || appdir_python -m uv sync --frozen --no-dev \
+  || fail "uv sync failed"
 
 info "now install the root package"
-rm -rf "$POETRY_WHEEL_DIR" # delete whl
-appdir_python -m poetry build -f wheel --output="$POETRY_WHEEL_DIR"
-do_pip "$POETRY_WHEEL_DIR"/*.whl
+rm -rf "$UV_WHEEL_DIR" # delete whl
+appdir_python -m uv build --wheel --out-dir="$UV_WHEEL_DIR"
+info "Installing bitcoin_safe wheel with dependencies"
+appdir_python -m pip install --no-warn-script-location --cache-dir "$PIP_CACHE_DIR" "$UV_WHEEL_DIR"/*.whl
 
 
 # # was only needed during build time, not runtime
-appdir_python -m pip uninstall -y poetry pip 
-
-
-mv "$PROJECT_ROOT/.original.venv" "$PROJECT_ROOT/.venv" # moving the .venv back
+appdir_python -m pip uninstall -y uv pip 
 
 
 info "copying zbar"

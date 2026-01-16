@@ -24,8 +24,8 @@ PROJECT_ROOT="$CONTRIB/.."
 CACHEDIR="$CONTRIB_OSX/.cache"
 export DLL_TARGET_DIR="$CACHEDIR/dlls"
 PIP_CACHE_DIR="$CACHEDIR/pip_cache"
-POETRY_WHEEL_DIR="$CACHEDIR/poetry_wheel"
-POETRY_CACHE_DIR="$CACHEDIR/poetry_cache"
+UV_WHEEL_DIR="$CACHEDIR/uv_wheel"
+UV_CACHE_DIR="$CACHEDIR/uv_cache"
 
 mkdir -p "$CACHEDIR" "$DLL_TARGET_DIR"
 
@@ -103,21 +103,16 @@ brew install autoconf automake libtool gettext coreutils pkgconfig
 
 
 # ======================
-# Install Dependencies via Poetry in the same venv
+# Install Dependencies via uv in the same venv
 # ======================
-info "Using Poetry to install local project dependencies"
-# Optionally ensure Poetry does not create its own .venv:
-poetry config virtualenvs.create false
-# ...But we are already inside a venv, so Poetry *should* install into this environment:
-# run once; if it fails, run again; if that fails, exit 1
-poetry install --with main,build_mac \
-  || poetry install --with main,build_mac \
-  || { echo "poetry install failed twice"; exit 1; }
-
-# or, if you prefer an in-project .venv:
-# poetry config virtualenvs.in-project true
-# poetry env use python
-# poetry install --with main,build_mac
+info "Using uv to install local project dependencies"
+export UV_CACHE_DIR
+export UV_LINK_MODE=copy
+mkdir -p "$UV_CACHE_DIR"
+LOCKFILE="$PROJECT_ROOT/uv.lock"
+python -m uv sync --frozen --group build-mac --all-extras \
+  || python -m uv sync --frozen --group build-mac --all-extras \
+  || { echo "uv sync failed twice"; exit 1; }
 
 
 # ======================
@@ -203,9 +198,9 @@ cp -f "$DLL_TARGET_DIR/libusb-1.0.dylib" "$PROJECT_ROOT/bitcoin_safe/" || fail "
 # ======================
 # Install the root package (Wheel)
 # ======================
-sudo rm -Rf "$POETRY_WHEEL_DIR" || true
-poetry build -f wheel --output="$POETRY_WHEEL_DIR"
-pip install "$POETRY_WHEEL_DIR"/*.whl
+sudo rm -Rf "$UV_WHEEL_DIR" || true
+python -m uv build --wheel --out-dir="$UV_WHEEL_DIR"
+pip install "$UV_WHEEL_DIR"/*.whl
 
 
 
@@ -262,9 +257,6 @@ do
     i=$((i+1))
     sleep 1
 done
-
-# reset poetry config
-poetry config virtualenvs.create true
 
 info "Done. The .app and .dmg are *unsigned* and will trigger macOS Gatekeeper warnings."
 info "To ship, you’ll need to sign and notarize. See: sign_osx.sh"
