@@ -48,6 +48,18 @@ gnupg = None
 logger = logging.getLogger(__name__)
 
 
+class PGPDecodingError(Exception):
+    pass
+
+
+class PGPMissingSignature(Exception):
+    pass
+
+
+class PGPDownloadError(Exception):
+    pass
+
+
 @dataclass
 class FilenameInfo:
     app_name: str
@@ -167,6 +179,17 @@ class GitHubAssetDownloader:
 
 
 class SignatureVerifyer:
+    """PGP verification helper built on top of `pgpy`.
+
+    Disclaimer: pgpy is a pure-Python OpenPGP implementation and has notable limitations
+    compared to gpg/gnupg:
+      * It does not consult the system keyring/trust models; callers must supply keys.
+      * It does not implement newer OpenPGP v5/AEAD packets and some less common algorithms.
+      * Operations are not constant-time and no smartcard/agent support exists.
+      * Large keys and signatures can be slower to parse/verify than native gpg.
+    Keep these constraints in mind when relying on these verification helpers.
+    """
+
     def __init__(self, list_of_known_keys: list[SimpleGPGKey] | None, proxies: dict | None) -> None:
         """Initialize instance."""
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
@@ -200,6 +223,80 @@ class SignatureVerifyer:
             return public_key
 
         raise Exception(f"Could not process result f{result}")
+
+    def parse_signed_pgp_message(self, signed_message: str) -> tuple[pgpy.PGPMessage, pgpy.PGPSignature]:
+        """
+        Parse an armored PGP signed message and return the PGPMessage and the first PGPSignature.
+
+        Raises:
+            ValueError: if the input is empty or the message is not signed
+            pgpy.errors.PGPError (or generic Exception): if parsing fails
+        """
+        if not signed_message or not signed_message.strip():
+            raise PGPDecodingError("No signed message provided.")
+
+        try:
+            pgp_message = pgpy.PGPMessage.from_blob(signed_message)
+        except Exception as exc:
+            logger.error("Could not parse signed PGP message", exc_info=True)
+            raise PGPDecodingError(f"Could not parse signed PGP message: {exc}") from exc
+
+        if not isinstance(pgp_message, pgpy.PGPMessage):
+            # Very defensive, but makes intent explicit
+            raise PGPDecodingError("Parsed object is not a PGPMessage.")
+
+        if not pgp_message.is_signed:
+            raise PGPMissingSignature("Message is not signed.")
+
+        if not pgp_message.signatures:
+            raise PGPMissingSignature("Signed message contains no signatures.")
+
+        first_signature = pgp_message.signatures[0]
+        assert isinstance(first_signature, pgpy.PGPSignature)
+        return pgp_message, first_signature
+
+    def download_public_key_from_signed_message(self, signed_message: str) -> tuple[str, str | None]:
+        """Download a public key from a keyserver based on the signed message signature.
+
+        Returns (public_key_block, error, fingerprint).
+        """
+        pgp_message, signature = self.parse_signed_pgp_message(signed_message)
+        fingerprint = str(signature.signer_fingerprint)
+
+        if not fingerprint:
+            raise PGPDownloadError("Could not extract fingerprint from signed message.")
+
+        # Prefer full fingerprint endpoint when available, fallback to keyid.
+        url = None
+        if len(fingerprint) >= 32:
+            fp = fingerprint[-40:]
+            if len(fp) == 40:
+                url = f"https://keys.openpgp.org/vks/v1/by-fingerprint/{fp}"
+        if url is None:
+            # in case fingerprint is a key-id
+            keyid = fingerprint[-16:]
+            url = f"https://keys.openpgp.org/vks/v1/by-keyid/{keyid}"
+
+        try:
+            response = requests.get(url, timeout=10 if self.proxies else 2, proxies=self.proxies)
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            logger.error(f"Could not download public key from {url}: {exc}")
+            raise PGPDownloadError(f"Could not download public key: {exc}") from exc
+
+        key_block = response.text.strip()
+        if "BEGIN PGP PUBLIC KEY BLOCK" not in key_block:
+            logger.error("Downloaded content does not look like a public key.")
+            raise PGPDownloadError("Downloaded content is not a valid public key.")
+
+        # Import so subsequent verifications can reuse it.
+        try:
+            key = self.import_public_key_block(key_block)
+        except Exception as exc:
+            logger.error(f"Downloaded key could not be imported: {exc}")
+            raise PGPDownloadError(f"Downloaded key could not be imported: {exc}") from exc
+
+        return key_block, str(key.fingerprint)
 
     def import_known_keys(self) -> None:
         """Import known keys."""
@@ -309,6 +406,64 @@ class SignatureVerifyer:
             logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"Verification failed: {e}")
             return False
+
+    def verify_signed_message_block(
+        self, signed_message: str, public_key_block: str | None = None
+    ) -> tuple[bool, str | None, str | None]:
+        """Verify an ASCII-armored GPG signed message.
+
+        Returns a tuple of (verified, error, signer_fingerprint).
+        """
+        if not signed_message.strip():
+            return False, "No signed message provided.", None
+
+        try:
+            pgp_message = pgpy.PGPMessage.from_blob(signed_message)
+            assert isinstance(pgp_message, pgpy.PGPMessage)
+        except Exception as exc:
+            logger.error(f"Could not parse signed message: {exc}")
+            return False, f"Could not parse signed message: {exc}", None
+        if not pgp_message.is_signed:
+            return False, "Message does not contain a signature.", None
+
+        if public_key_block and public_key_block.strip():
+            try:
+                public_key = self.import_public_key_block(public_key_block)
+            except Exception as exc:
+                logger.error(f"Could not import public key: {exc}")
+                return False, f"Could not import public key: {exc}", None
+        elif self.public_keys:
+            public_key = next(iter(self.public_keys.values()))
+        else:
+            try:
+                downloaded_key, fingerprint = self.download_public_key_from_signed_message(signed_message)
+            except Exception as e:
+                return False, str(e), None
+
+            try:
+                public_key = self.import_public_key_block(downloaded_key)
+            except Exception as exc:
+                logger.error(f"Could not import downloaded public key: {exc}")
+                return False, f"Could not import downloaded public key: {exc}", fingerprint
+
+        keys_to_try = [public_key] + [key for key in self.public_keys.values() if key is not public_key]
+        last_error = None
+        for key in keys_to_try:
+            try:
+                verify_result = key.verify(pgp_message)
+                if not verify_result:
+                    continue
+                good_signatures = list(verify_result.good_signatures)
+                bad_signatures = list(verify_result.bad_signatures)
+                if good_signatures and not bad_signatures:
+                    fingerprint = str(key.fingerprint) if key.fingerprint else None
+                    return True, None, fingerprint
+            except Exception as exc:  # keep trying other keys if available
+                last_error = str(exc)
+                logger.debug(f"{self.__class__.__name__}: {exc}")
+                continue
+
+        return False, last_error or "Signature verification failed.", None
 
     @staticmethod
     def _get_asset_url(assets: list[Asset], ending: str) -> str | None:

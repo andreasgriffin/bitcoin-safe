@@ -64,7 +64,7 @@ RECENT_WALLET_MAXLEN = 15
 
 class UserConfig(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes, NetworkConfigs.__name__: NetworkConfigs}
-    VERSION = "0.2.5"
+    VERSION = "0.2.6"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -233,6 +233,10 @@ class UserConfig(BaseSaveableClass):
 
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.5"):
             dct["last_tab_title"] = []
+
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.6"):
+            # disable labeling of change
+            dct["auto_label_change_addresses"] = False
 
         return super().from_dump_migration(dct=dct)
 

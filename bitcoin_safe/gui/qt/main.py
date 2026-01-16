@@ -721,36 +721,6 @@ class MainWindow(QMainWindow):
         """Init menubar."""
         self.menubar = MenuBar()
 
-        # menu Bitcoin Safe
-        self.menu_bitcoin_Safe = self.menubar.add_menu("")
-        self.menu_action_about = self.menu_bitcoin_Safe.add_action("", self.open_about_tab)
-        self.menu_action_check_update = self.menu_bitcoin_Safe.add_action(
-            "",
-            self.update_notification_bar.check_and_make_visible,
-            icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
-        )
-
-        self.menu_action_settings_ui = self.menu_bitcoin_Safe.add_action(
-            "",
-            self.open_settings_ui,
-            icon=svg_tools.get_QIcon("bi--gear.svg"),
-        )
-        self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
-
-        self.menu_action_settings_network = self.menu_bitcoin_Safe.add_action(
-            "",
-            self.open_network_settings,
-            icon=svg_tools.get_QIcon("bi--gear.svg"),
-        )
-        self.menu_action_settings_network.setShortcut(QKeySequence("CTRL+."))
-
-        self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
-
-        self.menu_action_quit = self.menu_bitcoin_Safe.add_action("", self.quit_application)
-        self.menu_action_quit.setShortcut(QKeySequence.StandardKey.Quit)
-
-        self.menu_action_donate = self.menu_bitcoin_Safe.add_action("", self.show_donate_dialog)
-
         # menu wallet
         self.menu_wallet = self.menubar.add_menu("")
         self.menu_action_new_wallet = self.menu_wallet.add_action("", self.new_wallet)
@@ -809,10 +779,30 @@ class MainWindow(QMainWindow):
         self.key_sequence_close_tab = "Ctrl+W"
         self.menu_action_close_wallet.setShortcut(QKeySequence(self.key_sequence_close_tab))
 
+        self.menu_wallet.addSeparator()
+        self.menu_action_quit = self.menu_wallet.add_action("", self.quit_application)
+        self.menu_action_quit.setShortcut(QKeySequence.StandardKey.Quit)
+
         # menu edit
         self.menu_edit = self.menubar.add_menu("")
         self.tab_history_back_shortcut = QKeySequence("Alt+Left")
         self.tab_history_forward_shortcut = QKeySequence("Alt+Right")
+
+        self.menu_action_settings_ui = self.menu_edit.add_action(
+            "",
+            self.open_settings_ui,
+            icon=svg_tools.get_QIcon("bi--gear.svg"),
+        )
+        self.menu_action_settings_ui.setShortcut(QKeySequence("CTRL+,"))
+
+        self.menu_action_settings_network = self.menu_edit.add_action(
+            "",
+            self.open_network_settings,
+            icon=svg_tools.get_QIcon("bi--gear.svg"),
+        )
+        self.menu_action_settings_network.setShortcut(QKeySequence("CTRL+."))
+
+        self.menu_edit.addSeparator()
 
         # change wallet
         self.menu_action_rename_wallet = self.menu_edit.add_action("", self.change_wallet_id)
@@ -911,8 +901,18 @@ class MainWindow(QMainWindow):
         )
         self.menu_action_open_hwi_manager.setShortcut(QKeySequence("CTRL+M"))
 
+        self.menu_action_check_update = self.menu_tools.add_action(
+            "",
+            self.update_notification_bar.check_and_make_visible,
+            icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+        )
+        self.menu_action_check_update.setShortcut(QKeySequence("CTRL+U"))
+
         # menu help
         self.menu_help = self.menubar.add_menu("")
+
+        self.menu_action_about = self.menu_help.add_action("", self.open_about_tab)
+        self.menu_action_donate = self.menu_help.add_action("", self.show_donate_dialog)
 
         self.action_knowledge_website = self.menu_help.add_action(
             "", partial(webopen, "https://bitcoin-safe.org/en/knowledge/")
@@ -1121,12 +1121,6 @@ class MainWindow(QMainWindow):
         self.rebuild_current_wallet_tab_menu()
         self.menu_action_next_tab.setText(self.tr("&Next Wallet/Tab"))
         self.menu_action_previous_tab.setText(self.tr("&Previous Wallet/Tab"))
-        languages = "&Languages"
-        local_languages = self.tr("&Languages")
-        if local_languages != languages:
-            languages += f" - {local_languages}"
-        self.menu_bitcoin_Safe.setTitle(self.tr("&Bitcoin Safe"))
-        self.menu_action_about.setText(self.tr("&About"))
         self.menu_action_check_update.setText(self.tr("&Check for update"))
         self.menu_show_logs.setText(self.tr("&Show Logs"))
         self.menu_action_quit.setText(self.tr("Quit"))
@@ -1142,6 +1136,7 @@ class MainWindow(QMainWindow):
 
         self.menu_help.setTitle(self.tr("&Help"))
         self.action_knowledge_website.setText(self.tr("&Documentation"))
+        self.menu_action_about.setText(self.tr("&About"))
 
         self.menu_action_donate.setText(self.tr("&Donate"))
 
