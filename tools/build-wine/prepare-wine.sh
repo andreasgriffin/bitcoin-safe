@@ -50,6 +50,12 @@ break_legacy_easy_install
 info "Installing build dependencies"
 do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build.txt"
 
+# Ensure git is available for uv to fetch Git dependencies
+if ! command -v git >/dev/null 2>&1; then
+    info "git not found, installing..."
+    sudo apt-get update -qq
+    sudo apt-get install -y git
+fi
 
 info "Installing build dependencies using uv"
 export UV_CACHE_DIR="$BUILD_CACHEDIR/uv"
