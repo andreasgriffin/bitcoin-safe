@@ -410,7 +410,7 @@ class SignatureVerifyer:
     def verify_signed_message_block(
         self, signed_message: str, public_key_block: str | None = None
     ) -> tuple[bool, str | None, str | None]:
-        """Verify an ASCII-armored GPG signed message.
+        """Verify an ASCII-armored PGP signed message.
 
         Returns a tuple of (verified, error, signer_fingerprint).
         """

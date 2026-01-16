@@ -1756,11 +1756,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;अपडेट के लिए जाँचें</translation>
 		</message>
@@ -1838,11 +1833,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;सहायता</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;भाषाएँ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3668,6 +3658,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>ASCII आर्मर सत्यापित करें</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>PGP सत्यापित करें</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4433,6 +4428,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>सुरक्षा नोट: सत्यापन अंतर्निर्मित &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; लाइब्रेरी का उपयोग करता है। यह आपके कीरिंग से ट्रस्ट सेटिंग्स, निरस्तीकरण या समाप्ति समय का पालन नहीं करता और नए OpenPGP पैकेट्स का समर्थन नहीं कर सकता। परिणामों पर केवल तभी भरोसा करें जब आप स्वयं फिंगरप्रिंट/कुंजी की नवीनता की जाँच करें।</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>हस्ताक्षरित संदेश</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>सत्यापित करें</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5067,6 +5079,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>लेन-देन</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>फिंगरप्रिंट</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>PGP हस्ताक्षर मान्य है।</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>PGP हस्ताक्षर सत्यापन विफल हुआ।</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>कृपया हस्ताक्षरकर्ता का सार्वजनिक कुंजी ब्लॉक चिपकाएँ।</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>सार्वजनिक कुंजी स्वचालित रूप से डाउनलोड की गई।</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>सार्वजनिक कुंजी आवश्यक है</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>हस्ताक्षरित PGP संदेश आवश्यक है।</translation>
 		</message>
 	</context>
 	<context>

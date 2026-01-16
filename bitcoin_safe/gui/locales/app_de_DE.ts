@@ -1771,11 +1771,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>Auf Updates überprüfen</translation>
 		</message>
@@ -1853,11 +1848,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;Hilfe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>Sprachen</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3692,6 +3682,11 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 			<source>Verify ASCII Armour</source>
 			<translation>ASCII-Schutz verifizieren</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>PGP überprüfen</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4470,6 +4465,23 @@ Alternativ kannst du über {url} senden</translation>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>Sicherheitshinweis: Die Verifizierung verwendet die integrierte &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;-Bibliothek. Vertrauenseinstellungen, Widerrufe oder Ablaufzeiten aus Ihrem Schlüsselbund werden nicht berücksichtigt, und neuere OpenPGP-Pakete werden möglicherweise nicht unterstützt. Vertrauen Sie den Ergebnissen nur, wenn Sie den Fingerabdruck/die Aktualität des Schlüssels selbst überprüfen.</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Signierte Nachricht</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>Verifizieren</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5107,6 +5119,43 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Transaction</source>
 			<translation>Transaktion</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>Fingerabdruck</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>Die PGP-Signatur ist gültig.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>Die Überprüfung der PGP-Signatur ist fehlgeschlagen.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>Bitte fügen Sie den öffentlichen Schlüsselblock des Unterzeichners ein.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>Öffentlicher Schlüssel automatisch heruntergeladen.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>Öffentlicher Schlüssel erforderlich</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>Eine signierte PGP-Nachricht ist erforderlich.</translation>
 		</message>
 	</context>
 	<context>
