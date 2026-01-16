@@ -4,6 +4,15 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      signing-policy-slug:
+        description: 'signing-policy-slug  ("" for no signing, "test-signing", "release-signing" for valid signing)'
+        type: choice
+        options:
+          - ''
+          - test-signing
+          - release-signing
+        default: ''
   pull_request:
     types:
       - opened
@@ -26,4 +35,6 @@ jobs:
   windows:
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-windows-and-test.yml
+    with:
+      signing-policy-slug: ${{ github.event.inputs.signing-policy-slug || '' }}
     secrets: inherit
