@@ -123,7 +123,7 @@ jobs:
         id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: win-artifacts
           path: dist/*  # zip everything in the folder
 
       - name: 'signing with ${{ github.event.inputs.signing-policy-slug }}'
@@ -145,7 +145,7 @@ jobs:
         id: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: signpath-signed
+          name: win-artifacts-signpath-signed
           path: signpath-signed/*  # zip everything in the folder
 
 
@@ -162,14 +162,14 @@ jobs:
         if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug != '' }}
         uses: actions/download-artifact@v4
         with:
-          name: signpath-signed
+          name: win-artifacts-signpath-signed
           path: artifacts
 
       - name: Download unsigned portable artifact
         if: ${{ github.event.inputs.skip_build_and_test_release_tag == '' && github.event.inputs.signing-policy-slug == '' }}
         uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: win-artifacts
           path: artifacts
 
       - name: Download release artifacts
@@ -324,7 +324,7 @@ jobs:
         if: always()  # This ensures the step runs regardless of previous failures    
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts
+          name: win-tests-artifacts
           path: |
             test_portable.log
             windows_portable_screenshot.png

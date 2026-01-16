@@ -78,7 +78,7 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: mac-artifact-${{ matrix.artifact_name }}
           path: dist/*.dmg
 
   test:
@@ -98,7 +98,7 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: mac-artifact-${{ matrix.artifact_name }}
           path: dmgs
 
       - name: Download release DMG for ${{ matrix.arch }}
@@ -287,7 +287,7 @@ jobs:
         if: always()  # This ensures the step runs regardless of previous failures    
         uses: actions/upload-artifact@v4
         with:
-          name: logs-${{ matrix.arch }}
+          name: mac-tests-${{ matrix.arch }}
           path: |
             *.png
             *.log

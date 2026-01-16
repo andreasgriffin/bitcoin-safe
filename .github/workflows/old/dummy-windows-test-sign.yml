@@ -26,7 +26,7 @@ jobs:
         id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: win-artifact
           path: dist/*  # zip everything in the folder
 
       - name: 'signing with test signing'
