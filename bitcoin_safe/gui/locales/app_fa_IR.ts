@@ -1757,11 +1757,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;بررسی به‌روزرسانی</translation>
 		</message>
@@ -1839,11 +1834,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;راهنما</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;زبان‌ها</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2860,7 +2850,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>پرداخت را در مرورگر خود تکمیل کنید. در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>پرداخت را در مرورگر خود تکمیل کنید. در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید:
+[andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3667,6 +3658,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>تأیید زره ASCII</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>تأیید PGP</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4435,6 +4431,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>یادداشت امنیتی: فرایند تأیید از کتابخانهٔ داخلی &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; استفاده می‌کند. این فرایند تنظیمات اعتماد، ابطال‌ها یا زمان‌های انقضا را از حلقهٔ کلید شما در نظر نمی‌گیرد و ممکن است از بسته‌های جدیدتر OpenPGP پشتیبانی نکند. فقط در صورتی به نتایج اعتماد کنید که خودتان اثر انگشت/تازگی کلید را بررسی کرده باشید.</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>پیام امضاشده</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>تأیید</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5069,6 +5082,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>تراکنش</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>اثرانگشت</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>امضای PGP معتبر است.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>تأیید امضای PGP ناموفق بود.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>لطفاً بلوک کلید عمومی امضاکننده را جای‌گذاری کنید.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>کلید عمومی به‌صورت خودکار دانلود شد.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>کلید عمومی موردنیاز است</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>پیام PGP امضاشده موردنیاز است.</translation>
 		</message>
 	</context>
 	<context>

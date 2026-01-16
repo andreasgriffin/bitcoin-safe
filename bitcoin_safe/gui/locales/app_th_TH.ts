@@ -1756,11 +1756,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;ตรวจสอบการอัปเดต  </translation>
 		</message>
@@ -1838,11 +1833,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;ช่วยเหลือ</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;ภาษา  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3665,6 +3655,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>ตรวจสอบเกราะ ASCII</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>ตรวจสอบ PGP</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4430,6 +4425,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ที่มีมาในตัว โดยจะไม่คำนึงถึงการตั้งค่าความเชื่อถือ การเพิกถอน หรือวันหมดอายุจากพวงกุญแจของคุณ และอาจไม่รองรับแพ็กเก็ต OpenPGP รุ่นใหม่กว่า โปรดเชื่อถือผลลัพธ์ก็ต่อเมื่อคุณตรวจสอบลายนิ้วมือ/ความใหม่ของกุญแจด้วยตนเอง</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>ข้อความที่ลงนาม</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>ตรวจสอบ</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5064,6 +5076,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>ธุรกรรม  </translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>ลายนิ้วมือ  </translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>ลายเซ็น PGP ถูกต้อง</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>การตรวจสอบลายเซ็น PGP ล้มเหลว</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>โปรดวางบล็อกกุญแจสาธารณะของผู้ลงนาม</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>ดาวน์โหลดกุญแจสาธารณะโดยอัตโนมัติ</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>ต้องการกุญแจสาธารณะ</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>ต้องการข้อความ PGP ที่ลงนามแล้ว</translation>
 		</message>
 	</context>
 	<context>

@@ -1757,11 +1757,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;Перевірити оновлення</translation>
 		</message>
@@ -1839,11 +1834,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;Допомога</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;Мови</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2860,7 +2850,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Завершіть оплату у своєму браузері. Якщо виникнуть проблеми, будь ласка, звертайтеся до нас за адресою: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>Завершіть оплату у своєму браузері.
+Якщо виникнуть проблеми, будь ласка, звертайтеся до нас за адресою: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3667,6 +3658,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>Перевірити ASCII-захист</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>Перевірити PGP</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4435,6 +4431,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>Примітка з безпеки: перевірка використовує вбудовану бібліотеку &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Вона не враховує налаштування довіри, відкликання або строки дії з вашого сховища ключів і може не підтримувати новіші пакети OpenPGP. Довіряйте результатам лише якщо ви самостійно перевірили відбиток/актуальність ключа.</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Підписане повідомлення</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>Перевірити</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5069,6 +5082,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>Транзакція</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>Відбиток</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>Підпис PGP дійсний.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>Перевірка підпису PGP не вдалася.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>Будь ласка, вставте блок відкритого ключа підписанта.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>Відкритий ключ завантажено автоматично.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>Потрібен відкритий ключ</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>Потрібне підписане повідомлення PGP.</translation>
 		</message>
 	</context>
 	<context>

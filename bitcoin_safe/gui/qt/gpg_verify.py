@@ -50,7 +50,7 @@ PUBLIC_KEY_PLACEHOLDER = """-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 @dataclass
 class GpgVerificationResult:
-    """Container for GPG verification outcome."""
+    """Container for PGP verification outcome."""
 
     success: bool
     message: str
@@ -107,9 +107,9 @@ def verify_gpg_signed_message(
     signed_message: str,
     parent: QWidget | None = None,
 ) -> GpgVerificationResult:
-    """Verify an ASCII-armored GPG signed message, optionally requesting a key."""
+    """Verify an ASCII-armored PGP signed message, optionally requesting a key."""
     if not signed_message.strip():
-        return GpgVerificationResult(False, translate("gpg", "Signed GPG message is required."))
+        return GpgVerificationResult(False, translate("gpg", "Signed PGP message is required."))
 
     verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
     key_block = ""
@@ -133,7 +133,7 @@ def verify_gpg_signed_message(
     fingerprint = fingerprint_from_verify or fingerprint
 
     if success:
-        body = translate("gpg", "GPG signature is valid.")
+        body = translate("gpg", "PGP signature is valid.")
         if fingerprint:
             link = _keyserver_url(fingerprint)
             body += f' ({translate("gpg", "Fingerprint")}: <a href="{link}">{fingerprint}</a>)'
@@ -142,5 +142,5 @@ def verify_gpg_signed_message(
         return GpgVerificationResult(True, body, fingerprint)
 
     return GpgVerificationResult(
-        False, error or translate("gpg", "GPG signature verification failed."), fingerprint
+        False, error or translate("gpg", "PGP signature verification failed."), fingerprint
     )

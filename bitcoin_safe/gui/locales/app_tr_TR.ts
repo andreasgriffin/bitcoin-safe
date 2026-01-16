@@ -1757,11 +1757,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;Güncellemeyi kontrol et</translation>
 		</message>
@@ -1839,11 +1834,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;Yardım</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;Diller</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2860,7 +2850,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Ödemeyi tarayıcınızda tamamlayın. Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>Ödemeyi tarayıcınızda tamamlayın.
+Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3667,6 +3658,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>ASCII Zırhını Doğrula</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>PGP Doğrula</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4435,6 +4431,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>Güvenlik notu: doğrulama, yerleşik &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; kütüphanesini kullanır. Anahtarlığınızdan gelen güven ayarlarını, iptalleri veya sona erme sürelerini dikkate almaz ve daha yeni OpenPGP paketlerini desteklemeyebilir. Sonuçlara yalnızca parmak izini/anahtarın güncelliğini kendiniz doğruluyorsanız güvenin.</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>İmzalı mesaj</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>Doğrula</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5069,6 +5082,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>İşlem</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>Parmak İzi</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>PGP imzası geçerli.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>PGP imza doğrulaması başarısız oldu.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>Lütfen imzalayanın genel anahtar bloğunu yapıştırın.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>Genel anahtar otomatik olarak indirildi.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>Genel anahtar gerekli</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>İmzalı bir PGP mesajı gereklidir.</translation>
 		</message>
 	</context>
 	<context>

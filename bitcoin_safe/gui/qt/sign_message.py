@@ -310,7 +310,7 @@ class VerifyGpgMessageTab(QWidget):
     signal_verify_gpg_message = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(self, signals_min: SignalsMin, parent: QWidget | None = None) -> None:
-        """Tab handling verification of ASCII-armored GPG signed messages."""
+        """Tab handling verification of ASCII-armored PGP signed messages."""
         super().__init__(parent)
         self.signals_min = signals_min
         self.signed_message_edit = QTextEdit()
@@ -499,7 +499,7 @@ class SignAndVerifyMessage(QWidget):
         self._set_result(error_message, success=False)
 
     def on_verify_gpg_clicked(self, signed_message: str) -> None:
-        """Verify an ASCII-armored GPG signed message."""
+        """Verify an ASCII-armored PGP signed message."""
 
         result = verify_gpg_signed_message(
             signed_message,
@@ -538,6 +538,6 @@ KHtJPcAxgXox0oi6N9u+E3Bt1aWPo9DriQoCcnd/9c/0BxWozkTte2FQ+R20+ZTKQWUW17rGjNBww9qq
         self.tabs.setTabText(0, self.tr("Sign"))
         self.tabs.setTabText(1, self.tr("Verify"))
         self.tabs.setTabText(2, self.tr("Verify ASCII Armour"))
-        self.tabs.setTabText(3, self.tr("Verify GPG"))
+        self.tabs.setTabText(3, self.tr("Verify PGP"))
         self.sign_tab.updateUI()
         self.verify_gpg_tab.updateUI()

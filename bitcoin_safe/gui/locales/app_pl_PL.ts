@@ -1771,11 +1771,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;Sprawdź aktualizacje</translation>
 		</message>
@@ -1853,11 +1848,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;Pomoc</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;Języki</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2879,7 +2869,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Dokończ płatność w swojej przeglądarce. W razie problemów prosimy o kontakt pod adresem: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>Dokończ płatność w swojej przeglądarce.
+W razie problemów prosimy o kontakt pod adresem: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3691,6 +3682,11 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 			<source>Verify ASCII Armour</source>
 			<translation>Weryfikuj opancerzenie ASCII</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>Zweryfikuj PGP</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4468,6 +4464,23 @@ Możesz też rozgłosić przez {url}</translation>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Nie uwzględnia ustawień zaufania, unieważnień ani dat wygaśnięcia z Twojego breloka kluczy i może nie obsługiwać nowszych pakietów OpenPGP. Ufaj wynikom tylko wtedy, gdy samodzielnie zweryfikujesz odcisk palca/aktualność klucza.</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Podpisana wiadomość</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>Weryfikuj</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5105,6 +5118,43 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		<message>
 			<source>Transaction</source>
 			<translation>Transakcja</translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>Odcisk palca</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>Podpis PGP jest prawidłowy.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>Weryfikacja podpisu PGP nie powiodła się.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>Proszę wklej blok klucza publicznego podpisującego.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>Klucz publiczny pobrany automatycznie.</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>Wymagany klucz publiczny</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>Wymagana jest podpisana wiadomość PGP.</translation>
 		</message>
 	</context>
 	<context>

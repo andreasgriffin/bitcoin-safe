@@ -1756,11 +1756,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Bitcoin Safe</source>
-			<translation>&amp;Bitcoin Safe</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Check for update</source>
 			<translation>&amp;အပ်ဒိတ် စစ်ဆေးပါ</translation>
 		</message>
@@ -1838,11 +1833,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Help</source>
 			<translation>&amp;tray သို့ချုံ့မည်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Languages</source>
-			<translation>&amp;ဘာသာစကားများ  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3665,6 +3655,11 @@ If you make a mistake here, your money is lost!</source>
 			<source>Verify ASCII Armour</source>
 			<translation>ASCII ကာကွယ်မှု အတည်ပြုပါ</translation>
 		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
+			<source>Verify PGP</source>
+			<translation>PGP ကို အတည်ပြုရန်</translation>
+		</message>
 	</context>
 	<context>
 		<name>SignMessage</name>
@@ -4430,6 +4425,23 @@ Or you can broadcast via {url}</source>
 		</message>
 	</context>
 	<context>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
+			<translation>လုံခြုံရေး မှတ်ချက်: အတည်ပြုခြင်းသည် အတွင်းပါရှိသော &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; လိုက်ဘရရီကို အသုံးပြုသည်။ သင့် keyring မှ ယုံကြည်မှု ဆက်တင်များ၊ ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလိုက်နာဘဲ၊ OpenPGP ပက်ကတ် အသစ်များကိုလည်း မထောက်ပံ့နိုင်ပါ။ လက်ဗွေ/သော့၏ လတ်တလောဖြစ်မှုကို ကိုယ်တိုင် စစ်ဆေးပြီးမှသာ ရလဒ်များကို ယုံကြည်ပါ။</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Signed message</source>
+			<translation>လက်မှတ်ထိုးထားသော စာတမ်း</translation>
+		</message>
+		<name>VerifyGpgMessageTab</name>
+		<message>
+			<source>Verify</source>
+			<translation>အတည်ပြုပါ</translation>
+		</message>
+	</context>
+	<context>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
@@ -5064,6 +5076,43 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Transaction</source>
 			<translation>ငွေလွှဲ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>gpg</name>
+		<message>
+			<source>Fingerprint</source>
+			<translation>လက်ဗွေရာ  </translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature is valid.</source>
+			<translation>PGP လက်မှတ်သည် မှန်ကန်ပါသည်။</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>PGP signature verification failed.</source>
+			<translation>PGP လက်မှတ် အတည်ပြုခြင်း မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Please paste the signer's public key block.</source>
+			<translation>လက်မှတ်ထိုးသူ၏ အများသုံးသော့ ဘလောက်ကို ကူးထည့်ပါ။</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key downloaded automatically.</source>
+			<translation>အများသုံးသော့ကို အလိုအလျောက် ဒေါင်းလုဒ်လုပ်ပြီးပါပြီ။</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Public key required</source>
+			<translation>အများသုံးသော့ လိုအပ်ပါသည်</translation>
+		</message>
+		<name>gpg</name>
+		<message>
+			<source>Signed PGP message is required.</source>
+			<translation>လက်မှတ်ထိုးထားသော PGP စာတမ်း လိုအပ်ပါသည်။</translation>
 		</message>
 	</context>
 	<context>
