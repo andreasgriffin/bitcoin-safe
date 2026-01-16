@@ -60,6 +60,7 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 
 from ...message_signature_verifyer import MessageSignatureVerifyer
 from ...signals import SignalsMin, WalletFunctions
+from .gpg_verify import verify_gpg_signed_message
 from .util import Message
 
 logger = logging.getLogger(__name__)
@@ -305,6 +306,57 @@ class _SignTab(SignMessageBase):
         self.sign_message_edit.setPlaceholderText(self.tr("Enter message"))
 
 
+class VerifyGpgMessageTab(QWidget):
+    signal_verify_gpg_message = cast(SignalProtocol[[str]], pyqtSignal(str))
+
+    def __init__(self, signals_min: SignalsMin, parent: QWidget | None = None) -> None:
+        """Tab handling verification of ASCII-armored GPG signed messages."""
+        super().__init__(parent)
+        self.signals_min = signals_min
+        self.signed_message_edit = QTextEdit()
+        self.verify_button = QPushButton()
+        self.disclaimer_label = QLabel()
+        self.disclaimer_label.setWordWrap(True)
+        self.disclaimer_label.setTextFormat(Qt.TextFormat.RichText)
+        self.disclaimer_label.setOpenExternalLinks(True)
+
+        layout = QGridLayout(self)
+        layout.addWidget(QLabel(self.tr("Signed message")), 0, 0)
+        layout.addWidget(self.signed_message_edit, 0, 1, 1, 3)
+        button_box = QDialogButtonBox(Qt.Orientation.Horizontal)
+        button_box.addButton(self.verify_button, QDialogButtonBox.ButtonRole.ActionRole)
+        layout.addWidget(button_box, 1, 1, 1, 3)
+        layout.addWidget(self.disclaimer_label, 2, 1, 1, 3)
+
+        self.verify_button.clicked.connect(self._emit_verify_request)
+        self.signals_min.language_switch.connect(self.updateUI)
+        self.updateUI()
+
+    def _emit_verify_request(self) -> None:
+        """Emit the verify request to the parent widget."""
+        self.signal_verify_gpg_message.emit(self.signed_message_edit.toPlainText())
+
+    def updateUI(self) -> None:
+        """Update translatable strings."""
+        self.verify_button.setText(self.tr("Verify"))
+        self.signed_message_edit.setPlaceholderText(
+            """-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Example message
+-----BEGIN PGP SIGNATURE-----
+...
+-----END PGP SIGNATURE-----"""
+        )
+        self.disclaimer_label.setText(
+            self.tr(
+                'Security note: verification uses a built-in <a href="https://github.com/SecurityInnovation/PGPy">pgpy</a> '
+                "library. It does not honor trust settings, revocations, or expiration times from your keyring and may "
+                "not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself."
+            )
+        )
+
+
 class SignAndVerifyMessage(QWidget):
     def __init__(
         self,
@@ -327,6 +379,8 @@ class SignAndVerifyMessage(QWidget):
         self.verify_signature_edit = QLineEdit()
         self.armored_message_edit = QTextEdit()
         self.result_label = QLabel()
+        self.result_label.setTextFormat(Qt.TextFormat.RichText)
+        self.result_label.setOpenExternalLinks(True)
         self.verify_button = QPushButton()
         self.verify_armored_button = QPushButton()
         self.verify_message_label = QLabel()
@@ -342,10 +396,12 @@ class SignAndVerifyMessage(QWidget):
             wallet_functions=wallet_functions,
             parent=self,
         )
+        self.verify_gpg_tab = VerifyGpgMessageTab(signals_min=signals_min, parent=self)
 
         self.result_label.setWordWrap(True)
         self.verify_button.clicked.connect(self.on_verify_clicked)
         self.verify_armored_button.clicked.connect(self.on_verify_armored_clicked)
+        self.verify_gpg_tab.signal_verify_gpg_message.connect(self.on_verify_gpg_clicked)
         self.sign_tab.signal_signed_message.connect(self.on_signed_message)
 
         self.verify_tab = QWidget()
@@ -372,6 +428,7 @@ class SignAndVerifyMessage(QWidget):
         self.tabs.addTab(self.sign_tab, "")
         self.tabs.addTab(self.verify_tab, "")
         self.tabs.addTab(self.verify_armored_tab, "")
+        self.tabs.addTab(self.verify_gpg_tab, "")
 
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.tabs)
@@ -441,6 +498,15 @@ class SignAndVerifyMessage(QWidget):
             error_message += f"\n{warnings}"
         self._set_result(error_message, success=False)
 
+    def on_verify_gpg_clicked(self, signed_message: str) -> None:
+        """Verify an ASCII-armored GPG signed message."""
+
+        result = verify_gpg_signed_message(
+            signed_message,
+            parent=self,
+        )
+        self._set_result(result.message, success=result.success)
+
     def _set_result(self, message: str, *, success: bool) -> None:
         """Display the verification outcome."""
 
@@ -472,4 +538,6 @@ KHtJPcAxgXox0oi6N9u+E3Bt1aWPo9DriQoCcnd/9c/0BxWozkTte2FQ+R20+ZTKQWUW17rGjNBww9qq
         self.tabs.setTabText(0, self.tr("Sign"))
         self.tabs.setTabText(1, self.tr("Verify"))
         self.tabs.setTabText(2, self.tr("Verify ASCII Armour"))
+        self.tabs.setTabText(3, self.tr("Verify GPG"))
         self.sign_tab.updateUI()
+        self.verify_gpg_tab.updateUI()
