@@ -103,6 +103,14 @@ def wait_for_sync(
     tx_count: int = 0,
     timeout: float = 10_000,
 ):
+    def info_message():
+        logger.info(
+            f"{wallet.id=}\n"
+            f"{wallet.get_balance().total=} and {minimum_funds=}\n"
+            f"{(not txid or wallet.get_tx(txid))=} and {txid=}"
+            f"{len(wallet.bdkwallet.transactions())=} and {tx_count=}"
+        )
+
     def condition() -> bool:
         res = bool(
             wallet.get_balance().total >= minimum_funds
@@ -110,18 +118,13 @@ def wait_for_sync(
             and len(wallet.bdkwallet.transactions()) >= tx_count
         )
         if not res:
+            info_message()
             QCoreApplication.processEvents()
             qtbot.wait(200)
         return res
 
-    def info_message():
-        logger.info(f"{wallet.get_balance().total=}")
-        logger.info(f"{(not txid or wallet.get_tx(txid))=}")
-        logger.info(f"{len(wallet.bdkwallet.transactions())=}")
-
     if condition():
         logger.info("No need to wait. Condition already satisfied")
-        info_message()
         return
 
     if wallet.config.network_config.server_type == BlockchainType.CompactBlockFilter:
@@ -140,6 +143,7 @@ def wait_for_sync(
         async def wait_for_funds():
             """Wait for funds."""
             deadline = asyncio.get_event_loop().time() + timeout
+            original_funds = wallet.get_balance().total
             while not condition():
                 await asyncio.sleep(0.5)
                 # first try to wait for incoming p2p transactions
@@ -150,11 +154,9 @@ def wait_for_sync(
                 await wallet.update()  # this is blocking
 
                 if asyncio.get_event_loop().time() > deadline:
-                    raise TimeoutError(
-                        f"Conditions not met: {wallet.get_balance().total} >= {minimum_funds} and {wallet.get_tx(txid) if txid else ''} in {wallet.id} within {timeout}s"
-                    )
+                    raise TimeoutError("Conditions not met")
 
-            logger.info(f"{wallet.id=} received {wallet.get_balance().total} sats")
+            logger.info(f"{wallet.id=} received {wallet.get_balance().total - original_funds} new Sats")
 
         wallet.loop_in_thread.run_foreground(wait_for_funds())
         info_message()

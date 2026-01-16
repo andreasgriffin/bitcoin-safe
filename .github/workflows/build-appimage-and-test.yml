@@ -102,11 +102,11 @@ jobs:
 
 
 
-      - name: Upload AppImage artifact
+      - name: Upload Linux artifacts
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: linux-artifacts
           path: dist/
           if-no-files-found: error
 
@@ -125,7 +125,7 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: linux-artifacts
           path: artifacts
 
       - name: Unpack AppImage archive
@@ -337,5 +337,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: logs-${{ matrix.package }}
+          name: linux-tests-${{ matrix.package }}
           path: test-artifacts
