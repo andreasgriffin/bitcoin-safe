@@ -4433,11 +4433,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>Примітка з безпеки: перевірка використовує вбудовану бібліотеку &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Вона не враховує налаштування довіри, відкликання або строки дії з вашого сховища ключів і може не підтримувати новіші пакети OpenPGP. Довіряйте результатам лише якщо ви самостійно перевірили відбиток/актуальність ключа.</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>Підписане повідомлення</translation>
 		</message>
@@ -5107,11 +5102,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>Відкритий ключ завантажено автоматично.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>Потрібен відкритий ключ</translation>
 		</message>
@@ -5488,6 +5478,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Фрагмент {index} із {total}</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>Виявлено недійсний підпис</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>Не вдалося імпортувати відкритий ключ: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>Не вдалося розібрати підписане повідомлення: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>Перевірка не вдалася</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>Повідомлення не містить підпису.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>Немає дійсних підписів</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>Підписане повідомлення не надано.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>Строк дії відкритого ключа минув.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>Відкритий ключ відкликано.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Примітка з безпеки: перевірка використовує вбудовану бібліотеку &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Вона не враховує налаштування довіри, відкликання або терміни дії з вашого сховища ключів. Будь ласка, перевіряйте повідомлення високої цінності за допомогою &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>Строк дії підпису минув.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>Непідтримуваний алгоритм хешування PGP.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>Слабкий алгоритм хешування PGP.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>відкритий ключ відсутній</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>неправильний тип підпису: {signature}</translation>
 		</message>
 	</context>
 	<context>

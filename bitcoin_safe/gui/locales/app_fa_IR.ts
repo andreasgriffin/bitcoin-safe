@@ -4433,11 +4433,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>یادداشت امنیتی: فرایند تأیید از کتابخانهٔ داخلی &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; استفاده می‌کند. این فرایند تنظیمات اعتماد، ابطال‌ها یا زمان‌های انقضا را از حلقهٔ کلید شما در نظر نمی‌گیرد و ممکن است از بسته‌های جدیدتر OpenPGP پشتیبانی نکند. فقط در صورتی به نتایج اعتماد کنید که خودتان اثر انگشت/تازگی کلید را بررسی کرده باشید.</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>پیام امضاشده</translation>
 		</message>
@@ -5107,11 +5102,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>کلید عمومی به‌صورت خودکار دانلود شد.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>کلید عمومی موردنیاز است</translation>
 		</message>
@@ -5488,6 +5478,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: قطعه {index} از {total}</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>امضای نامعتبر شناسایی شد</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>امکان وارد کردن کلید عمومی وجود ندارد: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>امکان تجزیهٔ پیام امضاشده وجود ندارد: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>تأیید ناموفق بود</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>پیام حاوی امضا نیست.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>هیچ امضای معتبری وجود ندارد</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>هیچ پیام امضاشده‌ای ارائه نشده است.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>کلید عمومی منقضی شده است.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>کلید عمومی لغو شده است.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>یادداشت امنیتی: فرایند تأیید از کتابخانهٔ داخلی &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; استفاده می‌کند. این فرایند تنظیمات اعتماد، ابطال‌ها یا زمان‌های انقضا را از حلقهٔ کلید شما در نظر نمی‌گیرد. لطفاً پیام‌های با ارزش بالا را با &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; تأیید کنید.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>امضا منقضی شده است.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>الگوریتم هش PGP پشتیبانی نمی‌شود.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>الگوریتم هش PGP ضعیف است.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>کلید عمومی موجود نیست</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>نوع امضای نادرست: {signature}</translation>
 		</message>
 	</context>
 	<context>

@@ -4427,11 +4427,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>လုံခြုံရေး မှတ်ချက်: အတည်ပြုခြင်းသည် အတွင်းပါရှိသော &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; လိုက်ဘရရီကို အသုံးပြုသည်။ သင့် keyring မှ ယုံကြည်မှု ဆက်တင်များ၊ ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလိုက်နာဘဲ၊ OpenPGP ပက်ကတ် အသစ်များကိုလည်း မထောက်ပံ့နိုင်ပါ။ လက်ဗွေ/သော့၏ လတ်တလောဖြစ်မှုကို ကိုယ်တိုင် စစ်ဆေးပြီးမှသာ ရလဒ်များကို ယုံကြည်ပါ။</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>လက်မှတ်ထိုးထားသော စာတမ်း</translation>
 		</message>
@@ -5101,11 +5096,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>အများသုံးသော့ကို အလိုအလျောက် ဒေါင်းလုဒ်လုပ်ပြီးပါပြီ။</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>အများသုံးသော့ လိုအပ်ပါသည်</translation>
 		</message>
@@ -5480,6 +5470,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>သင့် wallet မှ လက်ခံရယူရန် လိပ်စာအသစ်များ ဖန်တီးပါ။</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>မမှန်ကန်သော လက်မှတ်ကို တွေ့ရှိပါသည်</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>အများပြည်သူ့သော့ကို ထည့်သွင်းမရပါ: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>လက်မှတ်ပါသော မက်ဆေ့ချ်ကို ခွဲခြမ်းမရပါ: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>အတည်ပြုခြင်း မအောင်မြင်ပါ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>မက်ဆေ့ချ်တွင် လက်မှတ် မပါရှိပါ။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>မှန်ကန်သော လက်မှတ် မရှိပါ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>လက်မှတ်ပါသော မက်ဆေ့ချ် မပေးထားပါ။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>အများပြည်သူ့သော့ သက်တမ်းကုန်ဆုံးသွားပါသည်။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>အများပြည်သူ့သော့ကို ပြန်လည်ရုပ်သိမ်းထားပါသည်။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>လုံခြုံရေးမှတ်စု: အတည်ပြုခြင်းသည် အတွင်းပါရှိသော &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; စာကြည့်တိုက်ကို အသုံးပြုပါသည်။ သင့် keyring မှ ယုံကြည်မှုဆိုင်ရာ ဆက်တင်များ၊ ပြန်လည်ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလေးစားပါ။ တန်ဖိုးမြင့် မက်ဆေ့ချ်များကို &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ဖြင့် စစ်ဆေးပါ။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>လက်မှတ် သက်တမ်းကုန်ဆုံးသွားပါသည်။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>မထောက်ပံ့သော PGP ဟက်ရှ် အယ်လဂိုရစ်သမ်။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>အားနည်းသော PGP ဟက်ရှ် အယ်လဂိုရစ်သမ်။</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>အများပြည်သူ့သော့ မရှိပါ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>လက်မှတ် အမျိုးအစား မမှန်ပါ: {signature}</translation>
 		</message>
 	</context>
 	<context>

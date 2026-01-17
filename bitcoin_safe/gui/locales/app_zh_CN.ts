@@ -4436,11 +4436,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>安全提示：验证使用内置的 &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; 库。它不会遵循钥匙环中的信任设置、吊销或过期时间，并且可能不支持较新的 OpenPGP 数据包。只有在您自行验证指纹/密钥的新鲜度时，才应信任结果。</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>已签名的消息</translation>
 		</message>
@@ -5110,11 +5105,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>公钥已自动下载。</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>需要公钥</translation>
 		</message>
@@ -5489,6 +5479,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: 第 {index} 个，共 {total} 个</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>检测到无效签名</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>无法导入公钥：{exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>无法解析已签名的消息：{exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>验证失败</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>消息不包含签名。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>没有有效签名</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>未提供已签名的消息。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>公钥已过期。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>公钥已被吊销。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>安全提示：验证使用内置的 &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; 库。它不会遵循您密钥环中的信任设置、吊销信息或过期时间。请使用 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; 验证高价值消息。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>签名已过期。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>不支持的 PGP 哈希算法。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>弱 PGP 哈希算法。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>公钥不存在</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>错误的签名类型：{signature}</translation>
 		</message>
 	</context>
 	<context>

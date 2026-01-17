@@ -56,6 +56,7 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.export_data import QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 
 from ...message_signature_verifyer import MessageSignatureVerifyer
@@ -64,6 +65,15 @@ from .gpg_verify import verify_gpg_signed_message
 from .util import Message
 
 logger = logging.getLogger(__name__)
+
+
+def get_disclaimer_text():
+    return translate(
+        "pgp",
+        'Security note: verification uses a built-in <a href="https://github.com/SecurityInnovation/PGPy">pgpy</a> '
+        "library. It does not honor trust settings, revocations, or expiration times from your keyring. "
+        'Please verify high value messages with <a href="https://gnupg.org/">GPG</a>.',
+    )
 
 
 class SignMessageBase(QWidget):
@@ -348,13 +358,7 @@ Example message
 ...
 -----END PGP SIGNATURE-----"""
         )
-        self.disclaimer_label.setText(
-            self.tr(
-                'Security note: verification uses a built-in <a href="https://github.com/SecurityInnovation/PGPy">pgpy</a> '
-                "library. It does not honor trust settings, revocations, or expiration times from your keyring and may "
-                "not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself."
-            )
-        )
+        self.disclaimer_label.setText(get_disclaimer_text())
 
 
 class SignAndVerifyMessage(QWidget):

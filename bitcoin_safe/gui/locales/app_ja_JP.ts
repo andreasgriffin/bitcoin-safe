@@ -4430,11 +4430,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>セキュリティ注意: 検証は内蔵の &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ライブラリを使用します。キーリングの信頼設定、失効、または有効期限を考慮せず、新しい OpenPGP パケットをサポートしない場合があります。指紋/鍵の新しさを自分で確認した場合にのみ結果を信頼してください。</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>署名付きメッセージ</translation>
 		</message>
@@ -5104,11 +5099,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>公開鍵が自動的にダウンロードされました。</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>公開鍵が必要です</translation>
 		</message>
@@ -5483,6 +5473,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total} のうち {index} 番目の断片</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>不正な署名が検出されました</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>公開鍵をインポートできませんでした: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>署名付きメッセージを解析できませんでした: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>検証に失敗しました</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>メッセージに署名が含まれていません。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>有効な署名がありません</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>署名付きメッセージが提供されていません。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>公開鍵の有効期限が切れています。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>公開鍵が失効しています。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>セキュリティに関する注意: 検証には組み込みの &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ライブラリを使用します。キーリングの信頼設定、失効、または有効期限は考慮されません。高価値のメッセージは &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; で検証してください。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>署名の有効期限が切れています。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>サポートされていない PGP ハッシュアルゴリズムです。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>弱い PGP ハッシュアルゴリズムです。</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>公開鍵が存在しません</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>誤った署名タイプ: {signature}</translation>
 		</message>
 	</context>
 	<context>
