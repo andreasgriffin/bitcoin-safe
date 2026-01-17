@@ -32,8 +32,6 @@ import logging
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
 
 logger = logging.getLogger(__name__)
@@ -48,15 +46,18 @@ def test_download_manifest_and_verify() -> None:
         try:
             sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
             assert sig_filename
-        except Exception as exc:
-            pytest.skip(f"Skipping manifest download: {exc}")
+        except Exception:
+            raise
+            # pytest.skip(f"Skipping manifest download: {exc}")
         logger.debug(f"sig_filename {sig_filename}")
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
         assert sig_filename == Path(tempdir) / "sparrow-1.8.4-manifest.txt.asc"
         assert manager.is_signature_file_available(manifest_file)
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         assert manager._verify_file(
-            public_key=public_key, binary_file=manifest_file, signature_file=sig_filename
+            public_keys=[public_key],
+            binary_file=manifest_file,
+            signature_file=sig_filename,
         )
 
 
@@ -69,8 +70,9 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         try:
             sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
             assert sig_filename
-        except Exception as exc:
-            pytest.skip(f"Skipping manifest download: {exc}")
+        except Exception:
+            raise
+            # pytest.skip(f"Skipping manifest download: {exc}")
         logger.debug(f"sig_filename {sig_filename}")
 
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
@@ -83,7 +85,9 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         # correct signature is ok.
         assert manager._verify_file(
-            public_key=public_key, binary_file=manifest_file, signature_file=sig_filename
+            public_keys=[public_key],
+            binary_file=manifest_file,
+            signature_file=sig_filename,
         )
 
         # now overwrite the file:
@@ -95,7 +99,9 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         # wrong signature
         assert not manager._verify_file(
-            public_key=public_key, binary_file=manifest_file, signature_file=sig_filename
+            public_keys=[public_key],
+            binary_file=manifest_file,
+            signature_file=sig_filename,
         )
 
 
@@ -150,15 +156,13 @@ kEM8Jtcf183QgWT6hgT3oFoYRqj64Boh6Zn5s4HAR1Bph665rPk=
     public_key = manager.import_public_key_block(downloaded_key)
     assert public_key
 
-    success, error, returned_fingerprint = manager.verify_signed_message_block(signed_message, downloaded_key)
-    assert success, error
-    assert returned_fingerprint == fingerprint == "8198A18530A522A09561243989C4A25E69A5DE7F"
+    signer_keys, error = manager.verify_signed_message_block(signed_message, downloaded_key)
+    assert signer_keys, error
+    assert str(signer_keys[0].fingerprint) == fingerprint == "8198A18530A522A09561243989C4A25E69A5DE7F"
 
     # now change message and it must fail
     changed_message = signed_message
     changed_message = changed_message[:100] + changed_message[102:]
 
-    success, error, returned_fingerprint = manager.verify_signed_message_block(
-        changed_message, downloaded_key
-    )
-    assert not success
+    signer_keys, error = manager.verify_signed_message_block(changed_message, downloaded_key)
+    assert not signer_keys

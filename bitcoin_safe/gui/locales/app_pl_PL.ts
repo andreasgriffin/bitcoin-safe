@@ -4466,11 +4466,6 @@ Możesz też rozgłosić przez {url}</translation>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Nie uwzględnia ustawień zaufania, unieważnień ani dat wygaśnięcia z Twojego breloka kluczy i może nie obsługiwać nowszych pakietów OpenPGP. Ufaj wynikom tylko wtedy, gdy samodzielnie zweryfikujesz odcisk palca/aktualność klucza.</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>Podpisana wiadomość</translation>
 		</message>
@@ -5143,11 +5138,6 @@ została wykonana pomyślnie. Przejdź do testu wysyłki:
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>Klucz publiczny pobrany automatycznie.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>Wymagany klucz publiczny</translation>
 		</message>
@@ -5528,6 +5518,83 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Fragment {index} z {total}</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>Wykryto nieprawidłowy podpis</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>Nie można zaimportować klucza publicznego: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>Nie można przeanalizować podpisanej wiadomości: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>Weryfikacja nie powiodła się</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>Wiadomość nie zawiera podpisu.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>Brak poprawnych podpisów</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>Nie podano podpisanej wiadomości.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>Klucz publiczny wygasł.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>Klucz publiczny został unieważniony.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Nie uwzględnia ona ustawień zaufania, unieważnień ani terminów ważności z Twojego breloka kluczy. Wiadomości o wysokiej wartości weryfikuj za pomocą &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>Podpis wygasł.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>Nieobsługiwany algorytm skrótu PGP.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>Słaby algorytm skrótu PGP.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>klucz publiczny nieobecny</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>nieprawidłowy typ podpisu: {signature}</translation>
 		</message>
 	</context>
 	<context>

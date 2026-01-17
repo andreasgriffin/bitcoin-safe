@@ -36,6 +36,7 @@ import platform
 import re
 import shutil
 import subprocess
+from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
@@ -43,9 +44,20 @@ from typing import Any
 
 import pgpy  # Python-native OpenPGP library
 import requests
+from pgpy.constants import HashAlgorithm
+
+from bitcoin_safe.i18n import translate
 
 gnupg = None
 logger = logging.getLogger(__name__)
+
+
+def keyserver_url_for_fingerprint(fingerprint: str) -> str | None:
+    """Return keys.openpgp.org URL for a full fingerprint."""
+    fp = fingerprint.replace(" ", "").upper()
+    if len(fp) != 40:
+        return None
+    return f"https://keys.openpgp.org/vks/v1/by-fingerprint/{fp}"
 
 
 class PGPDecodingError(Exception):
@@ -197,6 +209,33 @@ class SignatureVerifyer:
         self.proxies = proxies
         self.import_known_keys()
 
+    @staticmethod
+    def _sig_errors(signature: pgpy.PGPSignature) -> list[str]:
+        """Return error string if signature is weak/expired/unsupported, else None."""
+        if not isinstance(signature, pgpy.PGPSignature):
+            return [translate("pgp", "{t} not a PGPSignature").format(t=type(signature))]
+
+        if not str(signature.signer_fingerprint):
+            return [translate("pgp", "No fingerprint in signature {s}").format(s=signature)]
+
+        hash_algo = signature.hash_algorithm
+        if not isinstance(hash_algo, HashAlgorithm):
+            return [translate("pgp", "Unsupported PGP hash algorithm.")]
+        if not hash_algo.is_collision_resistant:
+            return [translate("pgp", "Weak PGP hash algorithm.")]
+        if signature.is_expired:
+            return [translate("pgp", "Signature is expired.")]
+        return []
+
+    @staticmethod
+    def _key_errors(key: pgpy.PGPKey) -> list[str]:
+        """Return error string if key is revoked/expired, else None."""
+        if any(key.revocation_signatures):
+            return [translate("pgp", "Public key is revoked.")]
+        if key.is_expired:
+            return [translate("pgp", "Public key is expired.")]
+        return []
+
     def import_public_key_file(self, path: Path) -> pgpy.PGPKey:
         """Import public key file."""
         with open(str(path)) as file:
@@ -253,6 +292,10 @@ class SignatureVerifyer:
 
         first_signature = pgp_message.signatures[0]
         assert isinstance(first_signature, pgpy.PGPSignature)
+
+        if sig_error := self._sig_errors(first_signature):
+            raise PGPDecodingError(",".join(sig_error))
+
         return pgp_message, first_signature
 
     def download_public_key_from_signed_message(self, signed_message: str) -> tuple[str, str | None]:
@@ -261,21 +304,16 @@ class SignatureVerifyer:
         Returns (public_key_block, error, fingerprint).
         """
         pgp_message, signature = self.parse_signed_pgp_message(signed_message)
-        fingerprint = str(signature.signer_fingerprint)
+        fingerprint = str(signature.signer_fingerprint).replace(" ", "").upper()
 
         if not fingerprint:
             raise PGPDownloadError("Could not extract fingerprint from signed message.")
+        if len(fingerprint) != 40:
+            raise PGPDownloadError("Signed message does not contain a full fingerprint.")
 
-        # Prefer full fingerprint endpoint when available, fallback to keyid.
-        url = None
-        if len(fingerprint) >= 32:
-            fp = fingerprint[-40:]
-            if len(fp) == 40:
-                url = f"https://keys.openpgp.org/vks/v1/by-fingerprint/{fp}"
-        if url is None:
-            # in case fingerprint is a key-id
-            keyid = fingerprint[-16:]
-            url = f"https://keys.openpgp.org/vks/v1/by-keyid/{keyid}"
+        url = keyserver_url_for_fingerprint(fingerprint)
+        if not url:
+            raise PGPDownloadError("Signed message does not contain a full fingerprint.")
 
         try:
             response = requests.get(url, timeout=10 if self.proxies else 2, proxies=self.proxies)
@@ -376,32 +414,74 @@ class SignatureVerifyer:
             binary_file_to_check = manifest_file
 
         verification_result = self._verify_file(
-            public_key=public_key, binary_file=binary_file_to_check, signature_file=signature_file
+            public_keys=[public_key],
+            binary_file=binary_file_to_check,
+            signature_file=signature_file,
         )
 
         return verification_result
 
+    def _verify_pgp_message(
+        self,
+        message: pgpy.PGPMessage,
+        public_keys: Iterable[pgpy.PGPKey],
+        additional_signatures: list[pgpy.PGPSignature] | None = None,
+    ) -> tuple[list[pgpy.PGPKey], str | None]:
+        """Verifies that the pgp message is signed, and all signatures are secure.
+
+        Only supports primary keys (not subkeys)
+
+        Returns the signer fingerprints"""
+        signer_keys: list[pgpy.PGPKey] = []
+        public_keys_dict = {str(key.fingerprint): key for key in public_keys}
+        for signature in message.signatures + (additional_signatures or []):
+            if not isinstance(signature, pgpy.PGPSignature):
+                return [], translate("pgp", "wrong signature type: {signature}").format(signature)
+
+            if sig_error := self._sig_errors(signature):
+                return [], ",".join(sig_error)
+
+            public_key = public_keys_dict.get(str(signature.signer_fingerprint))
+            if not public_key:
+                return [], translate("pgp", "public key not present")
+
+            if key_error := self._key_errors(public_key):
+                return [], ",".join(key_error)
+
+            # Verify the signature
+            verify_result = public_key.verify(message.message, signature)
+            if not verify_result:
+                return [], translate("pgp", "Failed verification")
+            good_signatures = list(verify_result.good_signatures)
+            bad_signatures = list(verify_result.bad_signatures)
+            if bad_signatures:
+                return [], translate("pgp", "Bad signature detected")
+            if not good_signatures:
+                return [], translate("pgp", "No good signatures")
+
+            signer_keys.append(public_key)
+        return signer_keys, None
+
     def _verify_file(
-        self, public_key: pgpy.PGPKey, binary_file: Path | str, signature_file: Path | str
+        self, public_keys: Iterable[pgpy.PGPKey], binary_file: Path | str, signature_file: Path | str
     ) -> bool:
         """Verify file."""
         try:
             with open(str(signature_file), "rb") as sig_file:
                 signature = pgpy.PGPSignature.from_blob(sig_file.read())
+                if not isinstance(signature, pgpy.PGPSignature):
+                    return False
 
             with open(str(binary_file), "rb") as bin_file:
                 message_data = bin_file.read()
 
             pgpmessage = pgpy.PGPMessage.new(message_data, file=True)
 
-            # Verify the signature
-            verify_result = public_key.verify(pgpmessage.message, signature)
-            if not verify_result:
-                return False
-            good_signatures = list(verify_result.good_signatures)
-            bad_signatures = list(verify_result.bad_signatures)
-            # 1 single bad signature creates a False result
-            return bool(good_signatures) and not bool(bad_signatures)
+            signer_keys, error = self._verify_pgp_message(
+                pgpmessage, public_keys, additional_signatures=[signature]
+            )
+            return bool(signer_keys)
+
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             logger.error(f"Verification failed: {e}")
@@ -409,61 +489,48 @@ class SignatureVerifyer:
 
     def verify_signed_message_block(
         self, signed_message: str, public_key_block: str | None = None
-    ) -> tuple[bool, str | None, str | None]:
+    ) -> tuple[list[pgpy.PGPKey], str | None]:
         """Verify an ASCII-armored PGP signed message.
 
-        Returns a tuple of (verified, error, signer_fingerprint).
+        Fetches the public key based on the fingerprint if necessary.
+
+        Returns a tuple of (verified, error, first signer_fingerprint).
         """
         if not signed_message.strip():
-            return False, "No signed message provided.", None
+            return [], translate("pgp", "No signed message provided.")
 
         try:
             pgp_message = pgpy.PGPMessage.from_blob(signed_message)
             assert isinstance(pgp_message, pgpy.PGPMessage)
         except Exception as exc:
             logger.error(f"Could not parse signed message: {exc}")
-            return False, f"Could not parse signed message: {exc}", None
+            return [], translate("pgp", "Could not parse signed message: {exc}").format(exc=exc)
         if not pgp_message.is_signed:
-            return False, "Message does not contain a signature.", None
+            return [], translate("pgp", "Message does not contain a signature.")
+
+        keys = list(self.public_keys.values())
 
         if public_key_block and public_key_block.strip():
             try:
-                public_key = self.import_public_key_block(public_key_block)
+                key = self.import_public_key_block(public_key_block)
+                keys.append(key)
             except Exception as exc:
                 logger.error(f"Could not import public key: {exc}")
-                return False, f"Could not import public key: {exc}", None
-        elif self.public_keys:
-            public_key = next(iter(self.public_keys.values()))
+                return [], translate("pgp", "Could not import public key: {exc}").format(exc=exc)
         else:
+            # try with the internal keys before download
+            _signer_keys, _error = self._verify_pgp_message(pgp_message, keys)
+            if _signer_keys:
+                return _signer_keys, _error
+
             try:
                 downloaded_key, fingerprint = self.download_public_key_from_signed_message(signed_message)
+                key = self.import_public_key_block(downloaded_key)
+                keys.append(key)
             except Exception as e:
-                return False, str(e), None
+                return [], str(e)
 
-            try:
-                public_key = self.import_public_key_block(downloaded_key)
-            except Exception as exc:
-                logger.error(f"Could not import downloaded public key: {exc}")
-                return False, f"Could not import downloaded public key: {exc}", fingerprint
-
-        keys_to_try = [public_key] + [key for key in self.public_keys.values() if key is not public_key]
-        last_error = None
-        for key in keys_to_try:
-            try:
-                verify_result = key.verify(pgp_message)
-                if not verify_result:
-                    continue
-                good_signatures = list(verify_result.good_signatures)
-                bad_signatures = list(verify_result.bad_signatures)
-                if good_signatures and not bad_signatures:
-                    fingerprint = str(key.fingerprint) if key.fingerprint else None
-                    return True, None, fingerprint
-            except Exception as exc:  # keep trying other keys if available
-                last_error = str(exc)
-                logger.debug(f"{self.__class__.__name__}: {exc}")
-                continue
-
-        return False, last_error or "Signature verification failed.", None
+        return self._verify_pgp_message(pgp_message, keys)
 
     @staticmethod
     def _get_asset_url(assets: list[Asset], ending: str) -> str | None:

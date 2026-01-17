@@ -29,8 +29,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+import pgpy
 from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -41,7 +42,10 @@ from PyQt6.QtWidgets import (
 )
 
 from ...i18n import translate
-from ...signature_manager import PGPDecodingError, PGPDownloadError, PGPMissingSignature, SignatureVerifyer
+from ...signature_manager import (
+    SignatureVerifyer,
+    keyserver_url_for_fingerprint,
+)
 
 PUBLIC_KEY_PLACEHOLDER = """-----BEGIN PGP PUBLIC KEY BLOCK-----
 ...
@@ -52,9 +56,12 @@ PUBLIC_KEY_PLACEHOLDER = """-----BEGIN PGP PUBLIC KEY BLOCK-----
 class GpgVerificationResult:
     """Container for PGP verification outcome."""
 
-    success: bool
     message: str
-    fingerprint: str | None = None
+    signer_keys: list[pgpy.PGPKey] = field(default_factory=list)
+
+    @property
+    def success(self) -> bool:
+        return bool(self.signer_keys)
 
 
 class PublicKeyDialog(QDialog):
@@ -93,54 +100,34 @@ def prompt_for_public_key(parent: QWidget | None, reason: str) -> str | None:
     return key or None
 
 
-def _keyserver_url(fingerprint: str) -> str:
-    """Return keys.openpgp.org URL for a given fingerprint/keyid."""
-    fp = fingerprint.replace(" ", "").upper()
-    if len(fp) >= 40:
-        fp = fp[-40:]
-        return f"https://keys.openpgp.org/vks/v1/by-fingerprint/{fp}"
-    kid = fp[-16:]
-    return f"https://keys.openpgp.org/vks/v1/by-keyid/{kid}"
-
-
 def verify_gpg_signed_message(
     signed_message: str,
     parent: QWidget | None = None,
 ) -> GpgVerificationResult:
     """Verify an ASCII-armored PGP signed message, optionally requesting a key."""
     if not signed_message.strip():
-        return GpgVerificationResult(False, translate("gpg", "Signed PGP message is required."))
+        return GpgVerificationResult(translate("gpg", "Signed PGP message is required."), signer_keys=[])
 
     verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
-    key_block = ""
-    downloaded = False
-    fingerprint: str | None = None
 
-    downloaded = False
-    try:
-        key_block, fingerprint = verifyer.download_public_key_from_signed_message(signed_message)
-        downloaded = True
-    except (PGPDecodingError, PGPMissingSignature) as e:
-        return GpgVerificationResult(False, str(e), fingerprint)
-    except PGPDownloadError as e:
-        manual_key = prompt_for_public_key(parent, str(e))
+    signer_keys, error = verifyer.verify_signed_message_block(signed_message)
+
+    if not signer_keys:
+        # give  a second chance with manual key entry
+        manual_key = prompt_for_public_key(parent, str(error) if error else "")
         if manual_key:
-            key_block = manual_key
-        else:
-            return GpgVerificationResult(False, "No public key available", fingerprint)
+            signer_keys, error = verifyer.verify_signed_message_block(signed_message, manual_key)
 
-    success, error, fingerprint_from_verify = verifyer.verify_signed_message_block(signed_message, key_block)
-    fingerprint = fingerprint_from_verify or fingerprint
-
-    if success:
+    if signer_keys:
         body = translate("gpg", "PGP signature is valid.")
-        if fingerprint:
-            link = _keyserver_url(fingerprint)
-            body += f' ({translate("gpg", "Fingerprint")}: <a href="{link}">{fingerprint}</a>)'
-        if downloaded:
-            body += f"\n{translate('gpg', 'Public key downloaded automatically.')}"
-        return GpgVerificationResult(True, body, fingerprint)
+        for signer_key in signer_keys:
+            fingerprint = str(signer_key.fingerprint)
+            link = keyserver_url_for_fingerprint(fingerprint)
+            if link:
+                body += f' ({translate("gpg", "Fingerprint")}: <a href="{link}">{fingerprint}</a>)'
+            else:
+                body += f" ({translate('gpg', 'Fingerprint')}: {fingerprint})"
+    else:
+        body = error or translate("gpg", "PGP signature verification failed.")
 
-    return GpgVerificationResult(
-        False, error or translate("gpg", "PGP signature verification failed."), fingerprint
-    )
+    return GpgVerificationResult(body, signer_keys)

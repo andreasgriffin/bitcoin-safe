@@ -4430,11 +4430,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>सुरक्षा नोट: सत्यापन अंतर्निर्मित &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; लाइब्रेरी का उपयोग करता है। यह आपके कीरिंग से ट्रस्ट सेटिंग्स, निरस्तीकरण या समाप्ति समय का पालन नहीं करता और नए OpenPGP पैकेट्स का समर्थन नहीं कर सकता। परिणामों पर केवल तभी भरोसा करें जब आप स्वयं फिंगरप्रिंट/कुंजी की नवीनता की जाँच करें।</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>हस्ताक्षरित संदेश</translation>
 		</message>
@@ -5104,11 +5099,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>सार्वजनिक कुंजी स्वचालित रूप से डाउनलोड की गई।</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>सार्वजनिक कुंजी आवश्यक है</translation>
 		</message>
@@ -5483,6 +5473,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total} में से {index}वाँ खंड</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>अमान्य हस्ताक्षर का पता चला</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>सार्वजनिक कुंजी आयात नहीं की जा सकी: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>हस्ताक्षरित संदेश को पार्स नहीं किया जा सका: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>सत्यापन विफल</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>संदेश में कोई हस्ताक्षर नहीं है।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>कोई मान्य हस्ताक्षर नहीं</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>कोई हस्ताक्षरित संदेश प्रदान नहीं किया गया।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>सार्वजनिक कुंजी की अवधि समाप्त हो गई है।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>सार्वजनिक कुंजी निरस्त कर दी गई है।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>सुरक्षा सूचना: सत्यापन अंतर्निहित &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; लाइब्रेरी का उपयोग करता है। यह आपके कीरिंग से प्राप्त विश्वास सेटिंग्स, निरस्तीकरण या समाप्ति समय का सम्मान नहीं करता। कृपया उच्च मूल्य वाले संदेशों को &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; से सत्यापित करें।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>हस्ताक्षर की अवधि समाप्त हो गई है।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>असमर्थित PGP हैश एल्गोरिदम।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>कमज़ोर PGP हैश एल्गोरिदम।</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>सार्वजनिक कुंजी मौजूद नहीं है</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>गलत हस्ताक्षर प्रकार: {signature}</translation>
 		</message>
 	</context>
 	<context>

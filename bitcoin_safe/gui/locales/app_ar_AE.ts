@@ -4430,11 +4430,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>ملاحظة أمنية: يستخدم التحقق مكتبة &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; المدمجة. لا يراعي إعدادات الثقة أو الإلغاءات أو تواريخ الانتهاء من حلقة المفاتيح لديك، وقد لا يدعم حزم OpenPGP الأحدث. لا تثق بالنتائج إلا إذا تحققت بنفسك من بصمة المفتاح/حداثته.</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>رسالة موقعة</translation>
 		</message>
@@ -5104,11 +5099,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>تم تنزيل المفتاح العام تلقائيًا.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>المفتاح العام مطلوب</translation>
 		</message>
@@ -5483,6 +5473,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: الجزء {index} من {total}</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>تم اكتشاف توقيع غير صالح</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>تعذر استيراد المفتاح العام: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>تعذر تحليل الرسالة الموقعة: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>فشل التحقق</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>لا تحتوي الرسالة على توقيع.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>لا توجد تواقيع صالحة</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>لم يتم توفير رسالة موقعة.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>المفتاح العام منتهي الصلاحية.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>تم إلغاء المفتاح العام.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>ملاحظة أمنية: تستخدم عملية التحقق مكتبة &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; المدمجة. وهي لا تأخذ في الاعتبار إعدادات الثقة أو الإلغاءات أو تواريخ الانتهاء من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل ذات القيمة العالية باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>التوقيع منتهي الصلاحية.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>خوارزمية تجزئة PGP غير مدعومة.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>خوارزمية تجزئة PGP ضعيفة.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>المفتاح العام غير موجود</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>نوع توقيع غير صحيح: {signature}</translation>
 		</message>
 	</context>
 	<context>

@@ -4427,11 +4427,6 @@ Or you can broadcast via {url}</source>
 	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring and may not support newer OpenPGP packets. Only trust results if you verify the fingerprint/key freshness yourself.</source>
-			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ที่มีมาในตัว โดยจะไม่คำนึงถึงการตั้งค่าความเชื่อถือ การเพิกถอน หรือวันหมดอายุจากพวงกุญแจของคุณ และอาจไม่รองรับแพ็กเก็ต OpenPGP รุ่นใหม่กว่า โปรดเชื่อถือผลลัพธ์ก็ต่อเมื่อคุณตรวจสอบลายนิ้วมือ/ความใหม่ของกุญแจด้วยตนเอง</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
 			<source>Signed message</source>
 			<translation>ข้อความที่ลงนาม</translation>
 		</message>
@@ -5101,11 +5096,6 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>gpg</name>
 		<message>
-			<source>Public key downloaded automatically.</source>
-			<translation>ดาวน์โหลดกุญแจสาธารณะโดยอัตโนมัติ</translation>
-		</message>
-		<name>gpg</name>
-		<message>
 			<source>Public key required</source>
 			<translation>ต้องการกุญแจสาธารณะ</translation>
 		</message>
@@ -5480,6 +5470,83 @@ Click here to learn more.</source>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: ชิ้นส่วน {index} จากทั้งหมด {total}</translation>
+		</message>
+	</context>
+	<context>
+		<name>pgp</name>
+		<message>
+			<source>Bad signature detected</source>
+			<translation>ตรวจพบลายเซ็นไม่ถูกต้อง</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not import public key: {exc}</source>
+			<translation>ไม่สามารถนำเข้ากุญแจสาธารณะได้: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Could not parse signed message: {exc}</source>
+			<translation>ไม่สามารถแยกวิเคราะห์ข้อความที่มีลายเซ็นได้: {exc}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Failed verification</source>
+			<translation>การยืนยันล้มเหลว</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Message does not contain a signature.</source>
+			<translation>ข้อความไม่มีลายเซ็น</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No good signatures</source>
+			<translation>ไม่มีลายเซ็นที่ถูกต้อง</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>No signed message provided.</source>
+			<translation>ไม่ได้ระบุข้อความที่มีลายเซ็น</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is expired.</source>
+			<translation>กุญแจสาธารณะหมดอายุแล้ว</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Public key is revoked.</source>
+			<translation>กุญแจสาธารณะถูกเพิกถอน</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ที่มีมาในตัว ซึ่งจะไม่คำนึงถึงการตั้งค่าความเชื่อถือ การเพิกถอน หรือเวลาหมดอายุจากพวงกุญแจของคุณ โปรดตรวจสอบข้อความที่มีมูลค่าสูงด้วย &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Signature is expired.</source>
+			<translation>ลายเซ็นหมดอายุแล้ว</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Unsupported PGP hash algorithm.</source>
+			<translation>อัลกอริทึมแฮช PGP ที่ไม่รองรับ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>Weak PGP hash algorithm.</source>
+			<translation>อัลกอริทึมแฮช PGP ที่อ่อนแอ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>public key not present</source>
+			<translation>ไม่พบกุญแจสาธารณะ</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>wrong signature type: {signature}</source>
+			<translation>ประเภทลายเซ็นไม่ถูกต้อง: {signature}</translation>
 		</message>
 	</context>
 	<context>
