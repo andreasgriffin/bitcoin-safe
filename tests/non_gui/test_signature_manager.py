@@ -55,7 +55,7 @@ def test_download_manifest_and_verify() -> None:
         assert manager.is_signature_file_available(manifest_file)
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         assert manager._verify_file(
-            public_keys={str(public_key.fingerprint): public_key},
+            public_keys=[public_key],
             binary_file=manifest_file,
             signature_file=sig_filename,
         )
@@ -85,7 +85,7 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         # correct signature is ok.
         assert manager._verify_file(
-            public_keys={str(public_key.fingerprint): public_key},
+            public_keys=[public_key],
             binary_file=manifest_file,
             signature_file=sig_filename,
         )
@@ -99,7 +99,7 @@ def test_download_manifest_and_verify_wrong_signature() -> None:
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
         # wrong signature
         assert not manager._verify_file(
-            public_keys={str(public_key.fingerprint): public_key},
+            public_keys=[public_key],
             binary_file=manifest_file,
             signature_file=sig_filename,
         )
