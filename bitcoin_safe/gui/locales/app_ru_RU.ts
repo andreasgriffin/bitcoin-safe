@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>Описание адреса</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Подписанное сообщение</translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3648,6 +3653,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>Подписанное сообщение</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>Проверка не удалась.</translation>
 		</message>
@@ -5511,6 +5521,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>В подписи нет отпечатка {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>Нет действительных подписей</translation>
 		</message>
@@ -5558,6 +5573,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>неверный тип подписи: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} не является PGPSignature</translation>
 		</message>
 	</context>
 	<context>

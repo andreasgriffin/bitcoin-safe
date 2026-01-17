@@ -53,6 +53,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.descriptors import get_address_bip32_path
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
+from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.export_data import QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -62,7 +63,7 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 from ...message_signature_verifyer import MessageSignatureVerifyer
 from ...signals import SignalsMin, WalletFunctions
 from .gpg_verify import verify_gpg_signed_message
-from .util import Message
+from .util import Message, do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -475,7 +476,9 @@ class SignAndVerifyMessage(QWidget):
     def on_signed_message(self, signed_message: str) -> None:
         """Populate the signature field instead of opening a dialog."""
 
-        self.verify_signature_edit.setText(signed_message)
+        title = self.tr("Signed Message")
+        do_copy(signed_message, title=title)
+        show_textedit_message(text=signed_message, label_description="", title=title)
 
     def on_verify_armored_clicked(self) -> None:
         """Verify a BIP-0137 ASCII-armored message block."""

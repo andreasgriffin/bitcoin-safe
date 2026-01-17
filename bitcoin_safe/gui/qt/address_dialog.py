@@ -126,9 +126,10 @@ class AddressDetailsAdvanced(QWidget):
         )
         self.sign_message.signal_signed_message.connect(self.on_signed_message)
 
-    def on_signed_message(self, signed_message: str, title="Signed Message"):
+    def on_signed_message(self, signed_message: str):
         """On signed message."""
         self.sign_message.close()
+        title = self.tr("Signed Message")
         do_copy(signed_message, title=title)
         show_textedit_message(text=signed_message, label_description="", title=title)
 

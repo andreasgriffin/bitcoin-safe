@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>पता वर्णनकर्ता</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>हस्ताक्षरित संदेश  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3645,6 +3650,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>हस्ताक्षरित संदेश  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>सत्यापन विफल हुआ।</translation>
 		</message>
@@ -5503,6 +5513,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>हस्ताक्षर में कोई फ़िंगरप्रिंट नहीं है {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>कोई मान्य हस्ताक्षर नहीं</translation>
 		</message>
@@ -5550,6 +5565,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>गलत हस्ताक्षर प्रकार: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} PGPSignature नहीं है</translation>
 		</message>
 	</context>
 	<context>
