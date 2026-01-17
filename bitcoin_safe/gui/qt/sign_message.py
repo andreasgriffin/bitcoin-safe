@@ -44,9 +44,9 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QLabel,
     QLineEdit,
+    QPlainTextEdit,
     QPushButton,
     QTabWidget,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -252,7 +252,7 @@ class _SignTab(SignMessageBase):
     ) -> None:
         """Tab handling signing controls and QR/USB actions."""
         self.signals_min = signals_min
-        self.sign_message_edit = QTextEdit()
+        self.sign_message_edit = QPlainTextEdit()
         self.message_label = QLabel()
         self.sign_button_box = QDialogButtonBox(Qt.Orientation.Horizontal)
         self.sign_address_edit = AddressEdit(
@@ -323,7 +323,7 @@ class VerifyGpgMessageTab(QWidget):
         """Tab handling verification of ASCII-armored PGP signed messages."""
         super().__init__(parent)
         self.signals_min = signals_min
-        self.signed_message_edit = QTextEdit()
+        self.signed_message_edit = QPlainTextEdit()
         self.verify_button = QPushButton()
         self.disclaimer_label = QLabel()
         self.disclaimer_label.setWordWrap(True)
@@ -376,12 +376,12 @@ class SignAndVerifyMessage(QWidget):
         self.signals_min = signals_min
         self.setWindowIcon(svg_tools.get_QIcon("material-symbols--signature.svg"))
 
-        self.verify_message_edit = QTextEdit()
+        self.verify_message_edit = QPlainTextEdit()
         self.verify_address_edit = AddressEdit(
             network=network, wallet_functions=wallet_functions, ask_to_replace_if_was_used=False
         )
         self.verify_signature_edit = QLineEdit()
-        self.armored_message_edit = QTextEdit()
+        self.armored_message_edit = QPlainTextEdit()
         self.result_label = QLabel()
         self.result_label.setTextFormat(Qt.TextFormat.RichText)
         self.result_label.setOpenExternalLinks(True)
@@ -528,8 +528,7 @@ class SignAndVerifyMessage(QWidget):
         self.verify_address_edit.setPlaceholderText(self.tr("Address used to sign the message"))
         self.verify_signature_edit.setPlaceholderText(self.tr("Base64 signature"))
         self.armored_message_edit.setPlaceholderText(
-            """
------BEGIN BITCOIN SIGNED MESSAGE-----
+            """-----BEGIN BITCOIN SIGNED MESSAGE-----
 test
 -----BEGIN BITCOIN SIGNATURE-----
 bcrt1qznp9gqwteevnnyf8gsq5x7vjkd67ccmx0f9j55
