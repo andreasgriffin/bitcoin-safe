@@ -36,6 +36,7 @@ import platform
 import re
 import shutil
 import subprocess
+from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
@@ -410,7 +411,7 @@ class SignatureVerifyer:
             binary_file_to_check = manifest_file
 
         verification_result = self._verify_file(
-            public_keys={str(public_key.fingerprint): public_key},
+            public_keys=[public_key],
             binary_file=binary_file_to_check,
             signature_file=signature_file,
         )
@@ -420,7 +421,7 @@ class SignatureVerifyer:
     def _verify_pgp_message(
         self,
         message: pgpy.PGPMessage,
-        public_keys: dict[str, pgpy.PGPKey],
+        public_keys: Iterable[pgpy.PGPKey],
         additional_signatures: list[pgpy.PGPSignature] | None = None,
     ) -> tuple[list[pgpy.PGPKey], str | None]:
         """Verifies that the pgp message is signed, and all signatures are secure.
@@ -429,6 +430,7 @@ class SignatureVerifyer:
 
         Returns the signer fingerprints"""
         signer_keys: list[pgpy.PGPKey] = []
+        public_keys_dict = {str(key.fingerprint): key for key in public_keys}
         for signature in message.signatures + (additional_signatures or []):
             if not isinstance(signature, pgpy.PGPSignature):
                 return [], translate("pgp", "wrong signature type: {signature}").format(signature)
@@ -436,7 +438,7 @@ class SignatureVerifyer:
             if sig_error := self._is_sig_insecure(signature):
                 return [], sig_error
 
-            public_key = public_keys.get(str(signature.signer_fingerprint))
+            public_key = public_keys_dict.get(str(signature.signer_fingerprint))
             if not public_key:
                 return [], translate("pgp", "public key not present")
 
@@ -458,7 +460,7 @@ class SignatureVerifyer:
         return signer_keys, None
 
     def _verify_file(
-        self, public_keys: dict[str, pgpy.PGPKey], binary_file: Path | str, signature_file: Path | str
+        self, public_keys: Iterable[pgpy.PGPKey], binary_file: Path | str, signature_file: Path | str
     ) -> bool:
         """Verify file."""
         try:
@@ -503,12 +505,12 @@ class SignatureVerifyer:
         if not pgp_message.is_signed:
             return [], translate("pgp", "Message does not contain a signature.")
 
-        keys = self.public_keys.copy()
+        keys = list(self.public_keys.values())
 
         if public_key_block and public_key_block.strip():
             try:
                 key = self.import_public_key_block(public_key_block)
-                keys[str(key.fingerprint)] = key
+                keys.append(key)
             except Exception as exc:
                 logger.error(f"Could not import public key: {exc}")
                 return [], translate("pgp", "Could not import public key: {exc}").format(exc=exc)
@@ -521,7 +523,7 @@ class SignatureVerifyer:
             try:
                 downloaded_key, fingerprint = self.download_public_key_from_signed_message(signed_message)
                 key = self.import_public_key_block(downloaded_key)
-                keys[str(key.fingerprint)] = key
+                keys.append(key)
             except Exception as e:
                 return [], str(e)
 
