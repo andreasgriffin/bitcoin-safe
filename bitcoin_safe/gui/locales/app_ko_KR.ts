@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>주소 설명자  </translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>서명된 메시지  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3642,6 +3647,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>서명된 메시지  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>검증에 실패했습니다.</translation>
 		</message>
@@ -5500,6 +5510,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>서명에 지문이 없습니다 {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>유효한 서명이 없습니다</translation>
 		</message>
@@ -5547,6 +5562,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>잘못된 서명 유형: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t}은(는) PGPSignature가 아닙니다</translation>
 		</message>
 	</context>
 	<context>

@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>アドレス記述子</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>署名されたメッセージ  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3645,6 +3650,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>署名されたメッセージ  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>検証に失敗しました。</translation>
 		</message>
@@ -5503,6 +5513,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>署名にフィンガープリントがありません {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>有効な署名がありません</translation>
 		</message>
@@ -5550,6 +5565,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>誤った署名タイプ: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} は PGPSignature ではありません</translation>
 		</message>
 	</context>
 	<context>

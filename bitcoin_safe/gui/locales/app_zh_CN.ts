@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>地址描述</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>已签名消息  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3648,6 +3653,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>已签名消息  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>验证失败。</translation>
 		</message>
@@ -5509,6 +5519,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>签名中没有指纹 {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>没有有效签名</translation>
 		</message>
@@ -5556,6 +5571,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>错误的签名类型：{signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} 不是 PGPSignature</translation>
 		</message>
 	</context>
 	<context>

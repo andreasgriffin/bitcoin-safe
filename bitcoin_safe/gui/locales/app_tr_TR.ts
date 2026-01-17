@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>Adres tanımlayıcısı</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>İmzalanmış Mesaj</translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3645,6 +3650,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>İmzalanmış Mesaj</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>Doğrulama başarısız oldu.</translation>
 		</message>
@@ -5508,6 +5518,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>İmzadan parmak izi alınamadı {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>Geçerli imza yok</translation>
 		</message>
@@ -5555,6 +5570,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>yanlış imza türü: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} bir PGPSignature değil</translation>
 		</message>
 	</context>
 	<context>

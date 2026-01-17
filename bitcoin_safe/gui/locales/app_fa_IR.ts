@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>توصیف‌گر آدرس</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>پیام امضاشده</translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3645,6 +3650,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>پیام امضاشده</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>تأیید ناموفق بود.</translation>
 		</message>
@@ -5508,6 +5518,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>هیچ اثرانگشتی در امضا وجود ندارد {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>هیچ امضای معتبری وجود ندارد</translation>
 		</message>
@@ -5555,6 +5570,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>نوع امضای نادرست: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} یک PGPSignature نیست</translation>
 		</message>
 	</context>
 	<context>

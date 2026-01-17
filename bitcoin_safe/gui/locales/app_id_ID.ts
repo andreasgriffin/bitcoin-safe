@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>Deskriptor alamat</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Pesan yang Ditandatangani</translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3645,6 +3650,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>Pesan yang Ditandatangani</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>Verifikasi gagal.</translation>
 		</message>
@@ -5508,6 +5518,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>Tidak ada sidik jari dalam tanda tangan {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>Tidak ada tanda tangan yang valid</translation>
 		</message>
@@ -5555,6 +5570,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>jenis tanda tangan salah: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} bukan PGPSignature</translation>
 		</message>
 	</context>
 	<context>

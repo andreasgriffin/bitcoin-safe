@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>ตัวบ่งชี้ที่อยู่  </translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>ข้อความที่ลงนามแล้ว  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3642,6 +3647,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>ข้อความที่ลงนามแล้ว  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>การตรวจสอบล้มเหลว</translation>
 		</message>
@@ -5500,6 +5510,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>ไม่มีลายนิ้วมือในลายเซ็น {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>ไม่มีลายเซ็นที่ถูกต้อง</translation>
 		</message>
@@ -5547,6 +5562,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>ประเภทลายเซ็นไม่ถูกต้อง: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} ไม่ใช่ PGPSignature</translation>
 		</message>
 	</context>
 	<context>

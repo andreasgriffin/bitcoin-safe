@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>လိပ်စာဖော်ပြချက်  </translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3642,6 +3647,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>အတည်ပြုမှု မအောင်မြင်ပါ။</translation>
 		</message>
@@ -5500,6 +5510,11 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>လက်မှတ်တွင် fingerprint မရှိပါ {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>မှန်ကန်သော လက်မှတ် မရှိပါ</translation>
 		</message>
@@ -5547,6 +5562,11 @@ Click here to learn more.</source>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>လက်မှတ် အမျိုးအစား မမှန်ပါ: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} သည် PGPSignature မဟုတ်ပါ</translation>
 		</message>
 	</context>
 	<context>

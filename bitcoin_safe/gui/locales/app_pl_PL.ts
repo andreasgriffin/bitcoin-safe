@@ -84,6 +84,11 @@
 			<source>Address descriptor</source>
 			<translation>Dekryptator adresów</translation>
 		</message>
+		<name>AddressDetailsAdvanced</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Podpisana wiadomość</translation>
+		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -3669,6 +3674,11 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
+			<source>Signed Message</source>
+			<translation>Podpisana wiadomość</translation>
+		</message>
+		<name>SignAndVerifyMessage</name>
+		<message>
 			<source>Verification failed.</source>
 			<translation>Weryfikacja nie powiodła się.</translation>
 		</message>
@@ -5548,6 +5558,11 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
+			<source>No fingerprint in signature {s}</source>
+			<translation>Brak odcisku palca w podpisie {s}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
 			<source>No good signatures</source>
 			<translation>Brak poprawnych podpisów</translation>
 		</message>
@@ -5595,6 +5610,11 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>wrong signature type: {signature}</source>
 			<translation>nieprawidłowy typ podpisu: {signature}</translation>
+		</message>
+		<name>pgp</name>
+		<message>
+			<source>{t} not a PGPSignature</source>
+			<translation>{t} nie jest PGPSignature</translation>
 		</message>
 	</context>
 	<context>
