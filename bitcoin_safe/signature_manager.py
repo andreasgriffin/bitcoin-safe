@@ -210,28 +210,31 @@ class SignatureVerifyer:
         self.import_known_keys()
 
     @staticmethod
-    def _is_sig_insecure(signature: pgpy.PGPSignature) -> str | None:
+    def _sig_errors(signature: pgpy.PGPSignature) -> list[str]:
         """Return error string if signature is weak/expired/unsupported, else None."""
         if not isinstance(signature, pgpy.PGPSignature):
-            return f"{type(signature)} not a PGPSignature"
+            return [translate("pgp", "{t} not a PGPSignature").format(t=type(signature))]
+
+        if not str(signature.signer_fingerprint):
+            return [translate("pgp", "No fingerprint in signature {s}").format(s=signature)]
 
         hash_algo = signature.hash_algorithm
         if not isinstance(hash_algo, HashAlgorithm):
-            return translate("pgp", "Unsupported PGP hash algorithm.")
+            return [translate("pgp", "Unsupported PGP hash algorithm.")]
         if not hash_algo.is_collision_resistant:
-            return translate("pgp", "Weak PGP hash algorithm.")
+            return [translate("pgp", "Weak PGP hash algorithm.")]
         if signature.is_expired:
-            return translate("pgp", "Signature is expired.")
-        return None
+            return [translate("pgp", "Signature is expired.")]
+        return []
 
     @staticmethod
-    def _is_key_insecure(key: pgpy.PGPKey) -> str | None:
+    def _key_errors(key: pgpy.PGPKey) -> list[str]:
         """Return error string if key is revoked/expired, else None."""
         if any(key.revocation_signatures):
-            return translate("pgp", "Public key is revoked.")
+            return [translate("pgp", "Public key is revoked.")]
         if key.is_expired:
-            return translate("pgp", "Public key is expired.")
-        return None
+            return [translate("pgp", "Public key is expired.")]
+        return []
 
     def import_public_key_file(self, path: Path) -> pgpy.PGPKey:
         """Import public key file."""
@@ -290,8 +293,8 @@ class SignatureVerifyer:
         first_signature = pgp_message.signatures[0]
         assert isinstance(first_signature, pgpy.PGPSignature)
 
-        if sig_error := self._is_sig_insecure(first_signature):
-            raise PGPDecodingError(sig_error)
+        if sig_error := self._sig_errors(first_signature):
+            raise PGPDecodingError(",".join(sig_error))
 
         return pgp_message, first_signature
 
@@ -435,15 +438,15 @@ class SignatureVerifyer:
             if not isinstance(signature, pgpy.PGPSignature):
                 return [], translate("pgp", "wrong signature type: {signature}").format(signature)
 
-            if sig_error := self._is_sig_insecure(signature):
-                return [], sig_error
+            if sig_error := self._sig_errors(signature):
+                return [], ",".join(sig_error)
 
             public_key = public_keys_dict.get(str(signature.signer_fingerprint))
             if not public_key:
                 return [], translate("pgp", "public key not present")
 
-            if key_error := self._is_key_insecure(public_key):
-                return [], key_error
+            if key_error := self._key_errors(public_key):
+                return [], ",".join(key_error)
 
             # Verify the signature
             verify_result = public_key.verify(message.message, signature)
