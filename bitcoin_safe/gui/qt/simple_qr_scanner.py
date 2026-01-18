@@ -49,12 +49,14 @@ class SimpleQrScanner(BitcoinVideoWidget):
         close_all_video_widgets: SignalProtocol[[]],
         title: str,
         label_description: str = "",
+        display_result=True,
     ) -> None:
         """Initialize instance."""
         super().__init__(network=network, close_on_result=True)
 
         self.close_all_video_widgets = close_all_video_widgets
         self.title = title
+        self.display_result = display_result
         self.label_description = label_description
 
         self.close_all_video_widgets.emit()
@@ -70,6 +72,8 @@ class SimpleQrScanner(BitcoinVideoWidget):
 
     def on_raw_decoded(self, o: object) -> None:
         """On raw decoded."""
+        if not self.display_result:
+            return
         try:
             data = self.meta_data_handler.get_complete_data()
             self._show_result(data)

@@ -151,6 +151,7 @@ class SignMessageBase(QWidget):
             network=self.network,
             close_all_video_widgets=self.close_all_video_widgets,
             title=self.tr("Signed Message"),
+            display_result=False,
         )
         self._qr_scanner.signal_raw_content.connect(self.on_raw_content)
 
