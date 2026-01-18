@@ -378,7 +378,7 @@ def _gather_context(build: BuildPaths) -> dict[str, object]:
             "status_short": status,
         }
 
-        for filename in ("poetry.lock", "pyproject.toml"):
+        for filename in ("uv.lock", "pyproject.toml"):
             file_path = repo_root / filename
             if file_path.exists():
                 info[f"{filename}_sha256"] = _sha256_file(file_path)

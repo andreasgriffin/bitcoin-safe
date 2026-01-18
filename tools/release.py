@@ -189,10 +189,10 @@ def create_pypi_wheel(dist_dir="dist") -> tuple[str, str]:
         Tuple[str, str]: (whl_file, hash_value)
     """
 
-    def run_poetry_build():
-        # Run `poetry build`
-        """Run poetry build."""
-        subprocess.run(["poetry", "build"], check=True)
+    def run_uv_build():
+        # Run `uv build`
+        """Run uv build."""
+        subprocess.run([sys.executable, "-m", "uv", "build"], check=True)
 
     def get_whl_file():
         # Locate the .whl file in the dist directory
@@ -211,7 +211,7 @@ def create_pypi_wheel(dist_dir="dist") -> tuple[str, str]:
                 sha256_hash.update(byte_block)
         return sha256_hash.hexdigest()
 
-    run_poetry_build()
+    run_uv_build()
 
     whl_file = get_whl_file()
     if not whl_file:
@@ -226,7 +226,7 @@ def create_pypi_wheel(dist_dir="dist") -> tuple[str, str]:
 def publish_pypi_wheel(dist_dir="dist"):
     """Publish pypi wheel."""
     whl_file, hash_value = create_pypi_wheel(dist_dir=dist_dir)
-    subprocess.run(["poetry", "publish"], check=True)
+    subprocess.run([sys.executable, "-m", "uv", "publish"], check=True)
 
 
 def create_github_release(

@@ -27,9 +27,12 @@ export YARL_NO_EXTENSIONS=1
 export MULTIDICT_NO_EXTENSIONS=1
 export FROZENLIST_NO_EXTENSIONS=1
 export ELECTRUM_ECC_DONT_COMPILE=1
+export UV_CACHE_DIR="$BUILD_CACHEDIR/uv"
+export UV_LINK_MODE=copy
+LOCKFILE="$PROJECT_ROOT/uv.lock"
 
-POETRY_WHEEL_DIR="$BUILD_CACHEDIR/poetry_wheel"
-WINE_POETRY_WHEEL_DIR=$(win_path "$POETRY_WHEEL_DIR")
+UV_WHEEL_DIR="$BUILD_CACHEDIR/uv_wheel"
+WINE_UV_WHEEL_DIR=$(win_path "$UV_WHEEL_DIR")
 
 APPDIR="$WINEPREFIX/drive_c/$NAME_ROOT"
 WINE_APPDIR=$(win_path "$APPDIR")
@@ -37,33 +40,28 @@ PIP_CACHE_DIR="$BUILD_CACHEDIR/pip"
 WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR") 
 
 
-mkdir -p "$POETRY_WHEEL_DIR" "$APPDIR"   "$PIP_CACHE_DIR"   "$L_POETRY_CACHE_DIR"
+mkdir -p "$UV_WHEEL_DIR" "$APPDIR"   "$PIP_CACHE_DIR" "$UV_CACHE_DIR"
 
 info "Installing requirements..."
 
 
-info "Installing dependencies using poetry" 
-# ln -s $WINE_PYHOME/python.exe "/usr/bin/python.exe"
-# export PATH="$APPDIR/usr/bin:$PATH"
-# for poetry to install into the system python environment 
-# we have to also remove the .venv folder. Otherwise it will use it
-export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
-export POETRY_VIRTUALENVS_CREATE=false
-$WINE_PYTHON -m poetry config virtualenvs.create false
-
-move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
-# should have been installed already in prepare-wine
-$WINE_PYTHON -m poetry install --only main --no-interaction  
+info "Installing dependencies using uv" 
+move_and_overwrite "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.venv_org"
+$WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || $WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || { echo "uv sync failed twice"; exit 1; }
+move_and_overwrite "$PROJECT_ROOT/.venv_org" "$PROJECT_ROOT/.venv"
 
 
 info "now install the root package"
-rm -Rf "$POETRY_WHEEL_DIR" || true 
-$WINE_PYTHON -m poetry build -f wheel --output="$WINE_POETRY_WHEEL_DIR"
-info "ls of output directory: {$POETRY_WHEEL_DIR}  $(ls $POETRY_WHEEL_DIR)"
-for fullpath in "$POETRY_WHEEL_DIR"/*.whl; do
+rm -Rf "$UV_WHEEL_DIR" || true 
+$WINE_PYTHON -m uv build --wheel --out-dir="$WINE_UV_WHEEL_DIR"
+info "ls of output directory: {$UV_WHEEL_DIR}  $(ls $UV_WHEEL_DIR)"
+for fullpath in "$UV_WHEEL_DIR"/*.whl; do
   # remove everything up to and including the last slash
   filename="${fullpath##*/}"
-  do_wine_pip "$WINE_POETRY_WHEEL_DIR/$filename"
+  info "Installing bitcoin_safe wheel with dependencies"
+  $WINE_PYTHON -m pip install --no-warn-script-location --cache-dir "$WINE_PIP_CACHE_DIR" "$WINE_UV_WHEEL_DIR/$filename"
   break  # stop after the first one
 done
 
@@ -71,9 +69,7 @@ done
 
 
 # # was only needed during build time, not runtime
-$WINE_PYTHON -m pip uninstall -y poetry pip 
-
-move_and_overwrite $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
+$WINE_PYTHON -m pip uninstall -y uv pip 
 
 
 rm -rf dist/
