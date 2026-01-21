@@ -30,6 +30,9 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import platform
+import socket
+from hashlib import sha256
 from typing import cast
 
 import bdkpython as bdk
@@ -41,6 +44,7 @@ from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QColor
@@ -48,12 +52,7 @@ from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.descriptor_export_tools import shorten_filename
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import (
-    Message,
-    adjust_bg_color_for_darkmode,
-    save_file_dialog,
-    svg_tools,
-)
+from bitcoin_safe.gui.qt.util import Message, adjust_bg_color_for_darkmode, save_file_dialog, svg_tools
 from bitcoin_safe.html_utils import link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
@@ -127,6 +126,7 @@ class BackupNsecNotificationBar(NotificationBar):
 
 
 class SyncClient(PluginClient):
+    VERSION = "0.0.3"
     known_classes = {**PluginClient.known_classes, PluginPermission.__name__: PluginPermission}
     plugin_conditions = PluginConditions()
     required_permissions: set[PluginPermission] = {
@@ -181,11 +181,13 @@ class SyncClient(PluginClient):
         nostr_sync: NostrSync | None = None,
         enabled: bool = False,
         auto_open_psbts: bool = True,
+        device_info: dict[str, str] | None = None,
     ):
         """Initialize instance."""
         super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
         self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
+        self.device_info = device_info or {}
 
         self.signals = signals
         self.network = network
@@ -228,6 +230,48 @@ class SyncClient(PluginClient):
     def import_nsec(self):
         """Import nsec."""
         self.nostr_sync.ui.signal_set_keys.emit()
+
+    @staticmethod
+    def _hostname_hash(hostname: str) -> str:
+        return sha256(hostname.encode("utf-8")).hexdigest()
+
+    @classmethod
+    def _current_device_info(cls) -> dict[str, str]:
+        hostname = platform.node() or socket.gethostname() or "unknown"
+        return {"hostname": cls._hostname_hash(hostname)}
+
+    def _handle_possible_device_change(self) -> None:
+        """Detect device change and optionally reset sync key."""
+        current_info = self._current_device_info()
+        current_hostname_hash = current_info.get("hostname")
+        stored_hostname_hash = self.device_info.get("hostname")
+
+        if (
+            not current_hostname_hash
+            or not stored_hostname_hash
+            or stored_hostname_hash == current_hostname_hash
+        ):
+            return
+
+        reset_keys = question_dialog(
+            text=self.tr(
+                "This wallet was last used on another computer.\n"
+                "If you want to keep using both, please reset the Chat & Sync sync key (nsec) now."
+            ).format(current=platform.node() or socket.gethostname() or self.tr("this computer")),
+            title=self.tr("New computer detected"),
+            true_button=self.tr("Reset sync key"),
+            false_button=self.tr("Keep existing key"),
+        )
+
+        if reset_keys:
+            self.nostr_sync.reset_own_key()
+            if self.server:
+                self.backup_nsec_notificationbar.set_nsec(
+                    nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
+                    wallet_id=self.server.wallet_id,
+                )
+
+        self.device_info["hostname"] = current_hostname_hash
 
     def set_enabled(self, value: bool):
         """On set enabled."""
@@ -313,6 +357,7 @@ class SyncClient(PluginClient):
         # setting the parent here is crucial to avoid errors when closing
         """Load."""
         self.nostr_sync.setParent(self)
+        self._handle_possible_device_change()
         self.subscribe()
         self.publish_key()
 
@@ -407,6 +452,7 @@ class SyncClient(PluginClient):
         d = super().dump()
         d["auto_open_psbts"] = self.checkbox_auto_open_psbts.isChecked()
         d["nostr_sync_dump"] = self.nostr_sync.dump()
+        d["device_info"] = self.device_info
 
         return d
 
