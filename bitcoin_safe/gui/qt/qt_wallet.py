@@ -80,6 +80,7 @@ from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
+from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.plugin_framework.plugin_list_widget import PluginListWidget
@@ -750,22 +751,22 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """On qtwallet apply setting changes."""
         self.save()
 
+        current_protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_protowallet_from_ui()
-        new_wallet = Wallet.from_protowallet(
-            protowallet=self.wallet_descriptor_ui.protowallet,
-            config=self.config,
-            labels=self.wallet.labels,
-            default_category=self.wallet.labels.default_category,
-            loop_in_thread=self.loop_in_thread,
-        )
-        # compare if something change
-        worst = self.wallet.get_differences(new_wallet).worst()
+        updated_protowallet = self.wallet_descriptor_ui.protowallet
+
+        differences = current_protowallet.get_differences(updated_protowallet)
+        worst = differences.worst()
         if not worst:
             Message(self.tr("No changes to apply."))
             return
 
-        if worst.type == WalletDifferenceType.NoImpactOnAddresses:
-            # no message needs to be shown here
+        if worst.type == WalletDifferenceType.NoRescan:
+            self._apply_no_impact_setting_changes(updated_protowallet)
+            self.save()
+            Message(self.tr("Changes applied."))
+            return
+        elif worst.type == WalletDifferenceType.NeedsRescan:
             pass
         elif worst.type == WalletDifferenceType.ImpactOnAddresses:
             if not question_dialog(
@@ -774,7 +775,33 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             ):
                 return
 
+        new_wallet = Wallet.from_protowallet(
+            protowallet=updated_protowallet,
+            config=self.config,
+            labels=self.wallet.labels,
+            default_category=self.wallet.labels.default_category,
+            loop_in_thread=self.loop_in_thread,
+        )
         self._recreate_qt_wallet(new_wallet=new_wallet)
+
+    def _apply_no_impact_setting_changes(self, updated_protowallet: ProtoWallet) -> None:
+        """Apply no-impact settings changes without rebuilding the wallet."""
+
+        def keystore_key(keystore: KeyStore) -> str:
+            return keystore.xpub
+
+        updated_keystores = {
+            keystore_key(keystore): keystore for keystore in updated_protowallet.keystores if keystore
+        }
+
+        for keystore in self.wallet.keystores:
+            if not keystore:
+                continue
+            updated_keystore = updated_keystores.get(keystore_key(keystore))
+            if not updated_keystore:
+                continue
+            keystore.description = updated_keystore.description
+            keystore.label = updated_keystore.label
 
     def save_backup(self) -> str:
         """_summary_

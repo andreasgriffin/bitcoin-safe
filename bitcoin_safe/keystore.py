@@ -194,7 +194,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             if this[k] != other[k]:
                 differences.append(
                     WalletDifference(
-                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        type=WalletDifferenceType.NoRescan,
                         key=f"{prefix}{k}",
                         this_value=this[k],
                         other_value=other[k],

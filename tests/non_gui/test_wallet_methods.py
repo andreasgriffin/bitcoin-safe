@@ -188,7 +188,7 @@ def test_get_differences_gap_change():
     )
 
     diffs = wallet1.get_differences(wallet2)
-    assert any(d.key == "gap" and d.type == WalletDifferenceType.NoImpactOnAddresses for d in diffs)
+    assert any(d.key == "gap" and d.type == WalletDifferenceType.NeedsRescan for d in diffs)
     assert not diffs.has_impact_on_addresses()
 
 

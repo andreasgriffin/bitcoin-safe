@@ -168,7 +168,7 @@ def test_get_differences_metadata_fields():
     diffs = keystore.get_differences(keystore2)
     assert len(diffs) == 1
     assert diffs[0].key == "label"
-    assert diffs[0].type == WalletDifferenceType.NoImpactOnAddresses
+    assert diffs[0].type == WalletDifferenceType.NoRescan
 
 
 def test_is_seed_valid():
