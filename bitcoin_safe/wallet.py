@@ -296,7 +296,7 @@ class ProtoWallet(BaseSaveableClass):
             if this[k] != other[k]:
                 differences.append(
                     WalletDifference(
-                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        type=WalletDifferenceType.NeedsRescan,
                         key=k,
                         this_value=this[k],
                         other_value=other[k],
@@ -975,7 +975,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             if this[k] != other[k]:
                 differences.append(
                     WalletDifference(
-                        type=WalletDifferenceType.NoImpactOnAddresses,
+                        type=WalletDifferenceType.NeedsRescan,
                         key=k,
                         this_value=this[k],
                         other_value=other[k],
@@ -1001,7 +1001,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         ):
             differences.append(
                 WalletDifference(
-                    type=WalletDifferenceType.NoImpactOnAddresses,
+                    type=WalletDifferenceType.NoRescan,
                     key="labels",
                     this_value=this_value,
                     other_value=other_value,

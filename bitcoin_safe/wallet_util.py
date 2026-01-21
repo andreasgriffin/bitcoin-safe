@@ -73,7 +73,8 @@ def signer_name(threshold: int, i: int) -> str:
 
 class WalletDifferenceType(enum.Enum):
     # must be sorted by severity
-    NoImpactOnAddresses = 1
+    NoRescan = 1
+    NeedsRescan = 10
     ImpactOnAddresses = 100
 
 
