@@ -78,7 +78,7 @@ from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
-from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet import TxStatus, Wallet
 from bitcoin_safe.wallet_util import signer_name
 
 from ...pdf_labels import make_and_open_labels_pdf
@@ -1705,13 +1705,15 @@ class Wizard(WizardBase):
         return step
 
     def get_latest_send_test_in_tx_history(
-        self, steps: list[TutorialStep], wallet: Wallet
+        self, steps: list[TutorialStep], wallet: Wallet, exclude_local=True
     ) -> TutorialStep | None:
         """Get latest send test in tx history."""
         latest_step = None
         for test_number, tutoral_step in enumerate(steps):
             tx_text = self.tx_text(test_number)
             for txo in wallet.get_all_txos_dict().values():
+                if exclude_local and TxStatus.from_wallet(wallet=wallet, txid=txo.outpoint.txid).is_local():
+                    continue
                 if wallet.labels.get_label(txo.address) == tx_text:
                     latest_step = tutoral_step
         return latest_step

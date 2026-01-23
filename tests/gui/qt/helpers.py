@@ -71,6 +71,7 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
 from ...util import wait_for_sync
@@ -224,7 +225,12 @@ def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet:
 
     viewer.button_send.click()
     if isinstance((tx := viewer.data.data), bdk.Transaction):
-        qtbot.waitUntil(lambda: bool(qt_wallet.wallet.get_tx(str(tx.compute_txid()))), timeout=40_000)
+        qtbot.waitUntil(
+            lambda: TxStatus.from_wallet(
+                txid=str(tx.compute_txid()), wallet=qt_wallet.wallet
+            ).is_in_mempool(),
+            timeout=40_000,
+        )
         qtbot.wait(1000)  # to allow the ui to update
 
     shutter.save(viewer)
