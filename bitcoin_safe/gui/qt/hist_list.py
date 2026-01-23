@@ -57,6 +57,7 @@ import logging
 import os
 import tempfile
 from collections.abc import Iterable
+from datetime import datetime
 from enum import IntEnum
 from functools import partial
 from typing import Any, cast
@@ -88,7 +89,7 @@ from bitcoin_safe.tx import short_tx_id
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
+from ...wallet import LOCAL_TX_LAST_SEEN, ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .cbf_progress_bar import CBFProgressBar
 from .drag_info import AddressDragInfo
 from .my_treeview import (
@@ -671,7 +672,19 @@ class HistList(MyTreeView[str]):
                 if tx_status.is_local():
                     menu.add_action(
                         self.tr("Remove"),
-                        partial(self.remove_local_tx, txid, wallet),
+                        partial(
+                            self.signals.evict_txs_from_wallet_id.emit, [txid], wallet.id, LOCAL_TX_LAST_SEEN
+                        ),
+                    )
+                elif tx_status.is_unconfirmed():
+                    menu.add_action(
+                        self.tr("Remove"),
+                        partial(
+                            self.signals.evict_txs_from_wallet_id.emit,
+                            [txid],
+                            wallet.id,
+                            int(datetime.now().timestamp()),
+                        ),
                     )
 
         # run_hook('receive_menu', menu, txids, self.wallet)
@@ -679,14 +692,6 @@ class HistList(MyTreeView[str]):
             menu.exec(viewport.mapToGlobal(position))
 
         return menu
-
-    def remove_local_tx(self, txid: str, wallet: Wallet):
-        """Remove local tx."""
-        wallet.apply_evicted_txs([txid])
-
-        self.wallet_functions.wallet_signals[wallet.id].updated.emit(
-            UpdateFilter(refresh_all=True, reason=UpdateFilterReason.TransactionChange)
-        )
 
     def get_wallet(self, txid: str) -> Wallet | None:
         """Get wallet."""

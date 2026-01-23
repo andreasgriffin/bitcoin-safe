@@ -106,6 +106,7 @@ from ...wallet import (
     LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
+    TxStatus,
     Wallet,
     get_wallets,
 )
@@ -1810,9 +1811,26 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not applied_txs:
             return
 
-        self.refresh_caches_and_ui_lists(
-            force_ui_refresh=False,
-        )
+        self.refresh_caches_and_ui_lists(force_ui_refresh=False)
+
+    def apply_evicted_txs(self, txids: list[str], last_seen: int):
+        statuses = [TxStatus.from_wallet(txid=txid, wallet=self.wallet) for txid in txids]
+
+        if any(status.is_unconfirmed() for status in statuses) and not question_dialog(
+            text=self.tr(
+                "This will only remove the transaction from this wallet view. "
+                "It is already broadcast to the Bitcoin network and will likely still confirm.\n\n"
+                "Do you want to remove it from the wallet anyway?"
+            ),
+            title=self.tr("Remove unconfirmed transaction?"),
+            true_button=self.tr("Remove"),
+            false_button=self.tr("Cancel"),
+        ):
+            return
+
+        self.wallet.apply_evicted_txs(txids, evicted_at=last_seen)
+
+        self.refresh_caches_and_ui_lists(force_ui_refresh=False)
 
     def export_pdf_statement(self, wallet_id: str | None = None) -> None:
         """Export pdf statement."""

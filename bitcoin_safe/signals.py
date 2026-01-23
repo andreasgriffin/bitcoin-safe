@@ -279,7 +279,8 @@ class Signals(SignalsMin):
 
     request_manual_sync = cast(SignalProtocol[[]], pyqtSignal())
     signal_broadcast_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
-    apply_txs_to_wallets = cast(SignalProtocol[[list[bdk.Transaction]]], pyqtSignal(object))
+    apply_txs_to_wallets = cast(SignalProtocol[[list[bdk.Transaction], int]], pyqtSignal(object, int))
+    evict_txs_from_wallet_id = cast(SignalProtocol[[list[str], str, int]], pyqtSignal(object, str, int))
     signal_close_tabs_with_txids = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
 
     # this is for non-wallet bound objects like UitxViewer

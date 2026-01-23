@@ -125,7 +125,7 @@ from ...signals import Signals, UpdateFilter, WalletFunctions
 from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...util import fast_version
-from ...wallet import LOCAL_TX_LAST_SEEN, ProtoWallet, ToolsTxUiInfo, Wallet
+from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
@@ -221,6 +221,7 @@ class MainWindow(QMainWindow):
         self.signals.open_file_path.connect(self.open_file_path)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
         self.signals.apply_txs_to_wallets.connect(self.apply_txs_to_wallets_and_highlight)
+        self.signals.evict_txs_from_wallet_id.connect(self.apply_evicted_txs)
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
 
@@ -1502,13 +1503,11 @@ class MainWindow(QMainWindow):
                 return tx_details
         return None
 
-    def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN) -> None:
+    def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         for qt_wallet in self.qt_wallets.values():
             qt_wallet.apply_txs(txs, last_seen=last_seen)
 
-    def apply_txs_to_wallets_and_highlight(
-        self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
-    ) -> None:
+    def apply_txs_to_wallets_and_highlight(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         """Apply txs to wallets."""
 
         self.apply_txs_to_wallets(txs=txs, last_seen=last_seen)
@@ -1526,6 +1525,12 @@ class MainWindow(QMainWindow):
                         role=MyItemDataRole.ROLE_KEY,
                         scroll_to_last=True,
                     )
+
+    def apply_evicted_txs(self, txids: list[str], wallet_id: str, last_seen: int):
+        qt_wallet = self.qt_wallets.get(wallet_id)
+        if not qt_wallet:
+            return
+        qt_wallet.apply_evicted_txs(txids=txids, last_seen=last_seen)
 
     def open_tx_like_in_tab(
         self,
