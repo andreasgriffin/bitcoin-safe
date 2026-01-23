@@ -38,6 +38,7 @@ from collections.abc import Callable, Coroutine, Iterable
 from concurrent.futures import Future
 from datetime import timedelta
 from pathlib import Path
+from types import TracebackType
 from typing import (
     Any,
     TypeVar,
@@ -1484,7 +1485,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.signal_refresh_sync_status.emit()
         return None
 
-    def _sync_on_done(self, result) -> None:
+    def _sync_on_done(self, result: object) -> None:
         """Sync on done."""
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
         interval_timer_sync_regularly = min(
@@ -1496,13 +1497,28 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             f"interval_timer_sync_regularly to {interval_timer_sync_regularly}s"
         )
 
-    def _sync_on_error(self, packed_error_info) -> None:
+    def _notify_sync_error(self, exc_value: BaseException | None) -> None:
+        """Send a tray notification for any sync error."""
+        if not exc_value:
+            return
+
+        parts: list[str] = [
+            self.tr("Sync failed for wallet '{wallet}'.").format(wallet=self.wallet.id),
+            str(exc_value),
+        ]
+        Message("\n\n".join(parts), type=MessageType.Error, no_show=True).emit_with(self.signals.notification)
+
+    def _sync_on_error(
+        self, packed_error_info: tuple[type[BaseException], BaseException, TracebackType | None] | None
+    ) -> None:
         """Sync on error."""
         if self.wallet.client:
             self.wallet.client.set_sync_status(SyncStatus.error)
         self.signal_refresh_sync_status.emit()
         logger.info(f"Could not sync. SynStatus set to {SyncStatus.error.name} for wallet {self.wallet.id}")
         logger.error(str(packed_error_info))
+        exc_value = packed_error_info[1] if packed_error_info else None
+        self._notify_sync_error(exc_value)
         # custom_exception_handler(*packed_error_info)
 
     def _sync_on_success(self, result) -> None:
