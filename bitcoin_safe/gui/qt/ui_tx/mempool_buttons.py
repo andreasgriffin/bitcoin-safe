@@ -275,7 +275,12 @@ class RBFIcon(FlatSquareButton):
             parent=parent,
         )
         self.setVisible(False)
-        self.setToolTip(self.tr("RBF with this fee rate"))
+        self.setToolTip(
+            self.tr(
+                "Use this fee to build a replacement (RBF) transaction at the shown target speed."
+                "\nOutputs stay the same; only the fee changes."
+            )
+        )
 
 
 class CPFPIcon(FlatSquareButton):
@@ -291,7 +296,12 @@ class CPFPIcon(FlatSquareButton):
             parent=parent,
         )
         self.setVisible(False)
-        self.setToolTip(self.tr("CPFP with this fee rate"))
+        self.setToolTip(
+            self.tr(
+                "Spend your change with this fee to pull the parent in (CPFP)."
+                "\nThe combined parent+child fee rate should meet the target block."
+            )
+        )
 
 
 class EditWithFeeIcon(FlatSquareButton):

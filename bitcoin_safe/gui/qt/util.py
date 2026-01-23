@@ -1194,37 +1194,33 @@ def button_info(name: ButtonInfoType) -> ButtonInfo:
         )
     if name == ButtonInfoType.rbf:
         return ButtonInfo(
-            text=translate("util", "Edit (RBF)"),
+            text=translate("util", "Replace with higher fee (RBF)"),
             tooltip=translate(
                 "util",
-                "RBF = Replace By Fee,"
-                "\nwill create a new transaction with a higher fee"
-                "\nto speed up the confirmation.",
+                "Replace-By-Fee creates a new version of this transaction with a higher fee."
+                "\nUse it to speed up confirmation when the original is still unconfirmed."
+                "\nRequires the original transaction to signal RBF and your wallet to own a change output.",
             ),
             icon_name="rbf.svg",
         )
     if name == ButtonInfoType.cpfp:
         return ButtonInfo(
-            text=translate("util", "Process faster (CPFP)"),
+            text=translate("util", "Speed up with child (CPFP)"),
             tooltip=translate(
                 "util",
-                "CPFP = Child Pay For Parent,"
-                "\nwill append a new transaction to the old one."
-                "\nIf the average fee rate of both transactions is high enough"
-                "\nit will speed up confirmation of both transactions.",
+                "Child-Pays-For-Parent spends a change output of the pending transaction"
+                "\nwith a higher fee to pull both into a block."
+                "\nWorks only if you have an available change output and raise the combined fee rate.",
             ),
             icon_name="cpfp.svg",
         )
     if name == ButtonInfoType.cancel_with_rbf:
         return ButtonInfo(
-            text=translate("util", "Try cancel transaction (RBF)"),
+            text=translate("util", "Try cancel by double-spend (RBF)"),
             tooltip=translate(
                 "util",
-                "Cancel with RBF,"
-                "\nwill create a new transaction "
-                "\nwith you as a recipient and a higher fee"
-                "\nto replace the old transaction."
-                "\nThere is no guarantee this will work!!!",
+                "Attempts to double-spend the original transaction with a higher fee."
+                "\nOnly works on RBF-signaled transactions and is not guaranteed to succeed.",
             ),
             icon_name="pen.svg",
         )
