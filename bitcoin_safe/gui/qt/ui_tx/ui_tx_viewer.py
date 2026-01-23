@@ -855,6 +855,9 @@ class UITx_Viewer(UITx_Base):
             return
         tx = self.data.data
 
+        # save the transaction in the wallet right before attempting broadcast
+        self.save_local_tx()
+
         if not self.client:
             self._set_blockchain()
 
