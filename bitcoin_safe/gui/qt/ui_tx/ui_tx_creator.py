@@ -48,6 +48,7 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
+from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.ui_tx.columns import ColumnFee, ColumnInputs, ColumnRecipients
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -879,11 +880,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # detect and handle rbf
         conflicting_python_txos = self.wallet.get_conflicting_python_txos(txinfos.utxo_dict.keys())
 
-        conflicting_txids = [
+        conflicting_txids = {
             conflicting_python_txo.is_spent_by_txid
             for conflicting_python_txo in conflicting_python_txos
             if conflicting_python_txo.is_spent_by_txid
-        ]
+        }
+
         tx_details = [self.wallet.get_tx(conflicting_txid) for conflicting_txid in conflicting_txids]
         chain_positions = [tx.chain_position for tx in tx_details if tx]
 
@@ -909,33 +911,30 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             # these involved txs i can do rbf
 
             # for each conflicted_unconfirmed, get all roots and dependents
-            dependents_to_be_replaced: list[TransactionDetails] = []
+            dependents_to_be_replaced: dict[str, TransactionDetails] = {}
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:
-                    dependents_to_be_replaced += [
-                        fulltx.tx
-                        for fulltx in self.wallet.get_fulltxdetail_and_dependents(
-                            utxo.is_spent_by_txid, include_root_tx=False
-                        )
-                    ]
+                    for fulltx in self.wallet.get_fulltxdetail_and_dependents(
+                        utxo.is_spent_by_txid, include_root_tx=False
+                    ):
+                        dependents_to_be_replaced[fulltx.txid] = fulltx.tx
+
             if dependents_to_be_replaced:
                 Message(
                     self.tr(
                         "The unconfirmed dependent transactions {txids} will be "
                         "removed by this new transaction you are creating."
-                    ).format(txids=[dependent.txid for dependent in dependents_to_be_replaced])
+                    ).format(txids=dependents_to_be_replaced.keys())
                 )
 
             # for each conflicted_unconfirmed, get all roots and dependents
-            txs_to_be_replaced: list[TransactionDetails] = []
+            txs_to_be_replaced: dict[str, TransactionDetails] = {}
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:
-                    txs_to_be_replaced += [
-                        fulltx.tx
-                        for fulltx in self.wallet.get_fulltxdetail_and_dependents(utxo.is_spent_by_txid)
-                    ]
+                    for fulltx in self.wallet.get_fulltxdetail_and_dependents(utxo.is_spent_by_txid):
+                        txs_to_be_replaced[fulltx.txid] = fulltx.tx
 
-            fee_amount = sum((_tx_details.fee or 0) for _tx_details in txs_to_be_replaced)
+            fee_amount = sum((_tx_details.fee or 0) for _tx_details in txs_to_be_replaced.values())
 
             # because BumpFeeTxBuilder cannot build tx with too low fee,
             # we have to raise errors, if fee cannot be calculated
@@ -947,6 +946,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 except Exception:
                     pass
             else:
+                if not txinfos.replace_tx and len(txs_to_be_replaced) == 1:
+                    TxTools.add_replace_tx_to_txuiinfos(
+                        replace_tx=list(txs_to_be_replaced.values()).pop().transaction, txinfos=txinfos
+                    )
                 assert txinfos.replace_tx, (
                     f"No replace_tx available in bdk. There are {len(conflicted_unconfirmed)=}"
                 )

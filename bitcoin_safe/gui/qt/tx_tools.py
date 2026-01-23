@@ -101,6 +101,17 @@ class TxTools:
         return True
 
     @classmethod
+    def add_replace_tx_to_txuiinfos(
+        cls,
+        replace_tx: bdk.Transaction | None,
+        txinfos: TxUiInfos,
+    ):
+        if not GENERAL_RBF_AVAILABLE and replace_tx:
+            txinfos.utxos_read_only = True
+            txinfos.recipient_read_only = True
+            txinfos.replace_tx = replace_tx
+
+    @classmethod
     def edit_tx(
         cls,
         replace_tx: TransactionDetails | None,
@@ -115,10 +126,8 @@ class TxTools:
             # cannot be done safely
             return
 
-        if not GENERAL_RBF_AVAILABLE and replace_tx:
-            txinfos.utxos_read_only = True
-            txinfos.recipient_read_only = True
-            txinfos.replace_tx = replace_tx.transaction
+        if replace_tx:
+            cls.add_replace_tx_to_txuiinfos(replace_tx=replace_tx.transaction, txinfos=txinfos)
 
         txinfos.hide_UTXO_selection = False
         wallet_functions.signals.open_tx_like.emit(txinfos)
