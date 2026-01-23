@@ -1807,7 +1807,35 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def apply_txs(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
         """Apply txs."""
-        applied_txs = self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
+
+        txs_dict = {str(tx.compute_txid()): tx for tx in txs}
+
+        all_hidden_txs = self.wallet.get_hidden_txs_in_tx_graph()
+        append_hidden_tx = {txid: tx for txid, tx in txs_dict.items() if txid in all_hidden_txs}
+        only_non_hidden_txs = {txid: tx for txid, tx in txs_dict.items() if txid not in all_hidden_txs}
+
+        if append_hidden_tx and not question_dialog(
+            text=self.tr(
+                "The transactions\n{}\n"
+                "can only be added as unconfirmed in-mempool. \n"
+                "Do you want to continue anyway?"
+            ).format("\n".join(append_hidden_tx.keys())),
+            title=self.tr("Add as unconfirmed in-mempool?"),
+            true_button=self.tr("Add as unconfirmed in-mempool"),
+            false_button=self.tr("Cancel"),
+        ):
+            return
+
+        applied_txs: list[bdk.UnconfirmedTx] = []
+
+        if append_hidden_tx:
+            applied_txs += self.wallet.apply_unconfirmed_txs(
+                list(append_hidden_tx.values()), last_seen=int(datetime.datetime.now().timestamp())
+            )
+        if only_non_hidden_txs:
+            applied_txs += self.wallet.apply_unconfirmed_txs(
+                list(only_non_hidden_txs.values()), last_seen=last_seen
+            )
         if not applied_txs:
             return
 

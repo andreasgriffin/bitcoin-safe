@@ -2585,6 +2585,17 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
         self.persist()
 
+    def get_hidden_txs_in_tx_graph(self) -> dict[str, bdk.Transaction]:
+        hidden_txs: dict[str, bdk.Transaction] = {}
+
+        visible_txids = {tx.txid for tx in self.sorted_delta_list_transactions()}
+        for tx in self.serialize_persistence.change_set.tx_graph_changeset().txs:
+            txid = str(tx.compute_txid())
+            if txid in visible_txids:
+                continue
+            hidden_txs[txid] = tx
+        return hidden_txs
+
     def apply_unconfirmed_txs(
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
     ) -> list[bdk.UnconfirmedTx]:
