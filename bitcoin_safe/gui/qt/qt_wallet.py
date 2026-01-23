@@ -783,6 +783,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             labels=self.wallet.labels,
             default_category=self.wallet.labels.default_category,
             loop_in_thread=self.loop_in_thread,
+            initialization_tips=self.wallet.tips,
         )
         self._recreate_qt_wallet(new_wallet=new_wallet)
 
