@@ -85,6 +85,10 @@ class IconLabel(QWidget):
 
     def setText(self, a0: str | None) -> None:
         """SetText."""
+        if a0 is None:
+            a0 = ""
+        # IconLabel uses RichText to allow links; convert newlines so they render.
+        a0 = a0.replace("\n", "<br>")
         self.textLabel.setText(a0)
 
     def set_icon(self, icon: QIcon | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
@@ -107,7 +111,7 @@ class IconLabel(QWidget):
 
     def set_icon_as_help(self, tooltip: str | None, click_url: str | None = None):
         """Set icon as help."""
-        self.icon_label.setToolTip(tooltip)
+        self.icon_label.setToolTip(tooltip or click_url)
         self.click_url = click_url
         if self.click_url:
             self.set_icon(svg_tools.get_QIcon("bi--question-circle-link.svg"))

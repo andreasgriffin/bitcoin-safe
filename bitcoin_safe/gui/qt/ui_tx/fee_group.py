@@ -48,6 +48,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.ui_tx.form_container import GridFormLayout
 from bitcoin_safe.gui.qt.ui_tx.spinbox import FeerateSpinBox
 from bitcoin_safe.gui.qt.ui_tx.totals_box import TotalsBox
+from bitcoin_safe.gui.qt.ui_tx.util import get_cpfp_label, get_rbf_fee_label
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
@@ -175,13 +176,10 @@ class FeeWarningBar(NotificationBar):
         if too_high:
             s = (
                 self.tr(
-                    "The estimated transaction fee is:\n{fee}, "
-                    "which is {percent}% of\nthe sending value {sent}"
+                    "The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}"
                 )
                 if fee_info.fee_amount_is_estimated
-                else self.tr(
-                    "The transaction fee is:\n{fee}, which is {percent}% of\nthe sending value {sent}"
-                )
+                else self.tr("The transaction fee is: {fee}, which is {percent}% of the sending value {sent}")
             )
             description = s.format(
                 fee=Satoshis(fee_info.fee_amount, network).str_with_unit(),
@@ -403,66 +401,61 @@ class FeeGroup(QObject):
         self.set_fee_amount_label()
         self.mempool_buttons.refresh(fee_rate=self.spin_fee_rate.value())
 
-    def set_rbf_label(self, min_fee_rate: float | None) -> None:
+    def set_rbf_label(
+        self, current_fee: FeeInfo | None, min_fee_rate: float | None, conflicing_txids: set[str]
+    ) -> None:
         """Set rbf label."""
         self.form.set_row_visibility_of_widget(self.rbf_fee_label, bool(min_fee_rate))
         if min_fee_rate:
             fee_rate, unit = format_fee_rate_splitted(fee_rate=min_fee_rate, network=self.config.network)
-            url = "https://learnmeabitcoin.com/technical/transaction/fee/#rbf"
+
+            url, tooltip = get_rbf_fee_label(
+                current_fee=current_fee,
+                min_fee_rate=min_fee_rate,
+                network=self.config.network,
+                conflicing_txids=conflicing_txids,
+            )
+
             self.rbf_fee_label.setText(
                 self.tr("{rbf} min: {rate}").format(
                     rate=fee_rate,
                     rbf=link(url, "RBF"),
                 )
             )
-            self.rbf_fee_label.set_icon_as_help(
-                self.tr(
-                    "You can replace the previously broadcasted transaction"
-                    "\nwith a new transaction if it has a higher fee rate."
-                    "\nClick here to learn more about RBF (Replace-by-Fee)."
-                ),
-                click_url=url,
-            )
+            self.rbf_fee_label.set_icon_as_help(tooltip, click_url=url)
 
             self.rbf_fee_label_currency.setText(unit)
 
     def set_cpfp_label(
-        self, unconfirmed_ancestors: dict[str, TransactionDetails] | None, this_fee_info: FeeInfo
+        self,
+        this_fee_info: FeeInfo,
+        unconfirmed_parents_fee_info: FeeInfo | None,
+        unconfirmed_ancestors: dict[str, TransactionDetails],
     ) -> None:
         """Set cpfp label."""
-        self.form.set_row_visibility_of_widget(self.cpfp_fee_label, bool(unconfirmed_ancestors))
-        if not unconfirmed_ancestors:
-            return
 
-        unconfirmed_parents_fee_info = FeeInfo.combined_fee_info(txs=unconfirmed_ancestors.values())
-        if not unconfirmed_parents_fee_info:
+        if not this_fee_info or not unconfirmed_parents_fee_info:
             self.form.set_row_visibility_of_widget(self.cpfp_fee_label, False)
             return
 
         combined_fee_info = this_fee_info + unconfirmed_parents_fee_info
 
-        rate, unit = format_fee_rate_splitted(combined_fee_info.fee_rate(), self.config.network)
-        url = "https://learnmeabitcoin.com/technical/transaction/fee/#cpfp"
+        help_url, tooltip = get_cpfp_label(
+            unconfirmed_parents_fee_info=unconfirmed_parents_fee_info,
+            combined_fee_info=combined_fee_info,
+            unconfirmed_ancestors=unconfirmed_ancestors,
+            network=self.config.network,
+        )
+
+        cpfp_total_rate, unit = format_fee_rate_splitted(combined_fee_info.fee_rate(), self.config.network)
+
+        self.form.set_row_visibility_of_widget(self.cpfp_fee_label, cpfp_total_rate is not None)
+
         self.cpfp_fee_label.setText(
-            self.tr("{cpfp} total: {rate}").format(
-                rate=rate,
-                cpfp=link(url, "CPFP"),
-            )
+            self.tr("{cpfp} total: {rate}").format(rate=cpfp_total_rate, cpfp=link(help_url, "CPFP"))
         )
         self.cpfp_fee_label_currency.setText(unit)
-        self.cpfp_fee_label.set_icon_as_help(
-            tooltip=self.tr(
-                "This transaction has {number} unconfirmed parents "
-                "with a total fee rate of {parents_fee_rate}."
-                "\nClick to learn more about CPFP (Child Pays For Parent)."
-            ).format(
-                parents_fee_rate=format_fee_rate(
-                    unconfirmed_parents_fee_info.fee_rate(), network=self.config.network
-                ),
-                number=len(unconfirmed_ancestors or []),
-            ),
-            click_url=url,
-        )
+        self.cpfp_fee_label.set_icon_as_help(tooltip=tooltip, click_url=help_url)
 
     def set_fee_info(self, fee_info: FeeInfo | None):
         """Set fee info."""

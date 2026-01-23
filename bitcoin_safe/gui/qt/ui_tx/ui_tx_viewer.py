@@ -1509,7 +1509,7 @@ class UITx_Viewer(UITx_Base):
     ) -> None:
         """Handle cpfp."""
         parent_txids = set(str(txin.previous_output.txid) for txin in tx.input())
-        self.set_fee_group_cpfp_label(
+        self.set_cpfp_labels(
             parent_txids=parent_txids,
             this_fee_info=this_fee_info,
             fee_group=self.column_fee.fee_group,

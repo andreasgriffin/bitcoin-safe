@@ -979,14 +979,31 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 txinfos.fee_rate if txinfos.fee_rate is not None else MIN_RELAY_FEE, min_rbf_fee_rate
             )
 
-            self.column_fee.fee_group.set_rbf_label(txinfos.fee_rate)
             self.column_fee.fee_group.set_fee_infos(
                 fee_info=fee_info, tx_status=self.get_tx_status(), can_rbf_safely=False
             )  # False since, RBF doesnt apply for PSBT
-
             self.add_outpoints([python_utxo.outpoint for python_utxo in txinfos.utxo_dict.values()])
+            self.set_rbf_labels(
+                conflicted_unconfirmed=conflicted_unconfirmed,
+                current_fee=fee_info,
+                min_fee_rate=txinfos.fee_rate,
+            )
         else:
-            self.column_fee.fee_group.set_rbf_label(None)
+            self.set_rbf_labels(
+                conflicted_unconfirmed=conflicted_unconfirmed, current_fee=None, min_fee_rate=None
+            )
+
+    def set_rbf_labels(
+        self, conflicted_unconfirmed: set[PythonUtxo], current_fee: FeeInfo | None, min_fee_rate: float | None
+    ):
+        conflicing_txids = set(txo.is_spent_by_txid for txo in conflicted_unconfirmed if txo.is_spent_by_txid)
+
+        self.rbf_bar.set_infos(
+            current_fee=current_fee, min_fee_rate=min_fee_rate, conflicing_txids=conflicing_txids
+        )
+        self.column_fee.fee_group.set_rbf_label(
+            current_fee=current_fee, min_fee_rate=min_fee_rate, conflicing_txids=conflicing_txids
+        )
 
     def handle_cpfp(self, txinfos: TxUiInfos) -> None:
         """Handle cpfp."""
@@ -996,7 +1013,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             utxos = list(self.get_tx_ui_infos().utxo_dict.values())
             parent_txids = set(utxo.outpoint.txid_str for utxo in utxos)
 
-        self.set_fee_group_cpfp_label(
+        self.set_cpfp_labels(
             parent_txids=parent_txids,
             this_fee_info=self.estimate_fee_info(),
             fee_group=self.column_fee.fee_group,
