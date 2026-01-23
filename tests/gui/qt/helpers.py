@@ -225,12 +225,14 @@ def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet:
 
     viewer.button_send.click()
     if isinstance((tx := viewer.data.data), bdk.Transaction):
-        qtbot.waitUntil(
-            lambda: TxStatus.from_wallet(
-                txid=str(tx.compute_txid()), wallet=qt_wallet.wallet
-            ).is_in_mempool(),
-            timeout=40_000,
-        )
+        txid = str(tx.compute_txid())
+
+        def is_in_mempool():
+            QApplication.processEvents()
+            qtbot.wait(100)  # to allow the ui to update
+            return TxStatus.from_wallet(txid=txid, wallet=qt_wallet.wallet).is_in_mempool()
+
+        qtbot.waitUntil(is_in_mempool, timeout=40_000)
         qtbot.wait(1000)  # to allow the ui to update
 
     shutter.save(viewer)
