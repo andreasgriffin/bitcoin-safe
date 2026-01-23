@@ -1000,6 +1000,7 @@ class SidebarTree(QWidget, Generic[TT]):
             self._current_node = None
 
         if node:
+            self._scroll_node_into_view(node)
             self.currentChanged.emit(node)
 
     def _select_previous_from_history(self, excluding: SidebarNode[TT] | None = None) -> bool:
@@ -1089,6 +1090,30 @@ class SidebarTree(QWidget, Generic[TT]):
             w = w.parentWidget()
         return w if isinstance(w, SidebarNode) else None
 
+    def _scroll_node_into_view(self, node: SidebarNode[TT], margin: int = 12) -> None:
+        """Ensure the selected node is visible inside the sidebar scroll area."""
+        if not node.header_row.isVisible():
+            return
+        try:
+            self.scroll_area.ensureWidgetVisible(node.header_row, 0, margin)
+            return
+        except Exception:
+            # Fallback: manual adjustments if ensureWidgetVisible is unavailable.
+            pass
+
+        bar = self.scroll_area.verticalScrollBar()
+        vp = self.scroll_area.viewport()
+        if not bar or not vp:
+            return
+
+        top_left = node.header_row.mapTo(vp, QPoint(0, 0))
+        bottom = top_left.y() + node.header_row.height()
+
+        if top_left.y() < margin:
+            bar.setValue(bar.value() + top_left.y() - margin)
+        elif bottom > vp.height() - margin:
+            bar.setValue(bar.value() + bottom - vp.height() + margin)
+
     def _on_context_menu_requested(self, pos: QPoint) -> None:
         """On context menu requested."""
         vp = self.scroll_area.viewport()
@@ -1151,6 +1176,7 @@ class SidebarTree(QWidget, Generic[TT]):
             except ValueError:
                 self._append_to_slection_history(node)
         self._current_node = node
+        self._scroll_node_into_view(node)
         self.nodeSelected.emit(node)
 
     def _on_node_toggled(self, node: object, expanded: bool) -> None:
