@@ -100,6 +100,7 @@ from ....signer import (
     SignatureImporterWallet,
 )
 from ....wallet import (
+    LOCAL_TX_LAST_SEEN,
     ToolsTxUiInfo,
     TxConfirmationStatus,
     TxStatus,
@@ -559,7 +560,7 @@ class UITx_Viewer(UITx_Base):
 
     def save_local_tx(self):
         """Save local tx."""
-        self.signals.apply_txs_to_wallets.emit([self.extract_tx()])
+        self.signals.apply_txs_to_wallets.emit([self.extract_tx()], LOCAL_TX_LAST_SEEN)
 
     def extract_tx(self) -> bdk.Transaction:
         """Extract tx."""

@@ -107,6 +107,7 @@ from ...wallet import (
     LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
+    TxStatus,
     Wallet,
     get_wallets,
 )
@@ -1822,13 +1823,58 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def apply_txs(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
         """Apply txs."""
-        applied_txs = self.wallet.apply_unconfirmed_txs(txs, last_seen=last_seen)
+
+        txs_dict = {str(tx.compute_txid()): tx for tx in txs}
+
+        all_hidden_txs = self.wallet.get_hidden_txs_in_tx_graph()
+        append_hidden_tx = {txid: tx for txid, tx in txs_dict.items() if txid in all_hidden_txs}
+        only_non_hidden_txs = {txid: tx for txid, tx in txs_dict.items() if txid not in all_hidden_txs}
+
+        if append_hidden_tx and not question_dialog(
+            text=self.tr(
+                "The transactions\n{}\n"
+                "can only be added as unconfirmed in-mempool. \n"
+                "Do you want to continue anyway?"
+            ).format("\n".join(append_hidden_tx.keys())),
+            title=self.tr("Add as unconfirmed in-mempool?"),
+            true_button=self.tr("Add as unconfirmed in-mempool"),
+            false_button=self.tr("Cancel"),
+        ):
+            return
+
+        applied_txs: list[bdk.UnconfirmedTx] = []
+
+        if append_hidden_tx:
+            applied_txs += self.wallet.apply_unconfirmed_txs(
+                list(append_hidden_tx.values()), last_seen=int(datetime.datetime.now().timestamp())
+            )
+        if only_non_hidden_txs:
+            applied_txs += self.wallet.apply_unconfirmed_txs(
+                list(only_non_hidden_txs.values()), last_seen=last_seen
+            )
         if not applied_txs:
             return
 
-        self.refresh_caches_and_ui_lists(
-            force_ui_refresh=False,
-        )
+        self.refresh_caches_and_ui_lists(force_ui_refresh=False)
+
+    def apply_evicted_txs(self, txids: list[str], last_seen: int):
+        statuses = [TxStatus.from_wallet(txid=txid, wallet=self.wallet) for txid in txids]
+
+        if any(status.is_unconfirmed() for status in statuses) and not question_dialog(
+            text=self.tr(
+                "This will only remove the transaction from this wallet view. "
+                "It is already broadcast to the Bitcoin network and will likely still confirm.\n\n"
+                "Do you want to remove it from the wallet anyway?"
+            ),
+            title=self.tr("Remove unconfirmed transaction?"),
+            true_button=self.tr("Remove"),
+            false_button=self.tr("Cancel"),
+        ):
+            return
+
+        self.wallet.apply_evicted_txs(txids, evicted_at=last_seen)
+
+        self.refresh_caches_and_ui_lists(force_ui_refresh=False)
 
     def export_pdf_statement(self, wallet_id: str | None = None) -> None:
         """Export pdf statement."""

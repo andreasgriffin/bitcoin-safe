@@ -2578,12 +2578,23 @@ class Wallet(BaseSaveableClass, CacheManager):
         """Return locally stored transactions that lack confirmations."""
         return {key: tx for key, tx in self.get_txs().items() if is_local(tx.chain_position)}
 
-    def apply_evicted_txs(self, txids: list[str]):
+    def apply_evicted_txs(self, txids: list[str], evicted_at=LOCAL_TX_LAST_SEEN):
         "Evicts the txs from the mempool. It can only be applied again if last_seen>evicted_at"
         self.bdkwallet.apply_evicted_txs(
-            [bdk.EvictedTx(txid=bdk.Txid.from_string(txid), evicted_at=LOCAL_TX_LAST_SEEN) for txid in txids]
+            [bdk.EvictedTx(txid=bdk.Txid.from_string(txid), evicted_at=evicted_at) for txid in txids]
         )
         self.persist()
+
+    def get_hidden_txs_in_tx_graph(self) -> dict[str, bdk.Transaction]:
+        hidden_txs: dict[str, bdk.Transaction] = {}
+
+        visible_txids = {tx.txid for tx in self.sorted_delta_list_transactions()}
+        for tx in self.serialize_persistence.change_set.tx_graph_changeset().txs:
+            txid = str(tx.compute_txid())
+            if txid in visible_txids:
+                continue
+            hidden_txs[txid] = tx
+        return hidden_txs
 
     def apply_unconfirmed_txs(
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
