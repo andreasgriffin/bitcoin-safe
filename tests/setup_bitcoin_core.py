@@ -98,32 +98,31 @@ BITCOIN_BIN_DIR = BITCOIN_EXTRACT_DIR / "bin"
 BITCOIN_executable = "bitcoind.exe" if platform.system() == "Windows" else "bitcoind"
 
 
-def runcmd(cmd, background=False):
-    """Runcmd."""
+def runcmd(cmd, background: bool = False):
+    """Run a shell command and return stdout; raise with stderr on failure."""
     try:
         system = platform.system()
-        if system == "Windows":
-            # On Windows, use subprocess.Popen to start the process without blocking
-            process = subprocess.Popen(
-                cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-            )
-        else:
-            process = subprocess.Popen(
+        if background:
+            if system == "Windows":
+                return subprocess.Popen(
+                    cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+                )
+            return subprocess.Popen(
                 shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
 
-        if background:
-            return process
-        stdout, stderr = process.communicate()
-        if stderr:
-            raise Exception(stderr)
-        return stdout
+        if system == "Windows":
+            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        else:
+            proc = subprocess.run(shlex.split(cmd), capture_output=True, text=True)
 
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running bitcoind: {e}")
-        return None
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        if proc.returncode != 0:
+            raise RuntimeError(f"{cmd} failed with {proc.returncode}: {proc.stderr.strip()}")
+
+        return proc.stdout.strip()
+
+    except Exception as e:  # noqa: BLE001
+        logger.error("Command failed: %s", e)
         return None
 
 
@@ -164,7 +163,8 @@ def bitcoin_cli(
     cmd = (
         str(bitcoin_core / executable)
         + f" -datadir={BITCOIN_DATA_DIR}"
-        + f" -rpcconnect={bitcoin_host} -rpcport={bitcoin_port} -chain=regtest -rpcuser={rpc_user} -rpcpassword={rpc_password} "
+        + f" -rpcconnect={bitcoin_host} -rpcport={bitcoin_port} -chain=regtest"
+        + f" -rpcuser={rpc_user} -rpcpassword={rpc_password} "
         + command
     )
     return runcmd(cmd)

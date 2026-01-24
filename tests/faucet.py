@@ -45,6 +45,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.descriptors import descriptor_from_keystores
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.util import SATOSHIS_PER_BTC
+from bitcoin_safe.wallet import LOCAL_TX_LAST_SEEN
 
 from .helpers import TestConfig
 from .setup_bitcoin_core import bitcoin_cli
@@ -119,15 +120,26 @@ class Faucet:
 
     def _broadcast(self, tx: bdk.Transaction):
         """Broadcast a transaction using the active backend."""
-        for _ in range(10):
-            result = bitcoin_cli(f"sendrawtransaction {serialized_to_hex(tx.serialize())}", self.bitcoin_core)
-            logger.info(f"bitcoin_cli sendrawtransaction answer {result=}")
-            if result:
-                break
-            else:
-                time.sleep(1)
-        else:
-            raise Exception(f"Broadcasting {tx} failed.  no txid received from bitcoin_cli")
+        hex_tx = serialized_to_hex(tx.serialize())
+        for attempt in range(10):
+            try:
+                result = bitcoin_cli(f"sendrawtransaction {hex_tx}", self.bitcoin_core)
+                logger.info("bitcoin_cli sendrawtransaction answer result=%s", result)
+                if result:
+                    return
+            except RuntimeError as err:
+                message = str(err)
+                # Transient startup issues while bitcoind warms up
+                if "in warmup" in message or "refused" in message or "Connection reset" in message:
+                    logger.warning("bitcoin-cli not ready (attempt %d): %s", attempt + 1, message)
+                else:
+                    logger.warning(
+                        "bitcoin-cli sendrawtransaction error (attempt %d): %s", attempt + 1, message
+                    )
+
+            time.sleep(1)
+
+        raise Exception(f"Broadcasting {tx} failed. No txid received from bitcoin_cli after retries")
 
     def send(
         self, destination_address: str, qtbot: QtBot, amount=SATOSHIS_PER_BTC, fee_rate=1
@@ -145,6 +157,8 @@ class Faucet:
             raise RuntimeError("Faucet failed to sign transaction")
 
         tx = signed_psbt.extract_tx()
+        # apply as local
+        self.wallet.apply_unconfirmed_txs([tx], last_seen=LOCAL_TX_LAST_SEEN)
         self._broadcast(tx)
         if self.backend == "cbf":
             # since I sent the tx, I will not get notified by the bitcoin core node
