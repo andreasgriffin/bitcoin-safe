@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLayout,
     QPushButton,
     QSizePolicy,
     QSpinBox,
@@ -183,6 +184,8 @@ class NetworkSettingsUI(QWidget):
         self.signals = signals
         self.network_configs = network_configs
         self._layout = QVBoxLayout(self)
+        # Prevent shrinking below the natural size of contained widgets without hard-coded dimensions
+        self._layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
 
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.network_combobox = QComboBox(self)
