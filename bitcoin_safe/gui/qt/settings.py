@@ -72,6 +72,7 @@ class Settings(QTabWidget):
         )
         self.addTab(self.network_settings_ui, "")
         self.network_settings_ui.signal_cancel.connect(self.close)
+        self.currentChanged.connect(self._apply_minimum_size_hint)
 
         # category manager(s)
         # self.category_tab=QWidget()
@@ -119,6 +120,7 @@ class Settings(QTabWidget):
         self.setTabText(self.indexOf(self.langauge_ui), self.tr("General"))
         self.setTabText(self.indexOf(self.about_tab), self.tr("About"))
         # self.setTabText(self.indexOf(self.category_tab), self.tr("Category Manager"))
+        self._apply_minimum_size_hint()
 
     def keyPressEvent(self, a0: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
@@ -132,9 +134,14 @@ class Settings(QTabWidget):
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
         center_on_screen(self)
+        self._apply_minimum_size_hint()
 
     def open_about_tab(self) -> None:
         """Open the About tab and focus the settings window."""
         self.setCurrentWidget(self.about_tab)
         self.show()
         self.raise_()
+
+    def _apply_minimum_size_hint(self) -> None:
+        """Use Qt's calculated minimum size to prevent over-shrinking."""
+        self.setMinimumSize(self.minimumSizeHint())
