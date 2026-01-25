@@ -4,7 +4,7 @@
     <name>AboutTab</name>
     <message>
         <source>A secure bitcoin savings wallet for everyone.</source>
-        <translation>一款专为所有人打造的安全比特币储蓄钱包。</translation>
+        <translation>一款为所有人打造的安全比特币储蓄钱包。</translation>
     </message>
     <name>AboutTab</name>
     <message>
@@ -65,7 +65,7 @@
     <name>AddressAnalyzer</name>
     <message>
         <source>Invalid Address</source>
-        <translation>无效地址</translation>
+        <translation>无效的地址</translation>
     </message>
     <name>AddressAnalyzer</name>
     <message>
@@ -75,7 +75,7 @@
     <name>AddressAnalyzer</name>
     <message>
         <source>Valid Address</source>
-        <translation>有效地址</translation>
+        <translation>有效的地址</translation>
     </message>
 </context>
 <context>
@@ -1751,7 +1751,7 @@ Do you want to proceed anyway?</source>
     <name>LinkingWarningBar</name>
     <message>
         <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-        <translation>此交易结合了硬币类别 {categories} 并使这些类别可链接！  </translation>
+        <translation>此交易合并了该比特币类别 {categories}，并使这些类别关联在一起！</translation>
     </message>
     <name>LinkingWarningBar</name>
     <message>
@@ -1763,14 +1763,14 @@ Do you want to proceed anyway?</source>
     <name>LoadingWalletTab</name>
     <message>
         <source>Loading, please wait...</source>
-        <translation>加载中，请等待...  </translation>
+        <translation>正在加载，请稍候……</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source> Please open the sender wallet to edit this transaction.</source>
-        <translation>请打开发件人钱包以编辑此交易。  </translation>
+        <translation> 请打开支付方钱包以编辑此交易。</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1805,12 +1805,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Descriptor for hardware signers</source>
-        <translation>&amp;硬件签名器描述符</translation>
+        <translation>&amp;硬件签名器的描述符</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Documentation</source>
-        <translation>文档</translation>
+        <translation>&amp;文档</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1835,7 +1835,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Export</source>
-        <translation>&amp;导出  </translation>
+        <translation>&amp;导出</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1860,12 +1860,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Load Transaction or PSBT</source>
-        <translation>&amp;加载交易或部分签名交易PSBT</translation>
+        <translation>&amp;加载交易或 PSBT</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Manage Categories</source>
-        <translation>&amp;管理分类</translation>
+        <translation>&amp;管理类别</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1885,17 +1885,17 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;New Wallet</source>
-        <translation>&amp;新建钱包</translation>
+        <translation>&amp;新钱包</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Next Wallet/Tab</source>
-        <translation>&amp;下一个钱包/标签</translation>
+        <translation>&amp;下一个钱包/选项卡</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Nostr DM</source>
-        <translation>&amp;Nostr DM</translation>
+        <translation>&amp;Nostr 私信</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1905,7 +1905,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Open issue in github</source>
-        <translation>在 github 提交问题</translation>
+        <translation>&amp;在 GitHub 上创建问题</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1915,12 +1915,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Previous Wallet/Tab</source>
-        <translation>&amp;上一个钱包/标签</translation>
+        <translation>&amp;上一个钱包/选项卡</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Register Multisig with hardware signers</source>
-        <translation>&amp;在硬件签名者中注册多重签名  </translation>
+        <translation>&amp;使用硬件签名器来注册多重签名</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1930,27 +1930,27 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Search</source>
-        <translation>&amp;搜索  </translation>
+        <translation>&amp;搜索</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Send Email</source>
-        <translation>&amp;发送邮件</translation>
+        <translation>&amp;发送电子邮件</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Send via Email</source>
-        <translation>&amp;通过邮件发送</translation>
+        <translation>&amp;通过电子邮件发送</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Settings</source>
-        <translation>设置</translation>
+        <translation>&amp;设置</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;Show Logs</source>
-        <translation>&amp;显示日志  </translation>
+        <translation>&amp;显示日志</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1960,12 +1960,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;Tools</source>
-        <translation>&amp;工具  </translation>
+        <translation>&amp;工具</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>&amp;USB Signer Tools</source>
-        <translation>&amp;USB签名工具  </translation>
+        <translation>&amp;USB 签名器工具</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -1985,17 +1985,17 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;X/Twitter DM</source>
-        <translation>&amp;X/Twitter DM</translation>
+        <translation>&amp;X/推特私信</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>A wallet with id {name} is already open.  </source>
-        <translation>一个ID为 {name} 的钱包已经打开。</translation>
+        <translation>一个 ID 为 {name} 的钱包已打开。  </translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
-        <translation>带有 id {name} 的钱包已经打开。请先关闭它。</translation>
+        <translation>ID 为 {name} 的钱包已打开。请先将其关闭。</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2010,12 +2010,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Close Tab</source>
-        <translation>关闭标签  </translation>
+        <translation>关闭选项卡</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Close all transactions</source>
-        <translation>关闭所有交易  </translation>
+        <translation>关闭所有交易</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2035,12 +2035,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Closing tab {name}</source>
-        <translation>正在关闭标签页 {name}</translation>
+        <translation>正在关闭选项卡 {name}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Could not decode this string</source>
-        <translation>无法解码此字符串  </translation>
+        <translation>无法解码此字符串</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2050,27 +2050,27 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Could not open PSBT, because it lacks the input UTXOs.</source>
-        <translation>无法打开 PSBT，因为缺少输入 UTXO。</translation>
+        <translation>无法打开 PSBT 文件，因为其缺少输入 UTXO。</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Could not recognize the input. Do you want to scan again?</source>
-        <translation>无法识别该输入。要再次扫描吗？</translation>
+        <translation>无法识别该输入。您要重新扫描吗？</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-        <translation>当前正在监控比特币 p2p 流量：{ip}</translation>
+        <translation>当前正在监视比特币点对点流量：{ip}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-        <translation>当前正在监控比特币 p2p 流量：{ip}，通过代理 {proxy}</translation>
+        <translation>当前正在通过代理 {proxy} 监视位于 {ip} 的比特币点对点流量。</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Do you want to save the PSBT {id}?</source>
-        <translation>您想保存 PSBT {id} 吗？  </translation>
+        <translation>您是否要保存 PSBT {id}？</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2095,7 +2095,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Keep open</source>
-        <translation>保持开启</translation>
+        <translation>保持打开状态</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2105,27 +2105,27 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Monitoring the p2p bitcoin network</source>
-        <translation>正在监控比特币 p2p 网络</translation>
+        <translation>正在监视点对点比特币网络</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
-        <translation>通过代理 {proxy} 监控比特币 p2p 网络</translation>
+        <translation>通过代理 {proxy} 监视点对点比特币网络</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>New Tab {n}</source>
-        <translation>新标签页 {n}</translation>
+        <translation>新选项卡 {n}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>No file selected</source>
-        <translation>未选择文件  </translation>
+        <translation>未选择文件</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-        <translation>没有打开钱包。请打开发件人钱包以编辑此交易。  </translation>
+        <translation>未打开钱包。请打开支付方钱包以编辑此交易。</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2135,12 +2135,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>OK</source>
-        <translation>确定</translation>
+        <translation>好的</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>On macOS only {n} wallets can be opened at the same time</source>
-        <translation>在 macOS 上一次只能打开 {n} 个钱包</translation>
+        <translation>在 macOS 上，最多只能同时打开 {n} 个钱包。</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2150,7 +2150,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Open Transaction or PSBT</source>
-        <translation>打开交易或PSBT</translation>
+        <translation>打开交易或 PSBT</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -5403,7 +5403,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Created at {date} with</source>
-        <translation>在 {date} 创建的  </translation>
+        <translation>创建于 {date}，由</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5418,7 +5418,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>File not found!</source>
-        <translation>文件未找到！  </translation>
+        <translation>未找到文件！</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5448,7 +5448,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation>重新扫描此钱包时，请至少扫描到地址索引 {max_tip}，以发现所有资金地址。  </translation>
+        <translation>重新扫描此钱包时，请至少扫描至地址索引 {max_tip}，以发现所有已注资金的地址。</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5458,12 +5458,12 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-        <translation>硬件签名者的秘密种子词：永不在计算机上输入。永不拍照。  </translation>
+        <translation>硬件签名器的助记词：永不在计算机上输入。永不拍照。</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>Seed backup of {id}</source>
-        <translation>{id}的种子备份  </translation>
+        <translation>{id} 的助记词备份</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5473,17 +5473,17 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
-        <translation>钱包描述符（二维码） &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; 允许您创建仅查看钱包以查看余额。要从中支出，您需要 {number} 个秘密词（种子）。</translation>
+        <translation>钱包描述符（二维码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;可用于创建观察钱包以查看您的余额。若要从中花费，您则需要 {number} 个单词（助记词）。</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation>钱包描述符（二维码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;允许您创建只读钱包以查看您的余额。要从中支出，您需要{threshold}个种子和钱包描述符。  </translation>
+        <translation>钱包描述符（二维码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;可用于创建观察钱包以查看您的余额。若要从中花费，您则需要 {threshold} 个助记词和钱包描述符。</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>Total</source>
-        <translation>总计  </translation>
+        <translation>总计</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5498,17 +5498,17 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
-        <translation>{i}。 {threshold}的{m}多重签名钱包的种子备份：“{id}”  </translation>
+        <translation>{i}。{threshold}/{m} 多重签名钱包的助记词备份：“{id}”</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-        <translation>{keystore_label}（{keystore_fingerprint}）：{keystore_description}&lt;br/&gt;&lt;br/&gt;给继承人的指南：  </translation>
+        <translation>{keystore_label}（{keystore_fingerprint}）：{keystore_description}&lt;br/&gt;&lt;br/&gt;给继承者的指示：</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation>{keystore_label}：指纹：{keystore_fingerprint}，密钥起源：{keystore_key_origin}，{keystore_xpub}</translation>
+        <translation>{keystore_label}：指纹：{keystore_fingerprint}，密钥源：{keystore_key_origin}，{keystore_xpub}</translation>
     </message>
     <name>pdf</name>
     <message>
