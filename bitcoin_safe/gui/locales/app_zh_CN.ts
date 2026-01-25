@@ -1012,7 +1012,7 @@ Default 20</source>
     <name>ExportDataSimple</name>
     <message>
         <source>Save as image</source>
-        <translation>保存为图像</translation>
+        <translation>另存为图像</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
@@ -1111,21 +1111,22 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 {fee}, which is {percent}% of
 the sending value {sent}</source>
         <translation>预估的交易费用为：
-{fee}，即发送金额 {sent} 的 {percent}%。</translation>
+{fee}，即发送金额 {sent} 的 {percent}%</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>交易费用为：
-{fee}，已发送 {sent}！</translation>
+{fee}，并已发送 {sent}！</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
         <source>The transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
+        <translation>交易费用为：
+{fee}，即发送金额 {sent} 的 {percent}%</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
@@ -1223,56 +1224,56 @@ the sending value {sent}</source>
     <name>FloatingButtonBar</name>
     <message>
         <source>Yes, I see the transaction in the history</source>
-        <translation>是的，我在历史记录中看到了交易</translation>
+        <translation>是的，我在历史记录中看到了这笔交易</translation>
     </message>
 </context>
 <context>
     <name>GenerateSeed</name>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-        <translation>请确保没有其他程序访问硬件签名器</translation>
+        <translation>请确保没有其他程序正在访问硬件签名器</translation>
     </message>
     <name>GenerateSeed</name>
     <message>
         <source>Please enter the name (sticker label) of the hardware signer</source>
-        <translation>请输入硬件签名者的名称（贴纸标签）  </translation>
+        <translation>请输入硬件签名器的名称（贴纸标签）</translation>
     </message>
     <name>GenerateSeed</name>
     <message>
         <source>Sticker Label</source>
-        <translation>贴纸标签  </translation>
+        <translation>贴纸标签</translation>
     </message>
     <name>GenerateSeed</name>
     <message>
         <source>Success! Please complete this step with all hardware signers and then click Next.</source>
-        <translation>成功！请用所有硬件签名者完成此步骤，然后点击下一步。  </translation>
+        <translation>成功！请与所有硬件签名器完成此步骤，然后点击下一步。</translation>
     </message>
     <name>GenerateSeed</name>
     <message>
         <source>The setup didnt complete. Please repeat.</source>
-        <translation>设置未完成，请重试。  </translation>
+        <translation>设置未完成。请重试。</translation>
     </message>
 </context>
 <context>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Export File</source>
-        <translation>导出文件  </translation>
+        <translation>导出文件</translation>
     </message>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>Import File or Text</source>
-        <translation>导入文件或文本  </translation>
+        <translation>导入文件或文本</translation>
     </message>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>QR Code</source>
-        <translation>二维码  </translation>
+        <translation>二维码</translation>
     </message>
     <name>HardwareSignerInteractionWidget</name>
     <message>
         <source>USB</source>
-        <translation>USB  </translation>
+        <translation>USB</translation>
     </message>
 </context>
 <context>
@@ -1284,7 +1285,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-        <translation>找不到交易 {txid} 的钱包。请先打开相应的钱包。</translation>
+        <translation>无法找到交易 {txid} 的钱包。请先打开对应的钱包。</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1294,7 +1295,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Copy as csv</source>
-        <translation>复制为csv</translation>
+        <translation>复制为 CSV</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1304,7 +1305,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Details</source>
-        <translation>详细信息</translation>
+        <translation>详情</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1329,7 +1330,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Save as file</source>
-        <translation>另存为文件  </translation>
+        <translation>另存为文件</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1339,12 +1340,12 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Transaction id</source>
-        <translation>交易ID</translation>
+        <translation>交易 ID</translation>
     </message>
     <name>HistList</name>
     <message>
         <source>Txid</source>
-        <translation>交易标识符</translation>
+        <translation>交易 ID</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1354,7 +1355,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>Waiting to be included in a block</source>
-        <translation>等待被包含在区块中</translation>
+        <translation>正在等待被纳入区块中</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1364,7 +1365,7 @@ the sending value {sent}</source>
     <name>HistList</name>
     <message>
         <source>{number} Confirmations</source>
-        <translation>{number} 确认</translation>
+        <translation>{number} 次确认</translation>
     </message>
     <name>HistList</name>
     <message>
@@ -1376,42 +1377,42 @@ the sending value {sent}</source>
     <name>HistListWithToolbar</name>
     <message>
         <source>&amp;Generate PDF balance Statement</source>
-        <translation>&amp;生成 PDF 余额报表  </translation>
+        <translation>&amp;生成 PDF 余额对账单</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportClipboard</name>
     <message>
         <source>Share</source>
-        <translation>分享  </translation>
+        <translation>分享</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportFile</name>
     <message>
         <source>File</source>
-        <translation>文件  </translation>
+        <translation>文件</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportQR</name>
     <message>
         <source>QR</source>
-        <translation>QR  </translation>
+        <translation>二维码</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportUSB</name>
     <message>
         <source>USB</source>
-        <translation>USB  </translation>
+        <translation>USB</translation>
     </message>
 </context>
 <context>
     <name>HorizontalImportExportWallet</name>
     <message>
         <source>Seed</source>
-        <translation>助记词种子</translation>
+        <translation>助记词</translation>
     </message>
 </context>
 <context>
@@ -1423,7 +1424,7 @@ the sending value {sent}</source>
     <name>ImportLabelMenu</name>
     <message>
         <source>Exchange format (BIP329)</source>
-        <translation>交易所格式 (BIP329)</translation>
+        <translation>交易格式（BIP329）</translation>
     </message>
     <name>ImportLabelMenu</name>
     <message>
@@ -1438,19 +1439,19 @@ the sending value {sent}</source>
     <name>ImportLabelMenu</name>
     <message>
         <source>Restore labels from cloud using an existing sync key</source>
-        <translation>使用现有同步密钥从云恢复标签  </translation>
+        <translation>使用现有同步密钥从云端中恢复标签</translation>
     </message>
 </context>
 <context>
     <name>ImportXpubs</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
-        <translation>2. 将钱包信息导入比特币保险库</translation>
+        <translation>2. 将钱包信息导入到 Bitcoin Safe</translation>
     </message>
     <name>ImportXpubs</name>
     <message>
         <source>Next signer</source>
-        <translation>下一个签名者  </translation>
+        <translation>下一位签名者</translation>
     </message>
     <name>ImportXpubs</name>
     <message>
@@ -1465,41 +1466,41 @@ the sending value {sent}</source>
     <name>ImportXpubs</name>
     <message>
         <source>Previous signer</source>
-        <translation>前一个签名者  </translation>
+        <translation>上一位签名者</translation>
     </message>
     <name>ImportXpubs</name>
     <message>
         <source>Skip step</source>
-        <translation>跳过此步</translation>
+        <translation>跳过此步骤</translation>
     </message>
 </context>
 <context>
     <name>KeyOriginAnalyzer</name>
     <message>
         <source>Missing Key origin</source>
-        <translation>缺失关键来源  </translation>
+        <translation>缺失密匙源</translation>
     </message>
     <name>KeyOriginAnalyzer</name>
     <message>
         <source>The provided account {provided_account} differs from the default account {default_account}.</source>
-        <translation>提供的账户 {provided_account} 与默认账户 {default_account} 不同。  </translation>
+        <translation>提供的账户 {provided_account} 与默认账户 {default_account} 不同。</translation>
     </message>
     <name>KeyOriginAnalyzer</name>
     <message>
         <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-        <translation>提供的信息是针对 {key_origin_network} 的。请提供 {network} 网络的 xPub  </translation>
+        <translation>该提供的信息适用于 {key_origin_network} 网络。请为 {network} 网络提供 xPub。</translation>
     </message>
     <name>KeyOriginAnalyzer</name>
     <message>
         <source>Unexpected xpub origin</source>
-        <translation>意外的 xpub 来源</translation>
+        <translation>意外的 xpub 源</translation>
     </message>
 </context>
 <context>
     <name>KeyStoreUI</name>
     <message>
         <source>Advanced</source>
-        <translation>高级</translation>
+        <translation>高级设置</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
@@ -1519,74 +1520,74 @@ the sending value {sent}</source>
     <name>KeyStoreUI</name>
     <message>
         <source>Import fingerprint and xpub</source>
-        <translation>导入指纹和xpub</translation>
+        <translation>导入指纹和 xpub</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Name of signing device: ......
 Location of signing device: .....</source>
-        <translation>签名设备名称：...... 
-签名设备位置：......</translation>
+        <translation>签名设备名称：......
+签名设备位置：.....</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-        <translation>未找到预期 Xpub 来源 {key_origin} 的签名者数据。如果您想导入非默认帐户编号，请指定 Xpub 来源并重新扫描。</translation>
+        <translation>未找到预期 Xpub 源 {key_origin} 的签名者数据。如果您要导入非默认帐户编号，请指定 Xpub 源并重新扫描。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>OK</source>
-        <translation>确定</translation>
+        <translation>好的</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please ensure that there are no other programs accessing the Hardware signer</source>
-        <translation>请确保没有其他程序访问硬件签名器</translation>
+        <translation>请确保没有其他程序正在访问硬件签名器</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please enter a valid key origin.</source>
-        <translation>请输入有效的密钥来源。  </translation>
+        <translation>请输入有效的密钥源。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please import the information from all hardware signers first</source>
-        <translation>请先从所有硬件签名器导入信息  </translation>
+        <translation>请先导入所有硬件签名器的信息</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please paste descriptors into the descriptor field in the top right.</source>
-        <translation>请将描述粘贴到右上角的描述字段中。</translation>
+        <translation>请将描述符粘贴到右上角的描述符字段中。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please paste the exported file (like sparrow-export.json)</source>
-        <translation>请粘贴导出的文件（如sparrow-export.json）  </translation>
+        <translation>请粘贴导出的文件（例如：sparrow-export.json）</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Please paste the exported file (like sparrow-export.json):</source>
-        <translation>请粘贴导出的文件（如sparrow-export.json）：  </translation>
+        <translation>请粘贴导出的文件（例如：sparrow-export.json）：</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Seed</source>
-        <translation>助记词种子</translation>
+        <translation>助记词</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-        <translation>选定的地址类型 {type} 的标准是 {expected_key_origin}。如果不确定，请更正。  </translation>
+        <translation>所选地址类型 {type} 的标准为 {expected_key_origin}。若不确定，请予以修正。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
-        <translation>xPub来源 {key_origin} 与xPub属于一对，请选择正确的xPub来源配对。</translation>
+        <translation>xPub 源 {key_origin} 与 xPub 属于同一对。请选择正确的 xPub 源对。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-        <translation>xpub采用SLIP132格式。转换为标准格式。</translation>
+        <translation>该 xpub 采用 SLIP132 格式。正在转换为标准格式。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
@@ -1596,35 +1597,36 @@ Location of signing device: .....</source>
     <name>KeyStoreUI</name>
     <message>
         <source>xPub Origin</source>
-        <translation>xPub来源</translation>
+        <translation>xPub 源</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>{data_type} cannot be used here.</source>
-        <translation>{data_type} 在此处无法使用。</translation>
+        <translation>{data_type} 在此处不可用。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>{msg}
 Do you want to proceed anyway?</source>
-        <translation>{msg} 无论如何您还想继续吗？  </translation>
+        <translation>{msg}
+您确定要继续操作吗？</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
         <source>{xpub} is not a valid public xpub</source>
-        <translation>{xpub} 不是有效的公共xpub</translation>
+        <translation>{xpub} 不是有效的公共 xpub</translation>
     </message>
 </context>
 <context>
     <name>KeyStoreUIs</name>
     <message>
         <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-        <translation>填写所有{number}个签名者及其指纹{fingerprints}  </translation>
+        <translation>为所有 {number} 位签字者填写指纹 {fingerprints}</translation>
     </message>
     <name>KeyStoreUIs</name>
     <message>
         <source>Please import the complete data for Signer {i}!</source>
-        <translation>请为签名者{i}导入完整数据！  </translation>
+        <translation>请导入签名者 {i} 的完整数据！</translation>
     </message>
     <name>KeyStoreUIs</name>
     <message>
@@ -1634,29 +1636,29 @@ Do you want to proceed anyway?</source>
     <name>KeyStoreUIs</name>
     <message>
         <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-        <translation>您多次导入了相同的指纹！！！请使用不同的签名设备。  </translation>
+        <translation>您已多次导入相同的指纹！！！请使用另一台签名器。</translation>
     </message>
     <name>KeyStoreUIs</name>
     <message>
         <source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-        <translation>您多次导入了相同的xpub！！！请使用不同的签名设备。  </translation>
+        <translation>您已多次导入相同的 xpub！！！请使用另一台签名器。</translation>
     </message>
     <name>KeyStoreUIs</name>
     <message>
         <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-        <translation>您导入的关键起源{key_origins}有所不同！请再次确认是否有意为之。  </translation>
+        <translation>您导入的密钥源 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
     </message>
 </context>
 <context>
     <name>LabelBackup</name>
     <message>
         <source>Backup secret sync key:</source>
-        <translation>备份秘密同步密钥：  </translation>
+        <translation>备份秘密同步密钥：</translation>
     </message>
     <name>LabelBackup</name>
     <message>
         <source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-        <translation>在每台电脑上的同步与聊天标签中选择受信任的电脑。  </translation>
+        <translation>在每台计算机上的“同步和聊天”选项卡中选择受信任的计算机。</translation>
     </message>
     <name>LabelBackup</name>
     <message>
@@ -1666,12 +1668,12 @@ Do you want to proceed anyway?</source>
     <name>LabelBackup</name>
     <message>
         <source>Enable</source>
-        <translation>启用  </translation>
+        <translation>启用</translation>
     </message>
     <name>LabelBackup</name>
     <message>
         <source>Encrypted cloud backup of the address labels and categories</source>
-        <translation>加密云备份地址标签和类别  </translation>
+        <translation>加密云端备份地址标签和类别</translation>
     </message>
     <name>LabelBackup</name>
     <message>
@@ -1681,7 +1683,7 @@ Do you want to proceed anyway?</source>
     <name>LabelBackup</name>
     <message>
         <source>Multi-computer synchronization and chat</source>
-        <translation>多电脑同步和聊天  </translation>
+        <translation>多台计算机同步与聊天</translation>
     </message>
     <name>LabelBackup</name>
     <message>
@@ -1698,17 +1700,17 @@ Do you want to proceed anyway?</source>
     <name>LabelSnapshotMenu</name>
     <message>
         <source>No previous snapshots</source>
-        <translation>无先前快照</translation>
+        <translation>无先前的快照</translation>
     </message>
     <name>LabelSnapshotMenu</name>
     <message>
         <source>No wallets available</source>
-        <translation>无可用钱包</translation>
+        <translation>无可用的钱包</translation>
     </message>
     <name>LabelSnapshotMenu</name>
     <message>
         <source>Restore labels and categories snapshot</source>
-        <translation>还原标签和类别快照</translation>
+        <translation>恢复标签和类别快照</translation>
     </message>
     <name>LabelSnapshotMenu</name>
     <message>
@@ -1718,7 +1720,7 @@ Do you want to proceed anyway?</source>
     <name>LabelSnapshotMenu</name>
     <message>
         <source>State before restore</source>
-        <translation>恢复前状态</translation>
+        <translation>恢复前的状态</translation>
     </message>
     <name>LabelSnapshotMenu</name>
     <message>
@@ -1730,12 +1732,12 @@ Do you want to proceed anyway?</source>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} hours</source>
-        <translation>大约在{t}小时内</translation>
+        <translation>大约在 {t} 个小时</translation>
     </message>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} min</source>
-        <translation>大约在{t}分钟内</translation>
+        <translation>大约在 {t} 分钟</translation>
     </message>
 </context>
 <context>
@@ -5344,7 +5346,11 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. 将“恢复表”（{number}个词）附在这张纸上，或将12/24个词复制到这张纸上。&lt;br/&gt; 2. 在下面的线处折叠这张纸&lt;br/&gt; 3. 将每张纸放在一个不同的安全地点，只有您能进入&lt;br/&gt; 4. 您可以将硬件签名者放在 a) 与相应的纸质种子备份一起，或 b) 在另一个安全地点（如果有的话）</translation>
+        <translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
+                2. 沿着下方的折线折叠这张纸&lt;br/&gt;
+                3. 将每张纸分别存放在不同的安全地点，确保仅您本人能够访问&lt;br/&gt;
+                4. 您可以将硬件签名器：a) 与对应的纸质助记词备份一同存放，或 b) 各自存放在另一个安全地点（如果有的话）   
+                </translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5353,7 +5359,11 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. 将“恢复表”（{number}个词）附在这张纸上，或将12/24个词复制到这张纸上。&lt;br/&gt; 2. 在下面的线处折叠这张纸&lt;br/&gt; 3. 将这张纸放在一个只有您能进入的安全地点&lt;br/&gt; 4. 您可以将硬件签名者放在 a) 与纸质种子备份一起，或 b) 在另一个安全地点（如果有的话）</translation>
+        <translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24个单词复制到这张纸上。&lt;br/&gt;
+                2. 沿着下方的折线折叠这张纸&lt;br/&gt;
+                3. 将这张纸存放在安全的地点，确保仅您本人能够访问&lt;br/&gt;
+                4. 您可以将硬件签名器：a) 与纸质助记词备份一同存放，或 b) 存放在其他安全的地方（如果有的话）   
+                </translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5398,7 +5408,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Created with</source>
-        <translation>创建于  </translation>
+        <translation>创建于</translation>
     </message>
     <name>pdf</name>
     <message>
