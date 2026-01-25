@@ -131,7 +131,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             parent=parent,
         )
         self.wallet: Wallet | None = category_core.wallet if category_core else None
-        self._was_shown = False
+        self._ui_well_defined = False
         self.initial_tx_ui_infos = tx_ui_infos
         self._signal_tracker_wallet_signals = SignalTracker()
 
@@ -370,8 +370,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def showEvent(self, a0: QShowEvent | None):
         """ShowEvent."""
-        if not self._was_shown:
-            self._was_shown = True
+        if not self._ui_well_defined:
+            self._ui_well_defined = True
             if self.initial_tx_ui_infos:
                 try:
                     # the initial_tx_ui_infos can cause problems since the wallet
@@ -1025,6 +1025,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def set_ui(self, tx_ui_infos: TxUiInfos) -> None:
         """Set ui."""
+        # prevent showEvent from interfering
+        self._ui_well_defined = True
+
         self.handle_conflicting_utxo(txinfos=tx_ui_infos)
         self.handle_cpfp(tx_ui_infos)
 
