@@ -654,7 +654,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnFee</name>
     <message>
         <source>Mempool Fees</source>
-        <translation>内存池手续费</translation>
+        <translation>内存池费用</translation>
     </message>
     <name>ColumnFee</name>
     <message>
@@ -796,7 +796,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-        <translation>钱包设置未完成。请在创建备份PDF之前完成设置。</translation>
+        <translation>钱包设置尚未完成。请先完成设置后再创建备份 PDF 文件。</translation>
     </message>
 </context>
 <context>
@@ -830,17 +830,17 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>New descriptor entered</source>
-        <translation>输入了新的描述符  </translation>
+        <translation>已输入新的描述符</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Required Signers</source>
-        <translation>所需的签名</translation>
+        <translation>所需的签名者</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Scan Addresses ahead</source>
-        <translation>预先扫描地址  </translation>
+        <translation>提前扫描地址</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -850,81 +850,82 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Wallet Properties</source>
-        <translation>钱包属性  </translation>
+        <translation>钱包属性</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-        <translation>在扫描区块链时，钱包会创建额外的地址来发现交易 默认 20</translation>
+        <translation>在扫描区块链时，钱包将创建额外的地址以发现交易
+默认：20</translation>
     </message>
 </context>
 <context>
     <name>DeviceDialog</name>
     <message>
         <source>Select the detected device</source>
-        <translation>选择检测到的设备  </translation>
+        <translation>选择已检测到的设备</translation>
     </message>
 </context>
 <context>
     <name>DeviceManager</name>
     <message>
         <source>Trusted</source>
-        <translation>信任  </translation>
+        <translation>受信任的</translation>
     </message>
     <name>DeviceManager</name>
     <message>
         <source>Untrusted</source>
-        <translation>不受信任  </translation>
+        <translation>不受信任</translation>
     </message>
 </context>
 <context>
     <name>DistributeSeeds</name>
     <message>
         <source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-        <translation>请仔细选择安全位置，考虑到您需要从 {n} 个位置中找到 {m} 个，以便从您的多签名钱包中进行花费。</translation>
+        <translation>请谨慎选择安全地点，考虑到您需要前往 {n} 个地点中的 {m} 个，才能从您的多签名钱包中进行花费。</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Place each seed backup and hardware signer in a secure location, such:</source>
-        <translation>将每个助记词种子备份和硬件签名器放在安全的地方，例如：</translation>
+        <translation>将每个助记词备份和硬件签名器存放在安全的地方，例如：</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-        <translation>助记词种子备份{j}和硬件签名器{j}应放在位置{j}</translation>
+        <translation>助记词备份 {j} 和硬件签名器 {j} 应存放在地点 {j}</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Store the   hardware signer   in secure location.</source>
-        <translation>将硬件签名器存放在安全的地方。</translation>
+        <translation>将   硬件签名器   存放在安全的地方。</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-        <translation>将助记词种子备份存放在非常安全的地方（如金库）。</translation>
+        <translation>将  助记词备份   存放在&lt;b&gt;极其&lt;/b&gt;安全的地方（例如：银行保险箱）。</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>The seed backup (24 words) give total control over the funds.</source>
-        <translation>助记词种子备份（24个词）可以完全控制资金。</translation>
+        <translation>助记词备份（24 个单词）可完全掌控资金。</translation>
     </message>
 </context>
 <context>
     <name>DonateDialog</name>
     <message>
         <source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href=&apos;https://bitcoin-safe.org/en/donate/&apos;&gt;supporters page&lt;/a&gt;.</source>
-        <translation>Bitcoin Safe 由社区资助。您的支持使开发保持独立，帮助我们发布新功能，并改进安全审查。更大的支持者可以在我们的&lt;a href=&apos;https://bitcoin-safe.org/en/donate/&apos;&gt;支持者页面&lt;/a&gt;上展示。</translation>
+        <translation>Bitcoin Safe 是由社区资助的。您的支持让我们能够保持开发的独立性，不断推出新的功能，并增强安全审查的能力。大型支持者可以在我们的 &lt;a href=&apos;https://bitcoin-safe.org/zh/donate/&apos;&gt;支持者名单&lt;/a&gt;中突出展示。</translation>
     </message>
     <name>DonateDialog</name>
     <message>
         <source>Donation</source>
-        <translation>捐赠</translation>
+        <translation>打赏</translation>
     </message>
     <name>DonateDialog</name>
     <message>
         <source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-        <translation>捐赠成功。非常感谢您支持 Bitcoin Safe！</translation>
+        <translation>打赏成功。非常感谢您对 Bitcoin Safe 的支持！</translation>
     </message>
     <name>DonateDialog</name>
     <message>
@@ -934,7 +935,7 @@ Default 20</source>
     <name>DonateDialog</name>
     <message>
         <source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-        <translation>帮助 Bitcoin Safe 作为自由和开源软件不断发展。</translation>
+        <translation>帮助 Bitcoin Safe 作为自由且开源的软件不断发展。</translation>
     </message>
     <name>DonateDialog</name>
     <message>
@@ -944,7 +945,7 @@ Default 20</source>
     <name>DonateDialog</name>
     <message>
         <source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-        <translation>想讨论更大额度的捐助或合作？请使用下面的联系按钮联系我们。</translation>
+        <translation>想要探讨更大金额的捐赠或合作？请点击下方联系按钮与我们取得联系。</translation>
     </message>
 </context>
 <context>
@@ -958,17 +959,17 @@ Default 20</source>
     <name>Downloader</name>
     <message>
         <source>Download Progress</source>
-        <translation>下载进度  </translation>
+        <translation>下载进度</translation>
     </message>
     <name>Downloader</name>
     <message>
         <source>Download {}</source>
-        <translation>下载 {}  </translation>
+        <translation>下载 {}</translation>
     </message>
     <name>Downloader</name>
     <message>
         <source>Open download folder: {}</source>
-        <translation>打开下载文件夹: {}</translation>
+        <translation>打开下载文件夹：{}</translation>
     </message>
 </context>
 <context>
@@ -989,7 +990,7 @@ Default 20</source>
     <name>EnlargableImageWidgetWithButton</name>
     <message>
         <source>Enlarge</source>
-        <translation>放大  </translation>
+        <translation>放大</translation>
     </message>
 </context>
 <context>
@@ -1001,17 +1002,17 @@ Default 20</source>
     <name>ExportDataSimple</name>
     <message>
         <source>Export {data_type} to hardware signer</source>
-        <translation>将{data_type}导出到硬件签名器  </translation>
+        <translation>将 {data_type} 导出至硬件签名器</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
         <source>Image (*.{image_format})</source>
-        <translation>图像 (*.{image_format})  </translation>
+        <translation>图像 (*.{image_format})</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
         <source>Save as image</source>
-        <translation>保存为图片</translation>
+        <translation>保存为图像</translation>
     </message>
     <name>ExportDataSimple</name>
     <message>
@@ -1023,7 +1024,7 @@ Default 20</source>
     <name>ExportLabelMenu</name>
     <message>
         <source>Exchange format (BIP329)</source>
-        <translation>交易所格式 (BIP329)</translation>
+        <translation>交易格式（BIP329）</translation>
     </message>
     <name>ExportLabelMenu</name>
     <message>
@@ -1046,13 +1047,15 @@ Default 20</source>
     <message>
         <source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-        <translation>无法精确知道手续费率，因为交易的最终大小未知。</translation>
+        <translation>手续费率无法精确得知，
+因为交易的最终大小尚不明确。</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
 Click to learn more about CPFP (Child Pays For Parent).</source>
-        <translation>此交易有 {number} 个未确认父交易，其总费率为 {parents_fee_rate}。点击了解更多关于 CPFP（子付父费）。</translation>
+        <translation>此交易有 {number} 笔未确认的父交易，总手续费率为 {parents_fee_rate}。
+点击以了解更多有关 CPFP（子为父偿）机制的详情。</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -1064,12 +1067,14 @@ Click to learn more about CPFP (Child Pays For Parent).</source>
         <source>You can replace the previously broadcasted transaction
 with a new transaction if it has a higher fee rate.
 Click here to learn more about RBF (Replace-by-Fee).</source>
-        <translation>如果费率更高，你可以用一笔新交易替换先前已广播的交易。点击此处了解 RBF（通过手续费替代）。</translation>
+        <translation>您可以通过广播新的交易以替换先前广播的交易
+前提是新交易的手续费更高。
+点击此处了解更多有关 RBF（费用替换）的详情。</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>in ~{n}. Block</source>
-        <translation>约在{n}个区块</translation>
+        <translation>大约在 {n} 个区块</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -1098,20 +1103,22 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
     <name>FeeWarningBar</name>
     <message>
         <source>High fee ratio: {ratio}%.</source>
-        <translation>费用比例过高：{ratio}%。</translation>
+        <translation>高费用比率：{ratio}%。</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
         <source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>预估的交易费用为：{fee}，即发送值{sent}的{percent}%</translation>
+        <translation>预估的交易费用为：
+{fee}，即发送金额 {sent} 的 {percent}%。</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-        <translation>交易费用是：{fee}，且{sent}已发送！  </translation>
+        <translation>交易费用为：
+{fee}，已发送 {sent}！</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
@@ -1123,7 +1130,7 @@ the sending value {sent}</source>
     <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
-        <translation>{sent}已发送！  </translation>
+        <translation>{sent} 已发送！</translation>
     </message>
 </context>
 <context>
@@ -1137,27 +1144,27 @@ the sending value {sent}</source>
     <name>FileToolButton</name>
     <message>
         <source>Copy JSON</source>
-        <translation>复制JSON</translation>
+        <translation>复制 JSON</translation>
     </message>
     <name>FileToolButton</name>
     <message>
         <source>Copy TxId</source>
-        <translation>复制交易标识符</translation>
+        <translation>复制交易 ID</translation>
     </message>
     <name>FileToolButton</name>
     <message>
         <source>Copy {name}</source>
-        <translation>复制{name}</translation>
+        <translation>复制 {name}</translation>
     </message>
     <name>FileToolButton</name>
     <message>
         <source>Export</source>
-        <translation>导出  </translation>
+        <translation>导出</translation>
     </message>
     <name>FileToolButton</name>
     <message>
         <source>Export to file</source>
-        <translation>导出到文件  </translation>
+        <translation>导出到文件</translation>
     </message>
     <name>FileToolButton</name>
     <message>
@@ -1184,12 +1191,12 @@ the sending value {sent}</source>
     <name>FingerprintAnalyzer</name>
     <message>
         <source>Invalid Fingerprint</source>
-        <translation>无效指纹  </translation>
+        <translation>无效的指纹</translation>
     </message>
     <name>FingerprintAnalyzer</name>
     <message>
         <source>Missing Fingerprint</source>
-        <translation>缺失指纹  </translation>
+        <translation>缺失指纹</translation>
     </message>
 </context>
 <context>
@@ -1201,7 +1208,7 @@ the sending value {sent}</source>
     <name>FloatingButtonBar</name>
     <message>
         <source>Prefill transaction fields</source>
-        <translation>预填交易字段  </translation>
+        <translation>预填交易字段</translation>
     </message>
     <name>FloatingButtonBar</name>
     <message>
@@ -1211,7 +1218,7 @@ the sending value {sent}</source>
     <name>FloatingButtonBar</name>
     <message>
         <source>Retry</source>
-        <translation>重试  </translation>
+        <translation>重试</translation>
     </message>
     <name>FloatingButtonBar</name>
     <message>
