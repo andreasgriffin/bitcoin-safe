@@ -1328,6 +1328,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         top_widget_layout.addWidget(chart_container, stretch=3)
         top_widget_layout.addWidget(self.quick_receive, stretch=2)
 
+        self.signal_tracker.connect(self.fx.signal_data_updated, self.update_display_balance)
+
         splitter.addWidget(top_widget)
         splitter.addWidget(list_widget)
         splitter.setCollapsible(0, True)

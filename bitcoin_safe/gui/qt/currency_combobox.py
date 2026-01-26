@@ -86,10 +86,9 @@ class CurrencyComboBox(QComboBox):
         else:
             return f"{code} - {display_symbol.ljust(4)} - {name}"
 
-    @staticmethod
-    def _available_codes(rates: dict[str, dict], codes: Iterable[str]) -> list[str]:
+    def _available_codes(self, codes: Iterable[str]) -> list[str]:
         """Filter the provided iterable to only include available currency codes."""
-        return [code for code in codes if rates.get(FX.sanitize_key(code))]
+        return [code for code in codes if self.fx.get_rate(code)]
 
     def _add_currency_item(self, code: str) -> None:
         """Add a currency entry to the combo box if data for the code exists."""
@@ -101,10 +100,7 @@ class CurrencyComboBox(QComboBox):
             code,
         )
 
-    def _build_groups_by_order(
-        self,
-        rates: dict[str, dict],
-    ) -> list[list[str]]:
+    def _build_groups_by_order(self) -> list[list[str]]:
         """Return lists of currency codes grouped according to the given order."""
         groups: list[list[str]] = []
         grouped_codes: set[str] = set()
@@ -117,19 +113,19 @@ class CurrencyComboBox(QComboBox):
 
         for item in self.groups:
             if item is CurrencyGroup.TOP_FIAT:
-                add_group(self._available_codes(rates, self.TOP_CURRENCY_CODES))
+                add_group(self._available_codes(self.TOP_CURRENCY_CODES))
 
             elif item is CurrencyGroup.BTC_ONLY:
-                add_group(self._available_codes(rates, ["BTC"]))
+                add_group(self._available_codes(["BTC"]))
 
             elif item is CurrencyGroup.BITCOIN_OTHER:
-                add_group(self._available_codes(rates, self.BITCOIN_OTHER_CODES))
+                add_group(self._available_codes(self.BITCOIN_OTHER_CODES))
 
             elif item is CurrencyGroup.FIAT:
                 add_group(
                     [
                         code
-                        for code, data in sorted(rates.items())
+                        for code, data in sorted(self.fx.list_rates().items())
                         if data.get("type") == "fiat" and code not in grouped_codes
                     ]
                 )
@@ -138,7 +134,7 @@ class CurrencyComboBox(QComboBox):
                 add_group(
                     [
                         code
-                        for code, data in sorted(rates.items())
+                        for code, data in sorted(self.fx.list_rates().items())
                         if data.get("type") == "crypto" and code not in grouped_codes
                     ]
                 )
@@ -146,7 +142,7 @@ class CurrencyComboBox(QComboBox):
                 add_group(
                     [
                         code
-                        for code, data in sorted(rates.items())
+                        for code, data in sorted(self.fx.list_rates().items())
                         if data.get("type") == "commodity" and code not in grouped_codes
                     ]
                 )
@@ -164,7 +160,7 @@ class CurrencyComboBox(QComboBox):
 
             selected_currency_code = FX.sanitize_key(selected_currency or self.fx.config.currency)
 
-            group_lists = self._build_groups_by_order(self.fx.rates)
+            group_lists = self._build_groups_by_order()
 
             for group_index, codes in enumerate(group_lists):
                 if group_index > 0:

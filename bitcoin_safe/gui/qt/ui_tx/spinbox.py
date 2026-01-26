@@ -140,15 +140,18 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         signal_currency_changed: SignalProtocol[[]] | pyqtBoundSignal,
         signal_language_switch: SignalProtocol[[]] | pyqtBoundSignal,
         include_currrency_symbol=False,
+        fixed_currency: None | str = None,
         parent=None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
+
         self.fx = fx
         self.include_currrency_symbol = include_currrency_symbol
         self._btc_amount: int = 0
         self._is_max = False
-        self._currency_code: str | None = None
+        self.fixed_currency = fixed_currency
+        self._currency_code: str | None = fixed_currency
 
         # simple guard so we don't recurse
         self._prevent_update_btc_amount = False
@@ -188,7 +191,7 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
 
     def update_currency(self):
         """Update currency."""
-        if not self.fx:
+        if not self.fx or self.fixed_currency:
             return
 
         currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
@@ -223,6 +226,19 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def btc_value(self) -> int:
         """Btc value."""
         return self._btc_amount
+
+    def validate(self, input: str | None, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
+        if not input:
+            input = "0"
+        if not self.fx:
+            return QtGui.QValidator.State.Intermediate, input or "", pos
+
+        currency_code, currency_symbol, locale = self.get_code_symbol_locale(self.fx)
+
+        value = self.fx.parse_fiat_custom(formatted=input, currency_symbol=currency_symbol)
+        if value is None:
+            return QtGui.QValidator.State.Intermediate, input or "", pos
+        return QtGui.QValidator.State.Acceptable, input or "", pos
 
     def fiat_value(self) -> float | None:
         """Fiat value."""
