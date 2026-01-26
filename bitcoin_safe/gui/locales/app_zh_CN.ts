@@ -845,7 +845,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Wallet Descriptor</source>
-        <translation>钱包描述</translation>
+        <translation>钱包描述符</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -1505,7 +1505,7 @@ the sending value {sent}</source>
     <name>KeyStoreUI</name>
     <message>
         <source>Description</source>
-        <translation>描述</translation>
+        <translation>说明</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
@@ -2075,17 +2075,17 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>From &amp;QR Code</source>
-        <translation>来自&amp;二维码</translation>
+        <translation>从&amp;二维码</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>From &amp;file</source>
-        <translation>来自&amp;文件</translation>
+        <translation>从&amp;文件</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>From &amp;text</source>
-        <translation>来自&amp;文本</translation>
+        <translation>从&amp;文本</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2210,7 +2210,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>QR &amp;Scanner</source>
-        <translation>二维码 &amp;扫码器</translation>
+        <translation>二维码&amp;扫码器</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2240,12 +2240,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Search &amp;next	{shortcut}</source>
-        <translation>搜索 &amp;下一个	{shortcut}</translation>
+        <translation>搜索&amp;下一个	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Search &amp;previous	{shortcut}</source>
-        <translation>搜索 &amp;上一个	{shortcut}</translation>
+        <translation>搜索&amp;上一个	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2667,7 +2667,7 @@ Do you want to hide to tray instead?</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Create new wallet</source>
-        <translation>创建新钱包</translation>
+        <translation>创建一个新钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -3568,7 +3568,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SearchTreeView</name>
     <message>
         <source>Type to search...</source>
-        <translation>输入以搜索...</translation>
+        <translation>输入以搜索……</translation>
     </message>
 </context>
 <context>
@@ -3633,7 +3633,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignAndVerifyMessage</name>
     <message>
         <source>ASCII armored message is required.</source>
-        <translation>需要 ASCII 装甲消息。</translation>
+        <translation>需要 ASCII 加密消息。</translation>
     </message>
     <name>SignAndVerifyMessage</name>
     <message>
@@ -3703,7 +3703,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignAndVerifyMessage</name>
     <message>
         <source>Verify ASCII Armour</source>
-        <translation>验证 ASCII 装甲</translation>
+        <translation>验证 ASCII 加密</translation>
     </message>
     <name>SignAndVerifyMessage</name>
     <message>
@@ -3732,7 +3732,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignMessageBase</name>
     <message>
         <source>Message too short.</source>
-        <translation>消息太短。  </translation>
+        <translation>消息太短。</translation>
     </message>
     <name>SignMessageBase</name>
     <message>
@@ -3810,7 +3810,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignatureImporterUSB</name>
     <message>
         <source>USB Signing</source>
-        <translation>USB签名</translation>
+        <translation>USB 签名</translation>
     </message>
 </context>
 <context>
@@ -3997,7 +3997,7 @@ If you make a mistake here, your money is lost!</source>
     <name>ToolGui</name>
     <message>
         <source>USB Signer Tools</source>
-        <translation>USB签名工具  </translation>
+        <translation>USB 硬件签名器工具</translation>
     </message>
     <name>ToolGui</name>
     <message>
@@ -4273,7 +4273,7 @@ Or you can broadcast via {url}</source>
     <name>USBDevice</name>
     <message>
         <source>Do you want to restore an existing seed onto the device?</source>
-        <translation>您想将现有种子恢复到设备上吗？  </translation>
+        <translation>您是否想将现有的助记词恢复到设备上？</translation>
     </message>
 </context>
 <context>
@@ -4285,12 +4285,12 @@ Or you can broadcast via {url}</source>
     <name>USBGui</name>
     <message>
         <source>No USB devices found. It could be due to missing udev rules.</source>
-        <translation>未发现 USB 设备。这可能是由于缺少 udev 规则所致。</translation>
+        <translation>未检测到任何 USB 设备。这可能是由于缺少 udev 规则所导致的。</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>No device selected</source>
-        <translation>未选择设备  </translation>
+        <translation>未选择设备</translation>
     </message>
     <name>USBGui</name>
     <message>
@@ -4300,66 +4300,66 @@ Or you can broadcast via {url}</source>
     <name>USBGui</name>
     <message>
         <source>Please restart your computer for the changes to take effect.</source>
-        <translation>请重启计算机以使更改生效。  </translation>
+        <translation>请重启计算机以使更改生效。</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>Please unlock USB devices</source>
-        <translation>请解锁USB设备  </translation>
+        <translation>请解锁 USB 设备</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-        <translation>通过 USB 注册多签钱包不受 {device_type} 支持。请使用 sd 卡或扫描二维码。  </translation>
+        <translation>通过 USB 注册多签名钱包不受 {device_type} 支持。请使用 SD 卡或扫描二维码。</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>Restart computer</source>
-        <translation>重启计算机  </translation>
+        <translation>重启计算机</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>USB Devices</source>
-        <translation>USB设备  </translation>
+        <translation>USB 设备</translation>
     </message>
     <name>USBGui</name>
     <message>
         <source>Unlock USB devices</source>
-        <translation>解锁USB设备  </translation>
+        <translation>解锁 USB 设备</translation>
     </message>
 </context>
 <context>
     <name>USBRegisterMultisigWidget</name>
     <message>
         <source>Help</source>
-        <translation>帮助  </translation>
+        <translation>帮助</translation>
     </message>
     <name>USBRegisterMultisigWidget</name>
     <message>
         <source>Register Multisig</source>
-        <translation>注册多重签名  </translation>
+        <translation>注册多重签名</translation>
     </message>
     <name>USBRegisterMultisigWidget</name>
     <message>
         <source>Register Multisig wallet on hardware signer</source>
-        <translation>在硬件签名器上注册多重签名钱包  </translation>
+        <translation>在硬件签名器上注册多重签名钱包</translation>
     </message>
     <name>USBRegisterMultisigWidget</name>
     <message>
         <source>Successfully registered multisig wallet on hardware signer</source>
-        <translation>在硬件签名器上成功注册多签钱包  </translation>
+        <translation>已在硬件签名器上成功注册多重签名钱包</translation>
     </message>
 </context>
 <context>
     <name>USBValidateAddressWidget</name>
     <message>
         <source>Validate address</source>
-        <translation>验证地址  </translation>
+        <translation>验证地址</translation>
     </message>
     <name>USBValidateAddressWidget</name>
     <message>
         <source>Validate receive address:</source>
-        <translation>验证接收地址：  </translation>
+        <translation>验证接收地址：</translation>
     </message>
 </context>
 <context>
@@ -5040,7 +5040,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Connect to USB signer</source>
-        <translation>连接到USB签名器</translation>
+        <translation>连接到 USB 硬件签名器</translation>
     </message>
     <name>d</name>
     <message>
@@ -5060,7 +5060,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Import from camera</source>
-        <translation>从相机导入  </translation>
+        <translation>从摄像头导入</translation>
     </message>
     <name>d</name>
     <message>
@@ -5070,7 +5070,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Read QR code from camera</source>
-        <translation>从相机读取二维码</translation>
+        <translation>从摄像头读取二维码</translation>
     </message>
     <name>d</name>
     <message>
@@ -5398,7 +5398,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>BBQr QR</source>
-        <translation>BBQr QR</translation>
+        <translation>BBQr 二维码</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5458,7 +5458,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>No QR data available</source>
-        <translation>无可用的 QR 数据</translation>
+        <translation>无可用的二维码数据</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5590,7 +5590,7 @@ Click here to learn more.</source>
     <name>pgp</name>
     <message>
         <source>Security note: verification uses a built-in &lt;a href=&quot;https://github.com/SecurityInnovation/PGPy&quot;&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href=&quot;https://gnupg.org/&quot;&gt;GPG&lt;/a&gt;.</source>
-        <translation>安全提示：验证使用内置的 &lt;a href=&quot;https://github.com/SecurityInnovation/PGPy&quot;&gt;pgpy&lt;/a&gt; 库。它不会遵循您密钥环中的信任设置、吊销信息或过期时间。请使用 &lt;a href=&quot;https://gnupg.org/&quot;&gt;GPG&lt;/a&gt; 验证高价值消息。</translation>
+        <translation>安全提示：验证过程使用内置的 &lt;a href=&quot;https://github.com/SecurityInnovation/PGPy&quot;&gt;pgpy&lt;/a&gt; 库。该库不会遵循密钥环中的信任设置、撤销状态或过期时间。请使用 &lt;a href=&quot;https://gnupg.org/&quot;&gt;GPG&lt;/a&gt; 对高价值消息进行验证。</translation>
     </message>
     <name>pgp</name>
     <message>
@@ -5797,14 +5797,16 @@ Click here to learn more.</source>
     <name>usb</name>
     <message>
         <source>Pair Bitbox02</source>
-        <translation>配对Bitbox02  </translation>
+        <translation>配对 BitBox02</translation>
     </message>
     <name>usb</name>
     <message>
         <source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-        <translation>请比较并确认您的BitBox02上的配对代码：{code}  </translation>
+        <translation>请核对并确认您的 BitBox02 上的配对码：
+
+{code}</translation>
     </message>
 </context>
 <context>
@@ -5819,7 +5821,10 @@ Click here to learn more.</source>
 will append a new transaction to the old one.
 If the average fee rate of both transactions is high enough
 it will speed up confirmation of both transactions.</source>
-        <translation>CPFP = Child Pay For Parent，将在旧交易后追加一笔新交易。如果两笔交易的平均费率足够高，将加快两笔交易的确认。</translation>
+        <translation>CPFP = Child Pay For Parent（子为父偿）
+将在旧的交易后追加一笔新的交易。
+如果两笔交易的平均矿工费率足够高
+将加快两笔交易的确认速度。</translation>
     </message>
     <name>util</name>
     <message>
@@ -5828,7 +5833,11 @@ will create a new transaction
 with you as a recipient and a higher fee
 to replace the old transaction.
 There is no guarantee this will work!!!</source>
-        <translation>使用 RBF 取消，将创建一笔以你为收款人且手续费更高的新交易来替换旧交易。不能保证一定有效！！！</translation>
+        <translation>使用 RBF 来取消，
+将创建一笔新的交易，
+以您为收款方并设置更高的矿工费率，
+以替换旧的交易。
+此操作无法保证成功！！！</translation>
     </message>
     <name>util</name>
     <message>
@@ -5848,14 +5857,16 @@ There is no guarantee this will work!!!</source>
     <name>util</name>
     <message>
         <source>Process faster (CPFP)</source>
-        <translation>更快处理（CPFP）</translation>
+        <translation>加快处理（CPFP）</translation>
     </message>
     <name>util</name>
     <message>
         <source>RBF = Replace By Fee,
 will create a new transaction with a higher fee
 to speed up the confirmation.</source>
-        <translation>RBF = Replace By Fee，将创建一笔手续费更高的新交易以加速确认。</translation>
+        <translation>RBF = Replace By Fee（费用替换），
+将创建一笔矿工费更高的新交易
+以加快交易确认速度。</translation>
     </message>
     <name>util</name>
     <message>
@@ -5910,72 +5921,72 @@ to speed up the confirmation.</source>
     <name>util</name>
     <message>
         <source>in about 1 day</source>
-        <translation>在大约1天内</translation>
+        <translation>在大约 1 天</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 hour</source>
-        <translation>在大约1小时内</translation>
+        <translation>在大约 1 个小时</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 month</source>
-        <translation>在大约1个月内</translation>
+        <translation>在大约 1 个月</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 year</source>
-        <translation>在大约1年内</translation>
+        <translation>在大约 1 年</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} days</source>
-        <translation>在大约{}天内</translation>
+        <translation>在大约 {} 天</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} hours</source>
-        <translation>在大约{}小时内</translation>
+        <translation>在大约 {} 个小时</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} minutes</source>
-        <translation>在大约{}分钟内</translation>
+        <translation>在大约 {} 分钟</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} months</source>
-        <translation>在大约{}个月内</translation>
+        <translation>在大约 {} 个月</translation>
     </message>
     <name>util</name>
     <message>
         <source>in less than a minute</source>
-        <translation>不到一分钟内</translation>
+        <translation>在不到 1 分钟</translation>
     </message>
     <name>util</name>
     <message>
         <source>in over {} years</source>
-        <translation>在超过{}年内</translation>
+        <translation>在超过 {} 年</translation>
     </message>
     <name>util</name>
     <message>
         <source>in {} seconds</source>
-        <translation>在{}秒内</translation>
+        <translation>在 {} 秒</translation>
     </message>
     <name>util</name>
     <message>
         <source>less than a minute ago</source>
-        <translation>不到一分钟前</translation>
+        <translation>在不到 1 分钟前</translation>
     </message>
     <name>util</name>
     <message>
         <source>over {} years ago</source>
-        <translation>超过{}年前</translation>
+        <translation>超过 {} 年</translation>
     </message>
     <name>util</name>
     <message>
         <source>{} seconds ago</source>
-        <translation>{}秒前</translation>
+        <translation>在 {} 秒前</translation>
     </message>
 </context>
 <context>
@@ -5987,7 +5998,7 @@ to speed up the confirmation.</source>
     <name>utxo_list</name>
     <message>
         <source>Copy as csv</source>
-        <translation>复制为csv</translation>
+        <translation>另存为 CSV</translation>
     </message>
     <name>utxo_list</name>
     <message>
@@ -6002,12 +6013,12 @@ to speed up the confirmation.</source>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO</source>
-        <translation>未确认的UTXO</translation>
+        <translation>未确认的 UTXO</translation>
     </message>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-        <translation>未确认的UTXO已被交易{is_spent_by_txid}使用</translation>
+        <translation>未确认的 UTXO 被交易 {is_spent_by_txid} 花费</translation>
     </message>
     <name>utxo_list</name>
     <message>
@@ -6019,32 +6030,32 @@ to speed up the confirmation.</source>
     <name>video</name>
     <message>
         <source>Add RTSP Camera</source>
-        <translation>添加RTSP相机  </translation>
+        <translation>添加 RTSP 摄像头</translation>
     </message>
     <name>video</name>
     <message>
         <source>Brightness (reduce for bright displays):</source>
-        <translation>亮度（为明亮显示器降低亮度）：  </translation>
+        <translation>亮度（为明亮显示器降低亮度）：</translation>
     </message>
     <name>video</name>
     <message>
         <source>Camera</source>
-        <translation>相机  </translation>
+        <translation>摄像头</translation>
     </message>
     <name>video</name>
     <message>
         <source>Camera:</source>
-        <translation>相机：  </translation>
+        <translation>摄像头：</translation>
     </message>
     <name>video</name>
     <message>
         <source>Enhance picture for detection</source>
-        <translation>增强图片以便检测  </translation>
+        <translation>增强图像以便检测</translation>
     </message>
     <name>video</name>
     <message>
         <source>Enter RTSP URL</source>
-        <translation>输入 RTSP URL  </translation>
+        <translation>输入 RTSP 网址</translation>
     </message>
     <name>video</name>
     <message>
@@ -6054,44 +6065,44 @@ to speed up the confirmation.</source>
     <name>video</name>
     <message>
         <source>Postprocess</source>
-        <translation>后处理  </translation>
+        <translation>后期处理</translation>
     </message>
     <name>video</name>
     <message>
         <source>RTSP URL:</source>
-        <translation>RTSP URL:  </translation>
+        <translation>RTSP 网址：</translation>
     </message>
     <name>video</name>
     <message>
         <source>Screen</source>
-        <translation>屏幕  </translation>
+        <translation>屏幕</translation>
     </message>
     <name>video</name>
     <message>
         <source>Settings</source>
-        <translation>设置  </translation>
+        <translation>设置</translation>
     </message>
     <name>video</name>
     <message>
         <source>Show camera controls</source>
-        <translation>显示相机控制  </translation>
+        <translation>显示摄像头控制</translation>
     </message>
     <name>video</name>
     <message>
         <source>The camera could not be opened</source>
-        <translation>无法打开摄像头  </translation>
+        <translation>无法打开摄像头</translation>
     </message>
     <name>video</name>
     <message>
         <source>Zoom:</source>
-        <translation>缩放：  </translation>
+        <translation>放大：</translation>
     </message>
 </context>
 <context>
     <name>wallet</name>
     <message>
         <source>Change of:</source>
-        <translation>更改：  </translation>
+        <translation>找零：</translation>
     </message>
     <name>wallet</name>
     <message>
