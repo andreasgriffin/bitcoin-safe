@@ -35,8 +35,8 @@ from PyQt6.QtWidgets import QTabWidget
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.about_tab import AboutTab, LicenseDialog
+from bitcoin_safe.gui.qt.interface_settings_ui import InterfaceSettingsUi
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
-from bitcoin_safe.gui.qt.language_settings_ui import InterfaceSettingsUi
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
 from bitcoin_safe.gui.qt.util import center_on_screen, svg_tools
 from bitcoin_safe.signals import Signals
@@ -46,7 +46,7 @@ class Settings(QTabWidget):
     def __init__(
         self,
         config: UserConfig,
-        signals: Signals | None,
+        signals: Signals,
         language_chooser: LanguageChooser,
         fx: FX,
         parent=None,

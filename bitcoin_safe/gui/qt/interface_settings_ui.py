@@ -30,7 +30,11 @@ from __future__ import annotations
 
 import logging
 
-from PyQt6.QtWidgets import QFormLayout, QLabel, QWidget
+from PyQt6.QtWidgets import (
+    QFormLayout,
+    QLabel,
+    QWidget,
+)
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.language_chooser import (

@@ -38,6 +38,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.fx_types import FXProvider
 from bitcoin_safe.mempool_manager import fetch_from_url
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.util import SATOSHIS_PER_BTC
@@ -124,7 +125,7 @@ class FX(QObject):
         if symbol:
             return symbol
 
-        data = self.rates.get(currency_iso)
+        data = self.get_rate(currency_iso)
         if data:
             symbol = str(data.get("unit", "")) or currency_iso
 
@@ -136,7 +137,7 @@ class FX(QObject):
 
         currency_locale = self.get_currency_locale(currency_iso_code=currency_iso)
 
-        data = self.rates.get(currency_iso)
+        data = self.get_rate(currency_iso)
         if data:
             name = str(data.get("name"))
 
@@ -235,22 +236,16 @@ class FX(QObject):
 
     def fiat_to_btc(self, fiat: float, currency: str | None = None) -> int | None:
         """Fiat to btc."""
-        if not (
-            rate := self.rates.get(
-                self.sanitize_key(currency) if currency else self.sanitize_key(self.config.currency)
-            )
-        ):
+        rate = self.get_rate(currency or self.config.currency)
+        if not rate:
             return None
 
         return int(SATOSHIS_PER_BTC * fiat / rate["value"])
 
     def btc_to_fiat(self, amount: int, currency: str | None = None) -> float | None:
         """Btc to fiat."""
-        if not (
-            rate := self.rates.get(
-                self.sanitize_key(currency) if currency else self.sanitize_key(self.config.currency)
-            )
-        ):
+        rate = self.get_rate(currency or self.config.currency)
+        if not rate:
             return None
 
         fiat_amount = rate["value"] * amount / SATOSHIS_PER_BTC
@@ -347,3 +342,44 @@ class FX(QObject):
                 continue
             self.rates[upper] = self.rates[key]
             del self.rates[key]
+
+    def list_rates(self) -> dict[str, dict[str, Any]]:
+        """Return a merged view of fetched rates with custom overrides applied (custom takes precedence)."""
+        return self.rates
+
+    def get_rate(self, currency: str) -> dict[str, Any] | None:
+        """Return rate dict prioritizing custom overrides."""
+        return self.list_rates().get(self.sanitize_key(currency))
+
+    def get_rate_value(self, currency: str | None) -> float | None:
+        if not currency:
+            return None
+        rate = self.get_rate(currency)
+        if not rate:
+            return None
+        raw_val = rate.get("value")
+        if raw_val is None:
+            return None
+        try:
+            return float(raw_val)
+        except (TypeError, ValueError):
+            return None
+
+    def construct_rate(
+        self,
+        currency_iso: str,
+        value: float,
+        name: str | None = None,
+        unit: str | None = None,
+        type: str | None = None,
+    ):
+        return {
+            "name": name if name else (self.get_rate(currency_iso) or {}).get("name"),
+            "type": type if type else (self.get_rate(currency_iso) or {}).get("type"),
+            "unit": unit if unit else (self.get_rate(currency_iso) or {}).get("unit"),
+            "value": value,
+        }
+
+    def set_provider(self, provider: FXProvider) -> None:
+        """Switch price provider and refresh if necessary."""
+        self.update()
