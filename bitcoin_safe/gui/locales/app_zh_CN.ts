@@ -2130,7 +2130,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>No, quick scan</source>
-        <translation>否，快速扫描</translation>
+        <translation>不，快速扫描</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2170,7 +2170,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-        <translation>在此粘贴您的比特币交易或PSBT或拖放文件</translation>
+        <translation>在此处粘贴您的比特币交易，PSBT，或拖放文件。</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2185,12 +2185,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-        <translation>请在此粘贴您的比特币交易或PSBT，或拖放文件</translation>
+        <translation>请在此处粘贴您的比特币交易，PSBT，或拖放文件。</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Please select a Multisignature wallet first</source>
-        <translation>请首先选择一个多重签名钱包  </translation>
+        <translation>请先选择一个多重签名钱包</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2210,12 +2210,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>QR &amp;Scanner</source>
-        <translation>QR &amp;扫描器  </translation>
+        <translation>二维码 &amp;扫码器</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>QR Scanner</source>
-        <translation>二维码扫描器</translation>
+        <translation>二维码扫码器</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2225,7 +2225,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Reveal in file explorer</source>
-        <translation>在文件管理器中显示</translation>
+        <translation>在文件资源管理器中显示</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2235,22 +2235,22 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Save PSBT?</source>
-        <translation>保存 PSBT？  </translation>
+        <translation>保存 PSBT？</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Search &amp;next	{shortcut}</source>
-        <translation>搜索 &amp;下一个 {shortcut}</translation>
+        <translation>搜索 &amp;下一个	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Search &amp;previous	{shortcut}</source>
-        <translation>搜索 &amp;上一个 {shortcut}</translation>
+        <translation>搜索 &amp;上一个	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Selected file: {file_path}</source>
-        <translation>选中的文件：{file_path}</translation>
+        <translation>已选定的文件：{file_path}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2260,7 +2260,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Signed Message</source>
-        <translation>已签名消息  </translation>
+        <translation>已签名的消息</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2270,32 +2270,32 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Status: Connected via proxy</source>
-        <translation>状态：通过代理已连接</translation>
+        <translation>状态：已通过代理连接</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Status: Disconnected</source>
-        <translation>状态：已断开</translation>
+        <translation>状态：已断开连接</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Tab history: &amp;Backward	{shortcut}</source>
-        <translation>标签页历史：&amp;后退 {shortcut}</translation>
+        <translation>选项卡历史：&amp;后退	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Tab history: &amp;Forward	{shortcut}</source>
-        <translation>标签页历史：&amp;前进 {shortcut}</translation>
+        <translation>选项卡历史：&amp;前进	{shortcut}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>The wallet {file_path} is already open.</source>
-        <translation>钱包 {file_path} 已经打开。</translation>
+        <translation>钱包 {file_path} 已打开。</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-        <translation>钱包 {file_path} 已经打开。您还想再打开这个钱包吗？</translation>
+        <translation>钱包 {file_path} 已打开。您仍要打开此钱包吗？</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2306,32 +2306,33 @@ Do you want to proceed anyway?</source>
     <message>
         <source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-        <translation>此钱包仍在同步中，如果关闭，将需要从头开始同步。是否保持钱包打开？</translation>
+        <translation>此钱包仍在同步中，现在关闭将导致同步过程从头开始。
+您是否要保持钱包处于打开状态？</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Try connecting to: {ip}</source>
-        <translation>尝试连接到：{ip}</translation>
+        <translation>请尝试连接到：{ip}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Try connecting to: {ip} via proxy {proxy}</source>
-        <translation>通过代理 {proxy} 尝试连接到：{ip}</translation>
+        <translation>请尝试通过代理 {proxy} 连接至：{ip}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Trying to connect to bitcoin node...</source>
-        <translation>正在尝试连接到比特币节点...</translation>
+        <translation>正在尝试连接到比特币节点……</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Wallet Files (*.wallet);;All Files (*)</source>
-        <translation>钱包文件 (*.wallet);;所有文件 (*)  </translation>
+        <translation>钱包文件 (*.wallet);;所有文件 (*)</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Wallet already open</source>
-        <translation>钱包已经打开</translation>
+        <translation>钱包已打开</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2342,22 +2343,23 @@ Do you want to keep the wallet open?</source>
     <message>
         <source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-        <translation>钱包仍在同步中，如果关闭应用程序，将需要从头开始同步。是否改为隐藏到托盘？</translation>
+        <translation>钱包仍在同步中，现在关闭应用程序将导致同步过程从头开始。
+您是否希望将其隐藏到系统托盘？</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Wallets still syncing</source>
-        <translation>钱包仍在同步</translation>
+        <translation>钱包仍在同步中</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Was this wallet ever used before?</source>
-        <translation>这个钱包以前用过吗？</translation>
+        <translation>这个钱包之前用过吗？</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Yes, full scan for transactions</source>
-        <translation>是，完整扫描交易</translation>
+        <translation>是的，对交易进行完整扫描</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2374,7 +2376,7 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>Confirmations</source>
-        <translation>确认数</translation>
+        <translation>确认次数</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
@@ -2384,7 +2386,7 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>First confirmation</source>
-        <translation>第一次确认</translation>
+        <translation>首次确认</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
@@ -2394,14 +2396,14 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>{n}. Block</source>
-        <translation>{n}区块</translation>
+        <translation>{n} 个区块</translation>
     </message>
 </context>
 <context>
     <name>MyTreeView</name>
     <message>
         <source>All Files (*);;Text Files (*.csv)</source>
-        <translation>所有文件 (*);;文本文件 (*.csv)  </translation>
+        <translation>所有文件 (*);;文本文件 (*.csv)</translation>
     </message>
     <name>MyTreeView</name>
     <message>
@@ -2411,17 +2413,17 @@ Do you want to hide to tray instead?</source>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
-        <translation>复制为csv</translation>
+        <translation>另存为 CSV</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>Export csv</source>
-        <translation>导出 csv  </translation>
+        <translation>导出 CSV</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>No file selected</source>
-        <translation>未选择文件  </translation>
+        <translation>未选择文件</translation>
     </message>
     <name>MyTreeView</name>
     <message>
@@ -2453,7 +2455,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Bitcoin network monitoring</source>
-        <translation>比特币网络监控</translation>
+        <translation>比特币网络监视</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2468,7 +2470,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Click to open the mempool url</source>
-        <translation>点击打开 mempool URL</translation>
+        <translation>点击以打开 mempool 网址</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2483,7 +2485,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Enable SSL</source>
-        <translation>启用SSL</translation>
+        <translation>启用 SSL</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2499,7 +2501,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>IP Address:</source>
-        <translation>IP地址：</translation>
+        <translation>IP 地址：</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
