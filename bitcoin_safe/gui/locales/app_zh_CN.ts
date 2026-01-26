@@ -820,7 +820,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Fill signer information based on the new descriptor?</source>
-        <translation>是否根据新的描述符填写签名者信息？</translation>
+        <translation>是否根据新的描述符填写硬件签名器信息？</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -835,7 +835,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Required Signers</source>
-        <translation>所需的签名者</translation>
+        <translation>所需的硬件签名器</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -1451,7 +1451,7 @@ the sending value {sent}</source>
     <name>ImportXpubs</name>
     <message>
         <source>Next signer</source>
-        <translation>下一位签名者</translation>
+        <translation>下一台硬件签名器</translation>
     </message>
     <name>ImportXpubs</name>
     <message>
@@ -1466,7 +1466,7 @@ the sending value {sent}</source>
     <name>ImportXpubs</name>
     <message>
         <source>Previous signer</source>
-        <translation>上一位签名者</translation>
+        <translation>上一台硬件签名器</translation>
     </message>
     <name>ImportXpubs</name>
     <message>
@@ -1532,7 +1532,7 @@ Location of signing device: .....</source>
     <name>KeyStoreUI</name>
     <message>
         <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-        <translation>未找到预期 Xpub 源 {key_origin} 的签名者数据。如果您要导入非默认帐户编号，请指定 Xpub 源并重新扫描。</translation>
+        <translation>未找到预期 Xpub 源 {key_origin} 的硬件签名器数据。如果您要导入非默认帐户编号，请指定 Xpub 源并重新扫描。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
@@ -1626,7 +1626,7 @@ Do you want to proceed anyway?</source>
     <name>KeyStoreUIs</name>
     <message>
         <source>Please import the complete data for Signer {i}!</source>
-        <translation>请导入签名者 {i} 的完整数据！</translation>
+        <translation>请导入硬件签名器 {i} 的完整数据！</translation>
     </message>
     <name>KeyStoreUIs</name>
     <message>
@@ -2526,7 +2526,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Number of p2p connections:</source>
-        <translation>p2p 连接数:</translation>
+        <translation>点对点连接数：</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2556,7 +2556,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Proxy:</source>
-        <translation>代理：  </translation>
+        <translation>代理：</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2647,7 +2647,7 @@ Do you want to hide to tray instead?</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Best for medium-sized funds</source>
-        <translation>适合中等规模的资金</translation>
+        <translation>最适合中等规模的资金</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -2657,7 +2657,7 @@ Do you want to hide to tray instead?</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Choose Single Signature</source>
-        <translation>选择单签名</translation>
+        <translation>选择单一签名</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -2673,7 +2673,8 @@ Do you want to hide to tray instead?</source>
     <message>
         <source>Create or
 import custom wallet</source>
-        <translation>创建或导入自定义钱包</translation>
+        <translation>创建或
+导入自定义钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -2683,17 +2684,17 @@ import custom wallet</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Customize the wallet to your needs</source>
-        <translation>根据你的需求定制钱包</translation>
+        <translation>根据您的需求定制钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-        <translation>如果1个助记词种子丢失或被盗，可以使用剩余的2个种子加钱包描述（二维码）将所有资金转移到新钱包</translation>
+        <translation>若丢失或被盗 1 个助记词备份，您可以使用剩余的 2 个助记词和对应的钱包描述符（二维码）备份将所有资金转移至新的钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-        <translation>如果你被骗让黑客获取你的助记词种子，你的比特币将立即被盗</translation>
+        <translation>如果您被诱骗并向黑客透露您的助记词，您的比特币将立即被盗</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -2708,26 +2709,26 @@ import custom wallet</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Single Signature Wallet</source>
-        <translation>单签名钱包</translation>
+        <translation>单一签名钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-        <translation>钱包描述（二维码）是恢复钱包所必需的</translation>
+        <translation>钱包描述符（二维码）是恢复钱包所需的关键信息</translation>
     </message>
 </context>
 <context>
     <name>NostrSync</name>
     <message>
         <source>Group Chat</source>
-        <translation>群聊  </translation>
+        <translation>群聊</translation>
     </message>
 </context>
 <context>
     <name>NostrSyncWithSingleChats</name>
     <message>
         <source>Chat</source>
-        <translation>聊天  </translation>
+        <translation>聊天</translation>
     </message>
 </context>
 <context>
@@ -2746,12 +2747,12 @@ import custom wallet</source>
     <name>NotificationBarCBF</name>
     <message>
         <source>Compact Block Filters for p2p syncing is now available</source>
-        <translation>用于 p2p 同步的紧凑区块过滤器现已可用</translation>
+        <translation>紧凑型区块过滤器现已支持点对点同步功能</translation>
     </message>
     <name>NotificationBarCBF</name>
     <message>
         <source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
-        <translation>连接到比特币节点（p2p），并从中下载相关区块。</translation>
+        <translation>连接到比特币节点（点对点），并从中下载相关的区块。</translation>
     </message>
     <name>NotificationBarCBF</name>
     <message>
@@ -2761,7 +2762,7 @@ import custom wallet</source>
     <name>NotificationBarCBF</name>
     <message>
         <source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
-        <translation>更新您的网络设置（当前服务器不可靠）！您可以尝试使用 Compact Block Filters 进行 p2p 同步</translation>
+        <translation>请更新您的网络设置（当前的服务器不可靠）！您可尝试使用紧凑区块过滤器进行点对点同步</translation>
     </message>
 </context>
 <context>
@@ -2797,7 +2798,7 @@ import custom wallet</source>
     <name>PSBTAlreadyBroadcastedBar</name>
     <message>
         <source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-        <translation>该交易 {txid} 已签名并位于钱包 {wallet}</translation>
+        <translation>该交易 {txid} 已完成签名，并位于钱包 {wallet} 中</translation>
     </message>
 </context>
 <context>
@@ -2868,18 +2869,19 @@ import custom wallet</source>
     <name>PaymentButton</name>
     <message>
         <source>A browser callback arrived after the invoice expired. Please try again.</source>
-        <translation>发票过期后收到了浏览器回调。请再试一次。</translation>
+        <translation>浏览器回调在发票过期后才到达。请重试。</translation>
     </message>
     <name>PaymentButton</name>
     <message>
         <source>Choose an amount and create a donation invoice.</source>
-        <translation>选择金额并创建捐赠发票。</translation>
+        <translation>请选择金额并创建捐赠发票。</translation>
     </message>
     <name>PaymentButton</name>
     <message>
         <source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-        <translation>请在浏览器中完成付款。如有问题，请随时通过以下方式联系我们：[andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+        <translation>请在浏览器中完成支付。
+如有任何问题，请随时通过电子邮件方式联系我们：andreasgriffin@proton.me</translation>
     </message>
     <name>PaymentButton</name>
     <message>
@@ -2929,17 +2931,17 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
     <name>PaymentButton</name>
     <message>
         <source>Please choose a donation amount and a currency.</source>
-        <translation>请选择捐赠金额和货币。</translation>
+        <translation>请选择捐赠金额和币种。</translation>
     </message>
     <name>PaymentButton</name>
     <message>
         <source>Requesting invoice...</source>
-        <translation>正在请求发票...</translation>
+        <translation>正在请求发票……</translation>
     </message>
     <name>PaymentButton</name>
     <message>
         <source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-        <translation>正在请求发票... 将打开浏览器，Bitcoin Safe 将在本地监听回调。</translation>
+        <translation>正在请求发票…… 浏览器将打开，Bitcoin Safe 将在本地监听回调。</translation>
     </message>
     <name>PaymentButton</name>
     <message>
@@ -2992,23 +2994,24 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
     <name>QTWallet</name>
     <message>
         <source>All Files (*);;Wallet Files (*.wallet)</source>
-        <translation>所有文件 (*);;钱包文件 (*.wallet)  </translation>
+        <translation>所有文件 (*);;钱包文件 (*.wallet)</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-        <translation>检测到较低的间隙限制指示（向找零地址接收比特币）。是否要以增加到 {new_gap} 的间隙限制重新扫描钱包</translation>
+        <translation>检测到低间隙限制提示（在找零地址中接收比特币）。
+您是否希望以增加的间隙限制 {new_gap} 重新扫描钱包？</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Backup failed. Aborting Changes.</source>
-        <translation>备份失败。正在中止更改。</translation>
+        <translation>备份失败。正在取消更改。</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Backup saved to {filename}</source>
-        <translation>备份已保存到{filename}</translation>
+        <translation>备份已保存到 {filename}</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3018,7 +3021,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
-        <translation>无法移动钱包文件，因为{file_path}已存在</translation>
+        <translation>无法移动钱包文件，因为 {file_path} 已存在</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3028,27 +3031,27 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Connected to {server}</source>
-        <translation>已连接到 {server}  </translation>
+        <translation>已连接到 {server}</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Current price per bitcoin is unavailable.</source>
-        <translation>当前比特币价格不可用。</translation>
+        <translation>当前的比特币价格无法获取。</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Current price per bitcoin: {price} ({currency})</source>
-        <translation>当前每枚比特币价格：{price} ({currency})</translation>
+        <translation>当前的比特币价格：{price}（{currency}）</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Descriptor</source>
-        <translation>描述</translation>
+        <translation>描述符</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Disconnected from {server}</source>
-        <translation>已从 {server} 断开  </translation>
+        <translation>已与 {server} 断开连接</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3068,7 +3071,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Gap limit may be too low</source>
-        <translation>间隙限额可能过低</translation>
+        <translation>间隙限额可能太低</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3088,18 +3091,19 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Keep existing</source>
-        <translation>保留现有</translation>
+        <translation>保留现有的</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>New password:</source>
-        <translation>新密码：</translation>
+        <translation>新的密码：</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>钱包“{wallet}”中有新交易：{txs}  </translation>
+        <translation>钱包 ‘{wallet}’ 中有新交易：
+{txs}</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3109,12 +3113,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>No file selected</source>
-        <translation>未选择文件  </translation>
+        <translation>未选择文件</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Overwrite existing</source>
-        <translation>覆盖现有</translation>
+        <translation>覆盖现有的</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3149,7 +3153,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Save wallet</source>
-        <translation>保存钱包  </translation>
+        <translation>保存钱包</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3159,19 +3163,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>Successfully updated {number} Labels</source>
-        <translation>成功更新了{number}个标签  </translation>
+        <translation>已成功更新 {number} 个标签</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>Syncing with {server}</source>
-        <translation>与 {server} 同步  </translation>
+        <translation>正在与 {server} 同步</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>The transactions 
 {txs}
  in wallet &apos;{wallet}&apos; were removed from the history!!!</source>
-        <translation>钱包 &apos;{wallet}&apos; 中的交易 {txs} 已从历史记录中删除！！！</translation>
+        <translation>钱包 &apos;{wallet}&apos; 中的交易
+{txs}
+已从历史记录中移除！！！</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3196,12 +3202,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QTWallet</name>
     <message>
         <source>finished updating lists</source>
-        <translation>完成列表更新  </translation>
+        <translation>已完成列表更新</translation>
     </message>
     <name>QTWallet</name>
     <message>
         <source>start updating lists</source>
-        <translation>开始更新列表  </translation>
+        <translation>开始更新列表</translation>
     </message>
     <name>QTWallet</name>
     <message>
@@ -3214,14 +3220,14 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
-        <translation>二维码  </translation>
+        <translation>二维码</translation>
     </message>
 </context>
 <context>
     <name>QuickReceive</name>
     <message>
         <source>Manage Categories</source>
-        <translation>管理分类</translation>
+        <translation>管理类别</translation>
     </message>
     <name>QuickReceive</name>
     <message>
@@ -3238,7 +3244,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>RBFIcon</name>
     <message>
         <source>RBF with this fee rate</source>
-        <translation>以此费率进行 RBF</translation>
+        <translation>以此费率进行 RBF（费用替换）</translation>
     </message>
 </context>
 <context>
@@ -3306,7 +3312,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
                     &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;
                     为了确认您是否控制着这笔资金，您必须尝试从该钱包中进行花费。
                     &lt;br&gt;
-                    因此，在向该钱包发送大量比特币之前，您务必先从该钱包中进行花费，并测试所有的签名者。     
+                    因此，在向该钱包发送大量比特币之前，您务必先从该钱包中进行花费，并测试所有的硬件签名器。     
                     &lt;br&gt;
                     &lt;br&gt;
                     &lt;b&gt;在未完成所有发送测试操作之前！切勿向该钱包发送大额资金！&lt;/b&gt;   
@@ -3317,7 +3323,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>RecentlyOpenedWalletsGroup</name>
     <message>
         <source>Recently Opened Wallets</source>
-        <translation>最近打开的钱包  </translation>
+        <translation>最近打开过的钱包</translation>
     </message>
 </context>
 <context>
@@ -3329,12 +3335,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>RecipientWidget</name>
     <message>
         <source>Amount</source>
-        <translation>金额</translation>
+        <translation>数额</translation>
     </message>
     <name>RecipientWidget</name>
     <message>
         <source>Enter label here</source>
-        <translation>在此输入标签</translation>
+        <translation>在此处输入标签</translation>
     </message>
     <name>RecipientWidget</name>
     <message>
@@ -3356,7 +3362,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>Recipients</name>
     <message>
         <source>Add Recipient</source>
-        <translation>添加收件人  </translation>
+        <translation>添加收款方</translation>
     </message>
     <name>Recipients</name>
     <message>
@@ -3366,47 +3372,47 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>Recipients</name>
     <message>
         <source>All Files (*);;CSV (*.csv)</source>
-        <translation>所有文件 (*);;CSV (*.csv)  </translation>
+        <translation>所有文件 (*);;CSV (*.csv)</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>All Files (*);;Wallet Files (*.csv)</source>
-        <translation>所有文件 (*);;钱包文件 (*.csv)  </translation>
+        <translation>所有文件 (*);;钱包文件 (*.csv)</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Amount [{unit}]</source>
-        <translation>金额 [{unit}]  </translation>
+        <translation>金额 [{unit}]</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Export</source>
-        <translation>导出  </translation>
+        <translation>导出</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Export CSV Template</source>
-        <translation>导出 CSV 模板  </translation>
+        <translation>导出 CSV 模板</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Export as CSV file</source>
-        <translation>作为 CSV 文件导出  </translation>
+        <translation>导出为 CSV 文件</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Export csv</source>
-        <translation>导出 csv  </translation>
+        <translation>导出 CSV</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Import CSV file</source>
-        <translation>导入 CSV 文件  </translation>
+        <translation>导入 CSV 文件</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Import/Export</source>
-        <translation>导入/导出  </translation>
+        <translation>导入/导出</translation>
     </message>
     <name>Recipients</name>
     <message>
@@ -3416,54 +3422,54 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>Recipients</name>
     <message>
         <source>No file selected</source>
-        <translation>未选择文件  </translation>
+        <translation>未选择文件</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>No rows recognized</source>
-        <translation>未识别到行  </translation>
+        <translation>未识别到任何行</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Open CSV</source>
-        <translation>打开 CSV  </translation>
+        <translation>打开 CSV</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Please use the CSV template and include the header row.</source>
-        <translation>请使用 CSV 模板，并包含标题行。  </translation>
+        <translation>请使用 CSV 模板，并包含标题行。</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Recipients</source>
-        <translation>接收人</translation>
+        <translation>收款方</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>Recipients ({count})</source>
-        <translation>收款人（{count}）</translation>
+        <translation>收款方（{count}）</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>{address} is not a valid address!</source>
-        <translation>{address} 不是一个有效的地址！  </translation>
+        <translation>{address} 不是一个有效的地址！</translation>
     </message>
     <name>Recipients</name>
     <message>
         <source>{amount} is not a valid integer!</source>
-        <translation>{amount} 不是一个有效的整数！  </translation>
+        <translation>{amount} 不是一个有效的整数！</translation>
     </message>
 </context>
 <context>
     <name>RegisterMultisig</name>
     <message>
         <source>2. Import wallet information into Bitcoin Safe</source>
-        <translation>2. 将钱包信息导入比特币保险库</translation>
+        <translation>2. 将钱包信息导入到 Bitcoin Safe</translation>
     </message>
     <name>RegisterMultisig</name>
     <message>
         <source>Next signer</source>
-        <translation>下一个签名者  </translation>
+        <translation>下一台硬件签名器</translation>
     </message>
     <name>RegisterMultisig</name>
     <message>
@@ -3478,17 +3484,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>RegisterMultisig</name>
     <message>
         <source>Previous signer</source>
-        <translation>前一个签名者  </translation>
+        <translation>上一台硬件签名器</translation>
     </message>
     <name>RegisterMultisig</name>
     <message>
         <source>Skip step</source>
-        <translation>跳过此步</translation>
+        <translation>跳过此步骤</translation>
     </message>
     <name>RegisterMultisig</name>
     <message>
         <source>Yes, I registered the multisig on the {n} hardware signer</source>
-        <translation>是的，我在{n}硬件签名器上注册了多签</translation>
+        <translation>是的，我已在 {n} 台硬件签名器上注册了多重签名</translation>
     </message>
 </context>
 <context>
@@ -5074,12 +5080,12 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Recovery Signer {i}</source>
-        <translation>恢复签名者 {i}</translation>
+        <translation>恢复硬件签名器 {i}</translation>
     </message>
     <name>d</name>
     <message>
         <source>Signer {i}</source>
-        <translation>签名者 {i}</translation>
+        <translation>硬件签名器 {i}</translation>
     </message>
     <name>d</name>
     <message>
@@ -5101,7 +5107,7 @@ Or you can broadcast via {url}</source>
     <name>data</name>
     <message>
         <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-        <translation>指纹不同。只支持相同的指纹，确保所有派生的密钥属于同一签名者！  </translation>
+        <translation>指纹不一致。仅支持相同的指纹，确保所有派生的密钥均属于同一台硬件签名器！</translation>
     </message>
 </context>
 <context>
@@ -5142,7 +5148,7 @@ Or you can broadcast via {url}</source>
     <name>gpg</name>
     <message>
         <source>Please paste the signer&apos;s public key block.</source>
-        <translation>请粘贴签名者的公钥块。</translation>
+        <translation>请粘贴硬件签名器的公钥块。</translation>
     </message>
     <name>gpg</name>
     <message>
