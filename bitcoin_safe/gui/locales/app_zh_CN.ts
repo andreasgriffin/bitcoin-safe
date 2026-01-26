@@ -654,12 +654,12 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnFee</name>
     <message>
         <source>Mempool Fees</source>
-        <translation>内存池费用</translation>
+        <translation>Mempool 费用</translation>
     </message>
     <name>ColumnFee</name>
     <message>
         <source>Mempool position</source>
-        <translation>内存池位置</translation>
+        <translation>Mempool 位置</translation>
     </message>
     <name>ColumnFee</name>
     <message>
@@ -790,7 +790,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <message>
         <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-        <translation>此“描述符”包含重建钱包所需的所有信息。
+        <translation>此“描述符”包含重建钱包所需的所有信息。 
 请备份此描述符以确保资金可被恢复！</translation>
     </message>
     <name>DescriptorEdit</name>
@@ -1096,7 +1096,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
     <name>FeeRateWarningBar</name>
     <message>
         <source>The high priority mempool fee rate is {rate}</source>
-        <translation>高优先级内存池费率为 {rate}</translation>
+        <translation>高优先级 mempool 费率为 {rate}</translation>
     </message>
 </context>
 <context>
@@ -2381,7 +2381,7 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>Fetch new mempool data</source>
-        <translation>获取新的内存池数据</translation>
+        <translation>获取新的 mempool 数据</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
@@ -2511,7 +2511,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Mempool Instance URL</source>
-        <translation>Mempool实例URL</translation>
+        <translation>Mempool 实例网址</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2541,7 +2541,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
-        <translation>请在 mempool 网址的开头尝试 &apos;{scheme}&apos;</translation>
+        <translation>请尝试在 mempool 网址开头添加 &apos;{scheme}&apos;</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2551,7 +2551,7 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Press ⬇ arrow key for suggestions</source>
-        <translation>按 ⬇ 键获取建议  </translation>
+        <translation>请按 ⬇ 方向键以获取建议</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2565,7 +2565,7 @@ Do you want to hide to tray instead?</source>
     Mempool Instance: {server}</source>
         <translation>响应：
     {name}：{status}
-    Mempool实例：{server}</translation>
+    Mempool 实例：{server}</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2580,22 +2580,22 @@ Do you want to hide to tray instead?</source>
     <name>NetworkSettingsUI</name>
     <message>
         <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
-        <translation>tor 地址的格式应该是 &apos;{scheme}&apos;</translation>
+        <translation>Tor 的地址格式应为 &apos;{scheme}&apos;</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
         <source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-        <translation>初始节点用于监听并发现其他比特币节点。它并非被专用。</translation>
+        <translation>初始节点用于监听并发现其他比特币节点。它并非专属使用。</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
         <source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-        <translation>代理不适用于同步和聊天功能！  </translation>
+        <translation>代理不适用于同步与聊天功能！</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
         <source>URL:</source>
-        <translation>URL：</translation>
+        <translation>网址：</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2612,37 +2612,37 @@ Do you want to hide to tray instead?</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-        <translation>需要1个安全位置存放助记词种子备份（纸张或钢材）</translation>
+        <translation>需要一个安全的地点来存放助记词备份（纸质或不锈钢）。</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>1 seed (24 secret words) is all you need to access your funds</source>
-        <translation>1个助记词种子（24个秘密词）就能访问你的资金</translation>
+        <translation>一组助记词（24 个单词）即可访问您的资金</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>1 signing devices</source>
-        <translation>1个签名设备</translation>
+        <translation>1 台硬件签名器</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>2 of 3 Multi-Signature Wal</source>
-        <translation>2/3多重签名钱包(需要其中两个签名)</translation>
+        <translation>2/3 多重签名钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-        <translation>需要3个安全位置（每个位置有1个助记词种子备份加钱包描述）</translation>
+        <translation>需要 3 个安全地点（每个地点有 1 个助记词备份和对应的钱包描述符）</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>3 signing devices</source>
-        <translation>3个签名设备</translation>
+        <translation>3 台硬件签名器</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>Best for large funds</source>
-        <translation>适合大额资金</translation>
+        <translation>最适合大额资金</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -2775,12 +2775,12 @@ import custom wallet</source>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Get {testnet} coins</source>
-        <translation>获取 {testnet} 测试币</translation>
+        <translation>获取 {testnet} 代币</translation>
     </message>
     <name>NotificationBarRegtest</name>
     <message>
         <source>Network = {network}. The coins are worthless!</source>
-        <translation>网络 = {network}。这些币没有价值！</translation>
+        <translation>网络 = {network}。这些代币没有任何价值！</translation>
     </message>
     <name>NotificationBarRegtest</name>
     <message>
@@ -3267,12 +3267,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>ReceiveTest</name>
     <message>
         <source>Balance = {amount}</source>
-        <translation>余额 = {amount}  </translation>
+        <translation>余额 = {amount}</translation>
     </message>
     <name>ReceiveTest</name>
     <message>
         <source>Check if received</source>
-        <translation>检查是否收到</translation>
+        <translation>检查是否已接收到</translation>
     </message>
     <name>ReceiveTest</name>
     <message>
@@ -3282,7 +3282,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>ReceiveTest</name>
     <message>
         <source>No wallet setup yet</source>
-        <translation>还未设置钱包</translation>
+        <translation>尚未设置钱包</translation>
     </message>
     <name>ReceiveTest</name>
     <message>
@@ -3301,7 +3301,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>接收一小笔金额（少于 {test_amount}）到这个钱包的一个地址。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制着资金，您必须从钱包中测试支出。 &lt;br&gt; 因此，在您将大量比特币发送到钱包之前，从钱包中花费并测试所有签名者是&lt;b&gt;至关重要&lt;/b&gt;的。 &lt;br&gt; &lt;br&gt; &lt;b&gt;请勿先将大额资金发送到钱包，请先完成所有发送测试！&lt;/b&gt;</translation>
+        <translation>向该钱包的某个地址接收一笔&lt;b&gt;小额&lt;/b&gt;资金（低于 {test_amount}）。
+                    &lt;br&gt;&lt;br&gt;
+                    &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;
+                    为了确认您是否控制着这笔资金，您必须尝试从该钱包中进行花费。
+                    &lt;br&gt;
+                    因此，在向该钱包发送大量比特币之前，您务必先从该钱包中进行花费，并测试所有的签名者。     
+                    &lt;br&gt;
+                    &lt;br&gt;
+                    &lt;b&gt;在未完成所有发送测试操作之前！切勿向该钱包发送大额资金！&lt;/b&gt;   
+                    </translation>
     </message>
 </context>
 <context>
@@ -3589,7 +3598,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SendTest</name>
     <message>
         <source>Skip spend test?</source>
-        <translation>跳过支出测试？</translation>
+        <translation>跳过花费测试？</translation>
     </message>
     <name>SendTest</name>
     <message>
@@ -4696,7 +4705,7 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>All Send tests done successfully.</source>
-        <translation>所有发送测试都已成功完成。  </translation>
+        <translation>所有发送测试均已成功完成。</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4751,7 +4760,7 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>Send test {j}</source>
-        <translation>发送测试{j}</translation>
+        <translation>发送测试 {j}</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4769,7 +4778,10 @@ Or you can broadcast via {url}</source>
 &apos;{tx_text}&apos;
  was done successfully. Please proceed to do the send test: 
 &apos;{next_text}&apos;</source>
-        <translation>测试交易&apos;{tx_text}&apos;已成功完成。请继续进行发送测试：&apos;{next_text}&apos;  </translation>
+        <translation>测试交易
+‘{tx_text}’
+已成功完成。请继续进行发送测试：
+&apos;{next_text}&apos;</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -5237,12 +5249,12 @@ Or you can broadcast via {url}</source>
     <name>net_conf</name>
     <message>
         <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-        <translation>一个不错的选项是 {electrum_testnet4}，区块浏览器使用 {explorer_testnet4}。有一个 {faucet} 可免费获取测试币。</translation>
+        <translation>一个不错的选择是 {electrum_testnet4}，区块浏览器则使用 {explorer_testnet4}。另有 {faucet} 可免费获取测试网代币。</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-        <translation>一个不错的选项是 {electrum_testnet}，区块浏览器为 {explorer_testnet}</translation>
+        <translation>一个不错的选择是 {electrum_testnet}，区块浏览器则使用 {explorer_testnet}</translation>
     </message>
     <name>net_conf</name>
     <message>
@@ -5267,12 +5279,12 @@ Or you can broadcast via {url}</source>
     <name>net_conf</name>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
-        <translation>使用 &quot;bitcoind -chain=testnet4&quot; 运行 bitcoind</translation>
+        <translation>请使用 “bitcoind -chain=testnet4” 命令来运行您的 bitcoind</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-        <translation>Signet 使用 {electrum} 并在 {mempool_url} 上选择一个区块浏览器。有一个 {faucet} 提供免费的测试币。</translation>
+        <translation>Signet 选择 {electrum} 并使用在 {mempool_url} 上运行的区块浏览器。这里有一个免费测试网代币的 {faucet}。</translation>
     </message>
     <name>net_conf</name>
     <message>
@@ -5480,7 +5492,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-        <translation>钱包描述符（二维码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;可用于创建观察钱包以查看您的余额。若要从中花费，您则需要 {threshold} 个助记词和钱包描述符。</translation>
+        <translation>钱包描述符（二维码）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;可用于创建观察钱包以查看您的余额。若要从中花费，您则需要 {threshold} 个单词（助记词）和钱包描述符。</translation>
     </message>
     <name>pdf</name>
     <message>
