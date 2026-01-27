@@ -535,7 +535,7 @@
     <name>CategoryList</name>
     <message>
         <source>UTXOs</source>
-        <translation>UTXOs</translation>
+        <translation>UTXO</translation>
     </message>
 </context>
 <context>
@@ -705,7 +705,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnSankey</name>
     <message>
         <source>Export svg</source>
-        <translation>导出 SVG 文件</translation>
+        <translation>导出 SVG</translation>
     </message>
 </context>
 <context>
@@ -1110,7 +1110,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
         <source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>预估的矿工费用为：
+        <translation>预估矿工费用为：
 {fee}，即发送金额 {sent} 的 {percent}%</translation>
     </message>
     <name>FeeWarningBar</name>
@@ -1756,7 +1756,7 @@ Do you want to proceed anyway?</source>
     <name>LinkingWarningBar</name>
     <message>
         <source>{category} (in wallet {wallet_ids})</source>
-        <translation>{category}（在钱包 {wallet_ids} 中）  </translation>
+        <translation>{category}（在钱包 {wallet_ids} 中）</translation>
     </message>
 </context>
 <context>
@@ -2413,7 +2413,7 @@ Do you want to hide to tray instead?</source>
     <name>MyTreeView</name>
     <message>
         <source>Copy as csv</source>
-        <translation>另存为 CSV</translation>
+        <translation>复制为 CSV</translation>
     </message>
     <name>MyTreeView</name>
     <message>
@@ -2689,7 +2689,7 @@ import custom wallet</source>
     <name>NewWalletWelcomeScreen</name>
     <message>
         <source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-        <translation>若丢失或被盗 1 个助记词备份，您可以使用剩余的 2 个助记词和对应的钱包描述符（二维码）备份将所有资金转移至新的钱包</translation>
+        <translation>如果丢失或被盗 1 个助记词备份，您可以使用剩余的 2 个助记词和对应的钱包描述符（二维码）备份将所有资金转移至新的钱包</translation>
     </message>
     <name>NewWalletWelcomeScreen</name>
     <message>
@@ -3213,7 +3213,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <message>
         <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-        <translation>钱包 &apos;{wallet}&apos; 中有 {number} 笔新交易：{txs}</translation>
+        <translation>钱包 ‘{wallet}’ 中有 {number} 笔新的交易：
+{txs}</translation>
     </message>
 </context>
 <context>
@@ -3561,7 +3562,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <message>
         <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-        <translation>将备份纸上的{number}个单词与硬件签名器进行比较。如果您在这里犯错，您的钱将丢失！  </translation>
+        <translation>将钱包恢复表上的 {number} 个单词（助记词）与硬件签名器上显示的进行核对。
+若在此处出错，您的钱就打水漂了！</translation>
     </message>
 </context>
 <context>
@@ -4160,7 +4162,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
     <message>
         <source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-        <translation>请将矿工费率调整为至少 {minimum}，否则您可能无法广播交易。</translation>
+        <translation>请将矿工费率调整为至少 {minimum}，
+否则您可能无法广播交易。</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4423,12 +4426,12 @@ Or you can broadcast via {url}</source>
     <name>UntrustedDeviceItem</name>
     <message>
         <source>Trust</source>
-        <translation>信任  </translation>
+        <translation>受信任的</translation>
     </message>
     <name>UntrustedDeviceItem</name>
     <message>
         <source>Trust this device</source>
-        <translation>信任此设备  </translation>
+        <translation>信任这台设备</translation>
     </message>
 </context>
 <context>
@@ -4440,7 +4443,7 @@ Or you can broadcast via {url}</source>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Could not verify the download. Please try again later.</source>
-        <translation>无法验证下载，请稍后再试  </translation>
+        <translation>无法验证下载，请稍后重试。</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
@@ -4455,12 +4458,12 @@ Or you can broadcast via {url}</source>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Signature doesn&apos;t match!!! Please try again.</source>
-        <translation>签名不匹配，请重试  </translation>
+        <translation>签名不匹配！！！请重试。</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Signature verified.</source>
-        <translation>签名已验证  </translation>
+        <translation>签名已验证。</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
@@ -4472,7 +4475,7 @@ Or you can broadcast via {url}</source>
     <name>UtxoListWithToolbar</name>
     <message>
         <source>{amount} selected ({number} UTXOs)</source>
-        <translation>{amount} 已选 ({number} UTXOs)  </translation>
+        <translation>{amount} 已选择 ({number} 个 UTXO)</translation>
     </message>
 </context>
 <context>
@@ -4687,7 +4690,7 @@ Or you can broadcast via {url}</source>
     <name>WalletIdDialog</name>
     <message>
         <source>The wallet {filename} exists already.</source>
-        <translation>钱包 {filename} 已经存在。  </translation>
+        <translation>钱包 {filename} 已经存在。</translation>
     </message>
     <name>WalletIdDialog</name>
     <message>
@@ -4709,7 +4712,7 @@ Or you can broadcast via {url}</source>
     <name>WalletLabelAndCategoryEdit</name>
     <message>
         <source>Enter label for transaction</source>
-        <translation>输入交易标签  </translation>
+        <translation>为交易输入标签</translation>
     </message>
 </context>
 <context>
@@ -6012,7 +6015,7 @@ to speed up the confirmation.</source>
     <name>utxo_list</name>
     <message>
         <source>Copy as csv</source>
-        <translation>另存为 CSV</translation>
+        <translation>复制为 CSV</translation>
     </message>
     <name>utxo_list</name>
     <message>
