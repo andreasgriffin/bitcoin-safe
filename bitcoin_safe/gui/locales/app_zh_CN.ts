@@ -3633,7 +3633,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignAndVerifyMessage</name>
     <message>
         <source>ASCII armored message is required.</source>
-        <translation>需要 ASCII 加密消息。</translation>
+        <translation>需要 ASCII 铠装消息。</translation>
     </message>
     <name>SignAndVerifyMessage</name>
     <message>
@@ -3653,7 +3653,7 @@ If you make a mistake here, your money is lost!</source>
     <name>SignAndVerifyMessage</name>
     <message>
         <source>Armored message is valid.</source>
-        <translation>装甲消息有效。</translation>
+        <translation>铠装消息有效。</translation>
     </message>
     <name>SignAndVerifyMessage</name>
     <message>
@@ -5270,22 +5270,22 @@ Or you can broadcast via {url}</source>
     <name>net_conf</name>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>使用 &quot;bitcoind -chain=regtest&quot; 运行您的bitcoind</translation>
+        <translation>使用 &quot;bitcoind -chain=regtest&quot; 命令来运行您的 bitcoind</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
-        <translation>使用 &quot;bitcoind -chain=signet&quot; 运行您的bitcoind，但这和mutinynet.com的signet不同。</translation>
+        <translation>使用 “bitcoind -chain=signet” 命令来运行您的 bitcoind。但这与 mutinynet.com 的 signet 不同。</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
-        <translation>使用 &quot;bitcoind -chain=test&quot; 运行您的bitcoind</translation>
+        <translation>使用 &quot;bitcoind -chain=test&quot; 命令来运行您的 bitcoind</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
-        <translation>请使用 “bitcoind -chain=testnet4” 命令来运行您的 bitcoind</translation>
+        <translation>使用 “bitcoind -chain=testnet4” 命令来运行您的 bitcoind</translation>
     </message>
     <name>net_conf</name>
     <message>
@@ -5296,7 +5296,8 @@ Or you can broadcast via {url}</source>
     <message>
         <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-        <translation>服务器可以将您的IP地址与钱包地址关联。最好使用您自己的服务器，如 {link}。</translation>
+        <translation>该服务器能够将您的 IP 地址与钱包地址关联起来。
+建议使用您自己的服务器，例如：{link}。</translation>
     </message>
     <name>net_conf</name>
     <message>
@@ -5306,34 +5307,34 @@ It is best to use your own server, such as {link}.</source>
     <name>net_conf</name>
     <message>
         <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>您可以连接您自己的比特币节点，如 {link}。</translation>
+        <translation>您可以连接到自己的比特币节点，例如：{link}。</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-        <translation>你可以在 {server} 上设置 {electrum} 与一个区块浏览器在 {explorer}  </translation>
+        <translation>您可以在 {server} 上设置 {electrum}，配置一个 Electrum 服务器，并在 {explorer} 上设置一个区块浏览器。</translation>
     </message>
     <name>net_conf</name>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-        <translation>您可以在 {server} 上设置 {setup}，并在 {explorer} 上设置一个esplora服务器</translation>
+        <translation>您可以在 {server} 上设置 {setup} 的 esplora 服务器，并在 {explorer} 上设置区块浏览器。</translation>
     </message>
 </context>
 <context>
     <name>network_config</name>
     <message>
         <source>{cbf_connections} bitcoin nodes via {server_type}</source>
-        <translation>{cbf_connections} 个比特币节点，通过 {server_type}</translation>
+        <translation>通过 {server_type} 连接到 {cbf_connections} 个比特币节点</translation>
     </message>
     <name>network_config</name>
     <message>
         <source>{server_name}</source>
-        <translation>{server_name}  </translation>
+        <translation>{server_name}</translation>
     </message>
     <name>network_config</name>
     <message>
         <source>{server_name} via the proxy {proxy}</source>
-        <translation>通过代理 {proxy} 的 {server_name}  </translation>
+        <translation>通过代理 {proxy} 访问 {server_name}</translation>
     </message>
 </context>
 <context>
@@ -5408,12 +5409,12 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Balance Statement of &quot;{id}&quot;</source>
-        <translation>&quot;{id}&quot; 的余额报表  </translation>
+        <translation>“{id}” 的账户对账单</translation>
     </message>
     <name>pdf</name>
     <message>
         <source>Balance Statement of {id}</source>
-        <translation>{id} 的余额报表  </translation>
+        <translation>{id} 的账户对账单</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5423,7 +5424,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Created at {date} with</source>
-        <translation>创建于 {date}，由</translation>
+        <translation>创建于 {date}，使用</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5433,7 +5434,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Cut out the labels below and attach each one to the matching hardware signer.</source>
-        <translation>剪下下面的标签，并将每一个附加到相应的硬件签名器。</translation>
+        <translation>剪下下方的标签，并将每个标签附加到对应的硬件签名器上。</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5443,7 +5444,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Hardware signer labels for wallet &quot;{wallet_id}&quot;</source>
-        <translation>钱包“{wallet_id}”的硬件签名器标签</translation>
+        <translation>用于钱包 “{wallet_id}” 的硬件签名器标签</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5453,7 +5454,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
-        <translation>标签同步备份密钥：{label_sync_nsec}  </translation>
+        <translation>标签同步备份密钥：{label_sync_nsec}</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5513,7 +5514,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>UR QR</source>
-        <translation>UR QR</translation>
+        <translation>UR 二维码</translation>
     </message>
     <name>pdf</name>
     <message>
@@ -5533,7 +5534,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>{title}: Fragment {index} of {total}</source>
-        <translation>{title}: 第 {index} 个，共 {total} 个</translation>
+        <translation>{title}：第 {index} 片，共 {total} 片</translation>
     </message>
 </context>
 <context>
@@ -5585,7 +5586,7 @@ Click here to learn more.</source>
     <name>pgp</name>
     <message>
         <source>Public key is revoked.</source>
-        <translation>公钥已被吊销。</translation>
+        <translation>公钥已被撤销。</translation>
     </message>
     <name>pgp</name>
     <message>
@@ -5605,7 +5606,7 @@ Click here to learn more.</source>
     <name>pgp</name>
     <message>
         <source>Weak PGP hash algorithm.</source>
-        <translation>弱 PGP 哈希算法。</translation>
+        <translation>弱的 PGP 哈希算法。</translation>
     </message>
     <name>pgp</name>
     <message>
@@ -5620,7 +5621,7 @@ Click here to learn more.</source>
     <name>pgp</name>
     <message>
         <source>{t} not a PGPSignature</source>
-        <translation>{t} 不是 PGPSignature</translation>
+        <translation>{t} 不是 PGP 签名</translation>
     </message>
 </context>
 <context>
@@ -5652,21 +5653,21 @@ Click here to learn more.</source>
     <name>plugins</name>
     <message>
         <source>View the wallet&apos;s multisig threshold (m-of-n) configuration.</source>
-        <translation>查看钱包的多重签名阈值（m-of-n）配置。</translation>
+        <translation>查看钱包的多重签名阈值（n/m）配置。</translation>
     </message>
 </context>
 <context>
     <name>recipients</name>
     <message>
         <source>Address Already Used</source>
-        <translation>地址已被使用</translation>
+        <translation>该地址已被使用</translation>
     </message>
 </context>
 <context>
     <name>signatures</name>
     <message>
         <source>Address does not match recovered public key.</source>
-        <translation>地址与恢复的公钥不匹配。</translation>
+        <translation>该地址与恢复公钥不匹配。</translation>
     </message>
     <name>signatures</name>
     <message>
@@ -5696,12 +5697,12 @@ Click here to learn more.</source>
     <name>signatures</name>
     <message>
         <source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
-        <translation>消息周围有空白。修剪消息后验证成功。</translation>
+        <translation>消息周围有空白字符。在修剪空白字符后消息验证成功。</translation>
     </message>
     <name>signatures</name>
     <message>
         <source>Message is not valid BIP-0137 armored text.</source>
-        <translation>消息不是有效的 BIP-0137 装甲文本。</translation>
+        <translation>该消息不是有效的 BIP-0137 铠装文本。</translation>
     </message>
     <name>signatures</name>
     <message>
@@ -5711,7 +5712,7 @@ Click here to learn more.</source>
     <name>signatures</name>
     <message>
         <source>Signature header byte is invalid.</source>
-        <translation>签名字节头无效。</translation>
+        <translation>签名头字节无效。</translation>
     </message>
     <name>signatures</name>
     <message>
@@ -5726,12 +5727,12 @@ Click here to learn more.</source>
     <name>signatures</name>
     <message>
         <source>Signature must use a compressed public key for SegWit addresses.</source>
-        <translation>签名必须针对 SegWit 地址使用压缩公钥。</translation>
+        <translation>签名为原生 SegWit 地址必须使用压缩的公钥。</translation>
     </message>
     <name>signatures</name>
     <message>
         <source>Signature must use a compressed public key for nested SegWit addresses.</source>
-        <translation>签名必须针对嵌套 SegWit 地址使用压缩公钥。</translation>
+        <translation>签名为嵌套 SegWit 地址必须使用压缩的公钥。</translation>
     </message>
     <name>signatures</name>
     <message>
@@ -5756,12 +5757,12 @@ Click here to learn more.</source>
     <name>signatures</name>
     <message>
         <source>Unsupported bech32 witness program length.</source>
-        <translation>不支持的 bech32 witness 程序长度。</translation>
+        <translation>不支持的 bech32 见证程序长度。</translation>
     </message>
     <name>signatures</name>
     <message>
         <source>Unsupported bech32 witness version.</source>
-        <translation>不支持的 bech32 witness 版本。</translation>
+        <translation>不支持的 bech32 见证版本。</translation>
     </message>
 </context>
 <context>
@@ -5773,7 +5774,7 @@ Click here to learn more.</source>
     <name>tutorial</name>
     <message>
         <source>Never share the {number} secret words with anyone!</source>
-        <translation>永远不要与任何人分享 {number} 个秘密词！</translation>
+        <translation>永远不要与任何人分享这 {number} 个单词（助记词）！</translation>
     </message>
     <name>tutorial</name>
     <message>
@@ -5790,7 +5791,7 @@ Click here to learn more.</source>
     <name>tx</name>
     <message>
         <source>Speedup of {txid}</source>
-        <translation>对交易 {txid} 进行加速</translation>
+        <translation>加速交易 {txid}</translation>
     </message>
 </context>
 <context>
@@ -5881,42 +5882,42 @@ to speed up the confirmation.</source>
     <name>util</name>
     <message>
         <source>about 1 day ago</source>
-        <translation>大约1天前</translation>
+        <translation>大约 1 天前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 hour ago</source>
-        <translation>大约1小时前</translation>
+        <translation>大约 1 小时前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 month ago</source>
-        <translation>大约1个月前</translation>
+        <translation>大约 1 个月前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 year ago</source>
-        <translation>大约1年前</translation>
+        <translation>大约 1 年前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} days ago</source>
-        <translation>大约{}天前</translation>
+        <translation>大约 {} 天前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} hours ago</source>
-        <translation>大约{}小时前</translation>
+        <translation>大约 {} 小时前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} minutes ago</source>
-        <translation>大约{}分钟前</translation>
+        <translation>大约 {} 分钟前</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} months ago</source>
-        <translation>大约{}个月前</translation>
+        <translation>大约 {} 个月前</translation>
     </message>
     <name>util</name>
     <message>
