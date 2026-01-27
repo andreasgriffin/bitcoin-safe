@@ -4535,7 +4535,7 @@ Or you can broadcast via {url}</source>
     <name>WalletGraphClient</name>
     <message>
         <source>Export graph…</source>
-        <translation>导出图表…</translation>
+        <translation>导出图表……</translation>
     </message>
     <name>WalletGraphClient</name>
     <message>
@@ -4555,7 +4555,7 @@ Or you can broadcast via {url}</source>
     <name>WalletGraphClient</name>
     <message>
         <source>Full txid</source>
-        <translation>完整 txid</translation>
+        <translation>完整交易 ID</translation>
     </message>
     <name>WalletGraphClient</name>
     <message>
@@ -4672,7 +4672,7 @@ Or you can broadcast via {url}</source>
     <name>WalletIdDialog</name>
     <message>
         <source>Please choose a wallet name</source>
-        <translation>请选择一个钱包名称  </translation>
+        <translation>请选择一个钱包名称</translation>
     </message>
     <name>WalletIdDialog</name>
     <message>
@@ -4706,7 +4706,7 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source> and </source>
-        <translation>和</translation>
+        <translation> 和 </translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4716,32 +4716,32 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>Backup Seed</source>
-        <translation>备份助记词种子</translation>
+        <translation>备份助记词</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Buy hardware signers</source>
-        <translation>购买硬件签名器  </translation>
+        <translation>购买硬件签名器</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Generate Seed</source>
-        <translation>生成助记词种子</translation>
+        <translation>生成助记词</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Import signer info</source>
-        <translation>导入签名器信息</translation>
+        <translation>导入硬件签名器信息</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Label the hardware signers</source>
-        <translation>标记硬件签名器  </translation>
+        <translation>标记硬件签名器</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Put in secure locations</source>
-        <translation>放在安全位置</translation>
+        <translation>存放在安全地点</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4751,7 +4751,7 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>Register multisig on signers</source>
-        <translation>在签名器上注册多签</translation>
+        <translation>在硬件签名器上注册多重签名</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4771,12 +4771,12 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>Sign with {label}</source>
-        <translation>使用{label}签名</translation>
+        <translation>使用 {label} 签名</translation>
     </message>
     <name>Wizard</name>
     <message>
         <source>Sync &amp; Chat</source>
-        <translation>同步 &amp; 聊天  </translation>
+        <translation>同步与聊天</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4792,7 +4792,7 @@ Or you can broadcast via {url}</source>
     <name>Wizard</name>
     <message>
         <source>The wallet is not funded. Please fund the wallet.</source>
-        <translation>钱包未获资金。请为钱包充值。</translation>
+        <translation>此钱包尚未注资。请为此钱包注资。</translation>
     </message>
     <name>Wizard</name>
     <message>
@@ -4816,22 +4816,22 @@ Or you can broadcast via {url}</source>
     <name>XpubAnalyzer</name>
     <message>
         <source>Converting format</source>
-        <translation>转换格式  </translation>
+        <translation>格式转换</translation>
     </message>
     <name>XpubAnalyzer</name>
     <message>
         <source>Invalid xpub</source>
-        <translation>无效xpub  </translation>
+        <translation>无效的 xpub</translation>
     </message>
     <name>XpubAnalyzer</name>
     <message>
         <source>Missing xPub</source>
-        <translation>缺少xPub  </translation>
+        <translation>缺失 xPub</translation>
     </message>
     <name>XpubAnalyzer</name>
     <message>
         <source>The xpub is in SLIP132 format. Converting to standard format.</source>
-        <translation>xpub采用SLIP132格式。转换为标准格式。</translation>
+        <translation>该 xpub 采用了 SLIP132 格式。正在转换为标准格式。</translation>
     </message>
 </context>
 <context>
@@ -4875,12 +4875,12 @@ Or you can broadcast via {url}</source>
     <name>address_list</name>
     <message>
         <source>Funded</source>
-        <translation>已资助</translation>
+        <translation>已注资</translation>
     </message>
     <name>address_list</name>
     <message>
         <source>Funded or Unused</source>
-        <translation>已资助或未使用</translation>
+        <translation>已注资或未使用</translation>
     </message>
     <name>address_list</name>
     <message>
@@ -4919,69 +4919,69 @@ Or you can broadcast via {url}</source>
     <name>bitcoin_usb</name>
     <message>
         <source>Executing the script</source>
-        <translation>执行脚本  </translation>
+        <translation>执行脚本</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>Install udev files</source>
-        <translation>安装udev文件  </translation>
+        <translation>安装 udev 文件</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>No HWI AddressType could be found for {name}</source>
-        <translation>找不到{name}的HWI地址类型  </translation>
+        <translation>无法为 {name} 找到 HWI 地址类型</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>No USB devices found</source>
-        <translation>未发现USB设备  </translation>
+        <translation>未检测到任何 USB 设备</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>No suitable terminal emulator found.</source>
-        <translation>未找到合适的终端仿真器。  </translation>
+        <translation>未找到合适的终端仿真器。</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-        <translation>密钥起源{key_origin}的网络部分{network_str}必须用h强化  </translation>
+        <translation>密钥来源 {key_origin} 的网络部分 {network_str} 必须使用一个 h 来强化处理。</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>USB Devices</source>
-        <translation>USB设备  </translation>
+        <translation>USB 设备</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-        <translation>由于缺失udev文件，可能会出现USB错误。您现在想安装udev文件吗？  </translation>
+        <translation>USB 错误可能由缺少 udev 文件导致。您是否要立即安装 udev 文件？</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>Unknown network/coin type {network_str} in {key_origin}</source>
-        <translation>在{key_origin}中未知的网络/币种类型{network_str}  </translation>
+        <translation>未知网络/币种类型 {network_str} 在 {key_origin} 中</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>derivation_path {value} must start with a /</source>
-        <translation>推导路径{value}必须以/开始  </translation>
+        <translation>派生路径 {value} 必须以 “/” 开头</translation>
     </message>
     <name>bitcoin_usb</name>
     <message>
         <source>{value} is not a valid fingerprint</source>
-        <translation>{value}不是有效的指纹  </translation>
+        <translation>{value} 不是有效的指纹</translation>
     </message>
 </context>
 <context>
     <name>category</name>
     <message>
         <source>Add Category</source>
-        <translation>添加分类</translation>
+        <translation>添加类别</translation>
     </message>
     <name>category</name>
     <message>
         <source>Category name:</source>
-        <translation>分类名称：</translation>
+        <translation>类别名称：</translation>
     </message>
     <name>category</name>
     <message>
@@ -4991,49 +4991,49 @@ Or you can broadcast via {url}</source>
     <name>category</name>
     <message>
         <source>Enter new category name...</source>
-        <translation>输入新的分类名称...</translation>
+        <translation>输入新类别名称……</translation>
     </message>
     <name>category</name>
     <message>
         <source>Merge Categories</source>
-        <translation>合并分类</translation>
+        <translation>合并类别</translation>
     </message>
     <name>category</name>
     <message>
         <source>New category name:</source>
-        <translation>新的分类名称：</translation>
+        <translation>新类别名称：</translation>
     </message>
     <name>category</name>
     <message>
         <source>Rename Category</source>
-        <translation>重命名分类</translation>
+        <translation>重命名类别</translation>
     </message>
     <name>category</name>
     <message>
         <source>Resulting category:</source>
-        <translation>合并后的分类：</translation>
+        <translation>合并后的类别：</translation>
     </message>
 </context>
 <context>
     <name>constant</name>
     <message>
         <source>All files (*)</source>
-        <translation>所有文件 (*)  </translation>
+        <translation>所有文件 (*)</translation>
     </message>
     <name>constant</name>
     <message>
         <source>Complete Transaction (*.txn)</source>
-        <translation>完整交易 (*.txn)  </translation>
+        <translation>完整交易 (*.txn)</translation>
     </message>
     <name>constant</name>
     <message>
         <source>Partial Transaction (*.psbt)</source>
-        <translation>部分交易 (*.psbt)  </translation>
+        <translation>部分交易 (*.psbt)</translation>
     </message>
     <name>constant</name>
     <message>
         <source>Transaction (*.txn *.psbt);;All files (*)</source>
-        <translation>交易 (*.txn *.psbt);;所有文件 (*)  </translation>
+        <translation>交易 (*.txn *.psbt);;所有文件 (*)</translation>
     </message>
 </context>
 <context>
@@ -5050,7 +5050,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Create PDF</source>
-        <translation>创建PDF</translation>
+        <translation>创建 PDF</translation>
     </message>
     <name>d</name>
     <message>
@@ -5075,7 +5075,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>Recovery</source>
-        <translation>恢复  </translation>
+        <translation>恢复</translation>
     </message>
     <name>d</name>
     <message>
@@ -5100,7 +5100,7 @@ Or you can broadcast via {url}</source>
     <name>d</name>
     <message>
         <source>{} copied to Clipboard</source>
-        <translation>{}已复制到剪贴板</translation>
+        <translation>{} 已复制到剪贴板</translation>
     </message>
 </context>
 <context>
@@ -5165,7 +5165,7 @@ Or you can broadcast via {url}</source>
     <name>help</name>
     <message>
         <source>Help</source>
-        <translation>帮助  </translation>
+        <translation>帮助</translation>
     </message>
 </context>
 <context>
@@ -5187,12 +5187,12 @@ Or you can broadcast via {url}</source>
     <name>hist_list</name>
     <message>
         <source>Funded</source>
-        <translation>已资助</translation>
+        <translation>已注资</translation>
     </message>
     <name>hist_list</name>
     <message>
         <source>Funded or Unused</source>
-        <translation>已资助或未使用</translation>
+        <translation>已注资或未使用</translation>
     </message>
     <name>hist_list</name>
     <message>
@@ -5214,7 +5214,7 @@ Or you can broadcast via {url}</source>
     <name>import</name>
     <message>
         <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-        <translation>请转到同步选项卡并在那里导入您的同步密钥。然后标签将自动恢复。  </translation>
+        <translation>请前往同步选项卡，并在那里导入您的同步密钥。标签将自动恢复。</translation>
     </message>
 </context>
 <context>
@@ -5226,19 +5226,19 @@ Or you can broadcast via {url}</source>
     <name>importer</name>
     <message>
         <source>Import file</source>
-        <translation>导入文件  </translation>
+        <translation>导入文件</translation>
     </message>
 </context>
 <context>
     <name>mytreeview</name>
     <message>
         <source>Export as CSV</source>
-        <translation>导出为CSV</translation>
+        <translation>导出为 CSV</translation>
     </message>
     <name>mytreeview</name>
     <message>
         <source>Type to filter</source>
-        <translation>输入以过滤</translation>
+        <translation>输入以筛选</translation>
     </message>
     <name>mytreeview</name>
     <message>
@@ -5250,7 +5250,7 @@ Or you can broadcast via {url}</source>
     <name>net_conf</name>
     <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-        <translation>一个（有时有效的）服务器是 {link} 和一个区块浏览器在 {explorer}。这里有一个 {faucet}。  </translation>
+        <translation>一个（时有时无）的服务器地址为 {link}，区块浏览器位于 {explorer}。另有一个 {faucet}。</translation>
     </message>
     <name>net_conf</name>
     <message>
@@ -5356,7 +5356,10 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-        <translation>被动监听比特币 p2p 流量（就像一个比特币节点），  以便立即检测新广播的交易。这不会泄露你的钱包任何信息。点击这里了解更多。</translation>
+        <translation>被动监听比特币点对点流量（就像一个比特币节点），
+即时检测新广播的交易。
+这不会泄露你的钱包的任何信息。
+点击此处了解详情。</translation>
     </message>
 </context>
 <context>
@@ -5469,7 +5472,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-        <translation>重新扫描此钱包时，请至少扫描至地址索引 {max_tip}，以发现所有已注资金的地址。</translation>
+        <translation>重新扫描此钱包时，请至少扫描至地址索引 {max_tip}，以发现所有已注资的地址。</translation>
     </message>
     <name>pdf</name>
     <message>
