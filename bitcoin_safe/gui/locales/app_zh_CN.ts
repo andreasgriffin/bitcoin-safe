@@ -58,7 +58,7 @@
     <name>AddCategoryButton</name>
     <message>
         <source>KYC Exchange, Private, ...</source>
-        <translation>需要身份验证的交易所，私密的，……</translation>
+        <translation>KYC 交易所，私密的，……</translation>
     </message>
 </context>
 <context>
@@ -471,7 +471,7 @@
     <name>CPFPIcon</name>
     <message>
         <source>CPFP with this fee rate</source>
-        <translation>以此费率执行 CPFP</translation>
+        <translation>以此矿工费率执行 CPFP</translation>
     </message>
 </context>
 <context>
@@ -649,12 +649,12 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnFee</name>
     <message>
         <source>Confirming...</source>
-        <translation>确认中...</translation>
+        <translation>确认中……</translation>
     </message>
     <name>ColumnFee</name>
     <message>
         <source>Mempool Fees</source>
-        <translation>Mempool 费用</translation>
+        <translation>Mempool 矿工费率</translation>
     </message>
     <name>ColumnFee</name>
     <message>
@@ -983,7 +983,7 @@ Default 20</source>
     <name>EditWithFeeIcon</name>
     <message>
         <source>Edit with this fee rate</source>
-        <translation>以此费率编辑</translation>
+        <translation>以此矿工费率编辑</translation>
     </message>
 </context>
 <context>
@@ -1041,26 +1041,26 @@ Default 20</source>
     <name>FeeGroup</name>
     <message>
         <source>Approximate rate</source>
-        <translation>大致费率</translation>
+        <translation>大致矿工费率</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-        <translation>手续费率无法精确得知，
+        <translation>矿工费率无法精确得知，
 因为交易的最终大小尚不明确。</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
 Click to learn more about CPFP (Child Pays For Parent).</source>
-        <translation>此交易有 {number} 笔未确认的父交易，总手续费率为 {parents_fee_rate}。
+        <translation>此交易有 {number} 笔未确认的父交易，总矿工费率为 {parents_fee_rate}。
 点击以了解更多有关 CPFP（子为父偿）机制的详情。</translation>
     </message>
     <name>FeeGroup</name>
     <message>
         <source>Transaction fee rate</source>
-        <translation>交易费率</translation>
+        <translation>矿工费率</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -1068,7 +1068,7 @@ Click to learn more about CPFP (Child Pays For Parent).</source>
 with a new transaction if it has a higher fee rate.
 Click here to learn more about RBF (Replace-by-Fee).</source>
         <translation>您可以通过广播新的交易以替换先前广播的交易
-前提是新交易的手续费更高。
+前提是新交易的矿工费率更高。
 点击此处了解更多有关 RBF（费用替换）的详情。</translation>
     </message>
     <name>FeeGroup</name>
@@ -1096,7 +1096,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
     <name>FeeRateWarningBar</name>
     <message>
         <source>The high priority mempool fee rate is {rate}</source>
-        <translation>高优先级 mempool 费率为 {rate}</translation>
+        <translation>高优先级的 mempool 矿工费率为 {rate}</translation>
     </message>
 </context>
 <context>
@@ -1110,14 +1110,14 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
         <source>The estimated transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>预估的交易费用为：
+        <translation>预估的矿工费用为：
 {fee}，即发送金额 {sent} 的 {percent}%</translation>
     </message>
     <name>FeeWarningBar</name>
     <message>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-        <translation>交易费用为：
+        <translation>矿工费用为：
 {fee}，并已发送 {sent}！</translation>
     </message>
     <name>FeeWarningBar</name>
@@ -1125,7 +1125,7 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, which is {percent}% of
 the sending value {sent}</source>
-        <translation>交易费用为：
+        <translation>矿工费用为：
 {fee}，即发送金额 {sent} 的 {percent}%</translation>
     </message>
     <name>FeeWarningBar</name>
@@ -3244,7 +3244,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>RBFIcon</name>
     <message>
         <source>RBF with this fee rate</source>
-        <translation>以此费率进行 RBF（费用替换）</translation>
+        <translation>以此矿工费率进行 RBF（费用替换）</translation>
     </message>
 </context>
 <context>
@@ -3515,7 +3515,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
     <name>SankeyBitcoin</name>
     <message>
         <source>Fee</source>
-        <translation>费用</translation>
+        <translation>矿工费用</translation>
     </message>
 </context>
 <context>
@@ -4108,7 +4108,8 @@ Signatures:
     <message>
         <source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-        <translation>可在 {rate} 以下  添加更多输入以整合 UTXO 并降低未来费用</translation>
+        <translation>可在 {rate} 下方添加额外的输入 
+以合并 UTXO 并降低未来的矿工费用</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4118,7 +4119,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
     <name>UITx_Creator</name>
     <message>
         <source>Change fee rate</source>
-        <translation>更改手续费率</translation>
+        <translation>更改矿工费率</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4133,12 +4134,12 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
     <name>UITx_Creator</name>
     <message>
         <source>Fee rate too low</source>
-        <translation>手续费率过低</translation>
+        <translation>矿工费率太低</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
         <source>Keep fee rate</source>
-        <translation>保持手续费率</translation>
+        <translation>保持矿工费率</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4149,7 +4150,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
     <message>
         <source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-        <translation>请将手续费率调整为至少 {minimum}，否则您可能无法广播交易。</translation>
+        <translation>请将矿工费率调整为至少 {minimum}，否则您可能无法广播交易。</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4173,7 +4174,7 @@ txid:outpoint
     <name>UITx_Creator</name>
     <message>
         <source>Reduce future fees by merging UTXOs below {rate}</source>
-        <translation>通过合并低于 {rate} 的 UTXO 降低未来费用</translation>
+        <translation>通过合并低于 {rate} 的 UTXO 来降低未来的矿工费用</translation>
     </message>
     <name>UITx_Creator</name>
     <message>
@@ -4550,7 +4551,7 @@ Or you can broadcast via {url}</source>
     <name>WalletGraphClient</name>
     <message>
         <source>Fee</source>
-        <translation>费用</translation>
+        <translation>矿工费用</translation>
     </message>
     <name>WalletGraphClient</name>
     <message>
@@ -4630,7 +4631,7 @@ Or you can broadcast via {url}</source>
     <name>WalletGraphClient</name>
     <message>
         <source>Unknown fee</source>
-        <translation>未知费用</translation>
+        <translation>未知矿工费用</translation>
     </message>
     <name>WalletGraphClient</name>
     <message>
