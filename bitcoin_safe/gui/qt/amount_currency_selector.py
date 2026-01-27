@@ -28,9 +28,11 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 import bdkpython as bdk
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QCheckBox, QHBoxLayout, QWidget
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.currency_combobox import CurrencyComboBox, CurrencyGroup, CurrencyGroupFormatting
@@ -174,3 +176,91 @@ class AmountCurrencySelector(QWidget):
 
         amount, currency = self.amount_and_current_iso()
         self.amountChanged.emit(amount, currency)
+
+
+if __name__ == "__main__":
+    import sys
+
+    from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget
+
+    from bitcoin_safe.config import UserConfig
+
+    class DemoWindow(QMainWindow):
+        def __init__(self) -> None:
+            """Simple test harness for the AmountCurrencySelector widget."""
+            super().__init__()
+
+            # minimal FX setup with static rates so the demo works offline
+            self.config = UserConfig()
+            self.config.currency = "USD"
+            # Updated 27 January 2026 close-enough spot rates (1 BTC -> fiat)
+            self.config.rates = {
+                "BTC": {"name": "Bitcoin", "unit": "BTC", "value": 1.0, "type": "crypto"},
+                "USD": {"name": "US Dollar", "unit": "USD", "value": 88_230.0, "type": "fiat"},
+                "EUR": {"name": "Euro", "unit": "EUR", "value": 74_210.0, "type": "fiat"},
+                "GBP": {"name": "British Pound Sterling", "unit": "GBP", "value": 64_330.0, "type": "fiat"},
+            }
+
+            self.fx = FX(config=self.config, loop_in_thread=None, update_rates=False)
+            self.signals = Signals()
+
+            container = QWidget()
+            self._layout = QVBoxLayout(container)
+
+            self.auto_checkbox = QCheckBox(self.tr("Auto convert between fiat currencies"))
+            self.auto_checkbox.setChecked(True)
+            self.auto_checkbox.stateChanged.connect(self._rebuild_selector)
+            self._layout.addWidget(self.auto_checkbox)
+
+            self.selector: AmountCurrencySelector | None = None
+            self.label = QLabel("Enter an amount or change the currency.")
+
+            # build initial selector
+            self.selector = self._rebuild_selector()
+
+            self._layout.addWidget(self.label)
+            self._layout.addStretch()
+
+            self.setCentralWidget(container)
+            self.setWindowTitle("AmountCurrencySelector Demo")
+            self.resize(520, 200)
+
+            # preload demo values
+            self.selector.set_amount(50_000, "BTC")
+
+        def on_amount_changed(self, amount: object, currency: str) -> None:
+            """Update helper label when the selector changes."""
+            fiat_amount = cast(float, amount)
+            if FX.is_btc(currency, network=self.config.network):
+                btc_amount = int(fiat_amount)
+                fiat_value = self.fx.btc_to_fiat(btc_amount, currency=self.config.currency)
+                fiat_display = self.fx.fiat_to_str(fiat_value) if fiat_value is not None else "?"
+                self.label.setText(f"{btc_amount} sats ({currency}) ≈ {fiat_display}")
+            else:
+                self.label.setText(f"{fiat_amount:,.2f} {currency}")
+
+        def _rebuild_selector(self) -> AmountCurrencySelector:
+            """Recreate the selector when the auto-convert toggle changes."""
+            previous_amount: int | float = 50_000
+            previous_unit = "BTC"
+            if self.selector is not None:
+                previous_amount, previous_unit = self.selector.amount_and_current_iso()
+                self.selector.setParent(None)
+                self.selector.deleteLater()
+
+            self.selector = AmountCurrencySelector(
+                network=self.config.network,
+                fx=self.fx,
+                signals=self.signals,
+                auto_fiat_conversions=self.auto_checkbox.isChecked(),
+            )
+            self.selector.amountChanged.connect(self.on_amount_changed)
+            # Ensure selector is first widget under the checkbox
+            self._layout.insertWidget(1, self.selector)
+            self.selector.set_amount(previous_amount, previous_unit)
+            return self.selector
+
+    app = QApplication(sys.argv)
+    window = DemoWindow()
+    window.show()
+    sys.exit(app.exec())
