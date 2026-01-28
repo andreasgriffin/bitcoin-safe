@@ -1074,7 +1074,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
     <name>FeeGroup</name>
     <message>
         <source>in ~{n}. Block</source>
-        <translation>大约在 {n} 个区块</translation>
+        <translation>大约在 {n} 个区块内</translation>
     </message>
     <name>FeeGroup</name>
     <message>
@@ -1732,12 +1732,12 @@ Do you want to proceed anyway?</source>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} hours</source>
-        <translation>大约在 {t} 个小时</translation>
+        <translation>大约在 {t} 个小时内</translation>
     </message>
     <name>LabelTimeEstimation</name>
     <message>
         <source>~in {t} min</source>
-        <translation>大约在 {t} 分钟</translation>
+        <translation>大约在 {t} 分钟内</translation>
     </message>
 </context>
 <context>
@@ -5938,42 +5938,42 @@ to speed up the confirmation.</source>
     <name>util</name>
     <message>
         <source>in about 1 day</source>
-        <translation>在大约 1 天</translation>
+        <translation>在大约 1 天内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 hour</source>
-        <translation>在大约 1 个小时</translation>
+        <translation>在大约 1 个小时内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 month</source>
-        <translation>在大约 1 个月</translation>
+        <translation>在大约 1 个月内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 year</source>
-        <translation>在大约 1 年</translation>
+        <translation>在大约 1 年内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} days</source>
-        <translation>在大约 {} 天</translation>
+        <translation>在大约 {} 天内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} hours</source>
-        <translation>在大约 {} 个小时</translation>
+        <translation>在大约 {} 个小时内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} minutes</source>
-        <translation>在大约 {} 分钟</translation>
+        <translation>在大约 {} 分钟内</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} months</source>
-        <translation>在大约 {} 个月</translation>
+        <translation>在大约 {} 个月内</translation>
     </message>
     <name>util</name>
     <message>
