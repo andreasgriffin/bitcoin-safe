@@ -642,7 +642,9 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             amount = sum(selected_values)
             self.balance_label.setText(
                 self.tr("{amount} selected ({number} UTXOs)").format(
-                    amount=Satoshis(amount, network=self.config.network).str_with_unit(),
+                    amount=Satoshis(amount, network=self.config.network).str_with_unit(
+                        btc_symbol=self.config.bitcoin_symbol.value
+                    ),
                     number=len(selected_values),
                 )
             )

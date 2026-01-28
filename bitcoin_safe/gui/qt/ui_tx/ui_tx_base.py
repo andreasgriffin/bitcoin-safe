@@ -165,7 +165,9 @@ class UITx_Base(SearchableTab):
         self.high_fee_rate_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_rate_warning_label)
 
-        self.high_fee_warning_label = FeeWarningBar(network=self.config.network)
+        self.high_fee_warning_label = FeeWarningBar(
+            network=self.config.network, btc_symbol=self.fx.config.bitcoin_symbol.value
+        )
         self.high_fee_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_warning_label)
 

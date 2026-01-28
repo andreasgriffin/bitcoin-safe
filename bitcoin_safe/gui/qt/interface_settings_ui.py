@@ -30,7 +30,9 @@ from __future__ import annotations
 
 import logging
 
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from PyQt6.QtWidgets import (
+    QComboBox,
     QFormLayout,
     QLabel,
     QWidget,
@@ -74,12 +76,21 @@ class InterfaceSettingsUi(QWidget):
             formatting=CurrencyGroupFormatting.Full,
         )
 
+        # 2b) Bitcoin symbol
+        self.bitcoin_symbol_combo = QComboBox(self)
+        self.bitcoin_symbol_combo.addItem(BitcoinSymbol.ISO.value, BitcoinSymbol.ISO)
+        self.bitcoin_symbol_combo.addItem(BitcoinSymbol.UNICODE.value, BitcoinSymbol.UNICODE)
+        idx = self.bitcoin_symbol_combo.findData(self.config.bitcoin_symbol.value)
+        self.bitcoin_symbol_combo.setCurrentIndex(idx if idx >= 0 else 0)
+
         # 3) Layout
         form = QFormLayout(self)
         self.label_language = QLabel("")
         self.label_currency = QLabel("")
+        self.label_bitcoin_symbol = QLabel("")
         form.addRow(self.label_language, self.language_combo)
         form.addRow(self.label_currency, self.currency_combo)
+        form.addRow(self.label_bitcoin_symbol, self.bitcoin_symbol_combo)
 
         # 4) initial selection
         self.data_updated()
@@ -88,6 +99,7 @@ class InterfaceSettingsUi(QWidget):
         self.fx.signal_data_updated.connect(self.data_updated)
         self.language_combo.currentIndexChanged.connect(self._on_language_changed)
         self.currency_combo.currentIndexChanged.connect(self._on_currency_changed)
+        self.bitcoin_symbol_combo.currentIndexChanged.connect(self._on_bitcoin_symbol_changed)
 
     def data_updated(self):
         """Data updated."""
@@ -108,7 +120,14 @@ class InterfaceSettingsUi(QWidget):
         """On language changed."""
         self.language_chooser.switchLanguage(self.language_combo.itemData(idx))
 
+    def _on_bitcoin_symbol_changed(self, _idx: int):
+        """On bitcoin symbol changed."""
+        symbol = self.bitcoin_symbol_combo.currentData()
+        self.config.bitcoin_symbol = symbol or BitcoinSymbol.ISO
+        self.language_chooser.signals_currency_switch.emit()
+
     def updateUi(self):
         """UpdateUi."""
         self.label_language.setText("Language")
         self.label_currency.setText("Currency")
+        self.label_bitcoin_symbol.setText("Bitcoin symbol")

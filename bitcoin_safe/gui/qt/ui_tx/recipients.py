@@ -35,7 +35,7 @@ from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_safe_lib.gui.qt.satoshis import unit_sat_str, unit_str
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, unit_sat_str
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
@@ -119,12 +119,16 @@ class RecipientWidget(QWidget):
 
         self.amount_layout = QHBoxLayout()
         language_switch = cast(SignalProtocol[[]], self.wallet_functions.signals.language_switch)
-        self.amount_spin_box = BTCSpinBox(network=network, signal_language_switch=language_switch)
+        self.amount_spin_box = BTCSpinBox(
+            network=network,
+            signal_language_switch=language_switch,
+            btc_symbol=self.wallet_functions.signals.get_btc_symbol() or BitcoinSymbol.ISO.value,
+        )
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
         amount_analyzer.max_amount = int(21e6 * 1e8)
         self.amount_spin_box.setAnalyzer(amount_analyzer)
-        self.label_unit = QLabel(unit_str(network=network))
+        self.label_unit = QLabel(self.fx.config.bitcoin_symbol.value if self.fx else BitcoinSymbol.ISO.value)
         self.send_max_checkbox = QCheckBox()
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.send_max_checkbox.clicked), self.on_send_max_button_click
@@ -414,7 +418,11 @@ class RecipientBox(QWidget):
 
         set_margins(self._layout, {Qt.Edge.TopEdge: 0, Qt.Edge.LeftEdge: 0, Qt.Edge.RightEdge: 0})
         self.recipient_widget = RecipientWidget(
-            wallet_functions=wallet_functions, network=network, allow_edit=allow_edit, parent=self, fx=fx
+            wallet_functions=wallet_functions,
+            network=network,
+            allow_edit=allow_edit,
+            parent=self,
+            fx=fx,
         )
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.notification_bar = NotificationBarRecipient(

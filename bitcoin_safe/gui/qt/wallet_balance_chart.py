@@ -40,7 +40,7 @@ from typing import cast
 
 import bdkpython as bdk
 import numpy as np
-from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
 from PyQt6.QtCharts import (
@@ -125,6 +125,7 @@ class TrackingChartView(QChartView):
         line_series: QLineSeries,
         highlight_series: QScatterSeries,
         network: bdk.Network,
+        btc_symbol: str,
         highlight_radius=150,
         parent: QWidget | None = None,
         show_tooltip=False,
@@ -139,6 +140,7 @@ class TrackingChartView(QChartView):
         self.highlight_radius = highlight_radius
         self.network = network
         self.show_tooltip = show_tooltip
+        self.btc_symbol = btc_symbol
 
     def to_float(self, v: float | QDateTime) -> float:
         """To float."""
@@ -202,7 +204,7 @@ class TrackingChartView(QChartView):
         if self.show_tooltip:
             date_str = QDateTime.fromMSecsSinceEpoch(int(nearest_qt.x())).toString("d MMM yy  HH:mm")
             value_str = Satoshis(value=int(nearest_qt.y() * 1e8), network=self.network).str_with_unit(
-                color_formatting=None
+                color_formatting=None, btc_symbol=self.btc_symbol
             )
             QToolTip.showText(
                 event.globalPosition().toPoint(), f"{value_str} on {date_str}", self, self.rect()
@@ -246,6 +248,7 @@ class BalanceChart(QWidget):
     def __init__(
         self,
         network: bdk.Network,
+        btc_symbol: str,
         y_axis_text="Balance",
         highlight_radius=150,
         parent: QWidget | None = None,
@@ -333,6 +336,7 @@ class BalanceChart(QWidget):
             highlight_series=self.highlight_series,
             network=network,
             highlight_radius=highlight_radius,
+            btc_symbol=btc_symbol,
         )
         self._layout.addWidget(self.chart_view)
 
@@ -458,7 +462,11 @@ class WalletBalanceChart(BalanceChart):
     ) -> None:
         """Initialize instance."""
         super().__init__(
-            network=wallet.network, y_axis_text="", parent=parent, highlight_radius=highlight_radius
+            network=wallet.network,
+            y_axis_text="",
+            parent=parent,
+            highlight_radius=highlight_radius,
+            btc_symbol=wallet.config.bitcoin_symbol.value,
         )
         self.value_axis.setLabelFormat("%.2f")
         self.wallet = wallet
@@ -488,7 +496,7 @@ class WalletBalanceChart(BalanceChart):
 
     def updateUi(self) -> None:
         """UpdateUi."""
-        self.y_axis_text = self.tr("Balance ({unit})").format(unit=unit_str(self.wallet.network))
+        self.y_axis_text = self.tr("Balance ({unit})").format(unit=self.wallet.config.bitcoin_symbol.value)
 
         # self.datetime_axis.setTitleText(self.tr("Date"))
         # self.value_axis.setTitleText(self.y_axis_text)
@@ -546,7 +554,7 @@ class TransactionSimulator(QMainWindow):
         ]
 
         # Create BalanceChart
-        self.chart = BalanceChart(network=bdk.Network.REGTEST)
+        self.chart = BalanceChart(network=bdk.Network.REGTEST, btc_symbol="tBTC")
         self.setCentralWidget(self.chart)
 
         # QTimer to simulate incoming transactions

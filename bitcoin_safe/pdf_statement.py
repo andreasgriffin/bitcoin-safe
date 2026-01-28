@@ -35,7 +35,7 @@ from typing import Any
 import bdkpython as bdk
 import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
-from bitcoin_safe_lib.gui.qt.satoshis import Satoshis, unit_str
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_usb.address_types import DescriptorInfo
 from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
@@ -106,6 +106,9 @@ class PdfStatement(BasePDF):
         """Initialize instance."""
         super().__init__(lang_code=lang_code)
         self.network = network
+        self.bitcoin_symbol = (
+            BitcoinSymbol.ISO.value
+        )  # fixed symbol to not get unicode issues in pdfs (with asian fonts)
 
     @property
     def TEXT_24_WORDS(self):
@@ -203,7 +206,7 @@ class PdfStatement(BasePDF):
                 header=[
                     translate("pdf", "Category"),
                     translate("pdf", "Address"),
-                    translate("pdf", "Balance") + f" [{unit_str(self.network)}]",
+                    translate("pdf", "Balance") + f" [{self.bitcoin_symbol}]",
                 ],
                 styles=[self.style_paragraph_left, self.style_paragraph_left, self.style_paragraph_right],
             )
@@ -344,14 +347,20 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
                 category,
                 address,
                 Satoshis(value=amount, network=wallet.network).format(
-                    color_formatting="rich", show_unit=False, unicode_space_character=False
+                    color_formatting="rich",
+                    show_unit=False,
+                    unicode_space_character=False,
+                    btc_symbol=BitcoinSymbol.ISO.value,  # fixed symbol to not get unicode issues in pdfs (with asian fonts)
                 ),
             )
             for category, address, amount in addresses_and_balances
         ],
         threshold=info.threshold,
         total_amount=Satoshis(value=total_amount, network=wallet.network).format(
-            color_formatting="rich", show_unit=False, unicode_space_character=False
+            color_formatting="rich",
+            show_unit=False,
+            unicode_space_character=False,
+            btc_symbol=BitcoinSymbol.ISO.value,  # fixed symbol to not get unicode issues in pdfs (with asian fonts)
         ),
         max_tip=max_tip,
         label_sync_nsec=label_sync_nsec,

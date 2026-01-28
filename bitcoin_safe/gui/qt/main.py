@@ -224,6 +224,7 @@ class MainWindow(QMainWindow):
         self.signals.evict_txs_from_wallet_id.connect(self.apply_evicted_txs)
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
+        self.signals.get_btc_symbol.connect(self.get_btc_symbol)
 
         self.settings = Settings(
             config=self.config, signals=self.signals, fx=self.fx, language_chooser=self.language_chooser
@@ -331,6 +332,10 @@ class MainWindow(QMainWindow):
     def get_mempool_url(self) -> str:
         """Get mempool url."""
         return self.config.network_config.mempool_url
+
+    def get_btc_symbol(self) -> str:
+        """Get mempool url."""
+        return self.config.bitcoin_symbol.value
 
     def get_network(self) -> bdk.Network:
         """Get network."""

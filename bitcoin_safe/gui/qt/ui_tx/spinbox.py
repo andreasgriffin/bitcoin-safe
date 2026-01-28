@@ -299,10 +299,13 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
 class BTCSpinBox(AnalyzerSpinBox):
     "A Satoshi Spin Box.  The value stored is in Satoshis."
 
-    def __init__(self, network: bdk.Network, signal_language_switch: SignalProtocol[[]], parent=None) -> None:
+    def __init__(
+        self, network: bdk.Network, signal_language_switch: SignalProtocol[[]], btc_symbol: str, parent=None
+    ) -> None:
         """Initialize instance."""
         super().__init__(parent)
         self.network = network
+        self.btc_symbol = btc_symbol
         self._is_max = False
         self.setDecimals(0)  # Set the number of decimal places
         self.setRange(0, 21e6 * 1e8)  # Define range as required
@@ -339,7 +342,7 @@ class BTCSpinBox(AnalyzerSpinBox):
         """ValueFromText."""
         if self._is_max:
             return 0
-        return Satoshis.from_btc_str(text if text else "0", self.network).value
+        return Satoshis.from_btc_str(text if text else "0", self.network, btc_symbol=self.btc_symbol).value
 
     def validate(self, input: str | None, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
         """Validate."""
@@ -396,13 +399,16 @@ if __name__ == "__main__":
     layout = QFormLayout(window)
 
     # — your spin‑boxes —
-    btc_spin = BTCSpinBox(network=bdk.Network.REGTEST, signal_language_switch=fx.signal_data_updated)
+    btc_spin = BTCSpinBox(
+        network=bdk.Network.REGTEST, signal_language_switch=fx.signal_data_updated, btc_symbol="BTC"
+    )
     fiat_spin = FiatSpinBox(
         fx=fx,
         signal_currency_changed=fx.signal_data_updated,
         signal_language_switch=fx.signal_data_updated,
         include_currrency_symbol=True,
     )
+    btc_symbol = config.bitcoin_symbol.value
 
     # — locale selector —
     locale_combo = QComboBox()
@@ -455,9 +461,9 @@ if __name__ == "__main__":
     # — assemble form —
     layout.addRow("Locale:", locale_combo)
     layout.addRow("Currency:", currency_combo)
-    layout.addRow("BTC Amount:", btc_spin)
+    layout.addRow(f"{btc_symbol} Amount:", btc_spin)
     layout.addRow("Fiat Amount:", fiat_spin)
 
-    window.setWindowTitle("BTC / Fiat SpinBox Tester")
+    window.setWindowTitle(f"{btc_symbol} / Fiat SpinBox Tester")
     window.show()
     sys.exit(app.exec())

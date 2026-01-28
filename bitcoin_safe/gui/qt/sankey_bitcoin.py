@@ -32,7 +32,7 @@ import logging
 import platform
 
 import bdkpython as bdk
-from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtGui import QColor
 
@@ -151,8 +151,13 @@ class SankeyBitcoin(SankeyWidget):
 
             if value is not None:
                 # if count<10 :
-                display_label += Satoshis(value, self.network).str_with_unit(color_formatting=None)
-                tooltip += Satoshis(value, self.network).str_with_unit()
+                display_label += Satoshis(value, self.network).str_with_unit(
+                    color_formatting=None,
+                    btc_symbol=self.wallet_functions.signals.get_btc_symbol() or BitcoinSymbol.ISO.value,
+                )
+                tooltip += Satoshis(value, self.network).str_with_unit(
+                    btc_symbol=self.wallet_functions.signals.get_btc_symbol() or BitcoinSymbol.ISO.value
+                )
 
             if connect_right:
                 display_label += f" {right_arrow}"
@@ -301,7 +306,11 @@ class SankeyBitcoin(SankeyWidget):
             flow_index = FlowIndex(FlowType.OutFlow, i=len(self.txouts))
             labels[flow_index] = self.tr("Fee")
             tooltips[flow_index] = html_f(
-                labels[flow_index] + "<br>" + Satoshis(fee, self.network).str_with_unit(),
+                labels[flow_index]
+                + "<br>"
+                + Satoshis(fee, self.network).str_with_unit(
+                    btc_symbol=self.wallet_functions.signals.get_btc_symbol() or BitcoinSymbol.ISO.value
+                ),
                 add_html_and_body=True,
             )
 

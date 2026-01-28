@@ -65,7 +65,11 @@ class AmountCurrencySelector(QWidget):
         self._layout.setSpacing(8)
         selected_currency = self.fx.get_currency_iso()
 
-        self.btc_spin = BTCSpinBox(network=network, signal_language_switch=signals.language_switch)
+        self.btc_spin = BTCSpinBox(
+            network=network,
+            signal_language_switch=signals.language_switch,
+            btc_symbol=fx.config.bitcoin_symbol.value,
+        )
         self.fiat_spin = FiatSpinBox(
             fx=fx,
             signal_currency_changed=signals.currency_switch,

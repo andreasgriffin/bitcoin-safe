@@ -448,7 +448,9 @@ class HistList(MyTreeView[str]):
 
         labels = [""] * len(self.Columns)
         labels[self.Columns.WALLET_ID] = wallet.id
-        labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).str_as_change()
+        labels[self.Columns.AMOUNT] = Satoshis(amount, wallet.network).str_as_change(
+            btc_symbol=self.config.bitcoin_symbol.value
+        )
 
         labels[self.Columns.BALANCE] = str(Satoshis(new_balance, wallet.network))
         labels[self.Columns.TXID] = tx.txid
@@ -899,7 +901,9 @@ class HistListWithToolbar(TreeViewWithToolbar):
         super().updateUi()
         if self.balance_label:
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
-            self.balance_label.setText(balance_total.format_as_balance())
+            self.balance_label.setText(
+                balance_total.format_as_balance(btc_symbol=self.config.bitcoin_symbol.value)
+            )
         self.action_export_pdf_statement.setText(self.tr("&Generate PDF balance Statement"))
 
     def _set_progress_info(self, progress_info: ProgressInfo) -> None:

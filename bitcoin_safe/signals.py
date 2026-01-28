@@ -291,6 +291,7 @@ class Signals(SignalsMin):
         super().__init__()
         self.get_network = SingularSignalFunction[bdk.Network](name="get_network")
         self.get_mempool_url = SingularSignalFunction[str](name="get_mempool_url")
+        self.get_btc_symbol = SingularSignalFunction[str](name="get_btc_symbol")
 
 
 class WalletFunctions:

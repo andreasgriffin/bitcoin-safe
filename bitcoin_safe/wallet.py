@@ -2094,7 +2094,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             # if the fee is too low bdk will throw an exception here
             psbt = tx_builder.finish(self.bdkwallet)
         except bdk.CreateTxError.FeeRateTooLow as e:
-            fee = Satoshis(value=int(e.required), network=self.network).str_with_unit(color_formatting=None)
+            fee = Satoshis(value=int(e.required), network=self.network).str_with_unit(
+                color_formatting=None, btc_symbol=self.config.bitcoin_symbol.value
+            )
             raise Exception(f"Fee below the allowed minimum fee = {fee}") from e
         except Exception as e:
             raise e

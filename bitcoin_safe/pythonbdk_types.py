@@ -607,10 +607,10 @@ class Balance(QObject, SaveAllClass):
         summed = {key: self.__dict__[key] + other.__dict__[key] for key in self.__dict__.keys()}
         return self.__class__(**summed)
 
-    def format_long(self, network: bdk.Network) -> str:
+    def format_long(self, network: bdk.Network, btc_symbol: str) -> str:
         """Format long."""
         details = [
-            f"{title}: {Satoshis(value, network=network).str_with_unit()}"
+            f"{title}: {Satoshis(value, network=network).str_with_unit(btc_symbol=btc_symbol)}"
             for title, value in [
                 (self.tr("Confirmed"), self.confirmed),
                 (
@@ -623,9 +623,9 @@ class Balance(QObject, SaveAllClass):
         long = "\n".join(details)
         return long
 
-    def format_short(self, network: bdk.Network) -> str:
+    def format_short(self, network: bdk.Network, btc_symbol: str) -> str:
         """Format short."""
-        short = Satoshis(value=self.total, network=network).format_as_balance()
+        short = Satoshis(value=self.total, network=network).format_as_balance(btc_symbol=btc_symbol)
 
         return short
 
