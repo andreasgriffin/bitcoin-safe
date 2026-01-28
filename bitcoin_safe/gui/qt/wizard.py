@@ -969,7 +969,9 @@ class ReceiveTest(BaseTab):
         if utxos:
             Message(
                 self.tr("Balance = {amount}").format(
-                    amount=Satoshis(utxos[0].txout.value, self.refs.qt_wallet.wallet.network).str_with_unit()
+                    amount=Satoshis(utxos[0].txout.value, self.refs.qt_wallet.wallet.network).str_with_unit(
+                        btc_symbol=self.refs.qtwalletbase.config.bitcoin_symbol.value
+                    )
                 )
             )
         return utxos
@@ -1075,7 +1077,9 @@ class ReceiveTest(BaseTab):
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
-        test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit()
+        test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit(
+            btc_symbol=self.refs.qtwalletbase.config.bitcoin_symbol.value
+        )
         self.label_receive_description.setText(
             html_f(
                 self.tr(

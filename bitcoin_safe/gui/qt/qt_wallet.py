@@ -598,7 +598,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def update_display_balance(self):
         """Update display balance."""
         balance_total = Satoshis(self.wallet.get_balance().total, self.config.network)
-        self.balance_label.setText(balance_total.str_with_unit())
+        self.balance_label.setText(balance_total.str_with_unit(btc_symbol=self.config.bitcoin_symbol.value))
         self.fiat_value_label.setText(self.fx.btc_to_fiat_str(amount=balance_total.value))
         self._update_fiat_price_tooltip()
 
@@ -972,7 +972,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """Format txs for notification."""
         return "\n".join(
             [
-                f"  {Satoshis(tx.received - tx.sent, self.config.network).str_as_change(unit=True)}"
+                f"  {Satoshis(tx.received - tx.sent, self.config.network).str_as_change(unit=True, btc_symbol=self.config.bitcoin_symbol.value)}"
                 for tx in txs
             ]
         )

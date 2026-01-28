@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import bdkpython as bdk
 import pytest
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.fx import FX
@@ -144,7 +145,11 @@ def test_conversions(
         "ZAR": {"name": "South African Rand", "type": "fiat", "unit": "R", "value": 1544539.739},
         "ZMW": {"name": "Zambian Kwacha", "type": "fiat", "unit": "ZK", "value": 2100588.488},
     }
-    btc_spin = BTCSpinBox(network=bdk.Network.REGTEST, signal_language_switch=fx.signal_data_updated)
+    btc_spin = BTCSpinBox(
+        network=bdk.Network.REGTEST,
+        signal_language_switch=fx.signal_data_updated,
+        btc_symbol=BitcoinSymbol.ISO.value,
+    )
     fiat_spin = FiatSpinBox(
         fx=fx,
         signal_currency_changed=fx.signal_data_updated,

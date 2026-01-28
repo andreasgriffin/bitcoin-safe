@@ -35,7 +35,7 @@ from functools import partial
 from typing import Protocol
 
 import bdkpython as bdk
-from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtGui import QBrush, QColor, QPen, QTextCharFormat, QTextCursor
@@ -249,7 +249,10 @@ class UtxoEllipseItem(QGraphicsEllipseItem):
     ) -> UtxoEllipseItem:
         """Create output."""
         radius = cls._radius_for_value(python_utxo.value, max_utxo_value, min_radius, max_radius)
-        label_text = Satoshis(python_utxo.value, network).str_with_unit(color_formatting=None)
+        label_text = Satoshis(python_utxo.value, network).str_with_unit(
+            color_formatting=None,
+            btc_symbol=wallet.config.bitcoin_symbol.value if wallet else BitcoinSymbol.ISO.value,
+        )
         ellipse = cls(
             detail.txid,
             python_utxo.is_spent_by_txid,
@@ -686,7 +689,12 @@ class TransactionItem(QGraphicsRectItem):
             parent=self,
         )
 
-        tooltip = self._transaction_tooltip(detail, timestamp, network)
+        tooltip = self._transaction_tooltip(
+            detail,
+            timestamp,
+            network,
+            btc_symbol=wallet.config.bitcoin_symbol.value if wallet else BitcoinSymbol.ISO.value,
+        )
         label_tooltip = f"{detail.txid}\n{label_value}" if label_value else detail.txid
         if ENABLE_WALLET_GRAPH_TOOLTIPS:
             self.setToolTip(tooltip)
@@ -849,13 +857,17 @@ class TransactionItem(QGraphicsRectItem):
         return label_value, display_label
 
     @staticmethod
-    def _transaction_tooltip(detail: FullTxDetail, timestamp: datetime.datetime, network: bdk.Network) -> str:
+    def _transaction_tooltip(
+        detail: FullTxDetail, timestamp: datetime.datetime, network: bdk.Network, btc_symbol: str
+    ) -> str:
         """Transaction tooltip."""
         abbreviated = short_tx_id(detail.txid)
-        sent = Satoshis(detail.tx.sent, network).str_with_unit(color_formatting=None)
-        received = Satoshis(detail.tx.received, network).str_with_unit(color_formatting=None)
+        sent = Satoshis(detail.tx.sent, network).str_with_unit(color_formatting=None, btc_symbol=btc_symbol)
+        received = Satoshis(detail.tx.received, network).str_with_unit(
+            color_formatting=None, btc_symbol=btc_symbol
+        )
         fee = (
-            Satoshis(detail.tx.fee, network).str_with_unit(color_formatting=None)
+            Satoshis(detail.tx.fee, network).str_with_unit(color_formatting=None, btc_symbol=btc_symbol)
             if detail.tx.fee is not None
             else translate("WalletGraphClient", "Unknown fee")
         )

@@ -1075,8 +1075,12 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             balance = Balance()
             for wallet in self.address_list.wallets.values():
                 balance += wallet.get_balance()
-            self.balance_label.setText(balance.format_short(self.config.network))
-            self.balance_label.setToolTip(balance.format_long(self.config.network))
+            self.balance_label.setText(
+                balance.format_short(self.config.network, btc_symbol=self.config.bitcoin_symbol.value)
+            )
+            self.balance_label.setToolTip(
+                balance.format_long(self.config.network, btc_symbol=self.config.bitcoin_symbol.value)
+            )
 
     def _mine_to_selected_addresses(self) -> None:
         """Mine to selected addresses."""

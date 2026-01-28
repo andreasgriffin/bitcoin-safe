@@ -119,7 +119,9 @@ class CurrencySection(QWidget):
                 l1.setText(fiat)
                 l1_currency.setText(fiat_symbol)
 
-            btc_amount, btc_symbol = Satoshis(amount, network=self.network).format_splitted()
+            btc_amount, btc_symbol = Satoshis(amount, network=self.network).format_splitted(
+                btc_symbol=self.fx.config.bitcoin_symbol.value
+            )
 
             l2.setText(btc_amount)
             l2_currency.setText(btc_symbol)

@@ -121,7 +121,7 @@ class FeeRateWarningBar(NotificationBar):
 
 
 class FeeWarningBar(NotificationBar):
-    def __init__(self, network: bdk.Network) -> None:
+    def __init__(self, network: bdk.Network, btc_symbol: str) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
@@ -129,6 +129,7 @@ class FeeWarningBar(NotificationBar):
             has_close_button=False,
         )
         self.network = network
+        self.btc_symbol = btc_symbol
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
@@ -157,12 +158,16 @@ class FeeWarningBar(NotificationBar):
             # the == 0 case is relevant
             self.setVisible(force_show_fee_warning_on_0_amont)
             title = self.tr("{sent} is sent!").format(
-                sent=Satoshis(total_non_change_output_amount, network=network).str_with_unit()
+                sent=Satoshis(total_non_change_output_amount, network=network).str_with_unit(
+                    btc_symbol=self.btc_symbol
+                )
             )
             description = html_f(
                 self.tr("The transaction fee is:\n{fee}, and {sent} is sent!").format(
-                    fee=Satoshis(fee_info.fee_amount, network).str_with_unit(),
-                    sent=Satoshis(total_non_change_output_amount, network=network).str_with_unit(),
+                    fee=Satoshis(fee_info.fee_amount, network).str_with_unit(btc_symbol=self.btc_symbol),
+                    sent=Satoshis(total_non_change_output_amount, network=network).str_with_unit(
+                        btc_symbol=self.btc_symbol
+                    ),
                 ),
                 add_html_and_body=True,
             )
@@ -182,9 +187,11 @@ class FeeWarningBar(NotificationBar):
                 else self.tr("The transaction fee is: {fee}, which is {percent}% of the sending value {sent}")
             )
             description = s.format(
-                fee=Satoshis(fee_info.fee_amount, network).str_with_unit(),
+                fee=Satoshis(fee_info.fee_amount, network).str_with_unit(btc_symbol=self.btc_symbol),
                 percent=round(fee_info.fee_amount / total_non_change_output_amount * 100),
-                sent=Satoshis(total_non_change_output_amount, self.network).str_with_unit(),
+                sent=Satoshis(total_non_change_output_amount, self.network).str_with_unit(
+                    btc_symbol=self.btc_symbol
+                ),
             )
             title = html_f(
                 self.tr("High fee ratio: {ratio}%.").format(

@@ -37,6 +37,7 @@ from typing import Any
 
 import appdirs
 import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from PyQt6.QtCore import QCoreApplication
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
@@ -63,8 +64,12 @@ RECENT_WALLET_MAXLEN = 15
 
 
 class UserConfig(BaseSaveableClass):
-    known_classes = {**BaseSaveableClass.known_classes, NetworkConfigs.__name__: NetworkConfigs}
-    VERSION = "0.2.6"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+        NetworkConfigs.__name__: NetworkConfigs,
+        BitcoinSymbol.__name__: BitcoinSymbol,
+    }
+    VERSION = "0.2.8"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -93,6 +98,7 @@ class UserConfig(BaseSaveableClass):
         }
         self.language_code: str = DEFAULT_LANG_CODE
         self.currency: str = "USD"
+        self.bitcoin_symbol: BitcoinSymbol = BitcoinSymbol.ISO
         self.rates: dict[str, dict[str, Any]] = {}
         self.last_tab_title: list[str] = []
         self.auto_label_change_addresses: bool = False
