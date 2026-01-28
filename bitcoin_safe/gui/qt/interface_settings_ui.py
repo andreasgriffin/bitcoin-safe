@@ -80,7 +80,7 @@ class InterfaceSettingsUi(QWidget):
         self.bitcoin_symbol_combo = QComboBox(self)
         self.bitcoin_symbol_combo.addItem(BitcoinSymbol.ISO.value, BitcoinSymbol.ISO)
         self.bitcoin_symbol_combo.addItem(BitcoinSymbol.UNICODE.value, BitcoinSymbol.UNICODE)
-        idx = self.bitcoin_symbol_combo.findData(self.config.bitcoin_symbol.value)
+        idx = self.bitcoin_symbol_combo.findData(self.config.bitcoin_symbol)
         self.bitcoin_symbol_combo.setCurrentIndex(idx if idx >= 0 else 0)
 
         # 3) Layout
