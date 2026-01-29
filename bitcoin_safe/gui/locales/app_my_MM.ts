@@ -465,8 +465,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>ဤ ကုန်ကျစရိတ်နှုန်းဖြင့် CPFP ပြုလုပ်ရန်</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>မိခင်အရောင်းအဝယ်ကို ဆွဲခေါ်ရန် ဤအခကြေးငွေဖြင့် သင့်အလှည့်ငွေကို အသုံးပြုပါ (CPFP)။ မိခင်+ကလေး ပေါင်းစပ်အခကြေးနှုန်းသည် ပစ်မှတ် ဘလော့ကို ကိုက်ညီရပါမည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -699,6 +700,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>svg ထုတ်ပို့ပါ  </translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>ဖီယတ်ငွေကြေးများအကြား အလိုအလျောက် ပြောင်းလဲခြင်း</translation>
 		</message>
 	</context>
 	<context>
@@ -1042,21 +1050,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>ဤ لین‌ဒ‌င်တွင် အတည်မပြုရသေးသော မိဘ لین‌ဒ‌င် {number} ခု ရှိပြီး စုစုပေါင်း ကုန်ကျစရိတ်နှုန်းမှာ {parents_fee_rate} ဖြစ်သည်။ CPFP (Child Pays For Parent) အကြောင်း ပိုမိုလေ့လာရန် နှိပ်ပါ။</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>လင်ဒင်း ကုန်ကျစရိတ်နှုန်း</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>ပိုမိုမြင့်မားသော ကုန်ကျစရိတ်နှုန်းရှိပါက ယခင် ထုတ်လွှင့်ထားသော لین‌ဒ‌င်ကို အသစ်ဖြင့် အစားထိုးနိုင်သည်။ RBF (Replace‑by‑Fee) အကြောင်း သိရန် ဤနေရာကို နှိပ်ပါ။</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1094,10 +1089,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>ခန့်မှန်းထားသောငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>ခန့်မှန်းထားသော အရောင်းအဝယ်အခကြေးမှာ {fee} ဖြစ်ပြီး ပို့ဆောင်သည့် တန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1107,10 +1100,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>ငွေလွှဲခကြေးနန်းမှာ: {fee} ဖြစ်ပြီးပို့ဆောင်သောတန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်။  </translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>အရောင်းအဝယ်အခကြေးမှာ {fee} ဖြစ်ပြီး ပို့ဆောင်သည့် တန်ဖိုး {sent} ၏ {percent}% ဖြစ်သည်</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2946,6 +2937,16 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>မအတည်ပြုထားသည့်အဖြစ် mempool ထဲသို့ ထည့်ပါ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>မအတည်ပြုထားသည့်အဖြစ် mempool ထဲသို့ ထည့်မလား။</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>လိပ်စာများ  </translation>
 		</message>
@@ -2992,6 +2993,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>ပယ်ဖျက်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>ပိုက်ဆံအိတ်သိမ်းပါ  </translation>
 		</message>
@@ -2999,6 +3005,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>စကားဝှက်ပြောင်းပါ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>ပြောင်းလဲမှုများ အသုံးချပြီးပါပြီ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3118,6 +3129,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>ဖယ်ရှားပါ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>မအတည်ပြုထားသည့် အရောင်းအဝယ်ကို ဖယ်ရှားမလား။</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>လင်ဒင်းများ သိမ်းရန်</translation>
 		</message>
@@ -3138,8 +3159,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>ဝေါလက် '{wallet}' အတွက် စင့်ခ် မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>{server} နှင့်ထပ်တူညီပါ  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>အရောင်းအဝယ်များ {} ကို mempool ထဲတွင် မအတည်ပြုထားသည့်အဖြစ်သာ ထည့်နိုင်ပါသည်။ မည်သို့ပင်ဖြစ်စေ ဆက်လုပ်မလား။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3147,6 +3181,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>ဤသည်မှာ ဤဝေါလက်မြင်ကွင်းမှသာ အရောင်းအဝယ်ကို ဖယ်ရှားပါမည်။ ၎င်းကို Bitcoin ကွန်ယက်သို့ ထုတ်လွှင့်ပြီးသားဖြစ်ပြီး အများအားဖြင့် အတည်ပြုခံရမည်ဖြစ်သည်။ သို့တိုင်အောင် ဝေါလက်မှ ဖယ်ရှားလိုပါသလား။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3212,8 +3253,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>ဤ ကုန်ကျစရိတ်နှုန်းဖြင့် RBF</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>ပြထားသော ပစ်မှတ်အမြန်နှုန်းဖြင့် အစားထိုး (RBF) အရောင်းအဝယ် တည်ဆောက်ရန် ဤအခကြေးကို အသုံးပြုပါ။ ထွက်ပေါက်များသည် အတူတူပင်ဖြစ်ပြီး အခကြေးသာ ပြောင်းလဲသည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -3842,8 +3884,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>ရှိပြီးသား ကီးကို ထိန်းသိမ်းပါ</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>ကွန်ပျူတာအသစ် တွေ့ရှိခဲ့သည်</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3857,6 +3909,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>Sync key ပြန်စတင်ပါ  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>Sync &amp; Chat  </translation>
 		</message>
@@ -3867,8 +3924,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>ဤဝေါလက်ကို နောက်ဆုံးအကြိမ် အခြားကွန်ပျူတာတွင် အသုံးပြုခဲ့သည်။ နှစ်ခုလုံးကို ဆက်လက်အသုံးပြုလိုပါက Chat &amp; Sync စင့်ခ်ကီး (nsec) ကို ယခု ပြန်လည်သတ်မှတ်ပါ။</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>ပရိုတိုကော</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>ဤကွန်ပျူတာ</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5647,7 +5715,7 @@ Click here to learn more.</source>
 		<name>signatures</name>
 		<message>
 			<source>Message is not valid BIP-0137 armored text.</source>
-			<translation/>
+			<translation>အခကြေးပိုမြင့်စွာဖြင့် မူလအရောင်းအဝယ်ကို ဒေါဘယ်လ်စပင့် လုပ်ရန် ကြိုးစားသည်။ RBF အချက်ပြထားသော အရောင်းအဝယ်များတွင်သာ လုပ်ဆောင်ပြီး အောင်မြင်မည်ဟု အာမခံမထားပါ။</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -5756,25 +5824,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>Child-Pays-For-Parent သည် စောင့်ဆိုင်းနေသော အရောင်းအဝယ်၏ အလှည့်ငွေထွက်ပေါက်ကို အခကြေးပိုမြင့်စွာ အသုံးပြုပြီး နှစ်ခုလုံးကို ဘလော့တစ်ခုထဲသို့ ဆွဲခေါ်ပါသည်။ အသုံးပြုနိုင်သော အလှည့်ငွေထွက်ပေါက် ရှိပြီး ပေါင်းစပ်အခကြေးနှုန်းကို မြှင့်တင်ပါကသာ လုပ်ဆောင်ပါသည်။</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>အမည်မသိ  </translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent သည် အဟောင်း လင်ဒင်းနောက်သို့ လင်ဒင်းအသစ်တစ်ခု ထပ်ဆင့်တပ်မည်။ လင်ဒင်းနှစ်ခု၏ ပျမ်းမျှ ကုန်ကျစရိတ်နှုန်း များလုံလောက်ပါက နှစ်ခုစလုံး၏ အတည်ပြုမှု မြန်ဆန်စေပါသည်။</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>RBF ဖြင့် ဖျက်သိမ်းရာတွင်  သင့်ကို လက်ခံသူအဖြစ် သတ်မှတ်ပြီး ကုန်ကျစရိတ် မြင့်သည့် လင်ဒင်းအသစ်တစ်ခုကို ဖန်တီးကာ အဟောင်းကို အစားထိုးမည် ဖြစ်သည်။ ၎င်းအောင်မြင်မည်ဟု အာမခံချက် မရှိပါ!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>အခကြေးပိုမြင့်ဖြင့် အစားထိုးပါ (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5783,30 +5847,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>တည်းဖြတ် (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>ဤ လင်ဒင်း၏ အချက်အလက်များဖြင့် ပို့ရန် dialog ကို ကြိုတင်ဖြည့်ပါ။</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>ပိုမို မြန်ဆန်စေပါ (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>Replace-By-Fee သည် ဤအရောင်းအဝယ်၏ အခကြေးပိုမြင့်သည့် ဗားရှင်းအသစ်ကို ဖန်တီးသည်။ မူလအရောင်းအဝယ် မအတည်ပြုသေးချိန်တွင် အတည်ပြုမှုကို မြန်ဆန်စေရန် အသုံးပြုပါ။ မူလအရောင်းအဝယ်သည် RBF အချက်ပြရပြီး ဝေါလက်တွင် အလှည့်ငွေထွက်ပေါက် ရှိရပါမည်။</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee သည် အတည်ပြု زمانیမြန်စေရန် ကုန်ကျစရိတ်ပိုမိုမြင့်သော လင်ဒင်းအသစ်ကို ဖန်တီးသည်။</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>ကလေးဖြင့် မြန်ဆန်စေပါ (CPFP)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>ငွေလွှဲကိုဖျက်ပစ်ဖို့ကြိုးစားပါ (RBF)  </translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>ဒေါဘယ်လ်စပင့်ဖြင့် ပယ်ဖျက်ရန် ကြိုးစားပါ (RBF)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်သည် စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ မြှင့်တင်သောကြောင့် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေသည်။</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5922,6 +5986,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{} စက္ကန့် အကြာက</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်၏ အခကြေးသည် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေရန် အလွန်နိမ့်လွန်းပါသည်၊ အကြောင်းမှာ စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ လျှော့ချထားသောကြောင့် ဖြစ်သည်။ အနည်းဆုံး {parent_rate} ကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်၏ အခကြေးသည် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေရန် အလွန်နိမ့်လွန်းပါသည်၊ အကြောင်းမှာ စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ လျှော့ချထားသောကြောင့် ဖြစ်သည်။ အနည်းဆုံး {parent_rate} ကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>မအတည်ပြုထားသည့် မိခင်အရောင်းအဝယ်</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>မသိ</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>{number} မအတည်ပြုထားသည့် မိခင်အရောင်းအဝယ်များ</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

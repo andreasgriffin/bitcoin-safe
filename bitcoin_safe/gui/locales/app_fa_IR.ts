@@ -466,8 +466,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>CPFP با این نرخ کارمزد</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>با این کارمزد، باقی‌ماندهٔ خود را خرج کنید تا تراکنش والد را وارد بلاک کنید (CPFP). نرخ کارمزد ترکیبی والد+فرزند باید به بلاک هدف برسد.</translation>
 		</message>
 	</context>
 	<context>
@@ -700,6 +701,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>خروجی‌ SVG</translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>تبدیل خودکار بین ارزهای فیات</translation>
 		</message>
 	</context>
 	<context>
@@ -1043,21 +1051,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>این تراکنش دارای {number} تراکنش والدِ تأییدنشده است با مجموع نرخ کارمزد {parents_fee_rate}. برای آشنایی بیشتر با CPFP (Child Pays For Parent) کلیک کنید.</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>نرخ کارمزد تراکنش</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>اگر نرخ کارمزدِ بالاتری داشته باشد، می‌توانید تراکنش پخش‌شده‌ی قبلی را با یک تراکنش جدید جایگزین کنید. برای آشنایی بیشتر با RBF (Replace‑by‑Fee) اینجا کلیک کنید।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1095,10 +1090,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>کارمزد تخمینی تراکنش: {fee} است که برابر {percent}% از مبلغ ارسالی {sent} می‌باشد</translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>کارمزد تخمینی تراکنش برابر است با: {fee} که {percent}% از مقدار ارسال‌شده {sent} است</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1108,10 +1101,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>کارمزد تراکنش: {fee} است که برابر {percent}% از مبلغ ارسالی {sent} می‌باشد</translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>کارمزد تراکنش برابر است با: {fee} که {percent}% از مقدار ارسال‌شده {sent} است</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2948,6 +2939,16 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>افزودن به‌صورت تأییدنشده در mempool</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>افزودن به‌صورت تأییدنشده در mempool؟</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>آدرس‌ها</translation>
 		</message>
@@ -2994,6 +2995,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>لغو</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>نمی‌توان فایل کیف پول را جابه‌جا کرد؛ زیرا {file_path} وجود دارد</translation>
 		</message>
@@ -3001,6 +3007,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>تغییر گذرواژه</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>تغییرات اعمال شد.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,6 +3131,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>حذف</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>حذف تراکنش تأییدنشده؟</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>ذخیره تراکنش‌ها</translation>
 		</message>
@@ -3140,8 +3161,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>همگام‌سازی برای کیف‌پول '{wallet}' ناموفق بود.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>در حال همگام‌سازی با {server}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>تراکنش‌های {} فقط می‌توانند به‌صورت تأییدنشده در mempool افزوده شوند. با این حال ادامه می‌دهید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3149,6 +3183,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>این کار فقط تراکنش را از نمای این کیف‌پول حذف می‌کند. این تراکنش قبلاً به شبکهٔ بیت‌کوین پخش شده و احتمالاً همچنان تأیید خواهد شد. با این حال آن را از کیف‌پول حذف می‌کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3214,8 +3255,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>RBF با این نرخ کارمزد</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>از این کارمزد برای ساخت یک تراکنش جایگزین (RBF) با سرعت هدف نمایش‌داده‌شده استفاده کنید. خروجی‌ها ثابت می‌مانند؛ فقط کارمزد تغییر می‌کند.</translation>
 		</message>
 	</context>
 	<context>
@@ -3845,8 +3887,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>نگه‌داشتن کلید موجود</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>پشتیبان برچسب و همگام‌سازی رمزنگاری‌شده با دستگاه‌های مورد اعتماد</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>رایانهٔ جدید شناسایی شد</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3860,6 +3912,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>ریست‌ کردن کلید همگام‌سازی</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>همگام‌سازی و چت</translation>
 		</message>
@@ -3870,8 +3927,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>این کیف‌پول آخرین بار روی رایانهٔ دیگری استفاده شده است. اگر می‌خواهید به استفاده از هر دو ادامه دهید، لطفاً اکنون کلید همگام‌سازی Chat &amp; Sync (nsec) را بازنشانی کنید.</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>پروتکل</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>این رایانه</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5764,25 +5832,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>تلاش می‌کند تراکنش اصلی را با کارمزد بالاتر دوبار خرج کند. فقط برای تراکنش‌هایی که RBF را علامت می‌زنند کار می‌کند و موفقیت تضمین‌شده نیست.</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>موجودی: {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent، یک تراکنش جدید را به تراکنش قدیمی می‌افزاید. اگر نرخ کارمزد میانگینِ هر دو به اندازه کافی بالا باشد، تأیید هر دو سریع‌تر می‌شود.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>لغو با RBF، یک تراکنش جدید با شما به‌عنوان گیرنده و با کارمزدی بالاتر ایجاد می‌کند تا تراکنش قدیمی را جایگزین کند. هیچ تضمینی برای موفقیت وجود ندارد!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent با خرج‌کردن خروجی باقی‌ماندهٔ تراکنش در انتظار با کارمزد بالاتر، هر دو را به یک بلاک می‌کشد. فقط در صورتی کار می‌کند که خروجی باقی‌ماندهٔ در دسترس داشته باشید و نرخ ترکیبی را افزایش دهید.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5791,30 +5855,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>ویرایش (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>گفت‌وگوی ارسال را با اطلاعات این تراکنش از پیش پر کنید.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>پردازش سریع‌تر (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>جایگزینی با کارمزد بالاتر (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee، برای تسریع تأیید، تراکنش جدیدی با کارمزدی بالاتر ایجاد می‌کند.</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee نسخهٔ جدیدی از این تراکنش با کارمزد بالاتر ایجاد می‌کند. زمانی که تراکنش اصلی هنوز تأیید نشده است برای تسریع تأیید استفاده کنید. نیازمند علامت‌دادن RBF توسط تراکنش اصلی و داشتن خروجی باقی‌مانده توسط کیف‌پول است.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>تلاش برای لغو تراکنش (RBF)</translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>تسریع با فرزند (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>تلاش برای لغو با دوبار خرج کردن (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5930,6 +5994,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{} ثانیه پیش</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent: این تراکنش با افزایش نرخ کل کارمزد به {combined_rate}، تأیید {parent_str} را تسریع می‌کند.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent: کارمزد این تراکنش برای تسریع تأیید {parent_str} بسیار کم است، زیرا نرخ کل کارمزد را به {combined_rate} کاهش می‌دهد. حداقل {parent_rate} را انتخاب کنید.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee: این تراکنش، تراکنش {txid} را با نرخ کارمزد {rate_org} جایگزین می‌کند. کارمزدی بالاتر از حداقل نرخ {rate_min} انتخاب کنید.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>تراکنش والدِ تأییدنشده</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>نامشخص</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} تراکنش والدِ تأییدنشده</translation>
 		</message>
 	</context>
 	<context>

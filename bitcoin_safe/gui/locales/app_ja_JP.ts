@@ -465,8 +465,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>この手数料率でCPFP</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>この手数料でお釣りを使い、親トランザクションを引き込みます（CPFP）。親＋子の合算手数料率は目標ブロックを満たす必要があります。</translation>
 		</message>
 	</context>
 	<context>
@@ -699,6 +700,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>SVGをエクスポート  </translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>法定通貨間の自動変換</translation>
 		</message>
 	</context>
 	<context>
@@ -1042,21 +1050,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>この取引には未承認の親が {number} 件あり、合計手数料率は {parents_fee_rate} です。CPFP（Child Pays For Parent）について詳しくはクリックしてください。</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>トランザクション手数料率</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>より高い手数料率であれば、以前にブロードキャストした取引を新しい取引で置き換えることができます。RBF（Replace‑by‑Fee）について詳しくはこちらをクリック。</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1094,10 +1089,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>推定トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>推定トランザクション手数料は {fee} で、送信額 {sent} の {percent}% です</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1107,10 +1100,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>トランザクション手数料は {fee} で、送信額 {sent} の {percent}% です</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2949,6 +2940,16 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>未確認として mempool に追加</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>未確認として mempool に追加しますか？</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>アドレス  </translation>
 		</message>
@@ -2995,6 +2996,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>キャンセル</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>パスワードを変更</translation>
 		</message>
@@ -3002,6 +3008,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>ウォレットが保存されました</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>変更が適用されました。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3121,6 +3132,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>削除</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>未確認トランザクションを削除しますか？</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>トランザクションを保存</translation>
 		</message>
@@ -3141,8 +3162,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>ウォレット '{wallet}' の同期に失敗しました。</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>{server} と同期中  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>トランザクション {} は未確認としてのみ mempool に追加できます。それでも続行しますか？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3150,6 +3184,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>ウォレット '{wallet}' のトランザクション {txs} が履歴から削除されました!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>これはこのウォレット表示からのみトランザクションを削除します。すでにビットコインネットワークにブロードキャストされており、確認される可能性があります。それでもウォレットから削除しますか？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3215,8 +3256,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>この手数料率で RBF</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>表示された目標速度で置換（RBF）トランザクションを作成するためにこの手数料を使用します。出力は同じで、手数料のみが変更されます。</translation>
 		</message>
 	</context>
 	<context>
@@ -3845,8 +3887,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>既存のキーを保持</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>新しいコンピューターが検出されました</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3860,6 +3912,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>同期キーをリセット  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>同期とチャット</translation>
 		</message>
@@ -3870,8 +3927,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>このウォレットは最後に別のコンピューターで使用されました。両方を使い続ける場合は、今すぐチャット＆同期の同期キー（nsec）をリセットしてください。</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>プロトコル</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>このコンピューター</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5759,25 +5827,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>より高い手数料で元のトランザクションを二重支払いしようとします。RBF を示すトランザクションでのみ機能し、成功は保証されません。</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>残高：{amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent は古い取引に新しい取引を追加します。両取引の平均手数料率が十分に高ければ、両方の承認が速くなります。</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>RBF でキャンセルすると、  あなたを受取人とし、手数料を高くした新しい取引を作成して古い取引を置き換えます。必ず成功する保証はありません!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent は、保留中のトランザクションの釣り銭出力をより高い手数料で使用し、両方をブロックに取り込みます。利用可能な釣り銭出力があり、合算手数料率を引き上げる場合にのみ機能します。</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5786,30 +5850,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>編集 (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>この取引情報で送信ダイアログを事前入力します。</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>早く処理 (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>より高い手数料で置換（RBF）</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee は、承認を早めるためにより高い手数料の新しい取引を作成します。</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee は、このトランザクションのより高い手数料の新しいバージョンを作成します。元のトランザクションが未確認のままの場合に確認を高速化するために使用してください。元のトランザクションが RBF を示し、ウォレットが釣り銭出力を所有している必要があります。</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>トランザクションをキャンセルしようとしています（RBF）</translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>子で高速化（CPFP）</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>二重支払いでキャンセルを試す（RBF）</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5925,6 +5989,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{}秒前</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent：このトランザクションは、合算手数料率を {combined_rate} に引き上げることで、{parent_str} の確認を高速化します。</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent：このトランザクションの手数料は、合算手数料率を {combined_rate} に下げてしまうため、{parent_str} の確認を高速化するには低すぎます。少なくとも {parent_rate} を選択してください。</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee：このトランザクションは、手数料率 {rate_org} でトランザクション {txid} を置き換えます。最小手数料率 {rate_min} を上回る手数料を選択してください。</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>未確認の親トランザクション</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>不明</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} 件の未確認の親トランザクション</translation>
 		</message>
 	</context>
 	<context>

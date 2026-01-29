@@ -465,8 +465,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>इस शुल्क दर के साथ CPFP</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>माता लेन-देन को खींचने के लिए इस शुल्क के साथ अपना चेंज खर्च करें (CPFP)। संयुक्त माता+बाल शुल्क दर को लक्ष्य ब्लॉक से मेल खाना चाहिए।</translation>
 		</message>
 	</context>
 	<context>
@@ -699,6 +700,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>एसवीजी निर्यात करें  </translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>फिएट मुद्राओं के बीच स्वतः रूपांतरण</translation>
 		</message>
 	</context>
 	<context>
@@ -1042,21 +1050,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>इस लेन-देन के {number} अपुष्ट पैरेंट हैं, जिनकी कुल शुल्क दर {parents_fee_rate} है। CPFP (Child Pays For Parent) के बारे में और जानने के लिए क्लिक करें।</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>लेन-देन शुल्क दर</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>यदि नई लेन-देन की शुल्क दर अधिक है, तो आप पहले प्रसारित की गई लेन-देन को नई लेन-देन से बदल सकते हैं। RBF (Replace‑by‑Fee) के बारे में अधिक जानने के लिए यहाँ क्लिक करें।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1094,10 +1089,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजी गई राशि {sent} का {percent}% है</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1107,10 +1100,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>लेन-देन शुल्क है: {fee}, जो भेजी गई राशि {sent} का {percent}% है</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2949,6 +2940,16 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>मेमपूल में अपुष्ट के रूप में जोड़ें</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>मेमपूल में अपुष्ट के रूप में जोड़ें?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>पते  </translation>
 		</message>
@@ -2995,6 +2996,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>रद्द करें</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>वॉलेट फ़ाइल को स्थानांतरित नहीं किया जा सकता, क्योंकि {file_path} मौजूद है</translation>
 		</message>
@@ -3002,6 +3008,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>पासवर्ड बदलें</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>परिवर्तन लागू किए गए।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3121,6 +3132,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>हटाएं</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>अपुष्ट लेन-देन हटाएं?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>लेन-देन सहेजें</translation>
 		</message>
@@ -3141,8 +3162,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>वॉलेट '{wallet}' के लिए सिंक विफल हुआ।</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>{server} के साथ सिंकिंग  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>लेन-देन {} केवल मेमपूल में अपुष्ट के रूप में जोड़े जा सकते हैं। क्या फिर भी जारी रखना चाहते हैं?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3150,6 +3184,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>वॉलेट '{wallet}' में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>यह केवल इस वॉलेट दृश्य से लेन-देन हटाएगा। यह पहले ही बिटकॉइन नेटवर्क पर प्रसारित हो चुका है और संभवतः फिर भी पुष्टि हो जाएगा। क्या फिर भी वॉलेट से हटाना चाहते हैं?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3215,8 +3256,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>इस शुल्क दर के साथ RBF</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>दिखाई गई लक्ष्य गति पर प्रतिस्थापन (RBF) लेन-देन बनाने के लिए इस शुल्क का उपयोग करें। आउटपुट समान रहते हैं; केवल शुल्क बदलता है।</translation>
 		</message>
 	</context>
 	<context>
@@ -3845,8 +3887,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>मौजूदा कुंजी रखें</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>विश्वसनीय उपकरणों में लेबल बैकअप और एन्क्रिप्टेड सिंकिंग  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>नया कंप्यूटर पता चला</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3860,6 +3912,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>सिंक कुंजी रीसेट करें  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>सिंक &amp; चैट  </translation>
 		</message>
@@ -3870,8 +3927,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>यह वॉलेट आख़िरी बार किसी अन्य कंप्यूटर पर उपयोग किया गया था। यदि आप दोनों का उपयोग जारी रखना चाहते हैं, तो कृपया अभी चैट और सिंक सिंक कुंजी (nsec) रीसेट करें।</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>प्रोटोकॉल</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>यह कंप्यूटर</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5759,25 +5827,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>उच्च शुल्क के साथ मूल लेन-देन को डबल-स्पेंड करने का प्रयास करता है। केवल RBF संकेतित लेन-देन पर काम करता है और सफलता की गारंटी नहीं है।</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>बैलेंस: {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, पुरानी लेन-देन में एक नई लेन-देन जोड़ता है। यदि दोनों का औसत शुल्क दर पर्याप्त उच्च है, तो दोनों की पुष्टि तेज़ हो जाती है।</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>RBF के साथ रद्द करने पर  आपको प्राप्तकर्ता बनाकर और अधिक शुल्क के साथ नई लेन-देन बनेगी ताकि पुरानी को बदला जा सके। इसकी सफलता की कोई गारंटी नहीं है!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent लंबित लेन-देन के चेंज आउटपुट को उच्च शुल्क के साथ खर्च करता है ताकि दोनों को एक ब्लॉक में खींचा जा सके। केवल तभी काम करता है जब आपके पास उपलब्ध चेंज आउटपुट हो और आप संयुक्त शुल्क दर बढ़ाएँ।</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5786,30 +5850,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>संपादित करें (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>भेजने वाले संवाद को इस लेन-देन की जानकारी से पहले से भरें।</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>तेज़ी से प्रक्रिया करें (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>उच्च शुल्क से प्रतिस्थापित करें (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, पुष्टि तेज़ करने के लिए अधिक शुल्क वाली नई लेन-देन बनाता है।</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee इस लेन-देन का उच्च शुल्क वाला नया संस्करण बनाता है। जब मूल लेन-देन अभी भी अपुष्ट हो, तब पुष्टि तेज़ करने के लिए उपयोग करें। मूल लेन-देन का RBF संकेत देना और वॉलेट के पास चेंज आउटपुट होना आवश्यक है।</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>लेन-देन रद्द करने का प्रयास करें (RBF)</translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>चाइल्ड के साथ तेज़ करें (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>डबल-स्पेंड द्वारा रद्द करने का प्रयास करें (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5925,6 +5989,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{} सेकंड पहले</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent: यह लेन-देन {combined_rate} तक कुल शुल्क दर बढ़ाकर {parent_str} की पुष्टि तेज़ करता है।</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent: इस लेन-देन का शुल्क {parent_str} की पुष्टि तेज़ करने के लिए बहुत कम है, क्योंकि यह कुल शुल्क दर को {combined_rate} तक घटा देता है। कम से कम {parent_rate} चुनें।</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee: यह लेन-देन {rate_org} शुल्क दर के साथ {txid} लेन-देन को प्रतिस्थापित करता है। न्यूनतम शुल्क दर {rate_min} से ऊपर का शुल्क चुनें।</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>अपुष्ट माता लेन-देन</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>अज्ञात</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} अपुष्ट माता लेन-देन</translation>
 		</message>
 	</context>
 	<context>
