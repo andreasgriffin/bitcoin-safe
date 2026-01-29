@@ -466,8 +466,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>Bu ücret oranı ile CPFP</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>Değişikliğinizi, ebeveyni içeri çekmek için bu ücretle harcayın (CPFP). Birleşik ebeveyn+çocuk ücret oranı hedef bloğu karşılamalıdır.</translation>
 		</message>
 	</context>
 	<context>
@@ -700,6 +701,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>svg dışa aktar</translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>Fiat para birimleri arasında otomatik dönüştürme</translation>
 		</message>
 	</context>
 	<context>
@@ -1043,21 +1051,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>Bu işlem toplam {parents_fee_rate} ücret oranına sahip {number} onaylanmamış üst işleme sahiptir. CPFP (Çocuk Ebeveyn İçin Öder) hakkında daha fazla bilgi edinmek için tıklayın.</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>İşlem ücret oranı</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>Daha önce yayınlanan işlemi, daha yüksek ücret oranına sahip yeni bir işlemle değiştirebilirsiniz. RBF (Ücretle-Değiştir) hakkında daha fazla bilgi edinmek için buraya tıklayın.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1095,10 +1090,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>Tahmini işlem ücreti: {fee}, bu da gönderim değerinin %{percent} kadarıdır {sent}</translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>Tahmini işlem ücreti: {fee}, bu da gönderilen değer {sent}’in %{percent}’idir</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1108,10 +1101,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>İşlem ücreti: {fee}, bu da gönderim değerinin %{percent} kadarıdır {sent}</translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>İşlem ücreti: {fee}, bu da gönderilen değer {sent}’in %{percent}’idir</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2948,6 +2939,16 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>Onaylanmamış olarak mempool’a ekle</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>Onaylanmamış olarak mempool’a eklensin mi?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>Adresler</translation>
 		</message>
@@ -2994,6 +2995,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>İptal</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>Cüzdan dosyası taşınamıyor, çünkü {file_path} zaten mevcut</translation>
 		</message>
@@ -3001,6 +3007,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>Şifre değiştir</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>Değişiklikler uygulandı.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,6 +3131,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>Kaldır</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>Onaylanmamış işlem kaldırılsın mı?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>İşlemleri kaydet</translation>
 		</message>
@@ -3140,8 +3161,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>Cüzdan '{wallet}' için senkronizasyon başarısız oldu.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>{server} ile senkronize ediliyor</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>İşlemler {} yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3149,6 +3183,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>'{wallet}' cüzdanındaki {txs} işlemleri geçmişten silindi!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>Bu, işlemi yalnızca bu cüzdan görünümünden kaldırır. İşlem Bitcoin ağına zaten yayınlandı ve büyük olasılıkla yine de onaylanacaktır. Yine de cüzdandan kaldırmak istiyor musunuz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3214,8 +3255,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>Bu ücret oranıyla RBF</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>Gösterilen hedef hızda bir değiştirme (RBF) işlemi oluşturmak için bu ücreti kullanın. Çıkışlar aynı kalır; yalnızca ücret değişir.</translation>
 		</message>
 	</context>
 	<context>
@@ -3845,8 +3887,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>Mevcut anahtarı koru</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>Etiket yedeği ve güvenilir cihazlara şifreli senkronizasyon</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>Yeni bilgisayar algılandı</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3860,6 +3912,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>Senkronizasyon anahtarını sıfırla</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>Senkronizasyon &amp; Sohbet</translation>
 		</message>
@@ -3870,8 +3927,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>Bu cüzdan en son başka bir bilgisayarda kullanıldı. Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Senkronizasyon anahtarını (nsec) sıfırlayın.</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>protokol</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>bu bilgisayar</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5764,25 +5832,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>Orijinal işlemi daha yüksek bir ücretle çift harcamaya çalışır. Yalnızca RBF sinyali verilmiş işlemlerde çalışır ve başarılı olacağı garanti değildir.</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>Bakiye: {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, eski işleme yeni bir işlem ekler. Her iki işlemin ortalama ücret oranı yeterince yüksekse, her iki işlemin onayını da hızlandırır.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>RBF ile iptal et, sizi alıcı olarak gösteren ve eski işlemin yerine geçecek daha yüksek ücretli yeni bir işlem oluşturur. Bunun işe yarayacağına dair bir garanti yok!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent, bekleyen işlemin bir değişiklik çıktısını daha yüksek bir ücretle harcayarak her ikisini de bir bloğa çeker. Yalnızca kullanılabilir bir değişiklik çıktınız varsa ve birleşik ücret oranını artırırsanız çalışır.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5791,30 +5855,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>Düzenle (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>Gönderim penceresini bu işlemin bilgileriyle doldur.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>Daha hızlı işleme al (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>Daha yüksek ücretle değiştir (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, daha yüksek ücretle yeni bir işlem oluşturarak onay hızını artırır.</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee, bu işlemin daha yüksek ücretli yeni bir sürümünü oluşturur. Orijinal işlem hâlâ onaylanmamışken onayı hızlandırmak için kullanın. Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik çıktısına sahip olmasını gerektirir.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>İşlemi iptal etmeyi dene (RBF)</translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>Çocuk ile hızlandır (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>Çift harcama ile iptali dene (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5930,6 +5994,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{} saniye önce</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent: Bu işlem, toplam ücret oranını {combined_rate}’e yükselttiği için {parent_str}’nin onayını hızlandırır.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent: Bu işlemin ücreti, toplam ücret oranını {combined_rate}’e düşürdüğü için {parent_str}’nin onayını hızlandırmak için çok düşüktür. En az {parent_rate} seçin.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee: Bu işlem, {rate_org} ücret oranıyla {txid} işlemini değiştirir. Asgari ücret oranı {rate_min}’in üzerinde bir ücret seçin.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>onaylanmamış ebeveyn işlem</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>bilinmiyor</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} onaylanmamış ebeveyn işlem</translation>
 		</message>
 	</context>
 	<context>

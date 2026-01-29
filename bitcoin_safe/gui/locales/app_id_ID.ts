@@ -466,8 +466,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>CPFP dengan tarif biaya ini</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>Gunakan kembalian Anda dengan biaya ini untuk menarik induk (CPFP). Tarif biaya gabungan induk+anak harus memenuhi target blok.</translation>
 		</message>
 	</context>
 	<context>
@@ -700,6 +701,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>Ekspor svg</translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>Konversi otomatis antar mata uang fiat</translation>
 		</message>
 	</context>
 	<context>
@@ -1043,21 +1051,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>Transaksi ini memiliki {number} induk belum terkonfirmasi dengan total tarif biaya {parents_fee_rate}. Klik untuk mempelajari lebih lanjut tentang CPFP (Child Pays For Parent).</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>Tarif biaya transaksi</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>Anda bisa mengganti transaksi yang sudah disiarkan dengan transaksi baru jika memiliki tarif biaya lebih tinggi. Klik di sini untuk mempelajari lebih lanjut tentang RBF (Replace-by-Fee).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1095,9 +1090,7 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
 			<translation>Perkiraan biaya transaksi adalah: {fee}, yaitu {percent}% dari nilai yang dikirim {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
@@ -1108,9 +1101,7 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
 			<translation>Biaya transaksi adalah: {fee}, yaitu {percent}% dari nilai yang dikirim {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
@@ -2948,6 +2939,16 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>Tambahkan sebagai belum terkonfirmasi di mempool</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>Tambahkan sebagai belum terkonfirmasi di mempool?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>Alamat</translation>
 		</message>
@@ -2994,6 +2995,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>Batal</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>Tidak dapat memindahkan file dompet, karena {file_path} sudah ada</translation>
 		</message>
@@ -3001,6 +3007,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>Ubah kata sandi</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>Perubahan diterapkan.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,6 +3131,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>Hapus</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>Hapus transaksi belum terkonfirmasi?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>Simpan transaksi</translation>
 		</message>
@@ -3140,8 +3161,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>Sinkronisasi gagal untuk dompet '{wallet}'.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>Sinkronisasi dengan {server}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>Transaksi {} hanya dapat ditambahkan sebagai belum terkonfirmasi di mempool. Apakah Anda tetap ingin melanjutkan?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3149,6 +3183,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Transaksi {txs} di dompet '{wallet}' dihapus dari riwayat!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>Ini hanya akan menghapus transaksi dari tampilan dompet ini. Transaksi sudah disiarkan ke jaringan Bitcoin dan kemungkinan besar tetap akan terkonfirmasi. Apakah Anda tetap ingin menghapusnya dari dompet?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3214,8 +3255,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>RBF dengan tarif biaya ini</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>Gunakan biaya ini untuk membuat transaksi pengganti (RBF) pada kecepatan target yang ditampilkan. Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 	</context>
 	<context>
@@ -3845,8 +3887,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>Pertahankan kunci yang ada</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>Cadangan label dan sinkronisasi terenkripsi ke perangkat terpercaya</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>Komputer baru terdeteksi</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3860,6 +3912,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>Setel ulang kunci sinkronisasi</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>Sinkronisasi &amp; Obrolan</translation>
 		</message>
@@ -3870,8 +3927,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>Dompet ini terakhir digunakan di komputer lain. Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisasi Chat &amp; Sync (nsec) sekarang.</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>protokol</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>komputer ini</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5764,25 +5832,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>Mencoba melakukan double-spend pada transaksi asli dengan biaya lebih tinggi. Hanya berfungsi pada transaksi yang memberi sinyal RBF dan tidak dijamin berhasil.</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>Saldo: {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, akan menambahkan transaksi baru ke yang lama. Jika rata-rata tarif biaya dari kedua transaksi cukup tinggi, ini akan mempercepat konfirmasi keduanya.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>Batalkan dengan RBF, akan membuat transaksi baru dengan Anda sebagai penerima dan biaya lebih tinggi untuk menggantikan transaksi lama. Tidak ada jaminan ini akan berhasil!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent membelanjakan keluaran kembalian dari transaksi tertunda dengan biaya lebih tinggi untuk menarik keduanya ke dalam sebuah blok. Hanya berfungsi jika Anda memiliki keluaran kembalian yang tersedia dan menaikkan tarif biaya gabungan.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5791,30 +5855,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>Edit (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>Isi otomatis dialog pengiriman dengan informasi transaksi ini.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>Proses lebih cepat (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>Ganti dengan biaya lebih tinggi (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, akan membuat transaksi baru dengan biaya lebih tinggi untuk mempercepat konfirmasi.</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee membuat versi baru dari transaksi ini dengan biaya lebih tinggi. Gunakan untuk mempercepat konfirmasi saat transaksi asli masih belum terkonfirmasi. Memerlukan transaksi asli memberi sinyal RBF dan dompet Anda memiliki keluaran kembalian.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>Coba batalkan transaksi (RBF)</translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>Percepat dengan anak (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>Coba batalkan dengan double-spend (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5930,6 +5994,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>{} detik yang lalu</translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent: Transaksi ini mempercepat konfirmasi {parent_str}, karena meningkatkan tarif biaya total menjadi {combined_rate}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent: Biaya transaksi ini terlalu rendah untuk mempercepat konfirmasi {parent_str}, karena menurunkan tarif biaya total menjadi {combined_rate}. Pilih setidaknya {parent_rate}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee: Transaksi ini menggantikan transaksi {txid} dengan tarif biaya {rate_org}. Pilih biaya di atas tarif minimum {rate_min}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>transaksi induk belum terkonfirmasi</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>tidak diketahui</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} transaksi induk belum terkonfirmasi</translation>
 		</message>
 	</context>
 	<context>

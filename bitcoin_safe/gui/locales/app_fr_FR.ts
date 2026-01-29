@@ -465,8 +465,9 @@
 	<context>
 		<name>CPFPIcon</name>
 		<message>
-			<source>CPFP with this fee rate</source>
-			<translation>CPFP avec ce taux de frais</translation>
+			<source>Spend your change with this fee to pull the parent in (CPFP).
+The combined parent+child fee rate should meet the target block.</source>
+			<translation>Dépensez votre monnaie avec ces frais pour attirer le parent (CPFP). Le taux de frais combiné parent+enfant doit atteindre le bloc cible.</translation>
 		</message>
 	</context>
 	<context>
@@ -699,6 +700,13 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Export svg</source>
 			<translation>Exporter en SVG</translation>
+		</message>
+	</context>
+	<context>
+		<name>DemoWindow</name>
+		<message>
+			<source>Auto convert between fiat currencies</source>
+			<translation>Conversion automatique entre devises fiduciaires</translation>
 		</message>
 	</context>
 	<context>
@@ -1042,21 +1050,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
-			<source>This transaction has {number} unconfirmed parents with a total fee rate of {parents_fee_rate}.
-Click to learn more about CPFP (Child Pays For Parent).</source>
-			<translation>Cette transaction a {number} parents non confirmés avec un taux de frais total de {parents_fee_rate}. Cliquez pour en savoir plus sur le CPFP (Child Pays For Parent).</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
 			<source>Transaction fee rate</source>
 			<translation>Taux de frais de la transaction</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>You can replace the previously broadcasted transaction
-with a new transaction if it has a higher fee rate.
-Click here to learn more about RBF (Replace-by-Fee).</source>
-			<translation>Vous pouvez remplacer la transaction déjà diffusée par une nouvelle transaction si elle a un taux de frais plus élevé. Cliquez ici pour en savoir plus sur le RBF (Replace‑by‑Fee).</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1094,10 +1089,8 @@ Click here to learn more about RBF (Replace-by-Fee).</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>Le frais de transaction estimé est: {fee}, ce qui représente {percent}% de la valeur envoyée {sent}</translation>
+			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>Les frais de transaction estimés sont : {fee}, soit {percent} % de la valeur envoyée {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1107,10 +1100,8 @@ the sending value {sent}</source>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
-			<source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-			<translation>Le frais de transaction est: {fee}, ce qui représente {percent}% de la valeur envoyée {sent}</translation>
+			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+			<translation>Les frais de transaction sont : {fee}, soit {percent} % de la valeur envoyée {sent}</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -2946,6 +2937,16 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>Add as unconfirmed in-mempool</source>
+			<translation>Ajouter comme non confirmée dans le mempool</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Add as unconfirmed in-mempool?</source>
+			<translation>Ajouter comme non confirmée dans le mempool ?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Addresses</source>
 			<translation>Adresses</translation>
 		</message>
@@ -2992,6 +2993,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Cancel</source>
+			<translation>Annuler</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
 			<translation>Impossible de déplacer le fichier du portefeuille, car {file_path} existe  </translation>
 		</message>
@@ -2999,6 +3005,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Change password</source>
 			<translation>Changer le mot de passe  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Changes applied.</source>
+			<translation>Modifications appliquées.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3118,6 +3129,16 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Remove</source>
+			<translation>Supprimer</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Remove unconfirmed transaction?</source>
+			<translation>Supprimer la transaction non confirmée ?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Save transactions</source>
 			<translation>Enregistrer les transactions</translation>
 		</message>
@@ -3138,8 +3159,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Sync failed for wallet '{wallet}'.</source>
+			<translation>Échec de la synchronisation pour le portefeuille '{wallet}'.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Syncing with {server}</source>
 			<translation>Synchronisation avec {server}  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>The transactions
+{}
+can only be added as unconfirmed in-mempool. 
+Do you want to continue anyway?</source>
+			<translation>Les transactions {} ne peuvent être ajoutées que comme non confirmées dans le mempool. Voulez-vous continuer quand même ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3147,6 +3181,13 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
 			<translation>Les transactions {txs} dans le portefeuille '{wallet}' ont été supprimées de l'historique!!!</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+
+Do you want to remove it from the wallet anyway?</source>
+			<translation>Cela ne supprimera la transaction que de cette vue du portefeuille. Elle a déjà été diffusée sur le réseau Bitcoin et sera probablement toujours confirmée. Voulez-vous quand même la supprimer du portefeuille ?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3212,8 +3253,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 	<context>
 		<name>RBFIcon</name>
 		<message>
-			<source>RBF with this fee rate</source>
-			<translation>RBF avec ce taux de frais</translation>
+			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+Outputs stay the same; only the fee changes.</source>
+			<translation>Utilisez ces frais pour créer une transaction de remplacement (RBF) à la vitesse cible affichée. Les sorties restent identiques ; seuls les frais changent.</translation>
 		</message>
 	</context>
 	<context>
@@ -3843,8 +3885,18 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Keep existing key</source>
+			<translation>Conserver la clé existante</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
 			<translation>Étiquette de sauvegarde et synchronisation cryptée avec des dispositifs de confiance  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>New computer detected</source>
+			<translation>Nouvel ordinateur détecté</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3858,6 +3910,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>Reset sync key</source>
+			<translation>Réinitialiser la clé de synchronisation  </translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>Sync &amp; Chat</source>
 			<translation>Sync &amp; Chat  </translation>
 		</message>
@@ -3868,8 +3925,19 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SyncClient</name>
 		<message>
+			<source>This wallet was last used on another computer.
+If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
+			<translation>Ce portefeuille a été utilisé pour la dernière fois sur un autre ordinateur. Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser maintenant la clé de synchronisation Chat &amp; Sync (nsec).</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
 			<source>protocol</source>
 			<translation>protocole</translation>
+		</message>
+		<name>SyncClient</name>
+		<message>
+			<source>this computer</source>
+			<translation>cet ordinateur</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5762,25 +5830,21 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>Attempts to double-spend the original transaction with a higher fee.
+Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
+			<translation>Tente une double dépense de la transaction originale avec des frais plus élevés. Ne fonctionne que pour les transactions signalant RBF et n’est pas garanti de réussir.</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Balance: {amount}</source>
 			<translation>Solde : {amount}  </translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>CPFP = Child Pay For Parent,
-will append a new transaction to the old one.
-If the average fee rate of both transactions is high enough
-it will speed up confirmation of both transactions.</source>
-			<translation>CPFP = Child Pay For Parent, ajoutera une nouvelle transaction à l’ancienne. Si le taux de frais moyen des deux transactions est suffisamment élevé, cela accélérera la confirmation des deux.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Cancel with RBF,
-will create a new transaction 
-with you as a recipient and a higher fee
-to replace the old transaction.
-There is no guarantee this will work!!!</source>
-			<translation>Annuler avec RBF, créera une nouvelle transaction avec vous comme destinataire et des frais plus élevés pour remplacer l’ancienne. Il n’y a aucune garantie que cela fonctionne!!!</translation>
+			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+with a higher fee to pull both into a block.
+Works only if you have an available change output and raise the combined fee rate.</source>
+			<translation>Child-Pays-For-Parent dépense une sortie de monnaie de la transaction en attente avec des frais plus élevés pour attirer les deux dans un bloc. Fonctionne uniquement si vous disposez d’une sortie de monnaie et augmentez le taux de frais combiné.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5789,30 +5853,30 @@ There is no guarantee this will work!!!</source>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Edit (RBF)</source>
-			<translation>Modifier (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
 			<source>Prefill the sending dialog with this transactions information.</source>
 			<translation>Préremplir la fenêtre d’envoi avec les informations de cette transaction.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Process faster (CPFP)</source>
-			<translation>Traiter plus vite (CPFP)</translation>
+			<source>Replace with higher fee (RBF)</source>
+			<translation>Remplacer par des frais plus élevés (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>RBF = Replace By Fee,
-will create a new transaction with a higher fee
-to speed up the confirmation.</source>
-			<translation>RBF = Replace By Fee, crée une nouvelle transaction avec des frais plus élevés pour accélérer la confirmation.</translation>
+			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+Use it to speed up confirmation when the original is still unconfirmed.
+Requires the original transaction to signal RBF and your wallet to own a change output.</source>
+			<translation>Replace-By-Fee crée une nouvelle version de cette transaction avec des frais plus élevés. Utilisez-la pour accélérer la confirmation lorsque l’originale est encore non confirmée. Nécessite que la transaction originale signale RBF et que votre portefeuille possède une sortie de monnaie.</translation>
 		</message>
 		<name>util</name>
 		<message>
-			<source>Try cancel transaction (RBF)</source>
-			<translation>Essayer d'annuler la transaction (RBF)  </translation>
+			<source>Speed up with child (CPFP)</source>
+			<translation>Accélérer avec un enfant (CPFP)</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>Try cancel by double-spend (RBF)</source>
+			<translation>Essayer d’annuler par double dépense (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5928,6 +5992,41 @@ to speed up the confirmation.</source>
 		<message>
 			<source>{} seconds ago</source>
 			<translation>Il y a {} secondes  </translation>
+		</message>
+	</context>
+	<context>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+since it increases the total fee rate to {combined_rate}.</source>
+			<translation>Child-Pays-For-Parent : Cette transaction accélère la confirmation de {parent_str}, car elle augmente le taux de frais total à {combined_rate}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
+			<translation>Child-Pays-For-Parent : Les frais de cette transaction sont trop faibles pour accélérer la confirmation de {parent_str}, car elle diminue le taux de frais total à {combined_rate}. Choisissez au moins {parent_rate}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+Pick a fee above the minimum fee rate {rate_min}.</source>
+			<translation>Replace-By-Fee : Cette transaction remplace la transaction {txid} avec un taux de frais de {rate_org}. Choisissez des frais au-dessus du taux minimal {rate_min}.</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unconfirmed parent transaction</source>
+			<translation>transaction parente non confirmée</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>unknown</source>
+			<translation>inconnu</translation>
+		</message>
+		<name>utils</name>
+		<message>
+			<source>{number} unconfirmed parent transactions</source>
+			<translation>{number} transactions parentes non confirmées</translation>
 		</message>
 	</context>
 	<context>
