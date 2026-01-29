@@ -46,26 +46,27 @@ jobs:
       - name: Run "Weblate correct"
         run: poetry run python tools/build.py --weblate_correct
 
-      - name: Commit changes
-        id: commit
+      - name: Check for changes
+        id: diff
         run: |
           if git diff --quiet --ignore-submodules HEAD; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: run Weblate correct"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Push changes
-        if: steps.commit.outputs.changed == 'true'
-        run: |
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+      - name: Commit Weblate fixes (verified)
+        if: steps.diff.outputs.changed == 'true'
+        uses: swinton/commit@v2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: .
+          commit-message: "chore: run Weblate correct"
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Comment on PR
-        if: steps.commit.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
