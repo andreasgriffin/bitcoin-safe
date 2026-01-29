@@ -47,6 +47,7 @@ import requests
 from pgpy.constants import HashAlgorithm
 
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.util import default_timeout
 
 gnupg = None
 logger = logging.getLogger(__name__)
@@ -165,7 +166,7 @@ class GitHubAssetDownloader:
         """Get assets."""
         try:
             logger.debug(f"Get assets from {api_url}")
-            response = requests.get(api_url, timeout=10 if self.proxies else 2, proxies=self.proxies)
+            response = requests.get(api_url, timeout=default_timeout(self.proxies), proxies=self.proxies)
             response.raise_for_status()
             assets = response.json().get("assets", [])
 
@@ -316,7 +317,7 @@ class SignatureVerifyer:
             raise PGPDownloadError("Signed message does not contain a full fingerprint.")
 
         try:
-            response = requests.get(url, timeout=10 if self.proxies else 2, proxies=self.proxies)
+            response = requests.get(url, timeout=default_timeout(self.proxies), proxies=self.proxies)
             response.raise_for_status()
         except requests.RequestException as exc:
             logger.error(f"Could not download public key from {url}: {exc}")
@@ -543,7 +544,7 @@ class SignatureVerifyer:
     @staticmethod
     def _download_file(download_url: str, filename: Path, proxies: dict | None) -> Path:
         """Download file."""
-        sig_response = requests.get(download_url, timeout=10 if proxies else 2, proxies=proxies)
+        sig_response = requests.get(download_url, timeout=default_timeout(proxies), proxies=proxies)
         sig_response.raise_for_status()
         with open(filename, "wb") as f:
             f.write(sig_response.content)

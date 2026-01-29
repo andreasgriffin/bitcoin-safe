@@ -47,6 +47,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.util import default_timeout
 from bitcoin_safe.util_os import show_file_in_explorer
 
 logger = logging.getLogger(__name__)
@@ -93,7 +94,9 @@ class DownloadWorker(QObject):
 
     def _download(self) -> None:
         """Perform the download and emit progress updates."""
-        response = requests.get(self.url, stream=True, timeout=10, proxies=self.proxies)
+        response = requests.get(
+            self.url, stream=True, timeout=default_timeout(self.proxies), proxies=self.proxies
+        )
         response.raise_for_status()
         content_length = response.headers.get("content-length")
 
