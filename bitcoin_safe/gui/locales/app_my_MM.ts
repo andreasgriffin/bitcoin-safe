@@ -887,7 +887,7 @@ Default 20</source>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>မျိုးစေ့အရန် {j} နှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သား {j} သည် {j} တွင်ရှိရမည်  </translation>
+			<translation>seed backup နှင့် hardware signer တစ်ခုချင်းစီကို လုံခြုံသောနေရာများတွင် ထားရှိပါ၊ ဥပမာအားဖြင့်–</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1594,7 +1594,7 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>လက်မှတ်သားများအားလုံးကို လက်ဗွေရာများ {fingerprints} ဖြင့်ဖြည့်ပါ  </translation>
+			<translation>fingerprints {fingerprints} ဖြင့် signer {number} ခုလုံးကို ဖြည့်သွင်းခြင်း</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -1963,12 +1963,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>{id} ဖြင့်ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
+			<translation>id {name} ပါသော wallet တစ်ခုကို ဖွင့်ထားပြီးသားဖြစ်သည်။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open. Please close it first.</source>
-			<translation>{id} ဖြင့်ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။ အရင်ဆုံးပိတ်ပါ။  </translation>
+			<translation>id {name} ပါသော wallet တစ်ခုကို ဖွင့်ထားပြီးသားဖြစ်သည်။ ကျေးဇူးပြု၍ အရင်ဆုံး ပိတ်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2193,7 +2193,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Quit</source>
-			<translation>ရှာဖွေ &amp;နောက်တစ်ခု {shortcut}</translation>
+			<translation>ထွက်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2218,7 +2218,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Search &amp;previous	{shortcut}</source>
-			<translation>Bitcoin Safe ကို ထောက်ပံ့ရန်</translation>
+			<translation>ရှာဖွေ &amp;ယခင် {shortcut}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2924,7 +2924,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
-			<translation>သတိပေးချက်! ဤလဲလှယ်မှုသည် လှည့်စားစွာတူညီသော လိပ်စာများကို ပါဝင်သည်။ လိပ်စာအဆိပ်သင့်ခြင်းအ</translation>
+			<translation>သတိပေးချက်! ဤအရောင်းအဝယ်တွင် လှည့်စားစေသော ဆင်တူလိပ်စာများ ပါဝင်နေပါသည်။ ၎င်းသည် address poisoning တိုက်ခိုက်မှု ဖြစ်နိုင်ပါသည်။ ဆင်တူသော လိပ်စာများမှာ &lt;br&gt;{addresses}.&lt;br&gt; အရောင်းအဝယ်အသေးစိတ်အားလုံးကို သေချာစွာ ပြန်လည်စစ်ဆေးပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -2999,7 +2999,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
-			<translation>ပိုက်ဆံအိတ်သိမ်းပါ  </translation>
+			<translation>{file_path} ရှိပြီးသားဖြစ်သောကြောင့် wallet ဖိုင်ကို မရွှေ့နိုင်ပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3019,12 +3019,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Current price per bitcoin is unavailable.</source>
-			<translation>Bitcoin တစ်ခုလျှင် လက်ရှိဈေးနှုန်း: {price} ({currency})</translation>
+			<translation>လက်ရှိ bitcoin တစ်လုံးချင်းစျေးနှုန်းကို မရရှိနိုင်ပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Current price per bitcoin: {price} ({currency})</source>
-			<translation>အကြောင်းအရာ</translation>
+			<translation>လက်ရှိ bitcoin တစ်လုံးချင်းစျေးနှုန်း: {price} ({currency})</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3318,7 +3318,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>ဒီပိုက်ဆံအိတ်ရဲ့လိပ်စာတစ်ခုသို့ &lt;b&gt;ငွေနည်းနည်း&lt;/b&gt; (စမ်းသပ်ပမာဏထက်နည်းသော) ကိုလက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ။&lt;/b&gt; &lt;br&gt;                     သင့်ငွေကိုထိန်းချုပ်နေသည်ဟုသိရန်အတွက်သင်သည်ပိုက်ဆံအိတ်မှအသုံးစရိအားစမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ဒါကြောင့် ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ကြီးမားသောငွေပမာဏကိုပေးပို့မည်မတိုင်ခင် ပိုက်ဆံအိတ်မှငွေသုံးစွဲခြင်းနှင့် လက်မှတ်ပေးသူအားလုံးစမ်းသပ်ရန် &lt;b&gt;အရေးကြီးသည်။&lt;/b&gt;                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;လက်ရှိတွင်ပိုက်ဆံအိတ်သို့ကြီးမားသောငွေကိုပေးပို့မည်မဟုတ်ပါ။ အရင်ဆုံးအားလုံးပေးပို့စမ်းသပ်မှုများပြီးစီးပါစေ!&lt;/b&gt;  </translation>
+			<translation>ဤ wallet ၏ လိပ်စာ ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ( {test_amount} ထက်နည်း ) လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     သင့်တွင် ရန်ပုံငွေများကို ထိန်းချုပ်ထားကြောင်း သိရှိရန် wallet မှ အသုံးစရိတ်ထုတ်နိုင်ကြောင်း စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို wallet ထဲသို့ မပို့မီ၊ wallet မှ အသုံးစရိတ်ထုတ်၍ signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;အခုချိန်တွင် wallet ထဲသို့ ပမာဏကြီး မပို့ပါနှင့်။ ပို့ခြင်း စမ်းသပ်မှုအားလုံးကို အရင်ဆုံး ပြီးစီးပါ။&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4161,7 +4161,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Fee rate too low</source>
-			<translation>ကျေးဇူးပြု၍ ကြေးနှုန်းကို အနည်းဆုံး {minimum} အထိ ပြောင်းပါ၊ ဒါမဟုတ်လျှင် ထုတ်လွှင့်၍ မရနိုင်ပါ။</translation>
+			<translation>အခကြေးနှုန်း နိမ့်လွန်းနေသည်</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4177,7 +4177,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>BBQr QR</translation>
+			<translation>အနည်းဆုံး {minimum} အထိ အခကြေးနှုန်းကို ပြောင်းလဲပါ၊ မဟုတ်ပါက ထုတ်လွှင့်နိုင်မည် မဟုတ်ပါ။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4487,7 +4487,7 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>ရွေးချယ်ထားသောပမာဏ ({number} UTXOs)  </translation>
+			<translation>{amount} ကို ရွေးချယ်ထားသည် ({number} UTXOs)</translation>
 		</message>
 	</context>
 	<context>
@@ -4781,7 +4781,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Send Test</source>
-			<translation>{label} နှင့်လက်မှတ်ပါ  </translation>
+			<translation>ပို့ခြင်း စမ်းသပ်မှု</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4796,7 +4796,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Sign with {label}</source>
-			<translation>ပိုက်ဆံအိတ်တွင်ငွေမရှိပါ။ ပိုက်ဆံအိတ်ဖြည့်ပါ။  </translation>
+			<translation>{label} ဖြင့် လက်မှတ်ရေးထိုးပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5472,7 +5472,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>No QR data available</source>
-			<translation>Serialised {label}:</translation>
+			<translation>QR ဒေတာ မရရှိနိုင်ပါ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5502,7 +5502,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Serialized {label}:</source>
-			<translation>ငွေလွှဲ ID: {txid}</translation>
+			<translation>Serialized {label}:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5522,12 +5522,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Transaction ID: {txid}</source>
-			<translation>UR QR</translation>
+			<translation>အရောင်းအဝယ် ID: {txid}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>UR QR</source>
-			<translation>{title}: စိတ်ခွဲ {index} / {total}</translation>
+			<translation>UR QR</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5547,7 +5547,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{title}: Fragment {index} of {total}</source>
-			<translation>သင့် wallet မှ လက်ခံရယူရန် လိပ်စာအသစ်များ ဖန်တီးပါ။</translation>
+			<translation>{title}: အပိုင်း {index} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5818,7 +5818,7 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>အတည်မပြုရ  </translation>
+			<translation>သင့် BitBox02 ပေါ်ရှိ pairing code ကို နှိုင်းယှဉ်ပြီး အတည်ပြုပါ:  {code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5831,7 +5831,7 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 		<name>util</name>
 		<message>
 			<source>Balance: {amount}</source>
-			<translation>အမည်မသိ  </translation>
+			<translation>လက်ကျန်ငွေ: {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5870,7 +5870,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>Try cancel by double-spend (RBF)</source>
-			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်သည် စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ မြှင့်တင်သောကြောင့် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေသည်။</translation>
+			<translation>ဒေါဘယ်လ်စပင့်ဖြင့် ပယ်ဖျက်ရန် ကြိုးစားပါ (RBF)</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5993,7 +5993,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်၏ အခကြေးသည် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေရန် အလွန်နိမ့်လွန်းပါသည်၊ အကြောင်းမှာ စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ လျှော့ချထားသောကြောင့် ဖြစ်သည်။ အနည်းဆုံး {parent_rate} ကို ရွေးချယ်ပါ။</translation>
+			<translation>Child-Pays-For-Parent: ဤအရောင်းအဝယ်သည် စုစုပေါင်းအခကြေးနှုန်းကို {combined_rate} သို့ တိုးမြှင့်သောကြောင့် {parent_str} ၏ အတည်ပြုမှုကို မြန်ဆန်စေပါသည်။</translation>
 		</message>
 		<name>utils</name>
 		<message>
@@ -6005,7 +6005,7 @@ since it descreases the total fee rate to {combined_rate}. Pick at least {parent
 		<message>
 			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-			<translation>မအတည်ပြုထားသည့် မိခင်အရောင်းအဝယ်</translation>
+			<translation>Replace-By-Fee: ဤအရောင်းအဝယ်သည် အခကြေးနှုန်း {rate_org} ဖြင့် အရောင်းအဝယ် {txid} ကို အစားထိုးပါသည်။ အနည်းဆုံးအခကြေးနှုန်း {rate_min} ထက် မြင့်သော အခကြေးကို ရွေးချယ်ပါ။</translation>
 		</message>
 		<name>utils</name>
 		<message>
@@ -6015,12 +6015,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>utils</name>
 		<message>
 			<source>unknown</source>
-			<translation>{number} မအတည်ပြုထားသည့် မိခင်အရောင်းအဝယ်များ</translation>
+			<translation>မသိ</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>{number} unconfirmed parent transactions</source>
-			<translation/>
+			<translation>မအတည်ပြုထားသည့် မိခင်အရောင်းအဝယ် {number} ခု</translation>
 		</message>
 	</context>
 	<context>

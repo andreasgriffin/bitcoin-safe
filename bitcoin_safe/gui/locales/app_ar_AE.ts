@@ -1963,7 +1963,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>هناك محفظة برقم {اسم} مفتوحة بالفعل.  </translation>
+			<translation>محفظة بالمعرّف {name} مفتوحة بالفعل.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2153,7 +2153,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Please enter the password for {filename}:</source>
-			<translation>يرجى إدخال كلمة المرور لـ {اسم_الملف}:</translation>
+			<translation>يرجى إدخال كلمة المرور لـ {filename}:</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,7 +2223,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Selected file: {file_path}</source>
-			<translation>الملف المحدد: {مسار_الملف}</translation>
+			<translation>الملف المحدد: {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2263,17 +2263,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>The wallet {file_path} is already open.</source>
-			<translation>المحفظة {مسار_الملف} مفتوحة بالفعل.</translation>
+			<translation>المحفظة {file_path} مفتوحة بالفعل.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-			<translation>المحفظة {مسار_الملف} مفتوحة بالفعل. هل تريد فتح المحفظة على أي حال؟</translation>
+			<translation>المحفظة {file_path} مفتوحة بالفعل. هل تريد فتح المحفظة على أي حال؟</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>There is no such file: {file_path}</source>
-			<translation>لا يوجد ملف بهذا الاسم: {مسار_الملف}</translation>
+			<translation>لا يوجد مثل هذا الملف: {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>

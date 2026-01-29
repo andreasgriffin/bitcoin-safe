@@ -584,7 +584,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ChatGui</name>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-			<translation>選択されたファイル：{file_path}</translation>
+			<translation>すべてのファイル (*);;PSBT (*.psbt);;トランザクション (*.tx)</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
@@ -1531,7 +1531,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste descriptors into the descriptor field in the top right.</source>
-			<translation>{data_type} ここでは使用できません。</translation>
+			<translation>右上のディスクリプタ欄にディスクリプタを貼り付けてください。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1576,7 +1576,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{data_type} cannot be used here.</source>
-			<translation>xpubはSLIP132フォーマットです。標準フォーマットに変換します。</translation>
+			<translation>{data_type} はここでは使用できません。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1587,7 +1587,7 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{xpub} is not a valid public xpub</source>
-			<translation>まずハードウェアウォレットから公開鍵情報をインポートしてください</translation>
+			<translation>{xpub} は有効な公開 xpub ではありません</translation>
 		</message>
 	</context>
 	<context>
@@ -1705,7 +1705,7 @@ Do you want to proceed anyway?</source>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} hours</source>
-			<translation>&amp;ウォレット</translation>
+			<translation>約 {t} 時間後</translation>
 		</message>
 		<name>LabelTimeEstimation</name>
 		<message>
@@ -1963,7 +1963,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>ウォレット {id} を閉じますか？</translation>
+			<translation>ID が {name} のウォレットはすでに開かれています。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1998,7 +1998,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close wallet</source>
-			<translation>タブ {name} を閉じる</translation>
+			<translation>ウォレットを閉じる</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2008,7 +2008,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Closing tab {name}</source>
-			<translation>{n} ブロック</translation>
+			<translation>タブ {name} を閉じています</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2133,7 +2133,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Wallet</source>
-			<translation>ウォレット {file_path} はすでに開いています。</translation>
+			<translation>ウォレットを開く</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2143,7 +2143,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-			<translation>PSBT {txid}</translation>
+			<translation>ここにビットコイントランザクションまたは PSBT を貼り付けるか、ファイルをドロップしてください</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,7 +2223,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Selected file: {file_path}</source>
-			<translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
+			<translation>選択されたファイル: {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2263,7 +2263,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>The wallet {file_path} is already open.</source>
-			<translation>ウォレットはすでに開いています</translation>
+			<translation>ウォレット {file_path} はすでに開かれています。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2273,7 +2273,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>There is no such file: {file_path}</source>
-			<translation>ラベルをエクスポート</translation>
+			<translation>そのようなファイルは存在しません: {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2502,7 +2502,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
-			<translation>応答： {name}: {status} メンプールインスタンス： {server}</translation>
+			<translation>パスワード:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2534,7 +2534,7 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>シングルシグネチャーウォレット</translation>
+			<translation>応答:     {name}: {status}     Mempool インスタンス: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2667,7 +2667,7 @@ import custom wallet</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Less support material online in case of recovery</source>
-			<translation>{untrusted}に行く</translation>
+			<translation>復旧時に利用できるオンラインのサポート資料が少ない</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2749,7 +2749,7 @@ import custom wallet</source>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
-			<translation>パスワードを入力してください：</translation>
+			<translation>ネットワーク = {network}。コインには価値がありません！</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
@@ -2987,7 +2987,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Backup saved to {filename}</source>
-			<translation>{file_path}が存在するため、ウォレットファイルを移動できません</translation>
+			<translation>バックアップは {filename} に保存されました</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3002,7 +3002,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
-			<translation>パスワードを変更</translation>
+			<translation>{file_path} が存在するため、ウォレットファイルを移動できません</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3205,7 +3205,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>Wallet saved</source>
-			<translation>{amount}を受け取りました</translation>
+			<translation>ウォレットを保存しました</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4253,7 +4253,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>PSBT {txid}</source>
-			<translation>ウォレットファイル (.wallet)</translation>
+			<translation>PSBT {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4289,7 +4289,7 @@ Or you can broadcast via {url}</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Transaction {txid}</source>
-			<translation>ウォレットを開く</translation>
+			<translation>トランザクション {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

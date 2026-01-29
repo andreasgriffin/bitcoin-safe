@@ -264,7 +264,7 @@
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>Max ≈ {montant}</translation>
+			<translation>Max ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -1113,7 +1113,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FiatSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>Max ≈ {montant}</translation>
+			<translation>Max ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>

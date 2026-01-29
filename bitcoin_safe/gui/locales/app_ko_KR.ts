@@ -4487,7 +4487,7 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>선택된 금액 ({number} UTXO)  </translation>
+			<translation>{amount} 선택됨 ({number} UTXO)</translation>
 		</message>
 	</context>
 	<context>
