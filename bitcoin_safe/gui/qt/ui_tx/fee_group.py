@@ -393,6 +393,11 @@ class FeeGroup(QObject):
         """UpdateUi."""
         self.fee_rate_label.setText(self.tr("Transaction fee rate"))
         self.missing_inputs_button.setText(self.tr("Download from\nblock explorer"))
+        self.missing_inputs_button.setToolTip(
+            self.tr("Download the parent transactions\nfrom {mempool}\nto calculate the fee rate.").format(
+                mempool=self.config.network_config.mempool_url
+            )
+        )
         self.approximate_fee_label.setText(html_f(self.tr("Approximate rate"), bf=True))
 
         # only in editor mode
