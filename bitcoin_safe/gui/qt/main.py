@@ -1517,7 +1517,7 @@ class MainWindow(QMainWindow):
         self, prevout_transactions: list[bdk.Transaction], spending_txid: str
     ):
         for qt_wallet in self.qt_wallets.values():
-            qt_wallet.wallet.insert_relevant_info_into_graph(
+            qt_wallet.insert_relevant_info_into_graph(
                 prevout_transactions=prevout_transactions, spending_txid=spending_txid
             )
 

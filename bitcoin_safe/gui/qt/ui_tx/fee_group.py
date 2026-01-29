@@ -420,9 +420,11 @@ class FeeGroup(QObject):
             show_approximate_fee_label,
         )
 
-        show_fee_label = not show_approximate_fee_label
+        could_download = (not self.fee_info) and bool(self.mempool_buttons.wallet_functions.get_qt_wallets())
+        show_fee = (not show_approximate_fee_label) and bool(self.fee_info)
+        show_download_button = (not show_approximate_fee_label) and could_download
+        show_fee_label = show_fee or show_download_button
         self.form.set_row_visibility_of_widget(self.fee_rate_label, show_fee_label)
-        show_download_button = show_fee_label and not self.fee_info
         self.form.set_row_visibility_of_widget(self.missing_inputs_button, show_download_button)
 
         self.approximate_fee_label.setToolTip(

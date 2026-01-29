@@ -1834,7 +1834,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if added_txs:
             self.wallet_signals.updated.emit(
                 UpdateFilter(
-                    txids=[spending_txid], refresh_all=True, reason=(UpdateFilterReason.TransactionChange)
+                    txids=[spending_txid], refresh_all=False, reason=(UpdateFilterReason.TransactionChange)
                 )
             )
 
