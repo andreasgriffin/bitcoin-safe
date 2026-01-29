@@ -34,7 +34,7 @@ import enum
 import logging
 from dataclasses import dataclass
 from math import ceil
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 import aiohttp
 import numpy as np
@@ -45,6 +45,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.util import default_timeout
 
 from .network_utils import ProxyInfo
 
@@ -146,15 +147,17 @@ def fee_to_color(fee, colors=mempoolFeeColors) -> str:
     return colors[indizes[-1]]
 
 
-async def fetch_from_url(url: str, proxies: dict[str, str] | None = None, is_json: bool = True) -> Any | None:
+async def fetch_from_url(
+    url: str,
+    proxies: dict[str, str] | None = None,
+    is_json: bool = True,
+    timeout: float | Literal["default"] = "default",
+) -> Any | None:
     """Fetch from url."""
-    logger.debug(f"fetch_from_url session.get({url}, timeout=10)")
-
-    # Configure a 10-second total timeout
-    timeout = aiohttp.ClientTimeout(total=10)
+    logger.debug(f"fetch_from_url session.get({url}, timeout={timeout})")
 
     # If you have an HTTP/HTTPS proxy, aiohttp wants e.g. proxy="http://user:pass@host:port"
-    conn_kwargs: dict[str, Any] = {"timeout": timeout}
+    conn_kwargs: dict[str, Any] = {"timeout": aiohttp.ClientTimeout(total=default_timeout(proxies, timeout))}
     if proxies:
         # prefer HTTP proxy but fall back to HTTPS
         proxy_url = proxies.get("http") or proxies.get("https")

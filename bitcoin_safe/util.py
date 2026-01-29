@@ -40,6 +40,7 @@ from types import TracebackType
 from typing import (
     Any,
     Concatenate,
+    Literal,
     ParamSpec,
     Protocol,
     TypeVar,
@@ -264,3 +265,9 @@ def short_address(address: str, prefix: int = 6, suffix: int = 4) -> str:
     if len(address) <= prefix + suffix:
         return address
     return f"{address[:prefix]}...{address[-suffix:]}"
+
+
+def default_timeout(proxies: Any, timeout: float | Literal["default"] = "default") -> float:
+    if timeout == "default":
+        return 10 if proxies else 2
+    return timeout

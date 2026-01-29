@@ -220,6 +220,7 @@ class MainWindow(QMainWindow):
         # connect the listeners
         self.signals.open_file_path.connect(self.open_file_path)
         self.signals.open_tx_like.connect(self.open_tx_like_in_tab)
+        self.signals.insert_relevant_info_into_graph.connect(self.insert_relevant_info_into_graph)
         self.signals.apply_txs_to_wallets.connect(self.apply_txs_to_wallets_and_highlight)
         self.signals.evict_txs_from_wallet_id.connect(self.apply_evicted_txs)
         self.signals.get_network.connect(self.get_network)
@@ -1511,6 +1512,14 @@ class MainWindow(QMainWindow):
     def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         for qt_wallet in self.qt_wallets.values():
             qt_wallet.apply_txs(txs, last_seen=last_seen)
+
+    def insert_relevant_info_into_graph(
+        self, prevout_transactions: list[bdk.Transaction], spending_txid: str
+    ):
+        for qt_wallet in self.qt_wallets.values():
+            qt_wallet.wallet.insert_relevant_info_into_graph(
+                prevout_transactions=prevout_transactions, spending_txid=spending_txid
+            )
 
     def apply_txs_to_wallets_and_highlight(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         """Apply txs to wallets."""

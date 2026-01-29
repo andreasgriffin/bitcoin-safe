@@ -2598,6 +2598,30 @@ class Wallet(BaseSaveableClass, CacheManager):
             hidden_txs[txid] = tx
         return hidden_txs
 
+    def insert_relevant_info_into_graph(
+        self, prevout_transactions: list[bdk.Transaction], spending_txid: str
+    ) -> list[tuple[TxOut, OutPoint]]:
+        "Inserts the relevant prevout_transactions  into the graph, if they provide inputs for spending_txid"
+        added_txs: list[tuple[TxOut, OutPoint]] = []
+        spending_tx = self.get_tx(spending_txid)
+        if not spending_tx:
+            return added_txs
+
+        txins = spending_tx.transaction.input()
+        expected_prevoutpoints = {OutPoint.from_bdk(txin.previous_output) for txin in txins}
+
+        for prevout_transaction in prevout_transactions:
+            prevout_transaction_id = prevout_transaction.compute_txid()
+            for prev_vout, prev_txout in enumerate(prevout_transaction.output()):
+                # the wallet has this txo
+                outpoint = OutPoint(txid=prevout_transaction_id, vout=prev_vout)
+                if outpoint in expected_prevoutpoints:
+                    self.bdkwallet.insert_txout(txout=prev_txout, outpoint=outpoint)
+                    added_txs.append((TxOut.from_bdk(prev_txout), outpoint))
+
+        self.persist()
+        return added_txs
+
     def apply_unconfirmed_txs(
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
     ) -> list[bdk.UnconfirmedTx]:

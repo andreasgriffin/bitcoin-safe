@@ -28,16 +28,18 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from functools import partial
 from time import time
 from typing import Any, cast
+from urllib.parse import urljoin
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
-from bitcoin_safe_lib.tx_util import serialized_to_hex
+from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QShowEvent
 from PyQt6.QtWidgets import (
@@ -73,9 +75,11 @@ from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.util import default_timeout
 
 from ....config import UserConfig
-from ....mempool_manager import MempoolManager
+from ....mempool_manager import MempoolManager, fetch_from_url
+from ....network_utils import ProxyInfo
 from ....psbt_util import FeeInfo, PubKeyInfo, SimpleInput, SimplePSBT
 from ....pythonbdk_types import (
     OutPoint,
@@ -298,6 +302,9 @@ class UITx_Viewer(UITx_Base):
             is_viewer=True,
             tx_status=self.get_tx_status(chain_position=chain_position),
         )
+        self.column_fee.fee_group.signal_download_missing_inputs.connect(
+            self.download_missing_inputs_from_mempool
+        )
         self.column_fee.header_widget.h_laylout.insertWidget(0, self.header_button_group)
         self.splitter.addWidget(self.column_fee)
 
@@ -483,6 +490,114 @@ class UITx_Viewer(UITx_Base):
         self.update_sending_source_totals()
         self.update_recipients_totals()
         self.column_fee.updateUi()
+
+    def _get_unknown_input_outpoints(self) -> list[OutPoint]:
+        tx = self.extract_tx()
+
+        txo_dict = self._get_python_txos()
+        return [outpoint for outpoint in get_prev_outpoints(tx) if not txo_dict.get(str(outpoint))]
+
+    def download_missing_inputs_from_mempool(self) -> None:
+        unknown_outpoints = self._get_unknown_input_outpoints()
+        if not unknown_outpoints:
+            return
+
+        mempool_url = self.signals.get_mempool_url()
+        if not mempool_url:
+            Message(
+                self.tr("No mempool URL configured."),
+                type=MessageType.Error,
+            )
+            return
+
+        txids = {str(outpoint.txid) for outpoint in unknown_outpoints}
+        if not txids:
+            return
+
+        async def do() -> tuple[list[bdk.Transaction], list[str]]:
+            proxies = (
+                ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
+                if self.config.network_config.proxy_url
+                else None
+            )
+            base_url = mempool_url if mempool_url.endswith("/") else f"{mempool_url}/"
+            tasks = [
+                fetch_from_url(
+                    urljoin(base_url, f"api/tx/{txid}/hex"),
+                    proxies=proxies,
+                    is_json=False,
+                    timeout=default_timeout(proxies),
+                )
+                for txid in txids
+            ]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            downloaded: list[bdk.Transaction] = []
+            failed: list[str] = []
+
+            for txid, result in zip(txids, results, strict=False):
+                if isinstance(result, Exception):
+                    logger.warning("Error downloading raw transaction %s: %s", txid, result)
+                    failed.append(txid)
+                    continue
+                if result is None:
+                    failed.append(txid)
+                    continue
+                try:
+                    raw_hex = (
+                        result.decode().strip()
+                        if isinstance(result, (bytes, bytearray))
+                        else str(result).strip()
+                    )
+                    tx = bdk.Transaction(hex_to_serialized(raw_hex))
+                except Exception as e:
+                    logger.warning("Failed to parse raw transaction %s: %s", txid, e)
+                    failed.append(txid)
+                    continue
+                downloaded.append(tx)
+
+            return downloaded, failed
+
+        def on_success(result: tuple[list[bdk.Transaction], list[str]]) -> None:
+            downloaded, failed = result
+            if downloaded:
+                self.signals.insert_relevant_info_into_graph.emit(
+                    downloaded, str(self.extract_tx().compute_txid())
+                )
+                self.reload(UpdateFilter(refresh_all=True))
+            if failed and downloaded:
+                Message(
+                    self.tr("Some transactions could not be downloaded: {txids}").format(
+                        txids=", ".join(failed)
+                    ),
+                    type=MessageType.Warning,
+                    no_show=True,
+                ).emit_with(self.signals.notification)
+            elif failed and not downloaded:
+                Message(
+                    self.tr("Failed to download missing fee info from mempool."),
+                    type=MessageType.Error,
+                    no_show=True,
+                ).emit_with(self.signals.notification)
+
+        def on_error(packed_error_info) -> None:
+            logger.warning("download_missing_inputs_from_mempool failed: %s", packed_error_info)
+            Message(
+                self.tr("Failed to download missing fee info from mempool."),
+                type=MessageType.Error,
+                no_show=True,
+            ).emit_with(self.signals.notification)
+
+        def on_done(_result) -> None:
+            pass
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_success=on_success,
+            on_error=on_error,
+            on_done=on_done,
+            key=f"{id(self)}download_missing_inputs",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def fill_button_group(self):
         """Fill button group."""

@@ -87,6 +87,7 @@ from bitcoin_safe.network_utils import (
 )
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
+from bitcoin_safe.util import default_timeout
 
 from ..icon_label import IconLabel
 
@@ -95,9 +96,10 @@ logger = logging.getLogger(__name__)
 
 def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
     """Test mempool space server."""
-    timeout = 10 if proxies else 2
     try:
-        response = requests.get(f"{url}/api/blocks/tip/height", timeout=timeout, proxies=proxies)
+        response = requests.get(
+            f"{url}/api/blocks/tip/height", timeout=default_timeout(proxies), proxies=proxies
+        )
         return response.status_code == 200
     except Exception as e:
         logger.warning(f"Mempool.space server connection test failed: {e}")
@@ -107,7 +109,6 @@ def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
 def test_connection(network_config: NetworkConfig) -> str | None:
     """Test connection."""
     proxy_info = ProxyInfo.parse(network_config.proxy_url) if network_config.proxy_url else None
-    timeout = 10 if proxy_info else 2
 
     if network_config.server_type == BlockchainType.Electrum:
         try:
@@ -120,7 +121,6 @@ def test_connection(network_config: NetworkConfig) -> str | None:
                 port=port,
                 use_ssl=network_config.electrum_use_ssl,
                 proxy_info=proxy_info,
-                timeout=timeout,
             )
         except Exception as e:
             logger.warning(f"Electrum connection test failed: {e}")
@@ -129,10 +129,11 @@ def test_connection(network_config: NetworkConfig) -> str | None:
     elif network_config.server_type == BlockchainType.Esplora:
         try:
             # Assuming Esplora's REST API for testing connection
+            proxies = proxy_info.get_requests_proxy_dict() if proxy_info else None
             response = requests.get(
                 f"{network_config.esplora_url}/blocks/tip/height",
-                timeout=timeout,
-                proxies=(proxy_info.get_requests_proxy_dict() if proxy_info else None),
+                timeout=default_timeout(proxies),
+                proxies=proxies,
             )
             if response.status_code == 200:
                 return response.json()
@@ -148,12 +149,13 @@ def test_connection(network_config: NetworkConfig) -> str | None:
             # Assuming Bitcoin RPC interface for testing connection
             headers = {"content-type": "application/json"}
             payload = {"jsonrpc": "1.0", "id": "curltest", "method": "getblockchaininfo", "params": []}
+            proxies = proxy_info.get_requests_proxy_dict() if proxy_info else None
             response = requests.post(
                 f"{network_config.rpc_ip}:{network_config.rpc_port}",
                 json=payload,
                 headers=headers,
                 auth=(network_config.rpc_username, network_config.rpc_password),
-                timeout=timeout,
+                timeout=default_timeout(proxies),
             )
             if response.status_code == 200 and "result" in response.json():
                 return response.json()

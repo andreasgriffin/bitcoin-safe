@@ -52,6 +52,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.network_config import ConnectionInfo, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
 
@@ -252,14 +253,12 @@ class P2PClient(QObject):
 
         Can raise Expceptions
         """
-        establish_connection_timeout = 20 if proxy_info else 2
-
         logger.debug(f"Connecting to {peer}")
         self.signal_try_connecting_to.emit(ConnectionInfo(peer=peer, proxy_info=proxy_info))
 
         try:
             self.reader, self.writer = await self._connect(
-                peer=peer, proxy_info=proxy_info, timeout=establish_connection_timeout
+                peer=peer, proxy_info=proxy_info, timeout=default_timeout(proxy_info)
             )
             self._current_peer = peer
         except asyncio.TimeoutError:

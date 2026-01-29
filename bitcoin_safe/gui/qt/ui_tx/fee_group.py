@@ -41,7 +41,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import (
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGroupBox, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -64,7 +64,6 @@ from ..util import (
     block_explorer_URL,
     open_website,
     set_margins,
-    set_no_margins,
 )
 from .mempool_buttons import MempoolButtons, SmallTitleLabel
 
@@ -205,6 +204,7 @@ class FeeWarningBar(NotificationBar):
 
 class FeeGroup(QObject):
     signal_fee_rate_change = cast(SignalProtocol[[float]], pyqtSignal(float))
+    signal_download_missing_inputs = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -256,7 +256,15 @@ class FeeGroup(QObject):
 
         self.form_widget = QWidget()
         self.form = GridFormLayout(self.form_widget)
-        set_no_margins(self.form)
+        set_margins(
+            self.form,
+            margins={
+                Qt.Edge.TopEdge: 0,
+                Qt.Edge.LeftEdge: 0,
+                Qt.Edge.RightEdge: 0,
+                Qt.Edge.BottomEdge: 3,
+            },
+        )
         self.groupBox_Fee_layout.addWidget(self.form_widget, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         self.rbf_fee_label = IconLabel()
@@ -278,6 +286,17 @@ class FeeGroup(QObject):
         self.form.addWidget(
             self.fee_rate_label, self.form.count(), 0, 1, 2, alignment=Qt.AlignmentFlag.AlignHCenter
         )
+
+        self.missing_inputs_button = QPushButton("")
+        font = self.missing_inputs_button.font()
+        font.setPointSize(7)  # smaller than default
+        self.missing_inputs_button.setFont(font)
+        self.missing_inputs_button.setVisible(False)
+        self.missing_inputs_button.clicked.connect(self.signal_download_missing_inputs.emit)
+        self.form.addWidget(
+            self.missing_inputs_button, self.form.count(), 0, 1, 2, alignment=Qt.AlignmentFlag.AlignHCenter
+        )
+
         self.approximate_fee_label = QLabel()
         self.form.addWidget(
             self.approximate_fee_label, self.form.count(), 0, 1, 2, alignment=Qt.AlignmentFlag.AlignHCenter
@@ -373,6 +392,7 @@ class FeeGroup(QObject):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.fee_rate_label.setText(self.tr("Transaction fee rate"))
+        self.missing_inputs_button.setText(self.tr("Download from\nblock explorer"))
         self.approximate_fee_label.setText(html_f(self.tr("Approximate rate"), bf=True))
 
         # only in editor mode
@@ -394,10 +414,11 @@ class FeeGroup(QObject):
             self.approximate_fee_label,
             show_approximate_fee_label,
         )
-        self.form.set_row_visibility_of_widget(
-            self.fee_rate_label,
-            bool((not show_approximate_fee_label) and self.fee_info),
-        )
+
+        show_fee_label = not show_approximate_fee_label
+        self.form.set_row_visibility_of_widget(self.fee_rate_label, show_fee_label)
+        show_download_button = show_fee_label and not self.fee_info
+        self.form.set_row_visibility_of_widget(self.missing_inputs_button, show_download_button)
 
         self.approximate_fee_label.setToolTip(
             self.tr(

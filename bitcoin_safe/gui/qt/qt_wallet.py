@@ -1824,6 +1824,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         keys = self.history_list.get_selected_keys()
         self.wallet_balance_chart.highlight_txids(txids=set(keys))
 
+    def insert_relevant_info_into_graph(
+        self, prevout_transactions: list[bdk.Transaction], spending_txid: str
+    ):
+        added_txs = self.wallet.insert_relevant_info_into_graph(
+            prevout_transactions=prevout_transactions, spending_txid=spending_txid
+        )
+
+        if added_txs:
+            self.wallet_signals.updated.emit(
+                UpdateFilter(
+                    txids=[spending_txid], refresh_all=True, reason=(UpdateFilterReason.TransactionChange)
+                )
+            )
+
     def apply_txs(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
         """Apply txs."""
 
