@@ -55,15 +55,17 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit Weblate fixes (verified)
+      - name: Create signed commit
         if: steps.diff.outputs.changed == 'true'
-        uses: swinton/commit@v2.x
+        id: commit
+        uses: planetscale/ghcommit-action@v0.2.20
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WEBLATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
         with:
-          files: .
-          commit-message: "chore: run Weblate correct"
-          ref: ${{ github.event.pull_request.head.ref }}
+          commit_message: "chore: run Weblate correct"
+          repo: ${{ github.event.pull_request.head.repo.full_name }}
+          branch: ${{ github.event.pull_request.head.ref }}
+          file_pattern: .
 
       - name: Comment on PR
         if: steps.diff.outputs.changed == 'true'
