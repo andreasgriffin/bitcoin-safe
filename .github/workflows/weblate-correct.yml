@@ -57,7 +57,7 @@ jobs:
 
       - name: Commit Weblate fixes (verified)
         if: steps.diff.outputs.changed == 'true'
-        uses: swinton/commit@v2
+        uses: swinton/commit@v2.x
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
