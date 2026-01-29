@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   run-weblate-correct:
@@ -14,6 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check last commit author
+        id: last_commit
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const pr = context.payload.pull_request;
+            const owner = pr.head.repo.owner.login;
+            const repo = pr.head.repo.name;
+            const sha = pr.head.sha;
+            const commit = await github.rest.repos.getCommit({ owner, repo, ref: sha });
+            const login = (commit.data.author && commit.data.author.login) ? commit.data.author.login.toLowerCase() : '';
+            const shouldRun = login === 'weblate';
+            core.info(`Last commit author: ${login || 'unknown'}`);
+            core.setOutput('login', login || '');
+            core.setOutput('should_run', shouldRun ? 'true' : 'false');
+
+      - name: Skip when last commit is not Weblate
+        if: steps.last_commit.outputs.should_run != 'true'
+        env:
+          LAST_LOGIN: ${{ steps.last_commit.outputs.login }}
+        run: |
+          echo "Last commit author (${LAST_LOGIN:-unknown}) is not Weblate; skipping workflow."
+          exit 0
+
       - name: Check out PR branch
         uses: actions/checkout@v4
         with:
@@ -60,12 +86,30 @@ jobs:
         id: commit
         uses: planetscale/ghcommit-action@v0.2.20
         env:
-          GITHUB_TOKEN: ${{ secrets.WEBLATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commit_message: "chore: run Weblate correct"
           repo: ${{ github.event.pull_request.head.repo.full_name }}
           branch: ${{ github.event.pull_request.head.ref }}
           file_pattern: .
+
+      - name: Trigger tests workflow
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const sameRepo = pr.head.repo.full_name === context.repo.owner + '/' + context.repo.repo;
+            if (!sameRepo) {
+              core.info('Skipping test trigger because PR head is in a fork');
+              return;
+            }
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'tests.yml',
+              ref: pr.head.ref,
+            });
 
       - name: Comment on PR
         if: steps.diff.outputs.changed == 'true'
