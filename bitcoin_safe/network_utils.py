@@ -33,7 +33,7 @@ import logging
 import socket
 import ssl
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 from urllib.parse import urlparse
 
 import bdkpython as bdk
@@ -42,6 +42,7 @@ import socks
 from bitcoin_safe.pythonbdk_types import (
     IpAddress,  # Requires PySocks or similar package.
 )
+from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +116,7 @@ def send_request_to_electrum_server(
     request: dict[str, Any],
     use_ssl: bool,
     proxy_info: ProxyInfo | None,
-    timeout: int = 2,
+    timeout: float | Literal["default"] = "default",
 ) -> dict[str, Any] | None:
     """Sends an arbitrary JSON-RPC request to the Electrum server and returns the
     decoded JSON response.
@@ -133,6 +134,7 @@ def send_request_to_electrum_server(
     """
     sock = None
     ssock = None
+    timeout = default_timeout(proxy_info, timeout)
     try:
         # Set up the proxy if provided.
         if proxy_info:
@@ -224,7 +226,7 @@ def get_electrum_server_version(
     port: int,
     use_ssl: bool,
     proxy_info: ProxyInfo | None,
-    timeout: int = 2,
+    timeout: float | Literal["default"] = "default",
 ) -> str | None:
     """Retrieves the server version from an Electrum server.
 
