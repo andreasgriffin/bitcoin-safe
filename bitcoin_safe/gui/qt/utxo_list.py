@@ -288,7 +288,7 @@ class UTXOList(MyTreeView[OutPoint]):
             if str(outpoints[0]) in self._wallet_dict:
                 menu.add_action(
                     translate("utxo_list", "Open transaction"),
-                    partial(self.signals.open_tx_like.emit, outpoints[0].txid),
+                    partial(self.signals.open_tx_like.emit, outpoints[0].txid_str),
                 )
 
             txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid_str)

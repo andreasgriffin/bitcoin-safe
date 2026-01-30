@@ -1545,6 +1545,7 @@ class MainWindow(QMainWindow):
         | PackagedTxLike
         | TxBuilderInfos
         | TxUiInfos
+        | bdk.Txid
         | bytes
         | str,
     ) -> None:
@@ -1600,6 +1601,9 @@ class MainWindow(QMainWindow):
             else:
                 # try to convert to str
                 txlike = str(txlike)
+
+        if isinstance(txlike, bdk.Txid):
+            txlike = str(txlike)
 
         if isinstance(txlike, str):
             try:
