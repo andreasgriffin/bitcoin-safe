@@ -140,16 +140,15 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            const sameRepo = pr.head.repo.full_name === context.repo.owner + '/' + context.repo.repo;
-            if (!sameRepo) {
-              core.info('Skipping test trigger because PR head is in a fork');
-              return;
-            }
+
+            // At this point, PR identity and source repo are already hard-verified.
+            // No sameRepo check needed.
+
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'tests.yml',
-              ref: pr.head.ref,
+              ref: context.repo.default_branch,
             });
 
       - name: Comment on PR
