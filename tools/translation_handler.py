@@ -58,6 +58,14 @@ def run_local(cmd) -> CompletedProcess:
 
 def ts_to_csv(ts_path: Path, csv_path: Path):
     """Ts to csv."""
+
+    def _align_edge_spaces(source_text: str, translation_text: str) -> str:
+        """Match translation edge spaces to source edge spaces."""
+        leading_spaces = len(source_text) - len(source_text.lstrip(" "))
+        trailing_spaces = len(source_text) - len(source_text.rstrip(" "))
+        core_translation = translation_text.strip(" ")
+        return f"{' ' * leading_spaces}{core_translation}{' ' * trailing_spaces}"
+
     tree = ET.parse(ts_path)
     root = tree.getroot()
 
@@ -69,6 +77,7 @@ def ts_to_csv(ts_path: Path, csv_path: Path):
         for message in context.findall("message"):
             source = message.findtext(source_key, default="")
             translation = message.findtext("translation", default="")
+            translation = _align_edge_spaces(source, translation)
             location = message.find(location_key)
             filename = location.get("filename") if location is not None else ""
             line = location.get("line") if location is not None else ""
