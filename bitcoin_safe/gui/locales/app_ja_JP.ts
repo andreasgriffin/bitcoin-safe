@@ -87,7 +87,7 @@
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>署名されたメッセージ  </translation>
+			<translation>署名されたメッセージ</translation>
 		</message>
 	</context>
 	<context>
@@ -267,12 +267,12 @@
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-			<translation>金額が大きすぎます。左側の十分に資金があるカテゴリをクリックするか、または高度なタブでコインを選択してください  </translation>
+			<translation>金額が大きすぎます。左側の十分に資金があるカテゴリをクリックするか、または高度なタブでコインを選択してください</translation>
 		</message>
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too small</source>
-			<translation>金額が小さすぎます  </translation>
+			<translation>金額が小さすぎます</translation>
 		</message>
 	</context>
 	<context>
@@ -313,7 +313,7 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>印刷されたPDFに{number}語のシードを貼り付けてください。  </translation>
+			<translation>印刷されたPDFに{number}語のシードを貼り付けてください。</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
@@ -369,7 +369,7 @@
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>{npub}を持つデバイスの名前を入力してください  </translation>
+			<translation>{npub}を持つデバイスの名前を入力してください</translation>
 		</message>
 		<name>BaseDeviceItem</name>
 		<message>
@@ -388,22 +388,22 @@
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>{file_content} を BitcoinData として認識できませんでした  </translation>
+			<translation>{file_content} を BitcoinData として認識できませんでした</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>{npub}を持つデバイスの名前を入力してください  </translation>
+			<translation>{npub}を持つデバイスの名前を入力してください</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Go to {untrusted}</source>
-			<translation>{untrusted}に移動する  </translation>
+			<translation>{untrusted}に移動する</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>To complete the connection, accept my {id} request on the other device {other}.</source>
-			<translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。  </translation>
+			<translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。</translation>
 		</message>
 	</context>
 	<context>
@@ -450,7 +450,7 @@
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
-			<translation>含まれるフォルダを開く  </translation>
+			<translation>含まれるフォルダを開く</translation>
 		</message>
 	</context>
 	<context>
@@ -462,7 +462,7 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} 個のハードウェア署名者を購入                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe は主要なハードウェア署名者すべてをサポートしています: &lt;a href="{url}"&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>{number} 個のハードウェア署名者を購入                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe は主要なハードウェア署名者すべてをサポートしています: &lt;a href="{url}"&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -496,7 +496,7 @@ The combined parent+child fee rate should meet the target block.</source>
 		<name>CategoryList</name>
 		<message>
 			<source>Addresses</source>
-			<translation>アドレス  </translation>
+			<translation>アドレス</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -546,7 +546,7 @@ The combined parent+child fee rate should meet the target block.</source>
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
@@ -579,7 +579,7 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>アドレス {used_addresses} には既に他のアドレスと関連するトランザクションがあります。本当にカテゴリを変更しますか？  </translation>
+			<translation>アドレス {used_addresses} には既に他のアドレスと関連するトランザクションがあります。本当にカテゴリを変更しますか？</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
@@ -614,12 +614,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ChatGui</name>
 		<message>
 			<source>Share a PSBT</source>
-			<translation>PSBTを共有する  </translation>
+			<translation>PSBTを共有する</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Type your message here...</source>
-			<translation>ここにメッセージを入力してください...  </translation>
+			<translation>ここにメッセージを入力してください...</translation>
 		</message>
 	</context>
 	<context>
@@ -714,7 +714,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnSankey</name>
 		<message>
 			<source>Export svg</source>
-			<translation>SVGをエクスポート  </translation>
+			<translation>SVGをエクスポート</translation>
 		</message>
 	</context>
 	<context>
@@ -755,7 +755,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Export</source>
-			<translation>エクスポート  </translation>
+			<translation>エクスポート</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -780,7 +780,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>まずマルチシグネチャウォレットを選択してください  </translation>
+			<translation>まずマルチシグネチャウォレットを選択してください</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -845,7 +845,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>New descriptor entered</source>
-			<translation>新しいデスクリプターが入力されました  </translation>
+			<translation>新しいデスクリプターが入力されました</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -855,7 +855,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Scan Addresses ahead</source>
-			<translation>先にアドレスをスキャン  </translation>
+			<translation>先にアドレスをスキャン</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -865,7 +865,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet Properties</source>
-			<translation>ウォレットのプロパティ  </translation>
+			<translation>ウォレットのプロパティ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -878,19 +878,19 @@ Default 20</source>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Select the detected device</source>
-			<translation>検出されたデバイスを選択する  </translation>
+			<translation>検出されたデバイスを選択する</translation>
 		</message>
 	</context>
 	<context>
 		<name>DeviceManager</name>
 		<message>
 			<source>Trusted</source>
-			<translation>信頼済み  </translation>
+			<translation>信頼済み</translation>
 		</message>
 		<name>DeviceManager</name>
 		<message>
 			<source>Untrusted</source>
-			<translation>信頼されていない  </translation>
+			<translation>信頼されていない</translation>
 		</message>
 	</context>
 	<context>
@@ -973,12 +973,12 @@ Default 20</source>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
-			<translation>ダウンロード進行状況  </translation>
+			<translation>ダウンロード進行状況</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
 			<source>Download {}</source>
-			<translation>ダウンロード {}  </translation>
+			<translation>ダウンロード {}</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
@@ -1004,7 +1004,7 @@ Default 20</source>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
-			<translation>拡大  </translation>
+			<translation>拡大</translation>
 		</message>
 	</context>
 	<context>
@@ -1016,12 +1016,12 @@ Default 20</source>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Export {data_type} to hardware signer</source>
-			<translation>{data_type}をハードウェア署名者にエクスポートする  </translation>
+			<translation>{data_type}をハードウェア署名者にエクスポートする</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Image (*.{image_format})</source>
-			<translation>画像 (*.{image_format})  </translation>
+			<translation>画像 (*.{image_format})</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
@@ -1111,7 +1111,7 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>取引手数料は{fee}で、{sent}が送信されました！  </translation>
+			<translation>取引手数料は{fee}で、{sent}が送信されました！</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1121,7 +1121,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FeeWarningBar</name>
 		<message>
 			<source>{sent} is sent!</source>
-			<translation>{sent}が送信されました！  </translation>
+			<translation>{sent}が送信されました！</translation>
 		</message>
 	</context>
 	<context>
@@ -1150,12 +1150,12 @@ since the final size of the transaction is unknown.</source>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export</source>
-			<translation>エクスポート  </translation>
+			<translation>エクスポート</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export to file</source>
-			<translation>ファイルにエクスポート  </translation>
+			<translation>ファイルにエクスポート</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1182,12 +1182,12 @@ since the final size of the transaction is unknown.</source>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Invalid Fingerprint</source>
-			<translation>無効な指紋  </translation>
+			<translation>無効な指紋</translation>
 		</message>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Missing Fingerprint</source>
-			<translation>指紋がありません  </translation>
+			<translation>指紋がありません</translation>
 		</message>
 	</context>
 	<context>
@@ -1199,7 +1199,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Prefill transaction fields</source>
-			<translation>トランザクションフィールドを事前に入力する  </translation>
+			<translation>トランザクションフィールドを事前に入力する</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
@@ -1209,7 +1209,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Retry</source>
-			<translation>再試行  </translation>
+			<translation>再試行</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
@@ -1226,7 +1226,7 @@ since the final size of the transaction is unknown.</source>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>ハードウェア署名者の名前（ステッカーラベル）を入力してください  </translation>
+			<translation>ハードウェア署名者の名前（ステッカーラベル）を入力してください</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
@@ -1236,34 +1236,34 @@ since the final size of the transaction is unknown.</source>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>成功！すべてのハードウェア署名者とこのステップを完了してから、次へをクリックしてください。  </translation>
+			<translation>成功！すべてのハードウェア署名者とこのステップを完了してから、次へをクリックしてください。</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>The setup didnt complete. Please repeat.</source>
-			<translation>設定が完了しませんでした。もう一度お試しください。  </translation>
+			<translation>設定が完了しませんでした。もう一度お試しください。</translation>
 		</message>
 	</context>
 	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
-			<translation>ファイルをエクスポートする  </translation>
+			<translation>ファイルをエクスポートする</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Import File or Text</source>
-			<translation>ファイルまたはテキストをインポートする  </translation>
+			<translation>ファイルまたはテキストをインポートする</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>QR Code</source>
-			<translation>QRコード  </translation>
+			<translation>QRコード</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
@@ -1320,7 +1320,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Save as file</source>
-			<translation>ファイルとして保存  </translation>
+			<translation>ファイルとして保存</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1367,35 +1367,35 @@ since the final size of the transaction is unknown.</source>
 		<name>HistListWithToolbar</name>
 		<message>
 			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;PDF残高明細書を生成  </translation>
+			<translation>&amp;PDF残高明細書を生成</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportClipboard</name>
 		<message>
 			<source>Share</source>
-			<translation>共有  </translation>
+			<translation>共有</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
 			<source>File</source>
-			<translation>ファイル  </translation>
+			<translation>ファイル</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
 			<source>QR</source>
-			<translation>QR  </translation>
+			<translation>QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
@@ -1429,7 +1429,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>既存の同期キーを使用してクラウドからラベルを復元  </translation>
+			<translation>既存の同期キーを使用してクラウドからラベルを復元</translation>
 		</message>
 	</context>
 	<context>
@@ -1441,7 +1441,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next signer</source>
-			<translation>次の署名者  </translation>
+			<translation>次の署名者</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1456,7 +1456,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>前の署名者  </translation>
+			<translation>前の署名者</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1468,17 +1468,17 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
-			<translation>キーの起源がありません  </translation>
+			<translation>キーの起源がありません</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided account {provided_account} differs from the default account {default_account}.</source>
-			<translation>提供されたアカウント {provided_account} はデフォルトのアカウント {default_account} と異なります。  </translation>
+			<translation>提供されたアカウント {provided_account} はデフォルトのアカウント {default_account} と異なります。</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-			<translation>提供された情報は{key_origin_network}用です。{network}ネットワークのxPubを提供してください  </translation>
+			<translation>提供された情報は{key_origin_network}用です。{network}ネットワークのxPubを提供してください</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -1536,12 +1536,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please enter a valid key origin.</source>
-			<translation>有効なキーオリジンを入力してください。  </translation>
+			<translation>有効なキーオリジンを入力してください。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please import the information from all hardware signers first</source>
-			<translation>最初にすべてのハードウェア署名者から情報をインポートしてください  </translation>
+			<translation>最初にすべてのハードウェア署名者から情報をインポートしてください</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1551,12 +1551,12 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json)</source>
-			<translation>エクスポートされたファイル（sparrow-export.jsonのような）を貼り付けてください  </translation>
+			<translation>エクスポートされたファイル（sparrow-export.jsonのような）を貼り付けてください</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json):</source>
-			<translation>エクスポートされたファイル（sparrow-export.jsonのような）を貼り付けてください：  </translation>
+			<translation>エクスポートされたファイル（sparrow-export.jsonのような）を貼り付けてください：</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1566,7 +1566,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-			<translation>選択されたアドレスタイプ{type}の標準は{expected_key_origin}です。確信がない場合は修正してください。  </translation>
+			<translation>選択されたアドレスタイプ{type}の標準は{expected_key_origin}です。確信がない場合は修正してください。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1586,7 +1586,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>xPub Origin</source>
-			<translation>xPubの起源  </translation>
+			<translation>xPubの起源</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1597,7 +1597,7 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} それでも進みますか？  </translation>
+			<translation>{msg} それでも進みますか？</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1609,12 +1609,12 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>全ての{number}署名者を指紋{fingerprints}で記入する  </translation>
+			<translation>全ての{number}署名者を指紋{fingerprints}で記入する</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Please import the complete data for Signer {i}!</source>
-			<translation>署名者{i}の完全なデータをインポートしてください！  </translation>
+			<translation>署名者{i}の完全なデータをインポートしてください！</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -1624,29 +1624,29 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>同じ指紋を何度もインポートしました!!! 異なる署名デバイスを使用してください。  </translation>
+			<translation>同じ指紋を何度もインポートしました!!! 異なる署名デバイスを使用してください。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>同じxpubを何度もインポートしました!!! 異なる署名デバイスを使用してください。  </translation>
+			<translation>同じxpubを何度もインポートしました!!! 異なる署名デバイスを使用してください。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-			<translation>インポートされたキーの起源{key_origins}が異なります！ これが意図したものであるかどうか再確認してください。  </translation>
+			<translation>インポートされたキーの起源{key_origins}が異なります！ これが意図したものであるかどうか再確認してください。</translation>
 		</message>
 	</context>
 	<context>
 		<name>LabelBackup</name>
 		<message>
 			<source>Backup secret sync key:</source>
-			<translation>バックアップ秘密同期キー：  </translation>
+			<translation>バックアップ秘密同期キー：</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>各コンピューターの同期＆チャットタブで信頼できるコンピューターを選択してください。  </translation>
+			<translation>各コンピューターの同期＆チャットタブで信頼できるコンピューターを選択してください。</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1656,12 +1656,12 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Enable</source>
-			<translation>有効にする  </translation>
+			<translation>有効にする</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>アドレスラベルとカテゴリーの暗号化クラウドバックアップ  </translation>
+			<translation>アドレスラベルとカテゴリーの暗号化クラウドバックアップ</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1671,7 +1671,7 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Multi-computer synchronization and chat</source>
-			<translation>マルチコンピュータ同期とチャット  </translation>
+			<translation>マルチコンピュータ同期とチャット</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1739,26 +1739,26 @@ Do you want to proceed anyway?</source>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-			<translation>この取引はコインカテゴリー {categories} を組み合わせ、これらのカテゴリーをリンク可能にします！  </translation>
+			<translation>この取引はコインカテゴリー {categories} を組み合わせ、これらのカテゴリーをリンク可能にします！</translation>
 		</message>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>{category} (in wallet {wallet_ids})</source>
-			<translation>{category}（ウォレット {wallet_ids} 内）  </translation>
+			<translation>{category}（ウォレット {wallet_ids} 内）</translation>
 		</message>
 	</context>
 	<context>
 		<name>LoadingWalletTab</name>
 		<message>
 			<source>Loading, please wait...</source>
-			<translation>読み込み中、お待ちください...  </translation>
+			<translation>読み込み中、お待ちください...</translation>
 		</message>
 	</context>
 	<context>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>この取引を編集するために送信者のウォレットを開いてください。  </translation>
+			<translation> この取引を編集するために送信者のウォレットを開いてください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1823,7 +1823,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export</source>
-			<translation>&amp;エクスポート  </translation>
+			<translation>&amp;エクスポート</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1908,7 +1908,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
-			<translation>&amp;ハードウェア署名者とのマルチシグの登録  </translation>
+			<translation>&amp;ハードウェア署名者とのマルチシグの登録</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1918,7 +1918,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
-			<translation>&amp;検索  </translation>
+			<translation>&amp;検索</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1938,7 +1938,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Show Logs</source>
-			<translation>&amp;ログを表示  </translation>
+			<translation>&amp;ログを表示</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1948,12 +1948,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Tools</source>
-			<translation>&amp;ツール  </translation>
+			<translation>&amp;ツール</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;USB署名者ツール  </translation>
+			<translation>&amp;USB署名者ツール</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1978,7 +1978,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>ID が {name} のウォレットはすでに開かれています。</translation>
+			<translation>ID が {name} のウォレットはすでに開かれています。  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1998,12 +1998,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close Tab</source>
-			<translation>タブを閉じる  </translation>
+			<translation>タブを閉じる</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close all transactions</source>
-			<translation>すべての取引を閉じる  </translation>
+			<translation>すべての取引を閉じる</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2058,7 +2058,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Do you want to save the PSBT {id}?</source>
-			<translation>PSBT {id} を保存しますか？  </translation>
+			<translation>PSBT {id} を保存しますか？</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2108,12 +2108,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ファイルが選択されていません  </translation>
+			<translation>ファイルが選択されていません</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-			<translation>ウォレットが開かれていません。この取引を編集するために送信者のウォレットを開いてください。  </translation>
+			<translation>ウォレットが開かれていません。この取引を編集するために送信者のウォレットを開いてください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2178,7 +2178,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>まずマルチシグネチャウォレットを選択してください  </translation>
+			<translation>まずマルチシグネチャウォレットを選択してください</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2198,7 +2198,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>QR &amp;Scanner</source>
-			<translation>QR &amp;スキャナ  </translation>
+			<translation>QR &amp;スキャナ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,7 +2223,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Save PSBT?</source>
-			<translation>PSBTを保存しますか？  </translation>
+			<translation>PSBTを保存しますか？</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,7 +2248,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>署名されたメッセージ  </translation>
+			<translation>署名されたメッセージ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2314,7 +2314,7 @@ Do you want to keep the wallet open?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet Files (*.wallet);;All Files (*)</source>
-			<translation>ウォレットファイル (*.wallet);;すべてのファイル (*)  </translation>
+			<translation>ウォレットファイル (*.wallet);;すべてのファイル (*)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2389,7 +2389,7 @@ Do you want to hide to tray instead?</source>
 		<name>MyTreeView</name>
 		<message>
 			<source>All Files (*);;Text Files (*.csv)</source>
-			<translation>すべてのファイル (*);;テキストファイル (*.csv)  </translation>
+			<translation>すべてのファイル (*);;テキストファイル (*.csv)</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -2404,12 +2404,12 @@ Do you want to hide to tray instead?</source>
 		<name>MyTreeView</name>
 		<message>
 			<source>Export csv</source>
-			<translation>csvをエクスポート  </translation>
+			<translation>csvをエクスポート</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ファイルが選択されていません  </translation>
+			<translation>ファイルが選択されていません</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -2431,7 +2431,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>esploraのURLの'{scheme}'が正しいことを確認していますか？  </translation>
+			<translation>esploraのURLの'{scheme}'が正しいことを確認していますか？</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2522,12 +2522,12 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>electrumのURLから'{scheme}'を削除してください  </translation>
+			<translation>electrumのURLから'{scheme}'を削除してください</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>mempoolのURLの始めに'{scheme}'を試してください  </translation>
+			<translation>mempoolのURLの始めに'{scheme}'を試してください</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2537,12 +2537,12 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
-			<translation>提案のために⬇矢印キーを押してください  </translation>
+			<translation>提案のために⬇矢印キーを押してください</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Proxy:</source>
-			<translation>プロキシ：  </translation>
+			<translation>プロキシ：</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2564,7 +2564,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The format for tor addresses should be '{scheme}'</source>
-			<translation>torアドレスの形式は'{scheme}'である必要があります  </translation>
+			<translation>torアドレスの形式は'{scheme}'である必要があります</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2574,7 +2574,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>プロキシは同期＆チャット機能には適用されません！  </translation>
+			<translation>プロキシは同期＆チャット機能には適用されません！</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2704,14 +2704,14 @@ import custom wallet</source>
 		<name>NostrSync</name>
 		<message>
 			<source>Group Chat</source>
-			<translation>グループチャット  </translation>
+			<translation>グループチャット</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSyncWithSingleChats</name>
 		<message>
 			<source>Chat</source>
-			<translation>チャット  </translation>
+			<translation>チャット</translation>
 		</message>
 	</context>
 	<context>
@@ -2966,7 +2966,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>Addresses</source>
-			<translation>アドレス  </translation>
+			<translation>アドレス</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2986,7 +2986,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
-			<translation>すべてのファイル (*);;ウォレットファイル (*.wallet)  </translation>
+			<translation>すべてのファイル (*);;ウォレットファイル (*.wallet)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3032,7 +3032,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Connected to {server}</source>
-			<translation>{server} に接続しました  </translation>
+			<translation>{server} に接続しました</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3052,7 +3052,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Disconnected from {server}</source>
-			<translation>{server} から切断しました  </translation>
+			<translation>{server} から切断しました</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3103,7 +3103,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ウォレット '{wallet}' の新しいトランザクション: {txs}  </translation>
+			<translation>ウォレット '{wallet}' の新しいトランザクション: {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3113,7 +3113,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ファイルが選択されていません  </translation>
+			<translation>ファイルが選択されていません</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3163,7 +3163,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Save wallet</source>
-			<translation>ウォレットを保存  </translation>
+			<translation>ウォレットを保存</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3173,7 +3173,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Successfully updated {number} Labels</source>
-			<translation>正常に{number}のラベルを更新しました  </translation>
+			<translation>正常に{number}のラベルを更新しました</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3183,7 +3183,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Syncing with {server}</source>
-			<translation>{server} と同期中  </translation>
+			<translation>{server} と同期中</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3230,12 +3230,12 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>finished updating lists</source>
-			<translation>リストの更新完了  </translation>
+			<translation>リストの更新完了</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>start updating lists</source>
-			<translation>リストの更新を開始  </translation>
+			<translation>リストの更新を開始</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3248,7 +3248,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QrToolButton</name>
 		<message>
 			<source>QR Code</source>
-			<translation>QRコード  </translation>
+			<translation>QRコード</translation>
 		</message>
 	</context>
 	<context>
@@ -3302,7 +3302,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Balance = {amount}</source>
-			<translation>残高 = {amount}  </translation>
+			<translation>残高 = {amount}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3336,14 +3336,14 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金をコントロールしているかどうかを知るためには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、大量のビットコインをウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだ大きな資金をウォレットに送らないでください。すべての送金テストを最初に完了してください！&lt;/b&gt;  </translation>
+			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金をコントロールしているかどうかを知るためには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、大量のビットコインをウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだ大きな資金をウォレットに送らないでください。すべての送金テストを最初に完了してください！&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
 			<source>Recently Opened Wallets</source>
-			<translation>最近開いたウォレット  </translation>
+			<translation>最近開いたウォレット</translation>
 		</message>
 	</context>
 	<context>
@@ -3382,7 +3382,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>Add Recipient</source>
-			<translation>受取人を追加  </translation>
+			<translation>受取人を追加</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3392,47 +3392,47 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;CSV (*.csv)</source>
-			<translation>すべてのファイル (*);;CSV (*.csv)  </translation>
+			<translation>すべてのファイル (*);;CSV (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.csv)</source>
-			<translation>すべてのファイル (*);;ウォレットファイル (*.csv)  </translation>
+			<translation>すべてのファイル (*);;ウォレットファイル (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Amount [{unit}]</source>
-			<translation>金額 [{unit}]  </translation>
+			<translation>金額 [{unit}]</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export</source>
-			<translation>エクスポート  </translation>
+			<translation>エクスポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export CSV Template</source>
-			<translation>CSVテンプレートをエクスポート  </translation>
+			<translation>CSVテンプレートをエクスポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export as CSV file</source>
-			<translation>CSVファイルとしてエクスポート  </translation>
+			<translation>CSVファイルとしてエクスポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export csv</source>
-			<translation>csvをエクスポート  </translation>
+			<translation>csvをエクスポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import CSV file</source>
-			<translation>CSVファイルをインポート  </translation>
+			<translation>CSVファイルをインポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import/Export</source>
-			<translation>インポート/エクスポート  </translation>
+			<translation>インポート/エクスポート</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3442,22 +3442,22 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ファイルが選択されていません  </translation>
+			<translation>ファイルが選択されていません</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>No rows recognized</source>
-			<translation>行が認識されませんでした  </translation>
+			<translation>行が認識されませんでした</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Open CSV</source>
-			<translation>CSVを開く  </translation>
+			<translation>CSVを開く</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Please use the CSV template and include the header row.</source>
-			<translation>CSVテンプレートを使用し、ヘッダ行を含めてください。  </translation>
+			<translation>CSVテンプレートを使用し、ヘッダ行を含めてください。</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3472,12 +3472,12 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>{address} is not a valid address!</source>
-			<translation>{address} は有効なアドレスではありません！  </translation>
+			<translation>{address} は有効なアドレスではありません！</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>{amount} is not a valid integer!</source>
-			<translation>{amount} は有効な整数ではありません！  </translation>
+			<translation>{amount} は有効な整数ではありません！</translation>
 		</message>
 	</context>
 	<context>
@@ -3489,7 +3489,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next signer</source>
-			<translation>次の署名者  </translation>
+			<translation>次の署名者</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
@@ -3504,7 +3504,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>前の署名者  </translation>
+			<translation>前の署名者</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
@@ -3528,7 +3528,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RelayDialog</name>
 		<message>
 			<source>Enter custom Nostr Relays</source>
-			<translation>カスタムNostrリレーを入力する  </translation>
+			<translation>カスタムNostrリレーを入力する</translation>
 		</message>
 	</context>
 	<context>
@@ -3542,31 +3542,31 @@ Outputs stay the same; only the fee changes.</source>
 		<name>SankeyWidget</name>
 		<message>
 			<source>All Files (*);;Text Files (*.svg)</source>
-			<translation>すべてのファイル (*);;テキストファイル (*.svg)  </translation>
+			<translation>すべてのファイル (*);;テキストファイル (*.svg)</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>Export svg</source>
-			<translation>SVGをエクスポート  </translation>
+			<translation>SVGをエクスポート</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ファイルが選択されていません  </translation>
+			<translation>ファイルが選択されていません</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsExportXpub</name>
 		<message>
 			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>ハードウェア署名者からウォレット情報をエクスポートする方法  </translation>
+			<translation>ハードウェア署名者からウォレット情報をエクスポートする方法</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsGenerateSeed</name>
 		<message>
 			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>各ハードウェア署名者で{number}のシークレットシードワードを生成し、回復シートに書き込む  </translation>
+			<translation>各ハードウェア署名者で{number}のシークレットシードワードを生成し、回復シートに書き込む</translation>
 		</message>
 	</context>
 	<context>
@@ -3581,7 +3581,7 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>バックアップ紙に書かれた{number}語とハードウェア署名者を比較します。ここで間違えると、お金が失われます！  </translation>
+			<translation>バックアップ紙に書かれた{number}語とハードウェア署名者を比較します。ここで間違えると、お金が失われます！</translation>
 		</message>
 	</context>
 	<context>
@@ -3595,24 +3595,24 @@ If you make a mistake here, your money is lost!</source>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
-			<translation>使用済みアウトプット  </translation>
+			<translation>使用済みアウトプット</translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Invalid seed</source>
-			<translation>無効なシード  </translation>
+			<translation>無効なシード</translation>
 		</message>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Missing Seed</source>
-			<translation>シードがありません  </translation>
+			<translation>シードがありません</translation>
 		</message>
 	</context>
 	<context>
@@ -3693,7 +3693,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Sign</source>
-			<translation>署名  </translation>
+			<translation>署名</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3708,7 +3708,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>署名されたメッセージ  </translation>
+			<translation>署名されたメッセージ</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3735,12 +3735,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
-			<translation>{bip32_path} で署名するメッセージを入力  </translation>
+			<translation>{bip32_path} で署名するメッセージを入力</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Sign message</source>
-			<translation>メッセージを署名する  </translation>
+			<translation>メッセージを署名する</translation>
 		</message>
 	</context>
 	<context>
@@ -3752,17 +3752,17 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Message too short.</source>
-			<translation>メッセージが短すぎます。  </translation>
+			<translation>メッセージが短すぎます。</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
-			<translation>署名  </translation>
+			<translation>署名</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>署名されたメッセージ  </translation>
+			<translation>署名されたメッセージ</translation>
 		</message>
 	</context>
 	<context>
@@ -3849,7 +3849,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
-			<translation>「{sticker}」を{device_name}に  </translation>
+			<translation>「{sticker}」を{device_name}に</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -3859,7 +3859,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>Put the following stickers on your hardware:</source>
-			<translation>次のステッカーをハードウェアに貼ってください：  </translation>
+			<translation>次のステッカーをハードウェアに貼ってください：</translation>
 		</message>
 	</context>
 	<context>
@@ -3908,7 +3908,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期  </translation>
+			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3918,7 +3918,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>受信したトランザクションと PSBTs を開く  </translation>
+			<translation>受信したトランザクションと PSBTs を開く</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3928,7 +3928,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>同期キーをリセット  </translation>
+			<translation>同期キーをリセット</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3959,19 +3959,19 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>SyncClient</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author}: {description}  </translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期  </translation>
+			<translation>信頼できるデバイスへのラベルバックアップと暗号化された同期</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>受信したトランザクションと PSBTs を開く  </translation>
+			<translation>受信したトランザクションと PSBTs を開く</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
@@ -3981,24 +3981,24 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>SyncTab</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author}: {description}  </translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
-			<translation>アドレスインデックス  </translation>
+			<translation>アドレスインデックス</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Display Address</source>
-			<translation>アドレスを表示する  </translation>
+			<translation>アドレスを表示する</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Get xpubs</source>
-			<translation>xpubを取得する  </translation>
+			<translation>xpubを取得する</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4013,7 +4013,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your PSBT in here</source>
-			<translation>ここにPSBTを貼り付けてください  </translation>
+			<translation>ここにPSBTを貼り付けてください</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4023,68 +4023,68 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your text to be signed</source>
-			<translation>署名するテキストを貼り付けてください  </translation>
+			<translation>署名するテキストを貼り付けてください</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Show Seed</source>
-			<translation>シードを表示 </translation>
+			<translation>シードを表示</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign Message</source>
-			<translation>メッセージを署名する  </translation>
+			<translation>メッセージを署名する</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign PSBT</source>
-			<translation>PSBTを署名する  </translation>
+			<translation>PSBTを署名する</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>USB Signer Tools</source>
-			<translation>USB署名者ツール  </translation>
+			<translation>USB署名者ツール</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock</source>
-			<translation>ロック解除  </translation>
+			<translation>ロック解除</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock Devices</source>
-			<translation>デバイスのロック解除  </translation>
+			<translation>デバイスのロック解除</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Wipe Device</source>
-			<translation>デバイスをワイプ  </translation>
+			<translation>デバイスをワイプ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs  </translation>
+			<translation>XPUBs</translation>
 		</message>
 	</context>
 	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
-			<translation>デバイスを信頼しない  </translation>
+			<translation>デバイスを信頼しない</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxExport</name>
 		<message>
 			<source>Export Transaction</source>
-			<translation>トランザクションをエクスポート  </translation>
+			<translation>トランザクションをエクスポート</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Create and collect {n}. signature</source>
-			<translation>{n} 番目の署名を作成し収集する  </translation>
+			<translation>{n} 番目の署名を作成し収集する</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4107,32 +4107,32 @@ Signatures:
 		<name>UI</name>
 		<message>
 			<source>Export sync key</source>
-			<translation>同期キーをエクスポート  </translation>
+			<translation>同期キーをエクスポート</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Import sync key</source>
-			<translation>同期キーをインポート  </translation>
+			<translation>同期キーをインポート</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>My Device: {id}</source>
-			<translation>私のデバイス：{id}  </translation>
+			<translation>私のデバイス：{id}</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>同期キーをリセット  </translation>
+			<translation>同期キーをリセット</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Set custom Relay list</source>
-			<translation>カスタムリレーリストを設定する  </translation>
+			<translation>カスタムリレーリストを設定する</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Sync key Export</source>
-			<translation>同期キーのエクスポート  </translation>
+			<translation>同期キーのエクスポート</translation>
 		</message>
 		<name>UI</name>
 		<message>
@@ -4141,7 +4141,7 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>あなたの同期キーは：{sync_key} これを保存し、'インポート同期キー'をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。  </translation>
+			<translation>あなたの同期キーは：{sync_key} これを保存し、'インポート同期キー'をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。</translation>
 		</message>
 	</context>
 	<context>
@@ -4169,12 +4169,12 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Create</source>
-			<translation>作成  </translation>
+			<translation>作成</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Do you want to continue, even though both coin categories become linkable?</source>
-			<translation>両方のコインカテゴリがリンク可能になるにも関わらず、続行しますか？  </translation>
+			<translation>両方のコインカテゴリがリンク可能になるにも関わらず、続行しますか？</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4243,7 +4243,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
-			<translation>ファイルをインポート  </translation>
+			<translation>ファイルをインポート</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4253,7 +4253,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>ラベル：  </translation>
+			<translation>ラベル： </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4316,7 +4316,7 @@ Or you can broadcast via {url}</source>
 		<name>USBDevice</name>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
-			<translation>デバイスに既存のシードを復元しますか？  </translation>
+			<translation>デバイスに既存のシードを復元しますか？</translation>
 		</message>
 	</context>
 	<context>
@@ -4333,7 +4333,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No device selected</source>
-			<translation>デバイスが選択されていません  </translation>
+			<translation>デバイスが選択されていません</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4343,54 +4343,54 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>変更が有効になるようにコンピュータを再起動してください。  </translation>
+			<translation>変更が有効になるようにコンピュータを再起動してください。</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Please unlock USB devices</source>
-			<translation>USBデバイスをアンロックしてください  </translation>
+			<translation>USBデバイスをアンロックしてください</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-			<translation>USB 経由でのマルチシグウォレットの登録は {device_type} によってサポートされていません。sdカードを使用するか、QR コードをスキャンしてください。 </translation>
+			<translation>USB 経由でのマルチシグウォレットの登録は {device_type} によってサポートされていません。sdカードを使用するか、QR コードをスキャンしてください。</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Restart computer</source>
-			<translation>コンピュータを再起動する  </translation>
+			<translation>コンピュータを再起動する</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>USBデバイス  </translation>
+			<translation>USBデバイス</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Unlock USB devices</source>
-			<translation>USBデバイスをアンロックする  </translation>
+			<translation>USBデバイスをアンロックする</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>ヘルプ  </translation>
+			<translation>ヘルプ</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig</source>
-			<translation>マルチシグを登録する  </translation>
+			<translation>マルチシグを登録する</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig wallet on hardware signer</source>
-			<translation>ハードウェア署名者にマルチシグウォレットを登録する  </translation>
+			<translation>ハードウェア署名者にマルチシグウォレットを登録する</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>ハードウェア署名者でマルチシグウォレットを成功裏に登録した  </translation>
+			<translation>ハードウェア署名者でマルチシグウォレットを成功裏に登録した</translation>
 		</message>
 	</context>
 	<context>
@@ -4402,7 +4402,7 @@ Or you can broadcast via {url}</source>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate receive address:</source>
-			<translation>受信アドレスを検証する：  </translation>
+			<translation>受信アドレスを検証する：</translation>
 		</message>
 	</context>
 	<context>
@@ -4456,12 +4456,12 @@ Or you can broadcast via {url}</source>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
-			<translation>信頼  </translation>
+			<translation>信頼</translation>
 		</message>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust this device</source>
-			<translation>このデバイスを信頼する  </translation>
+			<translation>このデバイスを信頼する</translation>
 		</message>
 	</context>
 	<context>
@@ -4473,7 +4473,7 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Could not verify the download. Please try again later.</source>
-			<translation>ダウンロードを確認できませんでした。後でもう一度お試しください。  </translation>
+			<translation>ダウンロードを確認できませんでした。後でもう一度お試しください。</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4488,12 +4488,12 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
-			<translation>署名が一致しません!!! もう一度お試しください。  </translation>
+			<translation>署名が一致しません!!! もう一度お試しください。</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature verified.</source>
-			<translation>署名が確認されました。  </translation>
+			<translation>署名が確認されました。</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4505,7 +4505,7 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>{amount} 選択済み ({number} UTXOs)  </translation>
+			<translation>{amount} 選択済み ({number} UTXOs)</translation>
 		</message>
 	</context>
 	<context>
@@ -4715,12 +4715,12 @@ Or you can broadcast via {url}</source>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Please choose a wallet name</source>
-			<translation>ウォレット名を選択してください  </translation>
+			<translation>ウォレット名を選択してください</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>The wallet {filename} exists already.</source>
-			<translation>ウォレット {filename} はすでに存在します。  </translation>
+			<translation>ウォレット {filename} はすでに存在します。</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
@@ -4742,7 +4742,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for transaction</source>
-			<translation>取引のためのラベルを入力してください  </translation>
+			<translation>取引のためのラベルを入力してください</translation>
 		</message>
 	</context>
 	<context>
@@ -4754,7 +4754,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Send tests done successfully.</source>
-			<translation>すべての送信テストが成功しました。  </translation>
+			<translation>すべての送信テストが成功しました。</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4764,7 +4764,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Buy hardware signers</source>
-			<translation>ハードウェア署名者を購入する  </translation>
+			<translation>ハードウェア署名者を購入する</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4779,7 +4779,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Label the hardware signers</source>
-			<translation>ハードウェア署名者にラベルを付ける  </translation>
+			<translation>ハードウェア署名者にラベルを付ける</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4827,7 +4827,7 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>テストトランザクション '{tx_text}' が成功しました。送信テストに進んでください： '{next_text}'  </translation>
+			<translation>テストトランザクション '{tx_text}' が成功しました。送信テストに進んでください： '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4856,12 +4856,12 @@ Or you can broadcast via {url}</source>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
-			<translation>形式を変換する  </translation>
+			<translation>形式を変換する</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Invalid xpub</source>
-			<translation>無効なxpub  </translation>
+			<translation>無効なxpub</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
@@ -4959,57 +4959,57 @@ Or you can broadcast via {url}</source>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Executing the script</source>
-			<translation>スクリプトを実行する  </translation>
+			<translation>スクリプトを実行する</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Install udev files</source>
-			<translation>udevファイルをインストールする  </translation>
+			<translation>udevファイルをインストールする</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No HWI AddressType could be found for {name}</source>
-			<translation>{name}のHWIアドレスタイプが見つかりませんでした  </translation>
+			<translation>{name}のHWIアドレスタイプが見つかりませんでした</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No USB devices found</source>
-			<translation>USBデバイスが見つかりません  </translation>
+			<translation>USBデバイスが見つかりません</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No suitable terminal emulator found.</source>
-			<translation>適切なターミナルエミュレータが見つかりませんでした。  </translation>
+			<translation>適切なターミナルエミュレータが見つかりませんでした。</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-			<translation>キーの起源{key_origin}のネットワーク部分{network_str}はhで硬化する必要があります  </translation>
+			<translation>キーの起源{key_origin}のネットワーク部分{network_str}はhで硬化する必要があります</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>USBデバイス  </translation>
+			<translation>USBデバイス</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-			<translation>udevファイルが不足しているため、USBエラーが発生する可能性があります。今すぐudevファイルをインストールしますか？  </translation>
+			<translation>udevファイルが不足しているため、USBエラーが発生する可能性があります。今すぐudevファイルをインストールしますか？</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Unknown network/coin type {network_str} in {key_origin}</source>
-			<translation>{key_origin}の未知のネットワーク/コインタイプ{network_str}  </translation>
+			<translation>{key_origin}の未知のネットワーク/コインタイプ{network_str}</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>derivation_path {value} must start with a /</source>
-			<translation>導出パス{value}は/で始まる必要があります  </translation>
+			<translation>導出パス{value}は/で始まる必要があります</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
-			<translation>{value}は有効な指紋ではありません  </translation>
+			<translation>{value}は有効な指紋ではありません</translation>
 		</message>
 	</context>
 	<context>
@@ -5058,22 +5058,22 @@ Or you can broadcast via {url}</source>
 		<name>constant</name>
 		<message>
 			<source>All files (*)</source>
-			<translation>すべてのファイル (*)  </translation>
+			<translation>すべてのファイル (*)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Complete Transaction (*.txn)</source>
-			<translation>完全なトランザクション (*.txn)  </translation>
+			<translation>完全なトランザクション (*.txn)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Partial Transaction (*.psbt)</source>
-			<translation>部分的なトランザクション (*.psbt)  </translation>
+			<translation>部分的なトランザクション (*.psbt)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Transaction (*.txn *.psbt);;All files (*)</source>
-			<translation>トランザクション (*.txn *.psbt);;すべてのファイル (*)  </translation>
+			<translation>トランザクション (*.txn *.psbt);;すべてのファイル (*)</translation>
 		</message>
 	</context>
 	<context>
@@ -5100,7 +5100,7 @@ Or you can broadcast via {url}</source>
 		<name>d</name>
 		<message>
 			<source>Import from camera</source>
-			<translation>カメラからインポート  </translation>
+			<translation>カメラからインポート</translation>
 		</message>
 		<name>d</name>
 		<message>
@@ -5115,7 +5115,7 @@ Or you can broadcast via {url}</source>
 		<name>d</name>
 		<message>
 			<source>Recovery</source>
-			<translation>回復  </translation>
+			<translation>回復</translation>
 		</message>
 		<name>d</name>
 		<message>
@@ -5147,7 +5147,7 @@ Or you can broadcast via {url}</source>
 		<name>data</name>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-			<translation>指紋が異なります。同じ指紋のみがサポートされ、すべての派生キーが同じ署名者に属することが保証されます！  </translation>
+			<translation>指紋が異なります。同じ指紋のみがサポートされ、すべての派生キーが同じ署名者に属することが保証されます！</translation>
 		</message>
 	</context>
 	<context>
@@ -5205,7 +5205,7 @@ Or you can broadcast via {url}</source>
 		<name>help</name>
 		<message>
 			<source>Help</source>
-			<translation>ヘルプ  </translation>
+			<translation>ヘルプ</translation>
 		</message>
 	</context>
 	<context>
@@ -5254,7 +5254,7 @@ Or you can broadcast via {url}</source>
 		<name>import</name>
 		<message>
 			<source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-			<translation>同期タブに移動してそこで同期キーをインポートしてください。その後、ラベルが自動的に復元されます。  </translation>
+			<translation>同期タブに移動してそこで同期キーをインポートしてください。その後、ラベルが自動的に復元されます。</translation>
 		</message>
 	</context>
 	<context>
@@ -5266,7 +5266,7 @@ Or you can broadcast via {url}</source>
 		<name>importer</name>
 		<message>
 			<source>Import file</source>
-			<translation>ファイルをインポート  </translation>
+			<translation>ファイルをインポート</translation>
 		</message>
 	</context>
 	<context>
@@ -5351,7 +5351,7 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>{server} でエレクトラムサーバーを使用して {electrum} を設定し、{explorer} でブロックエクスプローラーを使用することができます  </translation>
+			<translation>{server} でエレクトラムサーバーを使用して {electrum} を設定し、{explorer} でブロックエクスプローラーを使用することができます</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5368,12 +5368,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>
-			<translation>{server_name}  </translation>
+			<translation>{server_name}</translation>
 		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name} via the proxy {proxy}</source>
-			<translation>プロキシ {proxy} 経由の {server_name}  </translation>
+			<translation>プロキシ {proxy} 経由の {server_name}</translation>
 		</message>
 	</context>
 	<context>
@@ -5406,7 +5406,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. 各紙を別々の安全な場所に置きます。アクセスできるのはあなただけです&lt;br/&gt;                 4. ハードウェア署名者を a) 対応する紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）</translation>
+			<translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. 各紙を別々の安全な場所に置きます。アクセスできるのはあなただけです&lt;br/&gt;                 4. ハードウェア署名者を a) 対応する紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5415,7 +5415,7 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. この紙を自分だけがアクセスできる安全な場所に置きます&lt;br/&gt;                 4. ハードウェア署名者を a) 紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）  </translation>
+			<translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. この紙を自分だけがアクセスできる安全な場所に置きます&lt;br/&gt;                 4. ハードウェア署名者を a) 紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5440,12 +5440,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of "{id}"</source>
-			<translation>"{id}"の残高明細書  </translation>
+			<translation>"{id}"の残高明細書</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of {id}</source>
-			<translation>{id}の残高明細書  </translation>
+			<translation>{id}の残高明細書</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5455,12 +5455,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Created at {date} with</source>
-			<translation>{date}に作成された  </translation>
+			<translation>{date}に作成された</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created with</source>
-			<translation>作成者  </translation>
+			<translation>作成者</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5470,7 +5470,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>File not found!</source>
-			<translation>ファイルが見つかりません！  </translation>
+			<translation>ファイルが見つかりません！</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5485,7 +5485,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
-			<translation>ラベル同期バックアップキー：{label_sync_nsec}  </translation>
+			<translation>ラベル同期バックアップキー：{label_sync_nsec}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5500,7 +5500,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-			<translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。  </translation>
+			<translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5510,12 +5510,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-			<translation>ハードウェアサイナーの秘密シードワード：コンピュータに入力しないこと。写真を撮らないこと。  </translation>
+			<translation>ハードウェアサイナーの秘密シードワード：コンピュータに入力しないこと。写真を撮らないこと。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Seed backup of {id}</source>
-			<translation>{id}のシードバックアップ  </translation>
+			<translation>{id}のシードバックアップ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5530,12 +5530,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-			<translation>ウォレットディスクリプタ（QRコード）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;は、あなたの残高を確認するための閲覧専用ウォレットを作成することを可能にします。それから支出するには{threshold}のシードとウォレットディスクリプタが必要です。  </translation>
+			<translation>ウォレットディスクリプタ（QRコード）&lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt;は、あなたの残高を確認するための閲覧専用ウォレットを作成することを可能にします。それから支出するには{threshold}のシードとウォレットディスクリプタが必要です。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Total</source>
-			<translation>合計  </translation>
+			<translation>合計</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5550,12 +5550,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-			<translation>{i}。{threshold}の{m}マルチシグウォレットのシードバックアップ："{id}"  </translation>
+			<translation>{i}。{threshold}の{m}マルチシグウォレットのシードバックアップ："{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-			<translation>{keystore_label}（{keystore_fingerprint}）：{keystore_description}&lt;br/&gt;&lt;br/&gt;相続人への指示：  </translation>
+			<translation>{keystore_label}（{keystore_fingerprint}）：{keystore_description}&lt;br/&gt;&lt;br/&gt;相続人への指示：</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5829,14 +5829,14 @@ Click here to learn more.</source>
 		<name>usb</name>
 		<message>
 			<source>Pair Bitbox02</source>
-			<translation>Bitbox02をペアリング  </translation>
+			<translation>Bitbox02をペアリング</translation>
 		</message>
 		<name>usb</name>
 		<message>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>あなたのBitBox02でペアリングコードを比較して確認してください：{code} </translation>
+			<translation>あなたのBitBox02でペアリングコードを比較して確認してください：{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -6082,32 +6082,32 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>video</name>
 		<message>
 			<source>Add RTSP Camera</source>
-			<translation>RTSPカメラを追加  </translation>
+			<translation>RTSPカメラを追加</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Brightness (reduce for bright displays):</source>
-			<translation>明るさ（明るいディスプレイ用に減らす）：  </translation>
+			<translation>明るさ（明るいディスプレイ用に減らす）：</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera</source>
-			<translation>カメラ  </translation>
+			<translation>カメラ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera:</source>
-			<translation>カメラ：  </translation>
+			<translation>カメラ：</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enhance picture for detection</source>
-			<translation>検出のための画像強化  </translation>
+			<translation>検出のための画像強化</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enter RTSP URL</source>
-			<translation>RTSP URL を入力  </translation>
+			<translation>RTSP URL を入力</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -6117,44 +6117,44 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>video</name>
 		<message>
 			<source>Postprocess</source>
-			<translation>ポストプロセス  </translation>
+			<translation>ポストプロセス</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>RTSP URL:</source>
-			<translation>RTSP URL:  </translation>
+			<translation>RTSP URL:</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Screen</source>
-			<translation>画面  </translation>
+			<translation>画面</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Settings</source>
-			<translation>設定  </translation>
+			<translation>設定</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Show camera controls</source>
-			<translation>カメラコントロールを表示  </translation>
+			<translation>カメラコントロールを表示</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>The camera could not be opened</source>
-			<translation>カメラを開けませんでした  </translation>
+			<translation>カメラを開けませんでした</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Zoom:</source>
-			<translation>ズーム：  </translation>
+			<translation>ズーム：</translation>
 		</message>
 	</context>
 	<context>
 		<name>wallet</name>
 		<message>
 			<source>Change of:</source>
-			<translation>変更：  </translation>
+			<translation>変更：</translation>
 		</message>
 		<name>wallet</name>
 		<message>

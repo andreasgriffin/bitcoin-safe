@@ -1979,7 +1979,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>{name} kimliğine sahip bir cüzdan zaten açık.</translation>
+			<translation>{name} kimliğine sahip bir cüzdan zaten açık.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
