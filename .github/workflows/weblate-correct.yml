@@ -27,10 +27,30 @@ jobs:
             const repo = pr.head.repo.name;
             const sha = pr.head.sha;
             const commit = await github.rest.repos.getCommit({ owner, repo, ref: sha });
-            const login = (commit.data.author && commit.data.author.login) ? commit.data.author.login.toLowerCase() : '';
-            const sender = (context.payload.sender && context.payload.sender.login)
-              ? context.payload.sender.login.toLowerCase()
+            const login = (commit.data.author && commit.data.author.login)
+              ? commit.data.author.login.toLowerCase()
               : '';
+            const committer = (commit.data.committer && commit.data.committer.login)
+              ? commit.data.committer.login.toLowerCase()
+              : '';
+            const name = (commit.data.commit && commit.data.commit.author && commit.data.commit.author.name)
+              ? commit.data.commit.author.name.toLowerCase()
+              : '';
+            const email = (commit.data.commit && commit.data.commit.author && commit.data.commit.author.email)
+              ? commit.data.commit.author.email.toLowerCase()
+              : '';
+            const shouldRun = [login, committer, name, email].some((value) => value.includes('weblate'));
+            core.info(`Last commit author login: ${login || 'unknown'}`);
+            core.info(`Last commit committer login: ${committer || 'unknown'}`);
+            core.info(`Last commit author name: ${name || 'unknown'}`);
+            core.info(`Last commit author email: ${email || 'unknown'}`);
+            core.setOutput('committer', committer || '');
+            core.setOutput('name', name || '');
+            core.setOutput('email', email || '');
+          LAST_COMMITTER: ${{ steps.last_commit.outputs.committer }}
+          LAST_NAME: ${{ steps.last_commit.outputs.name }}
+          LAST_EMAIL: ${{ steps.last_commit.outputs.email }}
+          echo "Last commit author login (${LAST_LOGIN:-unknown}), committer (${LAST_COMMITTER:-unknown}), name (${LAST_NAME:-unknown}), and email (${LAST_EMAIL:-unknown}) are not Weblate; skipping workflow."
             const shouldRun = login === 'weblate' || sender === 'weblate';
             core.info(`Last commit author: ${login || 'unknown'}`);
             core.info(`Event sender: ${sender || 'unknown'}`);
