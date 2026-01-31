@@ -103,6 +103,8 @@ def get_electrum_configs(network: bdk.Network) -> dict[str, ElectrumConfig]:
             # "default": ElectrumConfig("mempool.space:50002", True),
             "default": ElectrumConfig("electrum.blockstream.info:50002", True),
             "blockstream": ElectrumConfig("electrum.blockstream.info:50002", True),
+            "bullbitcoin-fulcrum": ElectrumConfig("fulcrum.bullbitcoin.com:50002", True),
+            "bullbitcoin-wes": ElectrumConfig("wes.bullbitcoin.com:50002", True),
             "umbrel": ElectrumConfig("umbrel.local:50001", False),
             "localhost": ElectrumConfig("127.0.0.1:50001", False),
         },
