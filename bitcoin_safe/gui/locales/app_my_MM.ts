@@ -31,7 +31,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>No additional signatures were added</source>
-			<translation>အပိုဆောင်းလက်မှတ်များမထည့်ထားပါ။  </translation>
+			<translation>အပိုဆောင်းလက်မှတ်များမထည့်ထားပါ။</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -41,7 +41,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်  </translation>
+			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -65,80 +65,80 @@
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
-			<translation>မမှန်ကန်သောလိပ်စာ  </translation>
+			<translation>မမှန်ကန်သောလိပ်စာ</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Missing Address</source>
-			<translation>လိပ်စာမရှိပါ  </translation>
+			<translation>လိပ်စာမရှိပါ</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Valid Address</source>
-			<translation>မှန်ကန်သောလိပ်စာ  </translation>
+			<translation>မှန်ကန်သောလိပ်စာ</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Address descriptor</source>
-			<translation>လိပ်စာဖော်ပြချက်  </translation>
+			<translation>လိပ်စာဖော်ပြချက်</translation>
 		</message>
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Advanced</source>
-			<translation>အဆင့်မြင့်  </translation>
+			<translation>အဆင့်မြင့်</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Close</source>
-			<translation>ပိတ်ပါ  </translation>
+			<translation>ပိတ်ပါ</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
 			<source>Validate</source>
-			<translation>အတည်ပြုပါ  </translation>
+			<translation>အတည်ပြုပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressEdit</name>
 		<message>
 			<source>Enter address here</source>
-			<translation>ဤနေရာတွင် လိပ်စာရိုက်ထည့်ပါ  </translation>
+			<translation>ဤနေရာတွင် လိပ်စာရိုက်ထည့်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>AddressList</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Address {address}</source>
-			<translation>လိပ်စာ {address}  </translation>
+			<translation>လိပ်စာ {address}</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Balance</source>
-			<translation>လက်ကျန်ငွေ  </translation>
+			<translation>လက်ကျန်ငွေ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Category</source>
-			<translation>အုပ်စု  </translation>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -148,22 +148,22 @@
 		<name>AddressList</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>csv အဖြစ်ကူးယူပါ  </translation>
+			<translation>csv အဖြစ်ကူးယူပါ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Details</source>
-			<translation>အသေးစိတ်များ  </translation>
+			<translation>အသေးစိတ်များ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Index</source>
-			<translation>အညွှန်း  </translation>
+			<translation>အညွှန်း</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Label</source>
-			<translation>တံဆိပ်  </translation>
+			<translation>တံဆိပ်</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -188,7 +188,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>Set category</source>
-			<translation>အုပ်စုခွဲခြားခြင်း  </translation>
+			<translation>အုပ်စုခွဲခြားခြင်း</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -198,7 +198,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>Type</source>
-			<translation>အမျိုးအစား  </translation>
+			<translation>အမျိုးအစား</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -208,32 +208,32 @@
 		<name>AddressList</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>ဘလော့ခ်စစ်ဆေးရေးမှတ်တမ်းကိုကြည့်ပါ  </translation>
+			<translation>ဘလော့ခ်စစ်ဆေးရေးမှတ်တမ်းကိုကြည့်ပါ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Wallet</source>
-			<translation>ပိုက်ဆံအိတ်  </translation>
+			<translation>ပိုက်ဆံအိတ်</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>change</source>
-			<translation>ပြောင်းလဲ  </translation>
+			<translation>ပြောင်းလဲ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>change address</source>
-			<translation>လိပ်စာပြောင်းလဲ  </translation>
+			<translation>လိပ်စာပြောင်းလဲ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>receiving</source>
-			<translation>လက်ခံသည့်  </translation>
+			<translation>လက်ခံသည့်</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>receiving address</source>
-			<translation>လက်ခံရရှိသောလိပ်စာ  </translation>
+			<translation>လက်ခံရရှိသောလိပ်စာ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -250,7 +250,7 @@
 		<name>AddressListWithToolbar</name>
 		<message>
 			<source>Generate to selected adddresses</source>
-			<translation>ရွေးချယ်ထားသောလိပ်စာများသို့ ထုတ်လုပ်ပါ  </translation>
+			<translation>ရွေးချယ်ထားသောလိပ်စာများသို့ ထုတ်လုပ်ပါ</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -272,14 +272,14 @@
 		<name>AmountAnalyzer</name>
 		<message>
 			<source>Amount too small</source>
-			<translation>ငွေပမာဏသည် နည်းပါးသည်  </translation>
+			<translation>ငွေပမာဏသည် နည်းပါးသည်</translation>
 		</message>
 	</context>
 	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>အမြင့်မားဆုံး ≈ {amount}  </translation>
+			<translation>အမြင့်မားဆုံး ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -308,22 +308,22 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။  </translation>
+			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။  </translation>
+			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Please complete the previous steps.</source>
-			<translation>ယခင်အဆင့်များကိုပြီးဆုံးပါ။  </translation>
+			<translation>ယခင်အဆင့်များကိုပြီးဆုံးပါ။</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
@@ -333,48 +333,48 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>pdf ထုတ်ပြီးတော့မည် (ဒါဟာ ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)  </translation>
+			<translation>pdf ထုတ်ပြီးတော့မည် (ဒါဟာ ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)</translation>
 		</message>
 	</context>
 	<context>
 		<name>Balance</name>
 		<message>
 			<source>Confirmed</source>
-			<translation>အတည်ပြုချက်  </translation>
+			<translation>အတည်ပြုချက်</translation>
 		</message>
 		<name>Balance</name>
 		<message>
 			<source>Unconfirmed</source>
-			<translation>မအတည်ပြုရသေးပါ  </translation>
+			<translation>မအတည်ပြုရသေးပါ</translation>
 		</message>
 		<name>Balance</name>
 		<message>
 			<source>Unmatured</source>
-			<translation>မရေရာသေးပါ  </translation>
+			<translation>မရေရာသေးပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseChat</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>{file_content} ကို BitcoinData အဖြစ်သိမ်းဆည်းမရပါ  </translation>
+			<translation>{file_content} ကို BitcoinData အဖြစ်သိမ်းဆည်းမရပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Device name</source>
-			<translation>စက်အမည်  </translation>
+			<translation>စက်အမည်</translation>
 		</message>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။  </translation>
+			<translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။</translation>
 		</message>
 		<name>BaseDeviceItem</name>
 		<message>
 			<source>Rename</source>
-			<translation>အမည်ပြောင်းရန်  </translation>
+			<translation>အမည်ပြောင်းရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -388,22 +388,22 @@
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>{file_content} ကို BitcoinData အဖြစ်သိမ်းဆည်းမရပါ  </translation>
+			<translation>{file_content} ကို BitcoinData အဖြစ်သိမ်းဆည်းမရပါ</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Enter a name of device with {npub}</source>
-			<translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။  </translation>
+			<translation>{npub} ပါသောစက်များ၏အမည်ကိုထည့်ပါ။</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>Go to {untrusted}</source>
-			<translation>{untrusted} သို့သွားပါ  </translation>
+			<translation>{untrusted} သို့သွားပါ</translation>
 		</message>
 		<name>BaseNostrSync</name>
 		<message>
 			<source>To complete the connection, accept my {id} request on the other device {other}.</source>
-			<translation>ချိတ်ဆက်မှုပြီးဆုံးရန် {other} စက်တွင် {id} တောင်းခံချက်ကိုလက်ခံပါ။  </translation>
+			<translation>ချိတ်ဆက်မှုပြီးဆုံးရန် {other} စက်တွင် {id} တောင်းခံချက်ကိုလက်ခံပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -424,7 +424,7 @@
 		<name>BlockingWaitingDialog</name>
 		<message>
 			<source>Please wait</source>
-			<translation>ခေတ္တစောင့်ပါ  </translation>
+			<translation>ခေတ္တစောင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -450,7 +450,7 @@
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
-			<translation>ဖိုင်ထဲကိုဖွင့်ပါ  </translation>
+			<translation>ဖိုင်ထဲကိုဖွင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -462,7 +462,7 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -496,17 +496,17 @@ The combined parent+child fee rate should meet the target block.</source>
 		<name>CategoryList</name>
 		<message>
 			<source>Addresses</source>
-			<translation>လိပ်စာများ  </translation>
+			<translation>လိပ်စာများ</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
 			<source>Balance</source>
-			<translation>လက်ကျန်ငွေ  </translation>
+			<translation>လက်ကျန်ငွေ</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
 			<source>Category</source>
-			<translation>အုပ်စု  </translation>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -546,7 +546,7 @@ The combined parent+child fee rate should meet the target block.</source>
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
@@ -573,13 +573,13 @@ The combined parent+child fee rate should meet the target block.</source>
 		<name>CategoryManager</name>
 		<message>
 			<source>Rename</source>
-			<translation>အမည်ပြောင်းရန်  </translation>
+			<translation>အမည်ပြောင်းရန်</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?  </translation>
+			<translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
@@ -592,19 +592,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>Chat</name>
 		<message>
 			<source>You can only send only PSBTs or transactions</source>
-			<translation>PSBTs သို့မဟုတ်ငွေလွှဲများကိုသာပို့နိုင်သည်  </translation>
+			<translation>PSBTs သို့မဟုတ်ငွေလွှဲများကိုသာပို့နိုင်သည်</translation>
 		</message>
 	</context>
 	<context>
 		<name>ChatGui</name>
 		<message>
 			<source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-			<translation>ဖိုင်များအားလုံး (*);;PSBT (*.psbt);;Transation (*.tx)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);;PSBT (*.psbt);;Transation (*.tx)</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
@@ -614,12 +614,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ChatGui</name>
 		<message>
 			<source>Share a PSBT</source>
-			<translation>PSBT မျှဝေပါ  </translation>
+			<translation>PSBT မျှဝေပါ</translation>
 		</message>
 		<name>ChatGui</name>
 		<message>
 			<source>Type your message here...</source>
-			<translation>ဤနေရာတွင် စာသားရိုက်ထည့်ပါ...  </translation>
+			<translation>ဤနေရာတွင် စာသားရိုက်ထည့်ပါ...</translation>
 		</message>
 	</context>
 	<context>
@@ -653,7 +653,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
-			<translation>အတည်ပြုပါ  </translation>
+			<translation>အတည်ပြုပါ</translation>
 		</message>
 		<name>ColumnFee</name>
 		<message>
@@ -680,7 +680,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnInputs</name>
 		<message>
 			<source>Add foreign UTXOs</source>
-			<translation>ပြင်ပသော UTXOs ထည့်ပါ  </translation>
+			<translation>ပြင်ပသော UTXOs ထည့်ပါ</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -709,12 +709,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnSankey</name>
 		<message>
 			<source>Diagram</source>
-			<translation>နမူနာ  </translation>
+			<translation>နမူနာ</translation>
 		</message>
 		<name>ColumnSankey</name>
 		<message>
 			<source>Export svg</source>
-			<translation>svg ထုတ်ပို့ပါ  </translation>
+			<translation>svg ထုတ်ပို့ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -728,19 +728,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorAnalyzer</name>
 		<message>
 			<source>Invalid Descriptor</source>
-			<translation>Descriptor မမှန်ကန်ပါ  </translation>
+			<translation>Descriptor မမှန်ကန်ပါ</translation>
 		</message>
 		<name>DescriptorAnalyzer</name>
 		<message>
 			<source>Missing Descriptor</source>
-			<translation>Descriptor မရှိပါ  </translation>
+			<translation>Descriptor မရှိပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Copy to clipboard</source>
-			<translation>ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ  </translation>
+			<translation>ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -750,12 +750,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Descriptor not valid</source>
-			<translation>Descriptor မမှန်ကန်ပါ  </translation>
+			<translation>Descriptor မမှန်ကန်ပါ</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Export</source>
-			<translation>တင်ပို့ပါ  </translation>
+			<translation>တင်ပို့ပါ</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -765,7 +765,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Import</source>
-			<translation>တင်သွင်းပါ  </translation>
+			<translation>တင်သွင်းပါ</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -775,12 +775,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>ပိုက်ဆံအိတ်တစ်ခုကိုပြန်လည်ရယူပါက သင့်ရဲ့ descriptor ကိုကပ်ရောက်ပါကဒီ "descriptor" သည် ပိုက်ဆံအိတ်ကိုပြန်လည်တည်ဆောက်ရန်အချက်အလက်အားလုံးပါဝင်သည်။  ငွေကိုပြန်လည်ရယူရန်ဤ descriptor ကိုအရန်ပြန်ပေးပါ။  </translation>
+			<translation>ပိုက်ဆံအိတ်တစ်ခုကိုပြန်လည်ရယူပါက သင့်ရဲ့ descriptor ကိုကပ်ရောက်ပါကဒီ "descriptor" သည် ပိုက်ဆံအိတ်ကိုပြန်လည်တည်ဆောက်ရန်အချက်အလက်အားလုံးပါဝင်သည်။  ငွေကိုပြန်လည်ရယူရန်ဤ descriptor ကိုအရန်ပြန်ပေးပါ။</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။  </translation>
+			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -806,31 +806,31 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Descriptor ကိုမပြောင်းလဲပါ  </translation>
+			<translation>Descriptor ကိုမပြောင်းလဲပါ</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုမပြီးသေးပါ။ ဘက်အပ် pdf ဖန်တီးမှုမတိုင်မီပြီးဆုံးပါ။  </translation>
+			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုမပြီးသေးပါ။ ဘက်အပ် pdf ဖန်တီးမှုမတိုင်မီပြီးဆုံးပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>DescriptorExport</name>
 		<message>
 			<source>Export Descriptor</source>
-			<translation>Descriptor တင်ပို့ပါ  </translation>
+			<translation>Descriptor တင်ပို့ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Address Type</source>
-			<translation>လိပ်စာအမျိုးအစား  </translation>
+			<translation>လိပ်စာအမျိုးအစား</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Descriptor unchanged</source>
-			<translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်  </translation>
+			<translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -845,27 +845,27 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>New descriptor entered</source>
-			<translation>ရှာဖွေထားသောကိရိယာကိုရွေးပါ  </translation>
+			<translation>ရှာဖွေထားသောကိရိယာကိုရွေးပါ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Required Signers</source>
-			<translation>လိုအပ်သောလက်မှတ်သားများ  </translation>
+			<translation>လိုအပ်သောလက်မှတ်သားများ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Scan Addresses ahead</source>
-			<translation>လိပ်စာများကိုတိုင်းတာပါ  </translation>
+			<translation>လိပ်စာများကိုတိုင်းတာပါ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet Descriptor</source>
-			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက်  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet Properties</source>
-			<translation>ပိုက်ဆံအိတ်ပုံရိပ်  </translation>
+			<translation>ပိုက်ဆံအိတ်ပုံရိပ်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -878,14 +878,14 @@ Default 20</source>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Select the detected device</source>
-			<translation>ယုံကြည်ရန်  </translation>
+			<translation>ယုံကြည်ရန်</translation>
 		</message>
 	</context>
 	<context>
 		<name>DeviceManager</name>
 		<message>
 			<source>Trusted</source>
-			<translation>မယုံကြည်ရန်  </translation>
+			<translation>မယုံကြည်ရန်</translation>
 		</message>
 		<name>DeviceManager</name>
 		<message>
@@ -897,7 +897,7 @@ Default 20</source>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>သင့်မဲ့လ်တီဆစ်-ပိုက်ဆံအိတ်ကိုသုံးစွဲရန် {m} မှ {n} အထိသွားရန်လိုအပ်သည့်အရာကိုစဉ်းစားပြီး လုံခြုံရာနေရာများကိုသေချာစွာရွေးပါ။  </translation>
+			<translation>သင့်မဲ့လ်တီဆစ်-ပိုက်ဆံအိတ်ကိုသုံးစွဲရန် {m} မှ {n} အထိသွားရန်လိုအပ်သည့်အရာကိုစဉ်းစားပြီး လုံခြုံရာနေရာများကိုသေချာစွာရွေးပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -907,22 +907,22 @@ Default 20</source>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>မျိုးစေ့အရန် {j} နှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သား {j} သည် {j} တည်နေရာတွင်ရှိရမည်  </translation>
+			<translation>မျိုးစေ့အရန် {j} နှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သား {j} သည် {j} တည်နေရာတွင်ရှိရမည်</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store the   hardware signer   in secure location.</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားကိုလုံခြုံရာနေရာတွင်သိမ်းဆည်းပါ။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားကိုလုံခြုံရာနေရာတွင်သိမ်းဆည်းပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>မျိုးစေ့အရန်ကို &lt;b&gt;အလွန်&lt;/b&gt; လုံခြုံသောနေရာတွင် (ဥပမာ - သိုေလှာင်ရုံ) သိမ်းဆည်းပါ။  </translation>
+			<translation>မျိုးစေ့အရန်ကို &lt;b&gt;အလွန်&lt;/b&gt; လုံခြုံသောနေရာတွင် (ဥပမာ - သိုေလှာင်ရုံ) သိမ်းဆည်းပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>မျိုးစေ့အရန် (24 စကားလုံး) သည် ငွေကြေးကိုအပြည့်အဝထိန်းချုပ်နိုင်သည်။  </translation>
+			<translation>မျိုးစေ့အရန် (24 စကားလုံး) သည် ငွေကြေးကိုအပြည့်အဝထိန်းချုပ်နိုင်သည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -973,17 +973,17 @@ Default 20</source>
 		<name>Downloader</name>
 		<message>
 			<source>Download Progress</source>
-			<translation>ဒေါင်းလုပ်တိုးတက်မှု  </translation>
+			<translation>ဒေါင်းလုပ်တိုးတက်မှု</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
 			<source>Download {}</source>
-			<translation>ဒေါင်းလုပ် {}  </translation>
+			<translation>ဒေါင်းလုပ် {}</translation>
 		</message>
 		<name>Downloader</name>
 		<message>
 			<source>Open download folder: {}</source>
-			<translation>ဒေါင်းလုပ်ဖိုင်တွင်းဖိုင်ဖွင့်ပါ: {}  </translation>
+			<translation>ဒေါင်းလုပ်ဖိုင်တွင်းဖိုင်ဖွင့်ပါ: {}</translation>
 		</message>
 	</context>
 	<context>
@@ -1004,7 +1004,7 @@ Default 20</source>
 		<name>EnlargableImageWidgetWithButton</name>
 		<message>
 			<source>Enlarge</source>
-			<translation>ချဲ့ထွင်ပါ  </translation>
+			<translation>ချဲ့ထွင်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -1016,17 +1016,17 @@ Default 20</source>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Export {data_type} to hardware signer</source>
-			<translation>{data_type} ကိုဟာ့ဒ်ဝဲလ်အမှတ်သားသို့တင်ပို့ပါ  </translation>
+			<translation>{data_type} ကိုဟာ့ဒ်ဝဲလ်အမှတ်သားသို့တင်ပို့ပါ</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Image (*.{image_format})</source>
-			<translation>ပုံ (*.{image_format})  </translation>
+			<translation>ပုံ (*.{image_format})</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Save as image</source>
-			<translation>ပုံအဖြစ်သိမ်းပါ  </translation>
+			<translation>ပုံအဖြစ်သိမ်းပါ</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
@@ -1071,7 +1071,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FeeGroup</name>
 		<message>
 			<source>in ~{n}. Block</source>
-			<translation>~{n} အတွင်းရှိ ဘလော့ခ်  </translation>
+			<translation>~{n} အတွင်းရှိ ဘလော့ခ်</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1111,7 +1111,7 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>ငွေလွှဲခကြေးမှာ: {fee} ဖြစ်ပြီး {sent} ကိုပေးပို့ခဲ့သည်!  </translation>
+			<translation>ငွေလွှဲခကြေးမှာ: {fee} ဖြစ်ပြီး {sent} ကိုပေးပို့ခဲ့သည်!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1121,46 +1121,46 @@ since the final size of the transaction is unknown.</source>
 		<name>FeeWarningBar</name>
 		<message>
 			<source>{sent} is sent!</source>
-			<translation>{sent} ပေးပို့ခဲ့သည်!  </translation>
+			<translation>{sent} ပေးပို့ခဲ့သည်!</translation>
 		</message>
 	</context>
 	<context>
 		<name>FiatSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>အမြင့်မားဆုံး ≈ {amount}  </translation>
+			<translation>အမြင့်မားဆုံး ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy JSON</source>
-			<translation>JSON ကူးယူပါ  </translation>
+			<translation>JSON ကူးယူပါ</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy TxId</source>
-			<translation>TxId ကူးယူပါ  </translation>
+			<translation>TxId ကူးယူပါ</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Copy {name}</source>
-			<translation>{name} ကူးယူပါ  </translation>
+			<translation>{name} ကူးယူပါ</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export</source>
-			<translation>တင်ပို့ပါ  </translation>
+			<translation>တင်ပို့ပါ</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Export to file</source>
-			<translation>ဖိုင်ထုတ်ပို့ပါ  </translation>
+			<translation>ဖိုင်ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
 			<source>Not available</source>
-			<translation>မရရှိနိုင်  </translation>
+			<translation>မရရှိနိုင်</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1182,95 +1182,95 @@ since the final size of the transaction is unknown.</source>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Invalid Fingerprint</source>
-			<translation>လက်ဗွေရာမမှန်ကန်ပါ  </translation>
+			<translation>လက်ဗွေရာမမှန်ကန်ပါ</translation>
 		</message>
 		<name>FingerprintAnalyzer</name>
 		<message>
 			<source>Missing Fingerprint</source>
-			<translation>လက်ဗွေရာဖြစ်ရပ်မရှိပါ  </translation>
+			<translation>လက်ဗွေရာဖြစ်ရပ်မရှိပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Create Transaction</source>
-			<translation>ငွေလွှဲဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲဖွင့်ပါ</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Prefill transaction fields</source>
-			<translation>ငွေလွှဲကွင်းလယ်များကိုကြိုတင်ဖြည့်ပါ  </translation>
+			<translation>ငွေလွှဲကွင်းလယ်များကိုကြိုတင်ဖြည့်ပါ</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Retry</source>
-			<translation>ထပ်မံလုပ်ပါ  </translation>
+			<translation>ထပ်မံလုပ်ပါ</translation>
 		</message>
 		<name>FloatingButtonBar</name>
 		<message>
 			<source>Yes, I see the transaction in the history</source>
-			<translation>ဟုတ်ပါတယ်၊ သမိုင်းထဲမှာငွေလွှဲကိုမြင်တယ်  </translation>
+			<translation>ဟုတ်ပါတယ်၊ သမိုင်းထဲမှာငွေလွှဲကိုမြင်တယ်</translation>
 		</message>
 	</context>
 	<context>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သား၏ အမည်ကို (စတစ်ကာတံဆိပ်) ထည့်ပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သား၏ အမည်ကို (စတစ်ကာတံဆိပ်) ထည့်ပါ</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Sticker Label</source>
-			<translation>စတစ်ကာတံဆိပ်  </translation>
+			<translation>စတစ်ကာတံဆိပ်</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>အောင်မြင်သည်! ဟာ့ဒ်ဝဲလ်အမှတ်သားများအားလုံးဖြင့်ဤအဆင့်ကိုပြီးဆုံးပါရန်နောက်တစ်ဆင့်ကိုနှိပ်ပါ။  </translation>
+			<translation>အောင်မြင်သည်! ဟာ့ဒ်ဝဲလ်အမှတ်သားများအားလုံးဖြင့်ဤအဆင့်ကိုပြီးဆုံးပါရန်နောက်တစ်ဆင့်ကိုနှိပ်ပါ။</translation>
 		</message>
 		<name>GenerateSeed</name>
 		<message>
 			<source>The setup didnt complete. Please repeat.</source>
-			<translation>စီမံခန့်ခွဲမှုမပြီးသေးပါ။ ထပ်မံလုပ်ပါ။  </translation>
+			<translation>စီမံခန့်ခွဲမှုမပြီးသေးပါ။ ထပ်မံလုပ်ပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
-			<translation>ဖိုင်ထုတ်ပို့ပါ  </translation>
+			<translation>ဖိုင်ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Import File or Text</source>
-			<translation>ဖိုင်သို့မဟုတ်စာသားတင်သွင်းပါ  </translation>
+			<translation>ဖိုင်သို့မဟုတ်စာသားတင်သွင်းပါ</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>QR Code</source>
-			<translation>QR ကုဒ်  </translation>
+			<translation>QR ကုဒ်</translation>
 		</message>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
-			<translation>လက်ကျန်ငွေ  </translation>
+			<translation>လက်ကျန်ငွေ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1280,12 +1280,12 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Category</source>
-			<translation>အုပ်စု  </translation>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>csv အဖြစ်ကော်ပီလုပ်ပါ  </translation>
+			<translation>csv အဖြစ်ကော်ပီလုပ်ပါ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1295,17 +1295,17 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Details</source>
-			<translation>အသေးစိတ်များ  </translation>
+			<translation>အသေးစိတ်များ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Label</source>
-			<translation>တံဆိပ်  </translation>
+			<translation>တံဆိပ်</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Local</source>
-			<translation>ဒေသဆိုင်ရာ  </translation>
+			<translation>ဒေသဆိုင်ရာ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1320,12 +1320,12 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Save as file</source>
-			<translation>ဖိုင်အဖြစ်သိမ်းပါ  </translation>
+			<translation>ဖိုင်အဖြစ်သိမ်းပါ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>Status</source>
-			<translation>အခြေအနေ  </translation>
+			<translation>အခြေအနေ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1335,12 +1335,12 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Txid</source>
-			<translation>Txid  </translation>
+			<translation>Txid</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ  </translation>
+			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1350,12 +1350,12 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Wallet</source>
-			<translation>ပိုက်ဆံအိတ်  </translation>
+			<translation>ပိုက်ဆံအိတ်</translation>
 		</message>
 		<name>HistList</name>
 		<message>
 			<source>{number} Confirmations</source>
-			<translation>{number} အတည်ပြုချက်များ  </translation>
+			<translation>{number} အတည်ပြုချက်များ</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1374,35 +1374,35 @@ since the final size of the transaction is unknown.</source>
 		<name>HorizontalImportExportClipboard</name>
 		<message>
 			<source>Share</source>
-			<translation>မျှဝေပါ  </translation>
+			<translation>မျှဝေပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
 			<source>File</source>
-			<translation>ဖိုင်  </translation>
+			<translation>ဖိုင်</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
 			<source>QR</source>
-			<translation>QR  </translation>
+			<translation>QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
 			<source>USB</source>
-			<translation>USB  </translation>
+			<translation>USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
 			<source>Seed</source>
-			<translation>မျိုးစေ့  </translation>
+			<translation>မျိုးစေ့</translation>
 		</message>
 	</context>
 	<context>
@@ -1429,56 +1429,56 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>ရှိပြီးသား sync key ဖြင့်တိုက်ရိုက်အဝေးမှတံဆိပ်များပြန်ယူပါ  </translation>
+			<translation>ရှိပြီးသား sync key ဖြင့်တိုက်ရိုက်အဝေးမှတံဆိပ်များပြန်ယူပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
 			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ  </translation>
+			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next signer</source>
-			<translation>နောက်လာမည့်လက်မှတ်သား  </translation>
+			<translation>နောက်လာမည့်လက်မှတ်သား</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်  </translation>
+			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>ယခင်လက်မှတ်သား  </translation>
+			<translation>ယခင်လက်မှတ်သား</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Skip step</source>
-			<translation>အဆင့်ကျော်ပါ  </translation>
+			<translation>အဆင့်ကျော်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
-			<translation>သော့ချက်အမူလအမူလမပြည့်စုံပါ  </translation>
+			<translation>သော့ချက်အမူလအမူလမပြည့်စုံပါ</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided account {provided_account} differs from the default account {default_account}.</source>
-			<translation>ပေးထားသောအကောင့် {provided_account} သည် ပုံမှန်အကောင့် {default_account} မှ ကွဲပြားနေသည်။  </translation>
+			<translation>ပေးထားသောအကောင့် {provided_account} သည် ပုံမှန်အကောင့် {default_account} မှ ကွဲပြားနေသည်။</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-			<translation>ပေးထားသောအချက်အလက်သည် {key_origin_network} အတွက်ဖြစ်သည်။ ကွန်ယက် {network} အတွက် xPub ကိုပေးပါ။  </translation>
+			<translation>ပေးထားသောအချက်အလက်သည် {key_origin_network} အတွက်ဖြစ်သည်။ ကွန်ယက် {network} အတွက် xPub ကိုပေးပါ။</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -1490,33 +1490,33 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Advanced</source>
-			<translation>အဆင့်မြင့်  </translation>
+			<translation>အဆင့်မြင့်</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Description</source>
-			<translation>ဖော်ပြချက်  </translation>
+			<translation>ဖော်ပြချက်</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Fingerprint</source>
-			<translation>လက်ဗွေရာ  </translation>
+			<translation>လက်ဗွေရာ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import</source>
-			<translation>တင်သွင်းပါ  </translation>
+			<translation>တင်သွင်းပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import fingerprint and xpub</source>
-			<translation>လက်ဗွေရာနှင့် xpub တင်သွင်းပါ  </translation>
+			<translation>လက်ဗွေရာနှင့် xpub တင်သွင်းပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>လက်မှတ်သားစက်အမည်: ...... လက်မှတ်သားစက်တည်နေရာ: .....  </translation>
+			<translation>လက်မှတ်သားစက်အမည်: ...... လက်မှတ်သားစက်တည်နေရာ: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1526,83 +1526,83 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>OK</source>
-			<translation>အိုကေ  </translation>
+			<translation>အိုကေ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please enter a valid key origin.</source>
-			<translation>တရားဝင်သောသော့ချက်မူလအစီအမံကိုရိုက်ထည့်ပါ။  </translation>
+			<translation>တရားဝင်သောသော့ချက်မူလအစီအမံကိုရိုက်ထည့်ပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please import the information from all hardware signers first</source>
-			<translation>ဦးစွာ ဟာ့ဒ်ဝဲလ်အမှတ်သားများမှအချက်အလက်ကိုတင်သွင်းပါ  </translation>
+			<translation>ဦးစွာ ဟာ့ဒ်ဝဲလ်အမှတ်သားများမှအချက်အလက်ကိုတင်သွင်းပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste descriptors into the descriptor field in the top right.</source>
-			<translation>ညာဘက်ထိပ်ဆုံးရှိဖော်ပြချက်ကွက်တွင် ဖော်ပြချက်များကိုကပ်ရောက်ပါ။  </translation>
+			<translation>ညာဘက်ထိပ်ဆုံးရှိဖော်ပြချက်ကွက်တွင် ဖော်ပြချက်များကိုကပ်ရောက်ပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json)</source>
-			<translation>တင်သွင်းထားသောဖိုင်ကို (ဥပမာ sparrow-export.json) ကပ်ရောက်ပါ  </translation>
+			<translation>တင်သွင်းထားသောဖိုင်ကို (ဥပမာ sparrow-export.json) ကပ်ရောက်ပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please paste the exported file (like sparrow-export.json):</source>
-			<translation>တင်သွင်းထားသောဖိုင်ကို (ဥပမာ sparrow-export.json) ကပ်ရောက်ပါ:  </translation>
+			<translation>တင်သွင်းထားသောဖိုင်ကို (ဥပမာ sparrow-export.json) ကပ်ရောက်ပါ:</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Seed</source>
-			<translation>မျိုးစေ့  </translation>
+			<translation>မျိုးစေ့</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-			<translation>ရွေးချယ်ထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းမှာ {expected_key_origin} ဖြစ်သည်။ သေချာမရှိပါကပြင်ဆင်ပါ။  </translation>
+			<translation>ရွေးချယ်ထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းမှာ {expected_key_origin} ဖြစ်သည်။ သေချာမရှိပါကပြင်ဆင်ပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
-			<translation>xPub မူလ {key_origin} နှင့် xPub သည် အတူတူဖြစ်သည်။ မှန်ကန်သော xPub မူလစုံတွဲကိုရွေးပါ။  </translation>
+			<translation>xPub မူလ {key_origin} နှင့် xPub သည် အတူတူဖြစ်သည်။ မှန်ကန်သော xPub မူလစုံတွဲကိုရွေးပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The xpub is in SLIP132 format. Converting to standard format.</source>
-			<translation>xpub သည် SLIP132 ပုံစံဖြစ်ပါသည်။ ပုံမှန်ပုံစံသို့ပြောင်းသည်။  </translation>
+			<translation>xpub သည် SLIP132 ပုံစံဖြစ်ပါသည်။ ပုံမှန်ပုံစံသို့ပြောင်းသည်။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>xPub</source>
-			<translation>xPub  </translation>
+			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>xPub Origin</source>
-			<translation>xPub မူလအစ  </translation>
+			<translation>xPub မူလအစ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} ကိုဤနေရာတွင်အသုံးမပြုနိုင်ပါ။  </translation>
+			<translation>{data_type} ကိုဤနေရာတွင်အသုံးမပြုနိုင်ပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} ခေါင်းပါပဲဆက်လုပ်မလား။  </translation>
+			<translation>{msg} ခေါင်းပါပဲဆက်လုပ်မလား။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>{xpub} is not a valid public xpub</source>
-			<translation>{xpub} သည် တရားဝင်အများပြည်သူ xpub မဟုတ်ပါ  </translation>
+			<translation>{xpub} သည် တရားဝင်အများပြည်သူ xpub မဟုတ်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -1614,7 +1614,7 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Please import the complete data for Signer {i}!</source>
-			<translation>လက်မှတ်သား {i} အတွက်အပြည့်အဝဒေတာကိုတင်သွင်းပါ!  </translation>
+			<translation>လက်မှတ်သား {i} အတွက်အပြည့်အဝဒေတာကိုတင်သွင်းပါ!</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -1624,29 +1624,29 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>သင့်သည်လက်ဗွေရာကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။  </translation>
+			<translation>သင့်သည်လက်ဗွေရာကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>သင့်သည် xpub ကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။  </translation>
+			<translation>သင့်သည် xpub ကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-			<translation>သင်တင်သွင်းထားသောသော့ချက်မူလများ {key_origins} ကွဲပြားနေပါသည်! ဤသို့မည်သည့်အရာကိုရည်ရွယ်ခဲ့သည်ကိုနှစ်ချက်စစ်ဆေးပါ။  </translation>
+			<translation>သင်တင်သွင်းထားသောသော့ချက်မူလများ {key_origins} ကွဲပြားနေပါသည်! ဤသို့မည်သည့်အရာကိုရည်ရွယ်ခဲ့သည်ကိုနှစ်ချက်စစ်ဆေးပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>LabelBackup</name>
 		<message>
 			<source>Backup secret sync key:</source>
-			<translation>လျှို့ဝှက်မျှော်စင်ကီးကိုအရန်ပြန်ပေးပါ။  </translation>
+			<translation>လျှို့ဝှက်မျှော်စင်ကီးကိုအရန်ပြန်ပေးပါ။</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>ကွန်ပျူတာတိုင်း၏ Sync &amp; Chat တက်ဘ်ပေါ်တွင်ယုံကြည်ရသောကွန်ပျူတာများကိုရွေးပါ။  </translation>
+			<translation>ကွန်ပျူတာတိုင်း၏ Sync &amp; Chat တက်ဘ်ပေါ်တွင်ယုံကြည်ရသောကွန်ပျူတာများကိုရွေးပါ။</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1656,22 +1656,22 @@ Do you want to proceed anyway?</source>
 		<name>LabelBackup</name>
 		<message>
 			<source>Enable</source>
-			<translation>ဖွင့်ပါ  </translation>
+			<translation>ဖွင့်ပါ</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>လိပ်စာတံဆိပ်နှင့်အုပ်စုများ၏လျှို့ဝှက်တိမ်းညွှန်းများ  </translation>
+			<translation>လိပ်စာတံဆိပ်နှင့်အုပ်စုများ၏လျှို့ဝှက်တိမ်းညွှန်းများ</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Finish</source>
-			<translation>ပြီးဆုံးပါ  </translation>
+			<translation>ပြီးဆုံးပါ</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
 			<source>Multi-computer synchronization and chat</source>
-			<translation>ကွန်ပျူတာအများစုကြားဆက်သွယ်ရေးနှင့်စကားပြောခြင်း  </translation>
+			<translation>ကွန်ပျူတာအများစုကြားဆက်သွယ်ရေးနှင့်စကားပြောခြင်း</translation>
 		</message>
 		<name>LabelBackup</name>
 		<message>
@@ -1720,50 +1720,50 @@ Do you want to proceed anyway?</source>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} hours</source>
-			<translation>~{t} နာရီအတွင်း  </translation>
+			<translation>~{t} နာရီအတွင်း</translation>
 		</message>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} min</source>
-			<translation>~{t} မိနစ်အတွင်း  </translation>
+			<translation>~{t} မိနစ်အတွင်း</translation>
 		</message>
 	</context>
 	<context>
 		<name>LicenseDialog</name>
 		<message>
 			<source>License Info</source>
-			<translation>လိုင်စင်အချက်အလက်  </translation>
+			<translation>လိုင်စင်အချက်အလက်</translation>
 		</message>
 	</context>
 	<context>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-			<translation>ဤငွေလွှဲသည်ငွေကြေးအုပ်စုများ {categories} ကိုပေါင်းစပ်ပြီးဤအုပ်စုများကိုချိတ်ဆက်နိုင်စေသည်!  </translation>
+			<translation>ဤငွေလွှဲသည်ငွေကြေးအုပ်စုများ {categories} ကိုပေါင်းစပ်ပြီးဤအုပ်စုများကိုချိတ်ဆက်နိုင်စေသည်!</translation>
 		</message>
 		<name>LinkingWarningBar</name>
 		<message>
 			<source>{category} (in wallet {wallet_ids})</source>
-			<translation>{category} (ပိုက်ဆံအိတ် {wallet_ids} တွင်)  </translation>
+			<translation>{category} (ပိုက်ဆံအိတ် {wallet_ids} တွင်)</translation>
 		</message>
 	</context>
 	<context>
 		<name>LoadingWalletTab</name>
 		<message>
 			<source>Loading, please wait...</source>
-			<translation>တင်ပြသနေပါ၊ ခေတ္တစောင့်ပါ...  </translation>
+			<translation>တင်ပြသနေပါ၊ ခေတ္တစောင့်ပါ...</translation>
 		</message>
 	</context>
 	<context>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။  </translation>
+			<translation> ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;About</source>
-			<translation>&amp;အကြောင်းအရာ  </translation>
+			<translation>&amp;အကြောင်းအရာ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1823,7 +1823,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Export</source>
-			<translation>&amp;ထုတ်ပို့ပါ  </translation>
+			<translation>&amp;ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1848,7 +1848,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Load Transaction or PSBT</source>
-			<translation>ငွေလွှဲသို့မဟုတ် PSBT တင်ပါ  </translation>
+			<translation>ငွေလွှဲသို့မဟုတ် PSBT တင်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1873,7 +1873,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;New Wallet</source>
-			<translation>ပိုက်ဆံအိတ်အသစ်  </translation>
+			<translation>ပိုက်ဆံအိတ်အသစ်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1888,7 +1888,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Open Wallet</source>
-			<translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖွင့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1908,7 +1908,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Register Multisig with hardware signers</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများနှင့် &amp;မဲ့လ်တီဆစ်ကိုမှတ်ပုံတင်ပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများနှင့် &amp;မဲ့လ်တီဆစ်ကိုမှတ်ပုံတင်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1918,7 +1918,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Search</source>
-			<translation>&amp;ရှာဖွေပါ  </translation>
+			<translation>&amp;ရှာဖွေပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1933,7 +1933,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Settings</source>
-			<translation>&amp;ဆက်တင်များ  </translation>
+			<translation>&amp;ဆက်တင်များ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1948,12 +1948,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Tools</source>
-			<translation>&amp;ကိရိယာများ  </translation>
+			<translation>&amp;ကိရိယာများ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;USB လက်မှတ်သားကိရိယာများ  </translation>
+			<translation>&amp;USB လက်မှတ်သားကိရိယာများ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1978,7 +1978,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>id {name} ပါသော wallet တစ်ခုကို ဖွင့်ထားပြီးသားဖြစ်သည်။</translation>
+			<translation>id {name} ပါသော wallet တစ်ခုကို ဖွင့်ထားပြီးသားဖြစ်သည်။  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1993,17 +1993,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close</source>
-			<translation>ပိတ်ပါ  </translation>
+			<translation>ပိတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close Tab</source>
-			<translation>တက်ဘ်ကိုပိတ်ပါ  </translation>
+			<translation>တက်ဘ်ကိုပိတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close all transactions</source>
-			<translation>ငွေလွှဲများအားလုံးပိတ်ပါ  </translation>
+			<translation>ငွေလွှဲများအားလုံးပိတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2013,22 +2013,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Close wallet</source>
-			<translation>ပိုက်ဆံအိတ်ပိတ်ပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်ပိတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Close wallet {id}?</source>
-			<translation>{id} ပိုက်ဆံအိတ်ကိုပိတ်ချင်ပါသလား?  </translation>
+			<translation>{id} ပိုက်ဆံအိတ်ကိုပိတ်ချင်ပါသလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Closing tab {name}</source>
-			<translation>{name} တက်ဘ်ကိုပိတ်ပါ  </translation>
+			<translation>{name} တက်ဘ်ကိုပိတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Could not decode this string</source>
-			<translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ  </translation>
+			<translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2058,22 +2058,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Do you want to save the PSBT {id}?</source>
-			<translation>{id} PSBT ကိုသိမ်းချင်ပါသလား?  </translation>
+			<translation>{id} PSBT ကိုသိမ်းချင်ပါသလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;QR Code</source>
-			<translation>QR ကုဒ်မှ  </translation>
+			<translation>QR ကုဒ်မှ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;file</source>
-			<translation>ဖိုင်မှ  </translation>
+			<translation>ဖိုင်မှ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;text</source>
-			<translation>စာသားမှ  </translation>
+			<translation>စာသားမှ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2108,12 +2108,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ဖိုင်မရှိပါ  </translation>
+			<translation>ဖိုင်မရှိပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-			<translation>ပိုက်ဆံအိတ်မရှိပါ။ ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။  </translation>
+			<translation>ပိုက်ဆံအိတ်မရှိပါ။ ဤလွှဲပြောင်းမှုကို တည်းဖြတ်ရန် ပို့ဆောင်သူအိတ်ကို ဖွင့်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2123,7 +2123,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>OK</source>
-			<translation>အိုကေ  </translation>
+			<translation>အိုကေ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2133,22 +2133,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Open &amp;Recent</source>
-			<translation>လတ်တလောများကိုဖွင့်ပါ  </translation>
+			<translation>လတ်တလောများကိုဖွင့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Transaction or PSBT</source>
-			<translation>ငွေလွှဲသို့မဟုတ် PSBT ဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲသို့မဟုတ် PSBT ဖွင့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Wallet</source>
-			<translation>ပိုက်ဆံအိတ်ဖွင့်ပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖွင့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2158,37 +2158,37 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ  </translation>
+			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please complete the wallet setup.</source>
-			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုပြီးဆုံးပါ။  </translation>
+			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုပြီးဆုံးပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please enter the password for {filename}:</source>
-			<translation>{filename} အတွက်စကားဝှက်ရိုက်ထည့်ပါ:  </translation>
+			<translation>{filename} အတွက်စကားဝှက်ရိုက်ထည့်ပါ:</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ၊ သို့မဟုတ်ဖိုင်ကိုထည့်ပါ။  </translation>
+			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ၊ သို့မဟုတ်ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။  </translation>
+			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select the wallet</source>
-			<translation>ပိုက်ဆံအိတ်ရွေးပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်ရွေးပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select the wallet first.</source>
-			<translation>ဦးစွာပိုက်ဆံအိတ်ကိုရွေးပါ။  </translation>
+			<translation>ဦးစွာပိုက်ဆံအိတ်ကိုရွေးပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2198,7 +2198,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>QR &amp;Scanner</source>
-			<translation>QR စကင်နာ  </translation>
+			<translation>QR စကင်နာ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2223,7 +2223,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Save PSBT?</source>
-			<translation>PSBT သိမ်းပါ?  </translation>
+			<translation>PSBT သိမ်းပါ?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2238,7 +2238,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Selected file: {file_path}</source>
-			<translation>ရွေးထားသောဖိုင်: {file_path}  </translation>
+			<translation>ရွေးထားသောဖိုင်: {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,7 +2248,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2278,17 +2278,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>The wallet {file_path} is already open.</source>
-			<translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။  </translation>
+			<translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-			<translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။ ပိုက်ဆံအိတ်ကိုပြန်ဖွင့်ချင်ပါသလား?  </translation>
+			<translation>{file_path} ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ။ ပိုက်ဆံအိတ်ကိုပြန်ဖွင့်ချင်ပါသလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>There is no such file: {file_path}</source>
-			<translation>{file_path} ဖိုင်မတည်ရှိပါ  </translation>
+			<translation>{file_path} ဖိုင်မတည်ရှိပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2314,12 +2314,12 @@ Do you want to keep the wallet open?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet Files (*.wallet);;All Files (*)</source>
-			<translation>ပိုက်ဆံအိတ်ဖိုင်များ (*.wallet);;ဖိုင်များအားလုံး (*)  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖိုင်များ (*.wallet);;ဖိုင်များအားလုံး (*)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet already open</source>
-			<translation>ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖွင့်ပြီးပါပြီ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2350,14 +2350,14 @@ Do you want to hide to tray instead?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>new</source>
-			<translation>အသစ်  </translation>
+			<translation>အသစ်</translation>
 		</message>
 	</context>
 	<context>
 		<name>MempoolButtons</name>
 		<message>
 			<source>Block {n}</source>
-			<translation>ဘလော့ခ် {n}  </translation>
+			<translation>ဘလော့ခ် {n}</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
@@ -2377,39 +2377,39 @@ Do you want to hide to tray instead?</source>
 		<name>MempoolButtons</name>
 		<message>
 			<source>Next Block</source>
-			<translation>နောက်တစ်ခုဘလော့ခ်  </translation>
+			<translation>နောက်တစ်ခုဘလော့ခ်</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
 			<source>{n}. Block</source>
-			<translation>{n} ဘလော့ခ်  </translation>
+			<translation>{n} ဘလော့ခ်</translation>
 		</message>
 	</context>
 	<context>
 		<name>MyTreeView</name>
 		<message>
 			<source>All Files (*);;Text Files (*.csv)</source>
-			<translation>ဖိုင်များအားလုံး (*);;စာသားဖိုင်များ (*.csv)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);;စာသားဖိုင်များ (*.csv)</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Copy</source>
-			<translation>ကူးယူပါ  </translation>
+			<translation>ကူးယူပါ</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>csv အဖြစ်ကူးယူပါ  </translation>
+			<translation>csv အဖြစ်ကူးယူပါ</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Export csv</source>
-			<translation>csv ဖိုင်တင်ပို့ပါ  </translation>
+			<translation>csv ဖိုင်တင်ပို့ပါ</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ဖိုင်မရှိပါ  </translation>
+			<translation>ဖိုင်မရှိပါ</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -2431,7 +2431,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>esplora URL တွင် '{scheme}' ဟုသေချာပါသလား။  </translation>
+			<translation>esplora URL တွင် '{scheme}' ဟုသေချာပါသလား။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2446,7 +2446,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Blockchain data source</source>
-			<translation>Blockchain ဒေတာရင်းမြစ်  </translation>
+			<translation>Blockchain ဒေတာရင်းမြစ်</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2471,7 +2471,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Enable SSL</source>
-			<translation>SSL ဖွင့်ပါ  </translation>
+			<translation>SSL ဖွင့်ပါ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2479,12 +2479,12 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။ {responses}   သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?  </translation>
+			<translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။ {responses}   သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>IP Address:</source>
-			<translation>IP လိပ်စာ:  </translation>
+			<translation>IP လိပ်စာ:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2494,7 +2494,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Mempool Instance URL</source>
-			<translation>Mempool Instance URL  </translation>
+			<translation>Mempool Instance URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2504,7 +2504,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Network Settings</source>
-			<translation>ကွန်ယက်ဆက်တင်များ  </translation>
+			<translation>ကွန်ယက်ဆက်တင်များ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2514,54 +2514,54 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
-			<translation>စကားဝှက်:  </translation>
+			<translation>စကားဝှက်:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>electrum URL မှ '{scheme}' ကိုဖယ်ရှားပါ။  </translation>
+			<translation>electrum URL မှ '{scheme}' ကိုဖယ်ရှားပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>mempool URL အစမှာ '{scheme}' ကိုစမ်းသပ်ပါ။  </translation>
+			<translation>mempool URL အစမှာ '{scheme}' ကိုစမ်းသပ်ပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Port:</source>
-			<translation>ဆိပ်ကမ်း:  </translation>
+			<translation>ဆိပ်ကမ်း:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
-			<translation>အကြံပြုချက်များအတွက် မြှားခလုတ် ⬇ ကိုနှိပ်ပါ  </translation>
+			<translation>အကြံပြုချက်များအတွက် မြှားခလုတ် ⬇ ကိုနှိပ်ပါ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Proxy:</source>
-			<translation>Proxy:  </translation>
+			<translation>Proxy:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>တုံ့ပြန်ချက်: {name}: {status}     Mempool Instance: {server}  </translation>
+			<translation>တုံ့ပြန်ချက်: {name}: {status}     Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>SSL:</source>
-			<translation>SSL:  </translation>
+			<translation>SSL:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Test Connection</source>
-			<translation>ချိတ်ဆက်မှုစမ်းသပ်ပါ  </translation>
+			<translation>ချိတ်ဆက်မှုစမ်းသပ်ပါ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The format for tor addresses should be '{scheme}'</source>
-			<translation>tor လိပ်စာများ၏ပုံစံသည် '{scheme}' ဖြစ်ရမည်။  </translation>
+			<translation>tor လိပ်စာများ၏ပုံစံသည် '{scheme}' ဖြစ်ရမည်။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2571,17 +2571,17 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!  </translation>
+			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>URL:</source>
-			<translation>URL:  </translation>
+			<translation>URL:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Username:</source>
-			<translation>အသုံးပြုသူအမည်:  </translation>
+			<translation>အသုံးပြုသူအမည်:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2593,17 +2593,17 @@ Do you want to hide to tray instead?</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>မျိုးစေ့အရန်ကိုသိမ်းဆည်းရန်လုံခြံုရာနေရာတစ်ခုလိုအပ်သည် (စက္ကူသို့မဟုတ်သံပြားတွင်)  </translation>
+			<translation>မျိုးစေ့အရန်ကိုသိမ်းဆည်းရန်လုံခြံုရာနေရာတစ်ခုလိုအပ်သည် (စက္ကူသို့မဟုတ်သံပြားတွင်)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>ငွေကြေးရယူရန် 24 စကားလုံးမျိုးစေ့တစ်ခုသာလိုအပ်သည်  </translation>
+			<translation>ငွေကြေးရယူရန် 24 စကားလုံးမျိုးစေ့တစ်ခုသာလိုအပ်သည်</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 signing devices</source>
-			<translation>လက်မှတ်သားစက် 1 ခု  </translation>
+			<translation>လက်မှတ်သားစက် 1 ခု</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2613,22 +2613,22 @@ Do you want to hide to tray instead?</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>လုံခြံုရေးနေရာ 3 ခုလိုအပ်သည် (တစ်ခုစီတွင် 1 မျိုးစေ့အရန် + ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)  </translation>
+			<translation>လုံခြံုရေးနေရာ 3 ခုလိုအပ်သည် (တစ်ခုစီတွင် 1 မျိုးစေ့အရန် + ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>3 signing devices</source>
-			<translation>လက်မှတ်သားစက် 3 ခု  </translation>
+			<translation>လက်မှတ်သားစက် 3 ခု</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Best for large funds</source>
-			<translation>ကြီးမားသောငွေကြေးများအတွက်အကောင်းဆုံး  </translation>
+			<translation>ကြီးမားသောငွေကြေးများအတွက်အကောင်းဆုံး</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Best for medium-sized funds</source>
-			<translation>အလတ်စားငွေကြေးများအတွက်အကောင်းဆုံး  </translation>
+			<translation>အလတ်စားငွေကြေးများအတွက်အကောင်းဆုံး</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2638,17 +2638,17 @@ Do you want to hide to tray instead?</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Choose Single Signature</source>
-			<translation>တစ်ဆင့်သောလက်မှတ်သားရွေးပါ  </translation>
+			<translation>တစ်ဆင့်သောလက်မှတ်သားရွေးပါ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Cons:</source>
-			<translation>အန္တရာယ်များ:  </translation>
+			<translation>အန္တရာယ်များ:</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Create new wallet</source>
-			<translation>ပိုက်ဆံအိတ်အသစ်ဖန်တီးပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်အသစ်ဖန်တီးပါ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2664,51 +2664,51 @@ import custom wallet</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Customize the wallet to your needs</source>
-			<translation>သင့်ရဲ့လိုအပ်ချက်အရပိုက်ဆံအိတ်ကိုသီးသန့်ဖြစ်စေပါ  </translation>
+			<translation>သင့်ရဲ့လိုအပ်ချက်အရပိုက်ဆံအိတ်ကိုသီးသန့်ဖြစ်စေပါ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>မျိုးစေ့ 1 ခုပျောက်ဆုံးသွားသို့မဟုတ်ခိုးယူခံရပါက ကျန်ရှိသော 2 မျိုးစေ့များ + ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) ဖြင့်အသစ်ပိုက်ဆံအိတ်သို့ငွေကြေးများကိုလွှဲပြောင်းနိုင်သည်။  </translation>
+			<translation>မျိုးစေ့ 1 ခုပျောက်ဆုံးသွားသို့မဟုတ်ခိုးယူခံရပါက ကျန်ရှိသော 2 မျိုးစေ့များ + ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) ဖြင့်အသစ်ပိုက်ဆံအိတ်သို့ငွေကြေးများကိုလွှဲပြောင်းနိုင်သည်။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>သင်ဟက်ကာများကိုမျိုးစေ့ပေးသွားမိပါကသင့်ရဲ့ Bitcoin ကိုချက်ချင်းခိုးယူသွားမည်။  </translation>
+			<translation>သင်ဟက်ကာများကိုမျိုးစေ့ပေးသွားမိပါကသင့်ရဲ့ Bitcoin ကိုချက်ချင်းခိုးယူသွားမည်။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Less support material online in case of recovery</source>
-			<translation>ပြန်လည်ယူရန်အတွက်အွန်လိုင်းပံ့ပိုးမှုမရ  </translation>
+			<translation>ပြန်လည်ယူရန်အတွက်အွန်လိုင်းပံ့ပိုးမှုမရ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Pros:</source>
-			<translation>အကျိုးအမြတ်များ:  </translation>
+			<translation>အကျိုးအမြတ်များ:</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Single Signature Wallet</source>
-			<translation>တစ်ဆင့်သောလက်မှတ်သားပိုက်ဆံအိတ်  </translation>
+			<translation>တစ်ဆင့်သောလက်မှတ်သားပိုက်ဆံအိတ်</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) သည်ပိုက်ဆံအိတ်ကိုပြန်ယူရန်လိုအပ်သည်  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) သည်ပိုက်ဆံအိတ်ကိုပြန်ယူရန်လိုအပ်သည်</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSync</name>
 		<message>
 			<source>Group Chat</source>
-			<translation>အုပ်စုစကားပြောခြင်း  </translation>
+			<translation>အုပ်စုစကားပြောခြင်း</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSyncWithSingleChats</name>
 		<message>
 			<source>Chat</source>
-			<translation>စကားပြောခြင်း  </translation>
+			<translation>စကားပြောခြင်း</translation>
 		</message>
 	</context>
 	<context>
@@ -2761,7 +2761,7 @@ import custom wallet</source>
 		<name>NotificationBarRegtest</name>
 		<message>
 			<source>Network = {network}. The coins are worthless!</source>
-			<translation>ကွန်ယက် = {network}။ ငွေကြေးများမတန်ဖိုးရှိပါ။  </translation>
+			<translation>ကွန်ယက် = {network}။ ငွေကြေးများမတန်ဖိုးရှိပါ။</translation>
 		</message>
 		<name>NotificationBarRegtest</name>
 		<message>
@@ -2785,64 +2785,64 @@ import custom wallet</source>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
-			<translation>စကားဝှက်ဖန်တီးပါ  </translation>
+			<translation>စကားဝှက်ဖန်တီးပါ</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Enter your password:</source>
-			<translation>စကားဝှက်ထည့်ပါ:  </translation>
+			<translation>စကားဝှက်ထည့်ပါ:</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Error</source>
-			<translation>အမှား  </translation>
+			<translation>အမှား</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Hide Password</source>
-			<translation>စကားဝှက်ဖုံးပါ  </translation>
+			<translation>စကားဝှက်ဖုံးပါ</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Passwords do not match!</source>
-			<translation>စကားဝှက်မတူပါ!  </translation>
+			<translation>စကားဝှက်မတူပါ!</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Re-enter your password:</source>
-			<translation>စကားဝှက်ပြန်ထည့်ပါ:  </translation>
+			<translation>စကားဝှက်ပြန်ထည့်ပါ:</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Show Password</source>
-			<translation>စကားဝှက်ပြပါ  </translation>
+			<translation>စကားဝှက်ပြပါ</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Submit</source>
-			<translation>တင်ပါ  </translation>
+			<translation>တင်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Hide Password</source>
-			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲပါ</translation>
 		</message>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Password Input</source>
-			<translation>စကားဝှက်ထည့်ပါ  </translation>
+			<translation>စကားဝှက်ထည့်ပါ</translation>
 		</message>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Please enter your password:</source>
-			<translation>စကားဝှက်ပြပါ  </translation>
+			<translation>စကားဝှက်ပြပါ</translation>
 		</message>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Show Password</source>
-			<translation>တင်ပါ  </translation>
+			<translation>တင်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -2946,7 +2946,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTProtoWallet</name>
 		<message>
 			<source>Setup wallet</source>
-			<translation>ပို့ပါ  </translation>
+			<translation>ပို့ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -2963,27 +2963,27 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>Addresses</source>
-			<translation>လိပ်စာများ  </translation>
+			<translation>လိပ်စာများ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
-			<translation>ဖိုင်များအားလုံး (*);;JSON ဖိုင်များ (*.json)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);;JSON ဖိုင်များ (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>ဖိုင်များအားလုံး (*);;JSON ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);;JSON ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>ဖိုင်များအားလုံး (*);;JSONL ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);;JSONL ဖိုင်များ (*.jsonl);;JSON ဖိုင်များ (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
-			<translation>ဖိုင်များအားလုံး (*);; ပိုက်ဆံအိတ်ဖိုင်များ (*.wallet)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);; ပိုက်ဆံအိတ်ဖိုင်များ (*.wallet)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2994,17 +2994,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Backup failed. Aborting Changes.</source>
-			<translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။  </translation>
+			<translation>အရန်အသိမ်းမအောင်မြင်ပါ။ ပြောင်းလဲမှုများပယ်ဖျက်ပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Backup saved to {filename}</source>
-			<translation>{filename} သို့အရန်အသိမ်းထားပြီးပါပြီ  </translation>
+			<translation>{filename} သို့အရန်အသိမ်းထားပြီးပါပြီ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Balance</source>
-			<translation>လက်ကျန်ငွေ  </translation>
+			<translation>လက်ကျန်ငွေ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3019,7 +3019,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Change password</source>
-			<translation>စကားဝှက်ပြောင်းပါ  </translation>
+			<translation>စကားဝှက်ပြောင်းပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3029,7 +3029,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Connected to {server}</source>
-			<translation>{server} သို့ချိတ်ဆက်ပါ  </translation>
+			<translation>{server} သို့ချိတ်ဆက်ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3044,17 +3044,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Descriptor</source>
-			<translation>ဖော်ပြချက်  </translation>
+			<translation>ဖော်ပြချက်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Disconnected from {server}</source>
-			<translation>{server} မှဖြတ်တောက်ပါ  </translation>
+			<translation>{server} မှဖြတ်တောက်ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Do you want to save a copy of these transactions?</source>
-			<translation>ဤငွေလွှဲများ၏ကော်ပီကိုသိမ်းချင်ပါသလား?  </translation>
+			<translation>ဤငွေလွှဲများ၏ကော်ပီကိုသိမ်းချင်ပါသလား?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3064,7 +3064,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Export labels</source>
-			<translation>တံဆိပ်များထုတ်ပို့ပါ  </translation>
+			<translation>တံဆိပ်များထုတ်ပို့ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3074,17 +3074,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>History</source>
-			<translation>သမိုင်း  </translation>
+			<translation>သမိုင်း</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Import Electrum Wallet labels</source>
-			<translation>Electrum ပိုက်ဆံအိတ်တံဆိပ်များတင်သွင်းပါ  </translation>
+			<translation>Electrum ပိုက်ဆံအိတ်တံဆိပ်များတင်သွင်းပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Import labels</source>
-			<translation>တံဆိပ်များတင်သွင်းပါ  </translation>
+			<translation>တံဆိပ်များတင်သွင်းပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3094,23 +3094,23 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>New password:</source>
-			<translation>စကားဝှက်အသစ်:  </translation>
+			<translation>စကားဝှက်အသစ်:</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ်: {txs}  </translation>
+			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ်: {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>No changes to apply.</source>
-			<translation>မည်သည့်ပြောင်းလဲများမှမလုပ်ပါ  </translation>
+			<translation>မည်သည့်ပြောင်းလဲများမှမလုပ်ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ဖိုင်မရွေးရသေးပါ  </translation>
+			<translation>ဖိုင်မရွေးရသေးပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,7 +3120,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Password incorrect</source>
-			<translation>စကားဝှက်မှားနေပါသည်  </translation>
+			<translation>စကားဝှက်မှားနေပါသည်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3160,7 +3160,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Save wallet</source>
-			<translation>ပိုက်ဆံအိတ်သိမ်းပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်သိမ်းပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3170,7 +3170,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Successfully updated {number} Labels</source>
-			<translation>{number} တံဆိပ်များအားအောင်မြင်စွာအသစ်တင်ပါ  </translation>
+			<translation>{number} တံဆိပ်များအားအောင်မြင်စွာအသစ်တင်ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3180,7 +3180,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Syncing with {server}</source>
-			<translation>{server} နှင့်ထပ်တူညီပါ  </translation>
+			<translation>{server} နှင့်ထပ်တူညီပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3195,7 +3195,7 @@ Do you want to continue anyway?</source>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!  </translation>
+			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3217,7 +3217,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>Wallet saved</source>
-			<translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ  </translation>
+			<translation>ပိုက်ဆံအိတ်သိမ်းပြီးပါပြီ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3227,25 +3227,25 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>finished updating lists</source>
-			<translation>စာရင်းများပြီးစီးပါ  </translation>
+			<translation>စာရင်းများပြီးစီးပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>start updating lists</source>
-			<translation>စာရင်းအသစ်အသစ်များစတင်ပါ  </translation>
+			<translation>စာရင်းအသစ်အသစ်များစတင်ပါ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ် {number} ခု: {txs}  </translation>
+			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ် {number} ခု: {txs}</translation>
 		</message>
 	</context>
 	<context>
 		<name>QrToolButton</name>
 		<message>
 			<source>QR Code</source>
-			<translation>QR ကုဒ်  </translation>
+			<translation>QR ကုဒ်</translation>
 		</message>
 	</context>
 	<context>
@@ -3262,7 +3262,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QuickReceive</name>
 		<message>
 			<source>Quick Receive</source>
-			<translation>အမြန်လက်ခံပါ  </translation>
+			<translation>အမြန်လက်ခံပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3277,7 +3277,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>ReceiveGroup</name>
 		<message>
@@ -3299,27 +3299,27 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Balance = {amount}</source>
-			<translation>လက်ကျန်ငွေ = {amount}  </translation>
+			<translation>လက်ကျန်ငွေ = {amount}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Check if received</source>
-			<translation>လက်ခံရရှိသည်ကိုစစ်ဆေးပါ  </translation>
+			<translation>လက်ခံရရှိသည်ကိုစစ်ဆေးပါ</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်  </translation>
+			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>No wallet setup yet</source>
-			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုမရှိသေးပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုမရှိသေးပါ</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3333,41 +3333,41 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>ဤ wallet ၏ လိပ်စာ ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ( {test_amount} ထက်နည်း ) လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     သင့်တွင် ရန်ပုံငွေများကို ထိန်းချုပ်ထားကြောင်း သိရှိရန် wallet မှ အသုံးစရိတ်ထုတ်နိုင်ကြောင်း စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို wallet ထဲသို့ မပို့မီ၊ wallet မှ အသုံးစရိတ်ထုတ်၍ signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;အခုချိန်တွင် wallet ထဲသို့ ပမာဏကြီး မပို့ပါနှင့်။ ပို့ခြင်း စမ်းသပ်မှုအားလုံးကို အရင်ဆုံး ပြီးစီးပါ။&lt;/b&gt;</translation>
+			<translation>ဤ wallet ၏ လိပ်စာ ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ( {test_amount} ထက်နည်း ) လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     သင့်တွင် ရန်ပုံငွေများကို ထိန်းချုပ်ထားကြောင်း သိရှိရန် wallet မှ အသုံးစရိတ်ထုတ်နိုင်ကြောင်း စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို wallet ထဲသို့ မပို့မီ၊ wallet မှ အသုံးစရိတ်ထုတ်၍ signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;အခုချိန်တွင် wallet ထဲသို့ ပမာဏကြီး မပို့ပါနှင့်။ ပို့ခြင်း စမ်းသပ်မှုအားလုံးကို အရင်ဆုံး ပြီးစီးပါ။&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
 			<source>Recently Opened Wallets</source>
-			<translation>လတ်တလောဖွင့်ထားသောပိုက်ဆံအိတ်များ  </translation>
+			<translation>လတ်တလောဖွင့်ထားသောပိုက်ဆံအိတ်များ</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Amount</source>
-			<translation>ပမာဏ  </translation>
+			<translation>ပမာဏ</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Enter label here</source>
-			<translation>ဤနေရာတွင်တံဆိပ်ထည့်ပါ  </translation>
+			<translation>ဤနေရာတွင်တံဆိပ်ထည့်ပါ</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Label</source>
-			<translation>တံဆိပ်  </translation>
+			<translation>တံဆိပ်</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Send max</source>
-			<translation>အများဆုံးပေးပို့ပါ  </translation>
+			<translation>အများဆုံးပေးပို့ပါ</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
@@ -3379,32 +3379,32 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>Add Recipient</source>
-			<translation>လက်ခံသူအသစ်ထည့်ပါ  </translation>
+			<translation>လက်ခံသူအသစ်ထည့်ပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;CSV (*.csv)</source>
-			<translation>ဖိုင်များအားလုံး (*);; CSV (*.csv)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);; CSV (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.csv)</source>
-			<translation>ဖိုင်များအားလုံး (*);; ပိုက်ဆံအိတ်ဖိုင်များ (*.csv)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);; ပိုက်ဆံအိတ်ဖိုင်များ (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Amount [{unit}]</source>
-			<translation>ပမာဏ [{unit}]  </translation>
+			<translation>ပမာဏ [{unit}]</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export</source>
-			<translation>တင်ပို့ပါ  </translation>
+			<translation>တင်ပို့ပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3414,22 +3414,22 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>Export as CSV file</source>
-			<translation>CSV အဖြစ်ထုတ်ပို့ပါ  </translation>
+			<translation>CSV အဖြစ်ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export csv</source>
-			<translation>CSV ဖိုင်ထုတ်ပို့ပါ  </translation>
+			<translation>CSV ဖိုင်ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import CSV file</source>
-			<translation>CSV ဖိုင်တင်သွင်းပါ  </translation>
+			<translation>CSV ဖိုင်တင်သွင်းပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import/Export</source>
-			<translation>တင်သွင်း/ထုတ်ပို့  </translation>
+			<translation>တင်သွင်း/ထုတ်ပို့</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3439,27 +3439,27 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ဖိုင်မရွေးရသေးပါ  </translation>
+			<translation>ဖိုင်မရွေးရသေးပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>No rows recognized</source>
-			<translation>အတန်းမရှိပါ  </translation>
+			<translation>အတန်းမရှိပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Open CSV</source>
-			<translation>CSV ဖိုင်ဖွင့်ပါ  </translation>
+			<translation>CSV ဖိုင်ဖွင့်ပါ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Please use the CSV template and include the header row.</source>
-			<translation>CSV ပုံစံကိုသုံးပြီးခေါင်းစဉ်အတန်းပါဝင်အောင်ပြုလုပ်ပါ။  </translation>
+			<translation>CSV ပုံစံကိုသုံးပြီးခေါင်းစဉ်အတန်းပါဝင်အောင်ပြုလုပ်ပါ။</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Recipients</source>
-			<translation>လက်ခံသူများ  </translation>
+			<translation>လက်ခံသူများ</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3469,49 +3469,49 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>{address} is not a valid address!</source>
-			<translation>{address} သည်တရားဝင်လိပ်စာမဟုတ်ပါ!  </translation>
+			<translation>{address} သည်တရားဝင်လိပ်စာမဟုတ်ပါ!</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>{amount} is not a valid integer!</source>
-			<translation>{amount} သည်တရားဝင်တန်ဖိုးမဟုတ်ပါ!  </translation>
+			<translation>{amount} သည်တရားဝင်တန်ဖိုးမဟုတ်ပါ!</translation>
 		</message>
 	</context>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ  </translation>
+			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next signer</source>
-			<translation>နောက်လာမည့်လက်မှတ်သား  </translation>
+			<translation>နောက်လာမည့်လက်မှတ်သား</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်  </translation>
+			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>ယခင်လက်မှတ်သား  </translation>
+			<translation>ယခင်လက်မှတ်သား</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Skip step</source>
-			<translation>အဆင့်ကျော်ပါ  </translation>
+			<translation>အဆင့်ကျော်ပါ</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>ဟုတ်ကဲ့၊ ငါဟာ {n} လက်မှတ်သားစက်ပေါ်မှာ multisig ကိုမှတ်ပုံတင်ခဲ့တယ်။  </translation>
+			<translation>ဟုတ်ကဲ့၊ ငါဟာ {n} လက်မှတ်သားစက်ပေါ်မှာ multisig ကိုမှတ်ပုံတင်ခဲ့တယ်။</translation>
 		</message>
 	</context>
 	<context>
@@ -3525,7 +3525,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RelayDialog</name>
 		<message>
 			<source>Enter custom Nostr Relays</source>
-			<translation>စိတ်ကြိုက် Nostr Relays ထည့်ပါ  </translation>
+			<translation>စိတ်ကြိုက် Nostr Relays ထည့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3539,38 +3539,38 @@ Outputs stay the same; only the fee changes.</source>
 		<name>SankeyWidget</name>
 		<message>
 			<source>All Files (*);;Text Files (*.svg)</source>
-			<translation>ဖိုင်များအားလုံး (*);; စာသားဖိုင်များ (*.svg)  </translation>
+			<translation>ဖိုင်များအားလုံး (*);; စာသားဖိုင်များ (*.svg)</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>Export svg</source>
-			<translation>svg ထုတ်ပို့ပါ  </translation>
+			<translation>svg ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>No file selected</source>
-			<translation>ဖိုင်မရွေးရသေးပါ  </translation>
+			<translation>ဖိုင်မရွေးရသေးပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsExportXpub</name>
 		<message>
 			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်မှပိုက်ဆံအိတ်အချက်အလက်ကိုမည်သို့ထုတ်ပို့ရမည်ကိုသင်ယူပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်မှပိုက်ဆံအိတ်အချက်အလက်ကိုမည်သို့ထုတ်ပို့ရမည်ကိုသင်ယူပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsGenerateSeed</name>
 		<message>
 			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်တိုင်းတွင် {number} လျှို့ဝှက်မျိုးစေ့စကားလုံးကိုဖန်တီးပြီး အရန်စာရွက်ပေါ်တွင်ရေးသားပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်တိုင်းတွင် {number} လျှို့ဝှက်မျိုးစေ့စကားလုံးကိုဖန်တီးပြီး အရန်စာရွက်ပေါ်တွင်ရေးသားပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsRegisterMultisig</name>
 		<message>
 			<source>Import the multisig information in the hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်မှ multisig အချက်အလက်ကိုတင်သွင်းပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်မှ multisig အချက်အလက်ကိုတင်သွင်းပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3578,55 +3578,55 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>အရန်စာရွက်ပေါ်ရှိ {number} စကားလုံးများနှင့်ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ကိုယှဉ်ပြိုင်ပါ။ ဒီမှာအမှားဖြစ်ခဲ့ရင်သင့်ငွေကြေးဆုံးရှုံးမည်!  </translation>
+			<translation>အရန်စာရွက်ပေါ်ရှိ {number} စကားလုံးများနှင့်ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ကိုယှဉ်ပြိုင်ပါ။ ဒီမှာအမှားဖြစ်ခဲ့ရင်သင့်ငွေကြေးဆုံးရှုံးမည်!</translation>
 		</message>
 	</context>
 	<context>
 		<name>SearchTreeView</name>
 		<message>
 			<source>Type to search...</source>
-			<translation>ရှာဖွေရန်ရိုက်ထည့်ပါ...  </translation>
+			<translation>ရှာဖွေရန်ရိုက်ထည့်ပါ...</translation>
 		</message>
 	</context>
 	<context>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
-			<translation>သုံးစွဲပြီးသား Outputs  </translation>
+			<translation>သုံးစွဲပြီးသား Outputs</translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Invalid seed</source>
-			<translation>မှားယွင်းသောမျိုးစေ့  </translation>
+			<translation>မှားယွင်းသောမျိုးစေ့</translation>
 		</message>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Missing Seed</source>
-			<translation>မျိုးစေ့ပျောက်နေသည်  </translation>
+			<translation>မျိုးစေ့ပျောက်နေသည်</translation>
 		</message>
 	</context>
 	<context>
 		<name>SendTest</name>
 		<message>
 			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အလုပ်လုပ်နေအောင် ပေးပို့မှုစမ်းသပ်မှုကိုပြီးဆုံးပါ။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အလုပ်လုပ်နေအောင် ပေးပို့မှုစမ်းသပ်မှုကိုပြီးဆုံးပါ။</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
 			<source>Skip spend test?</source>
-			<translation>အရာကိုကျော်ပါ  </translation>
+			<translation>အရာကိုကျော်ပါ</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
 			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>သင်သည်ပြင်ပငွေလွှဲ {n} ခုကိုပြီးခဲ့ပြီးဖြစ်ပါသည်။ ဒီအရာကိုကျော်ချင်ပါသလား?  </translation>
+			<translation>သင်သည်ပြင်ပငွေလွှဲ {n} ခုကိုပြီးခဲ့ပြီးဖြစ်ပါသည်။ ဒီအရာကိုကျော်ချင်ပါသလား?</translation>
 		</message>
 	</context>
 	<context>
@@ -3655,7 +3655,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3690,7 +3690,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Sign</source>
-			<translation>လက်မှတ်ထိုးပါ  </translation>
+			<translation>လက်မှတ်ထိုးပါ</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3705,7 +3705,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3732,12 +3732,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
-			<translation>{bip32_path} မှာလက်မှတ်ထိုးရန်စာတစ်စောင်ရိုက်ထည့်ပါ  </translation>
+			<translation>{bip32_path} မှာလက်မှတ်ထိုးရန်စာတစ်စောင်ရိုက်ထည့်ပါ</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Sign message</source>
-			<translation>စာတစ်စောင်လက်မှတ်ထိုးပါ  </translation>
+			<translation>စာတစ်စောင်လက်မှတ်ထိုးပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3749,61 +3749,61 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Message too short.</source>
-			<translation>စာကြောင့်ရှုပ်ထွေးနေသည်။  </translation>
+			<translation>စာကြောင့်ရှုပ်ထွေးနေသည်။</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
-			<translation>လက်မှတ်ထိုးပါ  </translation>
+			<translation>လက်မှတ်ထိုးပါ</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်  </translation>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
 	</context>
 	<context>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Import signed PSBT</source>
-			<translation>လက်မှတ်လက်ခံ PSBT တင်သွင်းပါ  </translation>
+			<translation>လက်မှတ်လက်ခံ PSBT တင်သွင်းပါ</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>OK</source>
-			<translation>အိုကေ  </translation>
+			<translation>အိုကေ</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Paste your PSBT in here or drop a file</source>
-			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။  </translation>
+			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။  </translation>
+			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Import signed PSBT</source>
-			<translation>လက်မှတ်လက်ခံ PSBT တင်သွင်းပါ  </translation>
+			<translation>လက်မှတ်လက်ခံ PSBT တင်သွင်းပါ</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>OK</source>
-			<translation>အိုကေ  </translation>
+			<translation>အိုကေ</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Paste your PSBT in here or drop a file</source>
-			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။  </translation>
+			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။  </translation>
+			<translation>သင်၏ PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -3815,14 +3815,14 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Scan QR code</source>
-			<translation>QR ကုဒ်စကင်နာ  </translation>
+			<translation>QR ကုဒ်စကင်နာ</translation>
 		</message>
 	</context>
 	<context>
 		<name>SignatureImporterUSB</name>
 		<message>
 			<source>Please do 'Wallet --&gt; Export --&gt; Export for ...' and register the multisignature wallet on the hardware signer.</source>
-			<translation>'ပိုက်ဆံအိတ် --&gt; ထုတ်ပို့မှု --&gt; ... အတွက်ထုတ်ပို့ပါ' ကိုလုပ်ပါနှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်မှာ multisignature ပိုက်ဆံအိတ်ကိုမှတ်ပုံတင်ပါ။  </translation>
+			<translation>'ပိုက်ဆံအိတ် --&gt; ထုတ်ပို့မှု --&gt; ... အတွက်ထုတ်ပို့ပါ' ကိုလုပ်ပါနှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်မှာ multisignature ပိုက်ဆံအိတ်ကိုမှတ်ပုံတင်ပါ။</translation>
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
@@ -3839,14 +3839,14 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်မကိုက်ညီပါ။ ဖျက်သိမ်းပါ။  </translation>
+			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်မကိုက်ညီပါ။ ဖျက်သိမ်းပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" သည် {device_name} တွင်  </translation>
+			<translation>"{sticker}" သည် {device_name} တွင်</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -3856,34 +3856,34 @@ If you make a mistake here, your money is lost!</source>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>Put the following stickers on your hardware:</source>
-			<translation>သင့်ဟာ့ဒ်ဝဲလ်ပေါ်တွင်အောက်ပါစတစ်ကာများကိုကပ်ပါ:  </translation>
+			<translation>သင့်ဟာ့ဒ်ဝဲလ်ပေါ်တွင်အောက်ပါစတစ်ကာများကိုကပ်ပါ:</translation>
 		</message>
 	</context>
 	<context>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Please enable syncing in the wallet {wallet_id} first</source>
-			<translation>ပထမဆုံး {wallet_id} မှာပေါင်းသင်းဖို့ဖွင့်ပါ  </translation>
+			<translation>ပထမဆုံး {wallet_id} မှာပေါင်းသင်းဖို့ဖွင့်ပါ</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Please enable the sync tab first</source>
-			<translation>ပထမဆုံး sync တက်ဘ်ကိုဖွင့်ပါ  </translation>
+			<translation>ပထမဆုံး sync တက်ဘ်ကိုဖွင့်ပါ</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with all devices in {wallet_id}</source>
-			<translation>{wallet_id} မှာရှိသောကိရိယာများအားလုံးဖြင့်ဝေမျှပါ  </translation>
+			<translation>{wallet_id} မှာရှိသောကိရိယာများအားလုံးဖြင့်ဝေမျှပါ</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with single device</source>
-			<translation>တစ်ခုတည်းဖြင့်ဝေမျှပါ  </translation>
+			<translation>တစ်ခုတည်းဖြင့်ဝေမျှပါ</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with trusted devices</source>
-			<translation>ယုံကြည်ရသောကိရိယာများဖြင့်ဝေမျှပါ  </translation>
+			<translation>ယုံကြည်ရသောကိရိယာများဖြင့်ဝေမျှပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3905,7 +3905,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ  </translation>
+			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3915,22 +3915,22 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>လက်ခံရရှိသောငွေလွှဲများနှင့် PSBT များဖွင့်ပါ  </translation>
+			<translation>လက်ခံရရှိသောငွေလွှဲများနှင့် PSBT များဖွင့်ပါ</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>{name} ကို {author} မှဖွင့်ပါ  </translation>
+			<translation>{name} ကို {author} မှဖွင့်ပါ</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>Sync key ပြန်စတင်ပါ  </translation>
+			<translation>Sync key ပြန်စတင်ပါ</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat  </translation>
+			<translation>Sync &amp; Chat</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3956,46 +3956,46 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>SyncClient</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author}: {description}  </translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ  </translation>
+			<translation>ယုံကြည်ရသောကိရိယာများနှင့်လျှို့ဝှက်ပေါင်းသင်းဖို့တံဆိပ်အရန်နှင့်ပေါင်းသင်းပါ</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>လက်ခံရရှိသောငွေလွှဲများနှင့် PSBT များဖွင့်ပါ  </translation>
+			<translation>လက်ခံရရှိသောငွေလွှဲများနှင့် PSBT များဖွင့်ပါ</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>{name} ကို {author} မှဖွင့်ပါ  </translation>
+			<translation>{name} ကို {author} မှဖွင့်ပါ</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author}: {description}  </translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
-			<translation>လိပ်စာအိန္ဒက်  </translation>
+			<translation>လိပ်စာအိန္ဒက်</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Display Address</source>
-			<translation>လိပ်စာပြသပါ  </translation>
+			<translation>လိပ်စာပြသပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Get xpubs</source>
-			<translation>xpubs ရယူပါ  </translation>
+			<translation>xpubs ရယူပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4005,12 +4005,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your PSBT in here</source>
-			<translation>သင့် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ  </translation>
+			<translation>သင့် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4020,68 +4020,68 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your text to be signed</source>
-			<translation>သင့်စာသားကိုဤနေရာတွင်ကပ်ရောက်ပါ  </translation>
+			<translation>သင့်စာသားကိုဤနေရာတွင်ကပ်ရောက်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Show Seed</source>
-			<translation>မျိုးစေ့ပြသပါ  </translation>
+			<translation>မျိုးစေ့ပြသပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign Message</source>
-			<translation>စာတိုလက်မှတ်ပါ  </translation>
+			<translation>စာတိုလက်မှတ်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign PSBT</source>
-			<translation>PSBT လက်မှတ်ပါ  </translation>
+			<translation>PSBT လက်မှတ်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>USB Signer Tools</source>
-			<translation>USB လက်မှတ်သားကိရိယာများ  </translation>
+			<translation>USB လက်မှတ်သားကိရိယာများ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock</source>
-			<translation>ဖွင့်ပါ  </translation>
+			<translation>ဖွင့်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock Devices</source>
-			<translation>ကိရိယာများဖွင့်ပါ  </translation>
+			<translation>ကိရိယာများဖွင့်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Wipe Device</source>
-			<translation>ကိရိယာကိုဖျက်ပါ  </translation>
+			<translation>ကိရိယာကိုဖျက်ပါ</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs  </translation>
+			<translation>XPUBs</translation>
 		</message>
 	</context>
 	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
-			<translation>ယုံမှတ်မထားပါ  </translation>
+			<translation>ယုံမှတ်မထားပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxExport</name>
 		<message>
 			<source>Export Transaction</source>
-			<translation>ငွေလွှဲထုတ်ပို့ပါ  </translation>
+			<translation>ငွေလွှဲထုတ်ပို့ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Create and collect {n}. signature</source>
-			<translation>{n} လက်မှတ်လုပ်ပြီးစုဆောင်းပါ  </translation>
+			<translation>{n} လက်မှတ်လုပ်ပြီးစုဆောင်းပါ</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4104,32 +4104,32 @@ Signatures:
 		<name>UI</name>
 		<message>
 			<source>Export sync key</source>
-			<translation>Sync key ထုတ်ပို့ပါ  </translation>
+			<translation>Sync key ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Import sync key</source>
-			<translation>Sync key တင်သွင်းပါ  </translation>
+			<translation>Sync key တင်သွင်းပါ</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>My Device: {id}</source>
-			<translation>ကျွန်ုပ်၏ကိရိယာ: {id}  </translation>
+			<translation>ကျွန်ုပ်၏ကိရိယာ: {id}</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>Sync key ပြန်စတင်ပါ  </translation>
+			<translation>Sync key ပြန်စတင်ပါ</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Set custom Relay list</source>
-			<translation>စိတ်ကြိုက် Relay စာရင်းသတ်မှတ်ပါ  </translation>
+			<translation>စိတ်ကြိုက် Relay စာရင်းသတ်မှတ်ပါ</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Sync key Export</source>
-			<translation>Sync key ထုတ်ပို့ပါ  </translation>
+			<translation>Sync key ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>UI</name>
 		<message>
@@ -4145,7 +4145,7 @@ Signatures:
 		<name>UITx_Creator</name>
 		<message>
 			<source>Add Inputs</source>
-			<translation>ဝင်ငွေထည့်ပါ  </translation>
+			<translation>ဝင်ငွေထည့်ပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4166,12 +4166,12 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Create</source>
-			<translation>ဖန်တီးပါ  </translation>
+			<translation>ဖန်တီးပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Do you want to continue, even though both coin categories become linkable?</source>
-			<translation>ဒီလိုဆက်လုပ်ချင်ပါသလား၊ ကွိုင်ပြီးသားငွေကြေးအုပ်စုနှစ်ခုလုံးသည်ဆက်စပ်နိုင်သည်။  </translation>
+			<translation>ဒီလိုဆက်လုပ်ချင်ပါသလား၊ ကွိုင်ပြီးသားငွေကြေးအုပ်စုနှစ်ခုလုံးသည်ဆက်စပ်နိုင်သည်။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4186,7 +4186,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Load UTXOs</source>
-			<translation>UTXOs တင်ပါ  </translation>
+			<translation>UTXOs တင်ပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4197,18 +4197,18 @@ otherwise you may not be able to broadcast it.</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please paste UTXO here</source>
-			<translation>UTXO ကိုကပ်ရောက်ပါ  </translation>
+			<translation>UTXO ကိုကပ်ရောက်ပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>UTXO ကိုဒီပုံစံနဲ့ကပ်ရောက်ပါ: txid:outpoint txid:outpoint  </translation>
+			<translation>UTXO ကိုဒီပုံစံနဲ့ကပ်ရောက်ပါ: txid:outpoint txid:outpoint</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
-			<translation>ဘယ်ဘက်ရှိဝင်ငွေအုပ်စုကိုရွေးပါ၊ သူသည်ငွေလွှဲလက်ခံသူနှင့်ကိုက်ညီသည်။  </translation>
+			<translation>ဘယ်ဘက်ရှိဝင်ငွေအုပ်စုကိုရွေးပါ၊ သူသည်ငွေလွှဲလက်ခံသူနှင့်ကိုက်ညီသည်။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4223,12 +4223,12 @@ txid:outpoint</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
-			<translation>{inputs} ဝင်ငွေသည်ဤအတည်ပြုထားသော txids {txids} များနှင့်အတူထိစပ်နေသည်။  </translation>
+			<translation>{inputs} ဝင်ငွေသည်ဤအတည်ပြုထားသော txids {txids} များနှင့်အတူထိစပ်နေသည်။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
 			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
-			<translation>သင့်မှတ်ဉာဏ်အသစ်တွင်ဖယ်ရှားမည့်အတည်မပြုရသောငွေလွှဲများသည် {txids} ဖြစ်သည်။  </translation>
+			<translation>သင့်မှတ်ဉာဏ်အသစ်တွင်ဖယ်ရှားမည့်အတည်မပြုရသောငွေလွှဲများသည် {txids} ဖြစ်သည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -4240,22 +4240,22 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
-			<translation>ဖိုင်တင်သွင်းပါ  </translation>
+			<translation>ဖိုင်တင်သွင်းပါ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Invalid Signatures</source>
-			<translation>မှားယွင်းသောလက်မှတ်များ  </translation>
+			<translation>မှားယွင်းသောလက်မှတ်များ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>တံဆိပ်:  </translation>
+			<translation>တံဆိပ်: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်  </translation>
+			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4265,7 +4265,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}  </translation>
+			<translation>PSBT {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4281,7 +4281,7 @@ Or you can broadcast via {url}</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Previous step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4296,12 +4296,12 @@ Or you can broadcast via {url}</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်  </translation>
+			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Transaction {txid}</source>
-			<translation>ငွေလွှဲ {txid}  </translation>
+			<translation>ငွေလွှဲ {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4313,7 +4313,7 @@ Or you can broadcast via {url}</source>
 		<name>USBDevice</name>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
-			<translation>ကိရိယာပေါ်တွင်ရှိပြီးသားမျိုးစေ့ကိုပြန်လည်ထည့်ချင်ပါသလား?  </translation>
+			<translation>ကိရိယာပေါ်တွင်ရှိပြီးသားမျိုးစေ့ကိုပြန်လည်ထည့်ချင်ပါသလား?</translation>
 		</message>
 	</context>
 	<context>
@@ -4330,7 +4330,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No device selected</source>
-			<translation>ကိရိယာမရွေးရသေးပါ  </translation>
+			<translation>ကိရိယာမရွေးရသေးပါ</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4340,12 +4340,12 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။  </translation>
+			<translation>အပြောင်းအလဲများထိရောက်စေရန်သင့်ကွန်ပျူတာကိုပြန်ချိန်ခွင်လျှာသွားပါ။</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Please unlock USB devices</source>
-			<translation>USB ကိရိယာများကိုဖွင့်ပါ  </translation>
+			<translation>USB ကိရိယာများကိုဖွင့်ပါ</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4355,78 +4355,78 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Restart computer</source>
-			<translation>ကွန်ပျူတာပြန်စတင်ပါ  </translation>
+			<translation>ကွန်ပျူတာပြန်စတင်ပါ</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>USB ကိရိယာများ  </translation>
+			<translation>USB ကိရိယာများ</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Unlock USB devices</source>
-			<translation>USB ကိရိယာများဖွင့်ပါ  </translation>
+			<translation>USB ကိရိယာများဖွင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>အကူအညီ  </translation>
+			<translation>အကူအညီ</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig</source>
-			<translation>Multisig မှတ်ပုံတင်ပါ  </translation>
+			<translation>Multisig မှတ်ပုံတင်ပါ</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig wallet on hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်မှတ်ပုံတင်ပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်မှတ်ပုံတင်ပါ</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်ကိုအောင်မြင်စွာမှတ်ပုံတင်ခဲ့သည်။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်ကိုအောင်မြင်စွာမှတ်ပုံတင်ခဲ့သည်။</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate address</source>
-			<translation>လိပ်စာကိုစစ်ဆေးပါ  </translation>
+			<translation>လိပ်စာကိုစစ်ဆေးပါ</translation>
 		</message>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate receive address:</source>
-			<translation>လက်ခံရရှိသောလိပ်စာစစ်ဆေးပါ:  </translation>
+			<translation>လက်ခံရရှိသောလိပ်စာစစ်ဆေးပါ:</translation>
 		</message>
 	</context>
 	<context>
 		<name>UTXOList</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Amount</source>
-			<translation>ပမာဏ  </translation>
+			<translation>ပမာဏ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Category</source>
-			<translation>အုပ်စု  </translation>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Label</source>
-			<translation>တံဆိပ်  </translation>
+			<translation>တံဆိပ်</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Outpoint</source>
-			<translation>Outpoint  </translation>
+			<translation>Outpoint</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -4446,56 +4446,56 @@ Or you can broadcast via {url}</source>
 		<name>UTXOList</name>
 		<message>
 			<source>Wallet</source>
-			<translation>ပိုက်ဆံအိတ်  </translation>
+			<translation>ပိုက်ဆံအိတ်</translation>
 		</message>
 	</context>
 	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
-			<translation>ယုံကြည်ပါ  </translation>
+			<translation>ယုံကြည်ပါ</translation>
 		</message>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust this device</source>
-			<translation>ဤကိရိယာကိုယုံကြည်ပါ  </translation>
+			<translation>ဤကိရိယာကိုယုံကြည်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Check for Update</source>
-			<translation>အပ်ဒိတ်စစ်ဆေးပါ  </translation>
+			<translation>အပ်ဒိတ်စစ်ဆေးပါ</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Could not verify the download. Please try again later.</source>
-			<translation>ဒေါင်းလုပ်ချက်ကိုစစ်ဆေးမရနိုင်ပါ။ နောက်တစ်ခါထပ်လုပ်ပါ။  </translation>
+			<translation>ဒေါင်းလုပ်ချက်ကိုစစ်ဆေးမရနိုင်ပါ။ နောက်တစ်ခါထပ်လုပ်ပါ။</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>New version available {tag}</source>
-			<translation>နယူးဗားရှင်းအသစ် {tag} ရှိပါတယ်  </translation>
+			<translation>နယူးဗားရှင်းအသစ် {tag} ရှိပါတယ်</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>No update found</source>
-			<translation>အပ်ဒိတ်မတွေ့ပါ  </translation>
+			<translation>အပ်ဒိတ်မတွေ့ပါ</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
-			<translation>လက်မှတ်မကိုက်ညီပါ!!! နောက်တစ်ခါထပ်လုပ်ပါ။  </translation>
+			<translation>လက်မှတ်မကိုက်ညီပါ!!! နောက်တစ်ခါထပ်လုပ်ပါ။</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Signature verified.</source>
-			<translation>လက်မှတ်အတည်ပြုပြီးပါပြီ။  </translation>
+			<translation>လက်မှတ်အတည်ပြုပြီးပါပြီ။</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>You have already the newest version.</source>
-			<translation>သင်သည်လက်ရှိဗားရှင်းနဲ့တူပါပြီ။  </translation>
+			<translation>သင်သည်လက်ရှိဗားရှင်းနဲ့တူပါပြီ။</translation>
 		</message>
 	</context>
 	<context>
@@ -4509,12 +4509,12 @@ Or you can broadcast via {url}</source>
 		<name>ValidateBackup</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>ValidateBackup</name>
 		<message>
 			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>ဟုတ်ကဲ့၊ ငါ့ {number} စကားလုံးတွေအားလုံးမှန်ကန်ပါတယ်။  </translation>
+			<translation>ဟုတ်ကဲ့၊ ငါ့ {number} စကားလုံးတွေအားလုံးမှန်ကန်ပါတယ်။</translation>
 		</message>
 	</context>
 	<context>
@@ -4533,14 +4533,14 @@ Or you can broadcast via {url}</source>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
-			<translation>လက်ကျန်ငွေ ({unit})  </translation>
+			<translation>လက်ကျန်ငွေ ({unit})</translation>
 		</message>
 	</context>
 	<context>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4605,7 +4605,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Label</source>
-			<translation>တံဆိပ်  </translation>
+			<translation>တံဆိပ်</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4655,7 +4655,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Transaction</source>
-			<translation>ငွေလွှဲ  </translation>
+			<translation>ငွေလွှဲ</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4702,22 +4702,22 @@ Or you can broadcast via {url}</source>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Choose wallet name</source>
-			<translation>ပိုက်ဆံအိတ်အမည်ရွေးပါ  </translation>
+			<translation>ပိုက်ဆံအိတ်အမည်ရွေးပါ</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Error</source>
-			<translation>အမှား  </translation>
+			<translation>အမှား</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Please choose a wallet name</source>
-			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။  </translation>
+			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>The wallet {filename} exists already.</source>
-			<translation>ပိုက်ဆံအိတ် {filename} ရှိပြီးသားဖြစ်ပါသည်။  </translation>
+			<translation>ပိုက်ဆံအိတ် {filename} ရှိပြီးသားဖြစ်ပါသည်။</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
@@ -4727,51 +4727,51 @@ Or you can broadcast via {url}</source>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Wallet name:</source>
-			<translation>ပိုက်ဆံအိတ်အမည်:  </translation>
+			<translation>ပိုက်ဆံအိတ်အမည်:</translation>
 		</message>
 	</context>
 	<context>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for recipient address</source>
-			<translation>လက်ခံသူလိပ်စာအတွက်တံဆိပ်ထည့်ပါ  </translation>
+			<translation>လက်ခံသူလိပ်စာအတွက်တံဆိပ်ထည့်ပါ</translation>
 		</message>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for transaction</source>
-			<translation>ငွေလွှဲတွင်တံဆိပ်ထည့်ပါ  </translation>
+			<translation>ငွေလွှဲတွင်တံဆိပ်ထည့်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>ပေးပို့မှုစမ်းသပ်ပါ  </translation>
+			<translation> ပေးပို့မှုစမ်းသပ်ပါ </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>All Send tests done successfully.</source>
-			<translation>ပေးပို့မှုစမ်းသပ်အားလုံးအောင်မြင်ပြီးပါပြီ။  </translation>
+			<translation>ပေးပို့မှုစမ်းသပ်အားလုံးအောင်မြင်ပြီးပါပြီ။</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Backup Seed</source>
-			<translation>မျိုးစေ့အရန်  </translation>
+			<translation>မျိုးစေ့အရန်</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Buy hardware signers</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်များအားတံဆိပ်ထိုးပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်များအားတံဆိပ်ထိုးပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Generate Seed</source>
-			<translation>မျိုးစေ့ဖန်တီးပါ  </translation>
+			<translation>မျိုးစေ့ဖန်တီးပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Import signer info</source>
-			<translation>လက်မှတ်သားအချက်အလက်တင်သွင်းပါ  </translation>
+			<translation>လက်မှတ်သားအချက်အလက်တင်သွင်းပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4781,17 +4781,17 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Put in secure locations</source>
-			<translation>လုံခြံုရာနေရာတွင်ထားပါ  </translation>
+			<translation>လုံခြံုရာနေရာတွင်ထားပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Receive Test</source>
-			<translation>လက်ခံစမ်းသပ်မှု  </translation>
+			<translation>လက်ခံစမ်းသပ်မှု</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Register multisig on signers</source>
-			<translation>လက်မှတ်သားများပေါ်တွင် multisig မှတ်ပုံတင်ပါ  </translation>
+			<translation>လက်မှတ်သားများပေါ်တွင် multisig မှတ်ပုံတင်ပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4801,12 +4801,12 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Send test</source>
-			<translation>ပို့ပေးမှုစမ်းသပ်ပါ  </translation>
+			<translation>ပို့ပေးမှုစမ်းသပ်ပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Send test {j}</source>
-			<translation>{j} ပို့ပေးမှုစမ်းသပ်ပါ  </translation>
+			<translation>{j} ပို့ပေးမှုစမ်းသပ်ပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4816,7 +4816,7 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat  </translation>
+			<translation>Sync &amp; Chat</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4824,22 +4824,22 @@ Or you can broadcast via {url}</source>
 '{tx_text}'
  was done successfully. Please proceed to do the send test: 
 '{next_text}'</source>
-			<translation>စမ်းသပ်ငွေလွှဲမှု '{tx_text}' ကိုအောင်မြင်စွာပြုလုပ်ခဲ့ပါပြီ။ ပေးပို့မှုစမ်းသပ်ကိုဆက်လုပ်ပါ: '{next_text}'  </translation>
+			<translation>စမ်းသပ်ငွေလွှဲမှု '{tx_text}' ကိုအောင်မြင်စွာပြုလုပ်ခဲ့ပါပြီ။ ပေးပို့မှုစမ်းသပ်ကိုဆက်လုပ်ပါ: '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>The wallet is not funded. Please fund the wallet.</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ဝယ်ပါ  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ဝယ်ပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Validate Backup</source>
-			<translation>အရန်စစ်ဆေးပါ  </translation>
+			<translation>အရန်စစ်ဆေးပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>You must have an initilized wallet first</source>
-			<translation>ပိုက်ဆံအိတ်ကိုဦးစွာစတင်ထားရမည်  </translation>
+			<translation>ပိုက်ဆံအိတ်ကိုဦးစွာစတင်ထားရမည်</translation>
 		</message>
 	</context>
 	<context>
@@ -4853,29 +4853,29 @@ Or you can broadcast via {url}</source>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
-			<translation>xPub မရှိပါ  </translation>
+			<translation>xPub မရှိပါ</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Invalid xpub</source>
-			<translation>အခြေအနေအားလုံး  </translation>
+			<translation>အခြေအနေအားလုံး</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Missing xPub</source>
-			<translation>မှန်ကန်မှုမရှိသော xpub  </translation>
+			<translation>မှန်ကန်မှုမရှိသော xpub</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>The xpub is in SLIP132 format. Converting to standard format.</source>
-			<translation>ပုံစံပြောင်းပါ  </translation>
+			<translation>ပုံစံပြောင်းပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>_SignTab</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>_SignTab</name>
 		<message>
@@ -4897,32 +4897,32 @@ Or you can broadcast via {url}</source>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
-			<translation>အသုံးမပြုပါ  </translation>
+			<translation>အသုံးမပြုပါ</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>All types</source>
-			<translation>အမျိုးအစားအားလုံး  </translation>
+			<translation>အမျိုးအစားအားလုံး</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Change</source>
-			<translation>ပြောင်းလဲလိပ်စာ  </translation>
+			<translation>ပြောင်းလဲလိပ်စာ</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Funded</source>
-			<translation>အသုံးပြုထားသည်  </translation>
+			<translation>အသုံးပြုထားသည်</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Funded or Unused</source>
-			<translation>ငွေဖြည့်ထားသည်သို့မဟုတ် အသုံးမပြုပါ  </translation>
+			<translation>ငွေဖြည့်ထားသည်သို့မဟုတ် အသုံးမပြုပါ</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Receiving</source>
-			<translation>လက်ခံရရှိသော  </translation>
+			<translation>လက်ခံရရှိသော</translation>
 		</message>
 		<name>address_list</name>
 		<message>
@@ -4939,74 +4939,74 @@ Or you can broadcast via {url}</source>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်  </translation>
+			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>basetab</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်  </translation>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 	</context>
 	<context>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Error</source>
-			<translation>အမှား  </translation>
+			<translation>အမှား</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Executing the script</source>
-			<translation>စာရိုက်ထုတ်ခြင်း  </translation>
+			<translation>စာရိုက်ထုတ်ခြင်း</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Install udev files</source>
-			<translation>udev ဖိုင်များတပ်ဆင်ပါ  </translation>
+			<translation>udev ဖိုင်များတပ်ဆင်ပါ</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No HWI AddressType could be found for {name}</source>
-			<translation>{name} အတွက် HWI AddressType မတွေ့ပါ။  </translation>
+			<translation>{name} အတွက် HWI AddressType မတွေ့ပါ။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No USB devices found</source>
-			<translation>USB ကိရိယာများမတွေ့ပါ။  </translation>
+			<translation>USB ကိရိယာများမတွေ့ပါ။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No suitable terminal emulator found.</source>
-			<translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။  </translation>
+			<translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-			<translation>{key_origin} ၏ ကွန်ယက်ပိုင်း {network_str} သည် h ဖြင့်မာကျောခိုင်မြဲစေရမည်။  </translation>
+			<translation>{key_origin} ၏ ကွန်ယက်ပိုင်း {network_str} သည် h ဖြင့်မာကျောခိုင်မြဲစေရမည်။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>USB ကိရိယာများ  </translation>
+			<translation>USB ကိရိယာများ</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-			<translation>udev ဖိုင်များပျောက်နေသဖြင့် USB အမှားများဖြစ်နိုင်သည်။ ယခု udev ဖိုင်များတပ်ဆင်ချင်ပါသလား?  </translation>
+			<translation>udev ဖိုင်များပျောက်နေသဖြင့် USB အမှားများဖြစ်နိုင်သည်။ ယခု udev ဖိုင်များတပ်ဆင်ချင်ပါသလား?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Unknown network/coin type {network_str} in {key_origin}</source>
-			<translation>{key_origin} တွင် {network_str} သည် မသိရသော ကွန်ယက်/ငွေကြေးအမျိုးအစားဖြစ်သည်။  </translation>
+			<translation>{key_origin} တွင် {network_str} သည် မသိရသော ကွန်ယက်/ငွေကြေးအမျိုးအစားဖြစ်သည်။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>derivation_path {value} must start with a /</source>
-			<translation>{value} ဖွဲ့စည်းပုံသည် / နှင့်စတင်ရမည်။  </translation>
+			<translation>{value} ဖွဲ့စည်းပုံသည် / နှင့်စတင်ရမည်။</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
-			<translation>{value} သည်တရားဝင်လက်ဗွေမဟုတ်ပါ။  </translation>
+			<translation>{value} သည်တရားဝင်လက်ဗွေမဟုတ်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5055,22 +5055,22 @@ Or you can broadcast via {url}</source>
 		<name>constant</name>
 		<message>
 			<source>All files (*)</source>
-			<translation>ဖိုင်များအားလုံး (*)  </translation>
+			<translation>ဖိုင်များအားလုံး (*)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Complete Transaction (*.txn)</source>
-			<translation>ပြည့်စုံသောငွေလွှဲ (*.txn)  </translation>
+			<translation>ပြည့်စုံသောငွေလွှဲ (*.txn)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Partial Transaction (*.psbt)</source>
-			<translation>တစ်ဝက်ပြည့်ငွေလွှဲ (*.psbt)  </translation>
+			<translation>တစ်ဝက်ပြည့်ငွေလွှဲ (*.psbt)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Transaction (*.txn *.psbt);;All files (*)</source>
-			<translation>ငွေလွှဲ (*.txn *.psbt);; ဖိုင်များအားလုံး (*)  </translation>
+			<translation>ငွေလွှဲ (*.txn *.psbt);; ဖိုင်များအားလုံး (*)</translation>
 		</message>
 	</context>
 	<context>
@@ -5082,69 +5082,69 @@ Or you can broadcast via {url}</source>
 		<name>d</name>
 		<message>
 			<source>Copy to clipboard</source>
-			<translation>ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ  </translation>
+			<translation>ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Create PDF</source>
-			<translation>PDF ဖန်တီးပါ  </translation>
+			<translation>PDF ဖန်တီးပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Create random mnemonic</source>
-			<translation>ကျပန်းမျိုးစေ့ဖန်တီးပါ  </translation>
+			<translation>ကျပန်းမျိုးစေ့ဖန်တီးပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Import from camera</source>
-			<translation>ကင်မရာမှတင်သွင်းပါ  </translation>
+			<translation>ကင်မရာမှတင်သွင်းပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Open file</source>
-			<translation>ဖိုင်ဖွင့်ပါ  </translation>
+			<translation>ဖိုင်ဖွင့်ပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Read QR code from camera</source>
-			<translation>ကင်မရာမှ QR ကုဒ်ဖတ်ပါ  </translation>
+			<translation>ကင်မရာမှ QR ကုဒ်ဖတ်ပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Recovery</source>
-			<translation>ပြန်လည်အရန်  </translation>
+			<translation>ပြန်လည်အရန်</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Recovery Signer {i}</source>
-			<translation>ပြန်လည်အရန်လက်မှတ်သား {i}  </translation>
+			<translation>ပြန်လည်အရန်လက်မှတ်သား {i}</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Signer {i}</source>
-			<translation>လက်မှတ်သား {i}  </translation>
+			<translation>လက်မှတ်သား {i}</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Text copied to Clipboard</source>
-			<translation>ကလစ်ဘုတ်သို့စာသားကော်ပီလုပ်ပါ  </translation>
+			<translation>ကလစ်ဘုတ်သို့စာသားကော်ပီလုပ်ပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ  </translation>
+			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>{} copied to Clipboard</source>
-			<translation>{} ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ  </translation>
+			<translation>{} ကလစ်ဘုတ်သို့ကော်ပီလုပ်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>data</name>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-			<translation>လက်ဗွေများသည်ကွဲပြားနေသည်။ တူညီသောလက်ဗွေများသာထောက်ပံ့ပါ၊ ဤအရာသည်အားလုံးလက်မှတ်သားများသည်တူညီသောလက်မှတ်သားမှလာသည်ဟုအာမခံပါသည်။  </translation>
+			<translation>လက်ဗွေများသည်ကွဲပြားနေသည်။ တူညီသောလက်ဗွေများသာထောက်ပံ့ပါ၊ ဤအရာသည်အားလုံးလက်မှတ်သားများသည်တူညီသောလက်မှတ်သားမှလာသည်ဟုအာမခံပါသည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -5158,19 +5158,19 @@ Or you can broadcast via {url}</source>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>general</name>
 		<message>
 			<source>Transaction</source>
-			<translation>ငွေလွှဲ  </translation>
+			<translation>ငွေလွှဲ</translation>
 		</message>
 	</context>
 	<context>
 		<name>gpg</name>
 		<message>
 			<source>Fingerprint</source>
-			<translation>လက်ဗွေရာ  </translation>
+			<translation>လက်ဗွေရာ</translation>
 		</message>
 		<name>gpg</name>
 		<message>
@@ -5202,39 +5202,39 @@ Or you can broadcast via {url}</source>
 		<name>help</name>
 		<message>
 			<source>Help</source>
-			<translation>အကူအညီ  </translation>
+			<translation>အကူအညီ</translation>
 		</message>
 	</context>
 	<context>
 		<name>hist_list</name>
 		<message>
 			<source>All status</source>
-			<translation>အခြေအနေအားလုံး  </translation>
+			<translation>အခြေအနေအားလုံး</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>All types</source>
-			<translation>အမျိုးအစားအားလုံး  </translation>
+			<translation>အမျိုးအစားအားလုံး</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Change</source>
-			<translation>ပြောင်းလဲလိပ်စာ  </translation>
+			<translation>ပြောင်းလဲလိပ်စာ</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Funded</source>
-			<translation>ငွေဖြည့်ထားသည်  </translation>
+			<translation>ငွေဖြည့်ထားသည်</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Funded or Unused</source>
-			<translation>ငွေဖြည့်ထားသည်သို့မဟုတ် အသုံးမပြုပါ  </translation>
+			<translation>ငွေဖြည့်ထားသည်သို့မဟုတ် အသုံးမပြုပါ</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Receiving</source>
-			<translation>လက်ခံရရှိသော  </translation>
+			<translation>လက်ခံရရှိသော</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
@@ -5251,31 +5251,31 @@ Or you can broadcast via {url}</source>
 		<name>import</name>
 		<message>
 			<source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-			<translation>Sync Tab သို့သွားပြီးသင့် Sync key ကိုတင်သွင်းပါ။ ထို့နောက်တံဆိပ်များကိုအလိုအလျောက်ပြန်ယူပါ။  </translation>
+			<translation>Sync Tab သို့သွားပြီးသင့် Sync key ကိုတင်သွင်းပါ။ ထို့နောက်တံဆိပ်များကိုအလိုအလျောက်ပြန်ယူပါ။</translation>
 		</message>
 	</context>
 	<context>
 		<name>importer</name>
 		<message>
 			<source>Import Signature</source>
-			<translation>လက်မှတ်တင်သွင်းပါ  </translation>
+			<translation>လက်မှတ်တင်သွင်းပါ</translation>
 		</message>
 		<name>importer</name>
 		<message>
 			<source>Import file</source>
-			<translation>ဖိုင်တင်သွင်းပါ  </translation>
+			<translation>ဖိုင်တင်သွင်းပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>mytreeview</name>
 		<message>
 			<source>Export as CSV</source>
-			<translation>CSV ဖိုင်အဖြစ်ထုတ်ပို့ပါ  </translation>
+			<translation>CSV ဖိုင်အဖြစ်ထုတ်ပို့ပါ</translation>
 		</message>
 		<name>mytreeview</name>
 		<message>
 			<source>Type to filter</source>
-			<translation>စိစစ်ရန်ရိုက်ထည့်ပါ  </translation>
+			<translation>စိစစ်ရန်ရိုက်ထည့်ပါ</translation>
 		</message>
 		<name>mytreeview</name>
 		<message>
@@ -5287,7 +5287,7 @@ Or you can broadcast via {url}</source>
 		<name>net_conf</name>
 		<message>
 			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>တစ်ခါတလေ အလုပ်လုပ်တဲ့ server ကို {link} နဲ့ {explorer} မှာရှိတဲ့ block explorer ဖြစ်သည်။ {faucet} ရှိပါတယ်။  </translation>
+			<translation>တစ်ခါတလေ အလုပ်လုပ်တဲ့ server ကို {link} နဲ့ {explorer} မှာရှိတဲ့ block explorer ဖြစ်သည်။ {faucet} ရှိပါတယ်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5333,7 +5333,7 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>ဆာဗာသည်သင့်ရဲ့ IP လိပ်စာကိုပိုက်ဆံအိတ်လိပ်စာများနှင့်ဆက်စပ်နိုင်သည်။ သင့်အိမ်တွင်ဆာဗာကဲ့သို့ {link} သုံးရန်ကောင်းသည်။  </translation>
+			<translation>ဆာဗာသည်သင့်ရဲ့ IP လိပ်စာကိုပိုက်ဆံအိတ်လိပ်စာများနှင့်ဆက်စပ်နိုင်သည်။ သင့်အိမ်တွင်ဆာဗာကဲ့သို့ {link} သုံးရန်ကောင်းသည်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5343,17 +5343,17 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>You can connect your own Bitcoin node, such as {link}.</source>
-			<translation>သင့်ရဲ့ Bitcoin node ကိုယ်တိုင်ချိတ်ဆက်ပါ၊ ဥပမာ - {link}။  </translation>
+			<translation>သင့်ရဲ့ Bitcoin node ကိုယ်တိုင်ချိတ်ဆက်ပါ၊ ဥပမာ - {link}။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>{electrum} ကို {server} တွင်ရှိသော electrum ဆာဗာနှင့် {explorer} တွင်ရှိသော block explorer နှင့်တွဲဖက်စီမံရန်သင့်အားဖြစ်စေသည်။  </translation>
+			<translation>{electrum} ကို {server} တွင်ရှိသော electrum ဆာဗာနှင့် {explorer} တွင်ရှိသော block explorer နှင့်တွဲဖက်စီမံရန်သင့်အားဖြစ်စေသည်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-			<translation>{setup} ကို {server} တွင်ရှိသော esplora server နှင့် {explorer} တွင်ရှိသော block explorer ဖြင့်စီမံပါ။  </translation>
+			<translation>{setup} ကို {server} တွင်ရှိသော esplora server နှင့် {explorer} တွင်ရှိသော block explorer ဖြင့်စီမံပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5365,12 +5365,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>
-			<translation>{server_name}  </translation>
+			<translation>{server_name}</translation>
 		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name} via the proxy {proxy}</source>
-			<translation>{server_name} ကို {proxy} ကနေတဆင့်သုံးပါ။  </translation>
+			<translation>{server_name} ကို {proxy} ကနေတဆင့်သုံးပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5382,7 +5382,7 @@ It is best to use your own server, such as {link}.</source>
 		<name>open_file</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲ/PSBT ဖွင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -5403,7 +5403,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. ဒီစာရွက်မှာ 'ပြန်ယူပါ' ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်တွေကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောကွဲပြားသောလုံခြုံသောနေရာများတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) ကိုက်ညီသောစက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။  </translation>
+			<translation>1. ဒီစာရွက်မှာ 'ပြန်ယူပါ' ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်တွေကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောကွဲပြားသောလုံခြုံသောနေရာများတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) ကိုက်ညီသောစက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5412,17 +5412,17 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. ဒီစာရွက်မှာ 'ပြန်ယူပါ' ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်ကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောလုံခြုံသောနေရာတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) စက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။  </translation>
+			<translation>1. ဒီစာရွက်မှာ 'ပြန်ယူပါ' ({number} စကား) ကိုတပ်ဆင်ပါသို့မဟုတ် 12/24 စကားတွေကိုဒီစာရွက်မှာမိတ္တူပြန်လုပ်ပါ။&lt;br/&gt;                 2. အောက်ကလိုင်းမှာဒီစာရွက်ကိုခေါက်ပါ&lt;br/&gt;                 3. ဒီစာရွက်ကိုသင်သာလျှင်ဝင်ရောက်နိုင်သောလုံခြုံသောနေရာတွင်တင်ပါ။&lt;br/&gt;                 4. သင်သည်စက်ဝိုင်းလက်မှတ်သွင်းသူကို a) စက္ကူအပေါက်ပြန်လည်ထားရှိမှုနှင့်အတူသို့မဟုတ် b) သီးသန့်လုံခြုံသောနေရာများတွင်ထားနိုင်သည်။                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>12 or 24</source>
-			<translation>12 သို့မဟုတ် 24  </translation>
+			<translation>12 သို့မဟုတ် 24</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Address</source>
-			<translation>လိပ်စာ  </translation>
+			<translation>လိပ်စာ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5432,7 +5432,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Balance</source>
-			<translation>လက်ကျန်ငွေ  </translation>
+			<translation>လက်ကျန်ငွေ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5442,22 +5442,22 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of {id}</source>
-			<translation>{id} ၏လက်ကျန်ငွေတင်ပြချက်  </translation>
+			<translation>{id} ၏လက်ကျန်ငွေတင်ပြချက်</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Category</source>
-			<translation>အုပ်စု  </translation>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created at {date} with</source>
-			<translation>{date} မှဖန်တီးပါသည်  </translation>
+			<translation>{date} မှဖန်တီးပါသည်</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created with</source>
-			<translation>ဖန်တီးသည်  </translation>
+			<translation>ဖန်တီးသည်</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5467,7 +5467,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>File not found!</source>
-			<translation>ဖိုင်မတွေ့ပါ!  </translation>
+			<translation>ဖိုင်မတွေ့ပါ!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5482,7 +5482,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
-			<translation>တံဆိပ်ကိုက်ညီစေရန်အရန်လက်မှတ်သော့: {label_sync_nsec}  </translation>
+			<translation>တံဆိပ်ကိုက်ညီစေရန်အရန်လက်မှတ်သော့: {label_sync_nsec}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5497,22 +5497,22 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-			<translation>ဤပိုက်ဆံအိတ်ကိုပြန်ရွေးစစ်ပါက အနည်းဆုံးလိပ်စာအိန်ဒက် {max_tip} အထိရှာဖွေပြီးအားလုံးငွေဖြည့်ထားသောလိပ်စာများကိုရှာဖွေပါ။  </translation>
+			<translation>ဤပိုက်ဆံအိတ်ကိုပြန်ရွေးစစ်ပါက အနည်းဆုံးလိပ်စာအိန်ဒက် {max_tip} အထိရှာဖွေပြီးအားလုံးငွေဖြည့်ထားသောလိပ်စာများကိုရှာဖွေပါ။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Please fold here!</source>
-			<translation>ဤနေရာတွင်ခေါက်ပါ!  </translation>
+			<translation>ဤနေရာတွင်ခေါက်ပါ!</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အတွက် မျိုးစေ့စကားလုံးများ: ကွန်ပျူတာထဲသို့ မရိုက်ပါ၊ ဓာတ်ပုံမရိုက်ပါ။  </translation>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အတွက် မျိုးစေ့စကားလုံးများ: ကွန်ပျူတာထဲသို့ မရိုက်ပါ၊ ဓာတ်ပုံမရိုက်ပါ။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Seed backup of {id}</source>
-			<translation>{id} အတွက်မျိုးစေ့အရန်  </translation>
+			<translation>{id} အတွက်မျိုးစေ့အရန်</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5527,12 +5527,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; သည် သင့်လက်ကျန်ငွေကိုကြည့်ရန် watch-only ပိုက်ဆံအိတ်ဖန်တီးရန်ခွင့်ပြုပါသည်။ ထိုက်နေရာမှ ငွေသုံးရန် {threshold} မျိုးစေ့များနှင့် ပိုက်ဆံအိတ်ဖော်ပြချက်လိုအပ်သည်။  </translation>
+			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; သည် သင့်လက်ကျန်ငွေကိုကြည့်ရန် watch-only ပိုက်ဆံအိတ်ဖန်တီးရန်ခွင့်ပြုပါသည်။ ထိုက်နေရာမှ ငွေသုံးရန် {threshold} မျိုးစေ့များနှင့် ပိုက်ဆံအိတ်ဖော်ပြချက်လိုအပ်သည်။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Total</source>
-			<translation>စုစုပေါင်း  </translation>
+			<translation>စုစုပေါင်း</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5547,7 +5547,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-			<translation>{i}။ {m} လက်မှတ်သား Multi-Sig ပိုက်ဆံအိတ်၏ {threshold} အတွက်မျိုးစေ့အရန်: "{id}"  </translation>
+			<translation>{i}။ {m} လက်မှတ်သား Multi-Sig ပိုက်ဆံအိတ်၏ {threshold} အတွက်မျိုးစေ့အရန်: "{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5557,7 +5557,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-			<translation>{keystore_label}: လက်ဗွေ: {keystore_fingerprint}, အခြေခံမူ: {keystore_key_origin}, {keystore_xpub}  </translation>
+			<translation>{keystore_label}: လက်ဗွေ: {keystore_fingerprint}, အခြေခံမူ: {keystore_key_origin}, {keystore_xpub}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5688,7 +5688,7 @@ Click here to learn more.</source>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
-			<translation>လိပ်စာကိုသုံးပြီးဖြစ်သည်  </translation>
+			<translation>လိပ်စာကိုသုံးပြီးဖြစ်သည်</translation>
 		</message>
 	</context>
 	<context>
@@ -5807,7 +5807,7 @@ Click here to learn more.</source>
 		<name>tutorial</name>
 		<message>
 			<source>Never type them into any computer or cellphone!</source>
-			<translation>ဓာတ်ပုံမရိုက်ပါ!  </translation>
+			<translation>ဓာတ်ပုံမရိုက်ပါ!</translation>
 		</message>
 	</context>
 	<context>
@@ -5858,7 +5858,7 @@ Works only if you have an available change output and raise the combined fee rat
 		<name>util</name>
 		<message>
 			<source>Edit</source>
-			<translation>ပြင်ဆင်ပါ  </translation>
+			<translation>ပြင်ဆင်ပါ</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5895,7 +5895,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>about 1 day ago</source>
-			<translation>တစ်နှစ်အကြာက  </translation>
+			<translation>တစ်နှစ်အကြာက</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5910,22 +5910,22 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>about 1 year ago</source>
-			<translation>တစ်နှစ်အကြာက  </translation>
+			<translation>တစ်နှစ်အကြာက</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} days ago</source>
-			<translation>အတည်မပြုရ  </translation>
+			<translation>အတည်မပြုရ</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} hours ago</source>
-			<translation>တစ်လအကြာက  </translation>
+			<translation>တစ်လအကြာက</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} minutes ago</source>
-			<translation>တစ်နာရီအကြာက  </translation>
+			<translation>တစ်နာရီအကြာက</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5945,12 +5945,12 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>in about 1 month</source>
-			<translation>လစဉ်အတွင်း  </translation>
+			<translation>လစဉ်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about 1 year</source>
-			<translation>တစ်နှစ်အတွင်း  </translation>
+			<translation>တစ်နှစ်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5970,7 +5970,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>in about {} months</source>
-			<translation>{} လအတွင်း  </translation>
+			<translation>{} လအတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5980,12 +5980,12 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>in over {} years</source>
-			<translation>{} နှစ်အတွင်း  </translation>
+			<translation>{} နှစ်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in {} seconds</source>
-			<translation>မိနစ်အနည်းငယ်အတွင်း  </translation>
+			<translation>မိနစ်အနည်းငယ်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5995,7 +5995,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>over {} years ago</source>
-			<translation>{} နှစ်ကျော်က  </translation>
+			<translation>{} နှစ်ကျော်က</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -6047,116 +6047,116 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>csv အဖြစ်ကော်ပီလုပ်ပါ  </translation>
+			<translation>csv အဖြစ်ကော်ပီလုပ်ပါ</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Open Address Details</source>
-			<translation>လိပ်စာအသေးစိတ်ကိုဖွင့်ပါ  </translation>
+			<translation>လိပ်စာအသေးစိတ်ကိုဖွင့်ပါ</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Open transaction</source>
-			<translation>ငွေလွှဲကိုဖွင့်ပါ  </translation>
+			<translation>ငွေလွှဲကိုဖွင့်ပါ</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Unconfirmed UTXO</source>
-			<translation>အတည်မပြုရသော UTXO  </translation>
+			<translation>အတည်မပြုရသော UTXO</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-			<translation>အတည်မပြုရသော UTXO ကိုငွေလွှဲ {is_spent_by_txid} မှသုံးစွဲပြီးဖြစ်ပါသည်။  </translation>
+			<translation>အတည်မပြုရသော UTXO ကိုငွေလွှဲ {is_spent_by_txid} မှသုံးစွဲပြီးဖြစ်ပါသည်။</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ  </translation>
+			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>video</name>
 		<message>
 			<source>Add RTSP Camera</source>
-			<translation>RTSP ကင်မရာထည့်ပါ  </translation>
+			<translation>RTSP ကင်မရာထည့်ပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Brightness (reduce for bright displays):</source>
-			<translation>မျက်နှာပြင်အလင်းပိုမိုမှာ နည်းပါးစေပါ  </translation>
+			<translation>မျက်နှာပြင်အလင်းပိုမိုမှာ နည်းပါးစေပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera</source>
-			<translation>ကင်မရာ  </translation>
+			<translation>ကင်မရာ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Camera:</source>
-			<translation>ကင်မရာ:  </translation>
+			<translation>ကင်မရာ:</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enhance picture for detection</source>
-			<translation>ပုံဖော်ရန်အာရုံခံပိုင်းကိုတိုးပေးပါ  </translation>
+			<translation>ပုံဖော်ရန်အာရုံခံပိုင်းကိုတိုးပေးပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enter RTSP URL</source>
-			<translation>RTSP URL ကိုရိုက်ထည့်ပါ  </translation>
+			<translation>RTSP URL ကိုရိုက်ထည့်ပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Error</source>
-			<translation>အမှား  </translation>
+			<translation>အမှား</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Postprocess</source>
-			<translation>အဆင့်မြှင့်ပြင်ဆင်ပါ  </translation>
+			<translation>အဆင့်မြှင့်ပြင်ဆင်ပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>RTSP URL:</source>
-			<translation>RTSP URL:  </translation>
+			<translation>RTSP URL:</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Screen</source>
-			<translation>မျက်နှာပြင်  </translation>
+			<translation>မျက်နှာပြင်</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Settings</source>
-			<translation>ဆက်တင်များ  </translation>
+			<translation>ဆက်တင်များ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Show camera controls</source>
-			<translation>ကင်မရာထိန်းချုပ်မှုများကိုပြပါ  </translation>
+			<translation>ကင်မရာထိန်းချုပ်မှုများကိုပြပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>The camera could not be opened</source>
-			<translation>ကင်မရာကိုဖွင့်မရပါ  </translation>
+			<translation>ကင်မရာကိုဖွင့်မရပါ</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Zoom:</source>
-			<translation>အနီးကပ်ပုံနှိပ်ပါ  </translation>
+			<translation>အနီးကပ်ပုံနှိပ်ပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>wallet</name>
 		<message>
 			<source>Change of:</source>
-			<translation>ပြောင်း  </translation>
+			<translation>ပြောင်း</translation>
 		</message>
 		<name>wallet</name>
 		<message>
 			<source>Confirmed</source>
-			<translation>အတည်ပြုပါ  </translation>
+			<translation>အတည်ပြုပါ</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -6166,12 +6166,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Local</source>
-			<translation>ဒေသဆိုင်ရာ  </translation>
+			<translation>ဒေသဆိုင်ရာ</translation>
 		</message>
 		<name>wallet</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -6181,7 +6181,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Unconfirmed</source>
-			<translation>အတည်မပြုရ  </translation>
+			<translation>အတည်မပြုရ</translation>
 		</message>
 		<name>wallet</name>
 		<message>

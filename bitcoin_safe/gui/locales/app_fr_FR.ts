@@ -87,7 +87,7 @@
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>Message signé  </translation>
+			<translation>Message signé</translation>
 		</message>
 	</context>
 	<context>
@@ -462,7 +462,7 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Acheter {number} signataires matériels                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe prend en charge tous les principaux signataires matériels : &lt;a href="{url}"&gt;Voir la liste complète&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>Acheter {number} signataires matériels                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe prend en charge tous les principaux signataires matériels : &lt;a href="{url}"&gt;Voir la liste complète&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -2073,7 +2073,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>From &amp;text</source>
-			<translation>Depuis &amp;texte  </translation>
+			<translation>Depuis &amp;texte</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2108,7 +2108,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>No file selected</source>
-			<translation>Aucun fichier sélectionné  </translation>
+			<translation>Aucun fichier sélectionné</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2123,7 +2123,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>OK</source>
-			<translation>OK  </translation>
+			<translation>OK</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2133,22 +2133,22 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Open &amp;Recent</source>
-			<translation>Ouvrir &amp;Récemment  </translation>
+			<translation>Ouvrir &amp;Récemment</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Transaction or PSBT</source>
-			<translation>Ouvrir Transaction ou PSBT  </translation>
+			<translation>Ouvrir Transaction ou PSBT</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>Ouvrir Transaction/PSBT  </translation>
+			<translation>Ouvrir Transaction/PSBT</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Open Wallet</source>
-			<translation>Ouvrir Portefeuille  </translation>
+			<translation>Ouvrir Portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2158,7 +2158,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-			<translation>Collez votre Transaction Bitcoin ou PSBT ici ou déposez un fichier  </translation>
+			<translation>Collez votre Transaction Bitcoin ou PSBT ici ou déposez un fichier</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2173,17 +2173,17 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-			<translation>Veuillez coller votre Transaction Bitcoin ou PSBT ici, ou déposez un fichier  </translation>
+			<translation>Veuillez coller votre Transaction Bitcoin ou PSBT ici, ou déposez un fichier</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select a Multisignature wallet first</source>
-			<translation>Veuillez d'abord sélectionner un portefeuille Multisignature  </translation>
+			<translation>Veuillez d'abord sélectionner un portefeuille Multisignature</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Please select the wallet</source>
-			<translation>Veuillez sélectionner le portefeuille  </translation>
+			<translation>Veuillez sélectionner le portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2198,7 +2198,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>QR &amp;Scanner</source>
-			<translation>Scanner QR  </translation>
+			<translation>Scanner QR</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2238,7 +2238,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Selected file: {file_path}</source>
-			<translation>Fichier sélectionné : {file_path}  </translation>
+			<translation>Fichier sélectionné : {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2248,7 +2248,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>Message signé  </translation>
+			<translation>Message signé</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2288,7 +2288,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>There is no such file: {file_path}</source>
-			<translation>Il n'y a pas de fichier : {file_path}  </translation>
+			<translation>Il n'y a pas de fichier : {file_path}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2314,12 +2314,12 @@ Do you want to keep the wallet open?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet Files (*.wallet);;All Files (*)</source>
-			<translation>Fichiers de portefeuille (*.wallet);;Tous les fichiers (*)  </translation>
+			<translation>Fichiers de portefeuille (*.wallet);;Tous les fichiers (*)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet already open</source>
-			<translation>Portefeuille déjà ouvert  </translation>
+			<translation>Portefeuille déjà ouvert</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2350,7 +2350,7 @@ Do you want to hide to tray instead?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>new</source>
-			<translation>nouveau  </translation>
+			<translation>nouveau</translation>
 		</message>
 	</context>
 	<context>
@@ -2377,39 +2377,39 @@ Do you want to hide to tray instead?</source>
 		<name>MempoolButtons</name>
 		<message>
 			<source>Next Block</source>
-			<translation>Bloc Suivant  </translation>
+			<translation>Bloc Suivant</translation>
 		</message>
 		<name>MempoolButtons</name>
 		<message>
 			<source>{n}. Block</source>
-			<translation>{n}. Bloc  </translation>
+			<translation>{n}. Bloc</translation>
 		</message>
 	</context>
 	<context>
 		<name>MyTreeView</name>
 		<message>
 			<source>All Files (*);;Text Files (*.csv)</source>
-			<translation>Tous les fichiers (*);;Fichiers Texte (*.csv)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers Texte (*.csv)</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Copy</source>
-			<translation>Copier  </translation>
+			<translation>Copier</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>Copier en CSV  </translation>
+			<translation>Copier en CSV</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>Export csv</source>
-			<translation>Exporter en CSV  </translation>
+			<translation>Exporter en CSV</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
 			<source>No file selected</source>
-			<translation>Aucun fichier sélectionné  </translation>
+			<translation>Aucun fichier sélectionné</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -2446,7 +2446,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Blockchain data source</source>
-			<translation>Source de données de la blockchain  </translation>
+			<translation>Source de données de la blockchain</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2471,7 +2471,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Enable SSL</source>
-			<translation>Activer SSL  </translation>
+			<translation>Activer SSL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2494,7 +2494,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Mempool Instance URL</source>
-			<translation>URL de l'instance Mempool  </translation>
+			<translation>URL de l'instance Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2504,7 +2504,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Network Settings</source>
-			<translation>Paramètres Réseau  </translation>
+			<translation>Paramètres Réseau</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2519,12 +2519,12 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>Veuillez retirer '{scheme}' de l'url electrum  </translation>
+			<translation>Veuillez retirer '{scheme}' de l'url electrum</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>Essayez '{scheme}' au début de l'url mempool  </translation>
+			<translation>Essayez '{scheme}' au début de l'url mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2534,7 +2534,7 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
-			<translation>Appuyez sur la touche flèche bas pour des suggestions  </translation>
+			<translation>Appuyez sur la touche flèche bas pour des suggestions</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2556,12 +2556,12 @@ Do you want to hide to tray instead?</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Test Connection</source>
-			<translation>Tester la Connexion  </translation>
+			<translation>Tester la Connexion</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The format for tor addresses should be '{scheme}'</source>
-			<translation>Le format des adresses tor doit être '{scheme}'  </translation>
+			<translation>Le format des adresses tor doit être '{scheme}'</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2593,52 +2593,52 @@ Do you want to hide to tray instead?</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>1 emplacement sécurisé pour stocker la sauvegarde de graine (sur papier ou acier) est nécessaire  </translation>
+			<translation>1 emplacement sécurisé pour stocker la sauvegarde de graine (sur papier ou acier) est nécessaire</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 graine (24 mots secrets) est tout ce dont vous avez besoin pour accéder à vos fonds  </translation>
+			<translation>1 graine (24 mots secrets) est tout ce dont vous avez besoin pour accéder à vos fonds</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>1 signing devices</source>
-			<translation>1 dispositif de signature  </translation>
+			<translation>1 dispositif de signature</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 sur 3 Multi-Signature  </translation>
+			<translation>2 sur 3 Multi-Signature</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3 emplacements sécurisés (chacun avec 1 sauvegarde de graine + descripteur de portefeuille) sont nécessaires  </translation>
+			<translation>3 emplacements sécurisés (chacun avec 1 sauvegarde de graine + descripteur de portefeuille) sont nécessaires</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>3 signing devices</source>
-			<translation>3 dispositifs de signature  </translation>
+			<translation>3 dispositifs de signature</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Best for large funds</source>
-			<translation>Meilleur pour les grands fonds  </translation>
+			<translation>Meilleur pour les grands fonds</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Best for medium-sized funds</source>
-			<translation>Meilleur pour les fonds de taille moyenne  </translation>
+			<translation>Meilleur pour les fonds de taille moyenne</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Choose Multi-Signature</source>
-			<translation>Choisir Multi-Signature  </translation>
+			<translation>Choisir Multi-Signature</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Choose Single Signature</source>
-			<translation>Choisir Signature Unique  </translation>
+			<translation>Choisir Signature Unique</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2648,7 +2648,7 @@ Do you want to hide to tray instead?</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Create new wallet</source>
-			<translation>Créer un nouveau portefeuille  </translation>
+			<translation>Créer un nouveau portefeuille</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2659,27 +2659,27 @@ import custom wallet</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Custom or import existing Wallet</source>
-			<translation>Personnaliser ou importer un portefeuille existant  </translation>
+			<translation>Personnaliser ou importer un portefeuille existant</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Customize the wallet to your needs</source>
-			<translation>Personnaliser le portefeuille selon vos besoins  </translation>
+			<translation>Personnaliser le portefeuille selon vos besoins</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Si 1 graine était perdue ou volée, tous les fonds peuvent être transférés à un nouveau portefeuille avec les 2 graines restantes + descripteur de portefeuille (QR-code)  </translation>
+			<translation>Si 1 graine était perdue ou volée, tous les fonds peuvent être transférés à un nouveau portefeuille avec les 2 graines restantes + descripteur de portefeuille (QR-code)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Si vous êtes trompé en donnant votre graine à des pirates, vos Bitcoin seront immédiatement volés  </translation>
+			<translation>Si vous êtes trompé en donnant votre graine à des pirates, vos Bitcoin seront immédiatement volés</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Less support material online in case of recovery</source>
-			<translation>Moins de matériel de support en ligne en cas de récupération  </translation>
+			<translation>Moins de matériel de support en ligne en cas de récupération</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -2689,26 +2689,26 @@ import custom wallet</source>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Single Signature Wallet</source>
-			<translation>Portefeuille Signature Unique  </translation>
+			<translation>Portefeuille Signature Unique</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Le descripteur de portefeuille (QR-code) est nécessaire pour récupérer le portefeuille  </translation>
+			<translation>Le descripteur de portefeuille (QR-code) est nécessaire pour récupérer le portefeuille</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSync</name>
 		<message>
 			<source>Group Chat</source>
-			<translation>Chat de Groupe  </translation>
+			<translation>Chat de Groupe</translation>
 		</message>
 	</context>
 	<context>
 		<name>NostrSyncWithSingleChats</name>
 		<message>
 			<source>Chat</source>
-			<translation>Chat  </translation>
+			<translation>Chat</translation>
 		</message>
 	</context>
 	<context>
@@ -2785,7 +2785,7 @@ import custom wallet</source>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
-			<translation>Créer un Mot de Passe  </translation>
+			<translation>Créer un Mot de Passe</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
@@ -2795,12 +2795,12 @@ import custom wallet</source>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Error</source>
-			<translation>Erreur  </translation>
+			<translation>Erreur</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Hide Password</source>
-			<translation>Masquer le Mot de Passe  </translation>
+			<translation>Masquer le Mot de Passe</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
@@ -2815,24 +2815,24 @@ import custom wallet</source>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Show Password</source>
-			<translation>Afficher le Mot de Passe  </translation>
+			<translation>Afficher le Mot de Passe</translation>
 		</message>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Submit</source>
-			<translation>Soumettre  </translation>
+			<translation>Soumettre</translation>
 		</message>
 	</context>
 	<context>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Hide Password</source>
-			<translation>Masquer le Mot de Passe  </translation>
+			<translation>Masquer le Mot de Passe</translation>
 		</message>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Password Input</source>
-			<translation>Entrée du Mot de Passe  </translation>
+			<translation>Entrée du Mot de Passe</translation>
 		</message>
 		<name>PasswordQuestion</name>
 		<message>
@@ -2842,7 +2842,7 @@ import custom wallet</source>
 		<name>PasswordQuestion</name>
 		<message>
 			<source>Show Password</source>
-			<translation>Afficher le Mot de Passe  </translation>
+			<translation>Afficher le Mot de Passe</translation>
 		</message>
 	</context>
 	<context>
@@ -2946,7 +2946,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTProtoWallet</name>
 		<message>
 			<source>Setup wallet</source>
-			<translation>Configurer le portefeuille  </translation>
+			<translation>Configurer le portefeuille</translation>
 		</message>
 	</context>
 	<context>
@@ -2968,22 +2968,22 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.json)</source>
-			<translation>Tous les fichiers (*);;Fichiers JSON (*.json)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers JSON (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>Tous les fichiers (*);;Fichiers JSON (*.jsonl);;Fichiers JSON (*.json)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers JSON (*.jsonl);;Fichiers JSON (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>Tous les fichiers (*);;Fichiers JSONL (*.jsonl);;Fichiers JSON (*.json)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers JSONL (*.jsonl);;Fichiers JSON (*.json)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.wallet)</source>
-			<translation>Tous les fichiers (*);;Fichiers de portefeuille (*.wallet)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers de portefeuille (*.wallet)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -2999,12 +2999,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Backup saved to {filename}</source>
-			<translation>Sauvegarde enregistrée dans {filename}  </translation>
+			<translation>Sauvegarde enregistrée dans {filename}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Balance</source>
-			<translation>Solde  </translation>
+			<translation>Solde</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3014,12 +3014,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
-			<translation>Impossible de déplacer le fichier du portefeuille, car {file_path} existe  </translation>
+			<translation>Impossible de déplacer le fichier du portefeuille, car {file_path} existe</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Change password</source>
-			<translation>Changer le mot de passe  </translation>
+			<translation>Changer le mot de passe</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3029,7 +3029,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Connected to {server}</source>
-			<translation>Connecté à {server}  </translation>
+			<translation>Connecté à {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3044,12 +3044,12 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Descriptor</source>
-			<translation>Descripteur  </translation>
+			<translation>Descripteur</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Disconnected from {server}</source>
-			<translation>Déconnecté de {server}  </translation>
+			<translation>Déconnecté de {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3064,7 +3064,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Export labels</source>
-			<translation>Exporter les étiquettes  </translation>
+			<translation>Exporter les étiquettes</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3074,17 +3074,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>History</source>
-			<translation>Historique  </translation>
+			<translation>Historique</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Import Electrum Wallet labels</source>
-			<translation>Importer les étiquettes du portefeuille Electrum  </translation>
+			<translation>Importer les étiquettes du portefeuille Electrum</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Import labels</source>
-			<translation>Importer les étiquettes  </translation>
+			<translation>Importer les étiquettes</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3110,7 +3110,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>No file selected</source>
-			<translation>Aucun fichier sélectionné  </translation>
+			<translation>Aucun fichier sélectionné</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,7 +3120,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Password incorrect</source>
-			<translation>Mot de passe incorrect  </translation>
+			<translation>Mot de passe incorrect</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3160,17 +3160,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Save wallet</source>
-			<translation>Sauvegarder le portefeuille  </translation>
+			<translation>Sauvegarder le portefeuille</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Send</source>
-			<translation>Envoyer  </translation>
+			<translation>Envoyer</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Successfully updated {number} Labels</source>
-			<translation>Mise à jour réussie de {number} étiquettes  </translation>
+			<translation>Mise à jour réussie de {number} étiquettes</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3180,7 +3180,7 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<name>QTWallet</name>
 		<message>
 			<source>Syncing with {server}</source>
-			<translation>Synchronisation avec {server}  </translation>
+			<translation>Synchronisation avec {server}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3217,7 +3217,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>Wallet saved</source>
-			<translation>Portefeuille sauvegardé  </translation>
+			<translation>Portefeuille sauvegardé</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3227,12 +3227,12 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>finished updating lists</source>
-			<translation>fin de la mise à jour des listes  </translation>
+			<translation>fin de la mise à jour des listes</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>start updating lists</source>
-			<translation>commencer à mettre à jour les listes  </translation>
+			<translation>commencer à mettre à jour les listes</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3245,7 +3245,7 @@ Do you want to remove it from the wallet anyway?</source>
 		<name>QrToolButton</name>
 		<message>
 			<source>QR Code</source>
-			<translation>Code QR  </translation>
+			<translation>Code QR</translation>
 		</message>
 	</context>
 	<context>
@@ -3277,7 +3277,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>ReceiveGroup</name>
 		<message>
@@ -3299,27 +3299,27 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Balance = {amount}</source>
-			<translation>Solde = {amount}  </translation>
+			<translation>Solde = {amount}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Check if received</source>
-			<translation>Vérifier si reçu  </translation>
+			<translation>Vérifier si reçu</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Next step</source>
-			<translation>Étape suivante  </translation>
+			<translation>Étape suivante</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>No wallet setup yet</source>
-			<translation>Aucune configuration de portefeuille encore  </translation>
+			<translation>Aucune configuration de portefeuille encore</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3341,34 +3341,34 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
 			<source>Recently Opened Wallets</source>
-			<translation>Portefeuilles récemment ouverts  </translation>
+			<translation>Portefeuilles récemment ouverts</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Amount</source>
-			<translation>Montant  </translation>
+			<translation>Montant</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Enter label here</source>
-			<translation>Entrez l'étiquette ici  </translation>
+			<translation>Entrez l'étiquette ici</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Send max</source>
-			<translation>Envoyer le maximum  </translation>
+			<translation>Envoyer le maximum</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
@@ -3380,77 +3380,77 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>Add Recipient</source>
-			<translation>Ajouter un destinataire  </translation>
+			<translation>Ajouter un destinataire</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;CSV (*.csv)</source>
-			<translation>Tous les fichiers (*);;CSV (*.csv)  </translation>
+			<translation>Tous les fichiers (*);;CSV (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>All Files (*);;Wallet Files (*.csv)</source>
-			<translation>Tous les fichiers (*);;Fichiers de portefeuille (*.csv)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers de portefeuille (*.csv)</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Amount [{unit}]</source>
-			<translation>Montant [{unit}]  </translation>
+			<translation>Montant [{unit}]</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export</source>
-			<translation>Exporter  </translation>
+			<translation>Exporter</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export CSV Template</source>
-			<translation>Exporter le modèle CSV  </translation>
+			<translation>Exporter le modèle CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export as CSV file</source>
-			<translation>Exporter en fichier CSV  </translation>
+			<translation>Exporter en fichier CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Export csv</source>
-			<translation>Exporter en CSV  </translation>
+			<translation>Exporter en CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import CSV file</source>
-			<translation>Importer un fichier CSV  </translation>
+			<translation>Importer un fichier CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Import/Export</source>
-			<translation>Import/Export  </translation>
+			<translation>Import/Export</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>No file selected</source>
-			<translation>Aucun fichier sélectionné  </translation>
+			<translation>Aucun fichier sélectionné</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>No rows recognized</source>
-			<translation>Aucune ligne reconnue  </translation>
+			<translation>Aucune ligne reconnue</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
 			<source>Open CSV</source>
-			<translation>Ouvrir CSV  </translation>
+			<translation>Ouvrir CSV</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3460,7 +3460,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>Recipients</name>
 		<message>
 			<source>Recipients</source>
-			<translation>Destinataires  </translation>
+			<translation>Destinataires</translation>
 		</message>
 		<name>Recipients</name>
 		<message>
@@ -3482,32 +3482,32 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe  </translation>
+			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next signer</source>
-			<translation>Signataire suivant  </translation>
+			<translation>Signataire suivant</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Next step</source>
-			<translation>Étape suivante  </translation>
+			<translation>Étape suivante</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Previous signer</source>
-			<translation>Signataire précédent  </translation>
+			<translation>Signataire précédent</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
 			<source>Skip step</source>
-			<translation>Sauter l'étape  </translation>
+			<translation>Sauter l'étape</translation>
 		</message>
 		<name>RegisterMultisig</name>
 		<message>
@@ -3526,52 +3526,52 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RelayDialog</name>
 		<message>
 			<source>Enter custom Nostr Relays</source>
-			<translation>Entrer des Relais Nostr personnalisés  </translation>
+			<translation>Entrer des Relais Nostr personnalisés</translation>
 		</message>
 	</context>
 	<context>
 		<name>SankeyBitcoin</name>
 		<message>
 			<source>Fee</source>
-			<translation>Frais  </translation>
+			<translation>Frais</translation>
 		</message>
 	</context>
 	<context>
 		<name>SankeyWidget</name>
 		<message>
 			<source>All Files (*);;Text Files (*.svg)</source>
-			<translation>Tous les fichiers (*);;Fichiers Texte (*.svg)  </translation>
+			<translation>Tous les fichiers (*);;Fichiers Texte (*.svg)</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>Export svg</source>
-			<translation>Exporter en SVG  </translation>
+			<translation>Exporter en SVG</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
 			<source>No file selected</source>
-			<translation>Aucun fichier sélectionné  </translation>
+			<translation>Aucun fichier sélectionné</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsExportXpub</name>
 		<message>
 			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>Comment exporter les informations du portefeuille depuis le signataire matériel  </translation>
+			<translation>Comment exporter les informations du portefeuille depuis le signataire matériel</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsGenerateSeed</name>
 		<message>
 			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>Générer {number} mots de graine secrets sur chaque signataire matériel et les écrire sur la feuille de récupération  </translation>
+			<translation>Générer {number} mots de graine secrets sur chaque signataire matériel et les écrire sur la feuille de récupération</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsRegisterMultisig</name>
 		<message>
 			<source>Import the multisig information in the hardware signer</source>
-			<translation>Importer les informations multisig dans le signataire matériel  </translation>
+			<translation>Importer les informations multisig dans le signataire matériel</translation>
 		</message>
 	</context>
 	<context>
@@ -3593,24 +3593,24 @@ If you make a mistake here, your money is lost!</source>
 		<name>SearchWallets</name>
 		<message>
 			<source>Spent Outputs</source>
-			<translation>Sorties dépensées  </translation>
+			<translation>Sorties dépensées</translation>
 		</message>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXOs  </translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Invalid seed</source>
-			<translation>Graine invalide  </translation>
+			<translation>Graine invalide</translation>
 		</message>
 		<name>SeedAnalyzer</name>
 		<message>
 			<source>Missing Seed</source>
-			<translation>Graine manquante  </translation>
+			<translation>Graine manquante</translation>
 		</message>
 	</context>
 	<context>
@@ -3656,7 +3656,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3691,7 +3691,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Sign</source>
-			<translation>Signer  </translation>
+			<translation>Signer</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3706,7 +3706,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignAndVerifyMessage</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>Message signé  </translation>
+			<translation>Message signé</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
@@ -3733,12 +3733,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessage</name>
 		<message>
 			<source>Enter message to be signed at {bip32_path}</source>
-			<translation>Entrer le message à signer à {bip32_path}  </translation>
+			<translation>Entrer le message à signer à {bip32_path}</translation>
 		</message>
 		<name>SignMessage</name>
 		<message>
 			<source>Sign message</source>
-			<translation>Signer le message  </translation>
+			<translation>Signer le message</translation>
 		</message>
 	</context>
 	<context>
@@ -3755,56 +3755,56 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Sign</source>
-			<translation>Signer  </translation>
+			<translation>Signer</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Signed Message</source>
-			<translation>Message signé  </translation>
+			<translation>Message signé</translation>
 		</message>
 	</context>
 	<context>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Import signed PSBT</source>
-			<translation>Importer PSBT signé  </translation>
+			<translation>Importer PSBT signé</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>OK</source>
-			<translation>OK  </translation>
+			<translation>OK</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Paste your PSBT in here or drop a file</source>
-			<translation>Collez votre PSBT ici ou déposez un fichier  </translation>
+			<translation>Collez votre PSBT ici ou déposez un fichier</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>Veuillez coller votre PSBT ici, ou déposez un fichier  </translation>
+			<translation>Veuillez coller votre PSBT ici, ou déposez un fichier</translation>
 		</message>
 	</context>
 	<context>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Import signed PSBT</source>
-			<translation>Importer PSBT signé  </translation>
+			<translation>Importer PSBT signé</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>OK</source>
-			<translation>OK  </translation>
+			<translation>OK</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Paste your PSBT in here or drop a file</source>
-			<translation>Collez votre PSBT ici ou déposez un fichier  </translation>
+			<translation>Collez votre PSBT ici ou déposez un fichier</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>Veuillez coller votre PSBT ici, ou déposez un fichier  </translation>
+			<translation>Veuillez coller votre PSBT ici, ou déposez un fichier</translation>
 		</message>
 	</context>
 	<context>
@@ -3816,7 +3816,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterQR</name>
 		<message>
 			<source>Scan QR code</source>
-			<translation>Scanner le code QR  </translation>
+			<translation>Scanner le code QR</translation>
 		</message>
 	</context>
 	<context>
@@ -3828,7 +3828,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterUSB</name>
 		<message>
 			<source>USB Signing</source>
-			<translation>Signature USB  </translation>
+			<translation>Signature USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3840,14 +3840,14 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original. Abandon  </translation>
+			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original. Abandon</translation>
 		</message>
 	</context>
 	<context>
 		<name>StickerTheHardware</name>
 		<message>
 			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" sur {device_name}  </translation>
+			<translation>"{sticker}" sur {device_name}</translation>
 		</message>
 		<name>StickerTheHardware</name>
 		<message>
@@ -3864,27 +3864,27 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Please enable syncing in the wallet {wallet_id} first</source>
-			<translation>Veuillez d'abord activer la synchronisation dans le portefeuille {wallet_id}  </translation>
+			<translation>Veuillez d'abord activer la synchronisation dans le portefeuille {wallet_id}</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Please enable the sync tab first</source>
-			<translation>Veuillez d'abord activer l'onglet de synchronisation  </translation>
+			<translation>Veuillez d'abord activer l'onglet de synchronisation</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with all devices in {wallet_id}</source>
-			<translation>Partager avec tous les dispositifs dans {wallet_id}  </translation>
+			<translation>Partager avec tous les dispositifs dans {wallet_id}</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with single device</source>
-			<translation>Partager avec un seul dispositif  </translation>
+			<translation>Partager avec un seul dispositif</translation>
 		</message>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with trusted devices</source>
-			<translation>Partager avec des dispositifs de confiance  </translation>
+			<translation>Partager avec des dispositifs de confiance</translation>
 		</message>
 	</context>
 	<context>
@@ -3906,7 +3906,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>Étiquette de sauvegarde et synchronisation cryptée avec des dispositifs de confiance  </translation>
+			<translation>Étiquette de sauvegarde et synchronisation cryptée avec des dispositifs de confiance</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3916,22 +3916,22 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncClient</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>Ouvrir les Transactions reçues et PSBTs  </translation>
+			<translation>Ouvrir les Transactions reçues et PSBTs</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>Ouverture de {name} de {author}  </translation>
+			<translation>Ouverture de {name} de {author}</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>Réinitialiser la clé de synchronisation  </translation>
+			<translation>Réinitialiser la clé de synchronisation</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
 			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat  </translation>
+			<translation>Sync &amp; Chat</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -3957,46 +3957,46 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>SyncClient</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author} : {description}  </translation>
+			<translation>{author} : {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>SyncTab</name>
 		<message>
 			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>Étiquette de sauvegarde et synchronisation cryptée avec des dispositifs de confiance  </translation>
+			<translation>Étiquette de sauvegarde et synchronisation cryptée avec des dispositifs de confiance</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Open received Transactions and PSBTs</source>
-			<translation>Ouvrir les Transactions reçues et PSBTs  </translation>
+			<translation>Ouvrir les Transactions reçues et PSBTs</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>Ouverture de {name} de {author}  </translation>
+			<translation>Ouverture de {name} de {author}</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author} : {description}  </translation>
+			<translation>{author} : {description}</translation>
 		</message>
 	</context>
 	<context>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
-			<translation>Index d'adresse  </translation>
+			<translation>Index d'adresse</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Display Address</source>
-			<translation>Afficher l'Adresse  </translation>
+			<translation>Afficher l'Adresse</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Get xpubs</source>
-			<translation>Obtenir les xpubs  </translation>
+			<translation>Obtenir les xpubs</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4006,12 +4006,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your PSBT in here</source>
-			<translation>Collez votre PSBT ici  </translation>
+			<translation>Collez votre PSBT ici</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4021,68 +4021,68 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>Paste your text to be signed</source>
-			<translation>Collez votre texte à signer  </translation>
+			<translation>Collez votre texte à signer</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Show Seed</source>
-			<translation>Afficher la Graine  </translation>
+			<translation>Afficher la Graine</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign Message</source>
-			<translation>Signer le Message  </translation>
+			<translation>Signer le Message</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Sign PSBT</source>
-			<translation>Signer PSBT  </translation>
+			<translation>Signer PSBT</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>USB Signer Tools</source>
-			<translation>Outils de Signature USB  </translation>
+			<translation>Outils de Signature USB</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock</source>
-			<translation>Déverrouiller  </translation>
+			<translation>Déverrouiller</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Unlock Devices</source>
-			<translation>Déverrouiller les Appareils  </translation>
+			<translation>Déverrouiller les Appareils</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Wipe Device</source>
-			<translation>Effacer l'Appareil  </translation>
+			<translation>Effacer l'Appareil</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>XPUBs</source>
-			<translation>XPUBs  </translation>
+			<translation>XPUBs</translation>
 		</message>
 	</context>
 	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
-			<translation>Désapprouver l'appareil  </translation>
+			<translation>Désapprouver l'appareil</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxExport</name>
 		<message>
 			<source>Export Transaction</source>
-			<translation>Exporter la Transaction  </translation>
+			<translation>Exporter la Transaction</translation>
 		</message>
 	</context>
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Create and collect {n}. signature</source>
-			<translation>Créer et collecter la {n}. signature  </translation>
+			<translation>Créer et collecter la {n}. signature</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4108,32 +4108,32 @@ Signatures:
 		<name>UI</name>
 		<message>
 			<source>Export sync key</source>
-			<translation>Exporter la clé de synchronisation  </translation>
+			<translation>Exporter la clé de synchronisation</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Import sync key</source>
-			<translation>Importer la clé de synchronisation  </translation>
+			<translation>Importer la clé de synchronisation</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>My Device: {id}</source>
-			<translation>Mon appareil : {id}  </translation>
+			<translation>Mon appareil : {id}</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Reset sync key</source>
-			<translation>Réinitialiser la clé de synchronisation  </translation>
+			<translation>Réinitialiser la clé de synchronisation</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Set custom Relay list</source>
-			<translation>Définir une liste de relais personnalisée  </translation>
+			<translation>Définir une liste de relais personnalisée</translation>
 		</message>
 		<name>UI</name>
 		<message>
 			<source>Sync key Export</source>
-			<translation>Export de clé de synchronisation  </translation>
+			<translation>Export de clé de synchronisation</translation>
 		</message>
 		<name>UI</name>
 		<message>
@@ -4149,7 +4149,7 @@ Signatures:
 		<name>UITx_Creator</name>
 		<message>
 			<source>Add Inputs</source>
-			<translation>Ajouter des entrées  </translation>
+			<translation>Ajouter des entrées</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4170,7 +4170,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Create</source>
-			<translation>Créer  </translation>
+			<translation>Créer</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4190,7 +4190,7 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Load UTXOs</source>
-			<translation>Charger les UTXOs  </translation>
+			<translation>Charger les UTXOs</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4201,7 +4201,7 @@ otherwise you may not be able to broadcast it.</source>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Please paste UTXO here</source>
-			<translation>Veuillez coller l'UTXO ici  </translation>
+			<translation>Veuillez coller l'UTXO ici</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4244,22 +4244,22 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Import file</source>
-			<translation>Importer un fichier  </translation>
+			<translation>Importer un fichier</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Invalid Signatures</source>
-			<translation>Signatures invalides  </translation>
+			<translation>Signatures invalides</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Étiquette :  </translation>
+			<translation>Étiquette : </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Next step</source>
-			<translation>Étape suivante  </translation>
+			<translation>Étape suivante</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4269,7 +4269,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}  </translation>
+			<translation>PSBT {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4285,7 +4285,7 @@ Or you can broadcast via {url}</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Previous step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4295,17 +4295,17 @@ Or you can broadcast via {url}</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Send</source>
-			<translation>Envoyer  </translation>
+			<translation>Envoyer</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original  </translation>
+			<translation>L'ID de transaction du PSBT signé ne correspond pas à l'ID de transaction original</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Transaction {txid}</source>
-			<translation>Transaction {txid}  </translation>
+			<translation>Transaction {txid}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4334,7 +4334,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>No device selected</source>
-			<translation>Aucun appareil sélectionné  </translation>
+			<translation>Aucun appareil sélectionné</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4349,7 +4349,7 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Please unlock USB devices</source>
-			<translation>Veuillez déverrouiller les appareils USB  </translation>
+			<translation>Veuillez déverrouiller les appareils USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4359,46 +4359,46 @@ Or you can broadcast via {url}</source>
 		<name>USBGui</name>
 		<message>
 			<source>Restart computer</source>
-			<translation>Redémarrer l'ordinateur  </translation>
+			<translation>Redémarrer l'ordinateur</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>Appareils USB  </translation>
+			<translation>Appareils USB</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
 			<source>Unlock USB devices</source>
-			<translation>Déverrouiller les appareils USB  </translation>
+			<translation>Déverrouiller les appareils USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Help</source>
-			<translation>Aide  </translation>
+			<translation>Aide</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig</source>
-			<translation>Enregistrer Multisig  </translation>
+			<translation>Enregistrer Multisig</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig wallet on hardware signer</source>
-			<translation>Enregistrer le portefeuille multisig sur le signataire matériel  </translation>
+			<translation>Enregistrer le portefeuille multisig sur le signataire matériel</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>Enregistrement réussi du portefeuille multisig sur le signataire matériel  </translation>
+			<translation>Enregistrement réussi du portefeuille multisig sur le signataire matériel</translation>
 		</message>
 	</context>
 	<context>
 		<name>USBValidateAddressWidget</name>
 		<message>
 			<source>Validate address</source>
-			<translation>Valider l'adresse  </translation>
+			<translation>Valider l'adresse</translation>
 		</message>
 		<name>USBValidateAddressWidget</name>
 		<message>
@@ -4410,27 +4410,27 @@ Or you can broadcast via {url}</source>
 		<name>UTXOList</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Amount</source>
-			<translation>Montant  </translation>
+			<translation>Montant</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Category</source>
-			<translation>Catégorie  </translation>
+			<translation>Catégorie</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
 			<source>Outpoint</source>
-			<translation>Point de sortie  </translation>
+			<translation>Point de sortie</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -4450,26 +4450,26 @@ Or you can broadcast via {url}</source>
 		<name>UTXOList</name>
 		<message>
 			<source>Wallet</source>
-			<translation>Portefeuille  </translation>
+			<translation>Portefeuille</translation>
 		</message>
 	</context>
 	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
-			<translation>Confiance  </translation>
+			<translation>Confiance</translation>
 		</message>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust this device</source>
-			<translation>Faire confiance à cet appareil  </translation>
+			<translation>Faire confiance à cet appareil</translation>
 		</message>
 	</context>
 	<context>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Check for Update</source>
-			<translation>Vérifier la mise à jour  </translation>
+			<translation>Vérifier la mise à jour</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4479,12 +4479,12 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>New version available {tag}</source>
-			<translation>Nouvelle version disponible {tag}  </translation>
+			<translation>Nouvelle version disponible {tag}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>No update found</source>
-			<translation>Aucune mise à jour trouvée  </translation>
+			<translation>Aucune mise à jour trouvée</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4506,19 +4506,19 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>{amount} sélectionné ({number} UTXOs)  </translation>
+			<translation>{amount} sélectionné ({number} UTXOs)</translation>
 		</message>
 	</context>
 	<context>
 		<name>ValidateBackup</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>ValidateBackup</name>
 		<message>
 			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Oui, je suis sûr que tous les {number} mots sont corrects  </translation>
+			<translation>Oui, je suis sûr que tous les {number} mots sont corrects</translation>
 		</message>
 	</context>
 	<context>
@@ -4537,14 +4537,14 @@ Or you can broadcast via {url}</source>
 		<name>WalletBalanceChart</name>
 		<message>
 			<source>Balance ({unit})</source>
-			<translation>Solde ({unit})  </translation>
+			<translation>Solde ({unit})</translation>
 		</message>
 	</context>
 	<context>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4594,7 +4594,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Fee</source>
-			<translation>Frais  </translation>
+			<translation>Frais</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4609,7 +4609,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Label</source>
-			<translation>Étiquette  </translation>
+			<translation>Étiquette</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4659,7 +4659,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Transaction</source>
-			<translation>Transaction  </translation>
+			<translation>Transaction</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4669,7 +4669,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Unknown</source>
-			<translation>Inconnu  </translation>
+			<translation>Inconnu</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -4706,17 +4706,17 @@ Or you can broadcast via {url}</source>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Choose wallet name</source>
-			<translation>Choisir un nom de portefeuille  </translation>
+			<translation>Choisir un nom de portefeuille</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Error</source>
-			<translation>Erreur  </translation>
+			<translation>Erreur</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
 			<source>Please choose a wallet name</source>
-			<translation>Veuillez choisir un nom de portefeuille  </translation>
+			<translation>Veuillez choisir un nom de portefeuille</translation>
 		</message>
 		<name>WalletIdDialog</name>
 		<message>
@@ -4738,12 +4738,12 @@ Or you can broadcast via {url}</source>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for recipient address</source>
-			<translation>Entrez une étiquette pour l'adresse du destinataire  </translation>
+			<translation>Entrez une étiquette pour l'adresse du destinataire</translation>
 		</message>
 		<name>WalletLabelAndCategoryEdit</name>
 		<message>
 			<source>Enter label for transaction</source>
-			<translation>Entrez une étiquette pour la transaction  </translation>
+			<translation>Entrez une étiquette pour la transaction</translation>
 		</message>
 	</context>
 	<context>
@@ -4760,42 +4760,42 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Backup Seed</source>
-			<translation>Sauvegarder la Graine  </translation>
+			<translation>Sauvegarder la Graine</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Buy hardware signers</source>
-			<translation>Acheter des signataires matériels  </translation>
+			<translation>Acheter des signataires matériels</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Generate Seed</source>
-			<translation>Générer une Graine  </translation>
+			<translation>Générer une Graine</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Import signer info</source>
-			<translation>Importer les informations du signataire  </translation>
+			<translation>Importer les informations du signataire</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Label the hardware signers</source>
-			<translation>Étiqueter les signataires matériels  </translation>
+			<translation>Étiqueter les signataires matériels</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Put in secure locations</source>
-			<translation>Mettre dans des emplacements sécurisés  </translation>
+			<translation>Mettre dans des emplacements sécurisés</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Receive Test</source>
-			<translation>Test de Réception  </translation>
+			<translation>Test de Réception</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Register multisig on signers</source>
-			<translation>Enregistrer le multisig sur les signataires  </translation>
+			<translation>Enregistrer le multisig sur les signataires</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4810,17 +4810,17 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Send test {j}</source>
-			<translation>Test d'envoi {j}  </translation>
+			<translation>Test d'envoi {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Sign with {label}</source>
-			<translation>Signer avec {label}  </translation>
+			<translation>Signer avec {label}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat  </translation>
+			<translation>Sync &amp; Chat</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4838,12 +4838,12 @@ Or you can broadcast via {url}</source>
 		<name>Wizard</name>
 		<message>
 			<source>Validate Backup</source>
-			<translation>Valider la Sauvegarde  </translation>
+			<translation>Valider la Sauvegarde</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>You must have an initilized wallet first</source>
-			<translation>Vous devez d'abord avoir un portefeuille initialisé  </translation>
+			<translation>Vous devez d'abord avoir un portefeuille initialisé</translation>
 		</message>
 	</context>
 	<context>
@@ -4857,17 +4857,17 @@ Or you can broadcast via {url}</source>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Converting format</source>
-			<translation>Conversion de format  </translation>
+			<translation>Conversion de format</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Invalid xpub</source>
-			<translation>xpub invalide  </translation>
+			<translation>xpub invalide</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
 			<source>Missing xPub</source>
-			<translation>xPub manquant  </translation>
+			<translation>xPub manquant</translation>
 		</message>
 		<name>XpubAnalyzer</name>
 		<message>
@@ -4879,7 +4879,7 @@ Or you can broadcast via {url}</source>
 		<name>_SignTab</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>_SignTab</name>
 		<message>
@@ -4901,37 +4901,37 @@ Or you can broadcast via {url}</source>
 		<name>address_list</name>
 		<message>
 			<source>All status</source>
-			<translation>Tous les statuts  </translation>
+			<translation>Tous les statuts</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>All types</source>
-			<translation>Tous les types  </translation>
+			<translation>Tous les types</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Change</source>
-			<translation>Changement  </translation>
+			<translation>Changement</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Funded</source>
-			<translation>Financé  </translation>
+			<translation>Financé</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Funded or Unused</source>
-			<translation>Financé ou Inutilisé  </translation>
+			<translation>Financé ou Inutilisé</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Receiving</source>
-			<translation>Réception  </translation>
+			<translation>Réception</translation>
 		</message>
 		<name>address_list</name>
 		<message>
 			<source>Unused</source>
-			<translation>Inutilisé  </translation>
+			<translation>Inutilisé</translation>
 		</message>
 		<name>address_list</name>
 		<message>
@@ -4943,39 +4943,39 @@ Or you can broadcast via {url}</source>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
-			<translation>Étape suivante  </translation>
+			<translation>Étape suivante</translation>
 		</message>
 		<name>basetab</name>
 		<message>
 			<source>Previous Step</source>
-			<translation>Étape précédente  </translation>
+			<translation>Étape précédente</translation>
 		</message>
 	</context>
 	<context>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Error</source>
-			<translation>Erreur  </translation>
+			<translation>Erreur</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Executing the script</source>
-			<translation>Exécution du script  </translation>
+			<translation>Exécution du script</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Install udev files</source>
-			<translation>Installer les fichiers udev  </translation>
+			<translation>Installer les fichiers udev</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No HWI AddressType could be found for {name}</source>
-			<translation>Aucun type d'adresse HWI ne peut être trouvé pour {name}  </translation>
+			<translation>Aucun type d'adresse HWI ne peut être trouvé pour {name}</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>No USB devices found</source>
-			<translation>Aucun appareil USB trouvé  </translation>
+			<translation>Aucun appareil USB trouvé</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -4985,12 +4985,12 @@ Or you can broadcast via {url}</source>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-			<translation>La partie réseau {network_str} de l'origine de la clé {key_origin} doit être renforcée avec un h  </translation>
+			<translation>La partie réseau {network_str} de l'origine de la clé {key_origin} doit être renforcée avec un h</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>USB Devices</source>
-			<translation>Appareils USB  </translation>
+			<translation>Appareils USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -5000,17 +5000,17 @@ Or you can broadcast via {url}</source>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>Unknown network/coin type {network_str} in {key_origin}</source>
-			<translation>Type de réseau/coin inconnu {network_str} dans {key_origin}  </translation>
+			<translation>Type de réseau/coin inconnu {network_str} dans {key_origin}</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>derivation_path {value} must start with a /</source>
-			<translation>derivation_path {value} doit commencer par un /  </translation>
+			<translation>derivation_path {value} doit commencer par un /</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
 			<source>{value} is not a valid fingerprint</source>
-			<translation>{value} n'est pas une empreinte valide  </translation>
+			<translation>{value} n'est pas une empreinte valide</translation>
 		</message>
 	</context>
 	<context>
@@ -5059,89 +5059,89 @@ Or you can broadcast via {url}</source>
 		<name>constant</name>
 		<message>
 			<source>All files (*)</source>
-			<translation>Tous les fichiers (*)  </translation>
+			<translation>Tous les fichiers (*)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Complete Transaction (*.txn)</source>
-			<translation>Transaction complète (*.txn)  </translation>
+			<translation>Transaction complète (*.txn)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Partial Transaction (*.psbt)</source>
-			<translation>Transaction partielle (*.psbt)  </translation>
+			<translation>Transaction partielle (*.psbt)</translation>
 		</message>
 		<name>constant</name>
 		<message>
 			<source>Transaction (*.txn *.psbt);;All files (*)</source>
-			<translation>Transaction (*.txn *.psbt);;Tous les fichiers (*)  </translation>
+			<translation>Transaction (*.txn *.psbt);;Tous les fichiers (*)</translation>
 		</message>
 	</context>
 	<context>
 		<name>d</name>
 		<message>
 			<source>Connect to USB signer</source>
-			<translation>Se connecter au signataire USB  </translation>
+			<translation>Se connecter au signataire USB</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Copy to clipboard</source>
-			<translation>Copier dans le presse-papiers  </translation>
+			<translation>Copier dans le presse-papiers</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Create PDF</source>
-			<translation>Créer un PDF  </translation>
+			<translation>Créer un PDF</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Create random mnemonic</source>
-			<translation>Créer une mnémonique aléatoire  </translation>
+			<translation>Créer une mnémonique aléatoire</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Import from camera</source>
-			<translation>Importer depuis la caméra  </translation>
+			<translation>Importer depuis la caméra</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Open file</source>
-			<translation>Ouvrir un fichier  </translation>
+			<translation>Ouvrir un fichier</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Read QR code from camera</source>
-			<translation>Lire le code QR depuis la caméra  </translation>
+			<translation>Lire le code QR depuis la caméra</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Recovery</source>
-			<translation>Récupération  </translation>
+			<translation>Récupération</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Recovery Signer {i}</source>
-			<translation>Signataire de récupération {i}  </translation>
+			<translation>Signataire de récupération {i}</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Signer {i}</source>
-			<translation>Signataire {i}  </translation>
+			<translation>Signataire {i}</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>Text copied to Clipboard</source>
-			<translation>Texte copié dans le presse-papiers  </translation>
+			<translation>Texte copié dans le presse-papiers</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>Voir sur l'explorateur de blocs  </translation>
+			<translation>Voir sur l'explorateur de blocs</translation>
 		</message>
 		<name>d</name>
 		<message>
 			<source>{} copied to Clipboard</source>
-			<translation>{} copié dans le presse-papiers  </translation>
+			<translation>{} copié dans le presse-papiers</translation>
 		</message>
 	</context>
 	<context>
@@ -5162,12 +5162,12 @@ Or you can broadcast via {url}</source>
 		<name>general</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>general</name>
 		<message>
 			<source>Transaction</source>
-			<translation>Transaction  </translation>
+			<translation>Transaction</translation>
 		</message>
 	</context>
 	<context>
@@ -5206,49 +5206,49 @@ Or you can broadcast via {url}</source>
 		<name>help</name>
 		<message>
 			<source>Help</source>
-			<translation>Aide  </translation>
+			<translation>Aide</translation>
 		</message>
 	</context>
 	<context>
 		<name>hist_list</name>
 		<message>
 			<source>All status</source>
-			<translation>Tous les statuts  </translation>
+			<translation>Tous les statuts</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>All types</source>
-			<translation>Tous les types  </translation>
+			<translation>Tous les types</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Change</source>
-			<translation>Changement  </translation>
+			<translation>Changement</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Funded</source>
-			<translation>Financé  </translation>
+			<translation>Financé</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Funded or Unused</source>
-			<translation>Financé ou Inutilisé  </translation>
+			<translation>Financé ou Inutilisé</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Receiving</source>
-			<translation>Réception  </translation>
+			<translation>Réception</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Unused</source>
-			<translation>Inutilisé  </translation>
+			<translation>Inutilisé</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
 			<source>Used</source>
-			<translation>Utilisé  </translation>
+			<translation>Utilisé</translation>
 		</message>
 	</context>
 	<context>
@@ -5262,24 +5262,24 @@ Or you can broadcast via {url}</source>
 		<name>importer</name>
 		<message>
 			<source>Import Signature</source>
-			<translation>Importer une signature  </translation>
+			<translation>Importer une signature</translation>
 		</message>
 		<name>importer</name>
 		<message>
 			<source>Import file</source>
-			<translation>Importer un fichier  </translation>
+			<translation>Importer un fichier</translation>
 		</message>
 	</context>
 	<context>
 		<name>mytreeview</name>
 		<message>
 			<source>Export as CSV</source>
-			<translation>Exporter en CSV  </translation>
+			<translation>Exporter en CSV</translation>
 		</message>
 		<name>mytreeview</name>
 		<message>
 			<source>Type to filter</source>
-			<translation>Tapez pour filtrer  </translation>
+			<translation>Tapez pour filtrer</translation>
 		</message>
 		<name>mytreeview</name>
 		<message>
@@ -5311,7 +5311,7 @@ Or you can broadcast via {url}</source>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
-			<translation>Exécutez votre bitcoind avec "bitcoind -chain=regtest"  </translation>
+			<translation>Exécutez votre bitcoind avec "bitcoind -chain=regtest"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5321,7 +5321,7 @@ Or you can broadcast via {url}</source>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=test"</source>
-			<translation>Exécutez votre bitcoind avec "bitcoind -chain=test"  </translation>
+			<translation>Exécutez votre bitcoind avec "bitcoind -chain=test"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5352,12 +5352,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>Vous pouvez configurer {electrum} avec un serveur electrum sur {server} et un explorateur de blocs sur {explorer}  </translation>
+			<translation>Vous pouvez configurer {electrum} avec un serveur electrum sur {server} et un explorateur de blocs sur {explorer}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-			<translation>Vous pouvez configurer {setup} avec un serveur esplora sur {server} et un explorateur de blocs sur {explorer}  </translation>
+			<translation>Vous pouvez configurer {setup} avec un serveur esplora sur {server} et un explorateur de blocs sur {explorer}</translation>
 		</message>
 	</context>
 	<context>
@@ -5369,12 +5369,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>network_config</name>
 		<message>
 			<source>{server_name}</source>
-			<translation>{server_name}  </translation>
+			<translation>{server_name}</translation>
 		</message>
 		<name>network_config</name>
 		<message>
 			<source>{server_name} via the proxy {proxy}</source>
-			<translation>{server_name} via le proxy {proxy}  </translation>
+			<translation>{server_name} via le proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -5386,7 +5386,7 @@ It is best to use your own server, such as {link}.</source>
 		<name>open_file</name>
 		<message>
 			<source>Open Transaction/PSBT</source>
-			<translation>Ouvrir Transaction/PSBT  </translation>
+			<translation>Ouvrir Transaction/PSBT</translation>
 		</message>
 	</context>
 	<context>
@@ -5423,12 +5423,12 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>12 or 24</source>
-			<translation>12 ou 24  </translation>
+			<translation>12 ou 24</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Address</source>
-			<translation>Adresse  </translation>
+			<translation>Adresse</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5438,32 +5438,32 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Balance</source>
-			<translation>Solde  </translation>
+			<translation>Solde</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of "{id}"</source>
-			<translation>Relevé de solde de "{id}"  </translation>
+			<translation>Relevé de solde de "{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Balance Statement of {id}</source>
-			<translation>Relevé de solde de {id}  </translation>
+			<translation>Relevé de solde de {id}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Category</source>
-			<translation>Catégorie  </translation>
+			<translation>Catégorie</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created at {date} with</source>
-			<translation>Créé le {date} avec  </translation>
+			<translation>Créé le {date} avec</translation>
 		</message>
 		<name>pdf</name>
 		<message>
 			<source>Created with</source>
-			<translation>Créé avec  </translation>
+			<translation>Créé avec</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5488,7 +5488,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
-			<translation>Clé de sauvegarde de synchronisation des étiquettes : {label_sync_nsec}  </translation>
+			<translation>Clé de sauvegarde de synchronisation des étiquettes : {label_sync_nsec}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5518,7 +5518,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Seed backup of {id}</source>
-			<translation>Sauvegarde de graine de {id}  </translation>
+			<translation>Sauvegarde de graine de {id}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5538,7 +5538,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Total</source>
-			<translation>Total  </translation>
+			<translation>Total</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5553,7 +5553,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-			<translation>{i}. Sauvegarde de graine d'un portefeuille Multi-Sig de {threshold} sur {m} : "{id}"  </translation>
+			<translation>{i}. Sauvegarde de graine d'un portefeuille Multi-Sig de {threshold} sur {m} : "{id}"</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5694,7 +5694,7 @@ Click here to learn more.</source>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
-			<translation>Adresse déjà utilisée  </translation>
+			<translation>Adresse déjà utilisée</translation>
 		</message>
 	</context>
 	<context>
@@ -5852,7 +5852,7 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 		<name>util</name>
 		<message>
 			<source>Balance: {amount}</source>
-			<translation>Solde : {amount}  </translation>
+			<translation>Solde : {amount}</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5864,7 +5864,7 @@ Works only if you have an available change output and raise the combined fee rat
 		<name>util</name>
 		<message>
 			<source>Edit</source>
-			<translation>Modifier  </translation>
+			<translation>Modifier</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5896,117 +5896,117 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>Unknown</source>
-			<translation>Inconnu  </translation>
+			<translation>Inconnu</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 day ago</source>
-			<translation>il y a environ 1 jour  </translation>
+			<translation>il y a environ 1 jour</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 hour ago</source>
-			<translation>il y a environ 1 heure  </translation>
+			<translation>il y a environ 1 heure</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 month ago</source>
-			<translation>il y a environ 1 mois  </translation>
+			<translation>il y a environ 1 mois</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 year ago</source>
-			<translation>il y a environ 1 an  </translation>
+			<translation>il y a environ 1 an</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} days ago</source>
-			<translation>il y a environ {} jours  </translation>
+			<translation>il y a environ {} jours</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} hours ago</source>
-			<translation>il y a environ {} heures  </translation>
+			<translation>il y a environ {} heures</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} minutes ago</source>
-			<translation>il y a environ {} minutes  </translation>
+			<translation>il y a environ {} minutes</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} months ago</source>
-			<translation>il y a environ {} mois  </translation>
+			<translation>il y a environ {} mois</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about 1 day</source>
-			<translation>dans environ 1 jour  </translation>
+			<translation>dans environ 1 jour</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about 1 hour</source>
-			<translation>dans environ 1 heure  </translation>
+			<translation>dans environ 1 heure</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about 1 month</source>
-			<translation>dans environ 1 mois  </translation>
+			<translation>dans environ 1 mois</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about 1 year</source>
-			<translation>dans environ 1 an  </translation>
+			<translation>dans environ 1 an</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about {} days</source>
-			<translation>dans environ {} jours  </translation>
+			<translation>dans environ {} jours</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about {} hours</source>
-			<translation>dans environ {} heures  </translation>
+			<translation>dans environ {} heures</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about {} minutes</source>
-			<translation>dans environ {} minutes  </translation>
+			<translation>dans environ {} minutes</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in about {} months</source>
-			<translation>dans environ {} mois  </translation>
+			<translation>dans environ {} mois</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in less than a minute</source>
-			<translation>dans moins d'une minute  </translation>
+			<translation>dans moins d'une minute</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in over {} years</source>
-			<translation>dans plus de {} ans  </translation>
+			<translation>dans plus de {} ans</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>in {} seconds</source>
-			<translation>dans {} secondes  </translation>
+			<translation>dans {} secondes</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>less than a minute ago</source>
-			<translation>il y a moins d'une minute  </translation>
+			<translation>il y a moins d'une minute</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>over {} years ago</source>
-			<translation>il y a plus de {} ans  </translation>
+			<translation>il y a plus de {} ans</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>{} seconds ago</source>
-			<translation>Il y a {} secondes  </translation>
+			<translation>Il y a {} secondes</translation>
 		</message>
 	</context>
 	<context>
@@ -6053,39 +6053,39 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>utxo_list</name>
 		<message>
 			<source>Copy as csv</source>
-			<translation>Copier en CSV  </translation>
+			<translation>Copier en CSV</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Open Address Details</source>
-			<translation>Ouvrir les détails de l'adresse  </translation>
+			<translation>Ouvrir les détails de l'adresse</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Open transaction</source>
-			<translation>Ouvrir la transaction  </translation>
+			<translation>Ouvrir la transaction</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Unconfirmed UTXO</source>
-			<translation>UTXO non confirmé  </translation>
+			<translation>UTXO non confirmé</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-			<translation>UTXO non confirmé est dépensé par la transaction {is_spent_by_txid}  </translation>
+			<translation>UTXO non confirmé est dépensé par la transaction {is_spent_by_txid}</translation>
 		</message>
 		<name>utxo_list</name>
 		<message>
 			<source>View on block explorer</source>
-			<translation>Voir sur l'explorateur de blocs  </translation>
+			<translation>Voir sur l'explorateur de blocs</translation>
 		</message>
 	</context>
 	<context>
 		<name>video</name>
 		<message>
 			<source>Add RTSP Camera</source>
-			<translation>Ajouter une caméra RTSP  </translation>
+			<translation>Ajouter une caméra RTSP</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -6095,7 +6095,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>video</name>
 		<message>
 			<source>Camera</source>
-			<translation>Caméra  </translation>
+			<translation>Caméra</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -6105,22 +6105,22 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>video</name>
 		<message>
 			<source>Enhance picture for detection</source>
-			<translation>Améliorer l'image pour la détection  </translation>
+			<translation>Améliorer l'image pour la détection</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Enter RTSP URL</source>
-			<translation>Entrez l'URL RTSP  </translation>
+			<translation>Entrez l'URL RTSP</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Error</source>
-			<translation>Erreur  </translation>
+			<translation>Erreur</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Postprocess</source>
-			<translation>Post-traitement  </translation>
+			<translation>Post-traitement</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -6130,22 +6130,22 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>video</name>
 		<message>
 			<source>Screen</source>
-			<translation>Écran  </translation>
+			<translation>Écran</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Settings</source>
-			<translation>Paramètres  </translation>
+			<translation>Paramètres</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>Show camera controls</source>
-			<translation>Afficher les commandes de la caméra  </translation>
+			<translation>Afficher les commandes de la caméra</translation>
 		</message>
 		<name>video</name>
 		<message>
 			<source>The camera could not be opened</source>
-			<translation>La caméra n'a pas pu être ouverte  </translation>
+			<translation>La caméra n'a pas pu être ouverte</translation>
 		</message>
 		<name>video</name>
 		<message>
@@ -6162,7 +6162,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Confirmed</source>
-			<translation>Confirmé  </translation>
+			<translation>Confirmé</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -6172,12 +6172,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Local</source>
-			<translation>Local  </translation>
+			<translation>Local</translation>
 		</message>
 		<name>wallet</name>
 		<message>
 			<source>PSBT</source>
-			<translation>PSBT  </translation>
+			<translation>PSBT</translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -6187,12 +6187,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Unconfirmed</source>
-			<translation>Non confirmé  </translation>
+			<translation>Non confirmé</translation>
 		</message>
 		<name>wallet</name>
 		<message>
 			<source>Unknown</source>
-			<translation>Inconnu  </translation>
+			<translation>Inconnu</translation>
 		</message>
 	</context>
 </TS>
