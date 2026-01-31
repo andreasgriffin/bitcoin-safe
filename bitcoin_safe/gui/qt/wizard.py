@@ -1573,6 +1573,7 @@ class Wizard(WizardBase):
             step_labels=[""] * 3,
             signals_min=qtwalletbase.signals,
             loop_in_thread=qt_wallet.loop_in_thread if qt_wallet else qtwalletbase.loop_in_thread,
+            clickable=False,
         )  # initialize with 3 steps (doesnt matter)
         logger.debug(f"__init__ {self.__class__.__name__}")
         self.qtwalletbase = qtwalletbase
