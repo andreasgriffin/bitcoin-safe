@@ -14,7 +14,7 @@ jobs:
     # Hard gate at job level: PR author + head repo + event sender must be exactly "weblate"
     if: >
       github.event.pull_request.user.login == 'weblate' &&
-      github.event.pull_request.head.repo.full_name == 'weblate/weblate-bitcoin-safe-bitcoin-safe' &&
+      github.event.pull_request.head.repo.full_name == 'weblate/bitcoin-safe' &&
       github.actor == 'weblate'
     runs-on: ubuntu-latest
 
@@ -28,7 +28,7 @@ jobs:
             const pr = context.payload.pull_request;
 
             // Hard-enforce expected head repo (fail closed)
-            const allowedHeadRepo = 'weblate/weblate-bitcoin-safe-bitcoin-safe';
+            const allowedHeadRepo = 'weblate/bitcoin-safe';
             if (pr.head.repo.full_name !== allowedHeadRepo) {
               core.info(`Skipping: head repo is ${pr.head.repo.full_name}, expected ${allowedHeadRepo}`);
               core.setOutput('login', '');
