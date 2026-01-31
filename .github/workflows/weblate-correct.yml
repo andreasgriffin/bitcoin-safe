@@ -28,17 +28,23 @@ jobs:
             const sha = pr.head.sha;
             const commit = await github.rest.repos.getCommit({ owner, repo, ref: sha });
             const login = (commit.data.author && commit.data.author.login) ? commit.data.author.login.toLowerCase() : '';
-            const shouldRun = login === 'weblate';
+            const sender = (context.payload.sender && context.payload.sender.login)
+              ? context.payload.sender.login.toLowerCase()
+              : '';
+            const shouldRun = login === 'weblate' || sender === 'weblate';
             core.info(`Last commit author: ${login || 'unknown'}`);
+            core.info(`Event sender: ${sender || 'unknown'}`);
             core.setOutput('login', login || '');
+            core.setOutput('sender', sender || '');
             core.setOutput('should_run', shouldRun ? 'true' : 'false');
 
       - name: Skip when last commit is not Weblate
         if: steps.last_commit.outputs.should_run != 'true'
         env:
           LAST_LOGIN: ${{ steps.last_commit.outputs.login }}
+          SENDER_LOGIN: ${{ steps.last_commit.outputs.sender }}
         run: |
-          echo "Last commit author (${LAST_LOGIN:-unknown}) is not Weblate; skipping workflow."
+          echo "Last commit author (${LAST_LOGIN:-unknown}) and event sender (${SENDER_LOGIN:-unknown}) are not Weblate; skipping workflow."
           exit 0
 
       - name: Check out PR branch
