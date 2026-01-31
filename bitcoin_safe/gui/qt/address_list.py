@@ -83,7 +83,7 @@ from bitcoin_safe.gui.qt.category_manager.category_manager import AddressDragInf
 from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.pythonbdk_types import Balance
+from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from ...config import UserConfig
@@ -97,6 +97,7 @@ from ...signals import (
     WalletFunctions,
     WalletSignals,
 )
+from ...tx import TxUiInfos
 from ...wallet import TxStatus, Wallet
 from .my_treeview import (
     DropRule,
@@ -821,6 +822,11 @@ class AddressList(MyTreeView[str]):
                     icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
 
+        menu.add_action(
+            self.tr("Select corresponding UTXOs for sending"),
+            partial(self._select_utxos_for_sending, self._group_addresses_by_wallet(selected_items)),
+        )
+
         menu.addSeparator()
         self._add_category_menu(menu, addrs)
 
@@ -908,6 +914,51 @@ class AddressList(MyTreeView[str]):
             )
 
         return menu
+
+    def _group_addresses_by_wallet(self, items: list[QStandardItem]) -> dict[str, list[str]]:
+        """Return selected addresses grouped by wallet id."""
+        grouped: dict[str, list[str]] = {}
+        for item in items:
+            wallet = self.get_wallet(item.index().row())
+            if not wallet:
+                continue
+            grouped.setdefault(wallet.id, []).append(item.text())
+        return grouped
+
+    def _utxos_for_addresses(self, wallet: Wallet, addresses: list[str]) -> list[PythonUtxo]:
+        """Return spendable UTXOs that belong to the given addresses."""
+        wanted = set(addresses)
+        return [utxo for utxo in wallet.get_all_utxos() if utxo.address in wanted]
+
+    def _select_utxos_for_sending(self, group_addresses_by_walletdict: dict[str, list[str]]) -> None:
+        """Open the send tab with UTXOs of the selected addresses pre‑selected."""
+        if not group_addresses_by_walletdict:
+            return
+
+        if len(group_addresses_by_walletdict) > 1:
+            Message(
+                self.tr("Please select addresses from a single wallet to choose UTXOs for sending."),
+                type=MessageType.Info,
+            )
+            return
+
+        wallet_id, addresses = next(iter(group_addresses_by_walletdict.items()))
+        wallet = self.wallets.get(wallet_id)
+        if not wallet:
+            return
+
+        utxos = self._utxos_for_addresses(wallet, addresses)
+        if not utxos:
+            Message(self.tr("No spendable UTXOs found for the selected addresses."), type=MessageType.Info)
+            return
+
+        tx_ui_infos = TxUiInfos(
+            utxo_dict={utxo.outpoint: utxo for utxo in utxos},
+            hide_UTXO_selection=False,
+            main_wallet_id=wallet.id,
+        )
+        tx_ui_infos.spend_all_utxos = True
+        self.wallet_functions.signals.open_tx_like.emit(tx_ui_infos)
 
     def get_edit_key_from_coordinate(self, row, col) -> Any:
         """Get edit key from coordinate."""

@@ -45,6 +45,7 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.tx import TxUiInfos
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
@@ -106,6 +107,50 @@ def test_wallet_send(
                 faucet=faucet,
                 qtbot=qtbot,
             )
+
+            def select_utxos_for_sending() -> None:
+                """Ensure selecting addresses seeds the send flow with the right UTXOs."""
+                address_list = qt_wallet.address_list
+                wallet = qt_wallet.wallet
+
+                target_address = wallet.get_addresses()[0]
+                grouped_addresses: dict[str, list[str]] = {wallet.id: [target_address]}
+
+                captured: list[TxUiInfos] = []
+
+                wallet_utxos = wallet.get_all_utxos()
+                assert wallet_utxos
+
+                def on_open_tx_like(tx_ui_infos: TxUiInfos) -> None:
+                    captured.append(tx_ui_infos)
+
+                qt_wallet.wallet_functions.signals.open_tx_like.connect(on_open_tx_like)
+                try:
+                    address_list._select_utxos_for_sending(grouped_addresses)
+                    qtbot.wait_until(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.uitx_creator)
+                finally:
+                    qt_wallet.wallet_functions.signals.open_tx_like.disconnect(on_open_tx_like)
+
+                assert captured
+                tx_ui_infos = captured[-1]
+                assert tx_ui_infos.main_wallet_id == wallet.id
+                assert tx_ui_infos.spend_all_utxos is True
+                assert tx_ui_infos.hide_UTXO_selection is False
+                assert set(utxo.address for utxo in tx_ui_infos.utxo_dict.values()) == {target_address}
+
+                uitx_creator = qt_wallet.uitx_creator
+                assert qt_wallet.tabs.currentWidget() is uitx_creator
+                assert uitx_creator.column_inputs.checkBox_manual_coin_select.isChecked()
+                assert uitx_creator.utxo_list.isVisible()
+
+                def _selection_matches() -> bool:
+                    selected_outpoints = set(uitx_creator.utxo_list.get_selected_outpoints())
+                    return selected_outpoints == set(tx_ui_infos.utxo_dict.keys())
+
+                qtbot.wait_until(_selection_matches)
+                assert _selection_matches()
+
+            select_utxos_for_sending()
 
             def import_recipients() -> None:
                 """Import recipients."""
