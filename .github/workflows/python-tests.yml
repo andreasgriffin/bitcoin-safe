@@ -11,7 +11,43 @@ on:
       backend:
         required: true
         type: string
+      repository:
+        required: false
+        type: string
+        default: ""
+      ref:
+        required: false
+        type: string
+        default: ""
 
+  workflow_dispatch:
+    inputs:
+      os:
+        description: "Runner OS"
+        required: true
+        type: choice
+        options:
+          - ubuntu-22.04
+          - windows-latest
+          - macos-latest
+      backend:
+        description: "Backend selector passed to pytest as --<backend>"
+        required: true
+        type: choice
+        options:
+          - fulcrum
+          - cbf
+      repository:
+        description: "Repository to checkout (owner/name). Leave empty for current repo."
+        required: false
+        type: string
+        default: ""
+      ref:
+        description: "Git ref to checkout (branch/tag/SHA). Leave empty for event ref."
+        required: false
+        type: string
+        default: ""
+        
 jobs:
   test:
     runs-on: ${{ inputs.os }}
@@ -23,8 +59,13 @@ jobs:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
 
+
     steps:
     - uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.repository != '' && inputs.repository || github.repository }}
+        ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
