@@ -167,8 +167,23 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>No spendable UTXOs found for the selected addresses.</source>
+			<translation/>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Number of transactions</source>
 			<translation>Anzahl der Transaktionen</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
+			<translation/>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>Select corresponding UTXOs for sending</source>
+			<translation/>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -468,7 +483,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>Geben Sie Ihr Wechselgeld mit dieser Gebühr aus, um die Elterntransaktion hereinzuziehen (CPFP). Die kombinierte Eltern+Kind-Gebührenrate sollte den Zielblock erreichen.</translation>
+			<translation>Verwenden Sie Ihr Kleingeld für diese Gebühr, um die Eltern einzubeziehen (CPFP).
+Der kombinierte Eltern-Kind-Tarif sollte dem Zielblock entsprechen.</translation>
 		</message>
 	</context>
 	<context>
@@ -3188,7 +3204,10 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>Die Transaktionen {} können nur als unbestätigt in den Mempool hinzugefügt werden. Möchten Sie dennoch fortfahren?</translation>
+			<translation>Die Transaktionen
+{}
+können nur als unbestätigt im Mempool hinzugefügt werden.
+Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3204,7 +3223,9 @@ im Wallet '{wallet}' wurden aus der Historie entfernt!!!</translation>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>Dies entfernt die Transaktion nur aus dieser Wallet-Ansicht. Sie wurde bereits ins Bitcoin-Netzwerk übertragen und wird voraussichtlich dennoch bestätigt. Möchten Sie sie trotzdem aus dem Wallet entfernen?</translation>
+			<translation>Dadurch wird die Transaktion nur aus dieser Wallet-Ansicht entfernt. Sie wurde bereits an das Bitcoin-Netzwerk übertragen und wird wahrscheinlich weiterhin bestätigt werden.
+
+Möchten Sie sie trotzdem aus der Wallet entfernen?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3273,7 +3294,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>Verwenden Sie diese Gebühr, um eine Ersatztransaktion (RBF) mit der angezeigten Zielgeschwindigkeit zu erstellen. Ausgänge bleiben gleich; nur die Gebühr ändert sich.</translation>
+			<translation>Verwenden Sie diese Gebühr, um eine Ersatztransaktion (RBF) mit der angezeigten Zielgeschwindigkeit zu erstellen.
+Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		</message>
 	</context>
 	<context>
@@ -3946,7 +3968,8 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>Dieses Wallet wurde zuletzt auf einem anderen Computer verwendet. Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat-&amp;-Sync-Synchronisationsschlüssel (nsec) zurück.</translation>
+			<translation>Diese Wallet wurde zuletzt auf einem anderen Computer verwendet.
+Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &amp; Sync-Synchronisierungsschlüssel (nsec) zurück.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5875,7 +5898,8 @@ Klicke hier, um mehr zu erfahren.</translation>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>Versucht, die ursprüngliche Transaktion mit einer höheren Gebühr doppelt auszugeben. Funktioniert nur bei Transaktionen mit RBF-Signal und ist nicht garantiert erfolgreich.</translation>
+			<translation>Versucht, die ursprüngliche Transaktion mit einer höheren Gebühr doppelt auszugeben.
+Funktioniert nur bei Transaktionen mit RBF-Signal und ist nicht garantiert erfolgreich.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5887,7 +5911,9 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent gibt einen Wechselgeld-Ausgang der ausstehenden Transaktion mit höherer Gebühr aus, um beide in einen Block zu ziehen. Funktioniert nur, wenn ein verfügbarer Wechselgeld-Ausgang vorhanden ist und die kombinierte Gebührenrate erhöht wird.</translation>
+			<translation>Child-Pays-For-Parent gibt eine Wechselausgabe der ausstehenden Transaktion
+mit einer höheren Gebühr aus, um beide in einen Block zu ziehen.
+Funktioniert nur, wenn Sie über eine verfügbare Wechselausgabe verfügen und die kombinierte Gebühr erhöhen.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5909,7 +5935,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee erstellt eine neue Version dieser Transaktion mit höherer Gebühr. Verwenden Sie dies, um die Bestätigung zu beschleunigen, wenn die ursprüngliche noch unbestätigt ist. Erfordert, dass die ursprüngliche Transaktion RBF signalisiert und das Wallet einen Wechselgeld-Ausgang besitzt.</translation>
+			<translation>Replace-By-Fee erstellt eine neue Version dieser Transaktion mit einer höheren Gebühr.
+Verwenden Sie diese Funktion, um die Bestätigung zu beschleunigen, wenn die ursprüngliche Transaktion noch nicht bestätigt ist.
+Erfordert, dass die ursprüngliche Transaktion RBF signalisiert und Ihre Wallet über einen Change-Output verfügt.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -6042,19 +6070,22 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Child-Pays-For-Parent: Diese Transaktion beschleunigt die Bestätigung von {parent_str}, da sie die Gesamtgebührenrate auf {combined_rate} erhöht.</translation>
+			<translation>Kind-bezahlt-für-Elternteil: Diese Transaktion beschleunigt die Bestätigung des {parent_str},
+da sie den Gesamtgebührensatz auf {combined_rate} erhöht.</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
 since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
-			<translation>Child-Pays-For-Parent: Die Gebühr dieser Transaktion ist zu niedrig, um die Bestätigung von {parent_str} zu beschleunigen, da sie die Gesamtgebührenrate auf {combined_rate} senkt. Wählen Sie mindestens {parent_rate}.</translation>
+			<translation>Kind-zahlt-für-Elternteil: Diese Transaktionsgebühr ist zu niedrig, um die Bestätigung des {parent_str} zu beschleunigen,
+da sie die Gesamtgebühr auf {combined_rate} senkt. Wählen Sie mindestens {parent_rate}.</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-			<translation>Replace-By-Fee: Diese Transaktion ersetzt die Transaktion {txid} mit der Gebührenrate {rate_org}. Wählen Sie eine Gebühr oberhalb der Mindestgebührenrate {rate_min}.</translation>
+			<translation>Ersetzen durch Gebühr: Diese Transaktion ersetzt die Transaktion {txid} durch den Gebührensatz {rate_org}.
+Wählen Sie eine Gebühr, die über dem Mindestgebührensatz {rate_min} liegt.</translation>
 		</message>
 		<name>utils</name>
 		<message>
