@@ -4,13 +4,19 @@ permissions:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
   linux-tests:
+    if: >
+      github.event_name != 'pull_request' ||
+      !(
+        github.event.pull_request.user.login == 'weblate' &&
+        github.event.pull_request.head.repo.full_name == 'weblate/bitcoin-safe'
+      )
     strategy:
       matrix:
         backend: [fulcrum, cbf]
@@ -21,7 +27,13 @@ jobs:
       backend: ${{ matrix.backend }}
 
   windows-tests:
-    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pytest-win') }}
+    if: >
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'pytest-win') &&
+      !(
+        github.event.pull_request.user.login == 'weblate' &&
+        github.event.pull_request.head.repo.full_name == 'weblate/bitcoin-safe'
+      )
     strategy:
       matrix:
         backend: [cbf]
