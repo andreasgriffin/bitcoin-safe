@@ -32,10 +32,10 @@ import logging
 from typing import cast
 
 import bdkpython as bdk
-import numpy as np
 import requests
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util import unique_elements
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QKeyEvent, QShowEvent
@@ -239,10 +239,8 @@ class NetworkSettingsUI(QWidget):
         self.electrum_url_edit = QCompleterLineEdit(
             network=network,
             suggestions={
-                network: list(
-                    np.unique(
-                        [electrum_config.url for electrum_config in get_electrum_configs(network).values()]
-                    )
+                network: unique_elements(
+                    [electrum_config.url for electrum_config in get_electrum_configs(network).values()]
                 )
                 for network in bdk.Network
             },
@@ -270,7 +268,7 @@ class NetworkSettingsUI(QWidget):
         self.esplora_url_edit = QCompleterLineEdit(
             network=network,
             suggestions={
-                network: list(np.unique(list(get_esplora_urls(network).values()))) for network in bdk.Network
+                network: unique_elements(get_esplora_urls(network).values()) for network in bdk.Network
             },
         )
 

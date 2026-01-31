@@ -56,6 +56,7 @@ from bitcoin_safe_lib.util import (
     hash_string,
     replace_non_alphanumeric,
     time_logger,
+    unique_elements,
 )
 from bitcoin_usb.address_types import DescriptorInfo
 from bitcoin_usb.software_signer import derive as software_signer_derive
@@ -1810,9 +1811,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         if not python_txos:
             return []
 
-        categories: list[str] = np.unique(
+        categories: list[str] = unique_elements(
             clean_list([self.labels.get_category_raw(python_utxo.address) for python_utxo in python_txos])
-        ).tolist()  # type: ignore
+        )
 
         if not categories:
             categories = [self.labels.get_default_category()]
