@@ -123,12 +123,13 @@ jobs:
         id: commit
         uses: planetscale/ghcommit-action@v0.2.20
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WEBLATE_PUSH_TOKEN }}
         with:
           commit_message: "chore: run Weblate correct"
           repo: ${{ github.event.pull_request.head.repo.full_name }}
           branch: ${{ github.event.pull_request.head.ref }}
           file_pattern: .
+
 
       - name: Comment on PR
         if: steps.diff.outputs.changed == 'true'
@@ -143,18 +144,4 @@ jobs:
               issue_number: pr.number,
               body,
             });
-
-  linux-tests:
-    needs: run-weblate-correct
-    if: needs.run-weblate-correct.outputs.changed == 'true'
-    strategy:
-      matrix:
-        backend: [fulcrum, cbf]
-    uses: ./.github/workflows/python-tests.yml
-    secrets: inherit
-    with:
-      os: ubuntu-22.04
-      backend: ${{ matrix.backend }}
-      # NOTE: python-tests.yml must support these optional inputs
-      repository: ${{ needs.run-weblate-correct.outputs.head_repo }}
-      ref: ${{ needs.run-weblate-correct.outputs.head_ref }}
+ 
