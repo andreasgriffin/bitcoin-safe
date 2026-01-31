@@ -167,8 +167,23 @@
 		</message>
 		<name>AddressList</name>
 		<message>
+			<source>No spendable UTXOs found for the selected addresses.</source>
+			<translation/>
+		</message>
+		<name>AddressList</name>
+		<message>
 			<source>Number of transactions</source>
 			<translation>लेन-देन की संख्या</translation>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
+			<translation/>
+		</message>
+		<name>AddressList</name>
+		<message>
+			<source>Select corresponding UTXOs for sending</source>
+			<translation/>
 		</message>
 		<name>AddressList</name>
 		<message>
