@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>ရွေးချယ်ထားသော လိပ်စာများအတွက် အသုံးချနိုင်သော UTXO မတွေ့ပါ။</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>ပို့ရန်အတွက် UTXO ရွေးချယ်နိုင်ရန် တစ်ခုတည်းသော ပိုက်ဆံအိတ်မှ လိပ်စာများကို ရွေးချယ်ပါ။</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>ပို့ရန်အတွက် သက်ဆိုင်သော UTXO များကို ရွေးချယ်ပါ</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -579,13 +580,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>လိပ်စာများ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
+			<translation>လိပ်စာများ {used_addresses}
+တွင် အခြားလိပ်စာများနှင့် ချိတ်ဆက်ထားသည့် ငွေလွှဲများရှိပြီးဖြစ်သည်။ သင် အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>လိပ်စာ {used_addresses} တွင် အခြားလိပ်စာများနှင့် ဆက်နွယ်သော ငွေလွှဲမှုများ ရှိပြီးသား ဖြစ်သည်။ ၎င်းတို့၏ အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
+			<translation>လိပ်စာ {used_addresses}
+တွင် အခြားလိပ်စာများနှင့် ဆက်နွယ်သော ငွေလွှဲမှုများ ရှိပြီးသား ဖြစ်သည်။ ၎င်းတို့၏ အမျိုးအစားကို ပြောင်းလဲရန် သေချာပါသလား?</translation>
 		</message>
 	</context>
 	<context>
@@ -1111,7 +1114,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>ငွေလွှဲခကြေးမှာ: {fee} ဖြစ်ပြီး {sent} ကိုပေးပို့ခဲ့သည်!</translation>
+			<translation>ငွေလွှဲခကြေးမှာ:
+{fee} ဖြစ်ပြီး {sent} ကိုပေးပို့ခဲ့သည်!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1516,7 +1520,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>လက်မှတ်သားစက်အမည်: ...... လက်မှတ်သားစက်တည်နေရာ: .....</translation>
+			<translation>လက်မှတ်သားစက်အမည်: ......
+လက်မှတ်သားစက်တည်နေရာ: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1597,7 +1602,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} ခေါင်းပါပဲဆက်လုပ်မလား။</translation>
+			<translation>{msg}
+ခေါင်းပါပဲဆက်လုပ်မလား။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2027,6 +2033,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>အပို ပီယာတစ်ခုသို့ ချိတ်ဆက်နေသည် (လက်ရှိ {count} ခု လုပ်ဆောင်နေသည်)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ</translation>
 		</message>
@@ -2044,16 +2055,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>လတ်တလော bitcoin p2p ယာဉ်ကြောကို စောင့်ကြည့်နေရာ: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>လတ်တလော bitcoin p2p ယာဉ်ကြောကို စောင့်ကြည့်နေရာ: {ip} (proxy {proxy} မှတစ်ဆင့်)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2257,8 +2258,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>အခြေအနေ: proxy မှတစ်ဆင့် ချိတ်ဆက်ပြီး</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>အခြေအနေ: ပီယာ {count} ခုနှင့် ချိတ်ဆက်ထားသည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2351,6 +2352,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>အသစ်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} ကို proxy {proxy} မှတစ်ဆင့်</translation>
 		</message>
 	</context>
 	<context>
@@ -2479,7 +2485,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။ {responses}   သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?</translation>
+			<translation>ဆာဗာချိတ်ဆက်မှုတွင်အမှားဖြစ်နေသည်။
+{responses}
+  သို့သော်လည်း ဆက်လက်ဆောင်ရွက်ချင်ပါသလား?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2488,8 +2496,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>မူလ node</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>မမှန်ကန်သော ပီယာ '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>လက်ဖြင့် သတ်မှတ်ထားသော ပီယာများ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>အများဆုံး ပီယာအရေအတွက်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>p2p လစ်စနာမှတစ်ဆင့် တစ်ပြိုင်နက် စောင့်ကြည့်မည့် ပီယာအရေအတွက်၏ အများဆုံး။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2510,6 +2533,12 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>p2p ချိတ်ဆက်မှု အရေအတွက်:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>လစ်စနာက ဦးစွာ ကြိုးစားသင့်သော ရွေးချယ်နိုင်သော ပီယာစာရင်း (တစ်ကြောင်းလျှင် တစ်ခု)။ အလိုအလျောက် ပီယာရှာဖွေမှုကို ယုံကြည်ရန် အလွတ်ထားပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2546,7 +2575,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>တုံ့ပြန်ချက်: {name}: {status}     Mempool Instance: {server}</translation>
+			<translation>တုံ့ပြန်ချက်:
+{name}: {status}
+    Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2565,13 +2596,16 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>မူလ node သည် လက်ခံနားထောင်ရန်နှင့် အခြား bitcoin node များကို ရှာဖွေဖော်ထုတ်ရန် အသုံးပြုသည်။ အထူးသီးသန့် မအသုံးမပြုပါ။</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>ဤဆက်တင်သည် လစ်စနာက တစ်ပြိုင်နက် ချိတ်ဆက်မည့် Bitcoin ပီယာအရေအတွက်ကို သတ်မှတ်သည်။ အက်ပ်လုပ်ဆောင်နေချိန်တွင် ထုတ်လွှင့်သော လုပ်ငန်းစဉ်များကိုသာ ကြားရမည်ဖြစ်သဖြင့် စတင်မည့်အချိန်မတိုင်မီ မမ်ပူးလ်များတွင် ရှိပြီးသား အရာအားလုံးကို လွတ်သွားမည်ဖြစ်သည်။ ချိတ်ဆက်ထားသော ပီယာများသည် သင့်ပိုက်ဆံအိတ် သို့မဟုတ် သင့်လုပ်ငန်းစဉ်များအကြောင်း မည်သည့်အချက်အလက်မျှ မသိပါ။ ပီယာများပိုသုံးခြင်းသည် လွှမ်းခြုံမှုကို တိုးတက်စေသော်လည်း ဘန်ဒ်ဝစ်နှင့် ချိတ်ဆက်မှုများကို ပိုမို အသုံးပြုသည်။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2582,11 +2616,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>အသုံးပြုသူအမည်:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -3100,7 +3129,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ်: {txs}</translation>
+			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ်:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3188,14 +3218,18 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>အရောင်းအဝယ်များ {} ကို mempool ထဲတွင် မအတည်ပြုထားသည့်အဖြစ်သာ ထည့်နိုင်ပါသည်။ မည်သို့ပင်ဖြစ်စေ ဆက်လုပ်မလား။</translation>
+			<translation>အရောင်းအဝယ်များ
+{}
+ကို mempool ထဲတွင် မအတည်ပြုထားသည့်အဖြစ်သာ ထည့်နိုင်ပါသည်။ မည်သို့ပင်ဖြစ်စေ ဆက်လုပ်မလား။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>{txs} သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!</translation>
+			<translation>
+{txs}
+သည် '{wallet}' ပိုက်ဆံအိတ်မှတိုင်းတာများမှဖယ်ရှားခံခဲ့ရသည်!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3238,7 +3272,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ် {number} ခု: {txs}</translation>
+			<translation>ပိုက်ဆံအိတ် '{wallet}' တွင်ငွေလွှဲအသစ် {number} ခု:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -4097,7 +4132,9 @@ Signatures:
 
 
 </source>
-			<translation>{label} သို့ ဆိုင်သော private key ဖြင့် လင်ဒင်းကို စာချုပ်ထိုးပြီး  လက်မှတ်များ: {signatures}</translation>
+			<translation>{label}
+သို့ ဆိုင်သော private key ဖြင့် လင်ဒင်းကို စာချုပ်ထိုးပြီး  လက်မှတ်များ:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4138,7 +4175,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>သင့် sync key မှာ: {sync_key} သိမ်းပါ၊ 'sync key တင်သွင်းပါ' ကိုနှိပ်ပါက သ</translation>
+			<translation>သင့် sync key မှာ:
+{sync_key}
+သိမ်းပါ၊ 'sync key တင်သွင်းပါ' ကိုနှိပ်ပါက သ</translation>
 		</message>
 	</context>
 	<context>
@@ -5392,7 +5431,8 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Bitcoin node တစ်ခုကဲ့သို့ Bitcoin p2p ယာဉ်ကြောကို ပက်ဆစ်စွာ နားထောင်ပြီး,  အသစ်ထုတ်လွှင့်သည့် လင်ဒင်းများကို ချက်ချင်း ရှာဖွေနိုင်ပါသည်။ ဤလုပ်ဆောင်မှုသည် သင်၏ ပိုက်ဆံအိတ်အကြောင်း မည်သည့်အချက်အလက်မျှ မဖော်ထုတ်ပါ။ ဆက်လက်လေ့လာရန် ဒါကိုနှိပ်ပါ။</translation>
+			<translation>Bitcoin node တစ်ခုကဲ့သို့ Bitcoin p2p ယာဉ်ကြောကို ပက်ဆစ်စွာ နားထောင်ပြီး, 
+အသစ်ထုတ်လွှင့်သည့် လင်ဒင်းများကို ချက်ချင်း ရှာဖွေနိုင်ပါသည်။ ဤလုပ်ဆောင်မှုသည် သင်၏ ပိုက်ဆံအိတ်အကြောင်း မည်သည့်အချက်အလက်မျှ မဖော်ထုတ်ပါ။ ဆက်လက်လေ့လာရန် ဒါကိုနှိပ်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5833,7 +5873,9 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>သင့် BitBox02 ပေါ်ရှိ pairing code ကို နှိုင်းယှဉ်ပြီး အတည်ပြုပါ:  {code}</translation>
+			<translation>သင့် BitBox02 ပေါ်ရှိ pairing code ကို နှိုင်းယှဉ်ပြီး အတည်ပြုပါ:
+
+{code}</translation>
 		</message>
 	</context>
 	<context>

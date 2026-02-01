@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>चयनित पतों के लिए कोई खर्च योग्य UTXO नहीं मिला।</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>कृपया भेजने के लिए UTXO चुनने हेतु एक ही वॉलेट से पते चुनें।</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>भेजने के लिए संबंधित UTXO चुनें</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} हार्डवेयर साइनर खरीदें                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनर का समर्थन करता है: &lt;a href="{url}"&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+			<translation>{number} हार्डवेयर साइनर खरीदें                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनर का समर्थन करता है: &lt;a href="{url}"&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -579,13 +580,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>पते {used_addresses} के लेनदेन पहले से ही अन्य पतों से जुड़े हुए हैं। क्या आप वाकई श्रेणी बदलना चाहते हैं?</translation>
+			<translation>पते {used_addresses}
+के लेनदेन पहले से ही अन्य पतों से जुड़े हुए हैं। क्या आप वाकई श्रेणी बदलना चाहते हैं?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>पते {used_addresses} में पहले से ही ऐसी लेन-देन हैं जो अन्य पतों से जुड़ती हैं। क्या आप वाकई उनकी श्रेणी बदलना चाहते हैं?</translation>
+			<translation>पते {used_addresses}
+में पहले से ही ऐसी लेन-देन हैं जो अन्य पतों से जुड़ती हैं। क्या आप वाकई उनकी श्रेणी बदलना चाहते हैं?</translation>
 		</message>
 	</context>
 	<context>
@@ -1061,7 +1064,8 @@ Default 20</source>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>शुल्क दर को ठीक-ठीक नहीं जाना जा सकता, क्योंकि लेनदेन का अंतिम आकार अज्ञात है।</translation>
+			<translation>शुल्क दर को ठीक-ठीक नहीं जाना जा सकता,
+क्योंकि लेनदेन का अंतिम आकार अज्ञात है।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1111,7 +1115,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>लेनदेन शुल्क है: {fee}, और {sent} भेजा गया है!</translation>
+			<translation>लेनदेन शुल्क है:
+{fee}, और {sent} भेजा गया है!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1516,7 +1521,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>हस्ताक्षर डिवाइस का नाम: ...... हस्ताक्षर डिवाइस का स्थान: .....</translation>
+			<translation>हस्ताक्षर डिवाइस का नाम: ......
+हस्ताक्षर डिवाइस का स्थान: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1597,7 +1603,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} क्या आप फिर भी आगे बढ़ना चाहेंगे?</translation>
+			<translation>{msg}
+क्या आप फिर भी आगे बढ़ना चाहेंगे?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2027,6 +2034,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>अतिरिक्त पीयर से कनेक्ट किया जा रहा है (वर्तमान में {count} सक्रिय)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>इस स्ट्रिंग को डिकोड नहीं कर सका</translation>
 		</message>
@@ -2044,16 +2056,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>इनपुट को पहचान नहीं सके। क्या आप फिर से स्कैन करना चाहते हैं?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>वर्तमान में इस स्थान पर बिटकॉइन p2p ट्रैफ़िक की निगरानी कर रहे हैं: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>वर्तमान में इस स्थान पर बिटकॉइन p2p ट्रैफ़िक की निगरानी कर रहे हैं: {ip}, प्रॉक्सी {proxy} के माध्यम से</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2257,8 +2259,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>स्थिति: प्रॉक्सी के माध्यम से कनेक्टेड</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>स्थिति: {count} पीयर से कनेक्टेड</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2351,6 +2353,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>नया</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} प्रॉक्सी {proxy} के माध्यम से</translation>
 		</message>
 	</context>
 	<context>
@@ -2491,8 +2498,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>प्रारंभिक नोड</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>अमान्य पीयर '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>मैनुअल पीयर</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>अधिकतम पीयर</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>p2p लिस्नर के माध्यम से एक साथ मॉनिटर किए जाने वाले पीयर की अधिकतम संख्या।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2513,6 +2535,12 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>p2p कनेक्शनों की संख्या:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>वैकल्पिक पीयर सूची (प्रति पंक्ति एक) जिन्हें लिस्नर को पहले आज़माना चाहिए। स्वचालित पीयर खोज पर निर्भर रहने के लिए इसे खाली रखें।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2549,7 +2577,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>प्रतिक्रियाएँ: {name}: {status} मेमपूल इंस्टेंस: {server}</translation>
+			<translation>प्रतिक्रियाएँ:
+{name}: {status}
+मेमपूल इंस्टेंस: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2568,13 +2598,16 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>प्रारंभिक नोड सुनने और अन्य बिटकॉइन नोड्स को खोजने के लिए उपयोग होता है। इसे विशेष रूप से नहीं उपयोग किया जाता।</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>प्रॉक्सी सिंक और चैट सुविधा पर लागू नहीं होती!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>प्रॉक्सी सिंक और चैट सुविधा पर लागू नहीं होती!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>यह निर्धारित करता है कि लिस्नर एक समय में कितने Bitcoin पीयर से कनेक्ट होता है। यह केवल ऐप चलने के दौरान प्रसारित लेनदेन सुनता है, इसलिए स्टार्टअप से पहले मेमपूल में मौजूद किसी भी चीज़ को मिस कर देगा। जुड़े हुए पीयर आपके वॉलेट या आपके लेनदेन के बारे में कुछ भी नहीं जानते। अधिक पीयर का उपयोग कवरेज बढ़ाता है लेकिन अधिक बैंडविड्थ और कनेक्शन का उपयोग करता है।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2585,11 +2618,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>उपयोगकर्ता नाम:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>होस्ट:पोर्ट</translation>
 		</message>
 	</context>
 	<context>
@@ -3103,7 +3131,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>वॉलेट '{wallet}' में नया लेनदेन: {txs}</translation>
+			<translation>वॉलेट '{wallet}' में नया लेनदेन:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3191,14 +3220,18 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>लेन-देन {} केवल मेमपूल में अपुष्ट के रूप में जोड़े जा सकते हैं। क्या फिर भी जारी रखना चाहते हैं?</translation>
+			<translation>लेन-देन
+{}
+केवल मेमपूल में अपुष्ट के रूप में जोड़े जा सकते हैं। क्या फिर भी जारी रखना चाहते हैं?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>वॉलेट '{wallet}' में लेन-देन {txs} इतिहास से हटा दिए गए थे!!!</translation>
+			<translation>वॉलेट '{wallet}' में लेन-देन
+{txs}
+इतिहास से हटा दिए गए थे!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3241,7 +3274,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>वॉलेट '{wallet}' में {number} नए लेनदेन हैं: {txs}</translation>
+			<translation>वॉलेट '{wallet}' में {number} नए लेनदेन हैं:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -4100,7 +4134,9 @@ Signatures:
 
 
 </source>
-			<translation>{label} की निजी कुंजी से लेन-देन पर हस्ताक्षर किए गए  हस्ताक्षर: {signatures}</translation>
+			<translation>{label}
+की निजी कुंजी से लेन-देन पर हस्ताक्षर किए गए  हस्ताक्षर:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4141,7 +4177,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>आपकी सिंक कुंजी है: {sync_key} इसे सहेजें, और जब आप 'इम्पोर्ट सिंक कुंजी' पर क्लिक करेंगे, तो यह आपके लेबल को nostr रिले से पुनः प्राप्त करना चाहिए।</translation>
+			<translation>आपकी सिंक कुंजी है:
+{sync_key}
+इसे सहेजें, और जब आप 'इम्पोर्ट सिंक कुंजी' पर क्लिक करेंगे, तो यह आपके लेबल को nostr रिले से पुनः प्राप्त करना चाहिए।</translation>
 		</message>
 	</context>
 	<context>
@@ -4195,7 +4233,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>कृपया शुल्क दर को कम से कम {minimum} कर दें, अन्यथा आप इसे प्रसारित नहीं कर पाएंगे।</translation>
+			<translation>कृपया शुल्क दर को कम से कम {minimum} कर दें,
+अन्यथा आप इसे प्रसारित नहीं कर पाएंगे।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5395,7 +5434,8 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>बिटकॉइन p2p ट्रैफ़िक को निष्क्रिय रूप से सुनें (बिटकॉइन नोड की तरह),  ताकि नई प्रसारित लेन-देन तुरंत पता चल सकें। इससे आपके वॉलेट के बारे में कुछ भी प्रकट नहीं होता। और जानने के लिए यहाँ क्लिक करें।</translation>
+			<translation>बिटकॉइन p2p ट्रैफ़िक को निष्क्रिय रूप से सुनें (बिटकॉइन नोड की तरह), 
+ताकि नई प्रसारित लेन-देन तुरंत पता चल सकें। इससे आपके वॉलेट के बारे में कुछ भी प्रकट नहीं होता। और जानने के लिए यहाँ क्लिक करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -5836,7 +5876,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>कृपया अपने BitBox02 पर जोड़ी गई कोड की तुलना करें और पुष्टि करें: {code}</translation>
+			<translation>कृपया अपने BitBox02 पर जोड़ी गई कोड की तुलना करें और पुष्टि करें:
+{code}</translation>
 		</message>
 	</context>
 	<context>

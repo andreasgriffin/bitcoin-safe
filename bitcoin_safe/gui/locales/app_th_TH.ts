@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>ไม่พบ UTXO ที่สามารถใช้จ่ายได้สำหรับที่อยู่ที่เลือก</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>โปรดเลือกที่อยู่จากกระเป๋าเงินเดียวเพื่อเลือก UTXO สำหรับการส่ง</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>เลือก UTXO ที่สอดคล้องกันสำหรับการส่ง</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>ซื้ออุปกรณ์ลงนามฮาร์ดแวร์ {number}                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe รองรับอุปกรณ์ลงนามฮาร์ดแวร์หลักทั้งหมด: &lt;a href="{url}"&gt;ดูรายการทั้งหมด&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+			<translation>ซื้ออุปกรณ์ลงนามฮาร์ดแวร์ {number} 
+                            &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe รองรับอุปกรณ์ลงนามฮาร์ดแวร์หลักทั้งหมด: &lt;a href="{url}"&gt;ดูรายการทั้งหมด&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -579,13 +580,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>ที่อยู่ {used_addresses} มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?</translation>
+			<translation>ที่อยู่ {used_addresses}
+มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>ที่อยู่ {used_addresses} มีธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นอยู่แล้ว แน่ใจหรือไม่ว่าต้องการเปลี่ยนหมวดหมู่ของมัน?</translation>
+			<translation>ที่อยู่ {used_addresses}
+มีธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นอยู่แล้ว แน่ใจหรือไม่ว่าต้องการเปลี่ยนหมวดหมู่ของมัน?</translation>
 		</message>
 	</context>
 	<context>
@@ -1517,7 +1520,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>ชื่ออุปกรณ์ลงนาม: ...... 
+			<translation>ชื่ออุปกรณ์ลงนาม: ......
+
 ตำแหน่งอุปกรณ์ลงนาม: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
@@ -1599,7 +1603,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} 
+			<translation>{msg}
+
 คุณต้องการดำเนินการต่อหรือไม่?</translation>
 		</message>
 		<name>KeyStoreUI</name>
@@ -2030,6 +2035,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>กำลังเชื่อมต่อกับเพียร์เพิ่มเติม (ปัจจุบันใช้งานอยู่ {count})</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>ไม่สามารถถอดรหัสสตริงนี้ได้</translation>
 		</message>
@@ -2047,16 +2057,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ไม่สามารถจดจำอินพุตได้ ต้องการสแกนอีกครั้งไหม?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>ขณะนี้กำลังตรวจสอบทราฟฟิก bitcoin แบบ p2p ที่: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>ขณะนี้กำลังตรวจสอบทราฟฟิก bitcoin แบบ p2p ที่: {ip} ผ่านพร็อกซี {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2260,8 +2260,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>สถานะ: เชื่อมต่อผ่านพร็อกซี</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>สถานะ: เชื่อมต่อกับเพียร์ {count} ราย</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2354,6 +2354,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>ใหม่</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} ผ่านพร็อกซี {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2482,7 +2487,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>มีข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์ {responses} คุณต้องการดำเนินการต่อหรือไม่?</translation>
+			<translation>มีข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์
+{responses}
+คุณต้องการดำเนินการต่อหรือไม่?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2491,8 +2498,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>โหนดเริ่มต้น</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>เพียร์ไม่ถูกต้อง '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>เพียร์แบบกำหนดเอง</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>จำนวนเพียร์สูงสุด</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>จำนวนเพียร์สูงสุดที่จะตรวจสอบพร้อมกันผ่านตัวรับฟัง p2p</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2513,6 +2535,12 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>จำนวนการเชื่อมต่อ p2p:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>รายการเพียร์ทางเลือก (หนึ่งรายการต่อบรรทัด) ที่ตัวรับฟังควรลองก่อน เว้นว่างไว้เพื่อพึ่งพาการค้นหาเพียร์อัตโนมัติ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2549,7 +2577,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>การตอบสนอง: {name}: {status} อินสแตนซ์ Mempool: {server}</translation>
+			<translation>การตอบสนอง:
+{name}: {status}
+อินสแตนซ์ Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2568,13 +2598,16 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>โหนดเริ่มต้นใช้สำหรับรับฟังและค้นหาโหนดบิตคอยน์อื่น ๆ เพิ่มเติม ไม่ได้ใช้แบบเอกสิทธิ์เฉพาะ</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Proxy ไม่ใช้กับฟีเจอร์ Sync&amp;Chat!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy ไม่ใช้กับฟีเจอร์ Sync&amp;Chat!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>การตั้งค่านี้กำหนดจำนวนเพียร์ Bitcoin ที่ตัวรับฟังเชื่อมต่อพร้อมกัน ตัวรับฟังจะได้ยินเฉพาะธุรกรรมที่ถูกกระจายระหว่างที่แอปทำงาน ดังนั้นจะพลาดสิ่งที่อยู่ในเมมพูลก่อนเริ่มต้น เพียร์ที่เชื่อมต่อจะไม่ทราบข้อมูลใดๆ เกี่ยวกับกระเป๋าเงินหรือธุรกรรมของคุณ การใช้เพียร์มากขึ้นช่วยเพิ่มความครอบคลุมแต่ใช้แบนด์วิดท์และการเชื่อมต่อมากขึ้น</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2585,11 +2618,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>ชื่อผู้ใช้:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>โฮสต์:พอร์ต</translation>
 		</message>
 	</context>
 	<context>
@@ -3103,7 +3131,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ธุรกรรมใหม่ในกระเป๋าเงิน '{wallet}': {txs}</translation>
+			<translation>ธุรกรรมใหม่ในกระเป๋าเงิน '{wallet}':
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3191,14 +3220,18 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>ธุรกรรม {} สามารถเพิ่มได้เฉพาะเป็นยังไม่ยืนยันใน mempool เท่านั้น ต้องการดำเนินการต่อหรือไม่?</translation>
+			<translation>ธุรกรรม
+{}
+สามารถเพิ่มได้เฉพาะเป็นยังไม่ยืนยันใน mempool เท่านั้น ต้องการดำเนินการต่อหรือไม่?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>ธุรกรรม {txs} ในกระเป๋าเงิน '{wallet}' ถูกลบออกจากประวัติ!!!</translation>
+			<translation>ธุรกรรม
+{txs}
+ในกระเป๋าเงิน '{wallet}' ถูกลบออกจากประวัติ!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3241,7 +3274,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>{number} ธุรกรรมใหม่ในกระเป๋าเงิน '{wallet}': {txs}</translation>
+			<translation>{number} ธุรกรรมใหม่ในกระเป๋าเงิน '{wallet}':
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -4100,7 +4134,9 @@ Signatures:
 
 
 </source>
-			<translation>ธุรกรรมถูกลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}  ลายเซ็น: {signatures}</translation>
+			<translation>ธุรกรรมถูกลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}
+ ลายเซ็น:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4141,7 +4177,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>กุญแจซิงค์ของคุณคือ: {sync_key} บันทึกไว้ และเมื่อคุณคลิก 'นำเข้ากุญแจซิงค์' มันควรจะกู้คืนป้ายกำกับของคุณจากเครือข่าย nostr</translation>
+			<translation>กุญแจซิงค์ของคุณคือ:
+{sync_key}
+บันทึกไว้ และเมื่อคุณคลิก 'นำเข้ากุญแจซิงค์' มันควรจะกู้คืนป้ายกำกับของคุณจากเครือข่าย nostr</translation>
 		</message>
 	</context>
 	<context>
@@ -5395,7 +5433,8 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>ฟังทราฟฟิกบิตคอยน์แบบ p2p แบบพาสซีฟ (เหมือนโหนดบิตคอยน์),  เพื่อให้ตรวจจับธุรกรรมที่เพิ่งกระจายได้ทันที การทำเช่นนี้ไม่เปิดเผยข้อมูลใด ๆ เกี่ยวกับกระเป๋าของคุณ คลิกที่นี่เพื่อเรียนรู้เพิ่มเติม</translation>
+			<translation>ฟังทราฟฟิกบิตคอยน์แบบ p2p แบบพาสซีฟ (เหมือนโหนดบิตคอยน์), 
+เพื่อให้ตรวจจับธุรกรรมที่เพิ่งกระจายได้ทันที การทำเช่นนี้ไม่เปิดเผยข้อมูลใด ๆ เกี่ยวกับกระเป๋าของคุณ คลิกที่นี่เพื่อเรียนรู้เพิ่มเติม</translation>
 		</message>
 	</context>
 	<context>
@@ -5836,7 +5875,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>โปรดเปรียบเทียบและยืนยันรหัสคู่บน BitBox02 ของคุณ: {code}</translation>
+			<translation>โปรดเปรียบเทียบและยืนยันรหัสคู่บน BitBox02 ของคุณ:
+{code}</translation>
 		</message>
 	</context>
 	<context>

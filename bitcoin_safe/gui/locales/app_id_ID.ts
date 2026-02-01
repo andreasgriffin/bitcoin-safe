@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>Tidak ditemukan UTXO yang dapat dibelanjakan untuk alamat yang dipilih.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>Silakan pilih alamat dari satu dompet untuk memilih UTXO untuk pengiriman.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>Pilih UTXO yang sesuai untuk pengiriman</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -483,7 +484,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>Gunakan kembalian Anda dengan biaya ini untuk menarik induk (CPFP). Tarif biaya gabungan induk+anak harus memenuhi target blok.</translation>
+			<translation>Gunakan kembalian Anda dengan biaya ini untuk menarik induk (CPFP).
+Tarif biaya gabungan induk+anak harus memenuhi target blok.</translation>
 		</message>
 	</context>
 	<context>
@@ -580,13 +582,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>Alamat {used_addresses} memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengubah kategori?</translation>
+			<translation>Alamat {used_addresses}
+memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengubah kategori?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>Alamat {used_addresses} memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengubah kategori mereka?</translation>
+			<translation>Alamat {used_addresses}
+memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengubah kategori mereka?</translation>
 		</message>
 	</context>
 	<context>
@@ -1112,7 +1116,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>Biaya transaksi adalah: {fee}, dan {sent} dikirim!</translation>
+			<translation>Biaya transaksi adalah:
+{fee}, dan {sent} dikirim!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1517,7 +1522,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>Nama perangkat penandatangan: ...... Lokasi perangkat penandatangan: .....</translation>
+			<translation>Nama perangkat penandatangan: ......
+Lokasi perangkat penandatangan: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1598,7 +1604,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} Apakah Anda ingin melanjutkan saja?</translation>
+			<translation>{msg}
+Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2028,6 +2035,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>Menghubungkan ke peer tambahan (saat ini {count} aktif)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>Tidak dapat mendekode string ini</translation>
 		</message>
@@ -2045,16 +2057,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>Tidak dapat mengenali input. Apakah Anda ingin memindai lagi?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>Saat ini memantau lalu lintas bitcoin p2p di: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>Saat ini memantau lalu lintas bitcoin p2p di: {ip} melalui proxy {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2258,8 +2260,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>Status: Terhubung via proxy</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>Status: Terhubung ke {count} peer</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2295,7 +2297,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>Dompet ini masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutupnya. Apakah Anda ingin tetap membuka dompet?</translation>
+			<translation>Dompet ini masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutupnya.
+Apakah Anda ingin tetap membuka dompet?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2331,7 +2334,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>Dompet masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutup aplikasi. Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
+			<translation>Dompet masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutup aplikasi.
+Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2352,6 +2356,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>baru</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} melalui proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2480,7 +2489,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Kesalahan dalam koneksi server. {responses} Apakah Anda ingin melanjutkan saja?</translation>
+			<translation>Kesalahan dalam koneksi server.
+{responses}
+Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2489,8 +2500,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>Node awal</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>Peer tidak valid '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>Peer manual</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>Maksimum peer</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>Jumlah maksimum peer yang dipantau secara bersamaan melalui pendengar p2p.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2511,6 +2537,13 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>Jumlah koneksi p2p:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>Daftar peer opsional (satu per baris) yang harus dicoba terlebih dahulu oleh pendengar.
+Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2547,7 +2580,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Respons:     {name}: {status}     Instansi Mempool: {server}</translation>
+			<translation>Respons:
+    {name}: {status}
+    Instansi Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2566,13 +2601,19 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>Node awal digunakan untuk mendengarkan dan juga menemukan node bitcoin lain. Tidak digunakan secara eksklusif.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Proxy tidak berlaku untuk fitur Sinkronisasi &amp; Obrolan!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy tidak berlaku untuk fitur Sinkronisasi &amp; Obrolan!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>Ini mengatur berapa banyak peer Bitcoin yang dihubungkan pendengar sekaligus.
+Ia hanya mendengar transaksi yang disiarkan saat aplikasi berjalan, sehingga akan melewatkan apa pun yang sudah ada di mempool sebelum startup.
+Peer yang terhubung tidak mempelajari apa pun tentang dompet atau transaksi Anda.
+Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih banyak bandwidth dan koneksi.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2583,11 +2624,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>Nama pengguna:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -2991,7 +3027,8 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Indikasi batas celah rendah terdeteksi (menerima Bitcoin ke alamat kembalian). Apakah Anda ingin memindai ulang dompet dengan batas celah yang ditingkatkan menjadi {new_gap}</translation>
+			<translation>Indikasi batas celah rendah terdeteksi (menerima Bitcoin ke alamat kembalian).
+Apakah Anda ingin memindai ulang dompet dengan batas celah yang ditingkatkan menjadi {new_gap}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3102,7 +3139,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>Transaksi baru di dompet '{wallet}': {txs}</translation>
+			<translation>Transaksi baru di dompet '{wallet}':
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3190,21 +3228,26 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>Transaksi {} hanya dapat ditambahkan sebagai belum terkonfirmasi di mempool. Apakah Anda tetap ingin melanjutkan?</translation>
+			<translation>Transaksi
+{}
+hanya dapat ditambahkan sebagai belum terkonfirmasi di mempool. Apakah Anda tetap ingin melanjutkan?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Transaksi {txs} di dompet '{wallet}' dihapus dari riwayat!!!</translation>
+			<translation>Transaksi
+{txs}
+di dompet '{wallet}' dihapus dari riwayat!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>Ini hanya akan menghapus transaksi dari tampilan dompet ini. Transaksi sudah disiarkan ke jaringan Bitcoin dan kemungkinan besar tetap akan terkonfirmasi. Apakah Anda tetap ingin menghapusnya dari dompet?</translation>
+			<translation>Ini hanya akan menghapus transaksi dari tampilan dompet ini.
+Transaksi sudah disiarkan ke jaringan Bitcoin dan kemungkinan besar tetap akan terkonfirmasi. Apakah Anda tetap ingin menghapusnya dari dompet?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3240,7 +3283,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>{number} transaksi baru di dompet '{wallet}': {txs}</translation>
+			<translation>{number} transaksi baru di dompet '{wallet}':
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3272,7 +3316,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>Gunakan biaya ini untuk membuat transaksi pengganti (RBF) pada kecepatan target yang ditampilkan. Keluaran tetap sama; hanya biayanya yang berubah.</translation>
+			<translation>Gunakan biaya ini untuk membuat transaksi pengganti (RBF) pada kecepatan target yang ditampilkan.
+Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 	</context>
 	<context>
@@ -3335,7 +3380,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dari dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Jangan kirim dana besar ke dompet dulu. Harap selesaikan semua tes pengiriman terlebih dahulu!&lt;/b&gt;   
+			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dari dompet ini.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. 
+                    &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Jangan kirim dana besar ke dompet dulu. Harap selesaikan semua tes pengiriman terlebih dahulu!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -3581,7 +3628,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Bandingkan {number} kata di kertas cadangan dengan penanda tangan perangkat keras. Jika Anda salah di sini, uang Anda hilang!</translation>
+			<translation>Bandingkan {number} kata di kertas cadangan dengan penanda tangan perangkat keras.
+Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 	</context>
 	<context>
@@ -3944,7 +3992,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>Dompet ini terakhir digunakan di komputer lain. Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisasi Chat &amp; Sync (nsec) sekarang.</translation>
+			<translation>Dompet ini terakhir digunakan di komputer lain.
+Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisasi Chat &amp; Sync (nsec) sekarang.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4100,7 +4149,9 @@ Signatures:
 
 
 </source>
-			<translation>Transaksi ditandatangani dengan kunci pribadi milik {label} Tanda tangan: {signatures}
+			<translation>Transaksi ditandatangani dengan kunci pribadi milik {label}
+Tanda tangan:
+{signatures}
 
 
 </translation>
@@ -4144,7 +4195,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Kunci sinkronisasi Anda adalah: {sync_key} Simpan, dan saat Anda klik 'impor kunci sinkronisasi', itu akan memulihkan label Anda dari nostr relays.</translation>
+			<translation>Kunci sinkronisasi Anda adalah:
+{sync_key}
+Simpan, dan saat Anda klik 'impor kunci sinkronisasi', itu akan memulihkan label Anda dari nostr relays.</translation>
 		</message>
 	</context>
 	<context>
@@ -4198,7 +4251,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>Harap ubah tarif biaya menjadi setidaknya {minimum}, jika tidak, Anda mungkin tidak dapat menyiarkan transaksi.</translation>
+			<translation>Harap ubah tarif biaya menjadi setidaknya {minimum},
+jika tidak, Anda mungkin tidak dapat menyiarkan transaksi.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4277,7 +4331,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Harap buka dompet terlebih dahulu untuk menyiarkan transaksi. Atau Anda bisa menyiarkan melalui {url}</translation>
+			<translation>Harap buka dompet terlebih dahulu untuk menyiarkan transaksi.
+Atau Anda bisa menyiarkan melalui {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5339,7 +5394,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>Server dapat mengasosiasikan alamat IP Anda dengan alamat dompet. Sebaiknya gunakan server Anda sendiri, seperti {link}.</translation>
+			<translation>Server dapat mengasosiasikan alamat IP Anda dengan alamat dompet.
+Sebaiknya gunakan server Anda sendiri, seperti {link}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5398,7 +5454,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Dengarkan lalu lintas bitcoin p2p secara pasif (seperti node bitcoin), untuk mendeteksi transaksi baru yang disiarkan segera. Ini tidak mengungkapkan apapun tentang dompet Anda. Klik di sini untuk mempelajari lebih lanjut.</translation>
+			<translation>Dengarkan lalu lintas bitcoin p2p secara pasif (seperti node bitcoin), untuk mendeteksi transaksi baru yang disiarkan segera.
+Ini tidak mengungkapkan apapun tentang dompet Anda.
+Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 	</context>
 	<context>
@@ -5841,7 +5899,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Harap bandingkan dan konfirmasi kode pasangan di BitBox02 Anda: {code}</translation>
+			<translation>Harap bandingkan dan konfirmasi kode pasangan di BitBox02 Anda:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5849,7 +5908,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>Mencoba melakukan double-spend pada transaksi asli dengan biaya lebih tinggi. Hanya berfungsi pada transaksi yang memberi sinyal RBF dan tidak dijamin berhasil.</translation>
+			<translation>Mencoba melakukan double-spend pada transaksi asli dengan biaya lebih tinggi.
+Hanya berfungsi pada transaksi yang memberi sinyal RBF dan tidak dijamin berhasil.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5861,7 +5921,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent membelanjakan keluaran kembalian dari transaksi tertunda dengan biaya lebih tinggi untuk menarik keduanya ke dalam sebuah blok. Hanya berfungsi jika Anda memiliki keluaran kembalian yang tersedia dan menaikkan tarif biaya gabungan.</translation>
+			<translation>Child-Pays-For-Parent membelanjakan keluaran kembalian dari transaksi tertunda dengan biaya lebih tinggi untuk menarik keduanya ke dalam sebuah blok.
+Hanya berfungsi jika Anda memiliki keluaran kembalian yang tersedia dan menaikkan tarif biaya gabungan.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5883,7 +5944,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee membuat versi baru dari transaksi ini dengan biaya lebih tinggi. Gunakan untuk mempercepat konfirmasi saat transaksi asli masih belum terkonfirmasi. Memerlukan transaksi asli memberi sinyal RBF dan dompet Anda memiliki keluaran kembalian.</translation>
+			<translation>Replace-By-Fee membuat versi baru dari transaksi ini dengan biaya lebih tinggi.
+Gunakan untuk mempercepat konfirmasi saat transaksi asli masih belum terkonfirmasi.
+Memerlukan transaksi asli memberi sinyal RBF dan dompet Anda memiliki keluaran kembalian.</translation>
 		</message>
 		<name>util</name>
 		<message>

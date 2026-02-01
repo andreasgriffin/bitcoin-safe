@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>برای آدرس‌های انتخاب‌شده هیچ UTXO قابل خرجی یافت نشد.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>لطفاً برای انتخاب UTXO جهت ارسال، آدرس‌ها را از یک کیف‌پول واحد انتخاب کنید.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>UTXOهای مربوطه را برای ارسال انتخاب کنید</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>خرید {number} امضاکننده سخت‌افزاری                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe از تمام امضاکنندگان سخت‌افزاری اصلی پشتیبانی می‌کند: &lt;a href="{url}"&gt;مشاهده فهرست کامل&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>خرید {number} امضاکننده سخت‌افزاری                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe از تمام امضاکنندگان سخت‌افزاری اصلی پشتیبانی می‌کند: &lt;a href="{url}"&gt;مشاهده فهرست کامل&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -483,7 +484,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>با این کارمزد، باقی‌ماندهٔ خود را خرج کنید تا تراکنش والد را وارد بلاک کنید (CPFP). نرخ کارمزد ترکیبی والد+فرزند باید به بلاک هدف برسد.</translation>
+			<translation>با این کارمزد، باقی‌ماندهٔ خود را خرج کنید تا تراکنش والد را وارد بلاک کنید (CPFP).
+نرخ کارمزد ترکیبی والد+فرزند باید به بلاک هدف برسد.</translation>
 		</message>
 	</context>
 	<context>
@@ -580,13 +582,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>آدرس‌های {used_addresses} از قبل تراکنش‌هایی دارند که به آدرس‌های دیگر پیوند می‌خورند. مطمئنید می‌خواهید دسته را تغییر دهید؟</translation>
+			<translation>آدرس‌های {used_addresses}
+از قبل تراکنش‌هایی دارند که به آدرس‌های دیگر پیوند می‌خورند. مطمئنید می‌خواهید دسته را تغییر دهید؟</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>آدرس‌های {used_addresses} از قبل تراکنش‌هایی مرتبط با آدرس‌های دیگر دارند. آیا مطمئنید می‌خواهید دسته‌بندی آن‌ها را تغییر دهید؟</translation>
+			<translation>آدرس‌های {used_addresses}
+از قبل تراکنش‌هایی مرتبط با آدرس‌های دیگر دارند. آیا مطمئنید می‌خواهید دسته‌بندی آن‌ها را تغییر دهید؟</translation>
 		</message>
 	</context>
 	<context>
@@ -1112,7 +1116,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>کارمزد تراکنش: {fee} است و {sent} ارسال شد!</translation>
+			<translation>کارمزد تراکنش:
+{fee} است و {sent} ارسال شد!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1517,7 +1522,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>نام دستگاه امضاکننده: ...... موقعیت دستگاه امضاکننده: .....</translation>
+			<translation>نام دستگاه امضاکننده: ......
+موقعیت دستگاه امضاکننده: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1598,7 +1604,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} آیا می‌خواهید به هر حال ادامه دهید؟</translation>
+			<translation>{msg}
+آیا می‌خواهید به هر حال ادامه دهید؟</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2028,6 +2035,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>در حال اتصال به همتای اضافی (در حال حاضر {count} فعال)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>امکان رمزگشایی این رشته وجود ندارد</translation>
 		</message>
@@ -2045,16 +2057,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>در حال حاضر ترافیک p2p بیت‌کوین در: {ip} در حال پایش است</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>در حال حاضر ترافیک p2p بیت‌کوین در: {ip} از طریق پروکسی {proxy} در حال پایش است</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2258,8 +2260,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>وضعیت: متصل از طریق پروکسی</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>وضعیت: متصل به {count} همتا</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2295,7 +2297,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>این کیف‌پول هنوز در حال همگام‌سازی است و در صورت بستن باید از ابتدا شروع شود. آیا می‌خواهید کیف‌پول باز بماند؟</translation>
+			<translation>این کیف‌پول هنوز در حال همگام‌سازی است و در صورت بستن باید از ابتدا شروع شود.
+آیا می‌خواهید کیف‌پول باز بماند؟</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2331,7 +2334,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>کیف‌پول‌ها هنوز در حال همگام‌سازی‌اند و در صورت بستن برنامه باید از ابتدا شروع شوند. آیا می‌خواهید به‌جای آن در نوار وظیفه پنهان شود؟</translation>
+			<translation>کیف‌پول‌ها هنوز در حال همگام‌سازی‌اند و در صورت بستن برنامه باید از ابتدا شروع شوند.
+آیا می‌خواهید به‌جای آن در نوار وظیفه پنهان شود؟</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2352,6 +2356,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>جدید</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} از طریق پراکسی {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2480,7 +2489,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>خطا در اتصال به سرور. {responses} آیا با این حال ادامه می‌دهید؟</translation>
+			<translation>خطا در اتصال به سرور.
+{responses}
+آیا با این حال ادامه می‌دهید؟</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2489,8 +2500,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>گره اولیه</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>همتای نامعتبر '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>همتاهای دستی</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>حداکثر همتاها</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>حداکثر تعداد همتاهایی که به‌طور هم‌زمان از طریق شنونده p2p پایش می‌شوند.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2511,6 +2537,13 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>تعداد اتصال‌های p2p:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>فهرست اختیاری همتاها (یکی در هر خط) که شنونده باید ابتدا امتحان کند.
+برای اتکا به کشف خودکار همتاها آن را خالی بگذارید.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2547,7 +2580,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>پاسخ‌ها:     {name}: {status}     نمونهٔ Mempool: {server}</translation>
+			<translation>پاسخ‌ها:
+    {name}: {status}
+    نمونهٔ Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2566,13 +2601,19 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>گره اولیه برای شنود و همچنین کشف گره‌های بیت‌کوین دیگر استفاده می‌شود. به‌صورت انحصاری استفاده نمی‌شود.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>پروکسی شامل قابلیت Sync&amp;Chat نمی‌شود!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>پروکسی شامل قابلیت Sync&amp;Chat نمی‌شود!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>این تنظیم تعیین می‌کند شنونده هم‌زمان به چند همتای Bitcoin متصل شود.
+شنونده فقط تراکنش‌هایی را می‌شنود که در زمان اجرای برنامه پخش می‌شوند، بنابراین هر چیزی که پیش از راه‌اندازی در ممپول‌ها بوده را از دست می‌دهد.
+همتاهای متصل هیچ اطلاعاتی درباره کیف‌پول یا تراکنش‌های شما به دست نمی‌آورند.
+استفاده از همتاهای بیشتر پوشش را بهبود می‌دهد اما پهنای باند و اتصال بیشتری مصرف می‌کند.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2583,11 +2624,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>نام کاربری:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>میزبان:پورت</translation>
 		</message>
 	</context>
 	<context>
@@ -2861,7 +2897,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>پرداخت را در مرورگر خود تکمیل کنید. در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید:
+			<translation>پرداخت را در مرورگر خود تکمیل کنید.
+در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید:
 [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
@@ -2991,7 +3028,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>نشانه‌ای از حد فاصله پایین شناسایی شد (دریافت بیت‌کوین به آدرس‌های باقی‌مانده). آیا می‌خواهید کیف پول را با حد فاصله افزایش‌یافته به {new_gap} دوباره اسکن کنید</translation>
+			<translation>نشانه‌ای از حد فاصله پایین شناسایی شد (دریافت بیت‌کوین به آدرس‌های باقی‌مانده).
+آیا می‌خواهید کیف پول را با حد فاصله افزایش‌یافته به {new_gap} دوباره اسکن کنید</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3102,7 +3140,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>تراکنش جدید در کیف پول «{wallet}»: {txs}</translation>
+			<translation>تراکنش جدید در کیف پول «{wallet}»:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3190,21 +3229,26 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>تراکنش‌های {} فقط می‌توانند به‌صورت تأییدنشده در mempool افزوده شوند. با این حال ادامه می‌دهید؟</translation>
+			<translation>تراکنش‌های
+{}
+فقط می‌توانند به‌صورت تأییدنشده در mempool افزوده شوند. با این حال ادامه می‌دهید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>تراکنش‌های {txs} در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
+			<translation>تراکنش‌های
+{txs}
+در کیف پول «{wallet}» از تاریخچه حذف شدند!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>این کار فقط تراکنش را از نمای این کیف‌پول حذف می‌کند. این تراکنش قبلاً به شبکهٔ بیت‌کوین پخش شده و احتمالاً همچنان تأیید خواهد شد. با این حال آن را از کیف‌پول حذف می‌کنید؟</translation>
+			<translation>این کار فقط تراکنش را از نمای این کیف‌پول حذف می‌کند.
+این تراکنش قبلاً به شبکهٔ بیت‌کوین پخش شده و احتمالاً همچنان تأیید خواهد شد. با این حال آن را از کیف‌پول حذف می‌کنید؟</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3240,7 +3284,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>{number} تراکنش جدید در کیف پول «{wallet}»: {txs}</translation>
+			<translation>{number} تراکنش جدید در کیف پول «{wallet}»:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3272,7 +3317,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>از این کارمزد برای ساخت یک تراکنش جایگزین (RBF) با سرعت هدف نمایش‌داده‌شده استفاده کنید. خروجی‌ها ثابت می‌مانند؛ فقط کارمزد تغییر می‌کند.</translation>
+			<translation>از این کارمزد برای ساخت یک تراکنش جایگزین (RBF) با سرعت هدف نمایش‌داده‌شده استفاده کنید.
+خروجی‌ها ثابت می‌مانند؛ فقط کارمزد تغییر می‌کند.</translation>
 		</message>
 	</context>
 	<context>
@@ -3335,7 +3381,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>مقدار &lt;b&gt;کمی&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس از این کیف پول دریافت کنید.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج‌کردن از کیف پول را آزمایش کنید.                      &lt;br&gt;                     بنابراین پیش از ارسال مقدار قابل‌توجهی بیتکوین به کیف پول، &lt;b&gt;ضروری&lt;/b&gt; است که از کیف پول خرج کنید و همهٔ امضاکننده‌ها را آزمایش نمایید.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;فعلا مبالغ زیاد به کیف پول ارسال نکنید. لطفاً ابتدا همهٔ تست‌های ارسال تراکنش را کامل کنید!&lt;/b&gt;   
+			<translation>مقدار &lt;b&gt;کمی&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس از این کیف پول دریافت کنید.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج‌کردن از کیف پول را آزمایش کنید. 
+                    &lt;br&gt;                     بنابراین پیش از ارسال مقدار قابل‌توجهی بیتکوین به کیف پول، &lt;b&gt;ضروری&lt;/b&gt; است که از کیف پول خرج کنید و همهٔ امضاکننده‌ها را آزمایش نمایید.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;فعلا مبالغ زیاد به کیف پول ارسال نکنید. لطفاً ابتدا همهٔ تست‌های ارسال تراکنش را کامل کنید!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -3581,7 +3629,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>کلمات {number} روی برگه پشتیبان را با امضاکننده سخت‌افزاری مقایسه کنید. اگر اشتباه کنید، پول شما از دست می‌رود!</translation>
+			<translation>کلمات {number} روی برگه پشتیبان را با امضاکننده سخت‌افزاری مقایسه کنید.
+اگر اشتباه کنید، پول شما از دست می‌رود!</translation>
 		</message>
 	</context>
 	<context>
@@ -3944,7 +3993,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>این کیف‌پول آخرین بار روی رایانهٔ دیگری استفاده شده است. اگر می‌خواهید به استفاده از هر دو ادامه دهید، لطفاً اکنون کلید همگام‌سازی Chat &amp; Sync (nsec) را بازنشانی کنید.</translation>
+			<translation>این کیف‌پول آخرین بار روی رایانهٔ دیگری استفاده شده است.
+اگر می‌خواهید به استفاده از هر دو ادامه دهید، لطفاً اکنون کلید همگام‌سازی Chat &amp; Sync (nsec) را بازنشانی کنید.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4100,7 +4150,9 @@ Signatures:
 
 
 </source>
-			<translation>تراکنش با کلید خصوصی متعلق به {label} امضا شد امضاها: {signatures}
+			<translation>تراکنش با کلید خصوصی متعلق به {label}
+امضا شد امضاها:
+{signatures}
 
 
 </translation>
@@ -4144,7 +4196,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>کلید همگام‌سازی شما: {sync_key} آن را ذخیره کنید و وقتی «وارد کردن کلید همگام‌سازی» را بزنید، برچسب‌های شما از رله‌های Nostr بازیابی خواهد شد.</translation>
+			<translation>کلید همگام‌سازی شما:
+{sync_key}
+آن را ذخیره کنید و وقتی «وارد کردن کلید همگام‌سازی» را بزنید، برچسب‌های شما از رله‌های Nostr بازیابی خواهد شد.</translation>
 		</message>
 	</context>
 	<context>
@@ -4277,7 +4331,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>لطفاً ابتدا یک کیف‌پول باز کنید تا تراکنش را پخش کنید. یا می‌توانید از طریق {url} پخش کنید</translation>
+			<translation>لطفاً ابتدا یک کیف‌پول باز کنید تا تراکنش را پخش کنید.
+یا می‌توانید از طریق {url} پخش کنید</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5339,7 +5394,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>سرور می‌تواند آدرس IP شما را با آدرس‌های کیف پول مرتبط کند. بهتر است از سرور خودتان، مانند {link} استفاده کنید.</translation>
+			<translation>سرور می‌تواند آدرس IP شما را با آدرس‌های کیف پول مرتبط کند.
+بهتر است از سرور خودتان، مانند {link} استفاده کنید.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5398,7 +5454,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>به‌صورت غیرفعال به ترافیک p2p بیت‌کوین گوش کنید (مانند یک گره بیت‌کوین)، تا تراکنش‌های تازه پخش‌شده فوراً شناسایی شوند. این کار هیچ اطلاعاتی دربارهٔ کیف‌پول شما فاش نمی‌کند. برای کسب اطلاعات بیشتر اینجا کلیک کنید.</translation>
+			<translation>به‌صورت غیرفعال به ترافیک p2p بیت‌کوین گوش کنید (مانند یک گره بیت‌کوین)، تا تراکنش‌های تازه پخش‌شده فوراً شناسایی شوند.
+این کار هیچ اطلاعاتی دربارهٔ کیف‌پول شما فاش نمی‌کند.
+برای کسب اطلاعات بیشتر اینجا کلیک کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -5841,7 +5899,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>لطفاً کد جفت‌سازی روی BitBox02 خود را مقایسه و تأیید کنید: {code}</translation>
+			<translation>لطفاً کد جفت‌سازی روی BitBox02 خود را مقایسه و تأیید کنید:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5849,7 +5908,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>تلاش می‌کند تراکنش اصلی را با کارمزد بالاتر دوبار خرج کند. فقط برای تراکنش‌هایی که RBF را علامت می‌زنند کار می‌کند و موفقیت تضمین‌شده نیست.</translation>
+			<translation>تلاش می‌کند تراکنش اصلی را با کارمزد بالاتر دوبار خرج کند.
+فقط برای تراکنش‌هایی که RBF را علامت می‌زنند کار می‌کند و موفقیت تضمین‌شده نیست.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5861,7 +5921,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent با خرج‌کردن خروجی باقی‌ماندهٔ تراکنش در انتظار با کارمزد بالاتر، هر دو را به یک بلاک می‌کشد. فقط در صورتی کار می‌کند که خروجی باقی‌ماندهٔ در دسترس داشته باشید و نرخ ترکیبی را افزایش دهید.</translation>
+			<translation>Child-Pays-For-Parent با خرج‌کردن خروجی باقی‌ماندهٔ تراکنش در انتظار با کارمزد بالاتر، هر دو را به یک بلاک می‌کشد.
+فقط در صورتی کار می‌کند که خروجی باقی‌ماندهٔ در دسترس داشته باشید و نرخ ترکیبی را افزایش دهید.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5883,7 +5944,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee نسخهٔ جدیدی از این تراکنش با کارمزد بالاتر ایجاد می‌کند. زمانی که تراکنش اصلی هنوز تأیید نشده است برای تسریع تأیید استفاده کنید. نیازمند علامت‌دادن RBF توسط تراکنش اصلی و داشتن خروجی باقی‌مانده توسط کیف‌پول است.</translation>
+			<translation>Replace-By-Fee نسخهٔ جدیدی از این تراکنش با کارمزد بالاتر ایجاد می‌کند.
+زمانی که تراکنش اصلی هنوز تأیید نشده است برای تسریع تأیید استفاده کنید.
+نیازمند علامت‌دادن RBF توسط تراکنش اصلی و داشتن خروجی باقی‌مانده توسط کیف‌پول است.</translation>
 		</message>
 		<name>util</name>
 		<message>

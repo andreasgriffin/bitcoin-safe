@@ -66,6 +66,24 @@ def ts_to_csv(ts_path: Path, csv_path: Path):
         core_translation = translation_text.strip(" ")
         return f"{' ' * leading_spaces}{core_translation}{' ' * trailing_spaces}"
 
+    def _fix_linebreak_mismatches(
+        source_text: str, translation_text: str, prefix="", postfix="", wrong_linebreak_char=" "
+    ) -> str:
+        """Replace placeholder double spaces with newlines when source has more breaks."""
+        search_string = f"{prefix}\n{postfix}"
+        wrong_translation_str = f"{prefix}{wrong_linebreak_char}{postfix}"
+
+        source_newlines = source_text.count(search_string)
+        translation_newlines = translation_text.count(search_string)
+        missing_newlines = source_newlines - translation_newlines
+
+        if missing_newlines > 0 and wrong_translation_str in translation_text:
+            translation_text = translation_text.replace(
+                wrong_translation_str, search_string, missing_newlines
+            )
+
+        return translation_text
+
     tree = ET.parse(ts_path)
     root = tree.getroot()
 
@@ -77,6 +95,21 @@ def ts_to_csv(ts_path: Path, csv_path: Path):
         for message in context.findall("message"):
             source = message.findtext(source_key, default="")
             translation = message.findtext("translation", default="")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=".")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=". ")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=",")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=", ")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=":")
+            translation = _fix_linebreak_mismatches(source, translation, prefix=": ")
+            translation = _fix_linebreak_mismatches(source, translation, prefix="}")
+            translation = _fix_linebreak_mismatches(source, translation, prefix="} ")
+            translation = _fix_linebreak_mismatches(source, translation, postfix="{")
+            translation = _fix_linebreak_mismatches(
+                source, translation, prefix="{txs}", wrong_linebreak_char=""
+            )
+            translation = _fix_linebreak_mismatches(
+                source, translation, postfix="{txs}", wrong_linebreak_char=""
+            )
             translation = _align_edge_spaces(source, translation)
             location = message.find(location_key)
             filename = location.get("filename") if location is not None else ""
