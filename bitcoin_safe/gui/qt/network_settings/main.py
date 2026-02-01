@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 import logging
+from functools import partial
 from typing import cast
 
 import bdkpython as bdk
@@ -42,6 +43,7 @@ from PyQt6.QtGui import QColor, QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QDialog,
     QDialogButtonBox,
     QFormLayout,
     QGridLayout,
@@ -53,10 +55,13 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QSpinBox,
     QStackedWidget,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
+from bitcoin_safe.execute_config import IS_PRODUCTION
+from bitcoin_safe.gui.qt.buttonedit import SquareButton
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import get_p2p_tooltip_text
@@ -72,6 +77,7 @@ from bitcoin_safe.network_config import (
     NetworkConfig,
     NetworkConfigs,
     P2pListenerType,
+    Peer,
     Peers,
     get_default_p2p_node_urls,
     get_default_port,
@@ -341,36 +347,45 @@ class NetworkSettingsUI(QWidget):
 
         self.p2p_typeComboBox = QComboBox()
         self.p2p_typeComboBox.addItem(self.tr("Automatic"), P2pListenerType.automatic)
-        self.p2p_typeComboBox.addItem(self.tr("Inital node"), P2pListenerType.inital)
         self.p2p_typeComboBox.addItem(self.tr("Deactive"), P2pListenerType.deactive)
         self.p2p_typeComboBox.setCurrentIndex(0)
         self.p2p_typeComboBox.currentIndexChanged.connect(self.on_p2p_type_combobox_Changed)
 
-        self.p2p_inital_url_edit = QCompleterLineEdit(
-            network=network,
-            suggestions={
-                network: list(get_default_p2p_node_urls(network).values()) for network in bdk.Network
-            },
+        self.p2p_parallel_label = IconLabel()
+        self.p2p_parallel_spinbox = QSpinBox()
+        self.p2p_parallel_spinbox.setRange(1, 10)
+        self.p2p_parallel_spinbox.setValue(2)
+        self.p2p_parallel_spinbox.setToolTip(
+            self.tr("Maximum number of peers to monitor concurrently via the p2p listener.")
         )
-        self.p2p_listener_inital_label = QLabel()
-        self.p2p_listener_inital_label.setWordWrap(True)
+
+        self.p2p_manual_peers_icon_label = IconLabel()
+        self.p2p_manual_peers_icon_label.textLabel.setVisible(True)
+        self.p2p_manual_peers_button = SquareButton(svg_tools.get_QIcon("pen.svg"), parent=self)
+        self.p2p_manual_peers_button.clicked.connect(self.on_edit_manual_peers)
+        self.manual_peers_data: Peers = Peers()
         self.p2p_listener_status_label = QLabel()
 
         self._layout.addWidget(self.groupbox_p2p)
         self.p2p_listener_icon_label_help = IconLabel()
         self.p2p_listener_icon_label_help.textLabel.setVisible(False)
         self.p2p_listener_icon_label_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.p2p_listener_refresh_button = QPushButton()
+        self.p2p_listener_refresh_button = SquareButton(
+            svg_tools.get_QIcon("bi--arrow-clockwise.svg"), parent=self
+        )
+        if IS_PRODUCTION:
+            self.p2p_listener_refresh_button.setVisible(False)
         self.p2p_listener_refresh_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.p2p_listener_refresh_button.setIcon(svg_tools.get_QIcon("bi--arrow-clockwise.svg"))
         self.p2p_listener_refresh_button.setToolTip(self.tr("Connect to a different peer"))
 
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_icon_label_help, 1, 0)
         self.groupbox_p2p_layout.addWidget(self.p2p_typeComboBox, 1, 1, 1, 2)
-        self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 1, 3)
-        self.groupbox_p2p_layout.addWidget(self.p2p_inital_url_edit, 2, 1, 1, 2)
-        self.groupbox_p2p_layout.addWidget(self.p2p_listener_inital_label, 3, 1, 1, 2)
-        self.groupbox_p2p_layout.addWidget(self.p2p_listener_status_label, 4, 1, 1, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_parallel_label, 2, 1)
+        self.groupbox_p2p_layout.addWidget(self.p2p_parallel_spinbox, 2, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_icon_label, 3, 1)
+        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_button, 3, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_status_label, 5, 1)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 5, 2)
 
         # proxy
         self.groupbox_proxy = QGroupBox()
@@ -430,10 +445,53 @@ class NetworkSettingsUI(QWidget):
 
     def on_p2p_type_combobox_Changed(self):
         """On p2p type combobox Changed."""
-        enabled = self.p2p_typeComboBox.currentData() == P2pListenerType.inital
+        mode = self.p2p_typeComboBox.currentData()
+        show_controls = mode != P2pListenerType.deactive
+        show_manual = mode == P2pListenerType.automatic
 
-        self.p2p_inital_url_edit.setVisible(enabled)
-        self.p2p_listener_inital_label.setVisible(enabled)
+        self.p2p_parallel_label.setVisible(show_controls)
+        self.p2p_parallel_spinbox.setVisible(show_controls)
+        self.p2p_manual_peers_icon_label.setVisible(show_manual)
+        self.p2p_manual_peers_button.setVisible(show_manual)
+
+    def on_edit_manual_peers(self):
+        """Open dialog to edit manual peers list."""
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Manual peers"))
+        layout = QVBoxLayout(dialog)
+
+        editor = QTextEdit(dialog)
+        suggestions = unique_elements(get_default_p2p_node_urls(self.network).values())
+        editor.setPlaceholderText("\n".join(suggestions))
+        editor.setPlainText("\n".join(str(peer) for peer in self.manual_peers))
+        layout.addWidget(editor)
+
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok
+            | QDialogButtonBox.StandardButton.Cancel
+            | QDialogButtonBox.StandardButton.Reset,
+            parent=dialog,
+        )
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        reset_button = buttons.button(QDialogButtonBox.StandardButton.Reset)
+        if reset_button:
+            reset_button.clicked.connect(partial(editor.setPlainText, "\n".join(suggestions)))
+        layout.addWidget(buttons)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.manual_peers = self._parse_manual_peers(editor.toPlainText()) or Peers()
+
+    def _parse_manual_peers(self, text: str) -> Peers | None:
+        """Parse newline separated peers."""
+        peers = Peers()
+        for line in [line.strip() for line in text.splitlines() if line.strip()]:
+            try:
+                peers.append(Peer.parse(line, network=self.network))
+            except Exception as exc:
+                Message(self.tr("Invalid peer '{peer}': {error}").format(peer=line, error=exc))
+                return None
+        return peers
 
     def on_button_mempool_clicked(self):
         """On button mempool clicked."""
@@ -478,15 +536,24 @@ class NetworkSettingsUI(QWidget):
             tooltip=get_p2p_tooltip_text(),
             click_url="https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/",
         )
-
-        self.groupbox_p2p.setTitle(self.tr("Bitcoin network monitoring"))
-        self.p2p_inital_url_edit.setPlaceholderText(self.tr("host:port"))
-        self.p2p_listener_inital_label.setText(
-            self.tr(
-                "The inital node is used to listen and also discover other bitcoin nodes. "
-                "It is not used exclusively."
+        self.p2p_parallel_label.textLabel.setText(self.tr("Max peers"))
+        self.p2p_parallel_label.set_icon_as_help(
+            tooltip=self.tr(
+                "This sets how many Bitcoin peers the listener connects to at once.\n"
+                "It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.\n"
+                "Connected peers do not learn anything about your wallet or your transactions.\n"
+                "Using more peers improves coverage but uses more bandwidth and connections."
             )
         )
+
+        self.groupbox_p2p.setTitle(self.tr("Bitcoin network monitoring"))
+        self.p2p_manual_peers_icon_label.set_icon_as_help(
+            tooltip=self.tr(
+                "Optional list of peers (one per line) the listener should try first.\n"
+                "Keep it empty to rely on automatic peer discovery."
+            )
+        )
+        self.p2p_manual_peers_icon_label.textLabel.setText(self.tr("Manual peers"))
         self.on_p2p_type_combobox_Changed()
 
         self.cbf_connection_label.set_icon_as_help(
@@ -610,7 +677,6 @@ class NetworkSettingsUI(QWidget):
         self.rpc_password_edit.set_network(network)
         self.edit_mempool_url.set_network(network)
         self.proxy_url_edit.set_network(network)
-        self.p2p_inital_url_edit.set_network(network)
 
         prev_text = self.server_type_comboBox.currentText()
         self.server_type_comboBox.clear()
@@ -842,25 +908,14 @@ class NetworkSettingsUI(QWidget):
         self.on_proxy_url_changed()
 
     @property
-    def p2p_inital_url(self) -> str | None:
-        """P2p inital url."""
-        text = self.p2p_inital_url_edit.text().strip()
-        if not text:
-            return None
+    def manual_peers(self) -> Peers:
+        """Manual peers."""
+        return Peers(self.manual_peers_data)
 
-        host, port = get_host_and_port(text)
-        if host and port is None:
-            default_port = get_default_port(self.network, BlockchainType.CompactBlockFilter)
-            if ":" in host and not host.startswith("[") and not host.endswith("]"):
-                host = f"[{host}]"
-            return f"{host}:{default_port}"
-
-        return text
-
-    @p2p_inital_url.setter
-    def p2p_inital_url(self, url: str | None):
-        """P2p inital url."""
-        self.p2p_inital_url_edit.setText(url if url else "")
+    @manual_peers.setter
+    def manual_peers(self, peers: Peers | list[Peer]):
+        """Manual peers."""
+        self.manual_peers_data = Peers(peers)
 
     @property
     def p2p_listener_type(self) -> P2pListenerType:
@@ -873,6 +928,16 @@ class NetworkSettingsUI(QWidget):
         index = self.p2p_typeComboBox.findData(state)
         if index >= 0:
             self.p2p_typeComboBox.setCurrentIndex(index)
+
+    @property
+    def p2p_listener_parallel_connections(self) -> int:
+        """P2p listener max peers."""
+        return self.p2p_parallel_spinbox.value()
+
+    @p2p_listener_parallel_connections.setter
+    def p2p_listener_parallel_connections(self, count: int) -> None:
+        """Set p2p listener max peers."""
+        self.p2p_parallel_spinbox.setValue(count)
 
     @property
     def discovered_peers(self) -> Peers:

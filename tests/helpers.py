@@ -36,7 +36,7 @@ import bdkpython as bdk
 import pytest
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.network_config import P2pListenerType
+from bitcoin_safe.network_config import P2pListenerType, Peer
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
 from .setup_bitcoin_core import BITCOIN_HOST, BITCOIN_LISTEN_PORT
@@ -51,8 +51,10 @@ def _configure_network_backend(config: TestConfig, backend: str, fulcrum: str | 
         config.network_config.server_type = BlockchainType.CompactBlockFilter
         config.network_config.cbf_connections = 1
 
-        config.network_config.p2p_listener_type = P2pListenerType.inital
-        config.network_config.p2p_inital_url = f"{BITCOIN_HOST}:{BITCOIN_LISTEN_PORT}"
+        config.network_config.p2p_listener_type = P2pListenerType.automatic
+        config.network_config.manual_peers.append(
+            Peer.parse(url=f"{BITCOIN_HOST}:{BITCOIN_LISTEN_PORT}", network=config.network)
+        )
         config.network_config.p2p_autodiscover_additional_peers = False
     else:
         assert fulcrum, "Fulcrum backend requested but no server URL provided"

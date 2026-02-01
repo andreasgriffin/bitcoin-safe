@@ -46,7 +46,7 @@ from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget, DecodingException
 from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descriptor
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
@@ -187,6 +187,8 @@ class MainWindow(QMainWindow):
         self.signals = Signals()
         self.wallet_functions = WalletFunctions(self.signals)
         self.loop_in_thread = LoopInThread()
+        self._p2p_listener_signals_connected = False
+        self.signal_tracker = SignalTracker()
 
         self.fx = FX(config=self.config, loop_in_thread=self.loop_in_thread)
         self.fx.signal_data_updated.connect(self.update_fx_rate_in_config)
@@ -560,12 +562,19 @@ class MainWindow(QMainWindow):
             outpoint_filter.update(qt_wallet.wallet.bdkwallet.list_unspent_outpoints(include_spent=False))
         self.p2p_listener.set_address_filter(address_filter=address_filter)
         self.p2p_listener.set_outpoint_filter(outpoint_filter=outpoint_filter)
-        self.p2p_listener.client.signal_current_peer_change.connect(self.on_p2p_listener_current_peer_change)
-        self.p2p_listener.client.signal_try_connecting_to.connect(self.on_p2p_listener_try_connecting_to)
+        if not self._p2p_listener_signals_connected:
+            self.signal_tracker.connect(
+                self.p2p_listener.signal_current_peers_change, self.on_p2p_listener_current_peers_change
+            )
+            self.signal_tracker.connect(
+                self.p2p_listener.signal_try_connecting_to, self.on_p2p_listener_try_connecting_to
+            )
+            self._p2p_listener_signals_connected = True
 
     def on_p2p_listener_try_connecting_to(self, connection_info: ConnectionInfo):
         """On p2p listener try connecting to."""
         tooltip = ""
+        active_count = len(self.p2p_listener.active_connections) if self.p2p_listener else 0
         if self.p2p_listener:
             if connection_info.proxy_info:
                 tooltip = self.tr("Try connecting to: {ip} via proxy {proxy}").format(
@@ -573,35 +582,43 @@ class MainWindow(QMainWindow):
                 )
             else:
                 tooltip = self.tr("Try connecting to: {ip}").format(ip=connection_info.peer)
+        status_text = (
+            self.tr("Trying to connect to bitcoin node...")
+            if active_count == 0
+            else self.tr("Connecting to additional peer (currently {count} active)").format(
+                count=active_count
+            )
+        )
         status_labels: list[QLabel] = [
             self.settings.network_settings_ui.p2p_listener_status_label,
         ]
         for label in status_labels:
             label.setToolTip(tooltip)
-            label.setText(self.tr("Trying to connect to bitcoin node..."))
+            label.setText(status_text)
 
-    def on_p2p_listener_current_peer_change(self, connection_info: ConnectionInfo | None):
-        """On p2p listener current peer change."""
-        text = ""
+    def on_p2p_listener_current_peers_change(self, connections: list[ConnectionInfo]):
+        """Update UI when the set of active p2p connections changes."""
+        text = self.tr("Status: Disconnected")
         tooltip = ""
-        if (
-            isinstance(connection_info, ConnectionInfo)
-            and self.p2p_listener
-            and self.p2p_listener.client.is_running()
-        ):
-            if connection_info.proxy_info:
-                text = self.tr("Status: Connected via proxy")
-                tooltip = self.tr(
-                    "Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}"
-                ).format(ip=connection_info.peer, proxy=connection_info.proxy_info.get_url())
-            else:
-                text = self.tr("Status: Connected")
-                tooltip = self.tr("Currently monitoring bitcoin p2p traffic at: {ip}").format(
-                    ip=connection_info.peer
-                )
-        else:
-            text = self.tr("Status: Disconnected")
-            tooltip = ""
+
+        if self.p2p_listener and connections:
+            count = len(connections)
+            text = (
+                self.tr("Status: Connected")
+                if count == 1
+                else self.tr("Status: Connected to {count} peers").format(count=count)
+            )
+            lines = []
+            for info in connections:
+                if info.proxy_info:
+                    lines.append(
+                        self.tr("{ip} via proxy {proxy}").format(
+                            ip=info.peer, proxy=info.proxy_info.get_url()
+                        )
+                    )
+                else:
+                    lines.append(str(info.peer))
+            tooltip = "\n".join(lines)
 
         status_labels: list[QLabel] = [
             self.settings.network_settings_ui.p2p_listener_status_label,
@@ -629,22 +646,26 @@ class MainWindow(QMainWindow):
     def init_p2p_listening(self):
         """Init p2p listening."""
         self.p2p_listener: P2pListener | None = None
+        self._p2p_listener_signals_connected = False
+        self.signal_tracker.disconnect_all()
         if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
             return
-        initial_peer = self.config.network_config.get_p2p_initial_peer()
+        manual_peers = self.config.network_config.get_manual_peers()
         discovered_peers = Peers(self.config.network_config.discovered_peers)
-        if initial_peer and initial_peer not in discovered_peers:
-            discovered_peers.append(initial_peer)
+        for peer in manual_peers:
+            if peer not in discovered_peers:
+                discovered_peers.append(peer)
         self.p2p_listener = P2pListener(
             network=self.config.network,
             discovered_peers=discovered_peers,
             loop_in_thread=self.loop_in_thread,
             autodiscover_additional_peers=self.config.network_config.p2p_autodiscover_additional_peers,
+            max_parallel_peers=self.config.network_config.p2p_listener_parallel_connections,
         )
         self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
         self.p2p_listener.start(
-            preferred_peers=[initial_peer] if initial_peer else None,
+            preferred_peers=manual_peers if manual_peers else None,
             proxy_info=(
                 ProxyInfo.parse(self.config.network_config.proxy_url)
                 if self.config.network_config.proxy_url

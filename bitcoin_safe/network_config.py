@@ -430,12 +430,11 @@ class ConnectionInfo:
 
 class P2pListenerType(enum.Enum):
     automatic = enum.auto()
-    inital = enum.auto()
     deactive = enum.auto()
 
 
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.2.5"
+    VERSION = "0.2.6"
     known_classes = {
         **BaseSaveableClass.known_classes,
         BlockchainType.__name__: BlockchainType,
@@ -467,8 +466,9 @@ class NetworkConfig(BaseSaveableClass):
         self.mempool_url: str = get_mempool_url(network)["default"]
         self.proxy_url: str | None = None
         self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
-        self.p2p_inital_url: str = get_default_p2p_node_urls(network=network)["default"]
+        self.manual_peers: Peers = Peers()
         self.p2p_autodiscover_additional_peers: bool = True
+        self.p2p_listener_parallel_connections: int = 2
         self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
@@ -502,16 +502,13 @@ class NetworkConfig(BaseSaveableClass):
 
         # overwrite the dict value
         d["discovered_peers"] = Peers() + [asdict(peer) for peer in self.discovered_peers]
+        d["manual_peers"] = Peers() + [asdict(peer) for peer in self.manual_peers]
 
         return d
 
-    def get_p2p_initial_peer(self) -> Peer | None:
-        """Get p2p initial peer."""
-        return (
-            Peer.parse(self.p2p_inital_url, network=self.network)
-            if self.p2p_inital_url and self.p2p_listener_type == P2pListenerType.inital
-            else None
-        )
+    def get_manual_peers(self) -> Peers:
+        """Return manually configured peers (copy)."""
+        return Peers(self.manual_peers)
 
     @classmethod
     def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> NetworkConfig:
@@ -523,6 +520,7 @@ class NetworkConfig(BaseSaveableClass):
         dct["discovered_peers"] = [
             Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("discovered_peers", [])
         ]
+        dct["manual_peers"] = [Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("manual_peers", [])]
 
         for k, v in dct.items():
             if v is not None:  # only overwrite the default value, if there is a value
@@ -557,6 +555,23 @@ class NetworkConfig(BaseSaveableClass):
             dct["p2p_listener_type"] = P2pListenerType.deactive
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.3"):
             dct["mempool_data"] = res if (res := dct.get("mempool_data")) else None
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.6"):
+            # migrate deprecated initial peer field into manual peers
+            manual_peers: list[dict] = []
+            if initial := dct.get("p2p_inital_url"):
+                try:
+                    manual_peers.append(
+                        asdict(Peer.parse(initial, network=dct.get("network", bdk.Network.BITCOIN)))
+                    )
+                except Exception:
+                    logger.warning("Could not migrate p2p_inital_url to manual_peers")
+            dct["manual_peers"] = manual_peers
+            # drop invalid enum value if present
+            if dct.get("p2p_listener_type") not in list(P2pListenerType):
+                dct["p2p_listener_type"] = P2pListenerType.automatic
+            elif dct.get("p2p_listener_type") is P2pListenerType.automatic:
+                # when it was automatic, the inital peer was not considered
+                dct["manual_peers"] = []
 
         return super().from_dump_migration(dct=dct)
 
