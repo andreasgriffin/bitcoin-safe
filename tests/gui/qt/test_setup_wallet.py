@@ -399,6 +399,7 @@ def test_wizard(
                 )
                 assert qt_wallet.uitx_creator.recipients.recipients[0].amount == amount - fee_info.fee_amount
                 assert qt_wallet.uitx_creator.recipients.recipients[0].checked_max_amount
+                assert qt_wallet.uitx_creator.splitter.sizes()[0] == 0
 
                 assert step.refs.floating_button_box.button_create_tx.isVisible()
                 step.refs.floating_button_box.button_create_tx.click()

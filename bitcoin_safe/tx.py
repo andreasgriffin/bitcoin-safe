@@ -121,6 +121,7 @@ class TxUiInfos(BaseSaveableClass):
     main_wallet_id: str | None = None
 
     recipients: list[Recipient] = field(default_factory=list)
+    hide_entire_input_column: bool = False
     hide_UTXO_selection: bool = True
     recipient_read_only: bool = False
     utxos_read_only: bool = False
@@ -131,6 +132,8 @@ class TxUiInfos(BaseSaveableClass):
         d = super().dump()
         d["fee_rate"] = self.fee_rate
         d["recipients"] = [asdict(r) for r in self.recipients]
+        d["hide_entire_input_column"] = self.hide_entire_input_column
+        d["hide_UTXO_selection"] = self.hide_UTXO_selection
         d["recipient_read_only"] = self.recipient_read_only
         d["utxos_read_only"] = self.utxos_read_only
         d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
