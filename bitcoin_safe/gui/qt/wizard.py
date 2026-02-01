@@ -1943,7 +1943,7 @@ class Wizard(WizardBase):
         )
 
         # visual elements
-        txinfos.hide_UTXO_selection = True
+        txinfos.hide_entire_input_column = True
         txinfos.recipient_read_only = True
 
         self.qt_wallet.uitx_creator.initial_tx_ui_infos = txinfos

@@ -1067,6 +1067,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 scroll_to_last=True,
             )
 
+        if tx_ui_infos.hide_entire_input_column:
+            self.splitter.setSizes([0, 1, 1])
+
         # do the recipients after the utxo list setting. otherwise setting the uxtos,
         # will reduce the sent amount to what is maximally possible, by the selected utxos
         self.recipients.set_allow_edit(not tx_ui_infos.recipient_read_only)
