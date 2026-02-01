@@ -316,6 +316,8 @@ def test_wizard(
                 shutter.save(main_window)
                 step = wizard.tab_generators[TutorialStep.backup_seed]
                 assert isinstance(step, BackupSeed)
+                assert not step.button_previous.isEnabled()
+                assert not step.custom_cancel_button.isEnabled()
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
                     assert step.custom_yes_button.isVisible()
                     step.custom_yes_button.click()

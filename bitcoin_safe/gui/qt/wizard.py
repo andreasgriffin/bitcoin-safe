@@ -279,6 +279,8 @@ class BaseTab(QObject):
         self.refs = refs
         super().__init__(parent=refs.container)
 
+        self.previous_step_enabled = True
+
         self.loop_in_thread = loop_in_thread
         self.signal_tracker = SignalTracker()
         self.buttonbox, self.buttonbox_buttons = create_button_box(
@@ -310,6 +312,7 @@ class BaseTab(QObject):
         """UpdateUi."""
         self.button_next.setText(translate("basetab", "Next step"))
         self.button_previous.setText(translate("basetab", "Previous Step"))
+        self.button_previous.setEnabled(self.previous_step_enabled)
         self.refs.floating_button_box.updateUi()
 
     def num_keystores(self) -> int:
@@ -876,6 +879,11 @@ class ImportXpubs(BaseTab):
 
 
 class BackupSeed(BaseTab):
+    def __init__(self, refs: WizardTabInfo, loop_in_thread: LoopInThread) -> None:
+        super().__init__(refs, loop_in_thread)
+
+        self.previous_step_enabled = False
+
     def _do_pdf(self) -> None:
         """Do pdf."""
         if not self.refs.qt_wallet:
@@ -936,6 +944,7 @@ class BackupSeed(BaseTab):
 
         self.custom_yes_button.setText(self.tr("Print recovery sheet"))
         self.custom_cancel_button.setText(self.tr("Previous Step"))
+        self.custom_cancel_button.setEnabled(self.previous_step_enabled)
 
         glue_statement = (
             self.tr("Glue the {number} word seed onto the matching printed pdf.").format(number=TEXT_24_WORDS)
