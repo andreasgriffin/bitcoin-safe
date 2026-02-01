@@ -1236,7 +1236,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             # )
         elif self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
             client = Client.from_cbf(
-                initial_peer=self.config.network_config.get_p2p_initial_peer(),
+                manual_peers=self.config.network_config.get_manual_peers(),
                 bdkwallet=self.bdkwallet,
                 gap=self.gap,
                 proxy_info=proxy_info,

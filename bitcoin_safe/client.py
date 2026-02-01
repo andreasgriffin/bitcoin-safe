@@ -41,7 +41,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe.cbf.cbf_sync import CbfSync
 from bitcoin_safe.client_helpers import ProgressInfo, SyncStatus, UpdateInfo
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.network_config import ElectrumConfig, Peer
+from bitcoin_safe.network_config import ElectrumConfig, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo, clean_electrum_url
 from bitcoin_safe.p2p.peer_discovery import CBF_REQUIRED_SERVICE_FLAGS, PeerDiscovery
 
@@ -200,7 +200,7 @@ class Client:
     @classmethod
     def from_cbf(
         cls,
-        initial_peer: Peer | None,
+        manual_peers: Peers | list[Peer] | None,
         bdkwallet: bdk.Wallet,
         proxy_info: ProxyInfo | None,
         data_dir: Path,
@@ -213,8 +213,8 @@ class Client:
         """From cbf."""
         peers: set[Peer] = set()
 
-        if initial_peer:
-            peers.add(initial_peer)
+        if manual_peers:
+            peers.update(manual_peers)
 
         p2p_discovery = PeerDiscovery(network=bdkwallet.network(), loop_in_thread=loop_in_thread)
         discovered_peers = loop_in_thread.run_foreground(
