@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>Keine ausgabefähigen UTXOs für die ausgewählten Adressen gefunden.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>Bitte wählen Sie Adressen aus einer einzigen Wallet aus, um UTXOs für den Versand auszuwählen.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>Zugehörige UTXOs für den Versand auswählen</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} Hardware-Signierer kaufen                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href="{url}"&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>{number} Hardware-Signierer kaufen                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href="{url}"&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -1067,7 +1068,8 @@ zu entdecken Standard 20</translation>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>Die Gebühr kann nicht genau bestimmt werden, da die endgültige Transaktionsgröße unbekannt ist.</translation>
+			<translation>Die Gebühr kann nicht genau bestimmt werden,
+da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2036,6 +2038,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>Verbindung zu zusätzlichem Peer wird hergestellt (derzeit {count} aktiv)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>Diese Zeichenfolge konnte nicht dekodiert werden</translation>
 		</message>
@@ -2053,16 +2060,6 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>Aktuell wird der bitcoin‑p2p‑Traffic überwacht unter: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>Aktuell wird der bitcoin‑p2p‑Traffic überwacht unter: {ip} über Proxy {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2266,8 +2263,8 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>Status: Über Proxy verbunden</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>Status: Mit {count} Peers verbunden</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2303,7 +2300,8 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>Diese Wallet wird noch synchronisiert, und die Synchronisierung müsste von vorne beginnen, wenn Sie sie schließen. Möchten Sie die Wallet geöffnet lassen?</translation>
+			<translation>Diese Wallet wird noch synchronisiert, und die Synchronisierung müsste von vorne beginnen, wenn Sie sie schließen.
+Möchten Sie die Wallet geöffnet lassen?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2339,7 +2337,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>Wallets werden noch synchronisiert, und die Synchronisierung müsste von vorne beginnen, wenn Sie die App schließen. Möchten Sie sie stattdessen in die Taskleiste minimieren?</translation>
+			<translation>Wallets werden noch synchronisiert, und die Synchronisierung müsste von vorne beginnen, wenn Sie die App schließen.
+Möchten Sie sie stattdessen in die Taskleiste minimieren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2360,6 +2359,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>neu</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} über Proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2500,8 +2504,23 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>Initialer Knoten</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>Ungültiger Peer '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>Manuelle Peers</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>Maximale Peers</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>Maximale Anzahl von Peers, die gleichzeitig über den p2p-Listener überwacht werden.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2522,6 +2541,13 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>Anzahl der p2p-Verbindungen:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>Optionale Liste von Peers (einer pro Zeile), die der Listener zuerst versuchen soll.
+Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2579,13 +2605,19 @@ Mempool-Instanz: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>Der initiale Knoten dient zum Lauschen und zum Auffinden weiterer Bitcoin‑Knoten. Er wird nicht exklusiv verwendet.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Der Proxy gilt nicht für die Sync&amp;Chat-Funktion!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Der Proxy gilt nicht für die Sync&amp;Chat-Funktion!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>Dies legt fest, mit wie vielen Bitcoin-Peers sich der Listener gleichzeitig verbindet.
+Er hört nur Transaktionen, die während der Laufzeit der App übertragen werden, und verpasst daher alles, was sich vor dem Start bereits in den Mempools befand.
+Verbundene Peers erfahren nichts über Ihre Wallet oder Ihre Transaktionen.
+Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verbindungen.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2596,11 +2628,6 @@ Mempool-Instanz: {server}</translation>
 		<message>
 			<source>Username:</source>
 			<translation>Benutzername:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>Host:Port</translation>
 		</message>
 	</context>
 	<context>
@@ -3004,7 +3031,8 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Ein Hinweis auf ein niedriges Gap-Limit wurde erkannt (Bitcoin-Empfang auf Wechselgeldadressen). Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scannen</translation>
+			<translation>Ein Hinweis auf ein niedriges Gap-Limit wurde erkannt (Bitcoin-Empfang auf Wechselgeldadressen).
+Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scannen</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3358,7 +3386,9 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;   
+			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen. 
+                    &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -4125,7 +4155,8 @@ Signatures:
 
 
 </source>
-			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert
+			<translation>Transaktion mit dem privaten Schlüssel von {label}
+signiert
 
 Signaturen:
 {signatures}
@@ -4231,7 +4262,8 @@ um UTXOs zu konsolidieren und künftige Gebühren zu reduzieren</translation>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>Bitte ändern Sie den Gebührensatz auf mindestens {minimum}, sonst kann die Transaktion möglicherweise nicht übertragen werden.</translation>
+			<translation>Bitte ändern Sie den Gebührensatz auf mindestens {minimum},
+sonst kann die Transaktion möglicherweise nicht übertragen werden.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>

@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>未找到所选地址的可花费 UTXO。</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>请选择来自同一钱包的地址以选择用于发送的 UTXO。</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>选择用于发送的相应 UTXO</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -2040,6 +2040,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>正在连接到额外的对等节点（当前活跃 {count} 个）</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>无法解码此字符串</translation>
 		</message>
@@ -2057,16 +2062,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>无法识别该输入。您要重新扫描吗？</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>当前正在监视比特币点对点流量：{ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>当前正在通过代理 {proxy} 监视位于 {ip} 的比特币点对点流量。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2270,8 +2265,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>状态：已通过代理连接</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>状态：已连接到 {count} 个对等节点</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2366,6 +2361,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>新的</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} 通过代理 {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2506,8 +2506,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>初始节点</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>无效的对等节点 '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>手动对等节点</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>最大对等节点数</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>通过 p2p 监听器同时监控的最大对等节点数量。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2528,6 +2543,12 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>点对点连接数：</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>监听器应优先尝试的可选对等节点列表（每行一个）。留空以依赖自动对等节点发现。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2585,13 +2606,16 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>初始节点用于监听并发现其他比特币节点。它并非专属使用。</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>代理不适用于同步与聊天功能！</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>代理不适用于同步与聊天功能！</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>此设置指定监听器同时连接的 Bitcoin 对等节点数量。它只会在应用运行期间接收广播的交易，因此会错过启动前已存在于内存池中的任何交易。已连接的对等节点不会了解你的钱包或交易的任何信息。使用更多对等节点可提高覆盖率，但会消耗更多带宽和连接。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2602,11 +2626,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>用户名：</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>主机:端口</translation>
 		</message>
 	</context>
 	<context>
@@ -3212,7 +3231,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>交易 {} 只能作为未确认添加到内存池。是否仍要继续？</translation>
+			<translation>交易
+{}
+只能作为未确认添加到内存池。是否仍要继续？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4134,7 +4155,8 @@ Signatures:
 
 
 </source>
-			<translation>使用属于 {label} 的私钥签署此交易
+			<translation>使用属于 {label}
+的私钥签署此交易
 
 签名：
 {signatures}

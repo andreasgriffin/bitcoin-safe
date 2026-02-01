@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>Seçilen adresler için harcanabilir UTXO bulunamadı.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>Gönderim için UTXO seçebilmek adına lütfen tek bir cüzdandan adresler seçin.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>Gönderim için ilgili UTXO’ları seçin</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} donanım imzalayıcı satın al                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe tüm büyük donanım imzalayıcılarını destekler: &lt;a href="{url}"&gt;Tam listeyi gör&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>{number} donanım imzalayıcı satın al                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe tüm büyük donanım imzalayıcılarını destekler: &lt;a href="{url}"&gt;Tam listeyi gör&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -483,7 +484,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>Değişikliğinizi, ebeveyni içeri çekmek için bu ücretle harcayın (CPFP). Birleşik ebeveyn+çocuk ücret oranı hedef bloğu karşılamalıdır.</translation>
+			<translation>Değişikliğinizi, ebeveyni içeri çekmek için bu ücretle harcayın (CPFP).
+Birleşik ebeveyn+çocuk ücret oranı hedef bloğu karşılamalıdır.</translation>
 		</message>
 	</context>
 	<context>
@@ -580,13 +582,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>{used_addresses} adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Kategoriyi değiştirmek istediğinize emin misiniz?</translation>
+			<translation>{used_addresses}
+adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Kategoriyi değiştirmek istediğinize emin misiniz?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>{used_addresses} adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onların kategorisini değiştirmek istediğinize emin misiniz?</translation>
+			<translation>{used_addresses}
+adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onların kategorisini değiştirmek istediğinize emin misiniz?</translation>
 		</message>
 	</context>
 	<context>
@@ -1062,7 +1066,8 @@ Default 20</source>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>Ücret oranı tam olarak bilinemez, çünkü işlemin nihai boyutu bilinmiyor.</translation>
+			<translation>Ücret oranı tam olarak bilinemez,
+çünkü işlemin nihai boyutu bilinmiyor.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1112,7 +1117,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>İşlem ücreti: {fee}, ve {sent} gönderildi!</translation>
+			<translation>İşlem ücreti:
+{fee}, ve {sent} gönderildi!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1517,7 +1523,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>İmzalayıcı cihaz adı: ...... İmzalayıcı cihaz konumu: .....</translation>
+			<translation>İmzalayıcı cihaz adı: ......
+İmzalayıcı cihaz konumu: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1598,7 +1605,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} Yine de devam etmek istiyor musunuz?</translation>
+			<translation>{msg}
+Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2028,6 +2036,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>Ek eşe bağlanılıyor (şu anda {count} aktif)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>Bu dize çözülemedi</translation>
 		</message>
@@ -2045,16 +2058,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>Girdi tanınamadı. Yeniden taramak ister misiniz?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>Şu anda bitcoin p2p trafiği izleniyor: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>Şu anda bitcoin p2p trafiği {proxy} üzerinden izleniyor: {ip}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2258,8 +2261,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>Durum: Proxy üzerinden bağlandı</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>Durum: {count} eşe bağlı</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2295,7 +2298,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>Bu cüzdan hâlâ senkronize ediliyor ve kapatırsanız senkronizasyon baştan başlamalı. Cüzdanı açık tutmak istiyor musunuz?</translation>
+			<translation>Bu cüzdan hâlâ senkronize ediliyor ve kapatırsanız senkronizasyon baştan başlamalı.
+Cüzdanı açık tutmak istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2331,7 +2335,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>Cüzdanlar hâlâ senkronize ediliyor ve uygulamayı kapatırsanız senkronizasyon baştan başlamalı. Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
+			<translation>Cüzdanlar hâlâ senkronize ediliyor ve uygulamayı kapatırsanız senkronizasyon baştan başlamalı.
+Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2352,6 +2357,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>yeni</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip}, proxy {proxy} üzerinden</translation>
 		</message>
 	</context>
 	<context>
@@ -2480,7 +2490,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Sunucu bağlantısında hata. {responses} Yine de devam etmek istiyor musunuz?</translation>
+			<translation>Sunucu bağlantısında hata.
+{responses}
+Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2489,8 +2501,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>Başlangıç düğümü</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>Geçersiz eş '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>Manuel eşler</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>Maksimum eş sayısı</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>p2p dinleyici üzerinden aynı anda izlenecek maksimum eş sayısı.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2511,6 +2538,13 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>p2p bağlantı sayısı:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>Dinleyicinin önce denemesi gereken isteğe bağlı eş listesi (satır başına bir tane).
+Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2547,7 +2581,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Yanıtlar:     {name}: {status}     Mempool Örneği: {server}</translation>
+			<translation>Yanıtlar:
+    {name}: {status}
+    Mempool Örneği: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2566,13 +2602,19 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>Başlangıç düğümü hem dinleme hem de diğer bitcoin düğümlerini keşfetmek için kullanılır. Özel olarak kullanılmaz.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Proxy, Sync&amp;Chat özelliğine uygulanmaz!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy, Sync&amp;Chat özelliğine uygulanmaz!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>Bu ayar, dinleyicinin aynı anda kaç Bitcoin eşine bağlanacağını belirler.
+Uygulama çalışırken yayınlanan işlemleri duyar; bu nedenle başlatmadan önce mempool’larda bulunanları kaçırır.
+Bağlı eşler cüzdanınız veya işlemleriniz hakkında hiçbir şey öğrenmez.
+Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant genişliği ve bağlantı kullanır.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2583,11 +2625,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>Kullanıcı adı:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -2991,7 +3028,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Düşük bir boşluk sınırı göstergesi algılandı (değişim adreslerine Bitcoin alındı). {new_gap} artırılmış boşluk sınırıyla cüzdanı yeniden taramak ister misiniz</translation>
+			<translation>Düşük bir boşluk sınırı göstergesi algılandı (değişim adreslerine Bitcoin alındı).
+{new_gap} artırılmış boşluk sınırıyla cüzdanı yeniden taramak ister misiniz</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3102,7 +3140,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>'{wallet}' cüzdanında yeni işlem: {txs}</translation>
+			<translation>'{wallet}' cüzdanında yeni işlem:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3190,21 +3229,26 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>İşlemler {} yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek istiyor musunuz?</translation>
+			<translation>İşlemler
+{}
+yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>'{wallet}' cüzdanındaki {txs} işlemleri geçmişten silindi!!!</translation>
+			<translation>'{wallet}' cüzdanındaki
+{txs}
+işlemleri geçmişten silindi!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>Bu, işlemi yalnızca bu cüzdan görünümünden kaldırır. İşlem Bitcoin ağına zaten yayınlandı ve büyük olasılıkla yine de onaylanacaktır. Yine de cüzdandan kaldırmak istiyor musunuz?</translation>
+			<translation>Bu, işlemi yalnızca bu cüzdan görünümünden kaldırır.
+İşlem Bitcoin ağına zaten yayınlandı ve büyük olasılıkla yine de onaylanacaktır. Yine de cüzdandan kaldırmak istiyor musunuz?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3240,7 +3284,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>'{wallet}' cüzdanında {number} yeni işlem: {txs}</translation>
+			<translation>'{wallet}' cüzdanında {number} yeni işlem:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3272,7 +3317,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>Gösterilen hedef hızda bir değiştirme (RBF) işlemi oluşturmak için bu ücreti kullanın. Çıkışlar aynı kalır; yalnızca ücret değişir.</translation>
+			<translation>Gösterilen hedef hızda bir değiştirme (RBF) işlemi oluşturmak için bu ücreti kullanın.
+Çıkışlar aynı kalır; yalnızca ücret değişir.</translation>
 		</message>
 	</context>
 	<context>
@@ -3335,7 +3381,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount}'den az) gönderin.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol edip etmediğinizi bilmek için, cüzdandan harcama test etmeniz gerekir.                      &lt;br&gt;                     Yani, cüzdana büyük miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;çok önemlidir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz büyük fonları cüzdana göndermeyin. Lütfen önce tüm gönderim testlerini tamamlayın!&lt;/b&gt;   
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount}'den az) gönderin.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol edip etmediğinizi bilmek için, cüzdandan harcama test etmeniz gerekir. 
+                    &lt;br&gt;                     Yani, cüzdana büyük miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;çok önemlidir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz büyük fonları cüzdana göndermeyin. Lütfen önce tüm gönderim testlerini tamamlayın!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -3581,7 +3629,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Yedek kağıttaki {number} kelimeyi donanım imzalayıcı ile karşılaştırın. Burada hata yaparsanız paranız kaybolur!</translation>
+			<translation>Yedek kağıttaki {number} kelimeyi donanım imzalayıcı ile karşılaştırın.
+Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 	</context>
 	<context>
@@ -3944,7 +3993,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>Bu cüzdan en son başka bir bilgisayarda kullanıldı. Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Senkronizasyon anahtarını (nsec) sıfırlayın.</translation>
+			<translation>Bu cüzdan en son başka bir bilgisayarda kullanıldı.
+Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Senkronizasyon anahtarını (nsec) sıfırlayın.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4100,7 +4150,9 @@ Signatures:
 
 
 </source>
-			<translation>İşlem {label} ait özel anahtar ile imzalandı İmzalar: {signatures}
+			<translation>İşlem {label}
+ait özel anahtar ile imzalandı İmzalar:
+{signatures}
 
 
 </translation>
@@ -4144,7 +4196,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Senkronizasyon anahtarınız: {sync_key} Bunu kaydedin, ve 'senkronizasyon anahtarını içe aktar' tıkladığınızda etiketleriniz nostr relaylerinden geri yüklenmelidir.</translation>
+			<translation>Senkronizasyon anahtarınız:
+{sync_key}
+Bunu kaydedin, ve 'senkronizasyon anahtarını içe aktar' tıkladığınızda etiketleriniz nostr relaylerinden geri yüklenmelidir.</translation>
 		</message>
 	</context>
 	<context>
@@ -4198,7 +4252,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>Lütfen ücret oranını en az {minimum} olacak şekilde değiştirin, aksi halde işlemi yayınlayamayabilirsiniz.</translation>
+			<translation>Lütfen ücret oranını en az {minimum} olacak şekilde değiştirin,
+aksi halde işlemi yayınlayamayabilirsiniz.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4277,7 +4332,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Lütfen işlemi yayınlamak için önce bir cüzdan açın. Ya da {url} üzerinden yayınlayabilirsiniz</translation>
+			<translation>Lütfen işlemi yayınlamak için önce bir cüzdan açın.
+Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5339,7 +5395,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>Sunucu, IP adresinizi cüzdan adresleriyle ilişkilendirebilir. Kendi sunucunuzu kullanmak en iyisidir, örneğin {link}.</translation>
+			<translation>Sunucu, IP adresinizi cüzdan adresleriyle ilişkilendirebilir.
+Kendi sunucunuzu kullanmak en iyisidir, örneğin {link}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5398,7 +5455,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Bitcoin p2p trafiğini pasif olarak dinle (tıpkı bir bitcoin node’u gibi), yeni yayınlanan işlemleri hemen tespit etmek için. Bu cüzdanınız hakkında hiçbir şey ortaya çıkarmaz. Daha fazla bilgi edinmek için burayatıklayın.</translation>
+			<translation>Bitcoin p2p trafiğini pasif olarak dinle (tıpkı bir bitcoin node’u gibi), yeni yayınlanan işlemleri hemen tespit etmek için.
+Bu cüzdanınız hakkında hiçbir şey ortaya çıkarmaz.
+Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 	</context>
 	<context>
@@ -5841,7 +5900,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Lütfen BitBox02’nizdeki eşleştirme kodunu karşılaştırın ve onaylayın: {code}</translation>
+			<translation>Lütfen BitBox02’nizdeki eşleştirme kodunu karşılaştırın ve onaylayın:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5849,7 +5909,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>Orijinal işlemi daha yüksek bir ücretle çift harcamaya çalışır. Yalnızca RBF sinyali verilmiş işlemlerde çalışır ve başarılı olacağı garanti değildir.</translation>
+			<translation>Orijinal işlemi daha yüksek bir ücretle çift harcamaya çalışır.
+Yalnızca RBF sinyali verilmiş işlemlerde çalışır ve başarılı olacağı garanti değildir.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5861,7 +5922,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent, bekleyen işlemin bir değişiklik çıktısını daha yüksek bir ücretle harcayarak her ikisini de bir bloğa çeker. Yalnızca kullanılabilir bir değişiklik çıktınız varsa ve birleşik ücret oranını artırırsanız çalışır.</translation>
+			<translation>Child-Pays-For-Parent, bekleyen işlemin bir değişiklik çıktısını daha yüksek bir ücretle harcayarak her ikisini de bir bloğa çeker.
+Yalnızca kullanılabilir bir değişiklik çıktınız varsa ve birleşik ücret oranını artırırsanız çalışır.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5883,7 +5945,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee, bu işlemin daha yüksek ücretli yeni bir sürümünü oluşturur. Orijinal işlem hâlâ onaylanmamışken onayı hızlandırmak için kullanın. Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik çıktısına sahip olmasını gerektirir.</translation>
+			<translation>Replace-By-Fee, bu işlemin daha yüksek ücretli yeni bir sürümünü oluşturur.
+Orijinal işlem hâlâ onaylanmamışken onayı hızlandırmak için kullanın.
+Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik çıktısına sahip olmasını gerektirir.</translation>
 		</message>
 		<name>util</name>
 		<message>

@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>No se encontraron UTXO gastables para las direcciones seleccionadas.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>Seleccione direcciones de una sola cartera para poder elegir UTXO para el envío.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>Seleccione los UTXO correspondientes para el envío</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Comprar {number} firmantes de hardware                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe admite todos los principales firmantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>Comprar {number} firmantes de hardware                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe admite todos los principales firmantes de hardware: &lt;a href="{url}"&gt;Ver lista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -483,7 +484,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>Gasta tu cambio con esta comisión para arrastrar al padre (CPFP). La tasa de comisión combinada padre+hijo debe cumplir el bloque objetivo.</translation>
+			<translation>Gasta tu cambio con esta comisión para arrastrar al padre (CPFP).
+La tasa de comisión combinada padre+hijo debe cumplir el bloque objetivo.</translation>
 		</message>
 	</context>
 	<context>
@@ -580,13 +582,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>Las direcciones {used_addresses} ya tienen transacciones vinculadas a otras direcciones. ¿Está seguro de que desea cambiar la categoría?</translation>
+			<translation>Las direcciones {used_addresses}
+ya tienen transacciones vinculadas a otras direcciones. ¿Está seguro de que desea cambiar la categoría?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>Las direcciones {used_addresses} ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres cambiar su categoría?</translation>
+			<translation>Las direcciones {used_addresses}
+ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres cambiar su categoría?</translation>
 		</message>
 	</context>
 	<context>
@@ -1062,7 +1066,8 @@ Default 20</source>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>La tarifa no se puede conocer exactamente, ya que el tamaño final de la transacción es desconocido.</translation>
+			<translation>La tarifa no se puede conocer exactamente,
+ya que el tamaño final de la transacción es desconocido.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1112,7 +1117,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>La tarifa de la transacción es: {fee}, y {sent} está enviado!</translation>
+			<translation>La tarifa de la transacción es:
+{fee}, y {sent} está enviado!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1517,7 +1523,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>Nombre del dispositivo de firma: ...... Ubicación del dispositivo de firma: .....</translation>
+			<translation>Nombre del dispositivo de firma: ......
+Ubicación del dispositivo de firma: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1598,7 +1605,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} ¿Desea proceder de todos modos?</translation>
+			<translation>{msg}
+¿Desea proceder de todos modos?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2028,6 +2036,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>Conectando a un par adicional (actualmente {count} activos)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>No se pudo decodificar esta cadena</translation>
 		</message>
@@ -2045,16 +2058,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>No se pudo reconocer la entrada. ¿Quieres escanear de nuevo?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>Actualmente se está monitorizando el tráfico p2p de bitcoin en: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>Actualmente se está monitorizando el tráfico p2p de bitcoin en: {ip} a través del proxy {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2258,8 +2261,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>Estado: Conectado vía proxy</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>Estado: Conectado a {count} pares</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2295,7 +2298,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>Esta cartera todavía se está sincronizando y tendrá que empezar desde cero si la cierras. ¿Quieres mantener la cartera abierta?</translation>
+			<translation>Esta cartera todavía se está sincronizando y tendrá que empezar desde cero si la cierras.
+¿Quieres mantener la cartera abierta?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2331,7 +2335,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>Las carteras todavía se están sincronizando y tendrán que empezar desde cero si cierras la aplicación. ¿Quieres ocultarla en la bandeja del sistema?</translation>
+			<translation>Las carteras todavía se están sincronizando y tendrán que empezar desde cero si cierras la aplicación.
+¿Quieres ocultarla en la bandeja del sistema?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2352,6 +2357,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>nuevo</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} a través del proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2480,7 +2490,8 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>Error en la conexión con el servidor. 
+			<translation>Error en la conexión con el servidor.
+
 {responses}
 
 ¿Quieres proceder de todos modos?</translation>
@@ -2492,8 +2503,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>Nodo inicial</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>Par no válido '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>Pares manuales</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>Máximo de pares</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>Número máximo de pares a supervisar simultáneamente mediante el oyente p2p.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2514,6 +2540,13 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>Número de conexiones p2p:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>Lista opcional de pares (uno por línea) que el oyente debería intentar primero.
+Déjela vacía para confiar en el descubrimiento automático de pares.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2550,7 +2583,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Respuestas: {name}: {status} Mempool Instance: {server}</translation>
+			<translation>Respuestas:
+{name}: {status}
+Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2569,13 +2604,19 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>El nodo inicial se utiliza para escuchar y también descubrir otros nodos de bitcoin. No se usa de forma exclusiva.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>¡El proxy no se aplica a la función de Sincronización y Chat!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>¡El proxy no se aplica a la función de Sincronización y Chat!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>Esto establece a cuántos pares de Bitcoin se conecta el oyente a la vez.
+Solo escucha las transacciones difundidas mientras la aplicación está en ejecución, por lo que perderá cualquier cosa que ya estuviera en los mempools antes del inicio.
+Los pares conectados no aprenden nada sobre su cartera ni sobre sus transacciones.
+Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexiones.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2586,11 +2627,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>Nombre de usuario:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>host:puerto</translation>
 		</message>
 	</context>
 	<context>
@@ -2994,7 +3030,8 @@ Si hay algún problema, no dude en contactarnos en: [andreasgriffin@proton.me](m
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Se detectó una indicación de un límite de gap bajo (recepción de Bitcoin en direcciones de cambio). ¿Desea volver a escanear la cartera con un límite de gap aumentado a {new_gap}</translation>
+			<translation>Se detectó una indicación de un límite de gap bajo (recepción de Bitcoin en direcciones de cambio).
+¿Desea volver a escanear la cartera con un límite de gap aumentado a {new_gap}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3105,7 +3142,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>Nueva transacción en la cartera '{wallet}': {txs}</translation>
+			<translation>Nueva transacción en la cartera '{wallet}':
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3193,21 +3231,26 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>Las transacciones {} solo pueden añadirse como no confirmadas en el mempool. ¿Desea continuar de todos modos?</translation>
+			<translation>Las transacciones
+{}
+solo pueden añadirse como no confirmadas en el mempool. ¿Desea continuar de todos modos?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Las transacciones {txs} en la cartera '{wallet}' han sido eliminadas del historial!!!</translation>
+			<translation>Las transacciones
+{txs}
+en la cartera '{wallet}' han sido eliminadas del historial!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>Esto solo eliminará la transacción de esta vista del monedero. Ya se ha difundido a la red Bitcoin y probablemente se confirmará igualmente. ¿Desea eliminarla del monedero?</translation>
+			<translation>Esto solo eliminará la transacción de esta vista del monedero.
+Ya se ha difundido a la red Bitcoin y probablemente se confirmará igualmente. ¿Desea eliminarla del monedero?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3243,7 +3286,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>{number} nuevas transacciones en la cartera '{wallet}': {txs}</translation>
+			<translation>{number} nuevas transacciones en la cartera '{wallet}':
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3275,7 +3319,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>Use esta comisión para crear una transacción de reemplazo (RBF) a la velocidad objetivo mostrada. Las salidas permanecen iguales; solo cambia la comisión.</translation>
+			<translation>Use esta comisión para crear una transacción de reemplazo (RBF) a la velocidad objetivo mostrada.
+Las salidas permanecen iguales; solo cambia la comisión.</translation>
 		</message>
 	</context>
 	<context>
@@ -3338,7 +3383,8 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Recibe una &lt;b&gt;pequeña&lt;/b&gt; cantidad (menos de {test_amount}) a una dirección de este monedero. &lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar los gastos desde el monedero. &lt;br&gt; Así que antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes. &lt;br&gt; &lt;br&gt; &lt;b&gt;¡NO envíes grandes fondos al monedero todavía. Por favor, completa primero todas las pruebas de envío!&lt;/b&gt;   
+			<translation>Recibe una &lt;b&gt;pequeña&lt;/b&gt; cantidad (menos de {test_amount}) a una dirección de este monedero.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar los gastos desde el monedero. &lt;br&gt; Así que antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes. &lt;br&gt; &lt;br&gt; &lt;b&gt;¡NO envíes grandes fondos al monedero todavía. Por favor, completa primero todas las pruebas de envío!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -3584,7 +3630,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Compara las {number} palabras en el papel de respaldo con el firmante de hardware. Si cometes un error aquí, ¡tu dinero se perderá!</translation>
+			<translation>Compara las {number} palabras en el papel de respaldo con el firmante de hardware.
+Si cometes un error aquí, ¡tu dinero se perderá!</translation>
 		</message>
 	</context>
 	<context>
@@ -3947,7 +3994,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>Este monedero se utilizó por última vez en otro ordenador. Si desea seguir usando ambos, restablezca ahora la clave de sincronización de Chat &amp; Sync (nsec).</translation>
+			<translation>Este monedero se utilizó por última vez en otro ordenador.
+Si desea seguir usando ambos, restablezca ahora la clave de sincronización de Chat &amp; Sync (nsec).</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4103,7 +4151,9 @@ Signatures:
 
 
 </source>
-			<translation>Transacción firmada con la clave privada perteneciente a {label} Firmas: {signatures}
+			<translation>Transacción firmada con la clave privada perteneciente a {label}
+Firmas:
+{signatures}
 
 
 </translation>
@@ -4147,7 +4197,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>Su clave de sincronización es: {sync_key} Guárdela, y cuando haga clic en 'importar clave de sincronización', debería restaurar sus etiquetas de los relevos de nostr.</translation>
+			<translation>Su clave de sincronización es:
+{sync_key}
+Guárdela, y cuando haga clic en 'importar clave de sincronización', debería restaurar sus etiquetas de los relevos de nostr.</translation>
 		</message>
 	</context>
 	<context>
@@ -4201,7 +4253,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>Por favor, cambia la tarifa a al menos {minimum}, de lo contrario puede que no puedas transmitirla.</translation>
+			<translation>Por favor,
+cambia la tarifa a al menos {minimum}, de lo contrario puede que no puedas transmitirla.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4280,7 +4333,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Abre primero una cartera para difundir la transacción. O puedes difundirla vía {url}</translation>
+			<translation>Abre primero una cartera para difundir la transacción.
+O puedes difundirla vía {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5342,7 +5396,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>El servidor puede asociar tu dirección IP con las direcciones de la cartera. Es mejor usar tu propio servidor, como {link}.</translation>
+			<translation>El servidor puede asociar tu dirección IP con las direcciones de la cartera.
+Es mejor usar tu propio servidor, como {link}.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5401,7 +5456,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>Escucha pasivamente el tráfico p2p de bitcoin (como un nodo de bitcoin), para detectar inmediatamente las transacciones recién difundidas. Esto no revela nada sobre tu cartera. Haz clic aquí para saber más.</translation>
+			<translation>Escucha pasivamente el tráfico p2p de bitcoin (como un nodo de bitcoin), para detectar inmediatamente las transacciones recién difundidas.
+Esto no revela nada sobre tu cartera.
+Haz clic aquí para saber más.</translation>
 		</message>
 	</context>
 	<context>
@@ -5844,7 +5901,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Por favor, compare y confirme el código de emparejamiento en su BitBox02: {code}</translation>
+			<translation>Por favor, compare y confirme el código de emparejamiento en su BitBox02:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5852,7 +5910,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>Intenta realizar un doble gasto de la transacción original con una comisión mayor. Solo funciona en transacciones que señalan RBF y no se garantiza el éxito.</translation>
+			<translation>Intenta realizar un doble gasto de la transacción original con una comisión mayor.
+Solo funciona en transacciones que señalan RBF y no se garantiza el éxito.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5864,7 +5923,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent gasta una salida de cambio de la transacción pendiente con una comisión mayor para arrastrar ambas a un bloque. Solo funciona si tiene una salida de cambio disponible y aumenta la tasa combinada.</translation>
+			<translation>Child-Pays-For-Parent gasta una salida de cambio de la transacción pendiente con una comisión mayor para arrastrar ambas a un bloque.
+Solo funciona si tiene una salida de cambio disponible y aumenta la tasa combinada.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5886,7 +5946,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee crea una nueva versión de esta transacción con una comisión mayor. Úselo para acelerar la confirmación cuando la original aún no esté confirmada. Requiere que la transacción original señale RBF y que el monedero posea una salida de cambio.</translation>
+			<translation>Replace-By-Fee crea una nueva versión de esta transacción con una comisión mayor.
+Úselo para acelerar la confirmación cuando la original aún no esté confirmada.
+Requiere que la transacción original señale RBF y que el monedero posea una salida de cambio.</translation>
 		</message>
 		<name>util</name>
 		<message>

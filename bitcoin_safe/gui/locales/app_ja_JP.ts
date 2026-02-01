@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>選択したアドレスに対して使用可能なUTXOが見つかりません。</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>送信のためにUTXOを選択するには、単一のウォレットからアドレスを選択してください。</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>送信に対応するUTXOを選択</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} 個のハードウェア署名者を購入                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe は主要なハードウェア署名者すべてをサポートしています: &lt;a href="{url}"&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+			<translation>{number} 個のハードウェア署名者を購入                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe は主要なハードウェア署名者すべてをサポートしています: &lt;a href="{url}"&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -579,13 +580,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>アドレス {used_addresses} には既に他のアドレスと関連するトランザクションがあります。本当にカテゴリを変更しますか？</translation>
+			<translation>アドレス {used_addresses}
+には既に他のアドレスと関連するトランザクションがあります。本当にカテゴリを変更しますか？</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>アドレス {used_addresses} は既に他のアドレスにリンクする取引があります。本当にカテゴリを変更しますか？</translation>
+			<translation>アドレス {used_addresses}
+は既に他のアドレスにリンクする取引があります。本当にカテゴリを変更しますか？</translation>
 		</message>
 	</context>
 	<context>
@@ -1597,7 +1600,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} それでも進みますか？</translation>
+			<translation>{msg}
+それでも進みますか？</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2027,6 +2031,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>追加のピアに接続中（現在 {count} 件がアクティブ）</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>この文字列を解読できませんでした</translation>
 		</message>
@@ -2044,16 +2053,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>入力を認識できませんでした。もう一度スキャンしますか？</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>現在、次の場所で bitcoin の p2p トラフィックを監視中: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>現在、次の場所で bitcoin の p2p トラフィックを監視中: {ip}（プロキシ {proxy} 経由）</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2257,8 +2256,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>ステータス: プロキシ経由で接続</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>ステータス: {count} 件のピアに接続済み</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2351,6 +2350,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>KYC-Exchange</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip}（プロキシ {proxy} 経由）</translation>
 		</message>
 	</context>
 	<context>
@@ -2491,8 +2495,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>初期ノード</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>無効なピア '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>手動ピア</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>最大ピア数</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>p2p リスナーを介して同時に監視する最大ピア数。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2513,6 +2532,12 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>p2p 接続数:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>リスナーが最初に試行すべき任意のピア一覧（1行に1つ）。自動ピア検出に依存する場合は空のままにしてください。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2549,7 +2574,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>応答:     {name}: {status}     Mempool インスタンス: {server}</translation>
+			<translation>応答:
+    {name}: {status}
+    Mempool インスタンス: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2568,13 +2595,16 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>初期ノードはリッスンおよび他のビットコインノードの発見に使われます。専用ではありません。</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>プロキシは同期＆チャット機能には適用されません！</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>プロキシは同期＆チャット機能には適用されません！</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>この設定は、リスナーが同時に接続する Bitcoin ピアの数を指定します。アプリの実行中にブロードキャストされたトランザクションのみを受信するため、起動前にメンプールに既に存在していたものは見逃します。接続されたピアは、あなたのウォレットやトランザクションについて何も知りません。より多くのピアを使用するとカバレッジは向上しますが、帯域幅と接続数をより多く使用します。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2585,11 +2615,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>メンプールインスタンスURL</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>ホスト:ポート</translation>
 		</message>
 	</context>
 	<context>
@@ -3103,7 +3128,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ウォレット '{wallet}' の新しいトランザクション: {txs}</translation>
+			<translation>ウォレット '{wallet}' の新しいトランザクション:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3191,14 +3217,18 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>トランザクション {} は未確認としてのみ mempool に追加できます。それでも続行しますか？</translation>
+			<translation>トランザクション
+{}
+は未確認としてのみ mempool に追加できます。それでも続行しますか？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>ウォレット '{wallet}' のトランザクション {txs} が履歴から削除されました!!!</translation>
+			<translation>ウォレット '{wallet}' のトランザクション
+{txs}
+が履歴から削除されました!!!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3241,7 +3271,9 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>ウォレット '{wallet}' に {number} 件の新しいトランザクションがあります：{txs}</translation>
+			<translation>ウォレット '{wallet}' に
+{number} 件の新しいトランザクションがあります：
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -4100,7 +4132,9 @@ Signatures:
 
 
 </source>
-			<translation>{label} に属する秘密鍵でトランザクションに署名しました  署名: {signatures}</translation>
+			<translation>{label}
+に属する秘密鍵でトランザクションに署名しました  署名:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4141,7 +4175,8 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>あなたの同期キーは：{sync_key} これを保存し、'インポート同期キー'をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。</translation>
+			<translation>あなたの同期キーは：{sync_key}
+これを保存し、'インポート同期キー'をクリックすると、nostrリレーからあなたのラベルが復元されるはずです。</translation>
 		</message>
 	</context>
 	<context>

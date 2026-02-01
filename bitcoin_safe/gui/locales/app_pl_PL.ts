@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>Nie znaleziono możliwych do wydania UTXO dla wybranych adresów.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>Proszę wybrać adresy z jednego portfela, aby móc wybrać UTXO do wysyłki.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>Wybierz odpowiednie UTXO do wysyłki</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>Kup {number} podpisujących sprzętowych                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe obsługuje wszystkich głównych podpisujących sprzętowych: &lt;a href="{url}"&gt;Zobacz pełną listę&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>Kup {number} podpisujących sprzętowych                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe obsługuje wszystkich głównych podpisujących sprzętowych: &lt;a href="{url}"&gt;Zobacz pełną listę&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -483,7 +484,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>Wydaj resztę z tą opłatą, aby wciągnąć transakcję nadrzędną (CPFP). Łączna stawka opłaty rodzic+dziecko powinna spełniać docelowy blok.</translation>
+			<translation>Wydaj resztę z tą opłatą, aby wciągnąć transakcję nadrzędną (CPFP).
+Łączna stawka opłaty rodzic+dziecko powinna spełniać docelowy blok.</translation>
 		</message>
 	</context>
 	<context>
@@ -1066,7 +1068,8 @@ Domyślnie 20</translation>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>Stawka opłaty nie może być dokładnie znana, ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
+			<translation>Stawka opłaty nie może być dokładnie znana,
+ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -2035,6 +2038,11 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>Łączenie z dodatkowym peerem (obecnie {count} aktywnych)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>Nie można zdekodować tego ciągu</translation>
 		</message>
@@ -2052,16 +2060,6 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>Nie udało się rozpoznać danych wejściowych. Zeskanować ponownie?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>Obecnie monitorowanie ruchu p2p bitcoina pod adresem: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>Obecnie monitorowanie ruchu p2p bitcoina pod adresem: {ip} przez proxy {proxy}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2265,8 +2263,8 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>Status: Połączono przez proxy</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>Status: Połączono z {count} peerami</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2302,7 +2300,8 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>Ten portfel nadal się synchronizuje, a jeśli go zamkniesz, synchronizacja będzie musiała rozpocząć się od nowa. Czy chcesz pozostawić portfel otwarty?</translation>
+			<translation>Ten portfel nadal się synchronizuje, a jeśli go zamkniesz, synchronizacja będzie musiała rozpocząć się od nowa.
+Czy chcesz pozostawić portfel otwarty?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2338,7 +2337,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>Portfele nadal się synchronizują, a jeśli zamkniesz aplikację, synchronizacja będzie musiała rozpocząć się od nowa. Czy chcesz ukryć ją w zasobniku systemowym?</translation>
+			<translation>Portfele nadal się synchronizują, a jeśli zamkniesz aplikację, synchronizacja będzie musiała rozpocząć się od nowa.
+Czy chcesz ukryć ją w zasobniku systemowym?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2359,6 +2359,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>nowy</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} przez proxy {proxy}</translation>
 		</message>
 	</context>
 	<context>
@@ -2499,8 +2504,23 @@ Czy mimo to chcesz kontynuować?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>Węzeł początkowy</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>Nieprawidłowy peer '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>Ręczne peery</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>Maksymalna liczba peerów</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>Maksymalna liczba peerów monitorowanych jednocześnie przez nasłuch p2p.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2521,6 +2541,13 @@ Czy mimo to chcesz kontynuować?</translation>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>Liczba połączeń p2p:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>Opcjonalna lista peerów (po jednym w wierszu), które nasłuch powinien spróbować najpierw.
+Pozostaw puste, aby polegać na automatycznym wykrywaniu peerów.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2578,13 +2605,19 @@ Instancja Mempool: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>Węzeł początkowy służy do nasłuchiwania oraz odkrywania innych węzłów bitcoina. Nie jest używany na wyłączność.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>Proxy nie dotyczy funkcji Sync&amp;Chat!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy nie dotyczy funkcji Sync&amp;Chat!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>Ustawia, z iloma peerami Bitcoin nasłuch łączy się jednocześnie.
+Nasłuch słyszy tylko transakcje nadawane w czasie działania aplikacji, więc pominie wszystko, co było już w mempoolach przed uruchomieniem.
+Połączone peery nie dowiadują się niczego o Twoim portfelu ani Twoich transakcjach.
+Użycie większej liczby peerów poprawia pokrycie, ale zużywa więcej przepustowości i połączeń.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2595,11 +2628,6 @@ Instancja Mempool: {server}</translation>
 		<message>
 			<source>Username:</source>
 			<translation>Nazwa użytkownika:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>host:port</translation>
 		</message>
 	</context>
 	<context>
@@ -3003,7 +3031,8 @@ W razie problemów prosimy o kontakt pod adresem: [andreasgriffin@proton.me](mai
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Wykryto wskazanie niskiego limitu przerwy (otrzymano bitcoiny na adresy reszty). Czy chcesz ponownie przeskanować portfel ze zwiększonym limitem przerwy do {new_gap}</translation>
+			<translation>Wykryto wskazanie niskiego limitu przerwy (otrzymano bitcoiny na adresy reszty).
+Czy chcesz ponownie przeskanować portfel ze zwiększonym limitem przerwy do {new_gap}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3203,7 +3232,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>Transakcje {} można dodać tylko jako niepotwierdzone do mempool. Czy mimo to kontynuować?</translation>
+			<translation>Transakcje
+{}
+można dodać tylko jako niepotwierdzone do mempool. Czy mimo to kontynuować?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3219,7 +3250,8 @@ w portfelu '{wallet}' zostały usunięte z historii!!!</translation>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>To usunie transakcję tylko z tego widoku portfela. Została już rozgłoszona w sieci Bitcoin i prawdopodobnie i tak zostanie potwierdzona. Czy mimo to usunąć ją z portfela?</translation>
+			<translation>To usunie transakcję tylko z tego widoku portfela.
+Została już rozgłoszona w sieci Bitcoin i prawdopodobnie i tak zostanie potwierdzona. Czy mimo to usunąć ją z portfela?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3288,7 +3320,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>Użyj tej opłaty, aby utworzyć transakcję zastępczą (RBF) z wyświetloną docelową prędkością. Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
+			<translation>Użyj tej opłaty, aby utworzyć transakcję zastępczą (RBF) z wyświetloną docelową prędkością.
+Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
 		</message>
 	</context>
 	<context>
@@ -3351,7 +3384,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Odbierz &lt;b&gt;niewielką&lt;/b&gt; kwotę (mniej niż {test_amount}) na 1 adres tego portfela.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Dlaczego?&lt;/b&gt; &lt;br&gt;                     Aby sprawdzić, czy kontrolujesz środki, musisz przetestować wydawanie z portfela.                      &lt;br&gt;                     Dlatego zanim wyślesz do portfela znaczną ilość Bitcoinów, &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie transakcji z portfela i przetestowanie wszystkich podpisujących.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NIE wysyłaj jeszcze dużych środków do portfela. Najpierw ukończ wszystkie testy wysyłki!&lt;/b&gt;   
+			<translation>Odbierz &lt;b&gt;niewielką&lt;/b&gt; kwotę (mniej niż {test_amount}) na 1 adres tego portfela.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Dlaczego?&lt;/b&gt; &lt;br&gt;                     Aby sprawdzić, czy kontrolujesz środki, musisz przetestować wydawanie z portfela. 
+                    &lt;br&gt;                     Dlatego zanim wyślesz do portfela znaczną ilość Bitcoinów, &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie transakcji z portfela i przetestowanie wszystkich podpisujących.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NIE wysyłaj jeszcze dużych środków do portfela. Najpierw ukończ wszystkie testy wysyłki!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -3961,7 +3996,8 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>Ten portfel był ostatnio używany na innym komputerze. Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &amp; Sync (nsec).</translation>
+			<translation>Ten portfel był ostatnio używany na innym komputerze.
+Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &amp; Sync (nsec).</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4117,7 +4153,8 @@ Signatures:
 
 
 </source>
-			<translation>Transakcja podpisana kluczem prywatnym należącym do {label} Podpisy:
+			<translation>Transakcja podpisana kluczem prywatnym należącym do {label}
+Podpisy:
 
 {signatures}
 
@@ -4222,7 +4259,8 @@ poniżej {rate}, aby scalić UTXO i zmniejszyć przyszłe opłaty</translation>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>Zmień proszę opłatę na co najmniej {minimum}, w przeciwnym razie możesz nie być w stanie jej rozesłać.</translation>
+			<translation>Zmień proszę opłatę na co najmniej {minimum},
+w przeciwnym razie możesz nie być w stanie jej rozesłać.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5884,7 +5922,8 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>Próbuje wykonać podwójne wydanie oryginalnej transakcji z wyższą opłatą. Działa tylko dla transakcji sygnalizujących RBF i nie gwarantuje powodzenia.</translation>
+			<translation>Próbuje wykonać podwójne wydanie oryginalnej transakcji z wyższą opłatą.
+Działa tylko dla transakcji sygnalizujących RBF i nie gwarantuje powodzenia.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5896,7 +5935,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent wydaje wyjście reszty z oczekującej transakcji z wyższą opłatą, aby wciągnąć obie do bloku. Działa tylko, jeśli masz dostępne wyjście reszty i podniesiesz łączną stawkę opłaty.</translation>
+			<translation>Child-Pays-For-Parent wydaje wyjście reszty z oczekującej transakcji z wyższą opłatą, aby wciągnąć obie do bloku.
+Działa tylko, jeśli masz dostępne wyjście reszty i podniesiesz łączną stawkę opłaty.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5918,7 +5958,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee tworzy nową wersję tej transakcji z wyższą opłatą. Użyj, aby przyspieszyć potwierdzenie, gdy oryginał jest nadal niepotwierdzony. Wymaga, aby oryginalna transakcja sygnalizowała RBF oraz aby portfel posiadał wyjście reszty.</translation>
+			<translation>Replace-By-Fee tworzy nową wersję tej transakcji z wyższą opłatą.
+Użyj, aby przyspieszyć potwierdzenie, gdy oryginał jest nadal niepotwierdzony.
+Wymaga, aby oryginalna transakcja sygnalizowała RBF oraz aby portfel posiadał wyjście reszty.</translation>
 		</message>
 		<name>util</name>
 		<message>

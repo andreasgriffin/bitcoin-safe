@@ -168,7 +168,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation/>
+			<translation>선택한 주소에 대해 사용 가능한 UTXO를 찾을 수 없습니다.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -178,12 +178,12 @@
 		<name>AddressList</name>
 		<message>
 			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation/>
+			<translation>전송을 위한 UTXO를 선택하려면 하나의 지갑에서 주소를 선택하세요.</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
 			<source>Select corresponding UTXOs for sending</source>
-			<translation/>
+			<translation>전송을 위해 해당 UTXO 선택</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -462,7 +462,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number}개의 하드웨어 서명자 구매                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href="{url}"&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+			<translation>{number}개의 하드웨어 서명자 구매                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href="{url}"&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -482,7 +483,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>부모를 끌어들이기 위해 이 수수료로 잔돈을 사용하세요(CPFP). 부모+자식의 결합 수수료율은 목표 블록을 충족해야 합니다.</translation>
+			<translation>부모를 끌어들이기 위해 이 수수료로 잔돈을 사용하세요(CPFP).
+부모+자식의 결합 수수료율은 목표 블록을 충족해야 합니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -1111,7 +1113,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>거래 수수료는: {fee}, 그리고 {sent}가 전송되었습니다!</translation>
+			<translation>거래 수수료는:
+{fee}, 그리고 {sent}가 전송되었습니다!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1516,7 +1519,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>서명 장치 이름: ...... 서명 장치 위치: .....</translation>
+			<translation>서명 장치 이름: ......
+서명 장치 위치: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1597,7 +1601,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} 그래도 계속하시겠습니까?</translation>
+			<translation>{msg}
+그래도 계속하시겠습니까?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2027,6 +2032,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Connecting to additional peer (currently {count} active)</source>
+			<translation>추가 피어에 연결 중 (현재 {count}개 활성)</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not decode this string</source>
 			<translation>이 문자열을 해석 할 수 없습니다</translation>
 		</message>
@@ -2044,16 +2054,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
 			<translation>입력을 인식하지 못했습니다. 다시 스캔하시겠습니까?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip}</source>
-			<translation>현재 다음에서 비트코인 p2p 트래픽을 모니터링 중: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Currently monitoring bitcoin p2p traffic at: {ip} via proxy {proxy}</source>
-			<translation>현재 다음에서 비트코인 p2p 트래픽을 모니터링 중: {ip} (프록시 {proxy} 경유)</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2257,8 +2257,8 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Status: Connected via proxy</source>
-			<translation>상태: 프록시를 통해 연결됨</translation>
+			<source>Status: Connected to {count} peers</source>
+			<translation>상태: {count}개의 피어에 연결됨</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2294,7 +2294,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>이 지갑은 아직 동기화 중이며 닫으면 처음부터 다시 시작해야 합니다. 지갑을 계속 열어두시겠습니까?</translation>
+			<translation>이 지갑은 아직 동기화 중이며 닫으면 처음부터 다시 시작해야 합니다.
+지갑을 계속 열어두시겠습니까?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2330,7 +2331,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>지갑들이 아직 동기화 중이며 앱을 닫으면 처음부터 다시 시작해야 합니다. 대신 트레이로 숨기시겠습니까?</translation>
+			<translation>지갑들이 아직 동기화 중이며 앱을 닫으면 처음부터 다시 시작해야 합니다.
+대신 트레이로 숨기시겠습니까?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2351,6 +2353,11 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>new</source>
 			<translation>새로운</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>{ip} via proxy {proxy}</source>
+			<translation>{ip} (프록시 {proxy} 경유)</translation>
 		</message>
 	</context>
 	<context>
@@ -2479,7 +2486,9 @@ Do you want to hide to tray instead?</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>서버 연결 오류. {responses}   그래도 진행하시겠습니까?</translation>
+			<translation>서버 연결 오류.
+{responses}
+  그래도 진행하시겠습니까?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2488,8 +2497,23 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Inital node</source>
-			<translation>초기 노드</translation>
+			<source>Invalid peer '{peer}': {error}</source>
+			<translation>유효하지 않은 피어 '{peer}': {error}</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Manual peers</source>
+			<translation>수동 피어</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Max peers</source>
+			<translation>최대 피어 수</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+			<translation>p2p 리스너를 통해 동시에 모니터링할 최대 피어 수입니다.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2510,6 +2534,13 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Number of p2p connections:</source>
 			<translation>p2p 연결 수:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Optional list of peers (one per line) the listener should try first.
+Keep it empty to rely on automatic peer discovery.</source>
+			<translation>리스너가 먼저 시도해야 할 선택적 피어 목록(한 줄에 하나).
+자동 피어 검색에 의존하려면 비워 두세요.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2546,7 +2577,9 @@ Do you want to hide to tray instead?</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>응답:     {name}: {status}     Mempool 인스턴스: {server}</translation>
+			<translation>응답:
+    {name}: {status}
+    Mempool 인스턴스: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2565,13 +2598,19 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The inital node is used to listen and also discover other bitcoin nodes. It is not used exclusively.</source>
-			<translation>초기 노드는 수신(리스닝) 및 다른 비트코인 노드를 발견하는 데 사용됩니다. 독점적으로 사용되지는 않습니다.</translation>
+			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
+			<translation>프록시는 Sync&amp;Chat 기능에 적용되지 않습니다!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>프록시는 Sync&amp;Chat 기능에 적용되지 않습니다!</translation>
+			<source>This sets how many Bitcoin peers the listener connects to at once.
+It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
+Connected peers do not learn anything about your wallet or your transactions.
+Using more peers improves coverage but uses more bandwidth and connections.</source>
+			<translation>이 설정은 리스너가 동시에 연결하는 Bitcoin 피어 수를 지정합니다.
+앱이 실행 중일 때 브로드캐스트된 트랜잭션만 수신하므로, 시작 전에 이미 멤풀에 있던 것은 놓치게 됩니다.
+연결된 피어는 지갑이나 트랜잭션에 대해 아무것도 알지 못합니다.
+더 많은 피어를 사용하면 커버리지가 향상되지만 더 많은 대역폭과 연결을 사용합니다.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2582,11 +2621,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Username:</source>
 			<translation>사용자 이름:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>host:port</source>
-			<translation>호스트:포트</translation>
 		</message>
 	</context>
 	<context>
@@ -2860,7 +2894,8 @@ import custom wallet</source>
 		<message>
 			<source>Complete the payment in your browser.
 If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>브라우저에서 결제를 완료하세요. 문제가 있으면 다음 주소로 언제든지 문의해 주세요: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<translation>브라우저에서 결제를 완료하세요.
+문제가 있으면 다음 주소로 언제든지 문의해 주세요: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -2989,7 +3024,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
 Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>낮은 갭 한계 표시가 감지되었습니다(잔돈 주소로 비트코인 수신). 갭 한계를 {new_gap}로 늘려 지갑을 다시 스캔하시겠습니까</translation>
+			<translation>낮은 갭 한계 표시가 감지되었습니다(잔돈 주소로 비트코인 수신).
+갭 한계를 {new_gap}로 늘려 지갑을 다시 스캔하시겠습니까</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3100,7 +3136,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>지갑 '{wallet}'에 새 트랜잭션이 있습니다: {txs}</translation>
+			<translation>지갑 '{wallet}'에 새 트랜잭션이 있습니다:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3188,21 +3225,25 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>거래 {}는 미확인 상태로만 mempool에 추가할 수 있습니다. 그래도 계속하시겠습니까?</translation>
+			<translation>거래
+{}는 미확인 상태로만 mempool에 추가할 수 있습니다. 그래도 계속하시겠습니까?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>The transactions 
 {txs}
  in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>트랜잭션 {txs}이 지갑 '{wallet}'의 기록에서 제거되었습니다!</translation>
+			<translation>트랜잭션
+{txs}
+이 지갑 '{wallet}'의 기록에서 제거되었습니다!</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>이는 이 지갑 보기에서만 거래를 제거합니다. 이미 비트코인 네트워크에 브로드캐스트되었으며 여전히 확인될 가능성이 큽니다. 그래도 지갑에서 제거하시겠습니까?</translation>
+			<translation>이는 이 지갑 보기에서만 거래를 제거합니다.
+이미 비트코인 네트워크에 브로드캐스트되었으며 여전히 확인될 가능성이 큽니다. 그래도 지갑에서 제거하시겠습니까?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3238,7 +3279,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>지갑 '{wallet}'에 {number}개의 새 트랜잭션이 있습니다: {txs}</translation>
+			<translation>지갑 '{wallet}'에 {number}개의 새 트랜잭션이 있습니다:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3270,7 +3312,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>표시된 목표 속도로 대체(RBF) 거래를 생성하려면 이 수수료를 사용하세요. 출력은 동일하며 수수료만 변경됩니다.</translation>
+			<translation>표시된 목표 속도로 대체(RBF) 거래를 생성하려면 이 수수료를 사용하세요.
+출력은 동일하며 수수료만 변경됩니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -3333,7 +3376,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>이 지갑의 주소 하나로 &lt;b&gt;소량&lt;/b&gt; ( {test_amount} 미만)을 받으세요.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하고 있는지 알아보기 위해서는 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑으로 상당한 양의 비트코인을 보내기 전에 지갑에서 지출을 하고 모든 서명자를 테스트하는 것이 &lt;b&gt;필수적&lt;/b&gt;입니다.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 큰 자금을 지갑으로 보내지 마세요. 모든 송금 테스트를 먼저 완료해주세요!&lt;/b&gt;                    </translation>
+			<translation>이 지갑의 주소 하나로 &lt;b&gt;소량&lt;/b&gt; ( {test_amount} 미만)을 받으세요.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하고 있는지 알아보기 위해서는 지갑에서 지출을 테스트해야 합니다. 
+                    &lt;br&gt;                     따라서 지갑으로 상당한 양의 비트코인을 보내기 전에 지갑에서 지출을 하고 모든 서명자를 테스트하는 것이 &lt;b&gt;필수적&lt;/b&gt;입니다.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 큰 자금을 지갑으로 보내지 마세요. 모든 송금 테스트를 먼저 완료해주세요!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3578,7 +3623,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>백업 종이의 {number} 단어와 하드웨어 서명 기계를 비교하세요. 여기서 실수하면 돈을 잃을 수 있습니다!</translation>
+			<translation>백업 종이의 {number} 단어와 하드웨어 서명 기계를 비교하세요.
+여기서 실수하면 돈을 잃을 수 있습니다!</translation>
 		</message>
 	</context>
 	<context>
@@ -3941,7 +3987,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>이 지갑은 마지막으로 다른 컴퓨터에서 사용되었습니다. 둘 다 계속 사용하려면 지금 채팅 및 동기화 동기화 키(nsec)를 재설정하세요.</translation>
+			<translation>이 지갑은 마지막으로 다른 컴퓨터에서 사용되었습니다.
+둘 다 계속 사용하려면 지금 채팅 및 동기화 동기화 키(nsec)를 재설정하세요.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4097,7 +4144,8 @@ Signatures:
 
 
 </source>
-			<translation>{label}에 속한 개인키로 트랜잭션 서명 완료  서명들: {signatures}</translation>
+			<translation>{label}에 속한 개인키로 트랜잭션 서명 완료  서명들:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4138,7 +4186,9 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>동기화 키는: {sync_key} 저장하세요, 'import sync key'를 클릭하면 nostr 릴레이에서 명칭을 복원할 수 있습니다.</translation>
+			<translation>동기화 키는:
+{sync_key}
+저장하세요, 'import sync key'를 클릭하면 nostr 릴레이에서 명칭을 복원할 수 있습니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -4271,7 +4321,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>먼저 지갑을 열어 트랜잭션을 브로드캐스트하세요. 또는 {url}을 통해 브로드캐스트할 수 있습니다</translation>
+			<translation>먼저 지갑을 열어 트랜잭션을 브로드캐스트하세요.
+또는 {url}을 통해 브로드캐스트할 수 있습니다</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5333,7 +5384,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>서버는 IP 주소를 지갑 주소와 연결할 수 있습니다. {link}와 같은 자신의 서버를 사용하는 것이 가장 좋습니다.</translation>
+			<translation>서버는 IP 주소를 지갑 주소와 연결할 수 있습니다.
+{link}와 같은 자신의 서버를 사용하는 것이 가장 좋습니다.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5392,7 +5444,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>(비트코인 노드처럼) 비트코인 p2p 트래픽을 수동으로 수신하여  새로 브로드캐스트된 트랜잭션을 즉시 감지합니다. 이는 지갑에 대해 아무것도 노출하지 않습니다. 자세히 알아보려면 클릭하세요.</translation>
+			<translation>(비트코인 노드처럼) 비트코인 p2p 트래픽을 수동으로 수신하여  새로 브로드캐스트된 트랜잭션을 즉시 감지합니다.
+이는 지갑에 대해 아무것도 노출하지 않습니다.
+자세히 알아보려면 클릭하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -5833,7 +5887,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>BitBox02에서 페어링 코드를 비교하고 확인하세요: {code}</translation>
+			<translation>BitBox02에서 페어링 코드를 비교하고 확인하세요:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -5841,7 +5896,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>더 높은 수수료로 원래 거래를 이중 지출하려고 시도합니다. RBF 신호가 있는 거래에서만 작동하며 성공이 보장되지 않습니다.</translation>
+			<translation>더 높은 수수료로 원래 거래를 이중 지출하려고 시도합니다.
+RBF 신호가 있는 거래에서만 작동하며 성공이 보장되지 않습니다.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5853,7 +5909,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent는 대기 중인 거래의 잔돈 출력을 더 높은 수수료로 사용하여 둘 다 블록에 포함되도록 합니다. 사용 가능한 잔돈 출력이 있고 결합 수수료율을 높이는 경우에만 작동합니다.</translation>
+			<translation>Child-Pays-For-Parent는 대기 중인 거래의 잔돈 출력을 더 높은 수수료로 사용하여 둘 다 블록에 포함되도록 합니다.
+사용 가능한 잔돈 출력이 있고 결합 수수료율을 높이는 경우에만 작동합니다.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5875,7 +5932,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee는 이 거래의 더 높은 수수료를 가진 새 버전을 생성합니다. 원래 거래가 아직 미확인일 때 확인을 가속하는 데 사용하세요. 원래 거래가 RBF 신호를 보내고 지갑이 잔돈 출력을 보유해야 합니다.</translation>
+			<translation>Replace-By-Fee는 이 거래의 더 높은 수수료를 가진 새 버전을 생성합니다.
+원래 거래가 아직 미확인일 때 확인을 가속하는 데 사용하세요.
+원래 거래가 RBF 신호를 보내고 지갑이 잔돈 출력을 보유해야 합니다.</translation>
 		</message>
 		<name>util</name>
 		<message>
