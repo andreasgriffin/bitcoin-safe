@@ -1453,12 +1453,17 @@ class SendTest(BaseTab):
         """Set visibilities."""
         if self.refs.qt_wallet:
             if should_be_visible:
-                self.widget_layout.addWidget(self.refs.qt_wallet.uitx_creator)
-                # without setVisible(True) it doesnt appear (clear why)
-                self.refs.qt_wallet.uitx_creator.setVisible(True)
+                uitx = self.refs.qt_wallet.uitx_creator
+                # ensure the widget is reparented away from whatever layout currently holds it
+                uitx.setParent(None)
+                self.widget_layout.addWidget(uitx)
+                uitx.setHidden(False)
             else:
-                self.refs.qt_wallet.send_node.setWidget(self.refs.qt_wallet.uitx_creator)
-                self.refs.qt_wallet.uitx_creator.clear_ui()
+                # Only move the shared widget back if this tab currently owns it;
+                # otherwise another SendTest tab will steal it away from the active step.
+                if self.widget_layout.indexOf(self.refs.qt_wallet.uitx_creator) != -1:
+                    self.refs.qt_wallet.send_node.setWidget(self.refs.qt_wallet.uitx_creator)
+                    self.refs.qt_wallet.uitx_creator.clear_ui()
 
     def _callback(self) -> None:
         """Callback."""
@@ -1822,13 +1827,13 @@ class Wizard(WizardBase):
         if self.should_be_visible:
             self.step_container.signal_widget_focus.emit(self.widgets[self.current_step()])
         else:
-            # self.qtwalletbase.tabs.setVisible(True)
             self.floating_button_box.setVisible(False)
             if self.qt_wallet:
                 self.qt_wallet.uitx_creator.button_box.setVisible(True)
 
-        for tab in self.tab_generators.values():
-            tab.set_visibilities(self.should_be_visible)
+        active_step = self.current_step()
+        for step, tab in self.tab_generators.items():
+            tab.set_visibilities(step == active_step)
 
     def num_keystores(self) -> int:
         """Num keystores."""
