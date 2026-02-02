@@ -247,8 +247,8 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             "Compact Block Filters are a private and fast way to get all blockchain information. "
             "The wallet will connect directly to multiple bitcoin nodes and download "
             "block summaries (Compact Block Filters) from them.<br>"
-            "If you specify an inital peer in the 'Bitcoin Network monitoring' section below, "
-            "this will be used as a preferred node.",
+            "If you specify manual peers in the 'Bitcoin Network monitoring' section below, "
+            "Compact Block Filters will connect to them first.",
         )
         d = {
             bdk.Network.BITCOIN: cbf_default_description,
