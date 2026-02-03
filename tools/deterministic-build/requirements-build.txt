@@ -480,7 +480,7 @@ platformdirs==4.5.1 \
 poetry==2.2.1 \
     --hash=sha256:bef9aa4bb00ce4c10b28b25e7bac724094802d6958190762c45df6c12749b37c \
     --hash=sha256:f5958b908b96c5824e2acbb8b19cdef8a3351c62142d7ecff2d705396c8ca34c
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
 poetry-core==2.2.1 \
     --hash=sha256:97e50d8593c8729d3f49364b428583e044087ee3def1e010c6496db76bd65ac5 \
     --hash=sha256:bdfce710edc10bfcf9ab35041605c480829be4ab23f5bc01202cfe5db8f125ab
@@ -624,7 +624,7 @@ virtualenv==20.36.1 \
 wheel==0.46.2 \
     --hash=sha256:33ae60725d69eaa249bc1982e739943c23b34b58d51f1cb6253453773aca6e65 \
     --hash=sha256:3d79e48fde9847618a5a181f3cc35764c349c752e2fe911e65fa17faab9809b0
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
 zstandard==0.25.0 \
     --hash=sha256:011d388c76b11a0c165374ce660ce2c8efa8e5d87f34996aa80f9c0816698b64 \
     --hash=sha256:01582723b3ccd6939ab7b3a78622c573799d5d8737b534b86d0e06ac18dbde4a \
@@ -728,11 +728,11 @@ zstandard==0.25.0 \
     # via pbs-installer
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==25.3 \
-    --hash=sha256:8d0538dbbd7babbd207f261ed969c65de439f6bc9e5dbd3b3b9a77f25d95f343 \
-    --hash=sha256:9655943313a94722b7774661c21049070f6bbb0a1516bf02f7c8d5d9201514cd
-    # via -r tools/deterministic-build/requirements-build.in
+pip==26.0 \
+    --hash=sha256:3ce220a0a17915972fbf1ab451baae1521c4539e778b28127efa79b974aff0fa \
+    --hash=sha256:98436feffb9e31bc9339cf369fd55d3331b1580b6a6f1173bacacddcf9c34754
+    # via -r requirements-build.in
 setuptools==80.9.0 \
     --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
     --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
-    # via -r tools/deterministic-build/requirements-build.in
+    # via -r requirements-build.in
