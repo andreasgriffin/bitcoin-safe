@@ -462,8 +462,11 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-        <translation>{number} Hardware-Signierer kaufen                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href=&quot;{url}&quot;&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+        <translation>{number} Hardware-Signierer kaufen                         
+    &lt;ul&gt; 
+        {different_hint}
+        &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href=&quot;{url}&quot;&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;
+     &lt;/ul&gt;
         </translation>
     </message>
 </context>
@@ -3387,9 +3390,15 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen. 
-                    &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;   
+        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieser Wallet.
+                    &lt;br&gt;&lt;br&gt;
+                    &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;
+                    Um zu wissen, ob Sie die Kontrolle über die Gelder haben, müssen Sie die Ausgabe aus der Wallet testen.
+                    &lt;br&gt;
+                    Bevor Sie also einen größeren Betrag an Bitcoin an die Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, Geld aus der Wallet auszugeben und alle Unterzeichner zu testen.
+                    &lt;b&gt;
+                    &lt;br&gt;
+                    &lt;b&gt;Senden Sie noch KEINE großen Geldbeträge an die Wallet. Bitte führen Sie zuerst alle Sendetests durch!&lt;/b&gt;   
                     </translation>
     </message>
 </context>
