@@ -5366,8 +5366,8 @@ In alternativa puoi trasmetterla tramite {url}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>I Compact Block Filter sono un modo privato e veloce per ottenere tutte le informazioni della blockchain. Il portafoglio si connetterà direttamente a più nodi bitcoin e scaricherà i riassunti dei blocchi (Compact Block Filters) da essi.&lt;br&gt;Se specifichi un nodo iniziale nella sezione “Monitoraggio Rete Bitcoin” qui sotto, verrà usato come nodo preferito.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>I Filtri di Blocchi Compatti sono un modo privato e veloce per ottenere tutte le informazioni della blockchain. Il wallet si collegherà direttamente a più nodi bitcoin e scaricherà da essi i riepiloghi dei blocchi (Filtri di Blocchi Compatti).&lt;br&gt;Se specifichi peer manuali nella sezione 'Bitcoin Network monitoring' qui sotto, i Filtri di Blocchi Compatti si collegheranno prima a essi.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

@@ -5342,8 +5342,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter เป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนด bitcoin หลายตัวและดาวน์โหลดสรุปบล็อกจากพวกเขา (Compact Block Filters)&lt;br&gt;หากคุณระบุ peer เริ่มต้นในส่วน ‘การตรวจสอบเครือข่าย Bitcoin’ ด้านล่าง ระบบจะใช้โหนดนั้นเป็นโหนดหลัก</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>ตัวกรองบล็อกแบบกะทัดรัดเป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนดบิตคอยน์หลายโหนดและดาวน์โหลดสรุปบล็อก (ตัวกรองบล็อกแบบกะทัดรัด) จากโหนดเหล่านั้น&lt;br&gt;หากคุณระบุเพียร์แบบกำหนดเองในส่วน 'Bitcoin Network monitoring' ด้านล่าง ตัวกรองบล็อกแบบกะทัดรัดจะเชื่อมต่อกับเพียร์เหล่านั้นก่อน</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

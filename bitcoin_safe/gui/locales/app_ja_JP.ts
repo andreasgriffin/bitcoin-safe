@@ -5339,8 +5339,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filterは、すべてのブロックチェーン情報をプライベートかつ高速に取得する方法です。ウォレットは複数のビットコインノードに直接接続し、そこからブロック概要（Compact Block Filters）をダウンロードします。&lt;br&gt;下の「Bitcoinネットワーク監視」セクションで初期ピアを指定した場合、それが優先ノードとして使用されます。</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>コンパクトブロックフィルターは、すべてのブロックチェーン情報をプライベートかつ高速に取得する方法です。ウォレットは複数のビットコインノードに直接接続し、そこからブロック要約（コンパクトブロックフィルター）をダウンロードします。&lt;br&gt;下の「Bitcoin Network monitoring」セクションで手動ピアを指定すると、コンパクトブロックフィルターはそれらに最初に接続します。</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

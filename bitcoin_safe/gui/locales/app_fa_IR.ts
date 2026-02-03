@@ -5362,8 +5362,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>فیلترهای بلوک فشرده راهی خصوصی و سریع برای دریافت تمام اطلاعات زنجیره بلوکی هستند. کیف‌پول به‌طور مستقیم به چند گره بیت‌کوین متصل می‌شود و خلاصه بلوک‌ها (Compact Block Filters) را از آن‌ها دانلود می‌کند.&lt;br&gt;اگر در بخش «پایش شبکه بیت‌کوین» در پایین، همتای اولیه‌ای مشخص کنید، از آن به‌عنوان گره ترجیحی استفاده می‌شود.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>فیلترهای بلوک فشرده راهی خصوصی و سریع برای دریافت تمام اطلاعات بلاک‌چین هستند. کیف پول به‌طور مستقیم به چندین نود بیت‌کوین متصل می‌شود و خلاصه‌های بلوک (فیلترهای بلوک فشرده) را از آن‌ها دانلود می‌کند.&lt;br&gt;اگر در بخش 'Bitcoin Network monitoring' در پایین، همتایان دستی را مشخص کنید، فیلترهای بلوک فشرده ابتدا به آن‌ها متصل خواهند شد.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

@@ -5352,8 +5352,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter는 모든 블록체인 정보를 비공개이면서 빠르게 가져오는 방법입니다. 지갑은 여러 비트코인 노드에 직접 연결하여 블록 요약(Compact Block Filters)을 다운로드합니다.&lt;br&gt;아래의 ‘Bitcoin 네트워크 모니터링’ 섹션에서 초기 피어를 지정하면, 선호 노드로 사용됩니다.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>컴팩트 블록 필터는 모든 블록체인 정보를 비공개적이고 빠르게 가져오는 방법입니다. 지갑은 여러 비트코인 노드에 직접 연결하여 블록 요약(컴팩트 블록 필터)을 다운로드합니다.&lt;br&gt;아래의 'Bitcoin Network monitoring' 섹션에서 수동 피어를 지정하면, 컴팩트 블록 필터는 먼저 해당 피어에 연결합니다.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

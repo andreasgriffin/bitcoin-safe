@@ -5363,8 +5363,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filters — це приватний і швидкий спосіб отримати всю інформацію про блокчейн. Гаманець підключиться безпосередньо до кількох вузлів біткоїна та завантажить із них зведення блоків (Compact Block Filters).&lt;br&gt;Якщо ви вкажете початкового піра в розділі «Моніторинг мережі Bitcoin» нижче, він буде використаний як пріоритетний вузол.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Компактні фільтри блоків — це приватний і швидкий спосіб отримати всю інформацію блокчейна. Гаманець безпосередньо підключатиметься до кількох вузлів bitcoin і завантажуватиме з них зведення блоків (компактні фільтри блоків).&lt;br&gt;Якщо ви вкажете ручних пірів у розділі 'Bitcoin Network monitoring' нижче, компактні фільтри блоків спочатку підключаться до них.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
