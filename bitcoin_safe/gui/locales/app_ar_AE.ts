@@ -5358,8 +5358,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>فلاتر الكتل المدمجة هي طريقة خاصة وسريعة للحصول على جميع معلومات البلوكشين. ستتصل المحفظة مباشرة بعدة عقد Bitcoin وتنزّل منها ملخصات الكتل (Compact Block Filters).&lt;br&gt;إذا حددت نظيرًا أوليًا في قسم "مراقبة شبكة Bitcoin" أدناه، فسيُستخدم كعقدة مفضلة.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>مرشحات الكتل المدمجة هي طريقة خاصة وسريعة للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرةً بعدة عُقد بيتكوين وتقوم بتنزيل ملخصات الكتل (مرشحات الكتل المدمجة) منها.&lt;br&gt;إذا حددت أقرانًا يدويين في قسم 'Bitcoin Network monitoring' أدناه، فستتصل مرشحات الكتل المدمجة بهم أولاً.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

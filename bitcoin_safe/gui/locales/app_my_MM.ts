@@ -5340,8 +5340,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter သည် blockchain အချက်အလက်အားလုံးကို လျှို့ဝှက်ပြီး မြန်ဆန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ ပိုက်ဆံအိတ်သည် bitcoin node များစွာသို့ တိုက်ရိုက်ချိတ်ဆက်ပြီး အဲဒီနေရာမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်ဆွဲပါမည်။&lt;br&gt;‘Bitcoin Network Monitoring’ အခန်းတွင် အစပိုင်း peer တစ်ဦးကို သတ်မှတ်ထားပါက ၎င်းကို အကြိုက်ဆုံး node အဖြစ် အသုံးပြုမည်။</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters သည် ဘလောက်ချိန်း အချက်အလက်အားလုံးကို ကိုယ်ရေးကိုယ်တာအနေဖြင့် လျင်မြန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ Wallet သည် bitcoin node များစွာသို့ တိုက်ရိုက် ချိတ်ဆက်ပြီး ထိုနေရာများမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်လုပ်ပါမည်။&lt;br&gt;အောက်ပါ 'Bitcoin Network monitoring' အပိုင်းတွင် manual peer များကို သတ်မှတ်ပါက Compact Block Filters သည် အရင်ဆုံး ထို peer များသို့ ချိတ်ဆက်ပါမည်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

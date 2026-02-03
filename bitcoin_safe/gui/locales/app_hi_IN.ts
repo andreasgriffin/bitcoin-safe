@@ -5343,8 +5343,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>कॉम्पैक्ट ब्लॉक फ़िल्टर ब्लॉकचेन की सभी जानकारी प्राप्त करने का एक निजी और तेज़ तरीका है। वॉलेट सीधे कई बिटकॉइन नोड्स से जुड़ेगा और उनसे ब्लॉक सारांश (Compact Block Filters) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे 'Bitcoin नेटवर्क मॉनिटरिंग' अनुभाग में एक प्रारंभिक पीयर निर्दिष्ट करते हैं, तो इसका उपयोग पसंदीदा नोड के रूप में किया जाएगा।</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>कॉम्पैक्ट ब्लॉक फ़िल्टर सभी ब्लॉकचेन जानकारी प्राप्त करने का एक निजी और तेज़ तरीका हैं। वॉलेट कई बिटकॉइन नोड्स से सीधे जुड़कर उनसे ब्लॉक सारांश (कॉम्पैक्ट ब्लॉक फ़िल्टर) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे दिए गए 'Bitcoin Network monitoring' अनुभाग में मैनुअल पीयर निर्दिष्ट करते हैं, तो कॉम्पैक्ट ब्लॉक फ़िल्टर पहले उनसे कनेक्ट होंगे।</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

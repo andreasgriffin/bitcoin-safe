@@ -5363,8 +5363,8 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter’lar, tüm blok zinciri bilgilerini özel ve hızlı bir şekilde almanın bir yoludur. Cüzdan, doğrudan birden fazla bitcoin düğümüne bağlanacak ve onlardan blok özetlerini (Compact Block Filters) indirecektir.&lt;br&gt;Aşağıdaki ‘Bitcoin Ağı izleme’ bölümünde bir başlangıç eş belirttiyseniz, bu tercih edilen düğüm olarak kullanılacaktır.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Kompakt Blok Filtreleri, tüm blok zinciri bilgilerini almanın gizli ve hızlı bir yoludur. Cüzdan, birden fazla bitcoin düğümüne doğrudan bağlanır ve onlardan blok özetlerini (Kompakt Blok Filtreleri) indirir.&lt;br&gt;Aşağıdaki 'Bitcoin Network monitoring' bölümünde manuel eşler belirtirseniz, Kompakt Blok Filtreleri önce onlara bağlanacaktır.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

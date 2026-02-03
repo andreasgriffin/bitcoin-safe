@@ -5362,8 +5362,8 @@ Atau Anda bisa menyiarkan melalui {url}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter adalah cara pribadi dan cepat untuk mendapatkan semua informasi blockchain. Dompet akan terhubung langsung ke beberapa node bitcoin dan mengunduh ringkasan blok (Compact Block Filters) dari sana.&lt;br&gt;Jika Anda menentukan peer awal di bagian ‘Pemantauan Jaringan Bitcoin’ di bawah, itu akan digunakan sebagai node pilihan.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Filter Blok Ringkas adalah cara yang privat dan cepat untuk mendapatkan semua informasi blockchain. Dompet akan terhubung langsung ke beberapa node bitcoin dan mengunduh ringkasan blok (Filter Blok Ringkas) dari mereka.&lt;br&gt;Jika Anda menentukan peer manual di bagian 'Bitcoin Network monitoring' di bawah, Filter Blok Ringkas akan terhubung ke sana terlebih dahulu.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

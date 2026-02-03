@@ -462,8 +462,11 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} Hardware-Signierer kaufen                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href="{url}"&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
+			<translation>{number} Hardware-Signierer kaufen                         
+    &lt;ul&gt; 
+        {different_hint}
+        &lt;li&gt;Bitcoin Safe unterstützt alle gängigen Hardware-Signierer: &lt;a href="{url}"&gt;Gesamte Liste ansehen&lt;/a&gt;&lt;/li&gt;
+     &lt;/ul&gt;
         </translation>
 		</message>
 	</context>
@@ -2695,7 +2698,8 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<message>
 			<source>Create or
 import custom wallet</source>
-			<translation>Benutzerdefinierte Wallet erstellen oder importieren</translation>
+			<translation>Benutzerdefinierte
+Wallet erstellen oder importieren</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3386,9 +3390,15 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen. 
-                    &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;   
+			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieser Wallet.
+                    &lt;br&gt;&lt;br&gt;
+                    &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;
+                    Um zu wissen, ob Sie die Kontrolle über die Gelder haben, müssen Sie die Ausgabe aus der Wallet testen.
+                    &lt;br&gt;
+                    Bevor Sie also einen größeren Betrag an Bitcoin an die Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, Geld aus der Wallet auszugeben und alle Unterzeichner zu testen.
+                    &lt;b&gt;
+                    &lt;br&gt;
+                    &lt;b&gt;Senden Sie noch KEINE großen Geldbeträge an die Wallet. Bitte führen Sie zuerst alle Sendetests durch!&lt;/b&gt;   
                     </translation>
 		</message>
 	</context>
@@ -5377,8 +5387,8 @@ Alternativ kannst du über {url} senden</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>Compact Block Filter sind eine private und schnelle Methode, alle Blockchain-Informationen zu erhalten. Das Wallet verbindet sich direkt mit mehreren Bitcoin-Nodes und lädt Blockzusammenfassungen (Compact Block Filters) herunter.&lt;br&gt;Wenn Sie unten im Abschnitt „Bitcoin-Netzwerküberwachung“ einen Start-Peer angeben, wird dieser als bevorzugter Node verwendet.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Kompakte Blockfilter sind eine private und schnelle Möglichkeit, alle Blockchain-Informationen zu erhalten. Die Wallet verbindet sich direkt mit mehreren Bitcoin-Nodes und lädt von ihnen Blockzusammenfassungen (kompakte Blockfilter) herunter.&lt;br&gt;Wenn Sie im untenstehenden Abschnitt 'Bitcoin Network monitoring' manuelle Peers angeben, verbinden sich die kompakten Blockfilter zuerst mit diesen.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5496,8 +5506,9 @@ Klicke hier, um mehr zu erfahren.</translation>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                      2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;     
-                            3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 
+			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;
+                            2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;
+                            3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;
                             4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren   
                 </translation>
 		</message>

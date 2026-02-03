@@ -2206,12 +2206,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>QR &amp;Scanner</source>
-			<translation>二维码&amp;扫码器</translation>
+			<translation>二维码&amp;扫描器</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>QR Scanner</source>
-			<translation>二维码扫码器</translation>
+			<translation>二维码扫描器</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -5377,8 +5377,8 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify an inital peer in the 'Bitcoin Network monitoring' section below, this will be used as a preferred node.</source>
-			<translation>紧凑区块过滤器是一种获取所有区块链信息的私密且快速的方式。钱包将直接连接到多个比特币节点并从中下载区块摘要（紧凑区块过滤器）。&lt;br&gt;如果您在下方“比特币网络监控”部分指定了初始节点，它将被用作首选节点。</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>紧凑区块过滤器是一种私密且快速获取全部区块链信息的方式。钱包将直接连接到多个比特币节点，并从它们下载区块摘要（紧凑区块过滤器）。&lt;br&gt;如果您在下方的“Bitcoin Network monitoring”部分指定了手动节点，紧凑区块过滤器将优先连接到它们。</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
