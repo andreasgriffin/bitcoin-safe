@@ -2,32 +2,32 @@
 
 #### A bitcoin savings wallet for the entire family
 
-- **Easy** Multisig-Wallet Setup
-  - Step-by-Step instructions for a secure MultiSig setup with PDF backup sheets
-  - Test transactions ensure that all hardware signers are ready
-  - Full support for [Coldcard](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Coldcard Q](https://store.coinkite.com/promo/8BFF877000C34A86F410), [Bitbox02](https://shop.bitbox.swiss/?ref=MOB4dk7gpm), [Blockstream Jade](https://store.blockstream.com/?code=XEocg5boS77D), [Trezor](https://affil.trezor.io/SHtNo), [Foundation Passport](https://foundation.xyz/passport), [Keystone](https://keyst.one), [Ledger](https://shop.ledger.com/?r=400f1fff75b5), [Specter DIY](https://clavastack.com/en/?coupon=bitcoin-safe), [SeedSigner](https://seedsigner.com), [Krux](https://selfcustody.github.io/krux), using  *QR*, *USB*, and *SD-card* 
-- **Secure**: Hardware signers only
-  - All wallets require hardware signers/wallets for safe seed storage 
+- **Easy Multisig-Wallet Setup**
+  - [Step-by-Step instructions](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) for a secure MultiSig setup with [PDF backup sheets](https://bitcoin-safe.org/en/features/pdf-export/)
+  - [Test transactions](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) ensure that all hardware signers are ready
+  - Full support for [Coldcard Q](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/coldcard-q/), [Coldcard Mk4](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/coldcard-mk4/), [BitBox02 / BitBox02 Nova](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/bitbox02/), [Foundation Passport](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/passport/), [Jade](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/jade/), [Jade Plus](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/jade-plus/), [Trezor Safe 3 & 5](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/trezor/), [Keystone](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/keystone/), [Ledger Nano S / S Plus / X / Flex](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/ledger/), [Specter DIY / Shield / Shield Lite](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/specter/), [SeedSigner](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/seedsigner/), [Krux](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/krux/), using  *QR*, *USB*, and *SD-card* 
+- **Secure**: [Hardware signers only](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/)
+  - [All wallets require hardware signers/wallets](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/) for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
-- **Multi-Language**:
-  - 🇺🇸 English, 🇨🇳 Chinese – 简体中文, 🇪🇸 Spanish – español de España, 🇯🇵 Japanese – 日本語, 🇷🇺 Russian – русский, 🇵🇹 Portuguese – português europeo, 🇧🇷 Portuguese (Brazil) – português do Brasil, 🇮🇳 Hindi – हिन्दी, 🇦🇪 Arabic – العربية, 🇮🇹 Italian – italiano, 🇫🇷 French – Français, 🇩🇪 German – Deutsch, 🇲🇲 Burmese – မြန်မာ, 🇰🇷 Korean – 한국어, 🇹🇭 Thai – ภาษาไทย, 🇮🇷 Persian (Farsi) – فارسی, 🇵🇱 Polish – Polski, 🇪🇸 Catalan – Català, 🇮🇩 Indonesian – Bahasa Indonesia, 🇹🇷 Turkish – Türkçe, 🇺🇦 Ukrainian – Українська (more upon request)
+- **Fast**
+  - Electrum/Esplora server
+  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) with [transaction notifications](https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/)
+- **Multi-Language**
+  - [🇺🇸](https://bitcoin-safe.org/en/),  [🇨🇳](https://bitcoin-safe.org/zh/), [🇪🇸](https://bitcoin-safe.org/es/), [🇯🇵](https://bitcoin-safe.org/ja/), [🇷🇺](https://bitcoin-safe.org/ru/), [🇵🇹](https://bitcoin-safe.org/pt/), [🇧🇷](https://bitcoin-safe.org/pt/), [🇮🇳](https://bitcoin-safe.org/hi/), [🇦🇪](https://bitcoin-safe.org/ar/), [🇮🇹](https://bitcoin-safe.org/it/), [🇫🇷](https://bitcoin-safe.org/fr/), [🇩🇪](https://bitcoin-safe.org/de/), [🇲🇲](https://bitcoin-safe.org/my/), [🇰🇷](https://bitcoin-safe.org/ko/), [🇹🇭](https://bitcoin-safe.org/th/), [🇮🇷](https://bitcoin-safe.org/fa/), [🇵🇱](https://bitcoin-safe.org/pl/), [🇪🇸](https://bitcoin-safe.org/ca/), [🇮🇩](https://bitcoin-safe.org/id/), [🇹🇷](https://bitcoin-safe.org/tr/), [🇺🇦](https://bitcoin-safe.org/en/) (more upon request)
 - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
   - Automatic coin selection within categories
-  - Transaction flow diagrams, visualizing inputs and outputs, click on inputs and output to trace the money flow
+  - [Transaction flow diagrams](https://bitcoin-safe.org/en/features/money-flow-diagram/), visualizing inputs and outputs, click on inputs and output to trace the money flow
 - **Sending** for non-technical users
   - 1-click fee selection via mempool-blocks
   - Automatic merging of utxos when fees are low
-- **Sync & Chat**:
+- **Plugin [Sync & Chat](https://bitcoin-safe.org/en/plugins/sync-chat/)**
   - Encrypted cloud backup (via nostr) of labels
-  - Label synchronization between different computers
-  - Wallet chat and PSBTs sharing between different computers
-- **Fast**: 
-  - Electrum/Esplora server
-  - Compact Block Filters 
+  - [Label synchronization](https://bitcoin-safe.org/en/features/label-sync/) between different computers
+  - [Wallet chat and PSBTs sharing](https://bitcoin-safe.org/en/plugins/sync-chat/) between different computers
 
 
 
-### Available on all platforms
+### [Available on all platforms](https://bitcoin-safe.org/en/features/cross-platform/)
 | ![Windows](docs/tx-win.png) | ![Mac OS X](docs/tx-mac.png) | ![Linux](docs/tx-linux.png) |
 |-----------------------------|-----------------------------|----------------------------|
 | Windows                    | Mac OS X                   | Linux                     |
@@ -41,7 +41,7 @@
   - CSV import for batch transactions
   - Label import and export using [BIP329](https://bip329.org/)
   - Label import from Electrum wallet
-  - Export of the money flow diagram to svg
+  - [Export of the money flow diagram](https://bitcoin-safe.org/en/features/money-flow-diagram/) to svg
   - Drag and drop for Transactions, PSBTs, and CSV files
 
 - **Wallet Features**
@@ -50,49 +50,49 @@
   - Bump fee on transactions (via Replace-by-Fee)
   - Receive faster (via Child Pays For Parents)
   - Encrypted wallet storage
-  - Backup PDF with Descriptor (Text and QR code)
+  - [Backup PDF with Descriptor](https://bitcoin-safe.org/en/features/pdf-export/) (Text and QR code)
   - Message signing via USB and QR
 
-- **Hardware Signer Connectivity**
+- **Support for all major [hardware signers](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/)**
   
-  - MicroSD (files)
-  - USB
-  - QR codes (enhanced QR code detection for Laptop cameras)
-  - Animated QR codes including [Coldcard/BBQr](https://bbqr.org/) and [UR](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md) format
+  - [MicroSD (files)](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/)
+  - [USB](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/)
+  - [QR codes](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/) (enhanced QR code detection for Laptop cameras)
+  - [Animated QR codes](https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/) including [Coldcard/BBQr](https://bbqr.org/) and [UR](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md) format
 
-- **Search and Filtering Options**
+- **[Search and Filtering Options](https://bitcoin-safe.org/en/features/search/)**
   
-  - Fast filtering across txids, utxos, labels, dates, amounts, categories
-  - Search across all open wallets, txids, utxos, labels, dates, amounts, categories
+  - [Fast filtering](https://bitcoin-safe.org/en/features/search/) across txids, utxos, labels, dates, amounts, categories
+  - [Search across all open wallets](https://bitcoin-safe.org/en/features/search/), txids, utxos, labels, dates, amounts, categories
 
-- **Languages**
+- **[Languages](https://bitcoin-safe.org/en/features/multi-language/)**
   
-  - 🇺🇸 English, 🇨🇳 Chinese – 简体中文, 🇪🇸 Spanish – español de España, 🇯🇵 Japanese – 日本語, 🇷🇺 Russian – русский, 🇵🇹 Portuguese – português europeo, 🇧🇷 Portuguese (Brazil) – português do Brasil, 🇮🇳 Hindi – हिन्दी, 🇦🇪 Arabic – العربية, 🇮🇹 Italian – italiano, 🇫🇷 French – Français, 🇩🇪 German – Deutsch, 🇲🇲 Burmese – မြန်မာ, 🇰🇷 Korean – 한국어, 🇹🇭 Thai – ภาษาไทย, 🇮🇷 Persian (Farsi) – فارسی, 🇵🇱 Polish – Polski, 🇪🇸 Catalan – Català, 🇮🇩 Indonesian – Bahasa Indonesia, 🇹🇷 Turkish – Türkçe, 🇺🇦 Ukrainian – Українська (more upon request)
+  - 🇺🇸 [English](https://bitcoin-safe.org/en/), 🇨🇳 [Chinese – 简体中文](https://bitcoin-safe.org/zh/), 🇪🇸 [Spanish – español de España](https://bitcoin-safe.org/es/), 🇯🇵 [Japanese – 日本語](https://bitcoin-safe.org/ja/), 🇷🇺 [Russian – русский](https://bitcoin-safe.org/ru/), 🇵🇹 [Portuguese – português europeo](https://bitcoin-safe.org/pt/), 🇧🇷 [Portuguese (Brazil) – português do Brasil](https://bitcoin-safe.org/pt/), 🇮🇳 [Hindi – हिन्दी](https://bitcoin-safe.org/hi/), 🇦🇪 [Arabic – العربية](https://bitcoin-safe.org/ar/), 🇮🇹 [Italian – italiano](https://bitcoin-safe.org/it/), 🇫🇷 [French – Français](https://bitcoin-safe.org/fr/), 🇩🇪 [German – Deutsch](https://bitcoin-safe.org/de/), 🇲🇲 [Burmese – မြန်မာ](https://bitcoin-safe.org/my/), 🇰🇷 [Korean – 한국어](https://bitcoin-safe.org/ko/), 🇹🇭 [Thai – ภาษาไทย](https://bitcoin-safe.org/th/), 🇮🇷 [Persian (Farsi) – فارسی](https://bitcoin-safe.org/fa/), 🇵🇱 [Polish – Polski](https://bitcoin-safe.org/pl/), 🇪🇸 [Catalan – Català](https://bitcoin-safe.org/ca/), 🇮🇩 [Indonesian – Bahasa Indonesia](https://bitcoin-safe.org/id/), 🇹🇷 [Turkish – Türkçe](https://bitcoin-safe.org/tr/), 🇺🇦 [Ukrainian – Українська](https://bitcoin-safe.org/en/) (more upon request)
 
 - **Transaction / PSBT Creation**
   
   - 1-click fee selection and mempool block preview
   - Automatic merging of utxos when fees are low
   - Highlighting of own addresses 
-  - Address poisoning detection and warning
+  - [Address poisoning detection and warning](https://bitcoin-safe.org/en/features/address-poisoning/)
 
 - **Security and Reliability**
   
-  - No seed generation or storage on mainnet
-  - Seed storage requires a separate hardware signer  
-  - Update notifications and signature verification
+  - [No seed generation or storage on mainnet](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/)
+  - [Seed storage requires a separate hardware signer](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/)  
+  - [Update notifications](https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/) and signature verification
   - Powered by [Bitcoin Development Kit (BDK)](https://github.com/bitcoindevkit/bdk)
 
 - **Ease of Use for Multisig Wallets**
   
-  - Simplified setup for multisig wallets, including step-by-step instructions and PDF backup sheet
-  - Test signing with all hardware signers
-  - Collaborative wallet management including chat and PSBT sharing via nostr and label synchronization between trusted devices
+  - [Simplified setup](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) for multisig wallets, including step-by-step instructions and [PDF backup sheet](https://bitcoin-safe.org/en/features/pdf-export/)
+  - [Test signing](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) with all hardware signers
+  - [Collaborative wallet management](https://bitcoin-safe.org/en/features/collaboration/) including chat and PSBT sharing via nostr and label synchronization between trusted devices
   - Optional custom nostr server 
 
 - **Fast syncing**: 
   - Electrum/Esplora server
-  - Compact Block Filters 
+  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) 
 
 
 ## Installation from Git repository
