@@ -4538,6 +4538,11 @@ Em alternativa, pode difundir via {url}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nova versão disponível {tag}</translation>
 		</message>

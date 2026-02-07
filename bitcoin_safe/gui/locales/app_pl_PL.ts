@@ -4544,6 +4544,11 @@ Możesz też rozgłosić przez {url}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Dostępna nowa wersja {tag}</translation>
 		</message>

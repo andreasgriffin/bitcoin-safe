@@ -4536,6 +4536,11 @@ O bé la pots emetre via {url}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nova versió disponible {tag}</translation>
 		</message>

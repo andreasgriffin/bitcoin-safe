@@ -4535,6 +4535,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>نسخهٔ جدید موجود است {tag}</translation>
 		</message>
