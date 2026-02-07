@@ -1,80 +1,64 @@
 {
-    "VERSION": "0.2.0",
+    "VERSION": "0.3.0",
     "__class__": "QTWallet",
-    "display_balance": {
-        "VERSION": "0.0.1",
-        "__class__": "Balance",
-        "confirmed": 0,
-        "immature": 0,
-        "trusted_pending": 0,
-        "untrusted_pending": 0
+    "address_list_with_toolbar": {
+        "VERSION": "0.0.0",
+        "__class__": "AddressListWithToolbar",
+        "address_list": {
+            "VERSION": "0.0.0",
+            "__class__": "AddressList",
+            "_scroll_position": 0,
+            "hidden_columns": [1, 3],
+            "selected_ids": []
+        },
+        "toolbar_is_visible": true
     },
-    "notified_tx_ids": [], 
+    "history_list_with_toolbar": {
+        "VERSION": "0.0.0",
+        "__class__": "HistListWithToolbar",
+        "hist_list": {
+            "VERSION": "0.0.0",
+            "__class__": "HistList",
+            "_scroll_position": 0,
+            "address_domain": null,
+            "hidden_columns": [1, 6, 0],
+            "selected_ids": []
+        },
+        "toolbar_is_visible": false
+    },
+    "last_tab_title": "History",
+    "notified_tx_ids": [],
     "tutorial_index": null,
     "wallet": {
-        "VERSION": "0.3.0",
+        "VERSION": "0.3.3",
         "__class__": "Wallet",
-        "_blockchain_height": 3080,
-        "_tips": [
-            1,
-            0
-        ],
-        "auto_opportunistic_coin_select": true,
+        "cbf_uuid": "3b4d8ae61bec403dbb24678b6d3f98d5",
         "descriptor_str": "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/<0;1>/*)#2hu8f4yz",
         "gap": 20,
         "id": "demo-public-regtest",
-        "keystores": [
-            {
-                "VERSION": "0.0.2",
-                "__class__": "KeyStore",
-                "derivation_path": "/<0;1>/*",
-                "description": "",
-                "fingerprint": "44250C36",
-                "key_origin": "m/84h/1h/0h",
-                "label": "Signer 1",
-                "mnemonic": "catch favorite drip bench plunge purity rabbit slam crouch globe vapor honey",
-                "network": {
-                    "__enum__": true,
-                    "name": "Network",
-                    "value": "REGTEST"
-                },
-                "xpub": "tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9"
-            }
-        ],
-        "labels": {
-            "VERSION": "0.1.0",
-            "__class__": "Labels",
-            "categories": [
-                "KYC Exchange",
-                "Private"
-            ],
-            "data": {
-                "bcrt1q45jympdfyfluktqmkda5g6vgyyza4ug5h33yj9": {
-                    "VERSION": "0.0.3",
-                    "__class__": "Label",
-                    "category": "Private",
-                    "label": null,
-                    "ref": "bcrt1q45jympdfyfluktqmkda5g6vgyyza4ug5h33yj9",
-                    "timestamp": 1746003358,
-                    "type": "addr"
-                },
-                "bcrt1qqugr58xv76s75e2ta6ty5spq6gxyr7c9nx8x7j": {
-                    "VERSION": "0.0.3",
-                    "__class__": "Label",
-                    "category": "KYC Exchange",
-                    "label": null,
-                    "ref": "bcrt1qqugr58xv76s75e2ta6ty5spq6gxyr7c9nx8x7j",
-                    "timestamp": 1746003358,
-                    "type": "addr"
-                }
+        "initialization_tips": [0, 0],
+        "keystores": [{
+            "VERSION": "0.0.2",
+            "__class__": "KeyStore",
+            "derivation_path": "/<0;1>/*",
+            "description": "",
+            "fingerprint": "44250C36",
+            "key_origin": "m/84h/1h/0h",
+            "label": "Signer 1",
+            "mnemonic": null,
+            "network": {
+                "__enum__": true,
+                "name": "Network",
+                "value": "REGTEST"
             },
-            "default_category": "KYC Exchange"
-        },
+            "xpub": "tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9"
+        }],
         "network": {
             "__enum__": true,
             "name": "Network",
             "value": "REGTEST"
         },
         "refresh_wallet": false
-    }
+    },
+    "warned_change_without_input_txids": []
 }

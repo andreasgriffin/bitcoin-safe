@@ -43,6 +43,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet_util import get_default_categories
 
 from ....i18n import translate
 from ....signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
@@ -151,14 +152,9 @@ class CategoryCore(QObject):
         self.wallet_signals = wallet_signals
         self.signals = signals
 
-    @classmethod
-    def get_default_categories(cls) -> list[str]:
-        """Get default categories."""
-        return [translate("category", "Default")]
-
     def add_default_categories(self) -> None:
         """Add default categories."""
-        for category in self.get_default_categories():
+        for category in get_default_categories():
             self.add(category)
 
     def add(self, category: str):

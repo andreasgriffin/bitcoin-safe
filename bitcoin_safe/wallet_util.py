@@ -105,3 +105,8 @@ class WalletDifferences(list[WalletDifference]):
             return d.type.value
 
         return sorted(self, key=key, reverse=True)[0]
+
+
+def get_default_categories() -> list[str]:
+    """Get default categories."""
+    return [translate("category", "Default")]

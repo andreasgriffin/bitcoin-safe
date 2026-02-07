@@ -77,7 +77,6 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.execute_config import DEMO_MODE, DONATION_ADDRESS, IS_PRODUCTION
-from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
@@ -110,6 +109,7 @@ from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.pyqt6_restart import restart_application
 from bitcoin_safe.util import OptExcInfo
+from bitcoin_safe.wallet_util import get_default_categories
 
 from ...config import UserConfig
 from ...fx import FX
@@ -2161,7 +2161,7 @@ class MainWindow(QMainWindow):
         wallet = Wallet.from_protowallet(
             protowallet,
             self.config,
-            default_category=CategoryCore.get_default_categories()[0],
+            default_category=get_default_categories()[0],
             is_new_wallet=is_new_wallet,
             loop_in_thread=self.loop_in_thread,
         )

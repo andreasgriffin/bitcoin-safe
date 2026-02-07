@@ -47,6 +47,7 @@ from bitcoin_safe.util import (
     list_of_dict_to_jsonline_list,
     list_of_dict_to_jsonlines,
 )
+from bitcoin_safe.wallet_util import get_default_categories
 
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 from .util import fast_version
@@ -264,7 +265,7 @@ class Labels(BaseSaveableClass):
         self,
         data: dict[str, Label] | None = None,
         categories: list[str] | None = None,
-        default_category: str = "default",
+        default_category: str | None = None,
         _snapshots: list[LabelSnapshot] | None = None,
     ) -> None:
         """Initialize instance."""
@@ -274,7 +275,7 @@ class Labels(BaseSaveableClass):
         # "ref": "tb1q6xhxcrzmjwf6ce5jlj08gyrmu4eq3zwpv0ss3f", "label": "Address" }
         self.data: dict[str, Label] = data if data else {}
         self.categories: list[str] = categories if categories else []
-        self.default_category = default_category
+        self.default_category = default_category or get_default_categories()[0]
         self._snapshots: list[LabelSnapshot] = _snapshots if _snapshots else []
 
     def count_address_labels(self):
