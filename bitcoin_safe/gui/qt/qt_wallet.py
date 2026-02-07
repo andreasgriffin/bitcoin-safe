@@ -1008,10 +1008,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
                     data.write_to_filedescriptor(fd)
                     logger.info(f"Exported {tx.txid} to {filename}")
-        else:
-            self.signals.signal_close_tabs_with_txids.emit(
-                [str(tx.transaction.compute_txid()) for tx in removed_txs]
-            )
 
         self.notified_tx_ids -= set([tx.txid for tx in removed_txs])
         # all the lists must be updated
