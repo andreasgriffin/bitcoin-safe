@@ -31,6 +31,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
+from functools import partial
 from typing import Any, cast
 
 import bdkpython as bdk
@@ -300,7 +301,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
         self.utxo_list.signal_selection_changed.connect(
-            lambda *_: self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
+            partial(self.on_input_changed, RefreshCounterKey.UTXO_SELECTION)
         )
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
