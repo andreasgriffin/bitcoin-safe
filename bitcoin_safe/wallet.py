@@ -2599,6 +2599,19 @@ class Wallet(BaseSaveableClass, CacheManager):
             hidden_txs[txid] = tx
         return hidden_txs
 
+    def get_median_time_past(self, window_size: int = 11) -> int | None:
+        """Return the median time past derived from anchored block times."""
+        anchors = self.serialize_persistence.change_set.tx_graph_changeset().anchors
+        times_by_height = {
+            anchor.confirmation_block_time.block_id.height: anchor.confirmation_block_time.confirmation_time
+            for anchor in anchors
+        }
+        if len(times_by_height) < window_size:
+            return None
+        latest_heights = sorted(times_by_height)[-window_size:]
+        latest_times = [times_by_height[height] for height in latest_heights]
+        return int(np.median(latest_times))
+
     def apply_unconfirmed_txs(
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
     ) -> list[bdk.UnconfirmedTx]:
