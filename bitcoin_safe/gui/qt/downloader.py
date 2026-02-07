@@ -65,6 +65,7 @@ class DownloadWorker(QObject):
         self.destination_dir = Path(destination_dir)
         self.proxies = proxies
         self.filename: Path = self.destination_dir / Path(url).name
+        self.highlight_filename: Path | None = None
         self._loop_in_thread = LoopInThread()
 
     def start(self) -> None:
@@ -178,7 +179,8 @@ class Downloader(QWidget):
 
     def showFile(self) -> None:
         """ShowFile."""
-        show_file_in_explorer(filename=self.mythread.filename)
+        filename = self.mythread.highlight_filename or self.mythread.filename
+        show_file_in_explorer(filename=filename)
 
 
 if __name__ == "__main__":

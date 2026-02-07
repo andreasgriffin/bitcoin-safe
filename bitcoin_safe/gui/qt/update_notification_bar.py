@@ -33,6 +33,7 @@ import os
 import platform
 import re
 import shutil
+import tarfile
 import tempfile
 from pathlib import Path
 from typing import Any, cast
@@ -208,6 +209,8 @@ class UpdateNotificationBar(NotificationBar):
         if sig_file_path:
             self.move_and_overwrite(sig_file_path, destination)
 
+        self.post_download_and_verify_action(download_thread)
+
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:
         # convert destination to destination with filename
@@ -224,6 +227,47 @@ class UpdateNotificationBar(NotificationBar):
     def get_download_folder() -> Path:
         """Get download folder."""
         return Path.home() / "Downloads"
+
+    def post_download_and_verify_action(self, download_thread: DownloadWorker) -> None:
+        """Post-download action after successful verification."""
+        download_path = download_thread.filename
+        if self._is_appimage_tarball(download_path):
+            try:
+                extracted_files = self._extract_tarball(download_path, download_path.parent)
+                extracted_appimage = self._select_appimage_file(extracted_files)
+                if extracted_appimage and extracted_appimage.exists():
+                    download_thread.highlight_filename = extracted_appimage
+            except (tarfile.TarError, OSError, ValueError) as exc:
+                logger.error("Failed to extract update archive %s: %s", download_path, exc)
+                Message(self.tr("Failed to extract update archive."), type=MessageType.Error)
+
+    @staticmethod
+    def _is_appimage_tarball(download_path: Path) -> bool:
+        return download_path.name.lower().endswith("appimage.tar.gz")
+
+    @staticmethod
+    def _is_within_directory(base_dir: Path, target_path: Path) -> bool:
+        base_dir_resolved = base_dir.resolve()
+        target_path_resolved = target_path.resolve(strict=False)
+        return base_dir_resolved == target_path_resolved or base_dir_resolved in target_path_resolved.parents
+
+    @staticmethod
+    def _select_appimage_file(paths: list[Path]) -> Path | None:
+        appimage_paths = [path for path in paths if path.name.lower().endswith(".appimage")]
+        if not appimage_paths:
+            return None
+        return max(appimage_paths, key=lambda path: path.stat().st_size)
+
+    def _extract_tarball(self, archive_path: Path, destination: Path) -> list[Path]:
+        destination.mkdir(parents=True, exist_ok=True)
+        with tarfile.open(archive_path, "r:*") as tar:
+            members = tar.getmembers()
+            for member in members:
+                member_path = destination / member.name
+                if not self._is_within_directory(destination, member_path):
+                    raise ValueError(f"Unsafe tar entry: {member.name}")
+            tar.extractall(destination)
+        return [(destination / member.name).resolve() for member in members if member.isfile()]
 
     def get_filtered_assets(self, assets: list[Asset]) -> list[Asset]:
         """Get filtered assets."""
