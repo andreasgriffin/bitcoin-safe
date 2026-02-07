@@ -29,6 +29,8 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, cast
 
 import bdkpython as bdk
@@ -38,7 +40,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, 
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import clean_list, time_logger
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QPushButton, QSplitter, QWidget
 
@@ -80,6 +82,31 @@ from ..utxo_list import UTXOList, UtxoListWithToolbar
 from .recipients import RecipientBox, RecipientWidget
 
 logger = logging.getLogger(__name__)
+
+
+class RefreshCounterKey(str, Enum):
+    FEE_SPIN = "fee_spin"
+    UTXO_SELECTION = "utxo_selection"
+    CATEGORY_SELECTION = "category_selection"
+    AMOUNT_CHANGE = "amount_change"
+
+
+@dataclass
+class RefreshCounters:
+    counts: dict[RefreshCounterKey, int] = field(
+        default_factory=lambda: {key: 0 for key in RefreshCounterKey},
+    )
+
+    def bump(self, key: RefreshCounterKey) -> None:
+        if key in self.counts:
+            self.counts[key] += 1
+
+    def snapshot(self) -> dict[str, int]:
+        return {key.value: count for key, count in self.counts.items()}
+
+    def reset(self) -> None:
+        for key in self.counts:
+            self.counts[key] = 0
 
 
 class UITx_Creator(UITx_Base, BaseSaveableClass):
@@ -134,6 +161,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self._ui_well_defined = False
         self.initial_tx_ui_infos = tx_ui_infos
         self._signal_tracker_wallet_signals = SignalTracker()
+        self._refresh_counters: RefreshCounters | None = None
+        self._refresh_counters_enabled = False
+        # Track input-change reasons so fee/amount recomputation happens once per burst.
+        self._input_changes_pending: set[RefreshCounterKey] = set()
+        self._input_change_timer = QTimer(self)
+        self._input_change_timer.setSingleShot(True)
+        self._input_change_timer.timeout.connect(self._apply_input_changed)
 
         if category_list:
             self.category_list = category_list
@@ -265,7 +299,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.coin_selection_checkbox_state_change
         )
         self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
-        self.utxo_list.signal_selection_changed.connect(self.on_input_changed)
+        self.utxo_list.signal_selection_changed.connect(
+            lambda *_: self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
+        )
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
         self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
@@ -276,6 +312,23 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         # must be after setting signals, to trigger signals when adding a recipient
         self.recipients.add_recipient()
+
+    def _bump_refresh_counter(self, key: RefreshCounterKey) -> None:
+        if self._refresh_counters is None:
+            return
+        self._refresh_counters.bump(key)
+
+    def enable_refresh_counters(self) -> None:
+        if self._refresh_counters_enabled:
+            return
+        self._refresh_counters_enabled = True
+        if self._refresh_counters is None:
+            self._refresh_counters = RefreshCounters()
+
+    def refresh_counter_snapshot(self) -> dict[str, int]:
+        if self._refresh_counters is None:
+            return {}
+        return self._refresh_counters.snapshot()
 
     def reset_splitter_sizes(self):
         """Reset splitter sizes."""
@@ -326,8 +379,20 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             fallback_confirmation_status=(TxConfirmationStatus.DRAFT),
         )
 
-    def on_input_changed(self):
+    def on_input_changed(self, reason: RefreshCounterKey = RefreshCounterKey.UTXO_SELECTION) -> None:
         """On input changed."""
+        if not self._input_change_timer.isActive():
+            self._input_change_timer.start(50)
+        self._input_changes_pending.add(reason)
+
+    def _apply_input_changed(self) -> None:
+        """Apply input changed."""
+        if not self._input_changes_pending:
+            return
+        self._input_changes_pending.clear()
+        if self._refresh_counters_enabled and self._refresh_counters:
+            for reason in self._input_changes_pending:
+                self._refresh_counters.bump(reason)
         fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
         # set max values
         fee_info = self.estimate_fee_info(fee_rate=fee_rate)
@@ -387,7 +452,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def on_fee_rate_change(self, fee_rate: float) -> None:
         """On fee rate change."""
-        self.on_input_changed()
+        self.on_input_changed(RefreshCounterKey.FEE_SPIN)
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
@@ -402,7 +467,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
 
         logger.debug(f"{self.__class__.__name__} update_with_filter")
-        self.on_input_changed_and_categories()
+        self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
         self.utxo_list.set_outpoints(self.get_outpoints())
 
     def update_recipients_totals(self):
@@ -466,7 +531,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
         """On signal clicked send max button."""
-        self.on_input_changed()
+        self.on_input_changed(RefreshCounterKey.AMOUNT_CHANGE)
 
     def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
         """On signal address text changed."""
@@ -481,26 +546,27 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if self.column_inputs.checkBox_auto_opportunistic_coin_select.isChecked():
             self.coin_selection_checkbox_state_change()
         else:
-            self.on_input_changed_and_categories()  # this hides rows in utxo_list
+            self.on_input_changed_and_categories(RefreshCounterKey.CATEGORY_SELECTION)
+            # this hides rows in utxo_list
             self.utxo_list.restrict_selection_to_non_hidden_rows()
 
     def on_recipients_added(self, recipient_tab_widget: RecipientBox):
         """On recipients added."""
         recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
         recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
-        self.on_input_changed_and_categories()
+        self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
 
     def on_recipients_removed(self):
         """On recipients removed."""
-        self.on_input_changed_and_categories()
+        self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
 
     def on_signal_amount_changed(self, recipient_widget: Any):
         """On signal amount changed."""
-        self.on_input_changed()
+        self.on_input_changed(RefreshCounterKey.AMOUNT_CHANGE)
 
-    def on_input_changed_and_categories(self):
+    def on_input_changed_and_categories(self, reason: RefreshCounterKey = RefreshCounterKey.UTXO_SELECTION):
         """On input changed and categories."""
-        self.on_input_changed()
+        self.on_input_changed(reason)
         self.update_categories()
 
     def update_high_fee_warning_label(self):
@@ -564,7 +630,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.category_list.select_row_by_clipboard(
             self.wallet.labels.get_default_category(), scroll_to_last=True
         )
-        self.on_input_changed_and_categories()
+        self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
 
     def create_tx(self) -> None:
         """Create tx."""

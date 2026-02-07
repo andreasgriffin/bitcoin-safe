@@ -88,7 +88,8 @@ hatchling="1.26.3"          # dependency of pyinstaller
 [tool.pytest.ini_options]
 markers = [
     "marker_qt_1: marks tests as marker_qt_1 (deselect by default)",
-    "marker_qt_2: marks tests as marker_qt_2 (deselect by default)"
+    "marker_qt_2: marks tests as marker_qt_2 (deselect by default)",
+    "marker_qt_3: marks tests as marker_qt_3 (deselect by default)"
 ]
 
 

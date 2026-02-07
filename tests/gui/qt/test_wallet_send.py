@@ -36,6 +36,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
+from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
@@ -45,6 +46,10 @@ from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.mempool_manager import TxPrio
+from bitcoin_safe.psbt_util import SimplePSBT
+from bitcoin_safe.pythonbdk_types import OutPoint, TxOut, robust_address_str_from_txout
+from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.tx import TxUiInfos
 
 from ...faucet import Faucet
@@ -60,6 +65,37 @@ from .helpers import (
 SEND_TEST_WALLET_FUND_AMOUNT = 10000000
 
 logger = logging.getLogger(__name__)
+
+
+def _rounded(value: float, decimals: int) -> float:
+    return round(value, decimals)
+
+
+def _close_to(value: int, expected: int, tolerance: int) -> bool:
+    return abs(value - expected) <= tolerance
+
+
+def _outpoints_from_psbt(psbt) -> set[OutPoint]:
+    return {OutPoint.from_bdk(txin.previous_output) for txin in psbt.extract_tx().input()}
+
+
+def _outputs_by_address(psbt, network) -> dict[str, int]:
+    output_map: dict[str, int] = {}
+    for output in psbt.extract_tx().output():
+        address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
+        output_map[address] = output.value.to_sat()
+    return output_map
+
+
+def _set_category(
+    qt_wallet: QTWallet,
+    address: str,
+    category: str,
+) -> None:
+    qt_wallet.wallet.labels.set_addr_category(address, category, timestamp="now")
+    qt_wallet.wallet_signals.updated.emit(
+        UpdateFilter(addresses=[address], categories=[category], reason=UpdateFilterReason.CategoryChange)
+    )
 
 
 @pytest.mark.marker_qt_2
@@ -323,3 +359,254 @@ def test_wallet_send(
 
         # end
         shutter.save(main_window)
+
+
+@pytest.mark.marker_qt_3
+def test_send_tab_complex_interactions(
+    qapp: QApplication,
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: TestConfig,
+    faucet: Faucet,
+    wallet_file: str = "send_test.wallet",
+) -> None:
+    """Test send tab interactions: recipients, fee, PSBT, categories, max, reset, edit."""
+    frame = inspect.currentframe()
+    assert frame
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
+        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+
+        shutter.save(main_window)
+
+        temp_dir = Path(tempfile.mkdtemp()) / wallet_file
+        wallet_path = Path("tests") / "data" / wallet_file
+        shutil.copy(str(wallet_path), str(temp_dir))
+
+        qt_wallet = main_window.open_wallet(str(temp_dir))
+        assert isinstance(qt_wallet, QTWallet)
+        shutter.save(main_window)
+
+        wallet = qt_wallet.wallet
+        receiving_addresses = wallet.get_receiving_addresses()
+        assert len(receiving_addresses) >= 3
+        kyc_address = receiving_addresses[0]
+        private_address = receiving_addresses[1]
+        unused_recipient_address = receiving_addresses[2]
+        category_recipient_address = str(wallet.get_address(force_new=True).address)
+
+        _set_category(qt_wallet, kyc_address, "KYC")
+        _set_category(qt_wallet, private_address, "Private")
+        shutter.save(main_window)
+
+        fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=250_000, address=kyc_address)
+        fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=150_000, address=private_address)
+
+        qtbot.waitUntil(lambda: wallet.get_addr_balance(kyc_address).total > 0, timeout=20_000)
+        qtbot.waitUntil(lambda: wallet.get_addr_balance(private_address).total > 0, timeout=20_000)
+        shutter.save(main_window)
+
+        qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
+        uitx_creator = qt_wallet.uitx_creator
+        uitx_creator.enable_refresh_counters()
+        shutter.save(main_window)
+
+        fee_spin = uitx_creator.column_fee.fee_group.spin_fee_rate
+        fee_decimals = fee_spin.decimals()
+        expected_fee_rate = uitx_creator.mempool_manager.get_prio_fee_rates()[TxPrio.low]
+        # Default fee rate should match the mempool "low" preset shown to the user.
+        assert _rounded(fee_spin.value(), fee_decimals) == _rounded(expected_fee_rate, fee_decimals)
+        shutter.save(main_window)
+
+        recipients = uitx_creator.recipients
+        # Start with one recipient and verify add/remove paths update the UI list.
+        assert recipients.count() == 1
+        recipients.add_recipient_button.click()
+        recipients.add_recipient_button.click()
+        qtbot.waitUntil(lambda: recipients.count() == 3)
+        shutter.save(main_window)
+
+        recipient_boxes = recipients.get_recipient_group_boxes()
+        assert len(recipient_boxes) == 3
+        close_button = recipient_boxes[0].notification_bar.closeButton
+        close_button.click()
+        qtbot.waitUntil(lambda: recipients.count() == 2)
+        shutter.save(main_window)
+
+        recipient_boxes = recipients.get_recipient_group_boxes()
+        assert len(recipient_boxes) == 2
+
+        # Mix one wallet-owned recipient with one external address.
+        external_address = str(faucet.wallet.get_address().address)
+        recipient_boxes[0].address = unused_recipient_address
+        recipient_boxes[1].address = external_address
+
+        recipient_boxes[1].amount = 50_000
+        shutter.save(main_window)
+
+        uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
+        shutter.save(main_window)
+
+        utxos = wallet.get_all_utxos()
+        kyc_utxos = [utxo for utxo in utxos if utxo.address == kyc_address]
+        private_utxos = [utxo for utxo in utxos if utxo.address == private_address]
+        assert kyc_utxos
+        assert private_utxos
+
+        selected_outpoint = kyc_utxos[0].outpoint
+        uitx_creator.utxo_list.select_rows(
+            [selected_outpoint],
+            uitx_creator.utxo_list.key_column,
+            role=MyItemDataRole.ROLE_KEY,
+            scroll_to_last=True,
+        )
+
+        qtbot.waitUntil(lambda: set(uitx_creator.utxo_list.get_selected_outpoints()) == {selected_outpoint})
+        shutter.save(main_window)
+
+        # Set fee rate explicitly to verify PSBT fee rate propagation.
+        fee_rate_target = 2.0
+        fee_spin.setValue(fee_rate_target)
+        qtbot.wait(100)
+        shutter.save(main_window)
+
+        # Single send-max should show "Max ≈" and compute from selected input - fee - fixed amount.
+        recipient_boxes[0].recipient_widget.send_max_checkbox.click()
+        assert recipient_boxes[0].recipient_widget.send_max_checkbox.text() == "Send max"
+        fee_info = uitx_creator.estimate_fee_info(fee_rate=fee_spin.value())
+        expected_single_max = (
+            sum(utxo.value for utxo in kyc_utxos[:1]) - recipient_boxes[1].amount - fee_info.fee_amount
+        )
+        # Max amount should equal selected input minus fixed recipient amount and fee.
+        qtbot.waitUntil(lambda: _close_to(recipient_boxes[0].amount, expected_single_max, 200))
+        qtbot.waitUntil(lambda: "Max ≈" in recipient_boxes[0].recipient_widget.amount_spin_box.text())
+        shutter.save(main_window)
+
+        # Disable max and set explicit amount; UI text should drop the "Max ≈" indicator.
+        recipient_boxes[0].recipient_widget.send_max_checkbox.click()
+        recipient_boxes[0].amount = 60_000
+        assert recipient_boxes[0].amount == 60_000
+        qtbot.waitUntil(lambda: "Max ≈" not in recipient_boxes[0].recipient_widget.amount_spin_box.text())
+        shutter.save(main_window)
+
+        # Dual send-max should split the remaining amount evenly between recipients.
+        recipient_boxes[0].recipient_widget.send_max_checkbox.click()
+        recipient_boxes[1].recipient_widget.send_max_checkbox.click()
+        fee_info = uitx_creator.estimate_fee_info(fee_rate=fee_spin.value())
+        total_input = sum(utxo.value for utxo in kyc_utxos[:1])
+        qtbot.waitUntil(lambda: recipient_boxes[0].amount > 0)
+        qtbot.waitUntil(lambda: recipient_boxes[0].amount == recipient_boxes[1].amount)
+        combined = recipient_boxes[0].amount + recipient_boxes[1].amount + fee_info.fee_amount
+        # Max split should consume the input minus fee, leaving at most rounding dust.
+        assert total_input - combined >= 0
+        assert total_input - combined <= 200
+        max_amounts = (recipient_boxes[0].amount, recipient_boxes[1].amount)
+        expected_split = (total_input - fee_info.fee_amount) // 2
+        assert _close_to(recipient_boxes[0].amount, expected_split, 200)
+        assert _close_to(recipient_boxes[1].amount, expected_split, 200)
+        qtbot.waitUntil(lambda: "Max ≈" in recipient_boxes[0].recipient_widget.amount_spin_box.text())
+        qtbot.waitUntil(lambda: "Max ≈" in recipient_boxes[1].recipient_widget.amount_spin_box.text())
+        expected_text = f"Max ≈ {Satoshis(recipient_boxes[0].amount, wallet.network)}"
+        assert recipient_boxes[0].recipient_widget.amount_spin_box.text() == expected_text
+        assert recipient_boxes[1].recipient_widget.amount_spin_box.text() == expected_text
+        shutter.save(main_window)
+
+        with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=20_000):
+            uitx_creator.button_ok.click()
+        shutter.save(main_window)
+
+        ui_tx_viewer = main_window.tab_wallets.currentNode().data
+        assert isinstance(ui_tx_viewer, UITx_Viewer)
+        assert ui_tx_viewer.fee_info
+        # Fee rate displayed in the PSBT view should match the selected fee spin value.
+        assert _rounded(ui_tx_viewer.fee_info.fee_rate(), fee_decimals) == _rounded(
+            fee_rate_target, fee_decimals
+        )
+        psbt = ui_tx_viewer.data.data
+        assert psbt
+        # PSBT fee should reflect the same fee value shown in the viewer.
+        assert ui_tx_viewer.fee_info.fee_amount == psbt.fee()
+
+        # PSBT should spend only the manually selected UTXO.
+        psbt_outpoints = _outpoints_from_psbt(psbt)
+        assert psbt_outpoints == {selected_outpoint}
+
+        outputs = _outputs_by_address(psbt, network=wallet.network)
+        # With both recipients on send-max, there should be no change output.
+        assert set(outputs.keys()) == {unused_recipient_address, external_address}
+        # Outputs should match the max-split amounts shown in the UI (tolerate rounding).
+        assert _close_to(outputs[unused_recipient_address], outputs[external_address], 200)
+        assert _close_to(outputs[unused_recipient_address], max_amounts[0], 200)
+        assert _close_to(outputs[external_address], max_amounts[1], 200)
+        shutter.save(main_window)
+
+        ui_tx_viewer.button_edit_tx.click()
+        qtbot.waitUntil(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.uitx_creator, timeout=10_000)
+        shutter.save(main_window)
+
+        edited_creator = qt_wallet.uitx_creator
+        edited_fee_spin = edited_creator.column_fee.fee_group.spin_fee_rate
+        # Edit should restore fee rate and selected inputs from the PSBT (excluding change output).
+        assert _rounded(edited_fee_spin.value(), fee_decimals) == _rounded(fee_spin.value(), fee_decimals)
+        assert set(edited_creator.utxo_list.get_selected_outpoints()) == {selected_outpoint}
+
+        edited_recipients = edited_creator.recipients.recipients
+        edited_addresses = {recipient.address for recipient in edited_recipients}
+        assert unused_recipient_address in edited_addresses
+        assert external_address in edited_addresses
+        for change_address in wallet.get_change_addresses():
+            assert change_address not in edited_addresses
+
+        # Reset should collapse recipients and clear coin-selection state.
+        edited_creator.button_clear.click()
+        qtbot.waitUntil(lambda: edited_creator.recipients.count() == 1)
+        assert not edited_creator.column_inputs.checkBox_manual_coin_select.isChecked()
+        assert edited_creator.utxo_list.get_selected_outpoints() == []
+        shutter.save(main_window)
+
+        edited_creator.column_inputs.checkBox_manual_coin_select.setChecked(False)
+        edited_creator.category_list.select_row_by_clipboard("Private")
+        qtbot.wait(100)
+        shutter.save(main_window)
+
+        recipient_boxes = edited_creator.recipients.get_recipient_group_boxes()
+        assert len(recipient_boxes) == 1
+        recipient_boxes[0].address = category_recipient_address
+        recipient_boxes[0].amount = 25_000
+        qtbot.wait(100)
+        qtbot.waitUntil(
+            lambda: wallet.labels.get_category(category_recipient_address) == "Private", timeout=10_000
+        )
+        shutter.save(main_window)
+
+        edited_creator.category_list.select_row_by_clipboard("KYC")
+        qtbot.waitUntil(
+            lambda: wallet.labels.get_category(category_recipient_address) == "KYC", timeout=10_000
+        )
+        shutter.save(main_window)
+
+        with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=20_000):
+            edited_creator.button_ok.click()
+        shutter.save(main_window)
+
+        ui_tx_viewer = main_window.tab_wallets.currentNode().data
+        assert isinstance(ui_tx_viewer, UITx_Viewer)
+        psbt = ui_tx_viewer.data.data
+        assert psbt
+
+        simple_psbt = SimplePSBT.from_psbt(psbt)
+        input_outpoints = {OutPoint.from_bdk(inp.txin.previous_output) for inp in simple_psbt.inputs}
+        wallet_utxos = {OutPoint.from_bdk(utxo.outpoint): utxo for utxo in wallet.get_all_utxos()}
+        input_categories = {
+            wallet.labels.get_category(wallet_utxos[outpoint].address)
+            for outpoint in input_outpoints
+            if outpoint in wallet_utxos
+        }
+        # Category-filtered send should pull inputs from the selected category only.
+        assert input_categories == {"KYC"}
+
+        refresh_counts = uitx_creator.refresh_counter_snapshot()
+        logger.info("send_tab_refresh_counts=%s", refresh_counts)
