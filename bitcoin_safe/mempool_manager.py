@@ -335,8 +335,16 @@ class MempoolManager(QObject):
 
             self.signal_data_updated.emit()
 
+    def _loop_is_running(self) -> bool:
+        """Check whether the background asyncio loop is running."""
+        loop = self.loop_in_thread._loop
+        return loop is not None and loop.is_running()
+
     def fetch_block_tip_height(self) -> int:
         """Fetch block tip height."""
+        if not self._loop_is_running():
+            logger.warning("Loop is not running; skipping mempool tip height fetch.")
+            return 0
         response = self.loop_in_thread.run_foreground(
             fetch_from_url(
                 f"{self.network_config.mempool_url}api/blocks/tip/height",
