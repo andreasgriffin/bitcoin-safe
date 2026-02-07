@@ -168,7 +168,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self._input_changes_pending: set[RefreshCounterKey] = set()
         self._input_change_timer = QTimer(self)
         self._input_change_timer.setSingleShot(True)
-        self._input_change_timer.timeout.connect(self._apply_input_changed)
+        self.signal_tracker.connect(
+            cast(SignalProtocol, self._input_change_timer.timeout), self._apply_input_changed
+        )
 
         if category_list:
             self.category_list = category_list
@@ -233,8 +235,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             fx=self.fx,
             parent=self,
         )
-        self.column_inputs.checkBox_auto_opportunistic_coin_select.clicked.connect(
-            self.on_checkBox_opportunistic_coin_select
+        self.signal_tracker.connect(
+            cast(SignalProtocol, self.column_inputs.checkBox_auto_opportunistic_coin_select.clicked),
+            self.on_checkBox_opportunistic_coin_select,
         )
         self.splitter.addWidget(self.column_inputs)
 
@@ -242,7 +245,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self._cache_last_category: str | None = None
         self.recipients = self.column_recipients.recipients
 
-        self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
+        self.signal_tracker.connect(
+            self.recipients.signal_clicked_send_max_button, self.on_signal_amount_changed
+        )
 
         self.column_fee = ColumnFee(
             wallet_functions=self.wallet_functions,
@@ -269,16 +274,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
             self.button_ok.setDefault(True)
-            self.button_ok.clicked.connect(self.create_tx)
+            self.signal_tracker.connect(cast(SignalProtocol, self.button_ok.clicked), self.create_tx)
 
         self.button_back = QPushButton()
         self.button_back.setIcon(svg_tools.get_QIcon("bi--arrow-left-short.svg"))
         self.button_box.addButton(self.button_back, QDialogButtonBox.ButtonRole.ResetRole)
-        self.button_back.clicked.connect(self.navigate_tab_history_backward)
+        self.signal_tracker.connect(
+            cast(SignalProtocol, self.button_back.clicked), self.navigate_tab_history_backward
+        )
 
         self.button_clear = self.button_box.addButton(QDialogButtonBox.StandardButton.Reset)
         if self.button_clear:
-            self.button_clear.clicked.connect(self.clear_ui)
+            self.signal_tracker.connect(cast(SignalProtocol, self.button_clear.clicked), self.clear_ui)
 
         self._layout.addWidget(HLine())
         self._layout.addWidget(self.button_box)
@@ -296,20 +303,27 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.set_utxo_list_visible(manual_coin_select)
 
         # signals
-        self.column_inputs.checkBox_manual_coin_select.checkStateChanged.connect(
-            self.coin_selection_checkbox_state_change
+        self.signal_tracker.connect(
+            cast(SignalProtocol, self.column_inputs.checkBox_manual_coin_select.checkStateChanged),
+            self.coin_selection_checkbox_state_change,
         )
-        self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
-        self.utxo_list.signal_selection_changed.connect(
-            partial(self.on_input_changed, RefreshCounterKey.UTXO_SELECTION)
+        self.signal_tracker.connect(
+            cast(SignalProtocol, self.mempool_manager.signal_data_updated),
+            self.update_fee_rate_to_mempool,
         )
-        self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
-        self.recipients.signal_added_recipient.connect(self.on_recipients_added)
-        self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
-        self.category_list.signal_selection_changed.connect(self.on_category_selection_changed)
-        self.column_fee.fee_group.signal_fee_rate_change.connect(self.on_fee_rate_change)
-        self.signals.language_switch.connect(self.updateUi)
-        self.signals.currency_switch.connect(self.update_all_totals)
+        self.signal_tracker.connect(
+            self.utxo_list.signal_selection_changed,
+            partial(self.on_input_changed, RefreshCounterKey.UTXO_SELECTION),
+        )
+        self.signal_tracker.connect(self.recipients.signal_amount_changed, self.on_signal_amount_changed)
+        self.signal_tracker.connect(self.recipients.signal_added_recipient, self.on_recipients_added)
+        self.signal_tracker.connect(self.recipients.signal_removed_recipient, self.on_recipients_removed)
+        self.signal_tracker.connect(
+            self.category_list.signal_selection_changed, self.on_category_selection_changed
+        )
+        self.signal_tracker.connect(self.column_fee.fee_group.signal_fee_rate_change, self.on_fee_rate_change)
+        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_all_totals)
 
         # must be after setting signals, to trigger signals when adding a recipient
         self.recipients.add_recipient()
@@ -553,8 +567,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def on_recipients_added(self, recipient_tab_widget: RecipientBox):
         """On recipients added."""
-        recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
-        recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
+        self.signal_tracker.connect(
+            recipient_tab_widget.signal_clicked_send_max_button, self.on_signal_clicked_send_max_button
+        )
+        self.signal_tracker.connect(
+            recipient_tab_widget.signal_address_text_changed, self.on_signal_address_text_changed
+        )
         self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
 
     def on_recipients_removed(self):
@@ -1150,7 +1168,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def close(self):
         """Close."""
-        self.signal_tracker.disconnect_all()
+        closed = super().close()
         self._signal_tracker_wallet_signals.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
 
@@ -1158,4 +1176,4 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.category_list.close()
         self.utxo_list_with_toolbar.close()
         self.setParent(None)
-        return super().close()
+        return closed

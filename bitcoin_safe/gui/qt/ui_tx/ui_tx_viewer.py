@@ -412,12 +412,17 @@ class UITx_Viewer(UITx_Base):
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.reload)
-        self.signals.currency_switch.connect(self.update_all_totals)
-        self.utxo_list.signal_finished_update.connect(self.update_all_totals)
-        self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
-        self.column_fee.fee_group.mempool_buttons.signal_cpfp_icon.connect(self._on_cpfp_icon)
-        self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon.connect(
-            self._on_edit_with_fee_icon
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_all_totals)
+        self.signal_tracker.connect(self.utxo_list.signal_finished_update, self.update_all_totals)
+        self.signal_tracker.connect(
+            self.column_fee.fee_group.mempool_buttons.signal_rbf_icon, self._on_rbf_icon
+        )
+        self.signal_tracker.connect(
+            self.column_fee.fee_group.mempool_buttons.signal_cpfp_icon, self._on_cpfp_icon
+        )
+        self.signal_tracker.connect(
+            self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon,
+            self._on_edit_with_fee_icon,
         )
 
     def _on_lang_switch(self):
@@ -490,7 +495,10 @@ class UITx_Viewer(UITx_Base):
         if not IS_PRODUCTION and not DEMO_MODE:
             button = QPushButton()
             button.setText("refresh")
-            button.clicked.connect(partial(self.reload, UpdateFilter(refresh_all=True)))
+            self.signal_tracker.connect(
+                cast(SignalProtocol, button.clicked),
+                partial(self.reload, UpdateFilter(refresh_all=True)),
+            )
             self.header_button_group.addButton(button)
 
         for i in range(self.splitter.count()):
@@ -505,7 +513,7 @@ class UITx_Viewer(UITx_Base):
             self.header_button_group.addButton(button)
             if not widget.isHidden():
                 self.header_button_group.setCurrentButton(button)
-            button.clicked.connect(partial(self.focus_tab, widget))
+            self.signal_tracker.connect(cast(SignalProtocol, button.clicked), partial(self.focus_tab, widget))
 
     def focus_tab(self, focus_widget: BaseColumn):
         """Focus tab."""
@@ -1043,8 +1051,8 @@ class UITx_Viewer(UITx_Base):
         # connect signals
         for importers in signature_importers.values():
             for importer in importers:
-                importer.signal_signature_added.connect(self.import_trusted_psbt)
-                importer.signal_final_tx_received.connect(self.tx_received)
+                self.signal_tracker.connect(importer.signal_signature_added, self.import_trusted_psbt)
+                self.signal_tracker.connect(importer.signal_final_tx_received, self.tx_received)
         return signature_importers
 
     def update_tx_progress(self) -> TxSigningSteps | None:
@@ -1518,10 +1526,10 @@ class UITx_Viewer(UITx_Base):
 
     def close(self):
         """Close."""
+        closed = super().close()
         self.column_sankey.close()
         self.column_recipients.close()
-        self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)
         self.setParent(None)
-        return super().close()
+        return closed

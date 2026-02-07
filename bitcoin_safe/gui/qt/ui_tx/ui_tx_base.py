@@ -339,6 +339,7 @@ class UITx_Base(SearchableTab):
 
     def close(self) -> bool:
         """Close."""
+        self.signal_tracker.disconnect_all()
         if self._owns_loop_in_thread:
             self.loop_in_thread.stop()
         return super().close()
