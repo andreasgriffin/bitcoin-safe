@@ -71,7 +71,9 @@ def test_label_export():
         + f'"{data[0].VERSION}"'
         + ', "__class__": "Label", "category": "category 0", "label": "my label", "ref": "some_address", "timestamp": '
         + f"{timestamp}"
-        + ', "type": "addr"}}, "default_category": "default"}'
+        + ', "type": "addr"}}, "default_category": '
+        + f'"{labels.default_category}"'
+        + "}"
     )
 
 
