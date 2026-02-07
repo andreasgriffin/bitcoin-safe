@@ -1842,7 +1842,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Feedback</source>
-			<translation>&amp;Feedback</translation>
+			<translation>&amp; Feedback</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -1897,7 +1897,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Nostr DM</source>
-			<translation>&amp;Nostr DM</translation>
+			<translation>&amp; Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -4166,7 +4166,6 @@ Signatures:
 
 </source>
 			<translation>Transaktion mit dem privaten Schlüssel von {label}
-signiert
 
 Signaturen:
 {signatures}
@@ -4554,6 +4553,11 @@ Alternativ kannst du über {url} senden</translation>
 		<message>
 			<source>Could not verify the download. Please try again later.</source>
 			<translation>Der Download konnte nicht verifiziert werden. Bitte versuchen Sie es später noch einmal.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

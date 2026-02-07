@@ -680,7 +680,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnFee</name>
 		<message>
 			<source>Priority</source>
-			<translation>优先</translation>
+			<translation>优先等级</translation>
 		</message>
 	</context>
 	<context>
@@ -697,7 +697,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>ColumnInputs</name>
 		<message>
 			<source>Select specific UTXOs</source>
-			<translation>选择特定的 UTXOs</translation>
+			<translation>选择特定的 UTXO</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -968,7 +968,7 @@ Default 20</source>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>想要探讨更大金额的捐赠或合作？请点击下方联系按钮与我们取得联系。</translation>
+			<translation>想要探讨更大金额的打赏或合作？请点击下方联系按钮与我们取得联系。</translation>
 		</message>
 	</context>
 	<context>
@@ -1081,7 +1081,7 @@ since the final size of the transaction is unknown.</source>
 		<name>FeeGroup</name>
 		<message>
 			<source>in ~{n}. Block</source>
-			<translation>大约在 {n} 个区块内</translation>
+			<translation>在大约 {n} 个区块之内</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1733,12 +1733,12 @@ Do you want to proceed anyway?</source>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} hours</source>
-			<translation>大约在 {t} 个小时内</translation>
+			<translation>在大约 {t} 个小时之内</translation>
 		</message>
 		<name>LabelTimeEstimation</name>
 		<message>
 			<source>~in {t} min</source>
-			<translation>大约在 {t} 分钟内</translation>
+			<translation>在大约 {t} 分钟之内</translation>
 		</message>
 	</context>
 	<context>
@@ -1816,7 +1816,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Donate</source>
-			<translation>&amp;捐赠</translation>
+			<translation>&amp;打赏</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2936,7 +2936,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>PaymentButton</name>
 		<message>
 			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>在发票超时之前未收到浏览器回调。请重试捐赠。</translation>
+			<translation>在发票超时之前未收到浏览器回调。请重试打赏。</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -2951,7 +2951,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>PaymentButton</name>
 		<message>
 			<source>Please choose a donation amount and a currency.</source>
-			<translation>请选择捐赠金额和币种。</translation>
+			<translation>请选择打赏金额和币种。</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -2966,7 +2966,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>PaymentButton</name>
 		<message>
 			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>无法连接到捐赠服务器。您可以向以下地址捐赠：{address}</translation>
+			<translation>无法连接到捐赠服务器。您可以向以下地址打赏：{address}</translation>
 		</message>
 	</context>
 	<context>
@@ -3409,7 +3409,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Amount</source>
-			<translation>数额</translation>
+			<translation>金额</translation>
 		</message>
 		<name>RecipientWidget</name>
 		<message>
@@ -4547,6 +4547,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>新版本可用 {tag}</translation>
 		</message>
@@ -4575,7 +4580,7 @@ Or you can broadcast via {url}</source>
 		<name>UtxoListWithToolbar</name>
 		<message>
 			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>{amount} 已选择 ({number} 个 UTXO)</translation>
+			<translation>{amount} 已选定（{number} 个 UTXO）</translation>
 		</message>
 	</context>
 	<context>
@@ -4643,7 +4648,7 @@ Or you can broadcast via {url}</source>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
-			<translation>拖动以浏览时间轴。单击或右键单击交易、txid 或 UTXO 以查看选项。</translation>
+			<translation>拖动以浏览时间轴。单击或右键单击交易、交易 ID 或 UTXO 以查看选项。</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -5496,10 +5501,10 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24个单词复制到这张纸上。&lt;br/&gt;
+			<translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
                 2. 沿着下方的折线折叠这张纸&lt;br/&gt;
                 3. 将这张纸存放在安全的地点，确保仅您本人能够访问&lt;br/&gt;
-                4. 您可以将硬件签名器：a) 与纸质助记词备份一同存放，或 b) 存放在其他安全的地方（如果有的话）   
+                4. 您可以将硬件签名器：a) 与该纸质助记词备份一同存放，或 b) 存放在其他安全的地方（如果有的话）   
                 </translation>
 		</message>
 		<name>pdf</name>
@@ -5540,7 +5545,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>Created at {date} with</source>
-			<translation>创建于 {date}，使用</translation>
+			<translation>创建于 {date}，通过</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5585,7 +5590,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-			<translation>重新扫描此钱包时，请至少扫描至地址索引 {max_tip}，以发现所有已注资的地址。</translation>
+			<translation>重新扫描此钱包时，请至少扫描到地址索引的第 {max_tip} 位，以发现所有已注资的地址。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5985,42 +5990,42 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>about 1 day ago</source>
-			<translation>大约 1 天前</translation>
+			<translation>在大约 1 天前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 hour ago</source>
-			<translation>大约 1 小时前</translation>
+			<translation>在大约 1 个小时前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 month ago</source>
-			<translation>大约 1 个月前</translation>
+			<translation>在大约 1 个月前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about 1 year ago</source>
-			<translation>大约 1 年前</translation>
+			<translation>在大约 1 年前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} days ago</source>
-			<translation>大约 {} 天前</translation>
+			<translation>在大约 {} 天前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} hours ago</source>
-			<translation>大约 {} 小时前</translation>
+			<translation>在大约 {} 小时前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} minutes ago</source>
-			<translation>大约 {} 分钟前</translation>
+			<translation>在大约 {} 分钟前</translation>
 		</message>
 		<name>util</name>
 		<message>
 			<source>about {} months ago</source>
-			<translation>大约 {} 个月前</translation>
+			<translation>在大约 {} 个月前</translation>
 		</message>
 		<name>util</name>
 		<message>

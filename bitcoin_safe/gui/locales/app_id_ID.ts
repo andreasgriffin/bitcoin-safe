@@ -4535,6 +4535,11 @@ Atau Anda bisa menyiarkan melalui {url}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Failed to extract update archive.</source>
+			<translation/>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Versi baru tersedia {tag}</translation>
 		</message>
