@@ -190,8 +190,7 @@ def get_esplora_urls(network: bdk.Network) -> dict[str, str]:
             "nigiri": "http://127.0.0.1:3000",
         },  # you can use https://github.com/ngutech21/nigiri-mempool/
         bdk.Network.TESTNET: {
-            "default": "https://blockstream.info/testnet/api/",
-            "blockstream": "https://blockstream.info/testnet/api/",
+            "default": "",
         },
         bdk.Network.TESTNET4: {
             "default": "",

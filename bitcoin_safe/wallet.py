@@ -739,9 +739,9 @@ class Wallet(BaseSaveableClass, CacheManager):
         labels: Labels | None = None,
         initialization_tips: list[int] | None = None,
         refresh_wallet=False,
-        default_category="default",
         initial_txs: list[bdk.Transaction] | None = None,
         serialize_persistence: SerializePersistence | None = None,
+        default_category: str | None = None,
         cbf_uuid: str | None = None,
         is_new_wallet=False,
         **kwargs,
@@ -925,7 +925,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         labels: Labels | None = None,
         initialization_tips: list[int] | None = None,
         refresh_wallet=False,
-        default_category="default",
+        default_category: str | None = None,
         is_new_wallet=False,
     ) -> Wallet:
         """Create a Wallet instance from a ProtoWallet definition."""
