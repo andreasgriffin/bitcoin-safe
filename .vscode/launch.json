@@ -9,7 +9,7 @@
       "args": [
         // "--profile",  
       ],
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
       // "justMyCode": false
     },
     {
@@ -26,7 +26,7 @@
       ],
 
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
       //  "justMyCode": false
     },
     {
@@ -43,7 +43,7 @@
       ],
 
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
       //  "justMyCode": false
     },
     {
@@ -62,7 +62,7 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Pytest non-gui",
@@ -79,7 +79,7 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Pytest: Current File [fulcrum]",
       "type": "debugpy",
@@ -95,7 +95,7 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Pytest: Current File [cbf]",
       "type": "debugpy",
@@ -111,7 +111,7 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "network settings",
@@ -120,7 +120,7 @@
       "module": "bitcoin_safe.gui.qt.network_settings",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "plugins demo",
@@ -137,7 +137,7 @@
       "module": "bitcoin_safe.gui.qt.step_progress_bar",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "p2p",
@@ -146,7 +146,7 @@
       "module": "bitcoin_safe.p2p",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Translation update",
@@ -157,7 +157,7 @@
         "--update_translations"
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "insert_chatgpt_translations",
       "type": "debugpy",
@@ -167,7 +167,7 @@
         "--insert_chatgpt_translations"
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Translation csv to ts",
@@ -178,7 +178,7 @@
         "--csv_to_ts"
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Weblate correct",
@@ -189,7 +189,7 @@
         "--weblate_correct"
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Build",
@@ -200,7 +200,7 @@
         "--targets", "appimage", "deb", "windows",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Build windows",
@@ -211,7 +211,7 @@
         "--targets", "windows",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Build linux",
@@ -222,7 +222,7 @@
         "--targets", "appimage", "deb",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Build mac",
       "type": "debugpy",
@@ -232,7 +232,7 @@
         "--targets", "mac",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Build Linux (Current Files)",
@@ -244,7 +244,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Build Mac (Current Files)",
       "type": "debugpy",
@@ -255,7 +255,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Build Windows (Current Files)",
       "type": "debugpy",
@@ -266,7 +266,7 @@
         "--commit", "None",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Sign",
       "type": "debugpy",
@@ -276,7 +276,7 @@
         "--sign",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     },
     {
       "name": "Lock no cache",
@@ -287,14 +287,14 @@
         "--lock",
       ],
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }, {
       "name": "Current File",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "preLaunchTask": "Poetry Install",
+      "preLaunchTask": "uv Sync",
     }
 
   ]

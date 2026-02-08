@@ -37,22 +37,30 @@ RUN dpkg --add-architecture i386 && \
     apt-get autoremove -y && \
     apt-get clean
 
+ARG WINEVERSION="latest"
 RUN DEBIAN_CODENAME=$(lsb_release --codename --short) && \
-    WINEVERSION="10.0.0.0~${DEBIAN_CODENAME}-1" && \
     wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
         echo "d965d646defe94b3dfba6d5b4406900ac6c81065428bf9d9303ad7a72ee8d1b8 winehq.key" | sha256sum -c - && \
         cat winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq.gpg && \
         echo deb [signed-by=/etc/apt/keyrings/winehq.gpg] https://dl.winehq.org/wine-builds/debian/ ${DEBIAN_CODENAME} main >> /etc/apt/sources.list.d/winehq.list && \
         rm winehq.key && \
     apt-get update -q && \
-    apt-get install -qy --allow-downgrades \
-        wine-stable-amd64:amd64=${WINEVERSION} \
-        wine-stable-i386:i386=${WINEVERSION} \
-        wine-stable:amd64=${WINEVERSION} \
-        winehq-stable:amd64=${WINEVERSION} \
-        libvkd3d1:amd64=1.3~${DEBIAN_CODENAME}-1 \
-        libvkd3d1:i386=1.3~${DEBIAN_CODENAME}-1 \
-        && \
+    if [ "$WINEVERSION" = "latest" ]; then \
+        apt-get install -qy --allow-downgrades --install-recommends \
+            winehq-stable \
+            libvkd3d1:amd64=1.3~${DEBIAN_CODENAME}-1 \
+            libvkd3d1:i386=1.3~${DEBIAN_CODENAME}-1 \
+            ; \
+    else \
+        apt-get install -qy --allow-downgrades \
+            wine-stable-amd64:amd64=${WINEVERSION} \
+            wine-stable-i386:i386=${WINEVERSION} \
+            wine-stable:amd64=${WINEVERSION} \
+            winehq-stable:amd64=${WINEVERSION} \
+            libvkd3d1:amd64=1.3~${DEBIAN_CODENAME}-1 \
+            libvkd3d1:i386=1.3~${DEBIAN_CODENAME}-1 \
+            ; \
+    fi && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get autoremove -y && \
     apt-get clean

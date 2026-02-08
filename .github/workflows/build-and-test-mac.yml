@@ -59,12 +59,12 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
+          python -m pip install uv
+          python -m uv sync --locked --all-groups --all-extras
 
       - name: Run build script
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
-        run: poetry run python tools/build.py --targets mac --commit None
+        run: python -m uv run python tools/build.py --targets mac --commit None
 
       - name: Check for DMG file
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}

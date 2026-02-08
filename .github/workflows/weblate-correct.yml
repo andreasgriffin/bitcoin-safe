@@ -107,7 +107,7 @@ jobs:
         run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
 
       - name: Run "Weblate correct"
-        run: poetry run python tools/build.py --weblate_correct
+        run: python -m uv run python tools/build.py --weblate_correct
 
       - name: Check for changes
         id: diff

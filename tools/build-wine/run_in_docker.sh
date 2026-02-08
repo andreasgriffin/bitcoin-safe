@@ -39,9 +39,6 @@ export WINE_PYTHON="wine $WINE_PYHOME/python.exe -B"
 
 . "$CONTRIB"/build_tools_util.sh
 
-export L_POETRY_CACHE_DIR="$BUILD_CACHEDIR/poetry" # needs the L_, because later I need to do  export POETRY_CACHE_DIR=WINE_POETRY_CACHE_DIR
-export WINE_POETRY_CACHE_DIR=$(win_path "$L_POETRY_CACHE_DIR") 
-
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported. PROJECT_ROOT contents:\n$(ls -la "$PROJECT_ROOT")"
 

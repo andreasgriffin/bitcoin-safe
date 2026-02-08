@@ -431,7 +431,7 @@ class Builder:
 
     def lock(self):
         """Lock."""
-        run_local("poetry lock --no-cache --no-update")
+        run_local("python -m uv lock -U")
 
     def verify(self, signed_files: list[Path]):
         """Verify."""
@@ -600,7 +600,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lock",
         action="store_true",
-        help="poetry lock --no-update --no-cache. This is important to ensure all hashes are included in the lockfile. ",
+        help="uv lock -U to refresh the complete lockfile.",
     )
     args = parser.parse_args()
 

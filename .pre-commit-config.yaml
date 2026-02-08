@@ -76,15 +76,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: update-poetry-version
-        name: Update Poetry Version
-        entry: python .update_version.py
-        language: python
-        always_run: true
-        files: pyproject.toml
-        additional_dependencies:
-          - tomlkit
-          
       - id: optional-precommit-checks
         name: Optional Precommit Checks
         entry: python .optional_precommit_checks.py

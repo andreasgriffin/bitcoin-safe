@@ -248,6 +248,25 @@ function do_wine_pip() {
         || fail "Could not install the specified packages due to a failure in: $@"
 }
 
+function do_wine_pip_with_exe() {
+    local python_exe="$1"
+    shift
+    info "Installing pip $@"
+    WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
+    wine "$python_exe" -B -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$WINE_PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
+
+function do_wine_pip_with_exe() {
+    local python_exe="$1"
+    shift
+    info "Installing pip $@"
+    WINE_PIP_CACHE_DIR=$(win_path "$PIP_CACHE_DIR")
+    wine "$python_exe" -B -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+        --cache-dir "$WINE_PIP_CACHE_DIR" "$@" \
+        || fail "Could not install the specified packages due to a failure in: $@"
+}
 
 
 move_and_overwrite() {

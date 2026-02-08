@@ -106,12 +106,14 @@
   sudo apt-get install qt6-tools-dev-tools libzbar-dev libxcb-cursor0 '^libqt6.*$' 
   ```
 
-- Install `poetry` and run `bitcoin_safe`
+- Install `uv` and run `bitcoin_safe`
   
   ```sh
   git clone https://github.com/andreasgriffin/bitcoin-safe.git
   cd bitcoin-safe
-  pip install poetry  && poetry install && poetry run python -m bitcoin_safe
+  python3 -m pip install uv
+  python3 -m uv sync --all-groups --all-extras
+  python3 -m uv run python -m bitcoin_safe
   ```
 
 ### Mac
@@ -135,7 +137,9 @@
 - Run `bitcoin_safe`
   
   ```sh 
-  python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
+  python3 -m pip install uv
+  python3 -m uv sync --all-groups --all-extras
+  python3 -m uv run python3 -m bitcoin_safe
   ```
 
 ## Development
@@ -143,7 +147,7 @@
 * Run the precommit manually for debugging
 
 ```shell
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 ```
 
 #### Regtest docker environement with electrs and mempool
@@ -200,8 +204,6 @@ nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0
 <!-- * ## Installation from PyPi
 
 ### Ubuntu, Debian, Windows
-
-- Install `poetry` and run `bitcoin_safe`
   
   ```sh
   pip install bitcoin-safe
