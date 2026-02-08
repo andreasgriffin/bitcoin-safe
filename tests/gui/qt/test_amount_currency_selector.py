@@ -46,6 +46,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def _build_fx(config: TestConfig) -> FX:
+    # Provide deterministic rates for conversion tests.
     config.currency = "USD"
     config.rates = {
         "BTC": {"name": "Bitcoin", "unit": "BTC", "value": 1.0, "type": "crypto"},
@@ -73,6 +74,7 @@ def _expected_fiat_amount(btc_sats: int, rate: float) -> float:
 
 
 def test_auto_conversion_enabled(qtbot: QtBot, test_config: TestConfig) -> None:
+    # Auto-conversion should keep BTC sats consistent across fiat changes.
     fx = _build_fx(test_config)
     signals = Signals()
 
@@ -84,6 +86,7 @@ def test_auto_conversion_enabled(qtbot: QtBot, test_config: TestConfig) -> None:
     )
     qtbot.addWidget(selector)
 
+    # Start in USD, then switch to EUR and BTC while preserving sats.
     starting_usd = 100.0
     usd_rate = fx.rates["USD"]["value"]
     eur_rate = fx.rates["EUR"]["value"]
@@ -105,6 +108,7 @@ def test_auto_conversion_enabled(qtbot: QtBot, test_config: TestConfig) -> None:
 
 
 def test_auto_conversion_disabled(qtbot: QtBot, test_config: TestConfig) -> None:
+    # Without auto-conversion, the fiat amount should remain unchanged on switch.
     fx = _build_fx(test_config)
     signals = Signals()
 
@@ -116,6 +120,7 @@ def test_auto_conversion_disabled(qtbot: QtBot, test_config: TestConfig) -> None
     )
     qtbot.addWidget(selector)
 
+    # Set an initial USD amount and verify BTC value.
     starting_usd = 100.0
     usd_rate = fx.rates["USD"]["value"]
 

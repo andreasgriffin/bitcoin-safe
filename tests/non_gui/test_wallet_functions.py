@@ -44,10 +44,12 @@ from bitcoin_safe.wallet import (
 def test_is_local_and_in_mempool():
     """Test is local and in mempool."""
     unconfirmed_local = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN)
+    # Local tx should be detected from the special timestamp.
     assert is_local(unconfirmed_local)
     assert not is_in_mempool(unconfirmed_local)
 
     unconfirmed_mempool = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN + 1)
+    # Any newer timestamp should be considered mempool.
     assert not is_local(unconfirmed_mempool)
     assert is_in_mempool(unconfirmed_mempool)
 
@@ -72,6 +74,7 @@ def test_txstatus_states():
         ),
         transitively=None,
     )
+    # Confirmed status should compute confirmations and sort id.
     confirmed_status = TxStatus(
         tx=None,
         chain_position=confirmed_cp,
@@ -83,6 +86,7 @@ def test_txstatus_states():
 
     # Unconfirmed transaction
     unconfirmed_cp = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN + 1)
+    # Unconfirmed status should allow RBF.
     unconfirmed_status = TxStatus(
         tx=None,
         chain_position=unconfirmed_cp,
@@ -94,6 +98,7 @@ def test_txstatus_states():
 
     # Local transaction
     local_cp = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN)
+    # Local status should allow initial broadcast and editing.
     local_status = TxStatus(
         tx=None,
         chain_position=local_cp,
@@ -106,12 +111,14 @@ def test_txstatus_states():
 
 def test_filename_clean():
     """Test filename clean."""
+    # Special characters should be removed and spaces converted to underscores.
     result = filename_clean("inv@lid name", replace_spaces_by="_")
     assert result == "invlid_name.wallet"
 
 
 def test_protowallet_keystore_management():
     """Test protowallet keystore management."""
+    # Start with a single keystore and verify single-sig behavior.
     pw = ProtoWallet(
         wallet_id="w",
         threshold=1,
@@ -121,10 +128,12 @@ def test_protowallet_keystore_management():
     )
     assert not pw.is_multisig()
 
+    # Increasing keystores should switch to multisig.
     pw.set_number_of_keystores(2)
     assert pw.is_multisig()
     assert len(pw.keystores) == 2
 
+    # Decreasing keystores should return to single-sig.
     pw.set_number_of_keystores(1)
     assert len(pw.keystores) == 1
     assert not pw.is_multisig()

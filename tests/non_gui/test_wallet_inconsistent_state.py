@@ -112,6 +112,7 @@ def test_balance_after_replaced_receive_tx_raises(
             "Skipped test_balance_after_replaced_receive_tx_raises because this error doesnt appear in cbf"
         )
         return
+    # Create a dedicated wallet for the inconsistent-state reproduction.
     wallet_handle = _make_single_sig_wallet(
         config=test_config_session,
         backend=faucet.backend,
@@ -122,6 +123,7 @@ def test_balance_after_replaced_receive_tx_raises(
     wallet = wallet_handle.wallet
     receive_address = str(wallet.get_address(force_new=True).address)
 
+    # Broadcast a low-fee receive transaction to set up the eviction case.
     amount_sat = 100_000
     tx = faucet.send(receive_address, amount=amount_sat, fee_rate=1, qtbot=qtbot)
 
@@ -135,19 +137,23 @@ def test_balance_after_replaced_receive_tx_raises(
     wallet.bdkwallet.apply_evicted_txs([evicted])
     wallet.bdkwallet.clear_method(wallet.bdkwallet.list_transactions)
 
+    # Clear caches so a fresh balance query hits the inconsistent state.
     wallet.cache_dict_fulltxdetail = {}
     wallet.cache_address_to_txids.clear()
     wallet.clear_instance_cache(clear_always_keep=True)
 
     original_retries = wallet_module.NUM_RETRIES_get_address_balances
     try:
+        # With a single retry, balance lookup should raise the inconsistency error.
         wallet_module.NUM_RETRIES_get_address_balances = 1
         with pytest.raises(InconsistentBDKState):
             _ = wallet.get_addr_balance(receive_address).total
 
+        # With more retries, the wallet should recover and show zero.
         wallet_module.NUM_RETRIES_get_address_balances = 2
         balance = wallet.get_addr_balance(receive_address)
         assert balance.total == 0
     finally:
+        # Restore global retry count and close the wallet.
         wallet_module.NUM_RETRIES_get_address_balances = original_retries
         wallet.close()

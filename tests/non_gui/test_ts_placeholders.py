@@ -62,6 +62,7 @@ def _iter_messages(root: ET.Element):
 
 
 def _format_counter(counter: Counter[str]) -> str:
+    # Render placeholder counts in a stable, human-readable format.
     if not counter:
         return "(none)"
     return ", ".join(
@@ -70,11 +71,12 @@ def _format_counter(counter: Counter[str]) -> str:
     )
 
 
-def test_ts_placeholder_parity():
+def test_ts_placeholder_parity() -> None:
     """Ensure translations keep the exact set and count of curly-brace placeholders."""
     locales_dir = Path(__file__).resolve().parents[2] / "bitcoin_safe" / "gui" / "locales"
     assert locales_dir.is_dir(), f"Locales directory missing at {locales_dir}"
 
+    # Load all .ts files and compare placeholders per message.
     ts_files = sorted(locales_dir.glob("*.ts"))
     assert ts_files, "No translation files found"
 
@@ -88,6 +90,7 @@ def test_ts_placeholder_parity():
             translation_placeholders = _collect_placeholders(translation_text)
 
             if source_placeholders != translation_placeholders:
+                # Record mismatch and clear the translation to force review.
                 errors.append(
                     f"{ts_path.name}::{context_name}\n"
                     f"  source: {source_text}\n"
@@ -101,6 +104,7 @@ def test_ts_placeholder_parity():
                     translation_el.remove(child)
                 file_modified = True
         if file_modified:
+            # Persist cleared translations to keep files consistent.
             tree.write(ts_path, encoding="utf-8", xml_declaration=True)
     if errors:
         pytest.fail("Mismatching curly-brace placeholders:\n\n" + "\n\n".join(errors))

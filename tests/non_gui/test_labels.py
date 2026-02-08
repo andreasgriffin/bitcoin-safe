@@ -40,10 +40,11 @@ from ..helpers import TestConfig
 from .utils import create_multisig_protowallet
 
 
-def test_label_export():
+def test_label_export() -> None:
     """Test label export."""
     labels = Labels()
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
+    # Set label and category with a fixed timestamp.
     labels.set_addr_label("some_address", "my label", timestamp=timestamp)
     labels.set_addr_category("some_address", "category 0", timestamp=timestamp)
 
@@ -52,6 +53,7 @@ def test_label_export():
 
     data = list(labels.dump()["data"].values())
     assert len(data) == 1
+    # Exported label structure should include all expected fields.
     assert data[0].dump() == {
         "VERSION": data[0].VERSION,
         "__class__": "Label",
@@ -63,6 +65,7 @@ def test_label_export():
     }
 
     labels._snapshots = []
+    # Ensure JSON dump remains stable for snapshot-less labels.
     assert (
         labels.dumps()
         == """{"VERSION": """
@@ -77,7 +80,7 @@ def test_label_export():
     )
 
 
-def test_dumps_data():
+def test_dumps_data() -> None:
     """Test dumps data."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
@@ -85,6 +88,7 @@ def test_dumps_data():
     labels.set_addr_label("some_address", "my label", timestamp=timestamp)
     labels.set_addr_category("some_address", "category 0")
 
+    # Round-trip via JSON lines should preserve label data.
     serialized_labels = labels.dumps_data_jsonlines()
 
     labels2 = Labels()
@@ -102,13 +106,14 @@ def test_dumps_data():
     assert a.timestamp != timestamp
 
 
-def test_preservebip329_keys_for_single_label():
+def test_preservebip329_keys_for_single_label() -> None:
     """Test preservebip329 keys for single label."""
     import json
 
     labels = Labels()
     labels.set_addr_category("some_address", "category 0", timestamp=0)
 
+    # Exported JSON should include all BIP-329 keys.
     serialized_labels = labels.dumps_data_jsonlines()
 
     jsondict = json.loads(serialized_labels)
@@ -121,7 +126,7 @@ def test_preservebip329_keys_for_single_label():
     )
 
 
-def test_label_bip329_import():
+def test_label_bip329_import() -> None:
     """Test label bip329 import."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
@@ -129,6 +134,7 @@ def test_label_bip329_import():
     labels.set_addr_label("some_address", "my label", timestamp=timestamp)
     labels.set_addr_category("some_address", "category 0", timestamp=timestamp)
 
+    # Export BIP-329 and import into a new Labels instance.
     s = labels.export_bip329_jsonlines()
     assert s == '{"type": "addr", "ref": "some_address", "label": "my label #category 0"}'
 
@@ -141,7 +147,7 @@ def test_label_bip329_import():
     assert labels2.get_label("some_address") == "my label"
 
 
-def test_label_bip329_import_with_timestamp():
+def test_label_bip329_import_with_timestamp() -> None:
     """Test label bip329 import with timestamp."""
     timestamp = datetime.datetime(2000, 1, 1, 0, 0, 0).timestamp()
 
@@ -149,6 +155,7 @@ def test_label_bip329_import_with_timestamp():
     s = json.dumps(d)
 
     labels2 = Labels()
+    # Import should respect the embedded timestamp.
     labels2.import_bip329_jsonlines(s)
 
     assert labels2.data["some_address"].dump() == {
@@ -162,11 +169,12 @@ def test_label_bip329_import_with_timestamp():
     }
 
 
-def test_label_bip329_category_drop_multiple_categories():
+def test_label_bip329_category_drop_multiple_categories() -> None:
     """Test label bip329 category drop multiple categories."""
     s = '{"type": "addr", "ref": "some_address", "label": "my label #category 0 #category 1"}'
 
     labels2 = Labels()
+    # Only the first category should be retained.
     labels2.import_bip329_jsonlines(s)
 
     assert labels2.get_category("some_address") == "category 0"
@@ -174,12 +182,13 @@ def test_label_bip329_category_drop_multiple_categories():
     assert labels2.get_label("some_address") == "my label"
 
 
-def test_label_bip329_category_bad_input():
+def test_label_bip329_category_bad_input() -> None:
     # empty
     """Test label bip329 category bad input."""
     s = '{"type": "addr", "ref": "some_address", "label": "my label #"}'
 
     labels2 = Labels()
+    # Empty category should fall back to default.
     labels2.import_bip329_jsonlines(s)
     assert labels2.get_category("some_address") == labels2.default_category
     assert labels2.get_label("some_address") == "my label"
@@ -188,6 +197,7 @@ def test_label_bip329_category_bad_input():
     s = '{"type": "addr", "ref": "some_address", "label": "my label ##category 0"}'
 
     labels2 = Labels()
+    # Double hashtag should still parse the category.
     labels2.import_bip329_jsonlines(s)
     assert labels2.get_category("some_address") == "category 0"
     assert labels2.get_label("some_address") == "my label"
@@ -196,12 +206,13 @@ def test_label_bip329_category_bad_input():
     s = '{"type": "addr", "ref": "some_address", "label": "my label # ### category 0 # ## category 1"}'
 
     labels2 = Labels()
+    # Parser should pick the first valid category token.
     labels2.import_bip329_jsonlines(s)
     assert labels2.get_category("some_address") == "category 0"
     assert labels2.get_label("some_address") == "my label"
 
 
-def test_import():
+def test_import() -> None:
     """Test import."""
     s = """
     
@@ -216,6 +227,7 @@ def test_import():
             """
 
     labels = Labels()
+    # Import multiple BIP-329 records from a mixed JSON lines string.
     labels.import_bip329_jsonlines(s)
 
     assert len(labels.data) == 7
@@ -242,16 +254,17 @@ def test_import():
     assert cleaned_s == labels.export_bip329_jsonlines()
 
 
-def test_label_timestamp_correctly(test_config: TestConfig):
+def test_label_timestamp_correctly(test_config: TestConfig) -> None:
     """Automatic category setting also sets a timestamp.
 
     It is crucial that the automatic timestamp is in the far past, such that when exchaning labels with
     another wallet with manual timestamps, the manual ones superceed the automatic ones.
     """
 
-    def set_timestamps(w: Wallet):
+    def set_timestamps(w: Wallet) -> None:
         """Set timestamps."""
         address_info_manual = w.get_address(force_new=True)
+        # Manual labels should get a timestamp greater than AUTOMATIC_TIMESTAMP.
         w.labels.set_category(type=LabelType.addr, ref=str(address_info_manual.address), category="manual")
         assert (
             timestamp_manual := w.labels.get_timestamp(str(address_info_manual.address))
@@ -263,9 +276,10 @@ def test_label_timestamp_correctly(test_config: TestConfig):
             timestamp_manual2 := w.labels.get_timestamp(str(address_info_manual2.address))
         ) and timestamp_manual2 > AUTOMATIC_TIMESTAMP
 
-    def check_timestamps_behavior_correct(w: Wallet):
+    def check_timestamps_behavior_correct(w: Wallet) -> None:
         """Check timestamps behavior correct."""
         address_info_auto = w.get_unused_category_address("manual")
+        # Auto category should use the AUTOMATIC_TIMESTAMP constant.
         assert w.labels.get_timestamp(str(address_info_auto.address)) == AUTOMATIC_TIMESTAMP
 
         assert (
@@ -277,6 +291,7 @@ def test_label_timestamp_correctly(test_config: TestConfig):
             timestamp_manual2 := w.labels.get_timestamp("bcrt1qzkdd9hcph3l2w29jfklwewctxp0hxnnlemtu47")
         ) and timestamp_manual2 > AUTOMATIC_TIMESTAMP
 
+    # Build two identical wallets to validate merge behavior.
     protowallet = create_multisig_protowallet(
         threshold=1,
         signers=1,
@@ -289,6 +304,7 @@ def test_label_timestamp_correctly(test_config: TestConfig):
     for _ in range(4):
         w_org.get_force_new_address(is_change=False)
 
+    # Auto-assign categories to unused addresses.
     w_org.set_addresses_category_if_unused("manual", addresses=w_org.get_addresses())
 
     set_timestamps(w_org)
@@ -314,19 +330,20 @@ def test_label_timestamp_correctly(test_config: TestConfig):
 
     w_copy_exported = w_copy.labels.dumps_data_jsonlines()
 
-    # import into w org
+    # Import into w_org should not override its manual timestamps.
     w_org.labels.import_dumps_data(w_copy_exported)
 
     # should have no effect
     check_timestamps_behavior_correct(w_org)
 
-    # importing into w_copy  should work
+    # Importing into w_copy should override auto timestamps with manual ones.
     w_copy.labels.import_dumps_data(w_org_exported)
 
     check_timestamps_behavior_correct(w_copy)
 
     eorg = w_org.labels.dumps_data_jsonline_list()
     ecopy = w_copy.labels.dumps_data_jsonline_list()
+    # Final exports should match when data is merged correctly.
     assert len(eorg) == len(ecopy)
     for e1, e2 in zip(eorg, ecopy, strict=False):
         assert e1 == e2

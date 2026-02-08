@@ -71,13 +71,16 @@ def test_print_existing_transaction(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
+        # Copy fixture wallet into a temp location so we can modify it.
         temp_wallet_path = tmp_path / wallet_file
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(wallet_path, temp_wallet_path)
 
+        # Open the wallet and ensure there is at least one transaction.
         qt_wallet = main_window.open_wallet(str(temp_wallet_path))
         assert qt_wallet
 
@@ -86,6 +89,7 @@ def test_print_existing_transaction(
 
         wait_for_sync(wallet=qt_wallet.wallet, minimum_funds=1, qtbot=qtbot)
 
+        # Open the first transaction in the history in a new viewer tab.
         tx_history = qt_wallet.wallet.sorted_delta_list_transactions()
 
         assert tx_history, "Expected at least one transaction in the wallet history"
@@ -100,12 +104,14 @@ def test_print_existing_transaction(
 
         pdf_path = tmp_path / "printed_transaction.pdf"
 
+        # Stub PDF open behavior and export to a known temp file path.
         monkeypatch.setattr(
             "bitcoin_safe.gui.qt.export_data.DataExportPDF.open_pdf",
             lambda self, path: None,
         )
         viewer.export_data_simple.button_export_file.export_to_pdf(filepath=pdf_path)
 
+        # Validate the PDF file was created and non-empty.
         assert pdf_path.exists()
         assert pdf_path.is_file()
         assert pdf_path.stat().st_size > 0
@@ -113,6 +119,7 @@ def test_print_existing_transaction(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
             close_wallet(

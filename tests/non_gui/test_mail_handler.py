@@ -37,7 +37,7 @@ from _pytest.logging import LogCaptureFixture
 logger = logging.getLogger(__name__)
 
 
-def test_no_error_logging(caplog: LogCaptureFixture):
+def test_no_error_logging(caplog: LogCaptureFixture) -> None:
     """Test no error logging."""
     with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
         mock_compose_email.return_value = "Mocked Function"
@@ -46,6 +46,7 @@ def test_no_error_logging(caplog: LogCaptureFixture):
             try:
                 int("aaa")
             except Exception as e:
+                # Log without exc_info; should not trigger email compose.
                 logger.error(str(e))
 
             # Check that no exc_info is included
@@ -54,7 +55,7 @@ def test_no_error_logging(caplog: LogCaptureFixture):
             mock_compose_email.assert_not_called()
 
 
-def test_exception_logging(caplog: LogCaptureFixture):
+def test_exception_logging(caplog: LogCaptureFixture) -> None:
     """Test exception logging."""
     with patch("bitcoin_safe.logging_handlers.OpenLogHandler.emit") as mock_OpenLogHandler_emit:
         mock_OpenLogHandler_emit.return_value = "Mocked OpenLogHandler.emit"
@@ -62,6 +63,7 @@ def test_exception_logging(caplog: LogCaptureFixture):
             mock_compose_email.return_value = "Mocked Function"
 
             with caplog.at_level(logging.INFO):
+                # Logging with exc_info should trigger email composition and handler emit.
                 logger.critical("this should compose an email", exc_info=sys.exc_info())
 
                 # Assert that the mocked function was called

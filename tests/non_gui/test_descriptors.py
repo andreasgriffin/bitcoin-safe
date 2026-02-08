@@ -39,7 +39,7 @@ from bitcoin_safe.descriptors import from_multisig_wallet_export
 logger = logging.getLogger(__name__)
 
 
-def test_from_multisig_wallet_export():
+def test_from_multisig_wallet_export() -> None:
     """Test from multisig wallet export."""
     s = """# Keystone Multisig setup file (created on 0439f926)
 #
@@ -55,6 +55,7 @@ Derivation: m/48'/0'/0'/2'
 95AF25EF: Zpub75PxF38JVVfjW4whYWpS7CMs4g88N7D187jnJx5RKPzRrxq3jMgCdRyz1ayQHrw9NhWbHmrzrB9UhpTxHwUWGSuHNzbdv9hZ6q74DBxpRQ6
 """
 
+    # Parse the text export and convert into a descriptor.
     data = Data.from_str(s, network=bdk.Network.BITCOIN)
     assert data.data_type == DataType.MultisigWalletExport
     assert isinstance(data.data, ConverterMultisigWalletExport)
@@ -62,13 +63,14 @@ Derivation: m/48'/0'/0'/2'
     assert isinstance(descriptor, bdk.Descriptor)
 
     # see also https://jlopp.github.io/xpub-converter/
+    # Descriptor string should match the known output for this export.
     assert (
         str(descriptor)
         == "wsh(sortedmulti(2,[0439f926/48'/0'/0'/2']xpub6DkFAXWQ2dHxq2vatrt9qyA3bXYU4ToWQwCHbf5XB2mSTexcHZCeKS1VZYcPoBd5X8yVcbXFHJR9R8UCVpt82VX1VhR28mCyxUFL4r6KFrf/<0;1>/*,[95af25ef/48'/0'/0'/2']xpub6EqLWU42dB2QNuQ5w8nCrwq3zwnyGWYQyd3fpu27BcQG8adgTdxoJBonAU6kjcQQKxCzvEfm3e3sp5d4ZKVXXVRQor6PLvbafehtr8QwtgS/<0;1>/*,[a32efffd/48'/0'/0'/2']xpub6EuZLQYmVs16eNnxVEh175kFwJH2bEmVJGobDMjvxafSz9VxY9er5bvrmcLXHdjqmnsvvnuyF1GUG1RxQ17bhR8yvEBJm7LTcNc4vKY7xds/<0;1>/*))#j5x0rym8"
     )
 
 
-def test_from_multisig_wallet_export_incompatible():
+def test_from_multisig_wallet_export_incompatible() -> None:
     """Test from multisig wallet export incompatible."""
     s = """# Coldcard Multisig setup file (created by Sparrow)
 #
@@ -81,10 +83,12 @@ Format: P2WSH-P2SH
 34BE20D9: tpubDEGiMrEBpyW7bqPePiQQ9FV2FsLnqwewrVL4HRByVoXnAohhi73iBGMFc5zKfRJ5ZipYmumysgxR7Uw6ZPz5NaAjzZuxWv2CfU7gutnV52o
     """
 
+    # Parse an export with an incompatible format order.
     data = Data.from_str(s, network=bdk.Network.REGTEST)
     assert data.data_type == DataType.MultisigWalletExport
     assert isinstance(data.data, ConverterMultisigWalletExport)
 
+    # This format ordering is not handled; ensure we raise.
     with pytest.raises(Exception):  # noqa: B017
         # https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki
         # clearly specifies

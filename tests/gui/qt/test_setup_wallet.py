@@ -102,8 +102,8 @@ def test_wizard(
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     backend: str,
-    wallet_name="test_wizard",
-    amount=int(1e6),
+    wallet_name: str = "test_wizard",
+    amount: int = int(1e6),
 ) -> None:  # bitcoin_core: Path,
     """Test wizard."""
     logger.debug("start test_wizard")
@@ -114,7 +114,8 @@ def test_wizard(
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
         logger.debug(f"(app, main_window) = {main_window}")
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
@@ -123,6 +124,7 @@ def test_wizard(
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             """On wallet id dialog."""
+            # Provide a deterministic wallet name in the modal.
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -132,6 +134,7 @@ def test_wizard(
 
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
+        # Resolve the proto wallet and wizard flow.
         qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
         wizard = qt_protowallet.wizard
@@ -142,6 +145,7 @@ def test_wizard(
             shutter.save(main_window)
             step = wizard.tab_generators[TutorialStep.buy]
             assert isinstance(step, BuyHardware)
+            # Advance from the "buy hardware" page.
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -151,6 +155,7 @@ def test_wizard(
             """Page sticker."""
             shutter.save(main_window)
             step: StickerTheHardware = wizard.tab_generators[TutorialStep.sticker]
+            # Advance from the sticker page.
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -160,6 +165,7 @@ def test_wizard(
             """Page generate."""
             shutter.save(main_window)
             step: GenerateSeed = wizard.tab_generators[TutorialStep.generate]
+            # Advance from the seed generation page.
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
@@ -180,7 +186,7 @@ def test_wizard(
 
             do_modal_click(step.button_create_wallet, wrong_entry, qtbot, cls=QMessageBox)
 
-            # import xpub
+            # Import xpub data for the signer.
             assert step.keystore_uis
             keystore = list(step.keystore_uis.getAllTabData().values())[0]
             keystore.tabs_import_type.setCurrentWidget(keystore.tab_manual)
@@ -213,6 +219,7 @@ def test_wizard(
                     "Please import the complete data for Signer 1!",
                 ),
             ]:
+                # Enter invalid data to trigger validation, then correct it.
                 type_text_in_edit(wrong_text, edit)
                 shutter.save(main_window)
                 assert "{ background-color: #ff6c54; }" in edit.styleSheet()
@@ -266,7 +273,7 @@ def test_wizard(
             type_text_in_edit(valid_text, edit)
             shutter.save(main_window)
 
-            # correct entry
+            # Correct entry via seed should auto-populate fields.
             for _edit in [keystore.edit_xpub, keystore.edit_key_origin, keystore.edit_fingerprint]:
                 _edit.setText("")
             keystore.edit_seed.setText(test_seeds[0])
@@ -281,7 +288,7 @@ def test_wizard(
 
             keystore.textEdit_description.setText("test description")
 
-            # check no error warning
+            # Check no error warning remains on required fields.
             for _edit in [
                 keystore.edit_seed,
                 keystore.edit_xpub,
@@ -290,6 +297,7 @@ def test_wizard(
             ]:
                 assert "background-color" not in _edit.input_field.styleSheet()
 
+            # Save the wallet once all data is valid.
             save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
@@ -299,14 +307,14 @@ def test_wizard(
         page_import(wizard)
 
         ######################################################
-        # now that the qt wallet is created i have to reload the
+        # Now that the wallet is created, reload from the wallet tree.
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
         wizard = qt_wallet.wizard
         assert isinstance(wizard, Wizard)
 
-        def do_all(qt_wallet: QTWallet):
-            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
+        def do_all(qt_wallet: QTWallet) -> None:
+            # Keep all operations in one scope to avoid lingering references to qt_wallet.
 
             wizard = qt_wallet.wizard
             assert isinstance(wizard, Wizard)
@@ -316,6 +324,7 @@ def test_wizard(
                 shutter.save(main_window)
                 step = wizard.tab_generators[TutorialStep.backup_seed]
                 assert isinstance(step, BackupSeed)
+                # Ensure back navigation is disabled and open the PDF backup.
                 assert not step.button_previous.isEnabled()
                 assert not step.custom_cancel_button.isEnabled()
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
@@ -323,6 +332,7 @@ def test_wizard(
                     step.custom_yes_button.click()
                     mock_open.assert_called_once()
 
+                    # Clean up generated PDF backups from the cache.
                     cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
                     prefix = f"Seed backup of {wallet_name}".replace(" ", "_")
                     temp_files = list(cache_dir.glob(f"{prefix}-*.pdf"))
@@ -334,6 +344,7 @@ def test_wizard(
 
             def switch_language() -> None:
                 """Switch language."""
+                # Briefly switch language to ensure translation updates.
                 main_window.language_chooser.switchLanguage("zh_CN")
                 shutter.save(main_window)
                 main_window.language_chooser.switchLanguage("en_US")
@@ -347,15 +358,18 @@ def test_wizard(
                 step = wizard.tab_generators[TutorialStep.receive]
                 assert isinstance(step, ReceiveTest)
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
+                # Address label should include invisible spaces for word wrap.
                 address_with_spaces = step.quick_receive.group_boxes[0].label.text()
                 assert address_with_spaces == insert_invisible_spaces_for_wordwrap(
                     "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes", max_word_length=1
                 )
                 address = step.quick_receive.group_boxes[0].address
                 assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
+                # Fund and wait for sync so the receive test passes.
                 faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
                 wait_for_sync(wallet=qt_wallet.wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
 
+                # The check button should report the updated balance, then disappear.
                 called_args_message_box = get_called_args_message_box(
                     "bitcoin_safe.gui.qt.wizard.Message",
                     step.check_button,
@@ -386,6 +400,7 @@ def test_wizard(
                 assert qt_wallet.uitx_creator.isVisible()
                 box = qt_wallet.uitx_creator.recipients.get_recipient_group_boxes()[0]
                 shutter.save(main_window)
+                # The wizard should prefill the send address and max amount.
                 assert [recipient.address for recipient in qt_wallet.uitx_creator.recipients.recipients] == [
                     "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 ]
@@ -404,6 +419,7 @@ def test_wizard(
                 assert qt_wallet.uitx_creator.splitter.sizes()[0] == 0
 
                 assert step.refs.floating_button_box.button_create_tx.isVisible()
+                # Create the transaction to proceed to the signing step.
                 step.refs.floating_button_box.button_create_tx.click()
                 shutter.save(main_window)
 
@@ -414,6 +430,7 @@ def test_wizard(
                 shutter.save(main_window)
                 viewer = main_window.tab_wallets.currentNode().data
                 assert isinstance(viewer, UITx_Viewer)
+                # Verify recipient details and fee settings in the viewer.
                 assert [recipient.address for recipient in viewer.recipients.recipients] == [
                     "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 ]
@@ -432,6 +449,7 @@ def test_wizard(
 
                 sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
 
+                # Broadcast and expect a success message after sync.
                 with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
                     viewer.button_send.click()
                     assert isinstance((tx := viewer.data.data), bdk.Transaction)
@@ -454,6 +472,7 @@ def test_wizard(
 
                 step = wizard.tab_generators[TutorialStep.distribute]
                 assert isinstance(step, DistributeSeeds)
+                # Advance through distribute seeds.
                 assert step.buttonbox_buttons[0].isVisible()
                 step.buttonbox_buttons[0].click()
 
@@ -467,6 +486,7 @@ def test_wizard(
 
                 step = wizard.tab_generators[TutorialStep.sync]
                 assert isinstance(step, LabelBackup)
+                # Advance through sync/label step.
                 assert step.buttonbox_buttons[0].isVisible()
                 step.buttonbox_buttons[0].click()
 
@@ -476,7 +496,7 @@ def test_wizard(
 
         do_all(qt_wallet)
 
-        def check_address_balances(qt_wallet: QTWallet):
+        def check_address_balances(qt_wallet: QTWallet) -> None:
             """Check address balances."""
             wallet = qt_wallet.wallet
 
@@ -492,7 +512,7 @@ def test_wizard(
 
         check_address_balances(qt_wallet)
 
-        def check_utxo_list(qt_wallet: QTWallet):
+        def check_utxo_list(qt_wallet: QTWallet) -> None:
             """Check utxo list."""
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             qt_wallet.uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
@@ -518,6 +538,7 @@ def test_wizard(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
 
@@ -534,6 +555,7 @@ def test_wizard(
 
         def check_that_it_is_in_recent_wallets() -> None:
             """Check that it is in recent wallets."""
+            # The wallet should appear in recent wallets after closing.
             assert any(
                 [
                     (wallet_name in name)
@@ -545,5 +567,5 @@ def test_wizard(
 
         check_that_it_is_in_recent_wallets()
 
-        # end
+        # Final screenshot after assertions.
         shutter.save(main_window)

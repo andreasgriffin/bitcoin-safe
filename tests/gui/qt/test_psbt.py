@@ -61,12 +61,13 @@ def test_psbt_warning_poision_mainnet(
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe"
 
         shutter.save(main_window)
 
-        def do_tx(tx, expected_fragments: list[str] | None = None):
+        def do_tx(tx: str, expected_fragments: list[str] | None = None) -> None:
             """Do tx."""
             expected_fragments = expected_fragments or []
             main_window.open_tx_like_in_tab(tx)
@@ -76,6 +77,7 @@ def test_psbt_warning_poision_mainnet(
             tab = node.data
             assert isinstance(tab, UITx_Viewer)
 
+            # Address poisoning warning should be visible and contain expected text fragments.
             assert tab.address_poisoning_warning_bar.isVisible()
             assert (
                 "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack."
@@ -146,12 +148,13 @@ def test_psbt_warning_poision(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
-        def do_psbt():
+        def do_psbt() -> None:
             """Do psbt."""
             org_ADDRESS_SIMILARITY_THRESHOLD = AddressComparer.ADDRESS_SIMILARITY_THRESHOLD
             AddressComparer.ADDRESS_SIMILARITY_THRESHOLD = 32_000
@@ -163,6 +166,7 @@ def test_psbt_warning_poision(
             tab = main_window.tab_wallets.root.findNodeByTitle("PSBT 8109...a65a").data
             assert isinstance(tab, UITx_Viewer)
 
+            # Address poisoning warning should be visible and contain expected fragments.
             assert tab.address_poisoning_warning_bar.isVisible()
             assert (
                 "Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack."

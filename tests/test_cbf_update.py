@@ -70,10 +70,10 @@ def _build_test_wallet(network: bdk.Network) -> tuple[bdk.Wallet, bdk.Persister,
     return wallet, persister, receive_address
 
 
-def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path):
+def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path) -> None:
     """Spin up bitcoind, sync a dummy BDK wallet via CBF, and apply the update."""
 
-    async def _run():
+    async def _run() -> None:
         network = bdk.Network.REGTEST
         wallet, persister, receive_address = _build_test_wallet(network)
 
@@ -90,6 +90,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path):
             v2_transport=True,
         )
 
+        # Start CBF sync against the local node.
         cbf_sync = CbfSync(
             wallet_id="test-cbf-sync",
             wallet=wallet,
@@ -102,6 +103,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path):
 
         cbf_sync.build_node()
         try:
+            # Poll for updates until one arrives or the deadline elapses.
             update_info = None
             deadline = asyncio.get_event_loop().time() + 120
             while update_info is None and asyncio.get_event_loop().time() < deadline:
@@ -112,6 +114,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path):
         finally:
             cbf_sync.shutdown_node()
 
+        # Apply the update and verify the wallet now has funds.
         assert update_info is not None
         wallet.apply_update(update_info.update)
         wallet.persist(persister)

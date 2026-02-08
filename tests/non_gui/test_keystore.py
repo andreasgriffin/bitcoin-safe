@@ -44,10 +44,11 @@ from .utils import create_test_seed_keystores
 logger = logging.getLogger(__name__)
 
 
-def test_dump(test_config: TestConfig):
-    "Tests if dump works correctly"
+def test_dump(test_config: TestConfig) -> None:
+    """Tests if dump works correctly."""
     network = bdk.Network.REGTEST
 
+    # Create a keystore, dump it, and ensure round-trip equality.
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i + 41}h/1h/0h/2h" for i in range(5)],
@@ -58,10 +59,11 @@ def test_dump(test_config: TestConfig):
     assert keystore.is_equal(keystore_restored)
 
 
-def test_is_equal():
+def test_is_equal() -> None:
     """Test is equal."""
     network = bdk.Network.REGTEST
 
+    # Base keystore used for comparison.
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -69,6 +71,7 @@ def test_is_equal():
     )[0]
 
     # xpub
+    # Modifying xpub should break equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -79,6 +82,7 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
     # fingerprint
+    # Fingerprint normalization should restore equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -90,6 +94,7 @@ def test_is_equal():
     assert keystore.is_equal(keystore2)
 
     # key_origin
+    # Key origin formatting differences should be normalized.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -101,6 +106,7 @@ def test_is_equal():
     assert keystore.is_equal(keystore2)
 
     # label
+    # Labels are metadata and should affect equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -110,6 +116,7 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
     # network
+    # Network differences should break equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -119,6 +126,7 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
     # mnemonic
+    # Different mnemonic should break equality.
     keystore2 = create_test_seed_keystores(
         signers=2,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -127,6 +135,7 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
     # description
+    # Description changes should break equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -136,6 +145,7 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
     # derivation_path
+    # Derivation path differences should break equality.
     keystore2 = create_test_seed_keystores(
         signers=1,
         key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
@@ -145,58 +155,65 @@ def test_is_equal():
     assert not keystore.is_equal(keystore2)
 
 
-def test_get_differences_address_fields():
+def test_get_differences_address_fields() -> None:
     """Test get differences address fields."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
     keystore2 = keystore.clone()
     keystore2.xpub += " "
+    # xpub changes should require address rescan.
     diffs = keystore.get_differences(keystore2)
     assert len(diffs) == 1
     assert diffs[0].key == "xpub"
     assert diffs[0].type == WalletDifferenceType.ImpactOnAddresses
 
 
-def test_get_differences_metadata_fields():
+def test_get_differences_metadata_fields() -> None:
     """Test get differences metadata fields."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
     keystore2 = keystore.clone()
     keystore2.label = "new"
+    # Label changes should not require rescan.
     diffs = keystore.get_differences(keystore2)
     assert len(diffs) == 1
     assert diffs[0].key == "label"
     assert diffs[0].type == WalletDifferenceType.NoRescan
 
 
-def test_is_seed_valid():
+def test_is_seed_valid() -> None:
     """Test is seed valid."""
+    # Known valid test seed should pass.
     assert KeyStore.is_seed_valid(test_seeds[0])
+    # Obvious invalid seed should fail.
     assert not KeyStore.is_seed_valid("not a valid seed")
 
 
-def test_is_xpub_valid():
+def test_is_xpub_valid() -> None:
     """Test is xpub valid."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
+    # Correct xpub should validate for the given network.
     assert KeyStore.is_xpub_valid(keystore.xpub, keystore.network)
+    # Truncated xpub should fail validation.
     assert not KeyStore.is_xpub_valid(keystore.xpub[:-4], keystore.network)
 
 
-def test_clone_creates_equal_object():
+def test_clone_creates_equal_object() -> None:
     """Test clone creates equal object."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
+    # Clone should be equal but not the same object.
     clone = keystore.clone()
     assert keystore.is_equal(clone)
     assert keystore is not clone
 
 
-def test_from_other_keystore_copies_attributes():
+def test_from_other_keystore_copies_attributes() -> None:
     """Test from other keystore copies attributes."""
     ks1 = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
@@ -207,25 +224,29 @@ def test_from_other_keystore_copies_attributes():
         network=bdk.Network.REGTEST,
         test_seed_offset=1,
     )[0]
+    # from_other_keystore should replace all relevant fields.
     ks1.from_other_keystore(ks2)
     assert ks1.is_equal(ks2)
 
 
-def test_is_identical_to_simple_pubkey_provider():
+def test_is_identical_to_simple_pubkey_provider() -> None:
     """Test is identical to simple pubkey provider."""
     ks = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[0]
+    # Same fields should be identical.
     spk = SimplePubKeyProvider(ks.xpub, ks.fingerprint, ks.key_origin)
     assert ks.is_identical_to(spk)
+    # Different fingerprint should not match.
     spk2 = SimplePubKeyProvider(ks.xpub, "FFFFFFFF", ks.key_origin)
     assert not ks.is_identical_to(spk2)
 
 
-def test_from_signer_info_defaults():
+def test_from_signer_info_defaults() -> None:
     """Test from signer info defaults."""
     base = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
     ]
     signer = SignerInfo(base.fingerprint, base.key_origin, base.xpub)
+    # Defaults should apply when signer does not override fields.
     ks = KeyStore.from_signer_info(
         signer,
         network=base.network,
@@ -236,7 +257,7 @@ def test_from_signer_info_defaults():
     assert ks.derivation_path == "/<0;1>/*"
 
 
-def test_from_signer_info_overrides():
+def test_from_signer_info_overrides() -> None:
     """Test from signer info overrides."""
     base = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
@@ -254,11 +275,12 @@ def test_from_signer_info_overrides():
         default_label="lbl",
         default_derivation_path="/<0;1>/*",
     )
+    # Signer-supplied name/path should override defaults.
     assert ks.label == "custom"
     assert ks.derivation_path == "/1/*"
 
 
-def test_sorted_keystores_orders_by_xpub():
+def test_sorted_keystores_orders_by_xpub() -> None:
     """Test sorted keystores orders by xpub."""
     ks1 = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
         0
@@ -269,19 +291,22 @@ def test_sorted_keystores_orders_by_xpub():
         network=bdk.Network.REGTEST,
         test_seed_offset=1,
     )[0]
+    # Sorting should order by xpub string.
     ordered = sorted_keystores([ks2, ks1])
     assert [k.xpub for k in ordered] == sorted([ks1.xpub, ks2.xpub])
 
 
-def test_network_consistent():
+def test_network_consistent() -> None:
     """Test network consistent."""
     bacon_xpub = "xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K"
+    # Mainnet xpub should only match mainnet.
     assert KeyStore.network_consistent(bdk.DescriptorPublicKey.from_string(bacon_xpub), bdk.Network.BITCOIN)
     assert not KeyStore.network_consistent(
         bdk.DescriptorPublicKey.from_string(bacon_xpub), bdk.Network.TESTNET4
     )
 
     testnet_tpub = "tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD"
+    # Testnet tpub should be valid on testnet-like networks only.
     assert KeyStore.network_consistent(
         bdk.DescriptorPublicKey.from_string(testnet_tpub), bdk.Network.TESTNET4
     )

@@ -35,9 +35,10 @@ from .setup_bitcoin_core import bitcoin_cli
 
 
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory
-def test_get_blockchain_info(bitcoin_core: Path):
+def test_get_blockchain_info(bitcoin_core: Path) -> None:
     # Execute the command to get blockchain information
     """Test get blockchain info."""
+    # Call bitcoin-cli and parse JSON output.
     result = bitcoin_cli("getblockchaininfo", bitcoin_core)
 
     # Parse the output as JSON
@@ -50,15 +51,19 @@ def test_get_blockchain_info(bitcoin_core: Path):
 
 
 def mine_blocks(
-    bitcoin_core: Path, n=1, address="bcrt1qdlxaahyrtx7g76c9l6szn4qn979ku4j6wx67vv5qvtf888y7lcpqdsnhxg"
-):
+    bitcoin_core: Path,
+    n: int = 1,
+    address: str = "bcrt1qdlxaahyrtx7g76c9l6szn4qn979ku4j6wx67vv5qvtf888y7lcpqdsnhxg",
+) -> str:
     # Mine n blocks to the specified address
     """Mine blocks."""
+    # Use generatetoaddress for deterministic block creation.
     result = bitcoin_cli(f"generatetoaddress {n} {address}", bitcoin_core)
     return result.strip()
 
 
-def test_mine_blocks(bitcoin_core: Path):
+def test_mine_blocks(bitcoin_core: Path) -> None:
     """Test mine blocks."""
+    # Mining should return at least one block hash.
     block_hashes = mine_blocks(bitcoin_core, 10)
     assert len(block_hashes) > 0

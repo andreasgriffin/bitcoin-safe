@@ -63,11 +63,13 @@ def test_signature_import_of_psbt_without_utxos(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Start from a PSBT missing UTXO data and import a signed version.
         original_psbt_with_utxos = "cHNidP8BAHEBAAAAAeiHh9h+004gbKuOsftsvi1P8enQp7QXj2/f/h6k/rMJAAAAAAD9////Av4ZAAAAAAAAFgAU5ytVX56aHKFd1BCiUqgZhL0Hi4gbDgAAAAAAABYAFFBhg6P35dEjPH34fODiPRO9OJKF1/IDAAABAL8BAAAAAAEBcP3O2sajhJ1yG0zM8WuYb8wrA88K4aGLd+Al7y488QEBAAAAAP3///8BUigAAAAAAAAWABQ73GqQQhGGkxmRnebMJC65HIumYAJHMEQCIGzG1xsqSw2ZJSQcFhos5VEgIs+G20p3zoIUpyjeVXyYAiANdH1K5zIqNqCmWo9AE8kM2xCOv01fpghjRQrVvI2jwgEhAmtY5HMmAWGm3b0x23LNBgkKTghfLtusJRJJfcus+sKiBOYDAAEBH1IoAAAAAAAAFgAUO9xqkEIRhpMZkZ3mzCQuuRyLpmAiBgJgyxjKpjXG2L1+X23h78bcNOyOlp1xVi1R+AaLcDRTvBhgxsdBVAAAgAEAAIAAAACAAAAAABUAAAAAIgIDwbk3IqMd2FY+Jx0yXnbsX1cZlKK5p2L67qL/pbN5ngIYYMbHQVQAAIABAACAAAAAgAEAAAAWAAAAACICA0YS01vBUDnuhTE4wNtNXQpvPBWO0UDZWFeevJ74ZkQaGGDGx0FUAACAAQAAgAAAAIAAAAAASgAAAAA="
         signed_psbt = "70736274ff0100710100000001e88787d87ed34e206cab8eb1fb6cbe2d4ff1e9d0a7b4178f6fdffe1ea4feb3090000000000fdffffff02fe19000000000000160014e72b555f9e9a1ca15dd410a252a81984bd078b881b0e000000000000160014506183a3f7e5d1233c7df87ce0e23d13bd389285d7f203000022020260cb18caa635c6d8bd7e5f6de1efc6dc34ec8e969d71562d51f8068b703453bc463043022006706c689b59e0de113c45422775e1778cb1a801df09f1f2e092a11b3e1b06c9021f2e45dde2ff6adc3bb02e503c8c051d539240d36731685bceb1005623dee46801000000"
         main_window.open_tx_like_in_tab(original_psbt_with_utxos)
@@ -80,6 +82,7 @@ def test_signature_import_of_psbt_without_utxos(
         assert isinstance(uitx_viewer, UITx_Viewer)
         assert uitx_viewer.tx_singning_steps
 
+        # Initial state should show signing UI but disable send actions.
         assert not uitx_viewer.button_send.isEnabled()
         assert uitx_viewer.button_send.isVisible()
         assert not uitx_viewer.button_send.isEnabled()
@@ -102,6 +105,7 @@ def test_signature_import_of_psbt_without_utxos(
 
         def text_entry(dialog: ImportDialog) -> None:
             """Text entry."""
+            # Paste the signed PSBT into the import dialog and confirm.
             shutter.save(dialog)
 
             dialog.text_edit.setText(signed_psbt)
@@ -115,9 +119,10 @@ def test_signature_import_of_psbt_without_utxos(
             widget_import_export.file.button_import.buttons[0].click, text_entry, qtbot, cls=ImportDialog
         )
 
-        # let ui tx update with the new info
+        # Let the UI update with the newly imported signatures.
         QApplication.processEvents()
 
+        # After import, send/edit/save should be enabled.
         assert uitx_viewer.button_send.isEnabled()
         assert uitx_viewer.button_edit_tx.isEnabled()
         assert uitx_viewer.button_save_local_tx.isEnabled()

@@ -45,7 +45,8 @@ from ...helpers import TestConfig
 def test_conversions(
     qtbot: QtBot,
     test_config: TestConfig,
-):
+) -> None:
+    # Provide deterministic rates across a wide currency list.
     fx = FX(config=test_config, loop_in_thread=None, update_rates=False)
     fx.rates = {
         "AED": {"name": "United Arab Emirates Dirham", "type": "fiat", "unit": "DH", "value": 335019.905},
@@ -158,9 +159,11 @@ def test_conversions(
     qtbot.addWidget(btc_spin)
     qtbot.addWidget(fiat_spin)
 
+    # Wire up the converter to keep the two spin boxes in sync.
     converter = CurrencyConverter(btc_spin, fiat_spin)
     assert isinstance(converter, CurrencyConverter)
 
+    # Setting BTC should update fiat across all currencies.
     btc_value = 123456
     btc_spin.setValue(btc_value)
 
@@ -170,6 +173,7 @@ def test_conversions(
             btc_value * fx.rates[fx.sanitize_key(currency_iso)]["value"] / SATOSHIS_PER_BTC, abs=1e-1
         )
 
+    # Setting fiat should update BTC across all currencies.
     fiat_value = 34567
     for currency_iso in fx.rates:
         fiat_spin.setCurrencyCode(currency_iso)

@@ -63,35 +63,38 @@ def test_default_network_config_works(
 
     shutter.create_symlink(test_config=test_config_main_chain)
     with main_window_context(test_config=test_config_main_chain) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait until the main window is shown before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe"
 
         shutter.save(main_window)
 
+        # Copy the fixture wallet so the test can modify it safely.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
-
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet and switch to the address tab.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
         qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
         shutter.save(main_window)
-        # check wallet address
+        # Ensure the default wallet address matches the expected value.
         assert qt_wallet.wallet.get_addresses()[0] == "bc1qyngkwkslw5ng4v7m42s8t9j6zldmhyvrnnn9k5"
 
-        def do_all(qt_wallet: QTWallet):
-            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
+        def do_all(qt_wallet: QTWallet) -> None:
+            # Avoid implicit references outside this scope that might keep qt_wallet alive.
 
-            def sync():
-                """Sync."""
+            def sync() -> None:
+                # Run a sync and wait for the signal to confirm completion.
                 with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=50000):
                     qt_wallet.sync()
 
                 shutter.save(main_window)
 
+                # Sanity check that some transaction history is available.
                 assert len(qt_wallet.wallet.sorted_delta_list_transactions()) >= 28
 
             sync()
@@ -101,6 +104,7 @@ def test_default_network_config_works(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete the reference and close the wallet UI to exercise cleanup.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
 
@@ -114,7 +118,7 @@ def test_default_network_config_works(
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
-            """Check that it is in recent wallets."""
+            # Ensure the wallet path shows up in recent wallets for this network.
             assert any(
                 [
                     (wallet_file in name)
@@ -126,5 +130,5 @@ def test_default_network_config_works(
 
         check_that_it_is_in_recent_wallets()
 
-        # end
+        # Final screenshot after assertions.
         shutter.save(main_window)

@@ -63,12 +63,14 @@ def test_verify_message_p2pkh() -> None:
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "1" * 64
     message = "Hardware wallet verification"
+    # Build a valid legacy signature.
     signature, pubkey_bytes = _create_message_signature(message, privkey_hex, compressed=False)
 
     network = MessageSignatureVerifyer.NETWORKS[0]
     pubkey_hash = hash160(pubkey_bytes)
     address = MessageSignatureVerifyer._to_base58_address(network.p2pkh_prefix, pubkey_hash)
 
+    # Verify should succeed and return normalized message.
     result = verifyer.verify_message(address, message, signature)
 
     assert result.match
@@ -81,6 +83,7 @@ def test_verify_message_p2wpkh_and_nested() -> None:
     verifyer = MessageSignatureVerifyer()
     privkey_hex = "2" * 64
     message = "SegWit verification"
+    # Build a valid compressed-key signature.
     signature, pubkey_bytes = _create_message_signature(message, privkey_hex, compressed=True)
 
     network = MessageSignatureVerifyer.NETWORKS[0]
@@ -90,6 +93,7 @@ def test_verify_message_p2wpkh_and_nested() -> None:
     nested_hash = hash160(redeem_script)
     nested_address = MessageSignatureVerifyer._to_base58_address(network.p2sh_prefix, nested_hash)
 
+    # Both native SegWit and nested SegWit should verify.
     assert verifyer.verify_message(bech32_address, message, signature).match
     assert verifyer.verify_message(nested_address, message, signature).match
 
@@ -105,6 +109,7 @@ def test_verify_message_trims_whitespace() -> None:
     pubkey_hash = hash160(pubkey_bytes)
     address = _bech32.encode(network.bech32_hrp, 0, pubkey_hash)
 
+    # Leading/trailing whitespace should be trimmed during verification.
     noisy_message = f"  {message}\n"
     result = verifyer.verify_message(address, noisy_message, signature)
 
@@ -126,13 +131,14 @@ def test_verify_message_invalid_signature() -> None:
     pubkey_hash = hash160(pubkey_bytes)
     address = _bech32.encode(network.bech32_hrp, 0, pubkey_hash)
 
+    # Invalid base64 should fail gracefully.
     bad_signature = "not-base64"
     result = verifyer.verify_message(address, message, bad_signature)
 
     assert not result.match
     assert result.error is not None
 
-    # Ensure a signature cannot be used for a different message
+    # Ensure a signature cannot be used for a different message.
     different_message_result = verifyer.verify_message(address, "different", signature)
     assert not different_message_result.match
 
@@ -193,14 +199,16 @@ def invalidate_s(signature_b64: str) -> str:
     return _bytes_to_b64(sig)
 
 
-def test_static_legacy_signatures():
+def test_static_legacy_signatures() -> None:
     """Test static."""
 
-    def check_all(verifyer: MessageSignatureVerifyer, address, message, signature):
+    def check_all(verifyer: MessageSignatureVerifyer, address: str, message: str, signature: str) -> None:
         """Check all."""
+        # Baseline signature should verify.
         result = verifyer.verify_message(address, message, signature)
         assert result.match
 
+        # Corruptions should fail verification.
         result = verifyer.verify_message(address, message, invalidate_header(signature))
         assert not result.match
 
@@ -210,8 +218,9 @@ def test_static_legacy_signatures():
         result = verifyer.verify_message(address, message, invalidate_s(signature))
         assert not result.match
 
-    def check_all_asciguarded(verifyer: MessageSignatureVerifyer, message):
+    def check_all_asciguarded(verifyer: MessageSignatureVerifyer, message: str) -> None:
         """Check all."""
+        # ASCII armored signatures should verify.
         result = verifyer.verify_message_asciguarded(message)
         assert result.match
 
@@ -221,6 +230,7 @@ def test_static_legacy_signatures():
     signature = "IGuLwe0qHi/YdhnhABMLjYi7O+kMxeo6l15GC+ar6NUcKJV4LMZm8vu29U+J0w9SuX8Oik5JGzYO4beWdfO+Rrw="
 
     verifyer = MessageSignatureVerifyer()
+    # Direct verify should succeed before corruption checks.
     result = verifyer.verify_message(address, message, signature)
     assert result.match
 

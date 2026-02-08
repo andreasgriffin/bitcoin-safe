@@ -68,16 +68,16 @@ def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
     Returns:
         bool: True if the structures are identical (considering ignore_value), False otherwise.
     """
-    # Handle ignore_value in direct comparison
+    # Handle ignore_value in direct comparison.
     if d1 == ignore_value or d2 == ignore_value:
         return True
 
-    # Check the type of d1 and d2
+    # Check the type of d1 and d2.
     if type(d1) is not type(d2):
         logger.debug(f"Type mismatch: {type(d1)} != {type(d2)}")
         return False
 
-    # If both are dictionaries
+    # If both are dictionaries.
     if isinstance(d1, dict):
         if d1.keys() != d2.keys():
             logger.debug(f"Dictionary keys mismatch: {d1.keys()} != {d2.keys()}")
@@ -88,7 +88,7 @@ def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
                 return False
         return True
 
-    # If both are lists
+    # If both are lists.
     if isinstance(d1, list):
         if len(d1) != len(d2):
             logger.debug(f"List length mismatch: {len(d1)} != {len(d2)}")
@@ -99,7 +99,7 @@ def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
                 return False
         return True
 
-    # Direct value comparison
+    # Direct value comparison.
     if d1 != d2:
         logger.debug(f"Value mismatch: {d1} != {d2}")
         return False
@@ -164,6 +164,7 @@ def test_funded_wallet_session(
         label="test",
         network=test_config_session.network,
     )
+    # Create a test wallet from a fixed descriptor.
     handle = create_test_wallet(
         wallet_id=wallet_name,
         descriptor_str=descriptor_str,
@@ -186,10 +187,11 @@ def test_funded_wallet(
 ) -> Generator[Wallet, None, None]:
     wallet = test_funded_wallet_session
     if wallet.get_balance().total:
+        # Reuse the existing funded wallet if already funded.
         yield wallet
         return
 
-    # fund the wallet
+    # Fund the wallet with categorized UTXOs.
     addresses_private = [
         str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config.num_private)
     ]
@@ -204,6 +206,7 @@ def test_funded_wallet(
         wallet.labels.set_addr_category(address, "KYC")
         faucet.send(address, amount=test_wallet_config.utxo_value_kyc, qtbot=qtbot)
 
+    # Mine blocks and wait for sync so balances reflect funding.
     faucet.mine(qtbot=qtbot)
     QApplication.processEvents()
 
@@ -230,6 +233,7 @@ def test_manual_coin_selection(
     """Test manual coin selection."""
     wallet = test_funded_wallet
 
+    # Select only "Private" UTXOs for the spend.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
     txinfos.utxo_dict = {
@@ -242,6 +246,7 @@ def test_manual_coin_selection(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # Build recipients with explicit amounts.
     recpient_amounts = [15_000, 25_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
@@ -272,9 +277,8 @@ def test_manual_coin_selection(
             "output": "value_to_be_ignored",
         },
     )
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [
@@ -286,7 +290,7 @@ def test_manual_coin_selection(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 1
 
@@ -304,6 +308,7 @@ def test_manual_coin_selection_1_max(
     """Test manual coin selection 1 max."""
     wallet = test_funded_wallet
 
+    # Spend all private UTXOs with one max recipient (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
     txinfos.utxo_dict = {
@@ -316,6 +321,7 @@ def test_manual_coin_selection_1_max(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # One fixed amount and one max-amount recipient.
     recpient_amounts = [15_000]
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(2)]
     recipients = [
@@ -350,9 +356,8 @@ def test_manual_coin_selection_1_max(
             "output": "value_to_be_ignored",
         },
     )
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
 
@@ -367,7 +372,7 @@ def test_manual_coin_selection_1_max(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 0
 
@@ -385,6 +390,7 @@ def test_manual_coin_selection_2_max(
     """Test manual coin selection 2 max."""
     wallet = test_funded_wallet
 
+    # Spend all private UTXOs with two max recipients (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
     txinfos.utxo_dict = {
@@ -399,6 +405,7 @@ def test_manual_coin_selection_2_max(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # One fixed amount and two max-amount recipients.
     recpient_amounts = [15_000]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // 2
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(3)]
@@ -439,9 +446,8 @@ def test_manual_coin_selection_2_max(
             "output": "value_to_be_ignored",
         },
     )
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
 
     expected_output_values = sorted(
         recpient_amounts
@@ -456,7 +462,7 @@ def test_manual_coin_selection_2_max(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 0
 
@@ -475,6 +481,7 @@ def test_category_coin_selection(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
+    # Select only private UTXOs, but allow coin selection to pick minimal inputs.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
     txinfos.utxo_dict = {
@@ -489,6 +496,7 @@ def test_category_coin_selection(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # Fixed recipients without max amount; change output expected.
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
@@ -519,13 +527,12 @@ def test_category_coin_selection(
             "output": "value_to_be_ignored",
         },
     )
-    # only 1 input is needed
+    # Only the minimal number of inputs should be chosen.
     num_inputs_needed = 1 + sum(recpient_amounts) // test_wallet_config.utxo_value_private
     assert len(tx_dict["input"]) == num_inputs_needed
 
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [num_inputs_needed * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
@@ -533,7 +540,7 @@ def test_category_coin_selection(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 1
 
@@ -552,6 +559,7 @@ def test_category_coin_selection_1_max(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
+    # Select private UTXOs with one max recipient (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
     txinfos.utxo_dict = {
@@ -566,6 +574,7 @@ def test_category_coin_selection_1_max(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # One fixed amount and one max-amount recipient.
     recpient_amounts = [15_000]
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(2)]
     recipients = [
@@ -600,12 +609,11 @@ def test_category_coin_selection_1_max(
             "output": "value_to_be_ignored",
         },
     )
-    # only 1 input is needed
+    # All private inputs are included when spend_all_utxos is false but max is set.
     assert len(tx_dict["input"]) == test_wallet_config.num_private
 
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [
@@ -617,7 +625,7 @@ def test_category_coin_selection_1_max(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 0
 
@@ -636,6 +644,7 @@ def test_category_coin_selection_2_max(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
+    # Spend all private UTXOs with two max recipients (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
     txinfos.utxo_dict = {
@@ -650,6 +659,7 @@ def test_category_coin_selection_2_max(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # One fixed amount and two max-amount recipients.
     recpient_amounts = [15_000]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // 2
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(3)]
@@ -690,9 +700,8 @@ def test_category_coin_selection_2_max(
             "output": "value_to_be_ignored",
         },
     )
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [estimated_max_amount_of_first_max]
@@ -706,7 +715,7 @@ def test_category_coin_selection_2_max(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 0
 
@@ -725,6 +734,7 @@ def test_category_coin_selection_6_max(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=False)
     wallet = test_funded_wallet
 
+    # Spend all private UTXOs with six max recipients.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
     txinfos.utxo_dict = {
@@ -739,6 +749,7 @@ def test_category_coin_selection_6_max(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # One fixed amount plus six max-amount recipients.
     recpient_amounts = [15_000]
     num_max_recipients = 6
     addresses = [str(wallet.get_address(force_new=True).address) for i in range(num_max_recipients + 1)]
@@ -779,9 +790,8 @@ def test_category_coin_selection_6_max(
             "output": "value_to_be_ignored",
         },
     )
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [
@@ -795,7 +805,7 @@ def test_category_coin_selection_6_max(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 0
 
@@ -819,6 +829,7 @@ def test_category_coin_selection_opportunistic(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=True, python_random_seed=1)
     wallet = test_funded_wallet
 
+    # Seed RNGs so opportunistic selection is deterministic.
     random.seed(test_coin_control_config.python_random_seed)
     np.random.seed(test_coin_control_config.python_random_seed)
 
@@ -836,6 +847,7 @@ def test_category_coin_selection_opportunistic(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # Fixed recipients without max; change output expected.
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
@@ -866,13 +878,12 @@ def test_category_coin_selection_opportunistic(
             "output": "value_to_be_ignored",
         },
     )
-    # the python_random_seed=2 leads to 2 inputs being chosen, even though only 1 is needed
+    # python_random_seed=1 leads to 2 inputs being chosen, even though only 1 is needed.
     num_inputs_chosen = 2
     assert len(tx_dict["input"]) == num_inputs_chosen
 
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [num_inputs_chosen * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
@@ -880,7 +891,7 @@ def test_category_coin_selection_opportunistic(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 1
 
@@ -900,6 +911,7 @@ def test_category_coin_selection_opportunistic_different_seed(
     test_coin_control_config = TestCoinControlConfig(opportunistic_merge_utxos=True, python_random_seed=42)
     wallet = test_funded_wallet
 
+    # Seed RNGs so opportunistic selection is deterministic.
     random.seed(test_coin_control_config.python_random_seed)
     np.random.seed(test_coin_control_config.python_random_seed)
 
@@ -917,6 +929,7 @@ def test_category_coin_selection_opportunistic_different_seed(
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
 
+    # Fixed recipients without max; change output expected.
     recpient_amounts = [15_000, 25_000, 35_000]
     addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
@@ -947,13 +960,12 @@ def test_category_coin_selection_opportunistic_different_seed(
             "output": "value_to_be_ignored",
         },
     )
-    # the python_random_seed=42 leads to 1 inputs being chosen
+    # python_random_seed=42 leads to 1 input being chosen.
     num_inputs_chosen = 1
     assert len(tx_dict["input"]) == num_inputs_chosen
 
-    # bdk gives random sorting, so i have to compare sorted lists
-    # if utxo_value_private != utxo_value_kyc, this check will implicitly
-    # also check if the correct coin categories were selected
+    # BDK output order is not deterministic; compare sorted values instead.
+    # If utxo_value_private != utxo_value_kyc, this also validates category selection.
     expected_output_values = sorted(
         recpient_amounts
         + [num_inputs_chosen * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
@@ -961,6 +973,6 @@ def test_category_coin_selection_opportunistic_different_seed(
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
 
-    # check that the recipient addresses are correct
+    # Check that the recipient addresses are correct.
     output_addresses = [output["address"] for output in tx_dict["output"]]
     assert len(set(output_addresses) - set(addresses)) == 1

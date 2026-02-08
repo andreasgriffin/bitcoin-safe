@@ -58,14 +58,15 @@ class MySignalclass(QObject):
 
 def chained_one_time_signal_connections(
     signals: list[pyqtBoundSignal], fs: list[Callable[..., bool]], disconnect_only_if_f_true=True
-):
-    "If after the i. f is called, it connects the i+1. signal"
+) -> None:
+    """Chain one-time signal handlers in order."""
 
     signal, remaining_signals = signals[0], signals[1:]
     f, remaining_fs = fs[0], fs[1:]
 
     def f_wrapper(*args, **kwargs):
         """F wrapper."""
+        # If the current handler returns truthy, advance to the next signal.
         res = f(*args, **kwargs)
         if disconnect_only_if_f_true and not res:
             # reconnect
@@ -78,7 +79,7 @@ def chained_one_time_signal_connections(
 
 
 @patch("pathlib.Path.home")
-def test_path_to_rel_home_path(mock_home):
+def test_path_to_rel_home_path(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test path to rel home path."""
     mock_home.return_value = Path("/home/user")
@@ -94,7 +95,7 @@ def test_path_to_rel_home_path(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_rel_path_to_abs_path(mock_home):
+def test_rel_path_to_abs_path(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test rel path to abs path."""
     mock_home.return_value = Path("/home/user")
@@ -110,7 +111,7 @@ def test_rel_path_to_abs_path(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_rel_path_to_abs_path_with_given_absolute(mock_home):
+def test_rel_path_to_abs_path_with_given_absolute(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test rel path to abs path with given absolute."""
     mock_home.return_value = Path("/home/user")
@@ -126,7 +127,7 @@ def test_rel_path_to_abs_path_with_given_absolute(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_conversion_round_trip(mock_home):
+def test_conversion_round_trip(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test conversion round trip."""
     mock_home.return_value = Path("/home/user")
@@ -141,7 +142,7 @@ def test_conversion_round_trip(mock_home):
     assert round_trip_path == original_path, "Round-trip conversion did not return the original path"
 
 
-def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
+def test_chained_one_time_signal_connections(caplog: LogCaptureFixture) -> None:
     """Test chained one time signal connections."""
     with caplog.at_level(logging.INFO):
         n = 4
@@ -159,6 +160,7 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
 
         fs = [factory(i, instance) for i, instance in enumerate(instances)]
 
+        # Connect the chain and emit signals twice to ensure one-time behavior.
         chained_one_time_signal_connections([instance.signal for instance in instances], fs)
 
         for instance in instances:
@@ -173,7 +175,7 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
         assert messages == [str(i) for i in range(n)]
 
 
-def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture):
+def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture) -> None:
     # repeat, but now do not return True
     """Test chained one time signal connections prevent disconnect."""
     with caplog.at_level(logging.INFO):
@@ -192,6 +194,7 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
 
         fs = [factory(i, instance) for i, instance in enumerate(instances)]
 
+        # Connect the chain but keep the first handler returning falsy.
         chained_one_time_signal_connections([instance.signal for instance in instances], fs)
 
         for instance in instances:
@@ -210,7 +213,7 @@ def make_psbt(
     destination_address: str,
     amount=SATOSHIS_PER_BTC,
     fee_rate=1,
-):
+) -> bdk.Psbt:
     """Make psbt."""
     txbuilder = bdk.TxBuilder()
 
@@ -220,6 +223,7 @@ def make_psbt(
 
     txbuilder = txbuilder.fee_rate(fee_rate)
 
+    # Build and wrap a PSBT so callers can sign it.
     psbt = txbuilder.finish(bdk_wallet)
 
     logger.debug(f"psbt to {destination_address}: {psbt.serialize()}\n")
@@ -228,9 +232,10 @@ def make_psbt(
     return psbt_for_signing
 
 
-def test_calculate_ema_zero_weights():
+def test_calculate_ema_zero_weights() -> None:
     """Test calculate ema zero weights."""
     from bitcoin_safe.util import calculate_ema
 
+    # Zero weights should still produce a deterministic EMA result.
     result = calculate_ema([1, 2, 3], n=3, weights=[0, 0, 0])
     assert result == 2.25

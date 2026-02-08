@@ -59,6 +59,7 @@ def test_chained_label_timestamp_updates() -> None:
     config.network = bdk.Network.REGTEST
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
 
+    # Use a fresh receiving address for timestamp changes.
     addr = str(wallet.get_force_new_address(is_change=False).address)
 
     # 1) Automatic category assignment uses the special AUTOMATIC_TIMESTAMP so
