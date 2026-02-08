@@ -50,6 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 def _strip_invisible(text: str) -> str:
+    # Remove zero-width or BOM characters that can appear in rendered labels.
     return text.replace("\u200b", "").replace("\ufeff", "")
 
 
@@ -68,15 +69,18 @@ def test_quick_receive_copy_and_next_address(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Copy fixture wallet into a temp path so we can modify it safely.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet and navigate to a stable tab before inspecting quick receive.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert isinstance(qt_wallet, QTWallet)
 
@@ -95,11 +99,13 @@ def test_quick_receive_copy_and_next_address(
         label_address = _strip_invisible(group_box.label.text())
         assert label_address == group_box.address
 
+        # Ensure the QR widget is visible so rendering can occur.
         quick_receive.scroll_area.ensureWidgetVisible(group_box)
         QTest.qWait(200)
         QApplication.processEvents()
 
         def qr_ready() -> bool:
+            # QR is "ready" if visible in viewport or an SVG renderer is valid.
             viewport = quick_receive.scroll_area.viewport()
             visible_in_viewport = bool(viewport) and group_box.qr_code.isVisibleTo(viewport)
             renderer_ready = (

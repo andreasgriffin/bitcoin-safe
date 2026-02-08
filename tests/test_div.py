@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 
 @patch("pathlib.Path.home")
-def test_path_to_rel_home_path(mock_home):
+def test_path_to_rel_home_path(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test path to rel home path."""
     mock_home.return_value = Path("/home/user")
@@ -61,7 +61,7 @@ def test_path_to_rel_home_path(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_rel_path_to_abs_path(mock_home):
+def test_rel_path_to_abs_path(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test rel path to abs path."""
     mock_home.return_value = Path("/home/user")
@@ -77,7 +77,7 @@ def test_rel_path_to_abs_path(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_rel_path_to_abs_path_with_given_absolute(mock_home):
+def test_rel_path_to_abs_path_with_given_absolute(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test rel path to abs path with given absolute."""
     mock_home.return_value = Path("/home/user")
@@ -93,7 +93,7 @@ def test_rel_path_to_abs_path_with_given_absolute(mock_home):
 
 
 @patch("pathlib.Path.home")
-def test_conversion_round_trip(mock_home):
+def test_conversion_round_trip(mock_home) -> None:
     # Mock the home directory to a fixed path
     """Test conversion round trip."""
     mock_home.return_value = Path("/home/user")
@@ -108,7 +108,7 @@ def test_conversion_round_trip(mock_home):
     assert round_trip_path == original_path, "Round-trip conversion did not return the original path"
 
 
-def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
+def test_chained_one_time_signal_connections(caplog: LogCaptureFixture) -> None:
     """Test chained one time signal connections."""
     with caplog.at_level(logging.INFO):
         n = 4
@@ -126,6 +126,7 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
 
         fs = [factory(i, instance) for i, instance in enumerate(instances)]
 
+        # Connect the chain and emit signals twice to ensure one-time behavior.
         chained_one_time_signal_connections([instance.signal for instance in instances], fs)
 
         for instance in instances:
@@ -141,7 +142,7 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture):
         ]
 
 
-def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture):
+def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture) -> None:
     # repeat, but now do not return True
     """Test chained one time signal connections prevent disconnect."""
     with caplog.at_level(logging.INFO):
@@ -160,6 +161,7 @@ def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptu
 
         fs = [factory(i, instance) for i, instance in enumerate(instances)]
 
+        # Connect the chain but keep the first handler returning falsy.
         chained_one_time_signal_connections([instance.signal for instance in instances], fs)
 
         for instance in instances:

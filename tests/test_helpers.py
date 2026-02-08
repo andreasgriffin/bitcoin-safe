@@ -49,6 +49,7 @@ class TestConfig(UserConfig):
 def test_config() -> TestConfig:
     """Test config."""
     config = TestConfig()
+    # Use a temp config dir/file for isolated tests.
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
     config.network = bdk.Network.REGTEST
     return config
@@ -59,6 +60,7 @@ def test_config_main_chain() -> TestConfig:
     """Test config main chain."""
     config = TestConfig()
     config.network = bdk.Network.BITCOIN
+    # Use a temp config dir/file for isolated tests.
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
 
     return config

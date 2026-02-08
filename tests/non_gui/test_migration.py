@@ -40,12 +40,13 @@ from bitcoin_safe.wallet import Wallet
 from ..helpers import TestConfig
 
 
-def test_011(test_config: TestConfig):
+def test_011(test_config: TestConfig) -> None:
     """Test 011."""
     file_path = "tests/data/0.1.1.wallet"
 
     password = None
 
+    # Older wallet files should load without a password.
     assert not Storage().has_password(file_path)
 
     wallet = Wallet.from_file(file_path, test_config, password=password, loop_in_thread=None)
@@ -53,20 +54,22 @@ def test_011(test_config: TestConfig):
     assert wallet
 
 
-def test_config010():
+def test_config010() -> None:
     """Test config010."""
     file_path = "tests/data/config_0.1.0.conf"
 
+    # Ensure legacy config loads and last_wallet_files is preserved.
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.last_wallet_files == {"Network.REGTEST": [".config/bitcoin_safe/REGTEST/Coldcard.wallet"]}
 
     assert config
 
 
-def test_config_0_1_6_testnet3_electrum():
+def test_config_0_1_6_testnet3_electrum() -> None:
     """Test config 0 1 6 testnet3 electrum."""
     file_path = "tests/data/0.1.6_testnet.conf"
 
+    # Testnet3 electrum settings should be migrated correctly.
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.network == bdk.Network.TESTNET
     assert config.network_config.network == bdk.Network.TESTNET
@@ -77,10 +80,11 @@ def test_config_0_1_6_testnet3_electrum():
     assert config.network_config.proxy_url is None
 
 
-def test_config_0_1_6_testnet4_electrum():
+def test_config_0_1_6_testnet4_electrum() -> None:
     """Test config 0 1 6 testnet4 electrum."""
     file_path = "tests/data/config_0.1.6_testnet4_electrum.conf"
 
+    # Testnet4 electrum settings should be migrated correctly.
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.network == bdk.Network.TESTNET4
     assert config.network_config.network == bdk.Network.TESTNET4
@@ -92,10 +96,11 @@ def test_config_0_1_6_testnet4_electrum():
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
 
 
-def test_config_0_1_6_testnet4_proxy_electrum():
+def test_config_0_1_6_testnet4_proxy_electrum() -> None:
     """Test config 0 1 6 testnet4 proxy electrum."""
     file_path = "tests/data/config_0.1.6_testnet4_proxy_electrum.conf"
 
+    # Proxy settings should be preserved for testnet4.
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.network == bdk.Network.TESTNET4
     assert config.network_config.network == bdk.Network.TESTNET4
@@ -107,10 +112,11 @@ def test_config_0_1_6_testnet4_proxy_electrum():
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
 
 
-def test_config_0_1_6_rpc():
+def test_config_0_1_6_rpc() -> None:
     """Test config 0 1 6 rpc."""
     file_path = "tests/data/config_0.1.6_rpc.conf"
 
+    # RPC config should map to electrum fields as expected.
     config = UserConfig.from_file(file_path=Path(file_path))
     assert config.network == bdk.Network.BITCOIN
     assert config.network_config.network == bdk.Network.BITCOIN

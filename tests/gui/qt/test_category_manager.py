@@ -62,12 +62,15 @@ def test_category_manager_add_and_merge(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
 
+        # Copy fixture wallet to a temp path so we can modify categories.
         temp_dir = Path(tempfile.mkdtemp()) / "0.2.0.wallet"
         wallet_path = Path("tests") / "data" / "0.2.0.wallet"
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet and launch the category manager.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
@@ -76,11 +79,13 @@ def test_category_manager_add_and_merge(
         category_manager.updateUi()
         category_manager.category_list.update_content()
 
+        # Capture existing categories as the baseline for later assertions.
         existing_categories = list(qt_wallet.wallet.labels.categories)
         assert existing_categories
 
         new_category = "Test Merge Category"
 
+        # Stub user prompts for new category creation in both modules.
         for target in [
             "bitcoin_safe.gui.qt.category_manager.category_core.prompt_new_category",
             "bitcoin_safe.gui.qt.category_manager.category_manager.prompt_new_category",
@@ -92,8 +97,10 @@ def test_category_manager_add_and_merge(
 
         assert new_category in qt_wallet.wallet.labels.categories
 
+        # Choose an existing category as the merge target.
         target_category = existing_categories[0]
 
+        # Stub merge prompt and ensure no used addresses block the merge.
         for target in [
             "bitcoin_safe.gui.qt.category_manager.category_core.prompt_merge_category",
             "bitcoin_safe.gui.qt.category_manager.category_manager.prompt_merge_category",
@@ -107,18 +114,22 @@ def test_category_manager_add_and_merge(
             role=MyItemDataRole.ROLE_CLIPBOARD_DATA,
         )
 
+        # Verify both categories are selected before merging.
         assert len(category_manager.category_list.get_selected_category_infos()) == 2, (
             "expected both categories to be selected for merge"
         )
 
+        # Merge the categories and refresh the list.
         category_manager.on_button_merge()
         category_manager.category_list.update_content()
 
+        # The new category should be merged into the target and removed.
         assert new_category not in qt_wallet.wallet.labels.categories
         assert target_category in qt_wallet.wallet.labels.categories
         assert len(qt_wallet.wallet.labels.categories) == len(existing_categories)
 
         shutter.save(main_window)
+        # Close wallet to clean up the test state.
         close_wallet(
             shutter=shutter,
             test_config=test_config,

@@ -34,13 +34,14 @@ import time
 from bitcoin_safe.address_comparer import AddressComparer
 
 
-def test_identical_addresses():
+def test_identical_addresses() -> None:
     """Test identical addresses."""
     addr = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+    # Identical addresses should never be flagged as poisoning.
     assert not AddressComparer.poisonous({addr, addr})
 
 
-def test_similar_poisonous_base58():
+def test_similar_poisonous_base58() -> None:
     """Test similar poisonous base58."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     # Slight difference at the end.
@@ -53,44 +54,49 @@ def test_similar_poisonous_base58():
     assert AddressComparer.poisonous({addr1, addr2})
 
 
-def test_different_addresses():
+def test_different_addresses() -> None:
     """Test different addresses."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "1A1atSLRHtKNngkdXEeobR76b53LETtpNa"  # Only 2 matching characters  (can be coincidence)
+    # Low similarity should not trigger poisoning detection.
     assert not AddressComparer.poisonous({addr1, addr2})
 
 
-def test_similar_poisonous_bech32():
+def test_similar_poisonous_bech32() -> None:
     # Two bech32 addresses that differ only slightly.
     """Test similar poisonous bech32."""
     addr1 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080"
     addr2 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt081"
 
+    # Nearly identical bech32 addresses should be flagged.
     assert AddressComparer.poisonous({addr1, addr2})
 
     # real example not similar enough
     addr1 = "bcrt1qlelfnq4c7asm6p556fw32e5kcgxsply7vls9hvcgfv83pyhtt0lscs6qa0"
     addr2 = "bcrt1qtsk0skze8qqd4juleyhtqq7sm03pe5vs7s6qa0"
 
+    # Real-world example should not trigger poisoning at default threshold.
     assert not AddressComparer.poisonous({addr1, addr2})
 
     # real example made more similar (not valid address)
     addr1 = "bcrt1qlelfnq4c7asm6p556fw32e5kcgxsply7vls9hvcgfv83pyhtt0lscs6qa0"
     addr2 = "bcrt1qlel0skze8qqd4juleyhtqq7sm03pe5vs7s6qa0"
 
+    # Making the strings more similar should now trigger detection.
     assert AddressComparer.poisonous({addr1, addr2})
 
 
-def test_base58_vs_bech32():
+def test_base58_vs_bech32() -> None:
     # Compare a base58 address with a bech32 address.
     # Since the strings are very different, the similarity score should be low.
     """Test base58 vs bech32."""
     addr1 = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080"
+    # Distinct formats should not be flagged.
     assert not AddressComparer.poisonous({addr1, addr2})
 
 
-def test_poisonous_bech32():
+def test_poisonous_bech32() -> None:
     # source https://github.com/jlopp/bitcoin-utils/tree/master/addressPoisonAttacks?ref=blog.lopp.net
     """Test poisonous bech32."""
     poision_tuples = [
@@ -103,22 +109,24 @@ def test_poisonous_bech32():
 
     combined_set = set()
     for addr1, addr2 in poision_tuples:
+        # Each known pair should be detected as poisoning.
         assert AddressComparer.poisonous({addr1, addr2})
         combined_set.add(addr1)
         combined_set.add(addr2)
 
+    # The combined set should yield one poisoned pair per tuple.
     poisonous = AddressComparer.poisonous(combined_set)
     assert len(poisonous) == len(poision_tuples)
 
 
-def test_non_poisonous_bech32():
+def test_non_poisonous_bech32() -> None:
     """Test non poisonous bech32."""
     random.seed(22)
     # Allowed characters for base58 (excluding 0, O, I, and l)
     base58_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
     # Helper to generate a fake base58 address of length 34 (first char is "1" for mainnet p2pkh)
-    def generate_address():
+    def generate_address() -> str:
         """Generate address."""
         return "1" + "".join(random.choices(base58_chars, k=33))
 
@@ -130,6 +138,7 @@ def test_non_poisonous_bech32():
 
     start_time = time.perf_counter()
     results = AddressComparer.poisonous(addresses)
+    # Random addresses should not trigger poisoning for this sample size.
     assert not results
     end_time = time.perf_counter()
     elapsed = end_time - start_time
@@ -137,13 +146,14 @@ def test_non_poisonous_bech32():
     print(f"Completed in {elapsed:.3f} seconds.")
 
 
-def test_compare_all_similar():
+def test_compare_all_similar() -> None:
     """For two very similar base58 addresses, check that compare_all returns a
     similarity that is nearly equal to the result of compare_address_info."""
     addr1 = "1A1zPaaaeP5QGefi2DMPTfTL5SLmv7DivfNa"
     addr2 = "1A1zPbbb5QGefi2DMPTfTL5SLmv7DivfNb"
 
     addresses = {addr1, addr2}
+    # compare_all should return the same similarity as a direct comparison.
     all_results = AddressComparer.compare_all(addresses)
     # There should be exactly one candidate pair.
     pair = tuple(sorted(addresses))
@@ -158,23 +168,25 @@ def test_compare_all_similar():
     assert AddressComparer.poisonous(addresses)
 
 
-def test_fuzzy_prefix_match_exact():
+def test_fuzzy_prefix_match_exact() -> None:
     # For two identical strings, the match score should equal the string length.
     """Test fuzzy prefix match exact."""
     a = "A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNbabcdef"
     b = "A1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcdef"
     result = AddressComparer.fuzzy_prefix_match(a, b)
+    # Only the prefix "A1" should match in this direction.
     assert result.score == 2
     assert result.matches[0][0] == "A1"
     assert result.matches[0][1] == "A1"
 
     result = AddressComparer.fuzzy_prefix_match(a, b, rtl=True)
+    # In RTL mode, the suffix "abcdef" should match.
     assert result.score == 6
     assert result.matches[0][0] == "abcdef"
     assert result.matches[0][1] == "abcdef"
 
 
-def test_fuzzy_prefix_match_gap():
+def test_fuzzy_prefix_match_gap() -> None:
     # Example where a gap is allowed.
     # a = "abcdef", b = "abcxef"
     # Expected behavior (based on our implementation):
@@ -186,6 +198,7 @@ def test_fuzzy_prefix_match_gap():
     a = "abcdef"
     b = "abcxef"
     result = AddressComparer.fuzzy_prefix_match(a, b)
+    # Score counts matched prefix + suffix with one gap.
     assert result.score == 5, f"Expected score 5 but got {result.score}"
     # For this implementation, matchA should be "abcdef" and matchB "abcxef"
     # (Even though the gap is used, the entire string is returned for illustrative purposes.)

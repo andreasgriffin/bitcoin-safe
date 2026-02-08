@@ -105,7 +105,7 @@ def test_funded_seed_wallet(
     qtbot: QtBot,
 ) -> Generator[Wallet, None, None]:
     wallet = test_funded_seed_wallet_session
-    # fund the wallet
+    # Fund the wallet with private category UTXOs.
     addresses_private = [
         str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config_seed.num_private)
     ]
@@ -115,6 +115,7 @@ def test_funded_seed_wallet(
 
     faucet.mine(qtbot=qtbot)
 
+    # Wait until the wallet reflects the funded balance.
     wait_for_sync(
         wallet=wallet,
         minimum_funds=test_wallet_config_seed.utxo_value_private * len(addresses_private),
@@ -138,7 +139,7 @@ def test_ema_fee_rate_weights_recent_heavier(
     test_funded_seed_wallet: Wallet,
     qtbot: QtBot,
     faucet: Faucet,
-):
+) -> None:
     """Test that the EMA fee rate for an incoming wallet is weighted more heavily
     towards recent transactions."""
 
@@ -147,6 +148,7 @@ def test_ema_fee_rate_weights_recent_heavier(
 
     def send_tx(fee_rate=100) -> str:
         """Broadcast a tx and record the intended fee rate for testing."""
+        # Create and sign a transaction at the desired fee rate.
         psbt_for_signing = make_psbt(
             wallet=wallet,
             destination_address=wallet.get_addresses()[0],
@@ -168,15 +170,18 @@ def test_ema_fee_rate_weights_recent_heavier(
         faucet.mine(qtbot=qtbot)
 
         txid = str(tx.compute_txid())
+        # Wait for the tx to appear, then store its intended fee rate.
         wait_for_sync(wallet=wallet, txid=txid, qtbot=qtbot)
         desired_fee_rates[txid] = fee_rate
         return txid
 
     # incoming txs have no fee rate (rpc doesnt seem to fill the fee field)
+    # Start by overriding fees to ensure EMA returns the relay floor.
     _override_tx_fees(wallet, desired_fee_rates)
     assert round(wallet.get_ema_fee_rate(), 1) == MIN_RELAY_FEE
 
-    def set_unknown_fee():
+    def set_unknown_fee() -> None:
+        # Force a fee into an incoming tx to validate EMA handling.
         # test that it takes in account the icoming txs, if a fee is known
         txdetails = wallet.sorted_delta_list_transactions()
         txdetails[0].fee = 21 * txdetails[0].vsize
@@ -184,6 +189,7 @@ def test_ema_fee_rate_weights_recent_heavier(
 
     set_unknown_fee()
     _override_tx_fees(wallet, desired_fee_rates)
+    # EMA should now reflect the manually injected fee rate.
     assert wallet.get_ema_fee_rate() == 21
 
     # send_tx clears the cache and resets the previous tx
@@ -194,6 +200,7 @@ def test_ema_fee_rate_weights_recent_heavier(
     set_unknown_fee()
     _override_tx_fees(wallet, desired_fee_rates)
     ema_after_100 = wallet.get_ema_fee_rate()
+    # Recent high fee should skew EMA upward.
     assert ema_after_100 == pytest.approx(73, abs=1)
 
     for _ in range(5):
@@ -203,6 +210,7 @@ def test_ema_fee_rate_weights_recent_heavier(
     set_unknown_fee()
     _override_tx_fees(wallet, desired_fee_rates)
     ema_after_lows = wallet.get_ema_fee_rate()
+    # Several low-fee txs should pull EMA down.
     assert ema_after_lows == pytest.approx(10, abs=1)
 
     for _ in range(1):
@@ -212,12 +220,13 @@ def test_ema_fee_rate_weights_recent_heavier(
     set_unknown_fee()
     _override_tx_fees(wallet, desired_fee_rates)
     ema_after_mid = wallet.get_ema_fee_rate()
+    # Mid-fee tx should raise EMA to an intermediate value.
     assert ema_after_mid == pytest.approx(18, abs=1)
 
 
 def test_address_balance(
     test_funded_seed_wallet: Wallet,
-):
+) -> None:
     """Test that the EMA fee rate for an incoming wallet is weighted more heavily
     towards recent transactions."""
 
@@ -230,4 +239,5 @@ def test_address_balance(
     for address in addresses:
         total += wallet.get_addr_balance(address).total
 
+    # Total of per-address balances should equal wallet balance.
     assert total == wallet.get_balance().total

@@ -73,16 +73,19 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Copy the fixture wallet into a temp directory to avoid modifying originals.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
 
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet and check UI wiring.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert isinstance(qt_wallet, QTWallet)
 
@@ -105,15 +108,17 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
             timeout=10000,
         )
 
+        # Switch to the address tab to validate wallet info.
         qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
         shutter.save(main_window)
-        # check wallet address
+        # Check wallet address matches fixture value.
         wallet_address = qt_wallet.wallet.get_addresses()[0]
         assert wallet_address == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
 
-        def check_open_address_dialog(qt_wallet: QTWallet):
+        def check_open_address_dialog(qt_wallet: QTWallet) -> None:
             """Check open address dialog."""
+            # Opening the address dialog should attach a new widget.
             prev_count = len(main_window.attached_widgets)
             main_window.show_address(wallet_address, qt_wallet.wallet.id)
             d = get_widget_top_level(address_dialog.AddressDialog, qtbot)
@@ -128,8 +133,9 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         check_open_address_dialog(qt_wallet)
 
-        def check_empty(qt_wallet: QTWallet):
+        def check_empty(qt_wallet: QTWallet) -> None:
             """Check empty."""
+            # New wallet should start with zero balance.
             assert qt_wallet.wallet.get_balance().total == 0
 
         check_empty(qt_wallet)
@@ -137,6 +143,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         def open_tx() -> UITx_Viewer:
             """Open tx."""
             tx = "0200000000010130e2288abc2259145cbd255a0cc94fe7226d26130b216100a9d631d7f31a5b090100000000fdffffff024894f31c01000000225120a450dee7d2d0f14d720b359f23660fed35c031de2d54e8fb0db8bd9f6b1ee35829ee250000000000220020b7f7e21184e2bacaa6346674bd9f619eb7619f316864d8c82564fde6735e7a3c0247304402203b76bd679a0f6ec4846a791247a5551771db6147a92f42e76ec4c079d3caf60502204f1bed609ee20c271faae2042c1d2727923650aea9439df78da45384e5979f1d01210370a2b7a566702a384ceb8e9f9f4c9ae8a4b4904b832c4de2cf19f3289285e20300000000"
+            # Emit a raw tx string and find the viewer tab created by the signal.
             main_window.signals.open_tx_like.emit(tx)
             QApplication.processEvents()
 
@@ -145,8 +152,9 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                     return child.widget
             raise Exception("no UITx_Viewer found")
 
-        def save_tx_to_local(tx_tab: UITx_Viewer, qt_wallet: QTWallet):
+        def save_tx_to_local(tx_tab: UITx_Viewer, qt_wallet: QTWallet) -> None:
             """Save tx to local."""
+            # Save the tx locally and verify it appears in history.
             assert tx_tab.button_save_local_tx.isVisible()
             tx_tab.save_local_tx()
             QApplication.processEvents()
@@ -158,11 +166,12 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
                 "6592209efae6c76e77626ffd62f2a59649a82aa3140f1d592f8e282293ececa3"
             ]
 
+            # Close the viewer tab to keep UI clean.
             for child in main_window.tab_wallets.root.child_nodes:
                 if isinstance(child.widget, UITx_Viewer):
                     child.removeNode()
 
-        def open_and_save_tx(qt_wallet: QTWallet):
+        def open_and_save_tx(qt_wallet: QTWallet) -> None:
             """Open and save tx."""
             tx_tab = open_tx()
             save_tx_to_local(tx_tab, qt_wallet)
@@ -173,6 +182,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
             close_wallet(
@@ -186,6 +196,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         def check_that_it_is_in_recent_wallets() -> None:
             """Check that it is in recent wallets."""
+            # The wallet should appear in recent wallets after closing.
             assert any(
                 [
                     (wallet_file in name)
@@ -197,7 +208,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         check_that_it_is_in_recent_wallets()
 
-        # end
+        # Final screenshot after assertions.
         shutter.save(main_window)
 
 
@@ -216,12 +227,15 @@ def test_open_same_wallet_twice(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
 
+        # Copy the fixture wallet into a temp path for this test.
         temp_dir = Path(tempfile.mkdtemp()) / "0.2.0.wallet"
         wallet_path = Path("tests") / "data" / "0.2.0.wallet"
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet once, then attempt to open it again.
         first_wallet = main_window.open_wallet(str(temp_dir))
         assert first_wallet
 
@@ -241,6 +255,7 @@ def test_open_same_wallet_twice(
             MessageRecorder,
         )
 
+        # Reopening the same file should show an info message and return None.
         reopened_wallet = main_window.open_wallet(str(temp_dir))
         assert reopened_wallet is None
         assert messages == [f"The wallet {temp_dir} is already open."]
@@ -248,6 +263,7 @@ def test_open_same_wallet_twice(
 
         # copy the wallet do a different dir and try again to open it
 
+        # Same wallet ID in a different path should also be rejected.
         different_dir = Path(tempfile.mkdtemp()) / f"{first_wallet.wallet.id}.wallet"
         shutil.copy(str(wallet_path), str(different_dir))
 

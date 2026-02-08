@@ -55,12 +55,13 @@ serialized_persistence = '{"descriptor": "wpkh([44250c36/84\'/1\'/0\']tpubDCrUjj
 
 
 class MyMemoryPersistence(bdk.Persistence):
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize instance."""
         self.memory = []
 
     def merge_all(self) -> bdk.ChangeSet:
         """Merge all."""
+        # Merge all accumulated changesets into one.
         total = bdk.ChangeSet()
         for cs in self.memory:
             total = bdk.ChangeSet.from_merge(total, cs)
@@ -68,28 +69,32 @@ class MyMemoryPersistence(bdk.Persistence):
 
     def initialize(self) -> bdk.ChangeSet:
         """Initialize."""
+        # BDK calls initialize to load the persisted state.
         return self.merge_all()
 
-    def persist(self, changeset: bdk.ChangeSet):
+    def persist(self, changeset: bdk.ChangeSet) -> None:
         """Persist."""
+        # Append each changeset so we can merge them later.
         self.memory.append(changeset)
 
 
 # --- The test ----------------------------------------------------------------
 
 
-def test_synced_transactions_roundtrip():
+def test_synced_transactions_roundtrip() -> None:
     # Build first wallet and persist its state
     """Test synced transactions roundtrip."""
     myp = MyMemoryPersistence()
     persister = bdk.Persister.custom(myp)
 
+    # Create a wallet and apply unconfirmed txs.
     wallet: bdk.Wallet = bdk.Wallet(descriptor, change_descriptor, bdk.Network.REGTEST, persister)
 
     wallet.apply_unconfirmed_txs(
         [bdk.UnconfirmedTx(tx=bdk.Transaction(bytes.fromhex(tx)), last_seen=0) for tx in initial_txs]
     )
 
+    # Persist the state for later comparison.
     wallet.persist(persister=persister)
 
     # Initialize a new wallet from provided serialized persistence
@@ -97,6 +102,7 @@ def test_synced_transactions_roundtrip():
     myp2.memory = [ChangeSetConverter.from_dict(json.loads(serialized_persistence))]
     persister2 = bdk.Persister.custom(myp2)
 
+    # Load a fresh wallet from the serialized changeset.
     wallet2 = bdk.Wallet.load(
         descriptor=descriptor,
         change_descriptor=change_descriptor,
@@ -107,6 +113,7 @@ def test_synced_transactions_roundtrip():
     outputs = wallet.list_output()
     outputs2 = wallet2.list_output()
     assert len(outputs) == len(outputs2)
+    # Outputs should match in outpoint identity.
     for o, o2 in zip(outputs, outputs2, strict=False):
         assert o.outpoint.txid == o2.outpoint.txid
         assert o.outpoint.vout == o2.outpoint.vout
@@ -116,10 +123,12 @@ def test_synced_transactions_roundtrip():
     txs2 = wallet2.transactions()
     assert txs, "Sync error: no transactions returned"
     assert len(txs) == len(txs2)
+    # Transaction IDs should match exactly.
     for tx, tx2 in zip(txs, txs2, strict=False):
         assert tx.transaction.compute_txid().serialize() == tx2.transaction.compute_txid().serialize()
 
     # Balance check
+    # Balance should match the known expected value.
     assert wallet.balance().total.to_sat() == 50_641_167
 
     # Persistence round-trip equivalence (dict compare is order-insensitive)

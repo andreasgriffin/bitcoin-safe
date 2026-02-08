@@ -45,7 +45,7 @@ def _make_config() -> TestConfig:
     return config
 
 
-def test_check_consistency_errors():
+def test_check_consistency_errors() -> None:
     """Test check consistency errors."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
@@ -57,25 +57,29 @@ def test_check_consistency_errors():
     descriptor = protowallet.to_multipath_descriptor().to_string_with_secret()
     keystores = [ks for ks in protowallet.keystores if ks]
 
+    # Empty keystores should raise.
     with pytest.raises(WalletInputsInconsistentError):
         Wallet.check_consistency([], descriptor, network=config.network)
 
+    # Network mismatch should raise.
     with pytest.raises(WalletInputsInconsistentError):
         Wallet.check_consistency(keystores, descriptor, network=bdk.Network.BITCOIN)
 
+    # Duplicate keystores should raise.
     with pytest.raises(WalletInputsInconsistentError):
         Wallet.check_consistency(keystores * 2, descriptor, network=config.network)
 
 
-def test_check_self_consistency(test_funded_wallet_session: Wallet):
+def test_check_self_consistency(test_funded_wallet_session: Wallet) -> None:
     """Test check self consistency."""
     wallet = test_funded_wallet_session
     descriptor = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)"
 
+    # A matching descriptor should pass consistency checks.
     Wallet.check_consistency(wallet.keystores, descriptor, network=bdk.Network.REGTEST)
 
 
-def test_check_protowallet_consistency_valid():
+def test_check_protowallet_consistency_valid() -> None:
     """Test check protowallet consistency valid."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
@@ -87,16 +91,18 @@ def test_check_protowallet_consistency_valid():
     descriptor = protowallet.to_multipath_descriptor().to_string_with_secret()
     keystores = [ks for ks in protowallet.keystores if ks]
 
+    # Valid keystores and descriptor should be consistent.
     Wallet.check_consistency(keystores, descriptor, network=config.network)
 
 
-def test_get_mn_tuple_single_sig(test_funded_wallet_session: Wallet):
+def test_get_mn_tuple_single_sig(test_funded_wallet_session: Wallet) -> None:
     """Test get mn tuple single sig."""
     wallet = test_funded_wallet_session
+    # Single-sig wallets should return (1, 1).
     assert wallet.get_mn_tuple() == (1, 1)
 
 
-def test_mark_all_labeled_addresses_used(test_funded_wallet_session: Wallet):
+def test_mark_all_labeled_addresses_used(test_funded_wallet_session: Wallet) -> None:
     """Test mark all labeled addresses used."""
     wallet = test_funded_wallet_session
     addr_info = wallet.get_address(force_new=True)
@@ -105,6 +111,7 @@ def test_mark_all_labeled_addresses_used(test_funded_wallet_session: Wallet):
     unused_before = [str(a) for a in wallet.bdkwallet.list_unused_addresses(bdk.KeychainKind.EXTERNAL)]
     assert any(address_str in entry for entry in unused_before)
 
+    # Label the address and mark labeled addresses as used.
     wallet.labels.set_addr_label(address_str, "lbl")
     wallet.mark_all_labeled_addresses_used(include_receiving_addresses=True)
 
@@ -112,9 +119,10 @@ def test_mark_all_labeled_addresses_used(test_funded_wallet_session: Wallet):
     assert all(address_str not in entry for entry in unused_after)
 
 
-def test_as_protowallet_roundtrip(test_funded_wallet_session: Wallet):
+def test_as_protowallet_roundtrip(test_funded_wallet_session: Wallet) -> None:
     """Test as protowallet roundtrip."""
     wallet = test_funded_wallet_session
+    # Convert to protowallet and back, then compare key fields.
     proto = wallet.as_protowallet()
     restored = Wallet.from_protowallet(
         proto,
@@ -129,7 +137,7 @@ def test_as_protowallet_roundtrip(test_funded_wallet_session: Wallet):
     )
 
 
-def test_get_differences_descriptor_change():
+def test_get_differences_descriptor_change() -> None:
     """Test get differences descriptor change."""
     config = _make_config()
     key_origins = [f"m/{i + 41}h/1h/0h/2h" for i in range(2)]
@@ -149,6 +157,7 @@ def test_get_differences_descriptor_change():
     wallet1 = Wallet.from_protowallet(protowallet=protowallet1, config=config, loop_in_thread=None)
     wallet2 = Wallet.from_protowallet(protowallet=protowallet2, config=config, loop_in_thread=None)
 
+    # Descriptor change should be flagged as impacting addresses.
     diffs = wallet1.get_differences(wallet2)
     assert any(
         d.key == "descriptor changed" and d.type == WalletDifferenceType.ImpactOnAddresses for d in diffs
@@ -156,7 +165,7 @@ def test_get_differences_descriptor_change():
     assert diffs.has_impact_on_addresses()
 
 
-def test_get_differences_gap_change():
+def test_get_differences_gap_change() -> None:
     """Test get differences gap change."""
     config = _make_config()
     protowallet = create_multisig_protowallet(
@@ -187,12 +196,13 @@ def test_get_differences_gap_change():
         loop_in_thread=None,
     )
 
+    # Gap change should require rescan but not change addresses.
     diffs = wallet1.get_differences(wallet2)
     assert any(d.key == "gap" and d.type == WalletDifferenceType.NeedsRescan for d in diffs)
     assert not diffs.has_impact_on_addresses()
 
 
-def test_get_mn_tuple():
+def test_get_mn_tuple() -> None:
     """Test get mn tuple."""
     config = _make_config()
     key_origins = [f"m/{i + 41}h/1h/0h/2h" for i in range(3)]
@@ -204,4 +214,5 @@ def test_get_mn_tuple():
     )
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
 
+    # Multisig should return (m, n).
     assert wallet.get_mn_tuple() == (2, 3)

@@ -90,7 +90,8 @@ def test_wallet_features_multisig(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
         assert main_window.notification_bar_testnet.isVisible()
 
@@ -100,6 +101,7 @@ def test_wallet_features_multisig(
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             """On wallet id dialog."""
+            # Provide a deterministic wallet name in the modal.
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
@@ -109,6 +111,7 @@ def test_wallet_features_multisig(
 
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
+        # Ensure exactly one proto wallet is created after the dialog.
         count_qt_protowallets = 0
         for child in main_window.tab_wallets.root.child_nodes:
             count_qt_protowallets += 1 if isinstance(child.data, QTProtoWallet) else 0
@@ -119,6 +122,7 @@ def test_wallet_features_multisig(
 
         def test_block_change_signals() -> None:
             """Test block change signals."""
+            # BlockChangesSignals should temporarily block UI signals on entry.
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
                 assert qt_protowallet.wallet_descriptor_ui.spin_req.signalsBlocked()
             with BlockChangesSignals([qt_protowallet.wallet_descriptor_ui]):
@@ -128,6 +132,7 @@ def test_wallet_features_multisig(
 
         def check_consistent() -> None:
             """Check consistent."""
+            # Ensure UI signers tab count and labels match the proto wallet state.
             assert isinstance(qt_protowallet, QTProtoWallet)
             signers = qt_protowallet.wallet_descriptor_ui.spin_signers.value()
             qt_protowallet.wallet_descriptor_ui.spin_req.value()
@@ -139,11 +144,13 @@ def test_wallet_features_multisig(
                 ) == qt_protowallet.protowallet.signer_name(i)
 
             if qt_protowallet.protowallet.is_multisig():
+                # Multisig should expose p2wsh in address types.
                 assert AddressTypes.p2wsh in [
                     qt_protowallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
                     for i in range(qt_protowallet.wallet_descriptor_ui.comboBox_address_type.count())
                 ]
             else:
+                # Single-sig should expose legacy p2pkh in address types.
                 assert AddressTypes.p2pkh in [
                     qt_protowallet.wallet_descriptor_ui.comboBox_address_type.itemData(i)
                     for i in range(qt_protowallet.wallet_descriptor_ui.comboBox_address_type.count())
@@ -153,6 +160,7 @@ def test_wallet_features_multisig(
             """Page1."""
             shutter.save(main_window)
 
+            # Verify the default 3-of-5 multisig configuration for the fixture.
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
             assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 5
             assert (
@@ -169,6 +177,7 @@ def test_wallet_features_multisig(
 
         def set_simple_multisig() -> None:
             """Set simple multisig."""
+            # Reduce to 1-of-2 while remaining in multisig mode.
             assert qt_protowallet.protowallet.is_multisig()
             qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
             assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 1
@@ -186,6 +195,7 @@ def test_wallet_features_multisig(
 
         def set_mnemonic(index: int) -> None:
             """Set mnemonic."""
+            # Fill the seed fields for a signer tab and validate derived fields.
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[index]
             key.tabs_import_type.setCurrentWidget(key.tab_manual)
 
@@ -205,6 +215,7 @@ def test_wallet_features_multisig(
 
         def do_save_wallet() -> None:
             """Do save wallet."""
+            # Fill two signers and persist the wallet.
             set_mnemonic(0)
             set_mnemonic(1)
 
@@ -223,22 +234,22 @@ def test_wallet_features_multisig(
 
         do_save_wallet()
 
-        # get the new qt wallet
+        # Get the new QTWallet created after saving.
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
         assert len(main_window.qt_wallets) == 1
         assert qt_wallet == list(main_window.qt_wallets.values())[0]
 
-        def do_all(qt_wallet: QTWallet):
-            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
+        def do_all(qt_wallet: QTWallet) -> None:
+            # Keep all operations in one scope to avoid lingering references to qt_wallet.
             shutter.save(main_window)
-            # check wallet address
+            # Check wallet address matches the fixture.
             assert (
                 qt_wallet.wallet.get_addresses()[0]
                 == "bcrt1qklm7yyvyu2av4f35ve6tm8mpn6mkr8e3dpjd3jp9vn77vu670g7qu9cznl"
             )
 
-            ##  from here starts testing features
+            # From here starts testing features via menu actions.
 
             wallet_name = qt_wallet.wallet.id + " new"
 
@@ -247,6 +258,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: WalletIdDialog) -> None:
                     """Callback."""
+                    # Enter new wallet name in the dialog.
                     shutter.save(dialog)
                     dialog.name_input.setText(wallet_name)
                     shutter.save(dialog)
@@ -264,6 +276,7 @@ def test_wallet_features_multisig(
 
                     def callback(dialog: PasswordCreation) -> None:
                         """Callback."""
+                        # Fill matching passwords and submit.
                         shutter.save(dialog)
                         dialog.password_input1.setText("new password")
                         dialog.password_input2.setText("new password")
@@ -276,6 +289,7 @@ def test_wallet_features_multisig(
                         main_window.menu_action_change_password, callback, qtbot, cls=PasswordCreation
                     )
 
+                    # Allow UI message to be emitted after submission.
                     QTest.qWait(200)
 
                     # Inspect the call arguments for each call
@@ -289,10 +303,12 @@ def test_wallet_features_multisig(
             def menu_action_export_pdf() -> None:
                 """Menu action export pdf."""
                 with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
+                    # Trigger export and verify an xdg open request is issued.
                     main_window.menu_action_export_pdf.trigger()
 
                     mock_open.assert_called_once()
 
+                    # Clean up the generated PDFs in the cache directory.
                     cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
                     prefix = f"Seed backup of {wallet_name}".replace(" ", "_")
                     temp_files = list(cache_dir.glob(f"{prefix}-*.pdf"))
@@ -307,6 +323,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: DescriptorExport) -> None:
                     """Callback."""
+                    # Open and close the descriptor export dialog.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -324,7 +341,7 @@ def test_wallet_features_multisig(
                     shutter.save(dialog)
 
                     with tempfile.TemporaryDirectory() as temp_dir:
-                        # export qr gifs
+                        # Export descriptor data via copy actions and files.
                         tool_button = dialog.button_export_file
                         assert isinstance(tool_button, FileToolButton)
                         for action in tool_button._menu.actions():
@@ -340,6 +357,7 @@ def test_wallet_features_multisig(
                             elif action in [tool_button.action_copy_data]:
                                 action.trigger()
 
+                                # Copying should place the descriptor in the clipboard.
                                 clipboard = QApplication.clipboard()
                                 assert clipboard
                                 assert (
@@ -347,7 +365,7 @@ def test_wallet_features_multisig(
                                     == "wsh(sortedmulti(1,[5aa39a43/48'/1'/0'/2']tpubDDyGGnd9qGbDsccDSe2imVHJPd96WysYkMVAf95PWzbbCmmKHSW7vLxvrTW3HsAau9MWirkJsyaALGJwqwcReu3LZVMg6XbRgBNYTtKXeuD/<0;1>/*,[5459f23b/48'/1'/0'/2']tpubDF5XHNeYNBkmPio8Zkw8zz6hBFoQ5BgXthUENZ7x51nbgNeC7exH6ZR8ZHSLEkLrKLxL1ELarJoDcZ1ZCAVCGALKA2V2KrNfegb2dPvdY5K/<0;1>/*))#4e59znyp"
                                 )
                             else:
-                                # export as file
+                                # Export to a file (including incomplete extensions).
                                 filename = (
                                     Path(temp_dir) / f"file_{action.text()}.t"
                                 )  # check that it also works with incomplete extensions
@@ -360,7 +378,7 @@ def test_wallet_features_multisig(
                                     mock_dialog.assert_called_once()
                                 assert filename.exists()
 
-                        # export qr gifs
+                        # Export QR (PNG or GIF) for each QR type.
                         assert dialog.export_qr_button.export_qr_widget
                         for i in reversed(
                             range(dialog.export_qr_button.export_qr_widget.combo_qr_type.count())
@@ -402,6 +420,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: ToolGui) -> None:
                     """Callback."""
+                    # Open and close the HWI manager dialog.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -419,6 +438,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: ImportDialog) -> None:
                     """Callback."""
+                    # Open and close the import dialog without data.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -436,6 +456,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: BitcoinVideoWidget) -> None:
                     """Callback."""
+                    # Open and close the QR scanning dialog.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -453,6 +474,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: Settings) -> None:
                     """Callback."""
+                    # Open and close settings dialog.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -471,6 +493,7 @@ def test_wallet_features_multisig(
                     # github windows network is very flaky
                     return
 
+                # Trigger update check and wait for success signal.
                 main_window.menu_action_check_update.trigger()
                 shutter.save(main_window)
                 assert main_window.update_notification_bar.isVisible()
@@ -489,6 +512,7 @@ def test_wallet_features_multisig(
 
                 def callback(dialog: Settings) -> None:
                     """Callback."""
+                    # Open and close the about/license dialog.
                     shutter.save(dialog)
                     dialog.close()
 
@@ -503,6 +527,7 @@ def test_wallet_features_multisig(
 
             def switch_languages() -> None:
                 """Switch languages."""
+                # Cycle through all languages and return to English.
                 for lang in main_window.language_chooser.availableLanguages.keys():
                     main_window.language_chooser.switchLanguage(lang)
                     shutter.save(main_window)
@@ -516,6 +541,7 @@ def test_wallet_features_multisig(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
 
@@ -528,5 +554,5 @@ def test_wallet_features_multisig(
             )
             shutter.save(main_window)
 
-        # end
+        # Final screenshot after assertions.
         shutter.save(main_window)

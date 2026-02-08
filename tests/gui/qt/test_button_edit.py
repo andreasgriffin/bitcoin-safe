@@ -71,8 +71,9 @@ def button_edit(dummy_instance_with_close_all_video_widgets: My, qapp: QApplicat
     )
 
 
-def test_square_button(qapp: QApplication):
+def test_square_button(qapp: QApplication) -> None:
     """Test square button."""
+    # Build the button with a parent to validate constructor wiring.
     icon = QIcon()
     parent = QWidget()
     button = SquareButton(icon, parent)
@@ -81,8 +82,9 @@ def test_square_button(qapp: QApplication):
     assert button.icon().cacheKey() == icon.cacheKey()
 
 
-def test_buttons_field_initialization(qapp: QApplication):
+def test_buttons_field_initialization(qapp: QApplication) -> None:
     """Test buttons field initialization."""
+    # Create with an explicit alignment and parent to verify stored state.
     parent = QWidget()
     buttons_field = ButtonsField(Qt.AlignmentFlag.AlignBottom, parent)
     assert buttons_field.parent() == parent
@@ -91,104 +93,114 @@ def test_buttons_field_initialization(qapp: QApplication):
     assert buttons_field.grid_layout is not None
 
 
-def test_buttons_field_add_button(qapp: QApplication):
+def test_buttons_field_add_button(qapp: QApplication) -> None:
     """Test buttons field add button."""
     buttons_field = ButtonsField()
     button = QPushButton()
+    # Appending should store the button and place it in the grid layout.
     buttons_field.append_button(button)
     assert button in buttons_field.buttons
     assert buttons_field.grid_layout.count() == 1
 
 
-def test_buttons_field_remove_button(qapp: QApplication):
+def test_buttons_field_remove_button(qapp: QApplication) -> None:
     """Test buttons field remove button."""
     buttons_field = ButtonsField()
     button = QPushButton()
     buttons_field.append_button(button)
     assert buttons_field.grid_layout.count() == 1
+    # Removing should drop the button and clear the layout slot.
     buttons_field.remove_button(button)
     assert button not in buttons_field.buttons
     assert buttons_field.grid_layout.count() == 0  # Now this should be 0
 
 
-def test_buttons_field_clear_buttons(qapp: QApplication):
+def test_buttons_field_clear_buttons(qapp: QApplication) -> None:
     """Test buttons field clear buttons."""
     buttons_field = ButtonsField()
     button1 = QPushButton()
     button2 = QPushButton()
     buttons_field.append_button(button1)
     buttons_field.append_button(button2)
+    # Clearing should reset the internal list and layout.
     buttons_field.clear_buttons()
     assert buttons_field.buttons == []
     assert buttons_field.grid_layout.count() == 0
 
 
-def test_buttons_field_resize_event(qapp: QApplication):
+def test_buttons_field_resize_event(qapp: QApplication) -> None:
     """Test buttons field resize event."""
     buttons_field = ButtonsField()
     for _ in range(10):
         button = QPushButton()
         buttons_field.append_button(button)
-    # Simulate resize event
+    # Simulate resize event to exercise layout rearrangement.
     event = QResizeEvent(QSize(200, 200), QSize(100, 100))
     buttons_field.resizeEvent(event)
-    # Check that rearrange_buttons was called (we can mock rearrange_buttons)
+    # Check that rearrange_buttons is invoked on resize.
     with patch.object(buttons_field, "rearrange_buttons") as mock_rearrange:
         buttons_field.resizeEvent(event)
         mock_rearrange.assert_called_once()
 
 
-def test_button_edit_initialization(button_edit: ButtonEdit):
+def test_button_edit_initialization(button_edit: ButtonEdit) -> None:
     """Test button edit initialization."""
+    # Ensure expected widgets are created and attached.
     assert isinstance(button_edit.input_field, AnalyzerLineEdit)
     assert button_edit.button_container is not None
     assert button_edit.main_layout is not None
 
 
-def test_button_edit_set_text(button_edit: ButtonEdit):
+def test_button_edit_set_text(button_edit: ButtonEdit) -> None:
     """Test button edit set text."""
+    # setText should delegate into the input field.
     button_edit.setText("Test Text")
     assert button_edit.input_field.text() == "Test Text"
 
 
-def test_button_edit_get_text(button_edit: ButtonEdit):
+def test_button_edit_get_text(button_edit: ButtonEdit) -> None:
     """Test button edit get text."""
     button_edit.setText("Test Text")
+    # text() should return the same value as the input field.
     assert button_edit.text() == "Test Text"
     assert button_edit.input_field.text() == "Test Text"
 
 
-def test_button_edit_set_input_field(button_edit: ButtonEdit):
+def test_button_edit_set_input_field(button_edit: ButtonEdit) -> None:
     """Test button edit set input field."""
     new_input_field = AnalyzerTextEdit()
+    # Replacing the input widget should update both state and layout.
     button_edit.set_input_field(new_input_field)
     assert button_edit.input_field == new_input_field
     assert button_edit.main_layout.itemAt(0).widget() == new_input_field
 
 
-def test_button_edit_format_as_error(button_edit: ButtonEdit):
+def test_button_edit_format_as_error(button_edit: ButtonEdit) -> None:
     """Test button edit format as error."""
+    # Error formatting should toggle background style.
     button_edit.format_as_error(True)
     assert "background-color" in button_edit.input_field.styleSheet()
     button_edit.format_as_error(False)
     assert "background-color" not in button_edit.input_field.styleSheet()
 
 
-def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit):
+def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit) -> None:
     """Test button edit format and apply validator valid."""
     button_edit.input_field.setText("Valid Input")
     analyzer = BaseAnalyzer()
+    # Mock a valid analyzer response and ensure no error styling is applied.
     with patch.object(BaseAnalyzer, "analyze", return_value=AnalyzerMessage("", AnalyzerState.Valid)):
         button_edit.input_field.setAnalyzer(analyzer)
         button_edit.format_and_apply_validator()
         assert "background-color" not in button_edit.input_field.styleSheet()
 
 
-def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit):
+def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit) -> None:
     """Test button edit format and apply validator invalid."""
     button_edit.input_field.setText("Invalid Input")
     invalid_result = AnalyzerMessage("Error message", AnalyzerState.Invalid)
     analyzer = BaseAnalyzer()
+    # Mock an invalid analyzer response and assert error styling + tooltip.
     with patch.object(BaseAnalyzer, "analyze", return_value=invalid_result):
         button_edit.input_field.setAnalyzer(analyzer)
         button_edit.format_and_apply_validator()
@@ -196,44 +208,49 @@ def test_button_edit_format_and_apply_validator_invalid(button_edit: ButtonEdit)
         assert button_edit.toolTip() == "Error message"
 
 
-def test_button_edit_add_pdf_button(button_edit: ButtonEdit, qtbot: QtBot):
+def test_button_edit_add_pdf_button(button_edit: ButtonEdit, qtbot: QtBot) -> None:
     """Test button edit add pdf button."""
-    qtbot.addWidget(button_edit)  # Register the widget with qtbot
+    # Register the widget with qtbot so we can simulate interaction.
+    qtbot.addWidget(button_edit)
     callback = MagicMock()
     button_edit.add_pdf_buttton(callback)
     assert button_edit.pdf_button is not None
-    # Simulate button click
+    # Simulate button click and confirm callback is invoked.
     qtbot.mouseClick(button_edit.pdf_button, Qt.MouseButton.LeftButton)
     callback.assert_called_once()
 
 
-def test_button_edit_add_open_file_button(button_edit: ButtonEdit, qtbot: QtBot):
+def test_button_edit_add_open_file_button(button_edit: ButtonEdit, qtbot: QtBot) -> None:
     """Test button edit add open file button."""
     callback = MagicMock()
+    # Mock the file dialog to return a path and ensure callback receives it.
     with patch("PyQt6.QtWidgets.QFileDialog.getOpenFileName", return_value=("file_path", "")):
         button_edit.add_open_file_button(callback)
         assert button_edit.open_file_button is not None
-        # Simulate button click
+        # Simulate button click to trigger the callback with path.
         qtbot.mouseClick(button_edit.open_file_button, Qt.MouseButton.LeftButton)
         callback.assert_called_once_with("file_path")
 
 
-def test_button_edit_set_placeholder_text(button_edit: ButtonEdit):
+def test_button_edit_set_placeholder_text(button_edit: ButtonEdit) -> None:
     """Test button edit set placeholder text."""
+    # Placeholder should pass through to the input widget.
     button_edit.setPlaceholderText("Enter text...")
     assert button_edit.input_field.placeholderText() == "Enter text..."
 
 
-def test_button_edit_set_read_only(button_edit: ButtonEdit):
+def test_button_edit_set_read_only(button_edit: ButtonEdit) -> None:
     """Test button edit set read only."""
+    # Toggle read-only state and confirm it propagates to the input.
     button_edit.setReadOnly(True)
     assert button_edit.input_field.isReadOnly()
     button_edit.setReadOnly(False)
     assert not button_edit.input_field.isReadOnly()
 
 
-def test_button_edit_update_ui(button_edit: ButtonEdit):
+def test_button_edit_update_ui(button_edit: ButtonEdit) -> None:
     """Test button edit update ui."""
+    # Add buttons then refresh UI to check tooltips are set.
     button_edit.add_copy_button()
     button_edit.add_pdf_buttton(lambda: None)
     button_edit.updateUi()
@@ -241,58 +258,61 @@ def test_button_edit_update_ui(button_edit: ButtonEdit):
     assert button_edit.pdf_button.toolTip() == "Create PDF"
 
 
-def test_button_edit_add_button(button_edit: ButtonEdit):
+def test_button_edit_add_button(button_edit: ButtonEdit) -> None:
     """Test button edit add button."""
     callback = MagicMock()
+    # Add a custom button and verify tooltip + click handling.
     button = button_edit.add_button(get_icon_path("icon.png"), callback, "Tooltip text")
     assert button in button_edit.button_container.buttons
     assert button.toolTip() == "Tooltip text"
-    # Simulate button click
+    # Simulate button click to trigger callback.
     button.click()
     callback.assert_called_once()
 
 
-def test_button_edit_set_plain_text(button_edit: ButtonEdit):
+def test_button_edit_set_plain_text(button_edit: ButtonEdit) -> None:
     """Test button edit set plain text."""
+    # setPlainText should align with text() expectations.
     button_edit.setPlainText("Plain Text")
     assert button_edit.input_field.text() == "Plain Text"
 
 
-def test_button_edit_set_style_sheet(button_edit: ButtonEdit):
+def test_button_edit_set_style_sheet(button_edit: ButtonEdit) -> None:
     """Test button edit set style sheet."""
+    # setStyleSheet should apply to the input field rather than the container.
     button_edit.setStyleSheet("background-color: red;")
     assert button_edit.input_field.styleSheet() == "background-color: red;"
 
 
-def test_buttons_field_rearrange_buttons(button_edit: ButtonEdit):
+def test_buttons_field_rearrange_buttons(button_edit: ButtonEdit) -> None:
     """Test buttons field rearrange buttons."""
     buttons_field = ButtonsField()
     for i in range(5):
         button = QPushButton(f"Button {i}")
         buttons_field.append_button(button)
-    # Simulate resize event
+    # Simulate resize event to force a layout recompute.
     event = QResizeEvent(QSize(100, 500), QSize(100, 100))
     buttons_field.resizeEvent(event)
-    # Check that buttons are arranged correctly
-    # Since the rearrangement logic can be complex, we can check the number of items in the grid layout
+    # Check the number of items in the grid layout (proxy for layout correctness).
     assert buttons_field.grid_layout.count() == 5
 
 
-def test_square_button_click(button_edit: ButtonEdit, qtbot: QtBot):
+def test_square_button_click(button_edit: ButtonEdit, qtbot: QtBot) -> None:
     """Test square button click."""
     icon = QIcon()
     parent = QWidget()
     button = SquareButton(icon, parent)
     callback = MagicMock()
     button.clicked.connect(callback)
-    # Simulate button click
+    # Simulate button click and ensure the signal fires.
     qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
     callback.assert_called_once()
 
 
-def test_button_edit_set_input_field_text_edit(button_edit: ButtonEdit):
+def test_button_edit_set_input_field_text_edit(button_edit: ButtonEdit) -> None:
     """Test button edit set input field text edit."""
     text_edit = AnalyzerTextEdit()
+    # Swap to a text edit and verify text round-tripping.
     button_edit.set_input_field(text_edit)
     assert isinstance(button_edit.input_field, AnalyzerTextEdit)
     button_edit.setText("Sample Text")
@@ -300,29 +320,31 @@ def test_button_edit_set_input_field_text_edit(button_edit: ButtonEdit):
     assert button_edit.text() == "Sample Text"
 
 
-def test_button_edit_method_delegation(button_edit: ButtonEdit):
-    # Set placeholder text
+def test_button_edit_method_delegation(button_edit: ButtonEdit) -> None:
     """Test button edit method delegation."""
+    # Placeholder should delegate to the input field.
     button_edit.setPlaceholderText("Placeholder")
     assert button_edit.input_field.placeholderText() == "Placeholder"
-    # Set read-only
+    # Read-only should also delegate to the input field.
     button_edit.setReadOnly(True)
     assert button_edit.input_field.isReadOnly()
 
 
-def test_button_edit_format_and_apply_validator_no_analyzer(button_edit: ButtonEdit):
+def test_button_edit_format_and_apply_validator_no_analyzer(button_edit: ButtonEdit) -> None:
     """Test button edit format and apply validator no analyzer."""
+    # Without an analyzer, validation should be a no-op for styling.
     with patch.object(button_edit.input_field, "analyzer", return_value=None):
         button_edit.format_and_apply_validator()
         assert "background-color" not in button_edit.input_field.styleSheet()
 
 
-def test_button_edit_add_reset_button(button_edit: ButtonEdit, qtbot: QtBot):
+def test_button_edit_add_reset_button(button_edit: ButtonEdit, qtbot: QtBot) -> None:
     """Test button edit add reset button."""
     get_reset_text = MagicMock(return_value="Reset Text")
+    # Reset button should pull new text and set it on click.
     reset_button = button_edit.addResetButton(get_reset_text)
     assert reset_button in button_edit.button_container.buttons
-    # Simulate button click
+    # Simulate button click and verify text changes.
     qtbot.mouseClick(reset_button, Qt.MouseButton.LeftButton)
     get_reset_text.assert_called_once()
     assert button_edit.text() == "Reset Text"

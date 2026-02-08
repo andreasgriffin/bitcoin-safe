@@ -34,6 +34,7 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -75,11 +76,11 @@ def _close_to(value: int, expected: int, tolerance: int) -> bool:
     return abs(value - expected) <= tolerance
 
 
-def _outpoints_from_psbt(psbt) -> set[OutPoint]:
+def _outpoints_from_psbt(psbt: Any) -> set[OutPoint]:
     return {OutPoint.from_bdk(txin.previous_output) for txin in psbt.extract_tx().input()}
 
 
-def _outputs_by_address(psbt, network) -> dict[str, int]:
+def _outputs_by_address(psbt: Any, network: Any) -> dict[str, int]:
     output_map: dict[str, int] = {}
     for output in psbt.extract_tx().output():
         address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
@@ -115,28 +116,31 @@ def test_wallet_send(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
-        QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore  # This will wait until the window is fully exposed
+        # Wait for the main window to render before interacting.
+        QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Copy a fixture wallet so the test can mutate it safely.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
-
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet from the temp path.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert qt_wallet
 
-        def do_all(qt_wallet: QTWallet):
-            "any implicit reference to qt_wallet (including the function page_send) will create a cell refrence"
+        def do_all(qt_wallet: QTWallet) -> None:
+            # Keep all operations in one scope to avoid lingering references to qt_wallet.
 
             qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
             shutter.save(main_window)
-            # check wallet address
+            # Check wallet address matches the fixture.
             assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
 
+            # Fund the wallet to enable UTXO selection and send flows.
             fund_wallet(
                 qt_wallet=qt_wallet,
                 amount=SEND_TEST_WALLET_FUND_AMOUNT,
@@ -158,10 +162,12 @@ def test_wallet_send(
                 assert wallet_utxos
 
                 def on_open_tx_like(tx_ui_infos: TxUiInfos) -> None:
+                    # Capture the send-flow payload emitted by the wallet UI.
                     captured.append(tx_ui_infos)
 
                 qt_wallet.wallet_functions.signals.open_tx_like.connect(on_open_tx_like)
                 try:
+                    # Trigger send flow from the address list selection.
                     address_list._select_utxos_for_sending(grouped_addresses)
                     qtbot.wait_until(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.uitx_creator)
                 finally:
@@ -190,6 +196,7 @@ def test_wallet_send(
 
             def import_recipients() -> None:
                 """Import recipients."""
+                # Switch to the send tab and add a recipient to expose CSV import UI.
                 qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
                 shutter.save(main_window)
                 qt_wallet.uitx_creator.recipients.add_recipient_button.click()
@@ -199,6 +206,7 @@ def test_wallet_send(
                 with open(str(test_file_path)) as file:
                     test_file_content = file.read()
 
+                # Import recipients from CSV and verify parsed data.
                 qt_wallet.uitx_creator.recipients.import_csv(test_file_path)
                 shutter.save(main_window)
 
@@ -215,6 +223,7 @@ def test_wallet_send(
 
                 shutter.save(main_window)
 
+                # Export recipients to CSV and compare to the original fixture.
                 with tempfile.TemporaryDirectory() as tempdir:
                     file_path = Path(tempdir) / "test.csv"
                     qt_wallet.uitx_creator.recipients.export_csv(
@@ -232,6 +241,7 @@ def test_wallet_send(
 
             def create_signed_tx() -> None:
                 """Create signed tx."""
+                # Click OK and wait for the viewer to open with a PSBT.
                 with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=10_000):
                     qt_wallet.uitx_creator.button_ok.click()
                 shutter.save(main_window)
@@ -240,6 +250,7 @@ def test_wallet_send(
                 assert isinstance(ui_tx_viewer, UITx_Viewer)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
+                # Confirm the recipients (including change) match expectations.
                 sorted_recipients = sorted(
                     ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
                 )
@@ -260,6 +271,7 @@ def test_wallet_send(
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
 
+                # Move to signing step and sign with the wallet seed.
                 ui_tx_viewer.button_next.click()
 
                 widget = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(0)
@@ -271,6 +283,7 @@ def test_wallet_send(
                     assert button.isVisible()
                     button.click()
 
+                    # Ensure a signature is added before proceeding.
                     with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
                         button.click()
 
@@ -286,6 +299,7 @@ def test_wallet_send(
                 assert isinstance(ui_tx_viewer, UITx_Viewer)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
+                # Re-assert recipients before broadcast to avoid regressions.
                 sorted_recipients = sorted(
                     ui_tx_viewer.recipients.recipients, key=lambda recipient: recipient.address
                 )
@@ -306,6 +320,7 @@ def test_wallet_send(
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
 
+                # Broadcast the transaction and wait for wallet update.
                 with qtbot.waitSignal(qt_wallet.wallet_signals.updated, timeout=60_000):
                     ui_tx_viewer.button_send.click()
 
@@ -314,7 +329,7 @@ def test_wallet_send(
                 assert isinstance(qt_wallet_tab, QTWallet)
                 QApplication.processEvents()
 
-                # check the tx is in the hist list
+                # Check the tx is present in the history list model.
                 model = qt_wallet_tab.history_list._source_model
                 for row in range(model.rowCount()):
                     index = model.index(row, model.key_column)
@@ -331,6 +346,7 @@ def test_wallet_send(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
+            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
 
@@ -346,6 +362,7 @@ def test_wallet_send(
 
         def check_that_it_is_in_recent_wallets() -> None:
             """Check that it is in recent wallets."""
+            # The wallet file should now appear in recent wallets for this network.
             assert any(
                 [
                     (wallet_file in name)
@@ -357,7 +374,7 @@ def test_wallet_send(
 
         check_that_it_is_in_recent_wallets()
 
-        # end
+        # Final screenshot after all assertions.
         shutter.save(main_window)
 
 
@@ -377,11 +394,13 @@ def test_send_tab_complex_interactions(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for UI before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Load the fixture wallet from a temp location.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
@@ -390,6 +409,7 @@ def test_send_tab_complex_interactions(
         assert isinstance(qt_wallet, QTWallet)
         shutter.save(main_window)
 
+        # Prepare labeled receiving addresses to drive category filters.
         wallet = qt_wallet.wallet
         receiving_addresses = wallet.get_receiving_addresses()
         assert len(receiving_addresses) >= 3
@@ -402,6 +422,7 @@ def test_send_tab_complex_interactions(
         _set_category(qt_wallet, private_address, "Private")
         shutter.save(main_window)
 
+        # Fund two distinct addresses to get UTXOs in different categories.
         fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=250_000, address=kyc_address)
         fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=150_000, address=private_address)
 
@@ -409,6 +430,7 @@ def test_send_tab_complex_interactions(
         qtbot.waitUntil(lambda: wallet.get_addr_balance(private_address).total > 0, timeout=20_000)
         shutter.save(main_window)
 
+        # Enter the send UI and enable refresh counters for debug.
         qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
         uitx_creator = qt_wallet.uitx_creator
         uitx_creator.enable_refresh_counters()
@@ -447,6 +469,7 @@ def test_send_tab_complex_interactions(
         recipient_boxes[1].amount = 50_000
         shutter.save(main_window)
 
+        # Enable manual coin selection so we can pick a specific input.
         uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
         shutter.save(main_window)
 
@@ -456,6 +479,7 @@ def test_send_tab_complex_interactions(
         assert kyc_utxos
         assert private_utxos
 
+        # Select one KYC UTXO and verify the selection sticks.
         selected_outpoint = kyc_utxos[0].outpoint
         uitx_creator.utxo_list.select_rows(
             [selected_outpoint],
@@ -514,6 +538,7 @@ def test_send_tab_complex_interactions(
         assert recipient_boxes[1].recipient_widget.amount_spin_box.text() == expected_text
         shutter.save(main_window)
 
+        # Build the PSBT with the current recipients and fee settings.
         with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=20_000):
             uitx_creator.button_ok.click()
         shutter.save(main_window)
@@ -567,6 +592,7 @@ def test_send_tab_complex_interactions(
         assert edited_creator.utxo_list.get_selected_outpoints() == []
         shutter.save(main_window)
 
+        # Use the category list to tag a recipient address and verify label updates.
         edited_creator.column_inputs.checkBox_manual_coin_select.setChecked(False)
         edited_creator.category_list.select_row_by_clipboard("Private")
         qtbot.wait(100)
@@ -588,6 +614,7 @@ def test_send_tab_complex_interactions(
         )
         shutter.save(main_window)
 
+        # Rebuild PSBT to validate category-based coin selection.
         with qtbot.waitSignal(main_window.signals.open_tx_like, timeout=20_000):
             edited_creator.button_ok.click()
         shutter.save(main_window)

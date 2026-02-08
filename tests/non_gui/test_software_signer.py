@@ -42,10 +42,11 @@ logger = logging.getLogger(__name__)
 
 def test_compare_software_signer_to_bdk(
     faucet: Faucet,
-):
+) -> None:
     """Test compare software signer to bdk."""
     wallet = faucet.wallet
 
+    # Build a PSBT using a fresh address.
     psbt = make_psbt(
         wallet=wallet,
         destination_address=str(
@@ -55,7 +56,7 @@ def test_compare_software_signer_to_bdk(
         fee_rate=100,
     )
 
-    # SoftwareSigner
+    # Sign with the SoftwareSigner and capture the resulting tx bytes.
     software_signer = SoftwareSigner(
         mnemonic=str(faucet.mnemonic),
         network=faucet.network,
@@ -65,7 +66,7 @@ def test_compare_software_signer_to_bdk(
     software_signed_psbt = software_signer.sign_psbt(psbt)
     software_tx = software_signed_psbt.extract_tx().serialize()
 
-    #
+    # Sign with BDK and compare the extracted transaction bytes.
     success = faucet.wallet.bdkwallet.sign(psbt, None)
     assert success
     tx = psbt.extract_tx().serialize()

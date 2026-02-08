@@ -87,29 +87,32 @@ psbt_sparrow_2of2 = bdk.Psbt(
 
 
 # Test function for psbt_0_1of1
-def test_psbt_0_1of1():
+def test_psbt_0_1of1() -> None:
     """Test psbt 0 1of1."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_1of1)
     input_ = psbt.inputs[0]
+    # Unsigned 1-of-1 should have no signatures and not be fully signed.
     assert input_._get_m_of_n
     assert len(input_.partial_sigs) == 0, "psbt_0_1of1 should have 0 signatures"
     assert not input_.is_fully_signed(), "psbt_0_1of1 should not be fully signed"
 
 
 # Test function for psbt_1_1of1
-def test_psbt_1_1of1():
+def test_psbt_1_1of1() -> None:
     """Test psbt 1 1of1."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_1of1)
     input_ = psbt.inputs[0]
+    # Fully signed 1-of-1 should include final witness data.
     assert input_.final_script_witness, "psbt_1_1of1 should have 1 signature"
     assert input_.is_fully_signed(), "psbt_1_1of1 should be fully signed"
 
 
 # Test function for psbt_1_2of3
-def test_psbt_1_2of3():
+def test_psbt_1_2of3() -> None:
     """Test psbt 1 2of3."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_2of3)
     input_ = psbt.inputs[0]
+    # 2-of-3 with one signature should not be fully signed.
     assert len(input_.partial_sigs) == 1, "psbt_1_2of3 should have 1 signature"
     assert not input_.is_fully_signed(), (
         "psbt_1_2of3 should not be fully signed considering it's a 2 of 3 multisig"
@@ -117,19 +120,21 @@ def test_psbt_1_2of3():
 
 
 # Test function for psbt_0_2of3
-def test_psbt_0_2of3():
+def test_psbt_0_2of3() -> None:
     """Test psbt 0 2of3."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of3)
     input_ = psbt.inputs[0]
+    # 2-of-3 with no signatures should not be fully signed.
     assert len(input_.partial_sigs) == 0, "psbt_0_2of3 should have 0 signatures"
     assert not input_.is_fully_signed(), (
         "psbt_0_2of3 should not be fully signed considering it's a 2 of 3 multisig"
     )
 
 
-def test_psbt_optional_fields():
+def test_psbt_optional_fields() -> None:
     """Test psbt optional fields."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of2)
+    # Verify optional fields are parsed from PSBT.
     assert psbt.inputs[0].non_witness_utxo
     assert psbt.inputs[0].non_witness_utxo.get("input", {}) == [
         {
@@ -167,19 +172,21 @@ def test_psbt_optional_fields():
     }
 
 
-def test_p2sh():
+def test_p2sh() -> None:
     """Test p2sh."""
     psbt = SimplePSBT.from_psbt(p2sh_0_2of3)
+    # P2SH multisig should expose pubkeys and outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 3
     assert len(psbt.outputs) == 2
 
 
-def test_to_txout():
+def test_to_txout() -> None:
     """Test to txout."""
     output_data = {"value": 1000, "script_pubkey": ""}
     unsigned_tx = {"value": 1000, "script_pubkey": ""}
 
+    # Convert a simple output into a TxOut instance.
     simple_output = SimpleOutput.from_output(output_data, unsigned_tx)
 
     txout = simple_output.to_txout()
@@ -187,15 +194,16 @@ def test_to_txout():
     assert isinstance(txout, TxOut)  # Should return a TxOut object
 
 
-def test_electrum_psbt():
+def test_electrum_psbt() -> None:
     """Test electrum psbt."""
     psbt = SimplePSBT.from_psbt(electrum_psbt)
+    # Electrum PSBT should parse with single input key and two outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
     assert len(psbt.outputs) == 2
 
 
-def test_psbt_sparrow_2of2():
+def test_psbt_sparrow_2of2() -> None:
     """Test psbt sparrow 2of2."""
     psbt = SimplePSBT.from_psbt(psbt_sparrow_2of2)
     assert len(psbt.inputs) == 1
@@ -207,9 +215,10 @@ def test_psbt_sparrow_2of2():
     assert not input_.is_fully_signed(), "PSBT 2of2 should be fully signed"
 
 
-def test_tr_psbt():
+def test_tr_psbt() -> None:
     """Test tr psbt."""
     psbt = SimplePSBT.from_psbt(tr_psbt_singlesig)
+    # Taproot single-sig should parse with one pubkey and two outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
     assert len(psbt.outputs) == 2
@@ -217,7 +226,7 @@ def test_tr_psbt():
 
 def test_p2sh_2of3_fully_signed(
     qtbot: QtBot,
-):
+) -> None:
     class B(QObject):
         close_all_video_widgets = cast(SignalProtocol[[]], pyqtSignal())
         pass
@@ -228,6 +237,7 @@ def test_p2sh_2of3_fully_signed(
     network = bdk.Network.REGTEST
     psbt = SimplePSBT.from_psbt(p2sh_2_2of3)
     input_ = psbt.inputs[0]
+    # Two signatures should be present in a fully signed 2-of-3 PSBT.
     assert len(input_.partial_sigs) == 2, "Expected 2 signatures for fully signed 2of3"
     # assert   input_.is_fully_signed(), "PSBT should be fully signed"
 

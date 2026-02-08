@@ -45,11 +45,12 @@ def data_tab_widget(qapp: QApplication) -> DataTabWidget:
     return widget
 
 
-def test_add_tab(data_tab_widget: DataTabWidget):
+def test_add_tab(data_tab_widget: DataTabWidget) -> None:
     """Test adding tabs and verifying data storage."""
     widget = data_tab_widget
     tab1 = QWidget()
     data1 = "Data for tab 1"
+    # Add the first tab and verify its data is stored.
     index1 = widget.addTab(tab1, description="Tab 1", data=data1)
     assert index1 == 0
     assert len(widget._tab_data) == 1
@@ -57,13 +58,14 @@ def test_add_tab(data_tab_widget: DataTabWidget):
 
     tab2 = QWidget()
     data2 = "Data for tab 2"
+    # Add a second tab and ensure ordering and data tracking are correct.
     index2 = widget.addTab(tab2, description="Tab 2", data=data2)
     assert index2 == 1
     assert len(widget._tab_data) == 2
     assert widget.tabData(index2) == data2
 
 
-def test_insert_tab(data_tab_widget: DataTabWidget):
+def test_insert_tab(data_tab_widget: DataTabWidget) -> None:
     """Test inserting a tab and verifying data consistency."""
     widget = data_tab_widget
     tab1 = QWidget()
@@ -75,6 +77,7 @@ def test_insert_tab(data_tab_widget: DataTabWidget):
 
     tab_inserted = QWidget()
     data_inserted = "Data for inserted tab"
+    # Insert between tab 1 and tab 2 and verify indices.
     index_inserted = widget.insertTab(1, tab_inserted, data_inserted, description="Inserted Tab")
     assert index_inserted == 1
     assert len(widget._tab_data) == 3
@@ -83,7 +86,7 @@ def test_insert_tab(data_tab_widget: DataTabWidget):
     assert widget.tabData(2) == data2
 
 
-def test_remove_tab(data_tab_widget: DataTabWidget):
+def test_remove_tab(data_tab_widget: DataTabWidget) -> None:
     """Test removing a tab and verifying data consistency."""
     widget = data_tab_widget
     tabs = []
@@ -93,6 +96,7 @@ def test_remove_tab(data_tab_widget: DataTabWidget):
         widget.addTab(tab, description=f"Tab {i}", data=data)
         tabs.append((tab, data))
 
+    # Remove the middle tab and ensure data shifts accordingly.
     widget.removeTab(1)
     assert len(widget._tab_data) == 2
     assert widget.tabData(0) == "Data for tab 0"
@@ -100,134 +104,147 @@ def test_remove_tab(data_tab_widget: DataTabWidget):
     assert widget.tabData(2) is None
 
 
-def test_clear_tab_data(data_tab_widget: DataTabWidget):
+def test_clear_tab_data(data_tab_widget: DataTabWidget) -> None:
     """Test clearing tab data."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab 1", data="Data 1")
     widget.addTab(QWidget(), description="Tab 2", data="Data 2")
     assert len(widget._tab_data) == 2
+    # Clear only data, not tabs themselves.
     widget.clearTabData()
     assert len(widget._tab_data) == 0
     assert widget.count() == 2
     assert widget.tabData(0) is None
 
 
-def test_get_current_tab_data(data_tab_widget: DataTabWidget):
+def test_get_current_tab_data(data_tab_widget: DataTabWidget) -> None:
     """Test retrieving data of the current tab."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab 1", data="Data 1")
     widget.addTab(QWidget(), description="Tab 2", data="Data 2")
+    # Switch to the second tab and fetch its data.
     widget.setCurrentIndex(1)
     assert widget.getCurrentTabData() == "Data 2"
 
 
-def test_get_all_tab_data(data_tab_widget: DataTabWidget):
+def test_get_all_tab_data(data_tab_widget: DataTabWidget) -> None:
     """Test retrieving all tab data."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab 1", data="Data 1")
     widget.addTab(QWidget(), description="Tab 2", data="Data 2")
+    # getAllTabData should map widgets to their stored data.
     all_data = widget.getAllTabData()
     assert len(all_data) == 2
     assert all_data[widget.widget(0)] == "Data 1"
     assert all_data[widget.widget(1)] == "Data 2"
 
 
-def test_get_data_for_tab(data_tab_widget: DataTabWidget):
+def test_get_data_for_tab(data_tab_widget: DataTabWidget) -> None:
     """Test retrieving data for a specific tab widget."""
     widget = data_tab_widget
     tab1 = QWidget()
     tab2 = QWidget()
     widget.addTab(tab1, description="Tab 1", data="Data 1")
     widget.addTab(tab2, description="Tab 2", data="Data 2")
+    # Access data by widget instance.
     assert widget.get_data_for_tab(tab1) == "Data 1"
     assert widget.get_data_for_tab(tab2) == "Data 2"
 
 
-def test_add_tab_with_position_and_focus(data_tab_widget: DataTabWidget):
+def test_add_tab_with_position_and_focus(data_tab_widget: DataTabWidget) -> None:
     """Test adding a tab at a specific position with focus."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab 1", data="Data 1")
     widget.addTab(QWidget(), description="Tab 2", data="Data 2")
     new_tab = QWidget()
+    # Insert the new tab at position 1 and focus it.
     widget.add_tab(new_tab, icon=None, description="New Tab", data="New Data", position=1, focus=True)
     assert len(widget._tab_data) == 3
     assert widget.currentIndex() == 1
     assert widget.tabData(1) == "New Data"
 
 
-def test_remove_all_tabs(data_tab_widget: DataTabWidget):
+def test_remove_all_tabs(data_tab_widget: DataTabWidget) -> None:
     """Test removing all tabs and data."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab 1", data="Data 1")
     widget.addTab(QWidget(), description="Tab 2", data="Data 2")
+    # Clearing the widget should remove tabs and associated data.
     widget.clear()
     assert widget.count() == 0
     assert len(widget._tab_data) == 0
 
 
-def test_add_tab_without_data(data_tab_widget: DataTabWidget):
+def test_add_tab_without_data(data_tab_widget: DataTabWidget) -> None:
     """Test adding a tab without associated data."""
     widget = data_tab_widget
     tab = QWidget()
     index = widget.addTab(tab, description="No Data Tab")
+    # No data should be stored for tabs without explicit data.
     assert len(widget._tab_data) == 0
 
     assert widget.tabData(index) is None
 
 
-def test_insert_tab_without_data(data_tab_widget: DataTabWidget):
+def test_insert_tab_without_data(data_tab_widget: DataTabWidget) -> None:
     """Test inserting a tab without associated data."""
     widget = data_tab_widget
     tab = QWidget()
     index = widget.insertTab(0, tab, data=None, description="Inserted No Data Tab")
+    # Inserting with data=None should not create a data entry.
     assert len(widget._tab_data) == 0
     assert widget.tabData(index) is None
 
 
-def test_remove_tab_updates_indices(data_tab_widget: DataTabWidget):
+def test_remove_tab_updates_indices(data_tab_widget: DataTabWidget) -> None:
     """Test that removing a tab updates the indices correctly."""
     widget = data_tab_widget
     for i in range(5):
         widget.addTab(QWidget(), description=f"Tab {i}", data=f"Data {i}")
+    # Removing index 2 should shift later tabs/data forward.
     widget.removeTab(2)
     assert len(widget._tab_data) == 4
     assert widget.tabData(2) == "Data 3"
     assert widget.tabData(3) == "Data 4"
 
 
-def test_insert_tab_updates_indices(data_tab_widget: DataTabWidget):
+def test_insert_tab_updates_indices(data_tab_widget: DataTabWidget) -> None:
     """Test that inserting a tab updates the indices correctly."""
     widget = data_tab_widget
     for i in range(3):
         widget.addTab(QWidget(), description=f"Tab {i}", data=f"Data {i}")
+    # Inserting at index 1 should push existing tabs forward.
     widget.insertTab(1, QWidget(), data="Inserted Data", description="Inserted Tab")
     assert len(widget._tab_data) == 4
     assert widget.tabData(1) == "Inserted Data"
     assert widget.tabData(2) == "Data 1"
 
 
-def test_set_tab_data(data_tab_widget: DataTabWidget):
+def test_set_tab_data(data_tab_widget: DataTabWidget) -> None:
     """Test setting tab data after creation."""
     widget = data_tab_widget
     tab = QWidget()
     index = widget.addTab(tab, description="Tab", data="Initial Data")
+    # Update stored data for an existing tab.
     widget.setTabData(tab, "Updated Data")
     assert widget.tabData(index) == "Updated Data"
 
 
-def test_invalid_index_access(data_tab_widget: DataTabWidget):
+def test_invalid_index_access(data_tab_widget: DataTabWidget) -> None:
     """Test accessing data with an invalid index."""
     widget = data_tab_widget
     widget.addTab(QWidget(), description="Tab", data="Data")
+    # Accessing data for an unknown widget should raise KeyError.
     with pytest.raises(KeyError):
         widget.get_data_for_tab(QWidget())
 
 
-def test_clear_tabs_and_data(data_tab_widget: DataTabWidget):
+def test_clear_tabs_and_data(data_tab_widget: DataTabWidget) -> None:
     """Test clearing all tabs and data."""
     widget = data_tab_widget
     for i in range(3):
         widget.addTab(QWidget(), description=f"Tab {i}", data=f"Data {i}")
+    # clear() removes tabs; clearTabData() removes stored data.
     widget.clear()
     widget.clearTabData()
     assert widget.count() == 0

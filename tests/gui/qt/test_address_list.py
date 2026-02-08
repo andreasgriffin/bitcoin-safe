@@ -53,6 +53,7 @@ logger = logging.getLogger(__name__)
 
 
 def _edit_label(address_list, source_row: int, label_text: str, qtbot: QtBot) -> None:
+    # Start editing the label cell for the given source row.
     source_index = address_list._source_model.index(source_row, address_list.Columns.LABEL)
     proxy_index = address_list.proxy.mapFromSource(source_index)
     assert proxy_index.isValid()
@@ -61,11 +62,13 @@ def _edit_label(address_list, source_row: int, label_text: str, qtbot: QtBot) ->
     QTest.keyClick(address_list, Qt.Key.Key_F2)
 
     def editor_ready() -> bool:
+        # The inline editor is a QLineEdit created by the view.
         return isinstance(address_list.findChild(QLineEdit), QLineEdit)
 
     qtbot.waitUntil(editor_ready, timeout=5_000)
     editor = address_list.findChild(QLineEdit)
     assert isinstance(editor, QLineEdit)
+    # Replace the label text and commit with Enter.
     editor.setText(label_text)
     QTest.keyClick(editor, Qt.Key.Key_Return)
 
@@ -86,6 +89,7 @@ def test_address_list_label_filter_and_utxo_selection(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for the window to be shown and confirm we are on regtest.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
@@ -95,12 +99,14 @@ def test_address_list_label_filter_and_utxo_selection(
         button = main_window.welcome_screen.pushButton_custom_wallet
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            # Provide a deterministic wallet name in the modal dialog.
             shutter.save(dialog)
             dialog.name_input.setText(wallet_id)
             dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
 
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
 
+        # Fill a 1-of-1 wallet descriptor with a manual seed and save it.
         qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_id).data
         assert isinstance(qt_protowallet, QTProtoWallet)
 
@@ -119,6 +125,7 @@ def test_address_list_label_filter_and_utxo_selection(
             ),
         )
 
+        # Open the freshly created wallet and navigate to the address tab.
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_id).data
         assert isinstance(qt_wallet, QTWallet)
 
@@ -126,9 +133,11 @@ def test_address_list_label_filter_and_utxo_selection(
         address_list = qt_wallet.address_list
         address_toolbar = qt_wallet.address_list_with_toolbar
 
+        # Wait until the address model has rows before interacting.
         qtbot.waitUntil(lambda: address_list._source_model.rowCount() > 0, timeout=10_000)
         shutter.save(main_window)
 
+        # Ensure we have at least two receiving addresses to select "other".
         wallet = qt_wallet.wallet
         receiving_addresses = wallet.get_receiving_addresses()
         if len(receiving_addresses) < 2:
@@ -137,10 +146,12 @@ def test_address_list_label_filter_and_utxo_selection(
         row = address_list.find_row_by_key(address)
         assert row is not None
 
+        # Edit the label for the first receiving address.
         label_text = f"label_{int(mytest_start_time.timestamp())}"
         _edit_label(address_list, row, label_text, qtbot)
 
         def label_applied() -> bool:
+            # Wait until the backend label cache reflects the edit.
             return qt_wallet.wallet.get_label_for_address(address) == label_text
 
         qtbot.waitUntil(label_applied, timeout=10_000)
@@ -151,11 +162,13 @@ def test_address_list_label_filter_and_utxo_selection(
         address_toolbar.change_button.setCurrentIndex(AddressTypeFilter.RECEIVING)
 
         qtbot.wait(200)
+        # Verify the labeled receiving address is visible under the filters.
         source_index = address_list._source_model.index(row, address_list.Columns.ADDRESS)
         proxy_index = address_list.proxy.mapFromSource(source_index)
         assert proxy_index.isValid()
         assert not address_list.isRowHidden(proxy_index.row(), QModelIndex())
 
+        # Change addresses should be hidden when filtering to receiving only.
         change_address = next((addr for addr in wallet.get_addresses() if wallet.is_change(addr)), None)
         if change_address:
             change_row = address_list.find_row_by_key(change_address)
@@ -177,6 +190,7 @@ def test_address_list_label_filter_and_utxo_selection(
             address=other_address,
         )
 
+        # Confirm the labeled address still has no UTXOs available for selection.
         utxos = address_list._utxos_for_addresses(wallet, [address])
         assert utxos == []
         shutter.save(main_window)
@@ -198,15 +212,18 @@ def test_address_list_filters_with_funding_and_quick_receive(
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
+        # Wait for UI to be ready and ensure we are on regtest.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
+        # Copy the fixture wallet into a temp directory so tests can modify it.
         temp_dir = Path(tempfile.mkdtemp()) / wallet_file
         wallet_path = Path("tests") / "data" / wallet_file
         shutil.copy(str(wallet_path), str(temp_dir))
 
+        # Open the wallet and wait for quick receive widgets to render.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert isinstance(qt_wallet, QTWallet)
 
@@ -220,11 +237,13 @@ def test_address_list_filters_with_funding_and_quick_receive(
         fund_wallet(qtbot=qtbot, faucet=faucet, qt_wallet=qt_wallet, amount=200_000, address=initial_receive)
 
         def quick_receive_updated() -> bool:
+            # The top quick receive card should now show a different address.
             return bool(quick_receive.group_boxes) and quick_receive.group_boxes[0].address != initial_receive
 
         qtbot.waitUntil(quick_receive_updated, timeout=10_000)
         shutter.save(main_window)
 
+        # Switch to the address tab to validate filters and selection behavior.
         qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
         address_list = qt_wallet.address_list
         address_toolbar = qt_wallet.address_list_with_toolbar
@@ -235,6 +254,7 @@ def test_address_list_filters_with_funding_and_quick_receive(
         assert row is not None
 
         def funded_balance() -> bool:
+            # Wait for wallet balance to reflect the funding transaction.
             return qt_wallet.wallet.get_addr_balance(initial_receive).total > 0
 
         qtbot.waitUntil(funded_balance, timeout=10_000)
@@ -244,6 +264,7 @@ def test_address_list_filters_with_funding_and_quick_receive(
         address_toolbar.change_button.setCurrentIndex(AddressTypeFilter.RECEIVING)
         qtbot.wait(200)
 
+        # The funded address should be visible in the filtered view.
         source_index = address_list._source_model.index(row, address_list.Columns.ADDRESS)
         proxy_index = address_list.proxy.mapFromSource(source_index)
         assert proxy_index.isValid()
@@ -254,10 +275,12 @@ def test_address_list_filters_with_funding_and_quick_receive(
         captured = []
 
         def on_open_tx_like(tx_ui_infos) -> None:  # noqa: ANN001
+            # Capture the emitted send-flow payload to assert on its contents.
             captured.append(tx_ui_infos)
 
         qt_wallet.wallet_functions.signals.open_tx_like.connect(on_open_tx_like)
         try:
+            # Trigger "send from these addresses" and wait for the send UI.
             address_list._select_utxos_for_sending({qt_wallet.wallet.id: [initial_receive]})
             qtbot.waitUntil(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.uitx_creator)
         finally:
