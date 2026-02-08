@@ -1,6 +1,6 @@
 ## Before version tagging
 
-* `poetry lock --no-cache` to ensure a complete lock file
+* `uv lock -U` to ensure a complete lock file
 * Update all translations
 * Check if dependencies can be published on pypi if possible (not possible for git commit hash dependencies)
 

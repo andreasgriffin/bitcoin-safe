@@ -50,18 +50,70 @@ break_legacy_easy_install
 info "Installing build dependencies"
 do_wine_pip -Ir "$PROJECT_ROOT/tools/deterministic-build/requirements-build.txt"
 
+install_wine_git() {
+    local git_dir="$WINEPREFIX/drive_c/MinGit"
+    local git_exe="$git_dir/cmd/git.exe"
 
-info "Installing build dependencies using poetry"
-# Installing via poetry directly would be better, but it seems not possible to 
-# overwrite the poetry.toml config to prevent local venv
-export POETRY_CACHE_DIR="$WINE_POETRY_CACHE_DIR"
-export POETRY_VIRTUALENVS_CREATE=false
-$WINE_PYTHON -m poetry config virtualenvs.create false
-move_and_overwrite $PROJECT_ROOT/.venv  $PROJECT_ROOT/.venv_org
-$WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
-  || $WINE_PYTHON -m poetry install --with main,build_wine --no-interaction \
-  || { echo "poetry install failed twice"; exit 1; }
-move_and_overwrite   $PROJECT_ROOT/.venv_org $PROJECT_ROOT/.venv
+    if [ -f "$git_exe" ]; then
+        info "MinGit already present at $git_dir"
+        export WINEPATH="c:\\MinGit\\cmd;c:\\MinGit\\mingw64\\bin;c:\\MinGit\\usr\\bin${WINEPATH:+;$WINEPATH}"
+        export PATH="$git_dir/cmd:$git_dir/mingw64/bin:$git_dir/usr/bin:$PATH"
+        return 0
+    fi
+
+    if [ "$WIN_ARCH" = "win64" ] ; then
+        GIT_VERSION="2.53.0"
+        GIT_ARCHIVE="MinGit-$GIT_VERSION-64-bit.zip"
+        GIT_URL="https://github.com/git-for-windows/git/releases/download/v$GIT_VERSION.windows.1/$GIT_ARCHIVE"
+        GIT_SHA256="82b562c918ec87b2ef5316ed79bb199e3a25719bb871a0f10294acf21ebd08cd"
+    else
+        GIT_VERSION="2.53.0"
+        GIT_ARCHIVE="MinGit-$GIT_VERSION-32-bit.zip"
+        GIT_URL="https://github.com/git-for-windows/git/releases/download/v$GIT_VERSION.windows.1/$GIT_ARCHIVE"
+        GIT_SHA256="ecdac7d32670aad730222eccf389a7e07803b7716728d9473d3afc24dc098113"
+    fi
+
+    info "Installing MinGit $GIT_VERSION for $WIN_ARCH"
+    if ! command -v unzip >/dev/null 2>&1; then
+        info "unzip not found, installing..."
+        sudo apt-get update -qq
+        sudo apt-get install -y unzip
+    fi
+
+    mkdir -p "$BUILD_CACHEDIR"
+    download_if_not_exist "$BUILD_CACHEDIR/$GIT_ARCHIVE" "$GIT_URL"
+    verify_hash "$BUILD_CACHEDIR/$GIT_ARCHIVE" "$GIT_SHA256"
+
+    rm -rf "$git_dir"
+    unzip -q "$BUILD_CACHEDIR/$GIT_ARCHIVE" -d "$git_dir"
+    if [ ! -f "$git_exe" ]; then
+        git_exe="$(find "$git_dir" -type f -iname git.exe | head -n 1)"
+    fi
+    if [ -z "$git_exe" ] || [ ! -f "$git_exe" ]; then
+        fail "MinGit install failed: git.exe not found after extraction"
+    fi
+
+    export WINEPATH="c:\\MinGit\\cmd;c:\\MinGit\\mingw64\\bin;c:\\MinGit\\usr\\bin${WINEPATH:+;$WINEPATH}"
+    export PATH="$git_dir/cmd:$git_dir/mingw64/bin:$git_dir/usr/bin:$PATH"
+}
+
+# Ensure git is available inside Wine for uv to fetch Git dependencies.
+install_wine_git
+
+info "Installing build dependencies using uv"
+export UV_CACHE_DIR="$BUILD_CACHEDIR/uv"
+export UV_LINK_MODE=copy
+WINE_VENV_ROOT="c:/bitcoin_safe/.venv"
+WINE_VENV_PYTHON="$WINE_VENV_ROOT/Scripts/python.exe"
+mkdir -p "$UV_CACHE_DIR"
+LOCKFILE="$PROJECT_ROOT/uv.lock"
+# uv wants to own the environment; ensure host .venv does not get in the way
+move_and_overwrite "$PROJECT_ROOT/.venv" "$PROJECT_ROOT/.venv_org"
+$WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || $WINE_PYTHON -m uv sync --frozen --group build-wine --all-extras \
+  || { echo "uv sync failed twice"; exit 1; }
+# restore original venv if it existed
+move_and_overwrite "$PROJECT_ROOT/.venv_org" "$PROJECT_ROOT/.venv"
 
 
 
@@ -110,6 +162,8 @@ info "Building PyInstaller."
     [[ -e "PyInstaller/bootloader/Windows-$PYINST_ARCH-intel/runw.exe" ]] || fail "Could not find runw.exe in target dir!"
 ) || fail "PyInstaller build failed"
 info "Installing PyInstaller."
-do_wine_pip ./pyinstaller
+info "Ensuring pip is available in the Wine venv."
+wine "$WINE_VENV_PYTHON" -B -m ensurepip --upgrade
+do_wine_pip_with_exe "$WINE_VENV_PYTHON" ./pyinstaller
 
 info "Wine is configured."
