@@ -1267,7 +1267,7 @@ class MainWindow(QMainWindow):
         """Change wallet id."""
         qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
-            Message(self.tr("Please select the wallet"))
+            Message(self.tr("Please select the wallet"), parent=self)
             return None
 
         old_id = qt_wallet.wallet.id
@@ -1294,7 +1294,7 @@ class MainWindow(QMainWindow):
         """Change wallet password."""
         qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
-            Message(self.tr("Please select the wallet"))
+            Message(self.tr("Please select the wallet"), parent=self)
             return
 
         qt_wallet.change_password()
@@ -1447,7 +1447,7 @@ class MainWindow(QMainWindow):
         """Show descriptor export window."""
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
-            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning, parent=self)
             return
 
         edit = qt_wallet.wallet_descriptor_ui.edit_descriptor
@@ -1468,10 +1468,12 @@ class MainWindow(QMainWindow):
         """Show register multisig."""
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
-            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning, parent=self)
             return
         if not qt_wallet.wallet.is_multisig():
-            Message(self.tr("Please select a Multisignature wallet first"), type=MessageType.Warning)
+            Message(
+                self.tr("Please select a Multisignature wallet first"), type=MessageType.Warning, parent=self
+            )
             return
 
         edit = qt_wallet.wallet_descriptor_ui.edit_descriptor
@@ -1491,7 +1493,7 @@ class MainWindow(QMainWindow):
 
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
-            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning, parent=self)
             return
         qt_wallet.export_pdf_statement()
 
@@ -1499,7 +1501,7 @@ class MainWindow(QMainWindow):
         """Export wallet pdf."""
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
-            Message(self.tr("Please select the wallet first."), type=MessageType.Warning)
+            Message(self.tr("Please select the wallet first."), type=MessageType.Warning, parent=self)
             return
 
         make_and_open_pdf(qt_wallet.wallet, lang_code=QLocale().name())
@@ -1598,12 +1600,15 @@ class MainWindow(QMainWindow):
                 current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
                 wallet = current_qt_wallet.wallet if current_qt_wallet else None
             if not wallet:
-                Message(self.tr("No wallet open. Please open the sender wallet to edit this transaction."))
+                Message(
+                    self.tr("No wallet open. Please open the sender wallet to edit this transaction."),
+                    parent=self,
+                )
                 return None
 
             qt_wallet = self.qt_wallets.get(wallet.id)
             if not qt_wallet:
-                Message(self.tr(" Please open the sender wallet to edit this transaction."))
+                Message(self.tr(" Please open the sender wallet to edit this transaction."), parent=self)
                 return None
             self.tab_wallets.setCurrentWidget(qt_wallet)
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
@@ -1631,7 +1636,7 @@ class MainWindow(QMainWindow):
                 res = Data.from_str(txlike, network=self.config.network)
             except Exception as e:
                 logger.debug(f"{self.__class__.__name__}: {e}")
-                Message(self.tr("Could not decode this string"), type=MessageType.Error)
+                Message(self.tr("Could not decode this string"), type=MessageType.Error, parent=self)
                 return None
             if res.data_type == DataType.Txid:
                 txdetails = self.fetch_txdetails(res.data)
@@ -1680,7 +1685,7 @@ class MainWindow(QMainWindow):
             else:
                 return
         else:
-            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
+            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error, parent=self)
 
     def dialog_open_qr_scanner(self) -> None:
         """Dialog open qr scanner."""
@@ -1870,10 +1875,15 @@ class MainWindow(QMainWindow):
                 self.tr("Could not open PSBT, because it lacks the input UTXOs.")
                 + f"\n{type(e).__name__}\n{e}",
                 type=MessageType.Error,
+                parent=self,
             )
             return None
         except Exception as e:
-            Message(self.tr("Could not open PSBT") + f"\n{type(e).__name__}\n{e}", type=MessageType.Error)
+            Message(
+                self.tr("Could not open PSBT") + f"\n{type(e).__name__}\n{e}",
+                type=MessageType.Error,
+                parent=self,
+            )
             return None
 
         if not isinstance(data.data, bdk.Psbt):
@@ -1979,6 +1989,7 @@ class MainWindow(QMainWindow):
                     n=MAC_OPEN_WALLET_LIMIT
                 ),
                 type=MessageType.Warning,
+                parent=self,
             )
             return None
 
@@ -1996,7 +2007,9 @@ class MainWindow(QMainWindow):
         # make sure this wallet isn't open already by this instance
         opened_file_paths = [qt_wallet.file_path for qt_wallet in self.qt_wallets.values()]
         if file_path in opened_file_paths:
-            Message(self.tr("The wallet {file_path} is already open.").format(file_path=file_path))
+            Message(
+                self.tr("The wallet {file_path} is already open.").format(file_path=file_path), parent=self
+            )
             return None
 
         if not QTWallet.get_wallet_lockfile(Path(file_path)):
@@ -2014,6 +2027,7 @@ class MainWindow(QMainWindow):
             Message(
                 self.tr("There is no such file: {file_path}").format(file_path=file_path),
                 type=MessageType.Error,
+                parent=self,
             )
             return None
 
@@ -2062,7 +2076,10 @@ class MainWindow(QMainWindow):
                     e, exc_info = result
                     # the file could also be corrupted, but the "wrong password" is by far the likliest
                     caught_exception_message(
-                        e, "Wrong password. Wallet could not be loaded.", exc_info=exc_info
+                        e,
+                        "Wrong password. Wallet could not be loaded.",
+                        exc_info=exc_info,
+                        parent=self,
                     )
                     continue
                 return None, password  # type: ignore[unreachable]
@@ -2071,7 +2088,8 @@ class MainWindow(QMainWindow):
             Message(
                 self.tr("A wallet with id {name} is already open. Please close it first.").format(
                     name=_guess_wallet_id
-                )
+                ),
+                parent=self,
             )
             return None
 
@@ -2209,7 +2227,7 @@ class MainWindow(QMainWindow):
                 return
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), type=MessageType.Error)
+            Message(str(e), type=MessageType.Error, parent=self)
 
     def create_qtwallet_from_qtprotowallet(
         self, root_node: SidebarNode, qt_protowallet: QTProtoWallet
@@ -2306,13 +2324,17 @@ class MainWindow(QMainWindow):
             return None
 
         if not tab_import_xpub.keystore_uis:
-            Message("Cannot create wallet, because no keystores are available", type=MessageType.Error)
+            Message(
+                "Cannot create wallet, because no keystores are available",
+                type=MessageType.Error,
+                parent=self,
+            )
             return
 
         org_protowallet = qt_protowallet.protowallet
         tab_import_xpub.keystore_uis.set_protowallet_from_keystore_ui()
         if org_protowallet.get_differences(qt_protowallet.protowallet).has_impact_on_addresses():
-            Message("QtProtowallet inconsitent. Cannot create wallet", type=MessageType.Error)
+            Message("QtProtowallet inconsitent. Cannot create wallet", type=MessageType.Error, parent=self)
             return
 
         self.create_qtwallet_from_ui(
@@ -2418,7 +2440,7 @@ class MainWindow(QMainWindow):
         """Toggle tutorial."""
         qt_wallet = qt_wallet if qt_wallet else self.get_qt_wallet()
         if not qt_wallet:
-            Message(self.tr("Please complete the wallet setup."))
+            Message(self.tr("Please complete the wallet setup."), parent=self)
             return
 
         if qt_wallet.wizard:

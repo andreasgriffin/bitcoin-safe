@@ -32,6 +32,7 @@ import logging
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
+from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
@@ -188,11 +189,15 @@ class TxTools:
         wallet_functions: WalletFunctions,
         fee_rate: float | None = None,
         target_total_unconfirmed_fee_rate: float | None = None,
+        parent: QWidget | None = None,
     ) -> None:
         """Cpfp tx."""
         utxo = wallet.get_cpfp_utxos(tx=tx_details.transaction)
         if not utxo:
-            Message(translate("tx", "Cannot CPFP the transaction because no receiving output could be found"))
+            Message(
+                translate("tx", "Cannot CPFP the transaction because no receiving output could be found"),
+                parent=parent,
+            )
             return
 
         txinfos = TxUiInfos()

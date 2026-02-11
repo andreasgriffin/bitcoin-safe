@@ -638,6 +638,7 @@ class UITx_Viewer(UITx_Base):
             wallet_functions=self.wallet_functions,
             fee_rate=fee_rate,
             target_total_unconfirmed_fee_rate=target_total_unconfirmed_fee_rate,
+            parent=self,
         )
 
     def _infos_for_edit_or_rbf(self, new_fee_rate: float | None = None):
@@ -663,6 +664,7 @@ class UITx_Viewer(UITx_Base):
             Message(
                 self.tr("Wallet of transaction inputs could not be found"),
                 type=MessageType.Error,
+                parent=self,
             )
             return
 
@@ -671,6 +673,7 @@ class UITx_Viewer(UITx_Base):
             Message(
                 self.tr("Please remove the existing local transaction of the wallet first."),
                 type=MessageType.Error,
+                parent=self,
             )
         else:
             TxTools.edit_tx(
@@ -691,6 +694,7 @@ class UITx_Viewer(UITx_Base):
             Message(
                 self.tr("Wallet of transaction inputs could not be found"),
                 type=MessageType.Error,
+                parent=self,
             )
             return
 
@@ -698,6 +702,7 @@ class UITx_Viewer(UITx_Base):
             Message(
                 self.tr("Not all necessary transaction details are available for RBF"),
                 type=MessageType.Error,
+                parent=self,
             )
             return
 
@@ -828,6 +833,7 @@ class UITx_Viewer(UITx_Base):
                         if "non-mandatory-script-verify-flag" in str(e)
                         else None
                     ),
+                    parent=self,
                 )
         else:
             Message(
@@ -835,6 +841,7 @@ class UITx_Viewer(UITx_Base):
                     "Please open a wallet first to broadcast the transaction.\nOr you can broadcast via {url}"
                 ).format(url="https://blockstream.info/tx/push"),
                 type=MessageType.Error,
+                parent=self,
             )
 
         return False
@@ -1083,7 +1090,9 @@ class UITx_Viewer(UITx_Base):
 
         if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():
             Message(
-                self.tr("The txid of the signed psbt doesnt match the original txid"), type=MessageType.Error
+                self.tr("The txid of the signed psbt doesnt match the original txid"),
+                type=MessageType.Error,
+                parent=self,
             )
             return
 

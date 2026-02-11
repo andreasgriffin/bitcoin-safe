@@ -489,7 +489,7 @@ class NetworkSettingsUI(QWidget):
             try:
                 peers.append(Peer.parse(line, network=self.network))
             except Exception as exc:
-                Message(self.tr("Invalid peer '{peer}': {error}").format(peer=line, error=exc))
+                Message(self.tr("Invalid peer '{peer}': {error}").format(peer=line, error=exc), parent=self)
                 return None
         return peers
 
@@ -646,7 +646,10 @@ class NetworkSettingsUI(QWidget):
         new_network_config = self.get_network_settings_from_ui()
         server_connection, mempool_server = self._test_connection(network_config=new_network_config)
 
-        Message(self._format_test_responses(new_network_config, server_connection, mempool_server))
+        Message(
+            self._format_test_responses(new_network_config, server_connection, mempool_server),
+            parent=self,
+        )
 
     def set_server_type_comboBox(self, new_index: int):
         """Set server type comboBox."""

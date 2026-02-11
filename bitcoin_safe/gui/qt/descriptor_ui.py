@@ -476,7 +476,7 @@ class DescriptorUI(QWidget):
             self.disable_fields()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), title="Error", type=MessageType.Error)
+            Message(str(e), title="Error", type=MessageType.Error, parent=self)
             return
 
     def _input_to_data(self, s: str) -> Data | None:

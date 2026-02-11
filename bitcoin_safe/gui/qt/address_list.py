@@ -153,7 +153,8 @@ class ImportLabelMenu(Menu):
             translate(
                 "import",
                 "Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.",
-            )
+            ),
+            parent=self,
         )
 
     def updateUi(self) -> None:
@@ -263,6 +264,7 @@ class LabelSnapshotMenu(Menu):
         Message(
             self.tr("Restored labels snapshot from {timestamp}").format(timestamp=timestamp_text),
             type=MessageType.Info,
+            parent=self,
         )
 
 
@@ -939,6 +941,7 @@ class AddressList(MyTreeView[str]):
             Message(
                 self.tr("Please select addresses from a single wallet to choose UTXOs for sending."),
                 type=MessageType.Info,
+                parent=self,
             )
             return
 
@@ -949,7 +952,11 @@ class AddressList(MyTreeView[str]):
 
         utxos = self._utxos_for_addresses(wallet, addresses)
         if not utxos:
-            Message(self.tr("No spendable UTXOs found for the selected addresses."), type=MessageType.Info)
+            Message(
+                self.tr("No spendable UTXOs found for the selected addresses."),
+                type=MessageType.Info,
+                parent=self,
+            )
             return
 
         tx_ui_infos = TxUiInfos(

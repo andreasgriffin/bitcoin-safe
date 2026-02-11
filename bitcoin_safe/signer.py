@@ -45,6 +45,7 @@ from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
 from bitcoin_safe.i18n import translate
@@ -79,6 +80,11 @@ class AbstractSignatureImporter(QObject):
         self.key_label = key_label
         self.close_all_video_widgets = close_all_video_widgets
         self.loop_in_thread = loop_in_thread
+
+    def _message_parent(self) -> QWidget | None:
+        """Get the QWidget parent for message dialogs."""
+        parent = self.parent()
+        return parent if isinstance(parent, QWidget) else None
 
     def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
         """Sign."""
@@ -126,6 +132,7 @@ class AbstractSignatureImporter(QObject):
                     Message(
                         self.tr("No additional signatures were added"),
                         type=MessageType.Error,
+                        parent=self._message_parent(),
                     )
                     return
 
@@ -148,12 +155,14 @@ class AbstractSignatureImporter(QObject):
                     Message(
                         self.tr("The txid of the signed psbt doesnt match the original txid"),
                         type=MessageType.Error,
+                        parent=self._message_parent(),
                     )
                     return
                 if tx_to_hex(scanned_tx) == tx_to_hex(original_psbt.extract_tx()):
                     Message(
                         self.tr("No additional signatures were added"),
                         type=MessageType.Error,
+                        parent=self._message_parent(),
                     )
                     return
 
@@ -167,6 +176,7 @@ class AbstractSignatureImporter(QObject):
                 self.tr("The input is incompatible with the PSBT to be signed.")
                 + f"\n{type(e).__name__}\n{e}",
                 type=MessageType.Error,
+                parent=self._message_parent(),
             )
             return
 
@@ -221,7 +231,10 @@ class SignatureImporterWallet(AbstractSignatureImporter):
                 psbt = new_psbt
 
         if not self.txids_match(original_psbt, psbt):
-            Message(self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"))
+            Message(
+                self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"),
+                parent=self._message_parent(),
+            )
             return
 
         logger.debug(f"psbt before signing: {tx_of_psbt_to_hex(psbt)[:4]=}")
@@ -284,7 +297,7 @@ class SignatureImporterQR(AbstractSignatureImporter):
                 else:
                     return
             else:
-                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
+                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error, parent=self._message_parent())
 
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(network=self.network)
@@ -427,7 +440,7 @@ class SignatureImporterUSB(SignatureImporterQR):
                     )
                 )
             else:
-                caught_exception_message(e)
+                caught_exception_message(e, parent=self._message_parent())
 
     @property
     def label(self) -> str:

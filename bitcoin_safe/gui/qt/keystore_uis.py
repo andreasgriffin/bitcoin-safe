@@ -155,7 +155,8 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             self.tr("Filling in all {number} signers with the fingerprints {fingerprints}").format(
                 number=len(signer_infos),
                 fingerprints=", ".join([signer_info.fingerprint for signer_info in signer_infos]),
-            )
+            ),
+            parent=self,
         )
         for signer_info, keystore_ui in zip(signer_infos, self.getAllTabData().values(), strict=False):
             keystore_ui.set_using_signer_info(signer_info)
@@ -179,6 +180,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     ),
                     no_show=True,
                     type=MessageType.Error,
+                    parent=self,
                 )
             )
         if len(set(fingerprints)) < len(keystore_uis):
@@ -189,6 +191,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     ),
                     no_show=True,
                     type=MessageType.Error,
+                    parent=self,
                 )
             )
 
@@ -199,6 +202,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     self.tr("Please import the complete data for Signer {i}!").format(i=xpubs.index("") + 1),
                     no_show=True,
                     type=MessageType.Error,
+                    parent=self,
                 )
             )
         if len(set(xpubs)) < len(keystore_uis):
@@ -209,6 +213,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     ),
                     no_show=True,
                     type=MessageType.Error,
+                    parent=self,
                 )
             )
         key_origins = [keystore_ui.edit_key_origin.text() for keystore_ui in keystore_uis]
@@ -220,6 +225,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     ),
                     no_show=True,
                     type=MessageType.Error,
+                    parent=self,
                 )
             )
         if len(set(key_origins)) > 1:
@@ -230,6 +236,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     ).format(key_origins=key_origins),
                     no_show=True,
                     type=MessageType.Warning,
+                    parent=self,
                 )
             )
 
@@ -240,12 +247,20 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 if analysis.state == AnalyzerState.Warning:
                     return_messages += [
                         Message(
-                            f"{keystore_ui.label}: {analysis.msg}", no_show=True, type=MessageType.Warning
+                            f"{keystore_ui.label}: {analysis.msg}",
+                            no_show=True,
+                            type=MessageType.Warning,
+                            parent=self,
                         )
                     ]
                 if analysis.state == AnalyzerState.Invalid:
                     return_messages += [
-                        Message(f"{keystore_ui.label}: {analysis.msg}", no_show=True, type=MessageType.Error)
+                        Message(
+                            f"{keystore_ui.label}: {analysis.msg}",
+                            no_show=True,
+                            type=MessageType.Error,
+                            parent=self,
+                        )
                     ]
 
         return return_messages

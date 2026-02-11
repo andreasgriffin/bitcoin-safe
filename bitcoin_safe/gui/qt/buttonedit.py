@@ -361,7 +361,7 @@ class ButtonEdit(QWidget):
                 else:
                     return
             else:
-                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
+                Message(f"{type(e).__name__}\n{e}", type=MessageType.Error, parent=self)
 
         self.close_all_video_widgets.emit()
         self._temp_bitcoin_video_widget = BitcoinVideoWidget(

@@ -244,6 +244,7 @@ class DescriptorEdit(QWidget):
             Message(
                 self.tr("Wallet setup not finished. Please finish before creating a Backup pdf."),
                 type=MessageType.Error,
+                parent=self,
             )
             return
 
@@ -293,7 +294,7 @@ class DescriptorEdit(QWidget):
             else:
                 return
         else:
-            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error)
+            Message(f"{type(e).__name__}\n{e}", type=MessageType.Error, parent=self)
 
     def on_action_import_from_clipboard(self):
         """On action import from clipboard."""
@@ -315,7 +316,7 @@ class DescriptorEdit(QWidget):
     def show_export_widget(self):
         """Show export widget."""
         if not self._check_if_valid():
-            Message(self.tr("Descriptor not valid"))
+            Message(self.tr("Descriptor not valid"), parent=self)
             return
 
         try:
@@ -355,7 +356,9 @@ class DescriptorEdit(QWidget):
         if not self.wallet:
             return
         if not self.wallet.is_multisig():
-            Message(self.tr("Please select a Multisignature wallet first"), type=MessageType.Warning)
+            Message(
+                self.tr("Please select a Multisignature wallet first"), type=MessageType.Warning, parent=self
+            )
             return
 
         if self._hardware_signer_interaction:

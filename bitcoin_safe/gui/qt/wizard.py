@@ -636,7 +636,7 @@ class GenerateSeed(BaseTab):
             text=self.refs.qtwalletbase.get_editable_protowallet().sticker_name(""),
         )
         if not ok:
-            Message("Aborted setup.")
+            Message("Aborted setup.", parent=self.refs.container)
             return
 
         self.usb_gui.set_initalization_label(initalization_label)
@@ -651,15 +651,21 @@ class GenerateSeed(BaseTab):
                 + "\n\n"
                 + self.tr("Please ensure that there are no other programs accessing the Hardware signer"),
                 type=MessageType.Error,
+                parent=self.refs.container,
             )
             return
         if not result:
-            Message(self.tr("The setup didnt complete. Please repeat."), type=MessageType.Error)
+            Message(
+                self.tr("The setup didnt complete. Please repeat."),
+                type=MessageType.Error,
+                parent=self.refs.container,
+            )
             return
 
         Message(
             self.tr("Success! Please complete this step with all hardware signers and then click Next."),
             type=MessageType.Info,
+            parent=self.refs.container,
         )
 
 
@@ -728,7 +734,7 @@ class ImportXpubs(BaseTab):
             self.refs.qtwalletbase.tutorial_index = self.refs.container.current_index() + 1
             self.refs.signal_create_wallet.emit(self.keystore_uis.protowallet.id)
         except Exception as e:
-            caught_exception_message(e)
+            caught_exception_message(e, parent=self.refs.container)
 
     def create(self) -> TutorialWidget:
         """Create."""
@@ -887,7 +893,7 @@ class BackupSeed(BaseTab):
     def _do_pdf(self) -> None:
         """Do pdf."""
         if not self.refs.qt_wallet:
-            Message(self.tr("Please complete the previous steps."))
+            Message(self.tr("Please complete the previous steps."), parent=self.refs.container)
             return
         make_and_open_pdf(
             self.refs.qt_wallet.wallet,
@@ -981,7 +987,8 @@ class ReceiveTest(BaseTab):
                     amount=Satoshis(utxos[0].txout.value, self.refs.qt_wallet.wallet.network).str_with_unit(
                         btc_symbol=self.refs.qtwalletbase.config.bitcoin_symbol.value
                     )
-                )
+                ),
+                parent=self.refs.container,
             )
         return utxos
 
@@ -990,7 +997,7 @@ class ReceiveTest(BaseTab):
     ) -> None:
         """Start sync."""
         if not self.refs.qt_wallet:
-            Message(self.tr("No wallet setup yet"), type=MessageType.Error)
+            Message(self.tr("No wallet setup yet"), type=MessageType.Error, parent=self.refs.container)
             return
 
         # before I do a sync, I should check if the tx is alreasy there.
@@ -1690,7 +1697,7 @@ class Wizard(WizardBase):
 
     def show_warning_not_initialized(self):
         """Show warning not initialized."""
-        Message(self.tr("You must have an initilized wallet first"), type=MessageType.Warning)
+        Message(self.tr("You must have an initilized wallet first"), type=MessageType.Warning, parent=self)
 
     def toggle_tutorial(self) -> None:
         """Toggle tutorial."""
@@ -1760,7 +1767,7 @@ class Wizard(WizardBase):
         steps = self.get_send_tests_steps()
         tx_text = self.tx_text(latest_test_number)
         if latest_test_number >= len(steps) - 1:
-            Message(self.tr("All Send tests done successfully."), type=MessageType.Info)
+            Message(self.tr("All Send tests done successfully."), type=MessageType.Info, parent=self)
         else:
             Message(
                 self.tr(
@@ -1768,6 +1775,7 @@ class Wizard(WizardBase):
                     "Please proceed to do the send test: \n'{next_text}'"
                 ).format(tx_text=tx_text, next_text=self.tx_text(latest_test_number + 1)),
                 type=MessageType.Info,
+                parent=self,
             )
 
         # only increase the index, if the index is not ahead already
@@ -1921,7 +1929,7 @@ class Wizard(WizardBase):
 
         utxos = [txo for txo in self.qt_wallet.wallet.get_all_utxos()]
         if not utxos:
-            Message(self.tr("The wallet is not funded. Please fund the wallet."))
+            Message(self.tr("The wallet is not funded. Please fund the wallet."), parent=self)
             return
         # select only the last utxo
         utxos = [utxos[0]]

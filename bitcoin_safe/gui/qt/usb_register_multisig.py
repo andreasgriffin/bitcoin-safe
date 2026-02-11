@@ -147,7 +147,7 @@ class USBValidateAddressWidget(QWidget):
             address = self.usb_gui.display_address(address_descriptor, slow_hwi_listing=True)
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), type=MessageType.Error)
+            Message(str(e), type=MessageType.Error, parent=self)
             return False
 
         return bool(address)
@@ -206,6 +206,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
                 self.tr("Successfully registered multisig wallet on hardware signer"),
                 type=MessageType.Info,
                 icon=svg_tools.get_QIcon("checkmark.svg"),
+                parent=self,
             )
         return result
 

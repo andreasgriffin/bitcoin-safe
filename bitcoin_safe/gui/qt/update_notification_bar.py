@@ -185,7 +185,7 @@ class UpdateNotificationBar(NotificationBar):
         """On download finished."""
         sig_file_path = self.verifyer.get_signature_from_web(download_thread.filename)
         if not sig_file_path:
-            Message(self.tr("Could not verify the download. Please try again later."))
+            Message(self.tr("Could not verify the download. Please try again later."), parent=self)
             self.refresh()
             self.setVisible(False)
             return
@@ -197,7 +197,11 @@ class UpdateNotificationBar(NotificationBar):
             download_thread.filename, expected_public_key=self.key
         )
         if not was_signature_verified:
-            Message(self.tr("Signature doesn't match!!! Please try again."), type=MessageType.Error)
+            Message(
+                self.tr("Signature doesn't match!!! Please try again."),
+                type=MessageType.Error,
+                parent=self,
+            )
             self.refresh()
             self.setVisible(False)
             return
@@ -239,7 +243,7 @@ class UpdateNotificationBar(NotificationBar):
                     download_thread.highlight_filename = extracted_appimage
             except (tarfile.TarError, OSError, ValueError) as exc:
                 logger.error("Failed to extract update archive %s: %s", download_path, exc)
-                Message(self.tr("Failed to extract update archive."), type=MessageType.Error)
+                Message(self.tr("Failed to extract update archive."), type=MessageType.Error, parent=self)
 
     @staticmethod
     def _is_appimage_tarball(download_path: Path) -> bool:

@@ -261,6 +261,7 @@ class SyncTab(ControlledGroupbox):
                         name=dm.data.data_type.name, author=self.nostr_sync.chat.get_alias(dm.author)
                     ),
                     no_show=True,
+                    parent=self,
                 ).emit_with(self.signals.notification)
                 self.signals.open_tx_like.emit(dm.data.data)
             elif not dm.data:
@@ -269,6 +270,7 @@ class SyncTab(ControlledGroupbox):
                         description=dm.description, author=self.nostr_sync.chat.get_alias(dm.author)
                     ),
                     no_show=True,
+                    parent=self,
                 ).emit_with(self.signals.notification)
 
     def enabled(self) -> bool:

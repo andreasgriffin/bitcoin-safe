@@ -387,7 +387,7 @@ class KeyStoreUI(QWidget):
             res = Data.from_str(s, network=self.network)
             self._on_handle_input(res)
         except Exception as e:
-            Message(str(e), type=MessageType.Error)
+            Message(str(e), type=MessageType.Error, parent=self)
 
     def _import_dialog(self):
         """Import dialog."""
@@ -408,7 +408,7 @@ class KeyStoreUI(QWidget):
             keystore = self.get_ui_values_as_keystore()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), type=MessageType.Error)
+            Message(str(e), type=MessageType.Error, parent=self)
             return
         self.edit_fingerprint.setText(keystore.fingerprint)
         self.edit_xpub.setText(keystore.xpub)
@@ -489,6 +489,7 @@ class KeyStoreUI(QWidget):
             Message(
                 analyzer_message.msg,
                 type=MessageType.Error,
+                parent=self,
             )
             return
         elif analyzer_message.state == AnalyzerState.Warning:
@@ -526,7 +527,8 @@ class KeyStoreUI(QWidget):
                 Message(
                     self.tr(
                         "No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again."
-                    ).format(key_origin=key_origin)
+                    ).format(key_origin=key_origin),
+                    parent=self,
                 )
 
         elif data.data_type == DataType.Xpub:
@@ -537,13 +539,17 @@ class KeyStoreUI(QWidget):
             DataType.Descriptor,
             DataType.MultisigWalletExport,
         ]:
-            Message(self.tr("Please paste descriptors into the descriptor field in the top right."))
+            Message(
+                self.tr("Please paste descriptors into the descriptor field in the top right."),
+                parent=self,
+            )
         elif isinstance(data.data, str) and parent:
             parent.setText(data.data)
         elif isinstance(data, Data):
             Message(
                 self.tr("{data_type} cannot be used here.").format(data_type=data.data_type),
                 type=MessageType.Error,
+                parent=self,
             )
         else:
             Exception("Could not recognize the QR Code")
@@ -556,6 +562,7 @@ class KeyStoreUI(QWidget):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
                 title="Converting format",
+                parent=self,
             )
             try:
                 self.edit_xpub.setText(ConverterXpub.convert_slip132_to_bip32(xpub))
@@ -604,6 +611,7 @@ class KeyStoreUI(QWidget):
                 + "\n\n"
                 + self.tr("Please ensure that there are no other programs accessing the Hardware signer"),
                 type=MessageType.Error,
+                parent=self,
             )
             return
         if not result:
@@ -624,7 +632,7 @@ class KeyStoreUI(QWidget):
         """On xpub usb click."""
         key_origin = self.key_origin
         if not key_origin:
-            Message(self.tr("Please enter a valid key origin."))
+            Message(self.tr("Please enter a valid key origin."), parent=self)
             return
         self._on_hwi_click(key_origin=key_origin)
 

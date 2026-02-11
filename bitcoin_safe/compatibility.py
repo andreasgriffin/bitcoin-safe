@@ -69,7 +69,8 @@ def check_compatibility():
             RuntimeError(
                 f"Unsupported macOS version: {current_ver} on {arch!r} — "
                 f"requires macOS {required_ver} or newer."
-            )
+            ),
+            parent=None,
         )
 
 

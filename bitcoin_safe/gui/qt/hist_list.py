@@ -707,7 +707,12 @@ class HistList(MyTreeView[str]):
         wallet = self.get_wallet(txid=tx_details.txid)
         if not wallet:
             return
-        TxTools.cpfp_tx(tx_details=tx_details, wallet=wallet, wallet_functions=self.wallet_functions)
+        TxTools.cpfp_tx(
+            tx_details=tx_details,
+            wallet=wallet,
+            wallet_functions=self.wallet_functions,
+            parent=self,
+        )
 
     def rbf_tx(
         self,
@@ -763,6 +768,7 @@ class HistList(MyTreeView[str]):
                     "Cannot find wallet for transaction {txid}. Please open the corresponding wallet first."
                 ).format(txid=short_tx_id(tx_details.txid)),
                 type=MessageType.Error,
+                parent=self,
             )
             return
 
