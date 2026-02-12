@@ -29,14 +29,19 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import dataclass
+from typing import cast
 
-from PyQt6.QtCore import Qt
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
     QDialogButtonBox,
+    QHBoxLayout,
     QLabel,
+    QPushButton,
     QScrollArea,
     QVBoxLayout,
     QWidget,
@@ -151,8 +156,21 @@ SOFTWARE.</p>
         self.setLayout(layout)
 
 
+@dataclass(frozen=True)
+class UpdateStatus:
+    is_checked: bool
+    has_update: bool
+    latest_version: str | None
+
+
 class AboutTab(QWidget):
-    def __init__(self, license_dialog: LicenseDialog, parent: QWidget | None = None) -> None:
+    signal_update_action_requested = cast(SignalProtocol[[]], pyqtSignal())
+
+    def __init__(
+        self,
+        license_dialog: LicenseDialog,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent=parent)
 
         layout = QVBoxLayout(self)
@@ -181,8 +199,41 @@ class AboutTab(QWidget):
         )
         version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        version_row_widget = QWidget(parent=self)
+        version_row_layout = QHBoxLayout(version_row_widget)
+        version_row_layout.setContentsMargins(0, 0, 0, 0)
+        version_row_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        version_status_label = QLabel(self.tr("(newest version)"), parent=self)
+        version_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        version_status_label.setVisible(False)
+
+        update_button = QPushButton(self.tr("Update available"), parent=self)
+        update_button.setVisible(False)
+        update_button.clicked.connect(self._handle_update_clicked)
+
+        version_row_layout.addWidget(version_label)
+        version_row_layout.addWidget(version_status_label)
+        version_row_layout.addWidget(update_button)
+
         foss_label = QLabel(self.tr("FOSS - Free & Open Source Software"), parent=self)
         foss_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        show_reproducible_label = sys.platform.startswith(("linux", "win"))
+        reproducible_label = QLabel(
+            self.tr("Binaries are {link}.").format(
+                link=link(
+                    "https://walletscrutiny.com/desktop/bitcoin.safe/",
+                    self.tr("reproducible"),
+                )
+            ),
+            parent=self,
+        )
+        reproducible_label.setHidden(not show_reproducible_label)
+        reproducible_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        reproducible_label.setTextFormat(Qt.TextFormat.RichText)
+        reproducible_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        reproducible_label.setOpenExternalLinks(True)
 
         licence_label = QLabel(f'<a href="#">{self.tr("Licence")}</a>', parent=self)
         licence_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -196,11 +247,30 @@ class AboutTab(QWidget):
         layout.addWidget(title_label)
         layout.addWidget(tagline_label)
         layout.addSpacing(6)
-        layout.addWidget(version_label)
+        layout.addWidget(version_row_widget)
         layout.addSpacing(6)
         layout.addWidget(foss_label)
+        layout.addWidget(reproducible_label)
         layout.addWidget(licence_label)
         layout.addStretch()
+
+        self._version_status_label = version_status_label
+        self._update_button = update_button
+        self.set_update_status(UpdateStatus(is_checked=False, has_update=False, latest_version=None))
+
+    def set_update_status(self, status: UpdateStatus) -> None:
+        """Set the update status for the version row."""
+        has_update = status.has_update and bool(status.latest_version)
+        show_newest = status.is_checked and not has_update
+        self._version_status_label.setVisible(show_newest)
+        self._update_button.setVisible(has_update)
+        if has_update and status.latest_version:
+            self._update_button.setText(
+                self.tr("Update to {version} available").format(version=status.latest_version)
+            )
+
+    def _handle_update_clicked(self) -> None:
+        self.signal_update_action_requested.emit()
 
 
 if __name__ == "__main__":

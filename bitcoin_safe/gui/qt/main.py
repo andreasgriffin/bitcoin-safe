@@ -77,6 +77,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.execute_config import DEMO_MODE, DONATION_ADDRESS, IS_PRODUCTION
+from bitcoin_safe.gui.qt.about_tab import UpdateStatus
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
@@ -229,10 +230,16 @@ class MainWindow(QMainWindow):
         self.signals.get_btc_symbol.connect(self.get_btc_symbol)
 
         self.settings = Settings(
-            config=self.config, signals=self.signals, fx=self.fx, language_chooser=self.language_chooser
+            config=self.config,
+            signals=self.signals,
+            fx=self.fx,
+            language_chooser=self.language_chooser,
         )
         self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.restart)
         self.signals.show_network_settings.connect(self.open_settings_ui)
+        self.settings.signal_update_action_requested.connect(
+            self.update_notification_bar.check_and_make_visible
+        )
 
         self.welcome_screen = NewWalletWelcomeScreen(
             network=self.config.network,
@@ -509,6 +516,16 @@ class MainWindow(QMainWindow):
         else:
             # trigger no needless syncing
             pass
+
+    def _get_update_status(self) -> UpdateStatus:
+        """Get update status for the About tab."""
+        assets_present = bool(self.update_notification_bar.assets)
+        latest_version = self.update_notification_bar.get_asset_tag()
+        return UpdateStatus(
+            is_checked=assets_present,
+            has_update=self.update_notification_bar.is_new_version_available(),
+            latest_version=latest_version,
+        )
 
     def any_has_no_txs(self) -> QWidget | None:
         """Any has no txs."""
@@ -1426,21 +1443,23 @@ class MainWindow(QMainWindow):
         ):
             self.restore_from_tray()
 
-    def open_settings_ui(self) -> None:
-        """Open settings."""
+    def _show_settings_window(self):
+        self.settings.set_update_status(self._get_update_status())
         self.settings.show()
         self.settings.raise_()
+
+    def open_settings_ui(self) -> None:
+        """Open settings."""
+        self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.langauge_ui)
 
     def open_network_settings(self) -> None:
-        self.settings.show()
-        self.settings.raise_()
+        self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
     def open_about_tab(self) -> None:
         """Open the About tab in settings."""
-        self.settings.show()
-        self.settings.raise_()
+        self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.about_tab)
 
     def show_descriptor_export_window(self, wallet: Wallet | None = None) -> None:

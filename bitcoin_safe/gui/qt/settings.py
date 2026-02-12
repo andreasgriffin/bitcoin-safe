@@ -28,13 +28,16 @@
 
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt
+from typing import cast
+
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import QTabWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.about_tab import AboutTab, LicenseDialog
+from bitcoin_safe.gui.qt.about_tab import AboutTab, LicenseDialog, UpdateStatus
 from bitcoin_safe.gui.qt.interface_settings_ui import InterfaceSettingsUi
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
@@ -43,6 +46,8 @@ from bitcoin_safe.signals import Signals
 
 
 class Settings(QTabWidget):
+    signal_update_action_requested = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self,
         config: UserConfig,
@@ -60,8 +65,12 @@ class Settings(QTabWidget):
 
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
 
-        self.about_tab = AboutTab(license_dialog=self._license_dialog, parent=self)
+        self.about_tab = AboutTab(
+            license_dialog=self._license_dialog,
+            parent=self,
+        )
         self.addTab(self.about_tab, "")
+        self.about_tab.signal_update_action_requested.connect(self._handle_update_clicked)
 
         # lannguage ui
         self.langauge_ui = InterfaceSettingsUi(config=config, fx=fx, language_chooser=language_chooser)
@@ -87,6 +96,10 @@ class Settings(QTabWidget):
 
         # signals
         # self.category_wallet_combobox .currentIndexChanged.connect(self.on_category_wallet_combobox)
+
+    def _handle_update_clicked(self) -> None:
+        self.signal_update_action_requested.emit()
+        self.close()
 
     # def showEvent(self, a0: Optional[QShowEvent]) -> None:
     #     self.fill_category_box()
@@ -141,6 +154,10 @@ class Settings(QTabWidget):
         self.setCurrentWidget(self.about_tab)
         self.show()
         self.raise_()
+
+    def set_update_status(self, status: UpdateStatus) -> None:
+        """Set update status on the About tab."""
+        self.about_tab.set_update_status(status)
 
     def _apply_minimum_size_hint(self) -> None:
         """Use Qt's calculated minimum size to prevent over-shrinking."""
