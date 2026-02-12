@@ -628,7 +628,9 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
         )
 
 
-def caught_exception_message(e: Exception, title=None, exc_info=None) -> Message:
+def caught_exception_message(
+    e: Exception, title: str | None = None, exc_info=None, parent: QWidget | None = None
+) -> Message:
     """Caught exception message."""
     exception_msg = str(e).replace("\\", "")
     exception_text = f"{e.__class__}: {exception_msg}"
@@ -637,7 +639,7 @@ def caught_exception_message(e: Exception, title=None, exc_info=None) -> Message
 
     text = title + "\n\n" if title else ""
     text += exception_text
-    return Message(text, type=MessageType.Error)
+    return Message(text, type=MessageType.Error, parent=parent)
 
 
 def custom_message_box(

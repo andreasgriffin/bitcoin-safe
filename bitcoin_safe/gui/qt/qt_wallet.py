@@ -202,7 +202,7 @@ class QTProtoWallet(QtWalletBase):
             self.wallet_descriptor_ui.set_protowallet_from_ui()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), type=MessageType.Error)
+            Message(str(e), type=MessageType.Error, parent=self)
             return
 
         self.signal_create_wallet.emit(self.protowallet.id)
@@ -721,9 +721,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # do backup
         filename = self.save_backup()
         if filename:
-            Message(self.tr("Backup saved to {filename}").format(filename=filename))
+            Message(self.tr("Backup saved to {filename}").format(filename=filename), parent=self)
         else:
-            Message(self.tr("Backup failed. Aborting Changes."))
+            Message(self.tr("Backup failed. Aborting Changes."), parent=self)
             return
 
         # i have to close it first, to ensure the wallet is shut down completely
@@ -760,13 +760,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         differences = current_protowallet.get_differences(updated_protowallet)
         worst = differences.worst()
         if not worst:
-            Message(self.tr("No changes to apply."))
+            Message(self.tr("No changes to apply."), parent=self)
             return
 
         if worst.type == WalletDifferenceType.NoRescan:
             self._apply_no_impact_setting_changes(updated_protowallet)
             self.save()
-            Message(self.tr("Changes applied."))
+            Message(self.tr("Changes applied."), parent=self)
             return
         elif worst.type == WalletDifferenceType.NeedsRescan:
             pass
@@ -847,7 +847,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             Message(
                 self.tr("Cannot move the wallet file, because {file_path} exists").format(
                     file_path=new_file_path
-                )
+                ),
+                parent=self,
             )
             return None
 
@@ -943,7 +944,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             if password is None:
                 return None
             if password != self.password:
-                Message(self.tr("Password incorrect"), type=MessageType.Warning)
+                Message(self.tr("Password incorrect"), type=MessageType.Warning, parent=self)
                 return None
 
         new_password = PasswordCreation(
@@ -954,7 +955,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         self.password = new_password
         self.save()
-        Message(self.tr("Wallet saved"))
+        Message(self.tr("Wallet saved"), parent=self)
         return self.password
 
     def cancel_setting_changes(self) -> None:
@@ -989,6 +990,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Message(
             message_content,
             no_show=True,
+            parent=self,
         ).emit_with(self.signals.notification)
         if question_dialog(
             message_content + "\n" + self.tr("Do you want to save a copy of these transactions?"),
@@ -1026,6 +1028,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     txs=self.format_txs_for_notification(appended_txs), wallet=self.wallet.id
                 ),
                 no_show=True,
+                parent=self,
             ).emit_with(self.signals.notification)
         elif len(appended_txs) > 1:
             Message(
@@ -1035,6 +1038,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     wallet=self.wallet.id,
                 ),
                 no_show=True,
+                parent=self,
             ).emit_with(self.signals.notification)
 
         self.notified_tx_ids = self.notified_tx_ids.union([tx.txid for tx in appended_txs])
@@ -1142,12 +1146,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 self.wallet_signals.finished_psbt_creation.emit()
                 return
             if isinstance(builder_infos, Exception):
-                caught_exception_message(builder_infos)
+                caught_exception_message(builder_infos, parent=self)
                 self.wallet_signals.finished_psbt_creation.emit()
                 return
             if not isinstance(builder_infos, TxBuilderInfos):
                 self.wallet_signals.finished_psbt_creation.emit()  # type: ignore
-                Message("Could not create PSBT", type=MessageType.Error)
+                Message("Could not create PSBT", type=MessageType.Error, parent=self)
                 return
 
             try:
@@ -1168,7 +1172,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 self.signals.open_tx_like.emit(builder_infos)
                 self.uitx_creator.clear_ui()
             except Exception as e:
-                caught_exception_message(e)
+                caught_exception_message(e, parent=self)
             finally:
                 self.wallet_signals.finished_psbt_creation.emit()
 
@@ -1506,7 +1510,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.tr("Sync failed for wallet '{wallet}'.").format(wallet=self.wallet.id),
             str(exc_value),
         ]
-        Message("\n\n".join(parts), type=MessageType.Error, no_show=True).emit_with(self.signals.notification)
+        Message(
+            "\n\n".join(parts),
+            type=MessageType.Error,
+            no_show=True,
+            parent=self,
+        ).emit_with(self.signals.notification)
 
     def _sync_on_error(
         self, packed_error_info: tuple[type[BaseException], BaseException, TracebackType | None] | None
@@ -1761,6 +1770,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Message(
             self.tr("Successfully updated {number} Labels").format(number=len(changed_data)),
             type=MessageType.Info,
+            parent=self,
         )
 
     def import_labels(self) -> None:
@@ -1791,6 +1801,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Message(
             self.tr("Successfully updated {number} Labels").format(number=len(changed_data)),
             type=MessageType.Info,
+            parent=self,
         )
 
     def import_electrum_wallet_labels(self) -> None:
@@ -1813,6 +1824,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Message(
             self.tr("Successfully updated {number} Labels").format(number=len(changed_data)),
             type=MessageType.Info,
+            parent=self,
         )
 
     def on_hist_list_selection_changed(self):

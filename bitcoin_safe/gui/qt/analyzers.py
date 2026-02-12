@@ -36,6 +36,7 @@ from bitcoin_qr_tools.data import ConverterXpub
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
 from bitcoin_usb.address_types import SimplePubKeyProvider
 from PyQt6.QtCore import QObject
+from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerMessage,
@@ -133,9 +134,12 @@ class XpubAnalyzer(BaseAnalyzer, QObject):
     def normalize(self, input: str, pos: int = 0) -> tuple[str, int]:
         """Normalize."""
         if ConverterXpub.is_slip132(input):
+            parent = self.parent()
+            parent_widget = parent if isinstance(parent, QWidget) else None
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
                 title=self.tr("Converting format"),
+                parent=parent_widget,
             )
             try:
                 input = ConverterXpub.convert_slip132_to_bip32(input)

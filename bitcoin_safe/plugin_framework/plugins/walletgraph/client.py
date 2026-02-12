@@ -258,6 +258,7 @@ class WalletGraphClient(PluginClient):
             Message(
                 self.tr("Could not export the wallet graph: {error}").format(error=str(exc)),
                 type=MessageType.Error,
+                parent=self,
             )
             logger.exception("Failed to export wallet graph")
             return
@@ -265,6 +266,7 @@ class WalletGraphClient(PluginClient):
         Message(
             self.tr("Wallet graph exported to {path}").format(path=file_path),
             type=MessageType.Info,
+            parent=self,
         )
 
     def _build_graphml(self, details: Iterable[FullTxDetail]) -> bytes:

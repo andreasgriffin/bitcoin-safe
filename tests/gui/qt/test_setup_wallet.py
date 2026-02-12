@@ -458,7 +458,9 @@ def test_wizard(
                     )
                     qtbot.wait_until(lambda: bool(mock_message.call_count), timeout=10_000)
                     mock_message.assert_called_with(
-                        main_window.tr("All Send tests done successfully."), type=MessageType.Info
+                        main_window.tr("All Send tests done successfully."),
+                        type=MessageType.Info,
+                        parent=qt_wallet.wizard,
                     )
 
                 # hist list

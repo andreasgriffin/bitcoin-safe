@@ -695,12 +695,14 @@ class Recipients(QWidget):
 
         if self._get_csv_header() != header:
             Message(
-                self.tr("Please use the CSV template and include the header row."), type=MessageType.Error
+                self.tr("Please use the CSV template and include the header row."),
+                type=MessageType.Error,
+                parent=self,
             )
             return
 
         if len(data) <= 1:
-            Message(self.tr("No rows recognized"), type=MessageType.Error)
+            Message(self.tr("No rows recognized"), type=MessageType.Error, parent=self)
             return
 
         rows = data[1:]
@@ -711,11 +713,14 @@ class Recipients(QWidget):
                 Message(
                     self.tr("{address} is not a valid address!").format(address=row[0]),
                     type=MessageType.Error,
+                    parent=self,
                 )
                 return
             if not is_int(row[1]):
                 Message(
-                    self.tr("{amount} is not a valid integer!").format(amount=row[1]), type=MessageType.Error
+                    self.tr("{amount} is not a valid integer!").format(amount=row[1]),
+                    type=MessageType.Error,
+                    parent=self,
                 )
                 return
 

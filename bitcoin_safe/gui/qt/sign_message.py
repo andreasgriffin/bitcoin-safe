@@ -168,12 +168,15 @@ class SignMessageBase(QWidget):
         msg = self.get_message()
         bip32_path = self.get_bip32_path()
         if len(msg) < 2:
-            Message(self.tr("Message too short."))
+            Message(self.tr("Message too short."), parent=self)
             self.usb_gui.signal_end_hwi_blocker.emit()
             return
 
         if not bip32_path:
-            Message(self.tr("Could not determine the derivation path for the provided address."))
+            Message(
+                self.tr("Could not determine the derivation path for the provided address."),
+                parent=self,
+            )
             self.usb_gui.signal_end_hwi_blocker.emit()
             return
 

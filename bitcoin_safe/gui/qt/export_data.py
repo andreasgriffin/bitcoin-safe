@@ -247,11 +247,11 @@ class FileToolButton(QToolButton):
     def export_to_pdf(self, filepath: Path | None = None) -> str | None:
         """Export the serialized data into a PDF with BBQr codes."""
         if self.data.data_type not in [DataType.Tx, DataType.PSBT]:
-            Message(self.tr("PDF export is only available for transactions or PSBTs."))
+            Message(self.tr("PDF export is only available for transactions or PSBTs."), parent=self)
             return None
 
         if not self.serialized:
-            Message(self.tr("Not available"))
+            Message(self.tr("Not available"), parent=self)
             return None
 
         default_filename = f"{short_tx_id(self.txid)}.pdf" if self.txid else None
@@ -393,7 +393,7 @@ class FileToolButton(QToolButton):
         if s:
             do_copy(s)
         else:
-            Message(self.tr("Not available"))
+            Message(self.tr("Not available"), parent=self)
 
     def on_action_copy_data(self):
         """On action copy data."""
@@ -439,7 +439,7 @@ class SyncChatToolButton(QToolButton):
     ) -> None:
         """Share with device."""
         if not sync_client.enabled:
-            Message(self.tr("Please enable the sync tab first"))
+            Message(self.tr("Please enable the sync tab first"), parent=self)
             return
         if receiver_public_key_bech32:
             self.on_nostr_share_with_member(
@@ -503,7 +503,8 @@ class SyncChatToolButton(QToolButton):
         """On nostr share with member."""
         if not sync_client.enabled:
             Message(
-                self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
+                self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id),
+                parent=self,
             )
             return
         sync_client.nostr_sync.group_chat.dm_connection.send(
@@ -529,7 +530,8 @@ class SyncChatToolButton(QToolButton):
         """On nostr share in group."""
         if not sync_client.enabled:
             Message(
-                self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id)
+                self.tr("Please enable syncing in the wallet {wallet_id} first").format(wallet_id=wallet_id),
+                parent=self,
             )
             return
 
@@ -877,7 +879,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
             """On error."""
             if not packed_error_info:
                 return
-            Message(str(packed_error_info), type=MessageType.Error)
+            Message(str(packed_error_info), type=MessageType.Error, parent=self)
 
         def on_success(result: list[str | None] | None) -> None:
             """On success."""

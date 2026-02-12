@@ -642,7 +642,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             and not self.category_list.get_selected_keys()
         ):
             Message(
-                self.tr("Please select an input category on the left, that fits the transaction recipients.")
+                self.tr("Please select an input category on the left, that fits the transaction recipients."),
+                parent=self,
             )
             self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
             return
@@ -657,6 +658,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     "Bitcoin-Safe pick the best coins for your transaction."
                 ),
                 type=MessageType.Warning,
+                parent=self,
             )
             self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
             return
@@ -684,6 +686,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             Message(
                 LinkingWarningBar.get_warning_text(category_dict),
                 type=MessageType.Warning,
+                parent=self,
             )
             if not question_dialog(
                 self.tr("Do you want to continue, even though both coin categories become linkable?"),
@@ -970,7 +973,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self.tr("The inputs {inputs} conflict with these confirmed txids {txids}.").format(
                     inputs=[utxo.outpoint for utxo in conflicting_confirmed],
                     txids=[utxo.is_spent_by_txid for utxo in conflicting_confirmed],
-                )
+                ),
+                parent=self,
             )
         conflicted_unconfirmed = set(conflicting_python_txos) - conflicting_confirmed
         if conflicted_unconfirmed:
@@ -991,7 +995,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     self.tr(
                         "The unconfirmed dependent transactions {txids} will be "
                         "removed by this new transaction you are creating."
-                    ).format(txids=dependents_to_be_replaced.keys())
+                    ).format(txids=dependents_to_be_replaced.keys()),
+                    parent=self,
                 )
 
             # for each conflicted_unconfirmed, get all roots and dependents
