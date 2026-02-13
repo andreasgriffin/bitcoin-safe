@@ -35,6 +35,7 @@ import sys
 import traceback
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
+from datetime import datetime
 from functools import partial
 from typing import (
     Any,
@@ -474,6 +475,7 @@ class Message:
         icon: QIcon | QPixmap | QMessageBox.Icon | None = None,
         msecs=None,
         type: MessageType = MessageType.Info,
+        created_at: datetime | None = None,
         no_show=False,
         **kwargs,
     ) -> None:
@@ -484,10 +486,27 @@ class Message:
         self.icon = icon
         self.msecs = msecs
         self.type = type
+        self.created_at = created_at or datetime.now()
         self.kwargs = kwargs
 
         if not no_show:
             self.show()
+
+    def clone(self) -> Message:
+        return Message(
+            msg=self.msg,
+            parent=self.parent,
+            title=self.title,
+            icon=self.icon,
+            msecs=self.msecs,
+            type=self.type,
+            created_at=self.created_at,
+            no_show=True,
+            **self.kwargs,
+        )
+
+    def strip_parent(self) -> None:
+        self.parent = None
 
     @staticmethod
     def system_tray_icon(
