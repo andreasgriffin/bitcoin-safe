@@ -1549,7 +1549,7 @@ Location of signing device: .....</source>
     <name>KeyStoreUI</name>
     <message>
         <source>Please enter a valid key origin.</source>
-        <translation>请输入有效的密钥源。</translation>
+        <translation>请输入有效的派生路径。</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
@@ -1648,7 +1648,7 @@ Do you want to proceed anyway?</source>
     <name>KeyStoreUIs</name>
     <message>
         <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-        <translation>您导入的密钥源 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
+        <translation>您导入的派生路径 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
     </message>
 </context>
 <context>
@@ -5497,7 +5497,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
+        <translation>1. 将“钱包恢复表”（{number} 个单词）附加在这张纸上，或将 12 或 24 个单词抄写在这张纸上。&lt;br/&gt;
                 2. 沿着下方的折线折叠这张纸&lt;br/&gt;
                 3. 将每张纸分别存放在不同的安全地点，确保仅您本人能够访问&lt;br/&gt;
                 4. 您可以将硬件签名器：a) 与对应的纸质助记词备份一同存放，或 b) 各自存放在另一个安全地点（如果有的话）   
@@ -5510,9 +5510,9 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
+        <translation>1. 将“钱包恢复表”（{number} 个单词）附加在这张纸上，或将 12 或 24 个单词抄写在这张纸上。&lt;br/&gt;
                 2. 沿着下方的折线折叠这张纸&lt;br/&gt;
-                3. 将这张纸存放在安全的地点，确保仅您本人能够访问&lt;br/&gt;
+                3. 将这张纸存放在安全的地方，确保仅您本人能够访问&lt;br/&gt;
                 4. 您可以将硬件签名器：a) 与该纸质助记词备份一同存放，或 b) 存放在其他安全的地方（如果有的话）   
                 </translation>
     </message>
@@ -5659,7 +5659,7 @@ Click here to learn more.</source>
     <name>pdf</name>
     <message>
         <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-        <translation>{keystore_label}：指纹：{keystore_fingerprint}，密钥源：{keystore_key_origin}，{keystore_xpub}</translation>
+        <translation>{keystore_label}：指纹：{keystore_fingerprint}，派生路径：{keystore_key_origin}，{keystore_xpub}</translation>
     </message>
     <name>pdf</name>
     <message>
