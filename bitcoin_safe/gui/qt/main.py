@@ -60,7 +60,14 @@ from PyQt6.QtCore import (
     QTimer,
     pyqtSignal,
 )
-from PyQt6.QtGui import QAction, QCloseEvent, QKeySequence, QPalette, QShortcut, QShowEvent
+from PyQt6.QtGui import (
+    QAction,
+    QCloseEvent,
+    QKeySequence,
+    QPalette,
+    QShortcut,
+    QShowEvent,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -70,7 +77,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QSizePolicy,
     QStyle,
-    QSystemTrayIcon,
     QVBoxLayout,
     QWidget,
 )
@@ -135,6 +141,7 @@ from .loading_wallet_tab import LoadingWalletTab
 from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
 from .sign_message import SignAndVerifyMessage
+from .tray_controller import TrayController
 from .util import (
     ELECTRUM_SERVER_DELAY_BLOCK,
     ELECTRUM_SERVER_DELAY_MEMPOOL_TX,
@@ -272,7 +279,6 @@ class MainWindow(QMainWindow):
         self.signal_remove_attached_widget.connect(self.on_signal_remove_attached_widget)
         self.signals.signal_close_tabs_with_txids.connect(self.on_signal_close_tabs_with_txids)
 
-        self._init_tray()
         # Populate recent wallets menu
         self.signal_recently_open_wallet_changed.emit(
             list(self.config.recently_open_wallets[self.config.network])
@@ -480,6 +486,7 @@ class MainWindow(QMainWindow):
         if self.config.is_maximized:
             self.showMaximized()
 
+        self._init_tray()
         self.init_menubar()
         self.set_title()
         logger.debug("done setupUi")
@@ -917,7 +924,7 @@ class MainWindow(QMainWindow):
 
         self.menu_action_minimize_to_tray = self.menu_view.add_action(
             "",
-            self.minimize_to_tray_from_menu,
+            self.tray_controller.minimize_to_tray_from_menu,
         )
         self.menu_action_minimize_to_tray.setShortcut(QKeySequence("CTRL+H"))
         self.menu_action_toggle_fullscreen = self.menu_view.add_action(
@@ -1003,7 +1010,7 @@ class MainWindow(QMainWindow):
 
         # other shortcuts (not in menu)
 
-        self.key_sequence_reveral_wallet_in_file_explorer = "Ctrl+Alt+R"
+        self.key_sequence_reveral_wallet_in_file_explorer: str = "Ctrl+Alt+R"
         self.shortcut_reveral_wallet_in_file_explorer = QShortcut(
             self.key_sequence_reveral_wallet_in_file_explorer, self
         )
@@ -1343,105 +1350,9 @@ class MainWindow(QMainWindow):
 
     def _init_tray(self) -> None:
         """Init tray."""
-        self._tray_visible_windows: list[QWidget] = []
-        self._tray_prev_active: QWidget | None = None
-
-        self.tray = QSystemTrayIcon(svg_tools.get_QIcon("logo.svg"), self)
-        self.tray.setToolTip("Bitcoin Safe")
-
-        menu = Menu(self)
-
-        menu.add_action(text=self.tr("Show/Hide"), slot=self.tray_toggle_window_visibility)
-        menu.add_action(text=self.tr("&Exit"), slot=self.on_tray_close)
-
-        self.tray.setContextMenu(menu)
-        self.tray.activated.connect(self.onTrayIconActivated)
-
-        self.signals.notification.connect(self.show_message_as_tray_notification)
-        self.tray.show()
-
-    def tray_toggle_window_visibility(self):
-        """Toggle between hidden-to-tray and visible window."""
-        # If no tray, just toggle show/minimize
-        if not QSystemTrayIcon.isSystemTrayAvailable():
-            if not self.isVisible() or (self.windowState() & Qt.WindowState.WindowMinimized):
-                self.show()
-                self.setWindowState(Qt.WindowState.WindowActive)
-                self.activateWindow()
-            else:
-                self.showMinimized()
-            return
-
-        if self.isHidden() or (self.windowState() & Qt.WindowState.WindowMinimized):
-            self.restore_from_tray()
-        else:
-            self.minimize_to_tray()
-
-    def minimize_to_tray(self):
-        # Remember which windows were actually visible, and the active one
-        """Minimize to tray."""
-        self._tray_visible_windows = [w for w in QApplication.topLevelWidgets() if w.isVisible()]
-        self._tray_prev_active = QApplication.activeWindow()
-
-        # Hide them all (or showMinimized() if you prefer)
-        for w in self._tray_visible_windows:
-            w.hide()
-
-    def restore_from_tray(self):
-        # Bring back only what we hid before
-        """Restore from tray."""
-        if not self._tray_visible_windows:
-            # Fallback: at least restore self
-            self.show()
-            self.setWindowState(
-                (self.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
-            )
-            self.activateWindow()
-            self.raise_()
-            return
-
-        # Show all previously visible top-level windows
-        for w in self._tray_visible_windows:
-            # Ensure the window is shown and not flagged as minimized
-            w.show()
-            w.setWindowState(
-                (w.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
-            )
-
-        # Prefer to activate the window that had focus before minimizing
-        target = self._tray_prev_active or self._tray_visible_windows[0]
-        if target:
-            target.activateWindow()
-            target.raise_()
-
-        # Clear state for next time
-        self._tray_visible_windows = []
-        self._tray_prev_active = None
-
-    def minimize_to_tray_from_menu(self) -> None:
-        """Minimize to tray via the Tools menu, with a fallback if tray is unavailable."""
-        if QSystemTrayIcon.isSystemTrayAvailable():
-            self.minimize_to_tray()
-            return
-
-        self.showMinimized()
-
-    def show_message_as_tray_notification(self, message: Message) -> None:
-        """Show message as tray notification."""
-        icon, _ = message.get_icon_and_title()
-        title = message.title or "Bitcoin Safe"
-        if message.msecs:
-            self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon), message.msecs)
-            return
-        self.tray.showMessage(title, message.msg, Message.system_tray_icon(icon))
-
-    def onTrayIconActivated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
-        """OnTrayIconActivated."""
-        if reason in (
-            QSystemTrayIcon.ActivationReason.Trigger,
-            QSystemTrayIcon.ActivationReason.DoubleClick,
-        ):
-            self.restore_from_tray()
+        self.tray_controller = TrayController(parent=self)
+        self.tray_controller.signal_on_close.connect(self.on_tray_close)
+        self.signals.notification.connect(self.tray_controller.show_message)
 
     def _show_settings_window(self):
         self.settings.set_update_status(self._get_update_status())
@@ -2658,7 +2569,7 @@ class MainWindow(QMainWindow):
         if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
             # if i close it via the tray (hidden), then it shouldnt ask this question
             if self.ask_to_minimize_only_because_cbf_sync():
-                self.minimize_to_tray()
+                self.tray_controller.minimize_to_tray()
                 return
         self.close()
 
@@ -2700,7 +2611,7 @@ class MainWindow(QMainWindow):
             self.config.save()
 
         self._disconnect_all_signals_safely()
-        self.tray.hide()
+        self.tray_controller.hide()
 
         # 3) On close, save both geometry and (optionally) window state
         self.qsettings.setValue("window/geometry", self.saveGeometry())
@@ -2719,7 +2630,7 @@ class MainWindow(QMainWindow):
             # if i close it via the tray (hidden), then it shouldnt ask this question
             if self.ask_to_minimize_only_because_cbf_sync():
                 a0.ignore()
-                self.minimize_to_tray()
+                self.tray_controller.minimize_to_tray()
                 return
 
         self._before_close()
@@ -2754,7 +2665,7 @@ class MainWindow(QMainWindow):
 
         if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
             if self.ask_to_minimize_only_because_cbf_sync():
-                self.minimize_to_tray()
+                self.tray_controller.minimize_to_tray()
                 return
 
         self._before_close()
