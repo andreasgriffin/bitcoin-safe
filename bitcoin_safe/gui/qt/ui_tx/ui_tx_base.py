@@ -31,10 +31,14 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from collections.abc import Callable
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTracker
+from PyQt6.QtCore import (
+    QDateTime,
+)
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QVBoxLayout
 
@@ -52,6 +56,7 @@ from bitcoin_safe.gui.qt.util import adjust_bg_color_for_darkmode
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import OutPoint, Recipient, TransactionDetails
+from bitcoin_safe.tx import LOCKTIME_THRESHOLD, MAX_NLOCKTIME, estimate_locktime_datetime
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -61,6 +66,8 @@ from ..my_treeview import SearchableTab
 from .util import get_cpfp_label
 
 logger = logging.getLogger(__name__)
+
+NLOCKTIME_FUTURE_YEARS = 10
 
 
 class RBFBar(NotificationBar):
@@ -138,6 +145,53 @@ class CPFPBar(NotificationBar):
             self.icon_label.setText(tooltip)
 
 
+class NLocktimeFutureWarningBar(NotificationBar):
+    def __init__(self, network: bdk.Network, text: str = "", parent=None) -> None:
+        """Initialize instance."""
+        super().__init__(text=text, optional_button_text="", has_close_button=False, parent=parent)
+        self.network = network
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
+        self.setVisible(False)
+
+    @staticmethod
+    def _normalize_locktime_datetime(locktime_datetime: datetime) -> datetime:
+        max_datetime = datetime.fromtimestamp(MAX_NLOCKTIME, tz=timezone.utc)
+        return locktime_datetime if locktime_datetime <= max_datetime else max_datetime
+
+    def _warn_far_future(self, locktime_datetime: datetime) -> None:
+        now = datetime.now(timezone.utc)
+        future_limit = now + timedelta(days=365 * NLOCKTIME_FUTURE_YEARS)
+        if locktime_datetime <= future_limit:
+            self.setVisible(False)
+            return
+        safe_datetime = self._normalize_locktime_datetime(locktime_datetime)
+        local_value = QDateTime.fromSecsSinceEpoch(int(safe_datetime.timestamp())).toString(
+            "yyyy-MM-dd HH:mm"
+        )
+        title = self.tr("nLocktime is far in the future.")
+        description = self.tr("This transaction will not be valid until {date}.").format(date=local_value)
+        self.icon_label.setText(f"{title} {description}")
+        self.setVisible(True)
+
+    def update_nlocktime_warning(self, nlocktime: int | None, current_height: int | None) -> None:
+        """Update nlocktime warning."""
+        if nlocktime is None:
+            self.setVisible(False)
+            return
+        if nlocktime >= LOCKTIME_THRESHOLD:
+            locktime_datetime = estimate_locktime_datetime(nlocktime, current_height)
+            if locktime_datetime is None:
+                self.setVisible(False)
+                return
+            self._warn_far_future(locktime_datetime)
+            return
+        estimated_datetime = estimate_locktime_datetime(nlocktime, current_height)
+        if estimated_datetime is None:
+            self.setVisible(False)
+            return
+        self._warn_far_future(estimated_datetime)
+
+
 class UITx_Base(SearchableTab):
     def __init__(
         self,
@@ -171,6 +225,10 @@ class UITx_Base(SearchableTab):
         self.high_fee_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_warning_label)
 
+        self.nlocktime_warning_label = NLocktimeFutureWarningBar(network=self.config.network)
+        self.nlocktime_warning_label.setHidden(True)
+        self._layout.addWidget(self.nlocktime_warning_label)
+
         # category_linking_warning_bar
         self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
         self._layout.addWidget(self.category_linking_warning_bar)
@@ -180,6 +238,10 @@ class UITx_Base(SearchableTab):
 
         self.cpfp_bar = CPFPBar(network=self.config.network, text="")
         self._layout.addWidget(self.cpfp_bar)
+
+    def update_nlocktime_warning(self, nlocktime: int | None, current_height: int) -> None:
+        """Update nlocktime warning."""
+        self.nlocktime_warning_label.update_nlocktime_warning(nlocktime, current_height)
 
     def _get_robust_height(self) -> int:
         "Tries to geth the height from any wallet.  If none are open then tries mempool"
@@ -315,9 +377,14 @@ class UITx_Base(SearchableTab):
         outpoints: list[OutPoint],
         recipient_addresses: list[str],
         tx_status: TxStatus,
+        nlocktime: int | None = None,
     ):
         """Set warning bars."""
         self.set_category_warning_bar(outpoints=outpoints, recipient_addresses=recipient_addresses)
+        self.update_nlocktime_warning(
+            nlocktime,
+            current_height=self._get_robust_height(),
+        )
 
     def _update_high_fee_warning_label(
         self, recipients: Recipients, fee_info: FeeInfo | None, tx_status: TxStatus

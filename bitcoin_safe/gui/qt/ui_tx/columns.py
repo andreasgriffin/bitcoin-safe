@@ -30,20 +30,22 @@ from __future__ import annotations
 
 import logging
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QSignalBlocker, Qt
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QCheckBox,
     QGroupBox,
     QPushButton,
     QSizePolicy,
     QSplitter,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
-from bitcoin_safe.gui.qt.nLockTimePicker import nLocktimePicker
+from bitcoin_safe.gui.qt.nlocktime_group_box import NLocktimeGroupBox
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.ui_tx.fee_group import FeeGroup
 from bitcoin_safe.gui.qt.ui_tx.header_widget import HeaderWidget
@@ -55,6 +57,7 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
 )
 from bitcoin_safe.gui.qt.utxo_list import UtxoListWithToolbar
+from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
@@ -174,12 +177,6 @@ class ColumnInputs(BaseColumn):
         # if hasattr(bdk.TxBuilder(), "add_foreign_utxo"):
         #     self.button_add_utxo.clicked.connect(self.click_add_utxo)
         #     verticalLayout_inputs.addWidget(self.button_add_utxo)
-
-        # nLocktime
-        self.nlocktime_picker = nLocktimePicker()
-        # TODO actiavte this as soon as https://docs.rs/bdk/latest/bdk/wallet/tx_builder/struct.TxBuilder.html#method.nlocktime is exposed in ffi   # noqa: E501
-        self.nlocktime_picker.setHidden(True)
-        groupbox_layout.addWidget(self.nlocktime_picker)
 
     def updateUi(self) -> None:
         """UpdateUi."""
@@ -315,6 +312,53 @@ class ColumnFee(BaseColumn):
         )
         self.insert_middle_widget(self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter)
 
+        self.nlocktime_group = NLocktimeGroupBox(self)
+        self.nlocktime_group.set_allow_edit(allow_edit)
+        self.nlocktime_group.setHidden(True)
+        self._layout.insertWidget(2, self.nlocktime_group)
+
+        self.toolbutton_advanced = QToolButton()
+        self.toolbutton_advanced.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+        self.toolbutton_advanced.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
+
+        self.menu_advanced = Menu(self)
+        self.action_set_nlocktime = QAction(self)
+        self.action_set_nlocktime.setCheckable(True)
+        self.action_set_nlocktime.toggled.connect(self._on_nlocktime_toggled)
+        self.menu_advanced.addAction(self.action_set_nlocktime)
+        self.toolbutton_advanced.setMenu(self.menu_advanced)
+        self.toolbutton_advanced.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.header_widget.h_laylout.addWidget(self.toolbutton_advanced)
+
+    def _on_nlocktime_toggled(self, checked: bool) -> None:
+        """On nlocktime toggled."""
+        self.nlocktime_group.setVisible(checked)
+
+    def set_nlocktime(self, nlocktime: int | None, current_height: int) -> None:
+        """Set nlocktime."""
+        self.set_nlocktime_visibility(
+            visible=nlocktime is not None,
+            current_height=current_height,
+            reset_on_hide=False,
+        )
+        self.nlocktime_group.set_locktime(nlocktime, current_height=current_height)
+
+    def set_nlocktime_visibility(
+        self, visible: bool, current_height: int, reset_on_hide: bool = True
+    ) -> None:
+        """Set nlocktime visibility without triggering menu handlers."""
+        with QSignalBlocker(self.action_set_nlocktime):
+            self.action_set_nlocktime.setChecked(visible)
+        if not visible and reset_on_hide:
+            self.nlocktime_group.set_locktime(None, current_height=current_height)
+        self.nlocktime_group.setVisible(visible)
+
+    def nlocktime(self) -> int | None:
+        """Get nlocktime."""
+        if not self.action_set_nlocktime.isChecked():
+            return None
+        return self.nlocktime_group.locktime()
+
     def updateUi(self) -> None:
         """UpdateUi."""
         title = self.tr("Mempool Fees")
@@ -332,4 +376,6 @@ class ColumnFee(BaseColumn):
                 title = self.tr("Confirmed")
         self.header_widget.set_icon(icon_text)
         self.header_widget.label_title.setText(title)
+        self.action_set_nlocktime.setText(self.tr("Show nLocktime"))
+        self.nlocktime_group.updateUi()
         self.fee_group.updateUi()

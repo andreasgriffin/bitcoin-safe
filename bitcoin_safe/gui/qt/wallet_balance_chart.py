@@ -66,8 +66,9 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
+from bitcoin_safe.tx import estimate_locktime_datetime
 from bitcoin_safe.util import monotone_increasing_timestamps
-from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet import Wallet, is_local
 
 logger = logging.getLogger(__name__)
 
@@ -514,6 +515,7 @@ class WalletBalanceChart(BalanceChart):
             return
 
         fallback_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
+        now_timestamp = datetime.datetime.now().timestamp()
 
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
@@ -521,11 +523,17 @@ class WalletBalanceChart(BalanceChart):
         balance = 0
         balance_data: list[ChartPoint] = []
         self.transactions = self.wallet.sorted_delta_list_transactions()
+        current_height = self.wallet.get_height()
         time_values = monotone_increasing_timestamps(
             [
                 (
                     transaction_details.get_height(unconfirmed_height=self.wallet.get_height()),
-                    transaction_details.get_datetime(fallback_timestamp=fallback_time.timestamp()),
+                    self._get_transaction_datetime(
+                        transaction_details=transaction_details,
+                        fallback_timestamp=fallback_time.timestamp(),
+                        current_height=current_height,
+                        now_timestamp=now_timestamp,
+                    ),
                 )
                 for transaction_details in self.transactions
             ]
@@ -538,6 +546,25 @@ class WalletBalanceChart(BalanceChart):
 
         # Update BalanceChart
         self.update_chart(balance_data)
+
+    @staticmethod
+    def _get_transaction_datetime(
+        transaction_details: TransactionDetails,
+        fallback_timestamp: float,
+        current_height: int,
+        now_timestamp: float,
+    ) -> datetime.datetime:
+        """Return the chart datetime for a transaction."""
+        base_datetime = transaction_details.get_datetime(fallback_timestamp=fallback_timestamp)
+        if not is_local(transaction_details.chain_position):
+            return base_datetime
+        locktime = transaction_details.transaction.lock_time()
+        if locktime <= 0:
+            return base_datetime
+        estimated = estimate_locktime_datetime(locktime, current_height)
+        if estimated and estimated.timestamp() > now_timestamp:
+            return estimated.replace(tzinfo=None)
+        return base_datetime
 
 
 class TransactionSimulator(QMainWindow):

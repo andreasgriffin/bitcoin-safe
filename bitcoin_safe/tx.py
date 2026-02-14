@@ -30,7 +30,8 @@ from __future__ import annotations
 
 import logging
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from datetime import datetime, timedelta, timezone
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
@@ -50,12 +51,62 @@ from .pythonbdk_types import (
 
 logger = logging.getLogger(__name__)
 
+LOCKTIME_THRESHOLD = 500_000_000
+MAX_NLOCKTIME = 0xFFFFFFFF
+MEDIAN_TIME_PAST_LAG_MINUTES = 60
+
 
 def short_tx_id(txid: str | bdk.Txid) -> str:
     """Short tx id."""
     if isinstance(txid, bdk.Txid):
         txid = str(txid)
     return f"{txid[:4]}...{txid[-4:]}"
+
+
+def estimate_locktime_datetime(
+    nlocktime: int,
+    current_height: int | None,
+    now: datetime | None = None,
+    median_time_past_lag_minutes: int = MEDIAN_TIME_PAST_LAG_MINUTES,
+) -> datetime | None:
+    """Estimate the datetime for a given nlocktime.
+
+    - For timestamp locktimes (>= LOCKTIME_THRESHOLD), returns the UTC datetime.
+    - For block-height locktimes, estimates using 10 minutes per block.
+    """
+    now = now or datetime.now(timezone.utc)
+    if nlocktime >= LOCKTIME_THRESHOLD:
+        return datetime.fromtimestamp(nlocktime, tz=timezone.utc) + timedelta(
+            minutes=median_time_past_lag_minutes
+        )
+    if current_height is None:
+        return None
+    # see: https://en.bitcoin.it/wiki/NLockTime
+    block_delta = nlocktime - current_height
+    if block_delta <= 0:
+        return now
+    max_datetime = datetime.max.replace(tzinfo=timezone.utc)
+    max_minutes = int((max_datetime - now).total_seconds() // 60)
+    estimated_minutes = 10 * block_delta
+    if estimated_minutes >= max_minutes:
+        return max_datetime
+    return now + timedelta(minutes=estimated_minutes)
+
+
+def is_nlocktime_already_valid(
+    nlocktime: int,
+    current_height: int,
+    now: datetime | None = None,
+    median_time_past_lag_minutes: int = MEDIAN_TIME_PAST_LAG_MINUTES,
+) -> bool:
+    """Return whether a locktime is already valid."""
+    estimated_datetime = estimate_locktime_datetime(
+        nlocktime, current_height, now=now, median_time_past_lag_minutes=median_time_past_lag_minutes
+    )
+    if estimated_datetime is None:
+        return False
+    now = now or datetime.now(timezone.utc)
+    return estimated_datetime <= now
 
 
 def calc_minimum_rbf_fee_info(
@@ -126,6 +177,7 @@ class TxUiInfos(BaseSaveableClass):
     recipient_read_only: bool = False
     utxos_read_only: bool = False
     replace_tx: bdk.Transaction | None = None
+    nlocktime: int | None = None
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
@@ -138,6 +190,7 @@ class TxUiInfos(BaseSaveableClass):
         d["utxos_read_only"] = self.utxos_read_only
         d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
         d["utxo_dict"] = {str(k): v for k, v in self.utxo_dict.items()}
+        d["nlocktime"] = self.nlocktime
         return d
 
     @classmethod
@@ -161,6 +214,15 @@ class TxUiInfos(BaseSaveableClass):
     def set_fee_rate(self, fee_rate: float):
         """Set fee rate."""
         self.fee_rate = fee_rate
+
+    def as_locktime(self) -> bdk.LockTime | None:
+        """Convert the stored nlocktime to a BDK LockTime."""
+        if self.nlocktime is None:
+            return None
+        value = max(0, min(self.nlocktime, MAX_NLOCKTIME))
+        if value >= LOCKTIME_THRESHOLD:
+            return cast(bdk.LockTime, bdk.LockTime.SECONDS(value))
+        return cast(bdk.LockTime, bdk.LockTime.BLOCKS(value))
 
     def fill_utxo_dict_from_utxos(self, utxos: list[PythonUtxo]):
         """Fill utxo dict from utxos."""
