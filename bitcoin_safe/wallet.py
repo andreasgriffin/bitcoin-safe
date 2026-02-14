@@ -101,7 +101,7 @@ from .pythonbdk_types import (
 )
 from .signals import UpdateFilter, WalletFunctions
 from .storage import BaseSaveableClass, filtered_for_init
-from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
+from .tx import TxBuilderInfos, TxUiInfos, is_nlocktime_already_valid, short_tx_id
 from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache, short_address
 
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker
@@ -2092,6 +2092,8 @@ class Wallet(BaseSaveableClass, CacheManager):
             tx_builder = bdk.BumpFeeTxBuilder(
                 txid=txinfos.replace_tx.compute_txid(), fee_rate=FeeRate.from_float_sats_vB(txinfos.fee_rate)
             )
+            if locktime := txinfos.as_locktime():
+                tx_builder = tx_builder.nlocktime(locktime)
             # if the fee is too low bdk will throw an exception here
             psbt = tx_builder.finish(self.bdkwallet)
         except bdk.CreateTxError.FeeRateTooLow as e:
@@ -2144,6 +2146,8 @@ class Wallet(BaseSaveableClass, CacheManager):
         tx_builder = tx_builder.add_global_xpubs()
         if txinfos.fee_rate is not None:
             tx_builder = tx_builder.fee_rate(FeeRate.from_float_sats_vB(txinfos.fee_rate))
+        if locktime := txinfos.as_locktime():
+            tx_builder = tx_builder.nlocktime(locktime)
 
         utxos_for_input = self.handle_opportunistic_merge_utxos(txinfos)
         selected_outpoints = [OutPoint.from_bdk(utxo.outpoint) for utxo in utxos_for_input.utxos]
@@ -2818,6 +2822,7 @@ class ToolsTxUiInfo:
         fee_info: FeeInfo | None,
         network: bdk.Network,
         wallets: list[Wallet],
+        current_height: int | None = None,
     ) -> TxUiInfos:
         """Construct UI information from transaction data."""
         outpoints = [OutPoint.from_bdk(inp.previous_output) for inp in tx.input()]
@@ -2835,4 +2840,9 @@ class ToolsTxUiInfo:
             )
         # fee rate
         txinfos.fee_rate = fee_info.fee_rate() if fee_info else None
+        locktime = tx.lock_time()
+        txinfos.nlocktime = locktime if locktime > 0 else None
+        if txinfos.nlocktime is not None and current_height is not None:
+            if is_nlocktime_already_valid(txinfos.nlocktime, current_height):
+                txinfos.nlocktime = None
         return txinfos

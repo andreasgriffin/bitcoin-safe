@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timezone
 from functools import partial
 from time import time
 from typing import Any, cast
@@ -37,6 +38,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QShowEvent
@@ -72,7 +74,7 @@ from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.tx import estimate_locktime_datetime, is_nlocktime_already_valid, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -641,11 +643,20 @@ class UITx_Viewer(UITx_Base):
             parent=self,
         )
 
-    def _infos_for_edit_or_rbf(self, new_fee_rate: float | None = None):
+    def _infos_for_edit_or_rbf(
+        self,
+        new_fee_rate: float | None,
+    ):
         """Infos for edit or rbf."""
         tx = self.extract_tx()
         wallets = get_wallets(self.wallet_functions)
-        txinfos = ToolsTxUiInfo.from_tx(tx, self.fee_info, self.network, wallets)
+        txinfos = ToolsTxUiInfo.from_tx(
+            tx,
+            self.fee_info,
+            self.network,
+            wallets,
+            current_height=self._get_robust_height(),
+        )
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 
@@ -658,7 +669,9 @@ class UITx_Viewer(UITx_Base):
 
     def edit(self, new_fee_rate: float | None = None) -> None:
         """Edit."""
-        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
+        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(
+            new_fee_rate=new_fee_rate,
+        )
 
         if not wallet:
             Message(
@@ -685,7 +698,9 @@ class UITx_Viewer(UITx_Base):
 
     def rbf(self, new_fee_rate: float | None = None) -> None:
         """Rbf."""
-        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(new_fee_rate=new_fee_rate)
+        txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(
+            new_fee_rate=new_fee_rate,
+        )
 
         if not wallet and txinfos.main_wallet_id:
             wallet = self.wallet_functions.get_wallets().get(txinfos.main_wallet_id)
@@ -861,6 +876,14 @@ class UITx_Viewer(UITx_Base):
             logger.error("data is not of type bdk.Transaction and cannot be broadcastet")
             return
         tx = self.data.data
+
+        if not is_nlocktime_already_valid(tx.lock_time(), self._get_robust_height()) and not question_dialog(
+            self.tr(
+                "This transaction is not valid yet (nLocktime set). Broadcasting will fail.\n"
+                "Do you want to broadcast anyway?"
+            )
+        ):
+            return
 
         if not self.client:
             self._set_blockchain()
@@ -1151,10 +1174,14 @@ class UITx_Viewer(UITx_Base):
         outpoints: list[OutPoint],
         recipient_addresses: list[str],
         tx_status: TxStatus,
+        nlocktime: int | None = None,
     ):
         """Set warning bars."""
         super()._set_warning_bars(
-            outpoints=outpoints, recipient_addresses=recipient_addresses, tx_status=tx_status
+            outpoints=outpoints,
+            recipient_addresses=recipient_addresses,
+            tx_status=tx_status,
+            nlocktime=nlocktime,
         )
         self.set_poisoning_warning_bar(outpoints=outpoints, recipient_addresses=recipient_addresses)
         self.update_high_fee_warning_label(confirmation_status=tx_status.confirmation_status)
@@ -1297,6 +1324,7 @@ class UITx_Viewer(UITx_Base):
                 tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status)
             ),
         )
+        self._set_nlocktime_from_tx(tx)
 
         if fee_info is not None:
             self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=chain_position)
@@ -1329,6 +1357,7 @@ class UITx_Viewer(UITx_Base):
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=tx_status,
+            nlocktime=tx.lock_time(),
         )
         self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
         self.label_line_edit.updateUi()
@@ -1473,6 +1502,7 @@ class UITx_Viewer(UITx_Base):
             tx_status=tx_status,
             can_rbf_safely=False,  # Since RBF doesnt apply for PSBT
         )
+        self._set_nlocktime_from_tx(tx)
 
         outputs = [TxOut.from_bdk(txout) for txout in tx.output()]
         advance_tip_for_addresses(
@@ -1501,6 +1531,7 @@ class UITx_Viewer(UITx_Base):
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=tx_status,
+            nlocktime=tx.lock_time(),
         )
         txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
         txo_dict.update(self._get_python_txos())
@@ -1512,6 +1543,31 @@ class UITx_Viewer(UITx_Base):
         """Set psbt already broadcasted bar."""
         tx, wallet = get_tx_details(self.txid(), wallet_functions=self.wallet_functions)
         self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
+
+    def _set_nlocktime_from_tx(self, tx: bdk.Transaction) -> None:
+        """Set nlocktime info from transaction."""
+        locktime = tx.lock_time()
+        nlocktime = locktime if locktime > 0 else None
+        chain_height = self._get_robust_height()
+        self.column_fee.set_nlocktime(nlocktime, current_height=chain_height)
+        if nlocktime is None:
+            self.column_fee.set_nlocktime_visibility(False, current_height=chain_height, reset_on_hide=False)
+        else:
+            estimated_datetime = estimate_locktime_datetime(nlocktime, chain_height)
+            if estimated_datetime is None:
+                self.column_fee.set_nlocktime_visibility(
+                    True, current_height=chain_height, reset_on_hide=False
+                )
+                self.update_nlocktime_warning(nlocktime, chain_height)
+                return
+            is_valid = datetime.now(timezone.utc) >= estimated_datetime
+            self.column_fee.set_nlocktime_visibility(
+                not is_valid, current_height=chain_height, reset_on_hide=False
+            )
+        self.update_nlocktime_warning(nlocktime, chain_height)
+        self.column_fee.nlocktime_group.set_current_block_height(
+            current_height=chain_height,
+        )
 
     def handle_cpfp(
         self, tx: bdk.Transaction, this_fee_info: FeeInfo, chain_position: bdk.ChainPosition | None

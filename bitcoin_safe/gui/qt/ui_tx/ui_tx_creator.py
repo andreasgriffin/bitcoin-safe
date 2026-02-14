@@ -252,6 +252,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             enable_approximate_fee_label=False,
             tx_status=self.get_tx_status(),
         )
+        self.column_fee.action_set_nlocktime.toggled.connect(self._on_nlocktime_toggled)
+        self.column_fee.nlocktime_group.signal_on_change.connect(self._on_nlocktime_changed)
 
         self.button_box = QDialogButtonBox()
         self.button_ok = SpinningButton(
@@ -371,6 +373,27 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if self.wallet and (_wallet_signal := self.wallet_functions.wallet_signals.get(self.wallet.id)):
             self.button_ok.set_enable_signal(signal_stop_spinning=(_wallet_signal.finished_psbt_creation))
 
+    def _on_nlocktime_toggled(self, checked: bool) -> None:
+        """Update defaults when nLocktime UI is shown."""
+        if not checked:
+            self._on_nlocktime_changed()
+            return
+        self.column_fee.nlocktime_group.reset_ui(self._get_robust_height())
+        self._on_nlocktime_changed()
+
+    def _on_nlocktime_changed(self, *args: object) -> None:
+        """Refresh warning bars when the nLocktime inputs change."""
+        tx_ui_infos = self.get_tx_ui_infos()
+        self._set_warning_bars(
+            outpoints=list(tx_ui_infos.utxo_dict.keys()),
+            recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
+            tx_status=self.get_tx_status(),
+            nlocktime=tx_ui_infos.nlocktime,
+        )
+
+    def _get_robust_height(self) -> int:
+        return self.wallet.get_height() if self.wallet else super()._get_robust_height()
+
     def get_tx_status(self) -> TxStatus:
         """Get tx status."""
         return TxStatus(
@@ -390,9 +413,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Apply input changed."""
         if not self._input_changes_pending:
             return
+        pending_reasons = set(self._input_changes_pending)
         self._input_changes_pending.clear()
         if self._refresh_counters_enabled and self._refresh_counters:
-            for reason in self._input_changes_pending:
+            for reason in pending_reasons:
                 self._refresh_counters.bump(reason)
         fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
         # set max values
@@ -423,14 +447,22 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             outpoints=list(tx_ui_infos.utxo_dict.keys()),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=self.get_tx_status(),
+            nlocktime=tx_ui_infos.nlocktime,
         )
 
     def _set_warning_bars(
-        self, outpoints: list[OutPoint], recipient_addresses: list[str], tx_status: TxStatus
+        self,
+        outpoints: list[OutPoint],
+        recipient_addresses: list[str],
+        tx_status: TxStatus,
+        nlocktime: int | None = None,
     ):
         """Set warning bars."""
         super()._set_warning_bars(
-            outpoints=outpoints, recipient_addresses=recipient_addresses, tx_status=tx_status
+            outpoints=outpoints,
+            recipient_addresses=recipient_addresses,
+            tx_status=tx_status,
+            nlocktime=nlocktime,
         )
         self.update_high_fee_warning_label()
 
@@ -609,6 +641,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             outpoints=list(tx_ui_infos.utxo_dict.keys()),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=self.get_tx_status(),
+            nlocktime=tx_ui_infos.nlocktime,
         )
 
         self.wallet_functions.wallet_signals[self.wallet.id].updated.emit(
@@ -854,6 +887,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         infos.recipient_read_only = not self.recipients.allow_edit
         infos.utxos_read_only = not self.utxo_list.allow_edit or not self.column_inputs.isEnabled()
+        infos.nlocktime = self.column_fee.nlocktime()
         return infos
 
     def get_global_xpub_dict(self, wallets: list[Wallet]) -> dict[str, tuple[str, str]]:
@@ -1107,6 +1141,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.column_fee.fee_group.set_spin_fee_value(tx_ui_infos.fee_rate)
         else:
             self.reset_fee_rate()
+        chain_height = self._get_robust_height()
+        self.column_fee.set_nlocktime(tx_ui_infos.nlocktime, chain_height)
+        self.update_nlocktime_warning(tx_ui_infos.nlocktime, chain_height)
 
         # do first tab_changed, because it will set the utxo_list.select_rows
         hide_UTXO_selection = tx_ui_infos.hide_UTXO_selection in [True, None]
