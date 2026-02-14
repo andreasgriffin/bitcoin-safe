@@ -1649,6 +1649,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
 
         self.search_edit = QLineEdit()
         self.search_edit.setClearButtonEnabled(True)
+        self.search_edit.setMaximumWidth(280)
         if self.searchable_list:
             self.search_edit.textChanged.connect(self.searchable_list.filter)
 

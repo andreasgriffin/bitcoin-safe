@@ -718,6 +718,11 @@ class MainWindow(QMainWindow):
 
         if isinstance((qt_wallet := node.data), QTWallet):
             menu.addSeparator()
+            self.context_menu_action_sync_wallet = menu.add_action(
+                self.tr("Sync"),
+                slot=qt_wallet.sync,
+                icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+            )
             self.action_reveal_file_explorer = menu.add_action(
                 self.tr("Reveal in file explorer"),
                 slot=partial(self.reveal_wallet_in_file_explorer, qt_wallet),
