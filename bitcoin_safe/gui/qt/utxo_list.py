@@ -212,6 +212,8 @@ class UTXOList(MyTreeView[OutPoint]):
             if hidden_columns_enum is not None
             else [
                 self.Columns.OUTPOINT,
+                self.Columns.WALLET_ID,
+                self.Columns.FIAT_BALANCE,
             ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,

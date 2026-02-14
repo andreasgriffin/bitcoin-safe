@@ -1709,6 +1709,7 @@ class MainWindow(QMainWindow):
             # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
             sort_column=UTXOList.Columns.ADDRESS,
             sort_order=Qt.SortOrder.AscendingOrder,
+            hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
         )
 
         widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, self.tab_wallets)
@@ -1842,6 +1843,7 @@ class MainWindow(QMainWindow):
             # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
             sort_column=UTXOList.Columns.ADDRESS,
             sort_order=Qt.SortOrder.AscendingOrder,
+            hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
         )
 
         widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, parent=self.tab_wallets)

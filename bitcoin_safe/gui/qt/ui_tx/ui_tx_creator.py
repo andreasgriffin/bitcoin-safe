@@ -191,13 +191,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 wallet_functions=self.wallet_functions,
                 outpoints=[],
                 fx=self.fx,
-                hidden_columns_enum=(
-                    [
-                        UTXOList.Columns.OUTPOINT,
-                        UTXOList.Columns.WALLET_ID,
-                        UTXOList.Columns.FIAT_BALANCE,
-                    ]
-                ),
                 sort_column=UTXOList.Columns.STATUS,
                 sort_order=Qt.SortOrder.AscendingOrder,
             )
