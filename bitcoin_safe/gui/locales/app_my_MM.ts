@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(နောက်ဆုံးဗားရှင်း)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>မည်သည့်သူမဆို အသုံးပြုနိုင်သည့် လုံခြုံသော Bitcoin စုဆောင်းပိုက်ဆံအိတ်။</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>Binary ဖိုင်များကို {link} တွင် ရနိုင်ပါသည်။</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>Update ရနိုင်ပါသည်</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>{version} သို့ Update ရနိုင်ပါသည်</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>ဗားရှင်း {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>ပြန်လည်ထုတ်လုပ်နိုင်သည်</translation>
 		</message>
 	</context>
 	<context>
@@ -677,6 +702,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>ဦးစားပေးမှု</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>nLocktime ကို ပြပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -1818,11 +1848,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;ပိတ်ရန်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;ပြည့်မျက်နှာပြင်မှ ထွက်မည်</translation>
 		</message>
@@ -2243,11 +2268,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>ပြ/ဖျောက်</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
@@ -2265,6 +2285,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>အခြေအနေ: ချိတ်ဆက်ဖြုတ်ထားသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>စင့်ခ်လုပ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2426,6 +2451,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>csv အဖြစ် အတန်း {n} ခုကို ကူးယူပြီးပါပြီ</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>ဤ လုပ်ဆောင်ချက်သည် {date} မတိုင်မီ မမှန်ကန်ပါ။</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime ကို အလွန်ဝေးသော အနာဂတ်တွင် သတ်မှတ်ထားသည်။</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>Block အမြင့်</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>Block အမြင့်: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>ရက်စွဲ/အချိန်</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>nLocktime မသတ်မှတ်ရသေးပါ။</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>သတ်မှတ်ထားသော Block တစ်ခု မိုင်းလုပ်ပြီးသည်အထိ နှောင့်နှေးစေရန် Block အမြင့်ကို အသုံးပြုပါ။ သတ်မှတ်ထားသော Network အချိန် (median-time-past) အထိ နှောင့်နှေးစေရန် ရက်စွဲ/အချိန်ကို အသုံးပြုပါ။ median-time-past သည် နောက်ဆုံး Block 11 ခု၏ Median timestamp ဖြစ်ပြီး ထို့ကြောင့် ပုံမှန်အားဖြင့် tip ထက် {minutes} မိနစ်ခန့် နောက်ကျနေသည်။</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>မှ စတင် အကျုံးဝင်သည်</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (ဒေသတွင်း အချိန်)</translation>
 		</message>
 	</context>
 	<context>
@@ -4099,6 +4176,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;ပိတ်ရန်</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>အသိပေးချက်များကို ရှင်းလင်းပါ</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>အသိပေးချက် မရှိပါ</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>ယခင် အသိပေးချက်များ</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>ပြ/ဖျောက်</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4336,6 +4440,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>ဤ လုပ်ဆောင်ချက်သည် မမှန်ကန်သေးပါ (nLocktime သတ်မှတ်ထားသည်)။ Broadcast မအောင်မြင်ပါလိမ့်မည်။ ထို့အပြင် Broadcast လုပ်လိုပါသလား?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

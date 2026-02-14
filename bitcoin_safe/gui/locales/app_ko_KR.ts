@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(최신 버전)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>모두를 위한 안전한 비트코인 저축 지갑.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>바이너리는 {link}에 있습니다.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>업데이트 사용 가능</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>{version}로 업데이트 가능</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>버전 {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>재현 가능</translation>
 		</message>
 	</context>
 	<context>
@@ -676,6 +701,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>우선순위</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>nLocktime 표시</translation>
 		</message>
 	</context>
 	<context>
@@ -1817,11 +1847,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;종료</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;전체 화면 종료</translation>
 		</message>
@@ -2242,11 +2267,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>표시/숨기기</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>서명된 메시지</translation>
 		</message>
@@ -2264,6 +2284,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>상태: 연결 해제됨</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>동기화</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2427,6 +2452,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>{n}개의 행이 csv로 복사되었습니다</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>이 거래는 {date}까지 유효하지 않습니다.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime이 매우 먼 미래로 설정되어 있습니다.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>블록 높이</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>블록 높이: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>날짜/시간</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>nLocktime이 설정되지 않았습니다.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>특정 블록이 채굴될 때까지 지연하려면 블록 높이를 사용하십시오. 특정 네트워크 시간(median-time-past)까지 지연하려면 날짜/시간을 사용하십시오. Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 일반적으로 체인 끝보다 약 {minutes}분 뒤에 있습니다.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>유효 시작 시점</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (현지 시간)</translation>
 		</message>
 	</context>
 	<context>
@@ -4111,6 +4188,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;종료</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>알림 지우기</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>알림 없음</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>지난 알림</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>표시/숨기기</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4348,6 +4452,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>이 거래는 아직 유효하지 않습니다(nLocktime 설정됨). 브로드캐스트가 실패합니다. 그래도 브로드캐스트하시겠습니까?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(остання версія)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>Безпечний біткоїн-гаманець для заощаджень для всіх.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>Бінарні файли доступні за адресою {link}.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>Доступне оновлення</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>Доступне оновлення до версії {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>Версія {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>відтворюваний</translation>
 		</message>
 	</context>
 	<context>
@@ -679,6 +704,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>Пріоритет</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>Показати nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1821,11 +1851,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;Вихід</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;Вийти з повноекранного режиму</translation>
 		</message>
@@ -2246,11 +2271,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Показати/Приховати</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>Підписане повідомлення</translation>
 		</message>
@@ -2268,6 +2288,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>Статус: Відключено</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>Синхронізувати</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2431,6 +2456,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>{n} рядків скопійовано як csv</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>Ця транзакція буде недійсною до {date}.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime встановлено далеко в майбутньому.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>Висота блоку</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>Висота блоку: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>Дата/час</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>nLocktime не встановлено.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>Використовуйте висоту блоку, щоб затримати до видобутку певного блоку. Використовуйте дату/час, щоб затримати до певного мережевого часу (median-time-past). median-time-past — це медіанна мітка часу останніх 11 блоків, тому зазвичай вона приблизно на {minutes} хвилин позаду вершини.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>Дійсно з</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (місцевий час)</translation>
 		</message>
 	</context>
 	<context>
@@ -4117,6 +4194,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;Вихід</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>Очистити сповіщення</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>Немає сповіщень</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>Минулі сповіщення</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Показати/Приховати</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4359,6 +4463,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>TXID підписаної PSBT не збігається з оригінальним TXID</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>Ця транзакція ще не дійсна (встановлено nLocktime). Трансляція завершиться помилкою. Все одно транслювати?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

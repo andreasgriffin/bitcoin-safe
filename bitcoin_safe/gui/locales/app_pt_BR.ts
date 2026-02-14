@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(versão mais recente)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>Uma carteira de poupança Bitcoin segura para todos.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>Os binários estão em {link}.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>Atualização disponível</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>Atualização para {version} disponível</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>Versão {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>reproduzível</translation>
 		</message>
 	</context>
 	<context>
@@ -679,6 +704,11 @@ têm transações vinculadas a outros endereços. Tem certeza de que deseja alte
 		<message>
 			<source>Priority</source>
 			<translation>Prioridade</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>Mostrar nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1821,11 +1851,6 @@ Deseja continuar mesmo assim?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;Sair</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;Sair da Tela Cheia</translation>
 		</message>
@@ -2246,11 +2271,6 @@ Deseja continuar mesmo assim?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Mostrar/Ocultar</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>Mensagem assinada</translation>
 		</message>
@@ -2268,6 +2288,11 @@ Deseja continuar mesmo assim?</translation>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>Status: Desconectado</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>Sincronizar</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2431,6 +2456,58 @@ Deseja ocultar na bandeja?</translation>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>{n} linhas foram copiadas como csv</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>Esta transação não será válida até {date}.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime está muito distante no futuro.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>Altura do bloco</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>Altura do bloco: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>Data/hora</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>Nenhum nLocktime definido.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>Use a altura do bloco para atrasar até que um bloco específico seja minerado. Use data/hora para atrasar até um horário específico da rede (median-time-past). Median-time-past é o timestamp mediano dos últimos 11 blocos, portanto normalmente está cerca de {minutes} minutos atrás da ponta.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>Válido a partir de</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (hora local)</translation>
 		</message>
 	</context>
 	<context>
@@ -4117,6 +4194,33 @@ Se quiser continuar usando ambos, redefina agora a chave de sincronização do C
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;Sair</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>Limpar notificações</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>Sem notificações</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>Notificações anteriores</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Mostrar/Ocultar</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4359,6 +4463,12 @@ Ou você pode transmitir via {url}</translation>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>O txid do psbt assinado não corresponde ao txid original</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>Esta transação ainda não é válida (nLocktime definido). A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(en yeni sürüm)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>Herkes için güvenli bir Bitcoin birikim cüzdanı.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>İkili dosyalar {link} adresindedir.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>Güncelleme mevcut</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>{version} sürümüne güncelleme mevcut</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>Sürüm {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>yeniden üretilebilir</translation>
 		</message>
 	</context>
 	<context>
@@ -679,6 +704,11 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		<message>
 			<source>Priority</source>
 			<translation>Öncelik</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>nLocktime göster</translation>
 		</message>
 	</context>
 	<context>
@@ -1821,11 +1851,6 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;Çıkış</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;Tam Ekrandan Çık</translation>
 		</message>
@@ -2246,11 +2271,6 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Göster/Gizle</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>İmzalanmış Mesaj</translation>
 		</message>
@@ -2268,6 +2288,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>Durum: Bağlı değil</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>Senkronize et</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2431,6 +2456,58 @@ Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>{n} satır csv olarak kopyalandı</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>Bu işlem {date} tarihine kadar geçerli olmayacaktır.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime çok uzak bir gelecekte.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>Blok yüksekliği</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>Blok yüksekliği: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>Tarih/saat</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>nLocktime ayarlanmamış.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>Belirli bir blok kazılana kadar geciktirmek için blok yüksekliğini kullanın. Belirli bir ağ zamanına (median-time-past) kadar geciktirmek için tarih/saat kullanın. Median-time-past, son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan yaklaşık {minutes} dakika geridedir.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>Geçerli başlangıç</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (yerel saat)</translation>
 		</message>
 	</context>
 	<context>
@@ -4117,6 +4194,33 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;Çıkış</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>Bildirimleri temizle</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>Bildirim yok</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>Geçmiş bildirimler</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>Göster/Gizle</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4359,6 +4463,12 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>İmzalanan psbt’nin txid’si orijinal txid ile eşleşmiyor</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>Bu işlem henüz geçerli değil (nLocktime ayarlı). Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

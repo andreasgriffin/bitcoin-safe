@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>（最新版本）</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>一款为所有人打造的安全比特币储蓄钱包。</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>二进制文件在 {link}。</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>有可用更新</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>可更新到 {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>版本 {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>可复现</translation>
 		</message>
 	</context>
 	<context>
@@ -487,7 +512,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>使用此手续费花费找零以拉入父交易（CPFP）。父+子合并费率应满足目标区块。</translation>
+			<translation>使用您的找零来支付此矿工费用，以拉入父交易（CPFP）。
+父与子的合并矿工费率应满足该目标区块。</translation>
 		</message>
 	</context>
 	<context>
@@ -681,6 +707,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>优先等级</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>显示 nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1548,7 +1579,7 @@ Location of signing device: .....</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please enter a valid key origin.</source>
-			<translation>请输入有效的密钥源。</translation>
+			<translation>请输入有效的派生路径。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1647,7 +1678,7 @@ Do you want to proceed anyway?</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-			<translation>您导入的密钥源 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
+			<translation>您导入的派生路径 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
 		</message>
 	</context>
 	<context>
@@ -1822,11 +1853,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;Edit</source>
 			<translation>&amp;编辑</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;退出</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2250,11 +2276,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>显示/隐藏</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>已签名的消息</translation>
 		</message>
@@ -2272,6 +2293,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>状态：已断开连接</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>同步</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2438,6 +2464,58 @@ Do you want to hide to tray instead?</source>
 		</message>
 	</context>
 	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>此交易在 {date} 之前无效。</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime 设置在遥远的未来。</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>区块高度</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>区块高度：{height}（{remaining}）</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>日期/时间</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>未设置 nLocktime。</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>使用区块高度来延迟，直到特定区块被挖出。使用日期/时间来延迟，直到特定网络时间（median-time-past）。Median-time-past 是最近 11 个区块的中位时间戳，因此通常比链尖落后约 {minutes} 分钟。</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>有效起始时间</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value}（本地时间）</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -2548,7 +2626,8 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Optional list of peers (one per line) the listener should try first.
 Keep it empty to rely on automatic peer discovery.</source>
-			<translation>监听器应优先尝试的可选对等节点列表（每行一个）。留空以依赖自动对等节点发现。</translation>
+			<translation>可选的对等节点列表（每行一个），监听器应当先尝试连接这些节点。
+保持列表为空以依赖自动对等节点发现功能。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2615,7 +2694,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
 Connected peers do not learn anything about your wallet or your transactions.
 Using more peers improves coverage but uses more bandwidth and connections.</source>
-			<translation>此设置指定监听器同时连接的 Bitcoin 对等节点数量。它只会在应用运行期间接收广播的交易，因此会错过启动前已存在于内存池中的任何交易。已连接的对等节点不会了解你的钱包或交易的任何信息。使用更多对等节点可提高覆盖率，但会消耗更多带宽和连接。</translation>
+			<translation>此设置指定监听器同时连接的比特币对等节点数量。
+它只会在应用运行期间接收广播的交易，因此会错过启动前已存在于内存池中的任何交易。
+已连接的对等节点无法获取您的钱包或交易信息。
+增加对等节点数量可提高覆盖范围，但会消耗更多带宽和连接资源。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3233,7 +3315,8 @@ can only be added as unconfirmed in-mempool.
 Do you want to continue anyway?</source>
 			<translation>交易
 {}
-只能作为未确认添加到内存池。是否仍要继续？</translation>
+只能以未确认的内存池状态添加。 
+您是否仍要继续？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3249,7 +3332,9 @@ Do you want to continue anyway?</source>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>这只会从该钱包视图中移除交易。它已广播到比特币网络，仍很可能会被确认。是否仍要从钱包中移除？</translation>
+			<translation>这只会从当前钱包视图中移除该交易。该交易已经广播到比特币网络，并且很可能会被确认。
+
+您确定仍要从钱包中移除它吗？</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3318,7 +3403,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>使用此手续费以所示目标速度构建替换（RBF）交易。输出保持不变；仅手续费更改。</translation>
+			<translation>使用此矿工费以显示的目标确认速度来构建替换（RBF）交易。
+输出保持不变，只有矿工费会发生变化。</translation>
 		</message>
 	</context>
 	<context>
@@ -3999,7 +4085,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>此钱包上次在另一台电脑上使用。如果要继续同时使用两者，请立即重置聊天与同步的同步密钥（nsec）。</translation>
+			<translation>此钱包上次在另一台计算机上使用过。
+如果要继续同时使用两者，请立即重置聊天和同步的密钥（nsec）。</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4122,6 +4209,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;退出</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>清除通知</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>没有通知</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>过去的通知</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>显示/隐藏</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4155,8 +4269,8 @@ Signatures:
 
 
 </source>
-			<translation>使用属于 {label}
-的私钥签署此交易
+			<translation>交易使用属于 {label}
+的私钥签署
 
 签名：
 {signatures}
@@ -4373,6 +4487,12 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>此交易尚未有效（已设置 nLocktime）。广播将失败。仍要广播吗？</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Transaction {txid}</source>
 			<translation>交易 {txid}</translation>
 		</message>
@@ -4548,7 +4668,7 @@ Or you can broadcast via {url}</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>无法解压更新压缩包。</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5488,7 +5608,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
+			<translation>1. 将“钱包恢复表”（{number} 个单词）附加在这张纸上，或将 12 或 24 个单词抄写在这张纸上。&lt;br/&gt;
                 2. 沿着下方的折线折叠这张纸&lt;br/&gt;
                 3. 将每张纸分别存放在不同的安全地点，确保仅您本人能够访问&lt;br/&gt;
                 4. 您可以将硬件签名器：a) 与对应的纸质助记词备份一同存放，或 b) 各自存放在另一个安全地点（如果有的话）   
@@ -5501,9 +5621,9 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. 将“钱包恢复表”（{number} 个单词）附在这张纸上，或将 12 或 24 个单词复制到这张纸上。&lt;br/&gt;
+			<translation>1. 将“钱包恢复表”（{number} 个单词）附加在这张纸上，或将 12 或 24 个单词抄写在这张纸上。&lt;br/&gt;
                 2. 沿着下方的折线折叠这张纸&lt;br/&gt;
-                3. 将这张纸存放在安全的地点，确保仅您本人能够访问&lt;br/&gt;
+                3. 将这张纸存放在安全的地方，确保仅您本人能够访问&lt;br/&gt;
                 4. 您可以将硬件签名器：a) 与该纸质助记词备份一同存放，或 b) 存放在其他安全的地方（如果有的话）   
                 </translation>
 		</message>
@@ -5650,7 +5770,7 @@ Click here to learn more.</source>
 		<name>pdf</name>
 		<message>
 			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-			<translation>{keystore_label}：指纹：{keystore_fingerprint}，密钥源：{keystore_key_origin}，{keystore_xpub}</translation>
+			<translation>{keystore_label}：指纹：{keystore_fingerprint}，派生路径：{keystore_key_origin}，{keystore_xpub}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -5936,7 +6056,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>尝试以更高的手续费对原交易进行双花。仅适用于标记了 RBF 的交易，且不保证成功。</translation>
+			<translation>试图通过支付更高的矿工费来双重花费该原始交易。
+仅适用于 RBF 标记的交易，并且不保证成功。</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5948,7 +6069,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>子付父（CPFP）通过以更高的手续费花费待处理交易的找零输出，将两者拉入同一区块。仅当你有可用的找零输出并提高合并费率时才有效。</translation>
+			<translation>子为父偿（CPFP）通过支付更高的矿工费，将待处理交易的找零输出拉入到同一区块。
+仅当你有可用的找零输出并提高合并的矿工费率时才生效。</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -5970,7 +6092,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee 会创建该交易的更高手续费版本。当原交易仍未确认时，用于加速确认。需要原交易发出 RBF 信号，且钱包拥有找零输出。</translation>
+			<translation>费用替换将创建一笔比此交易矿工费更高的全新交易版本。
+在原始交易尚未确认时，使用此功能可加快确认速度。
+需要原始交易发出 RBF 信号，并且您的钱包有找零地址输出。</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -6103,19 +6227,22 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Child-Pays-For-Parent：该交易通过将总费率提高到 {combined_rate} 来加速 {parent_str} 的确认。</translation>
+			<translation>子为父偿：此交易将加快 {parent_str} 的确认速度，
+因为它将总矿工费率提升到 {combined_rate}。</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
 since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
-			<translation>Child-Pays-For-Parent：该交易的手续费过低，无法加速 {parent_str} 的确认，因为它将总费率降低到 {combined_rate}。请选择至少 {parent_rate}。</translation>
+			<translation>子为父偿：此矿工费率太低，无法加快 {parent_str} 的确认速度，
+因为它将总矿工费率降低到 {combined_rate}。请至少设置为 {parent_rate}。</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-			<translation>Replace-By-Fee：该交易以费率 {rate_org} 替换交易 {txid}。请选择高于最低费率 {rate_min} 的手续费。</translation>
+			<translation>费用替换：此交易将交易 {txid} 的矿工费率替换为 {rate_org}。
+选择高于最低费率 {rate_min} 的矿工费率。</translation>
 		</message>
 		<name>utils</name>
 		<message>

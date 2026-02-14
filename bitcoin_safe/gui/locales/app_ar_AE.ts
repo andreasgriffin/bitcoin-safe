@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(أحدث إصدار)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>محفظة ادخار بيتكوين آمنة للجميع.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>الملفات الثنائية متاحة في {link}.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>يوجد تحديث متاح</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>يوجد تحديث إلى {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>الإصدار {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>قابل لإعادة الإنتاج</translation>
 		</message>
 	</context>
 	<context>
@@ -678,6 +703,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>الأولوية</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>إظهار nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1819,11 +1849,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;خروج</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;الخروج من ملء الشاشة</translation>
 		</message>
@@ -2244,11 +2269,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>إظهار/إخفاء</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>رسالة موقعة</translation>
 		</message>
@@ -2266,6 +2286,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>الحالة: غير متصل</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>مزامنة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2429,6 +2454,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>تم نسخ {n} صفًا كـ csv</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>لن تكون هذه المعاملة صالحة حتى {date}.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime محدد في مستقبل بعيد.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>ارتفاع الكتلة</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>ارتفاع الكتلة: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>التاريخ/الوقت</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>لم يتم تعيين nLocktime.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>استخدم ارتفاع الكتلة للتأخير حتى يتم تعدين كتلة معينة. استخدم التاريخ/الوقت للتأخير حتى وقت شبكة محدد (median-time-past). median-time-past هو الطابع الزمني الوسيط لآخر 11 كتلة، لذلك يكون عادةً متأخرًا بحوالي {minutes} دقيقة عن قمة السلسلة.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>صالح من</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (الوقت المحلي)</translation>
 		</message>
 	</context>
 	<context>
@@ -4116,6 +4193,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;خروج</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>مسح الإشعارات</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>لا توجد إشعارات</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>الإشعارات السابقة</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>إظهار/إخفاء</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4354,6 +4458,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>هذه المعاملة غير صالحة بعد (تم تعيين nLocktime). سيفشل البث. هل تريد البث على أي حال؟</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
