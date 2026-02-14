@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(جدیدترین نسخه)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>یک کیف‌پول پس‌انداز بیت‌کوین امن برای همه.</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>فایل‌های باینری در {link} هستند.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>به‌روزرسانی موجود است</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>به‌روزرسانی به {version} موجود است</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>نسخه {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>قابل بازتولید</translation>
 		</message>
 	</context>
 	<context>
@@ -679,6 +704,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>اولویت</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>نمایش nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1820,11 +1850,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;خروج</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;خروج از تمام‌صفحه</translation>
 		</message>
@@ -2245,11 +2270,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>نمایش/مخفی</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>پیام امضاشده</translation>
 		</message>
@@ -2267,6 +2287,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>وضعیت: قطع اتصال</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>همگام‌سازی</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2430,6 +2455,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>{n} ردیف به‌صورت csv کپی شد</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>این تراکنش تا {date} معتبر نخواهد بود.</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime در آینده‌ای بسیار دور تنظیم شده است.</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>ارتفاع بلاک</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>ارتفاع بلاک: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>تاریخ/زمان</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>هیچ nLocktime تنظیم نشده است.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>برای تأخیر تا استخراج یک بلاک مشخص از ارتفاع بلاک استفاده کنید. برای تأخیر تا زمان مشخص شبکه (median-time-past) از تاریخ/زمان استفاده کنید. median-time-past مهر زمانی میانه 11 بلاک اخیر است، بنابراین معمولاً حدود {minutes} دقیقه عقب‌تر از نوک زنجیره است.</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>معتبر از</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (زمان محلی)</translation>
 		</message>
 	</context>
 	<context>
@@ -4117,6 +4194,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;خروج</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>پاک کردن اعلان‌ها</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>هیچ اعلانی وجود ندارد</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>اعلان‌های گذشته</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>نمایش/مخفی</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4358,6 +4462,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>شناسهٔ تراکنش PSBT امضاشده با شناسه تراکنش اصلی مطابقت ندارد</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>این تراکنش هنوز معتبر نیست (nLocktime تنظیم شده است). پخش با شکست مواجه خواهد شد. آیا همچنان می‌خواهید پخش کنید؟</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

@@ -3,8 +3,18 @@
 	<context>
 		<name>AboutTab</name>
 		<message>
+			<source>(newest version)</source>
+			<translation>(เวอร์ชันล่าสุด)</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
 			<translation>กระเป๋าเงินออมบิตคอยน์ที่ปลอดภัยสำหรับทุกคน</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Binaries are {link}.</source>
+			<translation>ไฟล์ไบนารีอยู่ที่ {link}</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -23,8 +33,23 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
+			<source>Update available</source>
+			<translation>มีการอัปเดตพร้อมใช้งาน</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>Update to {version} available</source>
+			<translation>มีการอัปเดตเป็น {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
 			<source>Version {version}</source>
 			<translation>เวอร์ชัน {version}</translation>
+		</message>
+		<name>AboutTab</name>
+		<message>
+			<source>reproducible</source>
+			<translation>ทำซ้ำได้</translation>
 		</message>
 	</context>
 	<context>
@@ -677,6 +702,11 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Priority</source>
 			<translation>ลำดับความสำคัญ</translation>
+		</message>
+		<name>ColumnFee</name>
+		<message>
+			<source>Show nLocktime</source>
+			<translation>แสดง nLocktime</translation>
 		</message>
 	</context>
 	<context>
@@ -1820,11 +1850,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;ออก</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>&amp;Exit Full Screen</source>
 			<translation>&amp;ออกจากโหมดเต็มหน้าจอ</translation>
 		</message>
@@ -2245,11 +2270,6 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>แสดง/ซ่อน</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Signed Message</source>
 			<translation>ข้อความที่ลงนามแล้ว</translation>
 		</message>
@@ -2267,6 +2287,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Status: Disconnected</source>
 			<translation>สถานะ: ตัดการเชื่อมต่อ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Sync</source>
+			<translation>ซิงค์</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2428,6 +2453,58 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
 			<translation>คัดลอก {n} แถวเป็น csv แล้ว</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>This transaction will not be valid until {date}.</source>
+			<translation>ธุรกรรมนี้จะไม่ถูกต้องจนถึง {date}</translation>
+		</message>
+		<name>NLocktimeFutureWarningBar</name>
+		<message>
+			<source>nLocktime is far in the future.</source>
+			<translation>nLocktime ถูกตั้งไว้ไกลมากในอนาคต</translation>
+		</message>
+	</context>
+	<context>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height</source>
+			<translation>ความสูงบล็อก</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Block height: {height} ({remaining})</source>
+			<translation>ความสูงบล็อก: {height} ({remaining})</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Date/time</source>
+			<translation>วันที่/เวลา</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>No nLocktime set.</source>
+			<translation>ไม่ได้ตั้งค่า nLocktime</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Use block height to delay until a specific block is mined.
+Use date/time to delay until a specific network time (median-time-past).
+Median-time-past is the median timestamp of the last 11 blocks,
+so it is typically about {minutes} minutes behind the tip.</source>
+			<translation>ใช้ความสูงบล็อกเพื่อหน่วงเวลาจนกว่าบล็อกที่ระบุจะถูกขุด ใช้วันที่/เวลาเพื่อหน่วงเวลาจนถึงเวลาเครือข่ายที่ระบุ (median-time-past) median-time-past คือค่ากลางของเวลาประทับของ 11 บล็อกล่าสุด ดังนั้นโดยทั่วไปจะช้ากว่าปลายเชนประมาณ {minutes} นาที</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>Valid from</source>
+			<translation>มีผลตั้งแต่</translation>
+		</message>
+		<name>NLocktimeGroupBox</name>
+		<message>
+			<source>{value} (local time)</source>
+			<translation>{value} (เวลาท้องถิ่น)</translation>
 		</message>
 	</context>
 	<context>
@@ -4101,6 +4178,33 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrayController</name>
+		<message>
+			<source>&amp;Exit</source>
+			<translation>&amp;ออก</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Clear notifications</source>
+			<translation>ล้างการแจ้งเตือน</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>No notifications</source>
+			<translation>ไม่มีการแจ้งเตือน</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Past notifications</source>
+			<translation>การแจ้งเตือนก่อนหน้า</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Show/Hide</source>
+			<translation>แสดง/ซ่อน</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrustedDeviceItem</name>
 		<message>
 			<source>Untrust device</source>
@@ -4338,6 +4442,12 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+Do you want to broadcast anyway?</source>
+			<translation>ธุรกรรมนี้ยังไม่ถูกต้อง (ตั้งค่า nLocktime) การเผยแพร่จะล้มเหลว คุณต้องการเผยแพร่ต่อไปหรือไม่?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
