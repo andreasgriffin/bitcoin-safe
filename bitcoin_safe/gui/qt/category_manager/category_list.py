@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import enum
 import logging
+from collections.abc import Iterable
 from typing import Any, cast
 
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -54,6 +55,7 @@ from bitcoin_safe.gui.qt.my_treeview import (
 )
 from bitcoin_safe.gui.qt.util import category_color, create_color_circle
 from bitcoin_safe.storage import BaseSaveableClass
+from bitcoin_safe.util import fast_version
 
 from ....signals import Signals, UpdateFilter, UpdateFilterReason
 
@@ -61,7 +63,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryList(MyTreeView[CategoryInfo]):
-    VERSION = "0.0.0"
+    VERSION = "0.0.1"
     known_classes = {
         **BaseSaveableClass.known_classes,
         MyTreeView.__name__: MyTreeView,
@@ -69,7 +71,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
     signal_addresses_dropped = cast(SignalProtocol[[AddressDragInfo]], pyqtSignal(AddressDragInfo))
 
-    class Columns(MyTreeView.BaseColumnsEnum):
+    class Columns(MyTreeView.Columns):
         ADDRESS_COUNT = enum.auto()
         TXO_COUNT = enum.auto()
         UTXO_COUNT = enum.auto()
@@ -92,7 +94,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         Columns.UTXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {}
+    column_widths: dict[MyTreeView.Columns, int] = {}
     stretch_column = Columns.CATEGORY
     key_column = Columns.CATEGORY
 
@@ -113,7 +115,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         category_core: CategoryCore | None = None,
         sort_column: int | None = Columns.CATEGORY,
         sort_order: Qt.SortOrder | None = Qt.SortOrder.AscendingOrder,
-        hidden_columns: list[int] | None = None,
+        hidden_columns_enum: Iterable[Columns] | None = None,
         selected_ids: list[str] | None = None,
         _scroll_position=0,
     ):
@@ -123,7 +125,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
             config (UserConfig): _description_
             signals (Signals): _description_
             outpoints (List[OutPoint]): _description_
-            hidden_columns (_type_, optional): _description_. Defaults to None.
+            hidden_columns_enum (_type_, optional): _description_. Defaults to None.
             txout_dict (Dict[str, bdk.TxOut], optional): Can be used to augment the list with infos, if the utxo is not from the own wallet. Defaults to None.
         """
         super().__init__(
@@ -134,7 +136,14 @@ class CategoryList(MyTreeView[CategoryInfo]):
             signals=signals,
             sort_column=sort_column if sort_column is not None else None,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
-            hidden_columns=hidden_columns,
+            hidden_columns_enum=hidden_columns_enum
+            if hidden_columns_enum is not None
+            else [
+                self.Columns.COLOR,
+                self.Columns.TXO_BALANCE,
+                self.Columns.TXO_COUNT,
+                self.Columns.ADDRESS_COUNT,
+            ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
         )
@@ -168,7 +177,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         self.category_core = category_core
         self.update_content()
 
-    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
         """Get headers."""
         return {
             self.Columns.ADDRESS_COUNT: header_item(self.tr("Addresses")),
@@ -380,6 +389,14 @@ class CategoryList(MyTreeView[CategoryInfo]):
         """Get selected values."""
         items = self.selected_in_column(self.Columns.UTXO_BALANCE)
         return [x.data(MyItemDataRole.ROLE_CLIPBOARD_DATA) for x in items]
+
+    @classmethod
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
+            cls._do_hidden_column_migration(dct)
+
+        return super().from_dump_migration(dct=dct)
 
 
 class CategoryListWithToolbar(TreeViewWithToolbar):

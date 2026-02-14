@@ -1706,10 +1706,6 @@ class MainWindow(QMainWindow):
             wallet_functions=self.wallet_functions,
             outpoints=get_prev_outpoints(tx),
             fx=self.fx,
-            hidden_columns=[
-                UTXOList.Columns.OUTPOINT,
-                # UTXOList.Columns.PARENTS,
-            ],
             # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
             sort_column=UTXOList.Columns.ADDRESS,
             sort_order=Qt.SortOrder.AscendingOrder,
@@ -1842,10 +1838,6 @@ class MainWindow(QMainWindow):
             wallet_functions=self.wallet_functions,
             outpoints=get_prev_outpoints(psbt.extract_tx()),
             fx=self.fx,
-            hidden_columns=[
-                UTXOList.Columns.OUTPOINT,
-                # UTXOList.Columns.PARENTS,
-            ],
             txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
             # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
             sort_column=UTXOList.Columns.ADDRESS,

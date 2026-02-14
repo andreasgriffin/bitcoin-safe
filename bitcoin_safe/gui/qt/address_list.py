@@ -54,6 +54,7 @@ from __future__ import annotations
 
 import enum
 import logging
+from collections.abc import Iterable
 from enum import IntEnum
 from functools import partial
 from typing import Any, cast
@@ -84,7 +85,8 @@ from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.storage import BaseSaveableClass
+from bitcoin_safe.util import fast_version
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -303,7 +305,12 @@ class AddressTypeFilter(IntEnum):
 class AddressList(MyTreeView[str]):
     signal_tag_dropped = cast(SignalProtocol[[AddressDragInfo]], pyqtSignal(AddressDragInfo))
 
-    class Columns(MyTreeView.BaseColumnsEnum):
+    VERSION = "0.0.1"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
+
+    class Columns(MyTreeView.Columns):
         NUM_TXS = enum.auto()
         WALLET_ID = enum.auto()
         TYPE = enum.auto()
@@ -335,7 +342,7 @@ class AddressList(MyTreeView[str]):
 
     stretch_column = Columns.LABEL
     key_column = Columns.ADDRESS
-    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {
+    column_widths: dict[MyTreeView.Columns, int] = {
         Columns.ADDRESS: 150,
         Columns.COIN_BALANCE: 120,
         Columns.FIAT_BALANCE: 110,
@@ -359,7 +366,7 @@ class AddressList(MyTreeView[str]):
         config: UserConfig,
         wallet_functions: WalletFunctions,
         wallets: list[Wallet] | None = None,
-        hidden_columns: list[int] | None = None,
+        hidden_columns_enum: Iterable[Columns] | None = None,
         selected_ids: list[str] | None = None,
         _scroll_position=0,
     ) -> None:
@@ -372,7 +379,9 @@ class AddressList(MyTreeView[str]):
             editable_columns=[AddressList.Columns.LABEL],
             sort_column=AddressList.Columns.COIN_BALANCE,
             sort_order=Qt.SortOrder.DescendingOrder,
-            hidden_columns=hidden_columns,
+            hidden_columns_enum=hidden_columns_enum
+            if hidden_columns_enum is not None
+            else [self.Columns.WALLET_ID, self.Columns.INDEX],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
         )
@@ -429,6 +438,14 @@ class AddressList(MyTreeView[str]):
         """Dump."""
         d = super().dump()
         return d
+
+    @classmethod
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
+            cls._do_hidden_column_migration(dct)
+
+        return super().from_dump_migration(dct=dct)
 
     def get_drop_rules(self) -> list[DropRule]:
         # ─── “drag_tag” JSON only ON items ─────────────────────────────────
@@ -659,7 +676,7 @@ class AddressList(MyTreeView[str]):
         logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
-    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
         """Get headers."""
         currency_symbol = self.fx.get_currency_symbol()
         return {
@@ -1068,12 +1085,6 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         d = super().dump()
         d["address_list"] = self.address_list
         return d
-
-    @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> AddressListWithToolbar:
-        """From dump."""
-        super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**filtered_for_init(dct, cls))
 
     def on_create_address(self, wallet_id: str | None = None):
         """On create address."""

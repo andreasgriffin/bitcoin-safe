@@ -72,7 +72,6 @@ from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QWidget
-from typing_extensions import Self
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.config import UserConfig
@@ -84,8 +83,9 @@ from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.storage import BaseSaveableClass
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.util import fast_version
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
@@ -147,7 +147,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class HistList(MyTreeView[str]):
-    VERSION = "0.0.0"
+    VERSION = "0.0.1"
     known_classes = {
         **BaseSaveableClass.known_classes,
     }
@@ -171,7 +171,7 @@ class HistList(MyTreeView[str]):
             "fx": fx,
         }
 
-    class Columns(MyTreeView.BaseColumnsEnum):
+    class Columns(MyTreeView.Columns):
         TXID = enum.auto()
         WALLET_ID = enum.auto()
         STATUS = enum.auto()
@@ -198,7 +198,7 @@ class HistList(MyTreeView[str]):
         Columns.BALANCE: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
     }
 
-    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
+    column_widths: dict[MyTreeView.Columns, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
 
     def __init__(
         self,
@@ -208,7 +208,7 @@ class HistList(MyTreeView[str]):
         mempool_manager: MempoolManager,
         wallets: list[Wallet] | None = None,
         address_domain: list[str] | None = None,
-        hidden_columns: list[int] | None = None,
+        hidden_columns_enum: Iterable[Columns] | None = None,
         selected_ids: list[str] | None = None,
         _scroll_position=0,
     ) -> None:
@@ -221,7 +221,13 @@ class HistList(MyTreeView[str]):
             signals=wallet_functions.signals,
             sort_column=HistList.Columns.STATUS,
             sort_order=Qt.SortOrder.DescendingOrder,
-            hidden_columns=hidden_columns,
+            hidden_columns_enum=hidden_columns_enum
+            if hidden_columns_enum is not None
+            else [
+                HistList.Columns.WALLET_ID,
+                HistList.Columns.BALANCE,
+                HistList.Columns.TXID,
+            ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
         )
@@ -285,10 +291,12 @@ class HistList(MyTreeView[str]):
         return d
 
     @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Self:
-        """From dump."""
-        super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**filtered_for_init(dct, cls))
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
+            cls._do_hidden_column_migration(dct)
+
+        return super().from_dump_migration(dct=dct)
 
     def get_file_data(self, txid: str) -> Data | None:
         """Get file data."""
@@ -408,7 +416,7 @@ class HistList(MyTreeView[str]):
 
         self._after_update_content()
 
-    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
         """Get headers."""
         return {
             self.Columns.WALLET_ID: header_item(self.tr("Wallet")),
@@ -891,12 +899,6 @@ class HistListWithToolbar(TreeViewWithToolbar):
         d = super().dump()
         d["hist_list"] = self.hist_list
         return d
-
-    @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Self:
-        """From dump."""
-        super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**filtered_for_init(dct, cls))
 
     def update_with_filter(self, update_filter: UpdateFilter):
         """Update with filter."""

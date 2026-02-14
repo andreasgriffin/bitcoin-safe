@@ -178,14 +178,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 config=self.config,
                 category_core=category_core,
                 signals=self.signals,
-                hidden_columns=(
-                    [
-                        CategoryList.Columns.COLOR,
-                        CategoryList.Columns.TXO_BALANCE,
-                        CategoryList.Columns.TXO_COUNT,
-                        CategoryList.Columns.ADDRESS_COUNT,
-                    ]
-                ),
             )
         self.category_list.setDragEnabled(False)
         self.category_list.setAcceptDrops(False)
@@ -199,7 +191,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 wallet_functions=self.wallet_functions,
                 outpoints=[],
                 fx=self.fx,
-                hidden_columns=(
+                hidden_columns_enum=(
                     [
                         UTXOList.Columns.OUTPOINT,
                         UTXOList.Columns.WALLET_ID,
