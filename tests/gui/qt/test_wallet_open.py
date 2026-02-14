@@ -274,3 +274,34 @@ def test_open_same_wallet_twice(
         ]
 
         shutter.save(main_window)
+
+
+def test_open_missing_wallet_cleans_up_lockfile(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config: TestConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Opening a missing wallet must not leave a stale lockfile behind."""
+
+    class MessageRecorder:
+        def __init__(self, msg: str, *args, **kwargs) -> None:  # noqa: ANN001, D401
+            """Record message invocations."""
+
+        def show(self) -> None:  # noqa: D401
+            """Do not display message boxes during tests."""
+
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.main.Message",
+        MessageRecorder,
+    )
+
+    with main_window_context(test_config=test_config) as main_window:
+        missing_wallet = Path(tempfile.mkdtemp()) / "missing.wallet"
+        expected_lock = missing_wallet.with_suffix(".lock")
+
+        assert not missing_wallet.exists()
+        assert not expected_lock.exists()
+
+        assert main_window.open_wallet(str(missing_wallet)) is None
+        assert not expected_lock.exists()

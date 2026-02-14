@@ -1942,7 +1942,9 @@ class MainWindow(QMainWindow):
             )
             return None
 
-        if not QTWallet.get_wallet_lockfile(Path(file_path)):
+        wallet_file_path = Path(file_path)
+        wallet_lockfile_path = QTWallet.get_wallet_lockfile_path(wallet_file_path)
+        if wallet_lockfile_path.exists():
             if not question_dialog(
                 self.tr(
                     "The wallet {file_path} is already open.  Do you want to open the wallet anyway?"
@@ -1990,7 +1992,7 @@ class MainWindow(QMainWindow):
                 if isinstance(result, QTWallet):
                     return result, password
 
-            directory, filename = os.path.split(file_path)
+            _, filename = os.path.split(file_path)
             ui_password_question = PasswordQuestion(
                 label_text=self.tr("Please enter the password for {filename}:").format(filename=filename)
             )
@@ -2030,6 +2032,11 @@ class MainWindow(QMainWindow):
         if qt_wallet and password:
             # successfuly load, then cache the password
             self.password_cache.set_password("wallet", password)
+
+        if not QTWallet.get_wallet_lockfile(wallet_file_path):
+            logger.warning(
+                f"Could not create lock file {wallet_lockfile_path} after loading wallet {file_path}"
+            )
 
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
         QApplication.processEvents()
