@@ -57,6 +57,7 @@ from __future__ import annotations
 
 import enum
 import logging
+from collections.abc import Iterable
 from functools import partial
 from typing import Any
 
@@ -67,13 +68,13 @@ from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
-from typing_extensions import Self
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe.storage import BaseSaveableClass
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.util import fast_version
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -116,7 +117,12 @@ def tooltip_text_of_utxo(is_spent_by_txid: str | None, chain_position: bdk.Chain
 
 
 class UTXOList(MyTreeView[OutPoint]):
-    class Columns(MyTreeView.BaseColumnsEnum):
+    VERSION = "0.0.1"
+    known_classes = {
+        **BaseSaveableClass.known_classes,
+    }
+
+    class Columns(MyTreeView.Columns):
         STATUS = enum.auto()
         WALLET_ID = enum.auto()
         OUTPOINT = enum.auto()
@@ -147,7 +153,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths: dict[MyTreeView.BaseColumnsEnum, int] = {
+    column_widths: dict[MyTreeView.Columns, int] = {
         Columns.STATUS: 15,
         Columns.ADDRESS: 100,
         Columns.AMOUNT: 100,
@@ -179,7 +185,7 @@ class UTXOList(MyTreeView[OutPoint]):
         txout_dict: dict[str, bdk.TxOut] | dict[str, TxOut] | None = None,
         sort_column: int | None = None,
         sort_order: Qt.SortOrder | None = None,
-        hidden_columns: list[int] | None = None,
+        hidden_columns_enum: Iterable[Columns] | None = None,
         selected_ids: list[str] | None = None,
         _scroll_position=0,
     ):
@@ -189,7 +195,7 @@ class UTXOList(MyTreeView[OutPoint]):
             config (UserConfig): _description_
         signals (WalletFunctions): _description_
             outpoints (List[OutPoint]): _description_
-            hidden_columns (_type_, optional): _description_. Defaults to None.
+            hidden_columns_enum (_type_, optional): _description_. Defaults to None.
             txout_dict (Dict[str, bdk.TxOut], optional): Can be used to augment
                 the list with infos, if the utxo is not from the own wallet.
                 Defaults to None.
@@ -202,7 +208,13 @@ class UTXOList(MyTreeView[OutPoint]):
             signals=wallet_functions.signals,
             sort_column=sort_column if sort_column is not None else UTXOList.Columns.ADDRESS,
             sort_order=sort_order if sort_order is not None else Qt.SortOrder.AscendingOrder,
-            hidden_columns=hidden_columns,
+            hidden_columns_enum=hidden_columns_enum
+            if hidden_columns_enum is not None
+            else [
+                self.Columns.OUTPOINT,
+                self.Columns.WALLET_ID,
+                self.Columns.FIAT_BALANCE,
+            ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
         )
@@ -244,10 +256,12 @@ class UTXOList(MyTreeView[OutPoint]):
         return d
 
     @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
-        """From dump."""
-        super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**filtered_for_init(dct, cls))
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
+            cls._do_hidden_column_migration(dct)
+
+        return super().from_dump_migration(dct=dct)
 
     def on_update_fx_rates(self):
         """On update fx rates."""
@@ -356,7 +370,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
         return wallet, python_utxo, address, satoshis
 
-    def get_headers(self) -> dict[MyTreeView.BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
         """Get headers."""
         currency_symbol = self.fx.get_currency_symbol()
         return {
@@ -618,12 +632,6 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
         d = super().dump()
         d["utxo_list"] = self.utxo_list
         return d
-
-    @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> Self:
-        """From dump."""
-        super()._from_dump(dct, class_kwargs=class_kwargs)
-        return cls(**filtered_for_init(dct, cls))
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         """Update with filter."""

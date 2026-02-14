@@ -565,14 +565,12 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
 
     key_column = 0
 
-    class BaseColumnsEnum(enum.IntEnum):
+    class Columns(enum.IntEnum):
         @staticmethod
         def _generate_next_value_(name: str, start: int, count: int, last_values) -> int:
             # this is overridden to get a 0-based counter
             """Generate next value."""
             return count
-
-    Columns: type[BaseColumnsEnum]
 
     VERSION = "0.0.0"
     known_classes = {
@@ -585,11 +583,11 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         signals: Signals,
         parent: QWidget | None = None,
         stretch_column: int | None = None,
-        column_widths: dict[BaseColumnsEnum, int] | None = None,
-        editable_columns: Sequence[int] | None = None,
+        column_widths: dict[Columns, int] | None = None,
+        editable_columns: Iterable[Columns] | None = None,
         sort_column: int | None = None,
         sort_order: Qt.SortOrder = Qt.SortOrder.AscendingOrder,
-        hidden_columns: list[int] | None = None,
+        hidden_columns_enum: Iterable[Columns] | None = None,
         selected_ids: list[str] | None = None,
         _scroll_position: int | None = None,
     ) -> None:
@@ -598,7 +596,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         self.signals = signals
         self._source_model = MyStandardItemModel(key_column=self.key_column, parent=self)
         self.config = config
-        self.hidden_columns = hidden_columns if hidden_columns else []
+        self.hidden_columns_enum = set(hidden_columns_enum or set())
         self.stretch_column = stretch_column
         self.column_widths = column_widths if column_widths else {}
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -669,7 +667,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
     def dump(self) -> dict[str, Any]:
         """Dump."""
         d = super().dump()
-        d["hidden_columns"] = self.hidden_columns
+        d["hidden_columns_enum"] = [c.name for c in self.hidden_columns_enum]
         d["_scroll_position"] = (
             scrollbar.value() if (scrollbar := self.verticalScrollBar()) else self._scroll_position
         )
@@ -677,9 +675,27 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         return d
 
     @classmethod
+    def _do_hidden_column_migration(cls, dct: dict[str, Any]):
+        hidden_columns_int = dct.get("hidden_columns")
+        try:
+            dct["hidden_columns_enum"] = (
+                hidden_columns_int
+                if hidden_columns_int is None
+                else [list(cls.Columns)[i].name for i in hidden_columns_int]
+            )
+        except Exception:
+            logger.error(f"Could not convert {hidden_columns_int} to new format")
+
+    @classmethod
     def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> MyTreeView:
         """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
+        hidden_columns_enum = dct.get("hidden_columns_enum")
+        dct["hidden_columns_enum"] = (
+            hidden_columns_enum
+            if hidden_columns_enum is None
+            else [cls.Columns[name] for name in hidden_columns_enum if name in cls.Columns.__members__]
+        )
         return cls(**filtered_for_init(dct, cls))
 
     def get_drop_rules(self) -> list[DropRule]:
@@ -1047,7 +1063,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
 
     def update_headers(
         self,
-        headers: dict[BaseColumnsEnum, QStandardItem],
+        headers: dict[Columns, QStandardItem],
     ) -> None:
         """Update headers."""
         if not isinstance(header := self.header(), QHeaderView):
@@ -1481,8 +1497,8 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         # processEvents is important to ensure the scrollbar updates its values and the restoration works
         self._restore_selection()
 
-        for hidden_column in self.hidden_columns:
-            self.hideColumn(hidden_column)
+        for hidden_column in self.hidden_columns_enum:
+            self.hideColumn(hidden_column.value)
 
         # this MUST be after the selection,
         # such that on_selection_change is not triggered
@@ -1532,21 +1548,21 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         """Set allow edit."""
         self.allow_edit = allow_edit
 
-    def get_headers(self) -> dict[BaseColumnsEnum, QStandardItem]:
+    def get_headers(self) -> dict[Columns, QStandardItem]:
         """Get headers."""
         return {col: header_item(col.name) for col in self.Columns}
 
-    def set_column_hidden(self, col: BaseColumnsEnum, hide: bool):
+    def set_column_hidden(self, col: Columns, hide: bool):
         """Set column hidden."""
         self.setColumnHidden(col.value, hide)
-        if hide and col not in self.hidden_columns:
-            self.hidden_columns.append(col)
-        if not hide and col in self.hidden_columns:
-            self.hidden_columns.remove(col)
+        if hide and col not in self.hidden_columns_enum:
+            self.hidden_columns_enum.add(col)
+        if not hide and col in self.hidden_columns_enum:
+            self.hidden_columns_enum.remove(col)
 
-    def toggle_column_hidden(self, col: BaseColumnsEnum):
+    def toggle_column_hidden(self, col: Columns):
         """Toggle column hidden."""
-        self.set_column_hidden(col, col.value not in self.hidden_columns)
+        self.set_column_hidden(col, col not in set(self.hidden_columns_enum))
 
     def close(self) -> bool:
         """Close."""
@@ -1670,7 +1686,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
                 partial(self.searchable_list.toggle_column_hidden, column),
             )
             action.setCheckable(True)
-            action.setChecked(column.value not in self.searchable_list.hidden_columns)
+            action.setChecked(column not in self.searchable_list.hidden_columns_enum)
 
     def show_toolbar(self, is_visible: bool, config=None) -> None:
         """Show toolbar."""

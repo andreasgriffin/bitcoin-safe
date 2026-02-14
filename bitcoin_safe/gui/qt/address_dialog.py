@@ -280,11 +280,8 @@ class AddressDialog(QWidget):
             wallet_functions=self.wallet_functions,
             mempool_manager=self.mempool_manager,
             wallets=[self.wallet],
-            hidden_columns=[
-                HistList.Columns.TXID,
-                HistList.Columns.BALANCE,
-            ],
             address_domain=[self.address],
+            hidden_columns_enum=[HistList.Columns.TXID, HistList.Columns.BALANCE],
         )
         vbox.addWidget(self.hist_list)
 

@@ -69,15 +69,13 @@ class CategoryManager(QWidget):
             config=config,
             category_core=category_core,
             signals=category_core.signals,
-            hidden_columns=(
-                [
-                    CategoryList.Columns.COLOR,
-                    CategoryList.Columns.TXO_BALANCE,
-                    CategoryList.Columns.UTXO_BALANCE,
-                    CategoryList.Columns.UTXO_COUNT,
-                    CategoryList.Columns.TXO_COUNT,
-                ]
-            ),
+            hidden_columns_enum=[
+                CategoryList.Columns.COLOR,
+                CategoryList.Columns.TXO_BALANCE,
+                CategoryList.Columns.UTXO_BALANCE,
+                CategoryList.Columns.UTXO_COUNT,
+                CategoryList.Columns.TXO_COUNT,
+            ],
         )
         self.category_list_with_toolbar = CategoryListWithToolbar(
             category_list=self.category_list, config=config, parent=self

@@ -1269,13 +1269,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 config=self.config,
                 wallet_functions=self.wallet_functions,
                 wallets=[self.wallet],
-                hidden_columns=(
-                    [
-                        HistList.Columns.WALLET_ID,
-                        HistList.Columns.BALANCE,
-                        HistList.Columns.TXID,
-                    ]
-                ),
                 mempool_manager=self.mempool_manager,
             )
             history_list_with_toolbar = HistListWithToolbar(hist_list, self.config, parent=tabs)
@@ -1409,7 +1402,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 config=self.config,
                 wallets=[self.wallet],
                 wallet_functions=self.wallet_functions,
-                hidden_columns=([AddressList.Columns.WALLET_ID, AddressList.Columns.INDEX]),
             )
             address_list_with_toolbar = AddressListWithToolbar(
                 address_list=address_list,
