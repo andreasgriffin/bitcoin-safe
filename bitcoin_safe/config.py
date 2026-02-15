@@ -69,7 +69,7 @@ class UserConfig(BaseSaveableClass):
         NetworkConfigs.__name__: NetworkConfigs,
         BitcoinSymbol.__name__: BitcoinSymbol,
     }
-    VERSION = "0.2.8"
+    VERSION = "0.2.9"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -243,6 +243,16 @@ class UserConfig(BaseSaveableClass):
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.6"):
             # disable labeling of change
             dct["auto_label_change_addresses"] = False
+
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.9"):
+            migrated_network_configs: NetworkConfigs | None = dct.get("network_configs")
+            if migrated_network_configs:
+                testnet4_config = migrated_network_configs.configs.get(bdk.Network.TESTNET4.name)
+                if testnet4_config and testnet4_config.server_type == BlockchainType.CompactBlockFilter:
+                    electrum_default = get_electrum_configs(bdk.Network.TESTNET4)["default"]
+                    testnet4_config.server_type = BlockchainType.Electrum
+                    testnet4_config.electrum_url = testnet4_config.electrum_url or electrum_default.url
+                    testnet4_config.electrum_use_ssl = electrum_default.use_ssl
 
         return super().from_dump_migration(dct=dct)
 

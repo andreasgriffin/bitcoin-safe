@@ -28,11 +28,13 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import bdkpython as bdk
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.network_config import get_electrum_configs
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.storage import Storage
 from bitcoin_safe.wallet import Wallet
@@ -126,3 +128,24 @@ def test_config_0_1_6_rpc() -> None:
 
     assert config.network_config.proxy_url is None
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
+
+
+def test_config_0_2_8_testnet4_cbf_migrates_to_electrum(tmp_path: Path) -> None:
+    """Test config 0 2 8 testnet4 cbf migrates to electrum."""
+    config = UserConfig()
+    config.network = bdk.Network.TESTNET4
+    config.network_config.server_type = BlockchainType.CompactBlockFilter
+    config.network_config.electrum_url = ""
+
+    serialized = json.loads(config.dumps())
+    serialized["VERSION"] = "0.2.8"
+
+    file_path = tmp_path / "config_0.2.8_testnet4_cbf.conf"
+    file_path.write_text(json.dumps(serialized), encoding="utf-8")
+
+    migrated = UserConfig.from_file(file_path=file_path)
+    default_testnet4_electrum = get_electrum_configs(bdk.Network.TESTNET4)["default"]
+    assert migrated.network == bdk.Network.TESTNET4
+    assert migrated.network_config.server_type == BlockchainType.Electrum
+    assert migrated.network_config.electrum_url == default_testnet4_electrum.url
+    assert migrated.network_config.electrum_use_ssl == default_testnet4_electrum.use_ssl
