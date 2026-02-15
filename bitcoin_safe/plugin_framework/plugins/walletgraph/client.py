@@ -37,7 +37,8 @@ from typing import cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtGui import QShowEvent
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QKeySequence, QShortcut, QShowEvent
 from PyQt6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
@@ -108,6 +109,8 @@ class WalletGraphClient(PluginClient):
 
         self.export_button = QPushButton()
         self.export_button.setEnabled(False)
+        self.shortcut_reset_zoom = QShortcut(QKeySequence("Alt+0"), self)
+        self.shortcut_reset_zoom.setContext(Qt.ShortcutContext.ApplicationShortcut)
 
         self.instructions_label = QLabel(
             translate(
@@ -131,6 +134,9 @@ class WalletGraphClient(PluginClient):
         self.signal_tracker.connect(cast(SignalProtocol[[]], self.refresh_button.clicked), self.refresh_graph)
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.export_button.clicked), self.on_export_graph
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.shortcut_reset_zoom.activated), self._on_reset_zoom_shortcut
         )
         self.updateUi()
 
@@ -235,6 +241,12 @@ class WalletGraphClient(PluginClient):
         if self.graph_view.is_drawing:
             return
         self.refresh_graph()
+
+    def _on_reset_zoom_shortcut(self) -> None:
+        """Reset zoom when this plugin is currently visible."""
+        if not self.enabled or not self.isVisible() or not self.graph_view.isVisible():
+            return
+        self.graph_view.reset_zoom()
 
     def on_export_graph(self) -> None:
         """On export graph."""
