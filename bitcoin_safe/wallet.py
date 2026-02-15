@@ -64,6 +64,7 @@ from typing_extensions import Self
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
@@ -104,7 +105,6 @@ from .pythonbdk_types import (
 from .signals import UpdateFilter, WalletFunctions
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from .tx_constants import LOCAL_TX_LAST_SEEN
 from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache, short_address
 
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker

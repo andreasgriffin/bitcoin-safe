@@ -45,9 +45,10 @@ from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject
 
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
+
 from .locktime_estimation import estimate_locktime_datetime
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
-from .tx_constants import LOCAL_TX_LAST_SEEN
 from .util import fast_version
 
 logger = logging.getLogger(__name__)

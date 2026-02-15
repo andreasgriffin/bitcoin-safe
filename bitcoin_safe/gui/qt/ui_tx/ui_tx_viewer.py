@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.address_comparer import AddressComparer, FuzzyMatch
 from bitcoin_safe.client import Client
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
@@ -102,7 +103,6 @@ from ....signer import (
     SignatureImporterWallet,
 )
 from ....wallet import (
-    LOCAL_TX_LAST_SEEN,
     ToolsTxUiInfo,
     TxConfirmationStatus,
     TxStatus,

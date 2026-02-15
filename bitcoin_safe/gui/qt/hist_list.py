@@ -75,7 +75,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QWidget
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN, MIN_RELAY_FEE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -89,7 +89,7 @@ from bitcoin_safe.util import fast_version
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...wallet import LOCAL_TX_LAST_SEEN, ToolsTxUiInfo, TxStatus, Wallet, get_wallets
+from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .cbf_progress_bar import CBFProgressBar
 from .drag_info import AddressDragInfo
 from .history_range import DateRangePicker

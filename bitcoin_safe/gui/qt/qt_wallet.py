@@ -67,6 +67,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.client import ProgressInfo, UpdateInfo
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
@@ -104,7 +105,6 @@ from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, Wallet
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...util import fast_version
 from ...wallet import (
-    LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
     TxStatus,
