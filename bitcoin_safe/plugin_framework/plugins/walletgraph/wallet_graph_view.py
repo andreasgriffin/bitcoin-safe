@@ -37,10 +37,11 @@ from typing import cast
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util import time_logger
-from PyQt6.QtCore import QPointF, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QPointF, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QWheelEvent
 from PyQt6.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsView, QWidget
 
+from bitcoin_safe.gui.qt.pan_zoom_mixin import PanZoomMixin
 from bitcoin_safe.gui.qt.util import ColorScheme
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugins.walletgraph.wallet_graph_items import (
@@ -57,7 +58,7 @@ from bitcoin_safe.wallet import Wallet
 logger = logging.getLogger(__name__)
 
 
-class WalletGraphView(QGraphicsView):
+class WalletGraphView(PanZoomMixin, QGraphicsView):
     transactionClicked = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     MIN_TX_SPACING = 180.0
@@ -83,6 +84,7 @@ class WalletGraphView(QGraphicsView):
         self._tx_positions: dict[str, float] = {}
         self._current_wallet: Wallet | None = None
         self._current_details: list[FullTxDetail] = []
+        self.init_pan_zoom()
 
     def clear(self) -> None:
         """Clear."""
@@ -110,12 +112,19 @@ class WalletGraphView(QGraphicsView):
         """WheelEvent."""
         if not event:
             return
-        if event.angleDelta().y() > 0:
-            factor = 1.2
-        else:
-            factor = 1 / 1.2
-        self.scale(factor, factor)
-        event.accept()
+        if self.pan_zoom_handle_wheel_event(event, wheel_zooms=True):
+            return
+        super().wheelEvent(event)
+
+    def event(self, event: QEvent | None) -> bool:
+        """Process events, including native trackpad gestures."""
+        if self.pan_zoom_handle_event(event):
+            return True
+        return super().event(event)
+
+    def reset_zoom(self) -> None:
+        """Reset view transform while preserving current center."""
+        self.pan_zoom_reset_zoom(preserve_center=True)
 
     @time_logger
     def render_graph(

@@ -37,8 +37,10 @@ from typing import Protocol
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import Qt, pyqtBoundSignal
+from PyQt6.QtCore import QByteArray, Qt, pyqtBoundSignal
 from PyQt6.QtGui import QBrush, QColor, QPen, QTextCharFormat, QTextCursor
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtWidgets import (
     QGraphicsEllipseItem,
     QGraphicsItem,
@@ -50,12 +52,12 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.util import ColorScheme, ColorSchemeItem
+from bitcoin_safe.gui.qt.util import ColorScheme, ColorSchemeItem, sort_id_to_icon, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import FullTxDetail, PythonUtxo
 from bitcoin_safe.signals import WalletSignals
 from bitcoin_safe.tx import short_tx_id
-from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.wallet import TxStatus, Wallet
 
 logger = logging.getLogger(__name__)
 ENABLE_WALLET_GRAPH_TOOLTIPS = False
@@ -639,6 +641,8 @@ class TransactionItem(QGraphicsRectItem):
     LABEL_MARGIN = 12.0
     DEFAULT_WIDTH = 100.0
     DEFAULT_HEIGHT = 44.0
+    STATUS_ICON_SIZE = 16
+    STATUS_ICON_PADDING = 4.0
 
     def __init__(
         self,
@@ -688,6 +692,9 @@ class TransactionItem(QGraphicsRectItem):
             color=label_color,
             parent=self,
         )
+        self._status_icon_renderer: QSvgRenderer | None = None
+        self._status_icon_item: QGraphicsSvgItem | None = None
+        self._add_status_icon(wallet)
 
         tooltip = self._transaction_tooltip(
             detail,
@@ -699,6 +706,42 @@ class TransactionItem(QGraphicsRectItem):
         if ENABLE_WALLET_GRAPH_TOOLTIPS:
             self.setToolTip(tooltip)
             self.label_item.setToolTip(label_tooltip)
+
+    def _add_status_icon(self, wallet: Wallet | None) -> None:
+        """Add status icon matching history list semantics."""
+        if not wallet:
+            return
+        status = TxStatus.from_wallet(self.txid, wallet)
+        icon_name = sort_id_to_icon(status.sort_id())
+        svg_content = svg_tools.get_svg_content(icon_name)
+        if not svg_content:
+            return
+
+        renderer = QSvgRenderer()
+        if not renderer.load(QByteArray(svg_content.encode("utf-8"))):
+            return
+
+        icon_item = QGraphicsSvgItem(parent=self)
+        icon_item.setSharedRenderer(renderer)
+        icon_item.setElementId("")
+        default_size = renderer.defaultSize()
+        if default_size.width() <= 0 or default_size.height() <= 0:
+            return
+        scale_factor = min(
+            self.STATUS_ICON_SIZE / default_size.width(),
+            self.STATUS_ICON_SIZE / default_size.height(),
+        )
+        icon_item.setScale(scale_factor)
+        rect = self.rect()
+        icon_item.setPos(
+            rect.right() - self.STATUS_ICON_SIZE - self.STATUS_ICON_PADDING,
+            rect.top() + self.STATUS_ICON_PADDING,
+        )
+        icon_item.setZValue(self.zValue() + 1)
+        icon_item.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
+        icon_item.setAcceptHoverEvents(False)
+        self._status_icon_renderer = renderer
+        self._status_icon_item = icon_item
 
     def set_highlight_target(self, target: Highlightable | None) -> None:
         """Set highlight target."""
