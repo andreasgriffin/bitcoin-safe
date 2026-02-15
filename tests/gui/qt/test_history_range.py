@@ -171,14 +171,8 @@ def test_history_range_coupling(
         def expected_chart_range_for_picker(
             requested_start_ts: float,
             requested_end_ts: float,
-            full_start_ts: float,
-            full_end_ts: float,
         ) -> tuple[float, float]:
             start_ts, end_ts = sorted((requested_start_ts, requested_end_ts))
-            start_ts = max(start_ts, full_start_ts)
-            end_ts = min(end_ts, full_end_ts)
-            if start_ts > end_ts:
-                start_ts, end_ts = full_start_ts, full_end_ts
             return float(int(start_ts)), float(int(end_ts))
 
         full_start = qt_wallet.wallet_balance_chart.datetime_axis.min().toSecsSinceEpoch()
@@ -220,8 +214,6 @@ def test_history_range_coupling(
         custom_chart_start_ts, custom_chart_end_ts = expected_chart_range_for_picker(
             custom_start,
             custom_end,
-            float(full_start),
-            float(full_end),
         )
         qtbot.waitUntil(
             lambda: chart_axis_matches(custom_chart_start_ts, custom_chart_end_ts),
@@ -295,8 +287,6 @@ def test_history_range_coupling(
         picker_chart_start_ts, picker_chart_end_ts = expected_chart_range_for_picker(
             picker_start_ts,
             picker_end_ts,
-            float(full_start),
-            float(full_end),
         )
         qtbot.waitUntil(
             lambda: chart_axis_matches(picker_chart_start_ts, picker_chart_end_ts),
@@ -312,8 +302,6 @@ def test_history_range_coupling(
         last_7_chart_start_ts, last_7_chart_end_ts = expected_chart_range_for_picker(
             last_7_start_ts,
             last_7_end_ts,
-            float(full_start),
-            float(full_end),
         )
         qtbot.waitUntil(
             lambda: chart_axis_matches(last_7_chart_start_ts, last_7_chart_end_ts),
@@ -331,6 +319,15 @@ def test_history_range_coupling(
 
         date_picker.set_preset(DateRangePreset.LAST_30_DAYS)
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
+        last_30_start_ts = datetime.combine((now - timedelta(days=30)).date(), dt_time.min).timestamp()
+        last_30_end_ts = datetime.combine(now.date(), dt_time.max).timestamp()
+        last_30_chart_start_ts, last_30_chart_end_ts = expected_chart_range_for_picker(
+            last_30_start_ts, last_30_end_ts
+        )
+        qtbot.waitUntil(
+            lambda: chart_axis_matches(last_30_chart_start_ts, last_30_chart_end_ts),
+            timeout=5_000,
+        )
         shutter.save(main_window)
 
         date_picker.reset_button.click()

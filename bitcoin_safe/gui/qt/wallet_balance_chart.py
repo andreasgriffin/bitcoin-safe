@@ -661,12 +661,6 @@ class BalanceChart(QWidget):
     def set_time_range(self, start: datetime.datetime, end: datetime.datetime) -> None:
         """Set time range."""
         start, end = self._normalize_date_range(start, end)
-        if self._full_time_range:
-            full_start, full_end = self._full_time_range
-            start = max(start, full_start)
-            end = min(end, full_end)
-            if start > end:
-                start, end = full_start, full_end
         self._suppress_range_signal = True
         self.datetime_axis.setRange(
             QDateTime.fromSecsSinceEpoch(int(start.timestamp())),

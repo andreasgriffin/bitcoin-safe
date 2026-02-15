@@ -186,7 +186,10 @@ class DateRangePicker(QWidget):
             return
         date_range = self._range_for_preset(preset, datetime.datetime.now())
         self.set_range(date_range.start, date_range.end, update_preset=False)
-        normalized_range = self.get_range()
+        if preset == DateRangePreset.ALL_TIME and self._available_range is not None:
+            normalized_range = self._available_range
+        else:
+            normalized_range = self.get_range()
         self._update_custom_visibility()
         self.signal_range_changed.emit(normalized_range.start, normalized_range.end)
 
