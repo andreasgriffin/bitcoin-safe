@@ -38,7 +38,7 @@ from bitcoin_safe.locktime_estimation import (
 
 def test_estimate_locktime_datetime_zero_returns_now_without_height() -> None:
     now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
-    assert estimate_locktime_datetime(0, current_height=None, now=now) == now
+    assert estimate_locktime_datetime(0, current_height=0, now=now) == now
 
 
 def test_estimate_locktime_datetime_past_timestamp_is_in_past() -> None:
@@ -67,18 +67,10 @@ def test_estimate_locktime_datetime_timestamp_ignores_current_height() -> None:
     now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
     timestamp_locktime = LOCKTIME_THRESHOLD + 123_456
 
-    estimated_without_height = estimate_locktime_datetime(timestamp_locktime, current_height=None, now=now)
+    estimated_without_height = estimate_locktime_datetime(timestamp_locktime, current_height=0, now=now)
     estimated_with_height = estimate_locktime_datetime(timestamp_locktime, current_height=950_000, now=now)
 
     assert estimated_without_height == estimated_with_height
-
-
-def test_estimate_locktime_datetime_block_height_without_height_returns_none() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
-
-    estimated = estimate_locktime_datetime(840_000, current_height=None, now=now)
-
-    assert estimated is None
 
 
 def test_estimate_locktime_datetime_block_height_at_tip_returns_now() -> None:
