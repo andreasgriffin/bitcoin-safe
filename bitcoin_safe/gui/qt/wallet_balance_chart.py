@@ -51,24 +51,34 @@ from PyQt6.QtCharts import (
     QScatterSeries,
     QValueAxis,
 )
-from PyQt6.QtCore import QDateTime, QMargins, QPointF, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QBrush, QMouseEvent, QPainter, QPalette, QPen
+from PyQt6.QtCore import QDateTime, QEvent, QMargins, QPointF, Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import (
+    QAction,
+    QBrush,
+    QCursor,
+    QMouseEvent,
+    QPainter,
+    QPalette,
+    QPen,
+    QWheelEvent,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QGraphicsLayout,
     QMainWindow,
+    QMenu,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
-from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent
+from bitcoin_safe.gui.qt.pan_zoom_mixin import PanZoomInputMixin
+from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent, svg_tools
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
-from bitcoin_safe.tx import estimate_locktime_datetime
 from bitcoin_safe.util import monotone_increasing_timestamps
-from bitcoin_safe.wallet import Wallet, is_local
+from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -117,8 +127,10 @@ def find_nearest_point(
     return nearest, idx, distance
 
 
-class TrackingChartView(QChartView):
+class TrackingChartView(PanZoomInputMixin, QChartView):
     signal_click = cast(SignalProtocol[[int]], pyqtSignal(int))
+    signal_reset_zoom = cast(SignalProtocol[[]], pyqtSignal())
+    _WHEEL_ZOOM_FACTOR = 1.2
 
     def __init__(
         self,
@@ -136,12 +148,24 @@ class TrackingChartView(QChartView):
         self.setMouseTracking(True)
         self.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         self.setRenderHint(QPainter.RenderHint.TextAntialiasing, True)
+        self.setRubberBand(QChartView.RubberBand.RectangleRubberBand)
+        self.setTransformationAnchor(QChartView.ViewportAnchor.AnchorUnderMouse)
+        self.setResizeAnchor(QChartView.ViewportAnchor.AnchorUnderMouse)
         self.line_series = line_series
         self.highlight_series = highlight_series
         self.highlight_radius = highlight_radius
         self.network = network
         self.show_tooltip = show_tooltip
         self.btc_symbol = btc_symbol
+        self.init_pan_zoom_input()
+        self._is_modifier_panning = False
+        self._last_pan_pos: QPointF | None = None
+
+    @property
+    def _pan_modifier(self) -> Qt.KeyboardModifier:
+        if platform.system() == "Darwin":
+            return Qt.KeyboardModifier.AltModifier
+        return Qt.KeyboardModifier.ControlModifier
 
     def to_float(self, v: float | QDateTime) -> float:
         """To float."""
@@ -181,6 +205,14 @@ class TrackingChartView(QChartView):
         chart = self.chart()
         if not chart or not event:
             return
+        if self._is_modifier_panning and self._last_pan_pos is not None:
+            delta = event.position() - self._last_pan_pos
+            self._pan_by_pixels(delta)
+            self._last_pan_pos = event.position()
+            event.accept()
+            return
+        if event.buttons() & Qt.MouseButton.LeftButton:
+            return super().mouseMoveEvent(event)
 
         # 1) Get data-space mouse position
         point: QPointF = chart.mapToValue(event.position(), self.line_series)
@@ -190,7 +222,7 @@ class TrackingChartView(QChartView):
         infos = self.get_highlight_point(ref_data=ref_data)
         if not infos:
             return super().mouseMoveEvent(event)
-        nearest_xy, index, distance = infos
+        nearest_xy, _, distance = infos
         # logger.info(str(distance))
 
         # 5) Highlight & tooltip
@@ -217,6 +249,19 @@ class TrackingChartView(QChartView):
         """MousePressEvent."""
         if not event:
             return
+        if event.button() == Qt.MouseButton.RightButton:
+            self._show_context_menu(event)
+            event.accept()
+            return
+        if event.button() == Qt.MouseButton.LeftButton and event.modifiers() & self._pan_modifier:
+            self._is_modifier_panning = True
+            self._last_pan_pos = event.position()
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            event.accept()
+            return
+        if event.button() == Qt.MouseButton.MiddleButton:
+            self.signal_reset_zoom.emit()
+            return
         if not (chart := self.chart()):
             return
         # 1) map click → data coords (using your series)
@@ -227,13 +272,206 @@ class TrackingChartView(QChartView):
         # 4) Find nearest (normalized data-space)
         infos = self.get_highlight_point(ref_data=ref_data)
         if not infos:
-            return super().mouseMoveEvent(event)
-        nearest_xy, index, distance = infos
+            return super().mousePressEvent(event)
+        _, index, _ = infos
 
         self.signal_click.emit(index)
 
         # 3) let the base class handle the rest (zooming, panning, etc.)
         super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event: QMouseEvent | None) -> None:
+        """MouseReleaseEvent."""
+        if not event:
+            return
+        if self._is_modifier_panning and event.button() == Qt.MouseButton.LeftButton:
+            self._is_modifier_panning = False
+            self._last_pan_pos = None
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    def _show_context_menu(self, event: QMouseEvent) -> None:
+        menu = QMenu(self)
+        reset_action = QAction(self.tr("Reset zoom"), menu)
+        reset_action.setIcon(svg_tools.get_QIcon("reset-zoom.svg"))
+        reset_action.triggered.connect(self.signal_reset_zoom.emit)
+        menu.addAction(reset_action)
+        menu.exec(event.globalPosition().toPoint())
+
+    def mouseDoubleClickEvent(self, event: QMouseEvent | None) -> None:
+        """MouseDoubleClickEvent."""
+        if not event:
+            return
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.signal_reset_zoom.emit()
+            event.accept()
+            return
+        super().mouseDoubleClickEvent(event)
+
+    def wheelEvent(self, event: QWheelEvent | None) -> None:
+        """WheelEvent."""
+        if not event:
+            return
+        if self.pan_zoom_is_touchpad_event(event):
+            if self.pan_zoom_touchpad_wheel_is_suppressed():
+                event.accept()
+                return
+            pan_delta = self.pan_zoom_wheel_pan_delta(event)
+            if pan_delta.isNull():
+                return super().wheelEvent(event)
+            self._pan_by_pixels(pan_delta)
+            event.accept()
+            return
+        steps = self.pan_zoom_wheel_steps(event)
+        if steps == 0:
+            return super().wheelEvent(event)
+        scale = 1.0 / (self._WHEEL_ZOOM_FACTOR**steps)
+        if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self._zoom_y_at_viewport_pos(event.position(), scale=scale)
+        else:
+            self._zoom_x_at_viewport_pos(event.position(), scale=scale)
+        event.accept()
+        return
+
+    def event(self, event: QEvent | None) -> bool:
+        native_event = self.pan_zoom_native_gesture_event(event)
+        if not native_event:
+            return super().event(event)
+
+        zoom_factor = self.pan_zoom_native_zoom_factor(native_event)
+        if zoom_factor is not None:
+            viewport = self.viewport()
+            if not viewport:
+                return super().event(event)
+            self._zoom_x_at_viewport_pos(
+                QPointF(viewport.mapFromGlobal(QCursor.pos())),
+                scale=1.0 / zoom_factor,
+            )
+            self.pan_zoom_suppress_touchpad_wheel_temporarily()
+            native_event.accept()
+            return True
+        pan_delta = self.pan_zoom_native_pan_delta(native_event)
+        if pan_delta is not None:
+            self._pan_by_pixels(pan_delta)
+            self.pan_zoom_suppress_touchpad_wheel_temporarily()
+            native_event.accept()
+            return True
+        return super().event(event)
+
+    def _pan_by_pixels(self, delta: QPointF) -> None:
+        chart = self.chart()
+        if not chart:
+            return
+        chart.scroll(-delta.x(), delta.y())
+
+    def _zoom_x_at_viewport_pos(self, viewport_pos: QPointF, scale: float) -> None:
+        x_axis = self._get_horizontal_axis()
+        self._zoom_axis_at_viewport_pos(
+            x_axis, viewport_pos, scale=scale, orientation=Qt.Orientation.Horizontal
+        )
+
+    def _zoom_y_at_viewport_pos(self, viewport_pos: QPointF, scale: float) -> None:
+        y_axis = self._get_vertical_axis()
+        self._zoom_axis_at_viewport_pos(
+            y_axis, viewport_pos, scale=scale, orientation=Qt.Orientation.Vertical
+        )
+
+    def _zoom_axis_at_viewport_pos(
+        self,
+        axis: QDateTimeAxis | QValueAxis | None,
+        viewport_pos: QPointF,
+        scale: float,
+        orientation: Qt.Orientation,
+    ) -> None:
+        chart = self.chart()
+        if not axis or not chart:
+            return
+        current_min, current_max = self._axis_range(axis)
+        if current_max <= current_min:
+            return
+
+        anchor_value = self._axis_anchor_from_viewport_pos(
+            viewport_pos=viewport_pos,
+            current_min=current_min,
+            current_max=current_max,
+            orientation=orientation,
+        )
+        clamped_scale = max(0.05, min(20.0, scale))
+        new_min = anchor_value - (anchor_value - current_min) * clamped_scale
+        new_max = anchor_value + (current_max - anchor_value) * clamped_scale
+        self._set_axis_range(axis, new_min, new_max)
+
+    def _axis_anchor_from_viewport_pos(
+        self,
+        viewport_pos: QPointF,
+        current_min: float,
+        current_max: float,
+        orientation: Qt.Orientation,
+    ) -> float:
+        chart = self.chart()
+        if not chart:
+            return (current_min + current_max) / 2.0
+        scene_pos = self.mapToScene(viewport_pos.toPoint())
+        chart_pos = chart.mapFromScene(scene_pos)
+        plot_area = chart.plotArea()
+
+        if orientation == Qt.Orientation.Horizontal:
+            if plot_area.width() <= 0:
+                return (current_min + current_max) / 2.0
+            clamped_pos = min(max(chart_pos.x(), plot_area.left()), plot_area.right())
+            ratio = (clamped_pos - plot_area.left()) / plot_area.width()
+            return current_min + ratio * (current_max - current_min)
+
+        if plot_area.height() <= 0:
+            return (current_min + current_max) / 2.0
+        clamped_pos = min(max(chart_pos.y(), plot_area.top()), plot_area.bottom())
+        ratio = (plot_area.bottom() - clamped_pos) / plot_area.height()
+        return current_min + ratio * (current_max - current_min)
+
+    def _get_horizontal_axis(self) -> QDateTimeAxis | QValueAxis | None:
+        chart = self.chart()
+        if not chart:
+            return None
+        axes = chart.axes(Qt.Orientation.Horizontal, self.line_series)
+        if not axes:
+            return None
+        axis = axes[0]
+        if not isinstance(axis, (QDateTimeAxis, QValueAxis)):
+            return None
+        return axis
+
+    def _get_vertical_axis(self) -> QDateTimeAxis | QValueAxis | None:
+        chart = self.chart()
+        if not chart:
+            return None
+        axes = chart.axes(Qt.Orientation.Vertical, self.line_series)
+        if not axes:
+            return None
+        axis = axes[0]
+        if not isinstance(axis, (QDateTimeAxis, QValueAxis)):
+            return None
+        return axis
+
+    @staticmethod
+    def _axis_range(axis: QDateTimeAxis | QValueAxis) -> tuple[float, float]:
+        if isinstance(axis, QDateTimeAxis):
+            return (
+                float(axis.min().toMSecsSinceEpoch()),
+                float(axis.max().toMSecsSinceEpoch()),
+            )
+        return axis.min(), axis.max()
+
+    @staticmethod
+    def _set_axis_range(axis: QDateTimeAxis | QValueAxis, min_value: float, max_value: float) -> None:
+        if isinstance(axis, QDateTimeAxis):
+            axis.setRange(
+                QDateTime.fromMSecsSinceEpoch(int(min_value)),
+                QDateTime.fromMSecsSinceEpoch(int(max_value)),
+            )
+            return
+        axis.setRange(min_value, max_value)
 
 
 @dataclass
@@ -245,6 +483,16 @@ class ChartPoint:
 
 class BalanceChart(QWidget):
     default_buffer_time_in_sec = 60 * 60
+    signal_time_range_changed = cast(
+        SignalProtocol[[datetime.datetime, datetime.datetime]], pyqtSignal(object, object)
+    )
+    signal_full_range_changed = cast(
+        SignalProtocol[[datetime.datetime, datetime.datetime]], pyqtSignal(object, object)
+    )
+    signal_zoom_reset = cast(
+        SignalProtocol[[datetime.datetime, datetime.datetime]], pyqtSignal(object, object)
+    )
+    signal_zoom_state_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(
         self,
@@ -260,6 +508,9 @@ class BalanceChart(QWidget):
         self.project_until_now = show_time_up_to_now
         self.signal_tracker = SignalTracker()
         self.y_axis_text = y_axis_text
+        self._full_time_range: tuple[datetime.datetime, datetime.datetime] | None = None
+        self._full_value_range: tuple[float, float] | None = None
+        self._suppress_range_signal = False
         color_text = blend_qcolors(
             self.palette().color(QPalette.ColorRole.Dark), self.palette().color(QPalette.ColorRole.Text)
         )
@@ -296,6 +547,7 @@ class BalanceChart(QWidget):
 
         # Layout
         self._layout = QVBoxLayout()
+        self._layout.setContentsMargins(0, 0, 0, 0)
 
         # Reduce the overall chart margins
         self.chart.setMargins(QMargins(0, 0, 0, 0))  # Smaller margins (left, top, right, bottom)
@@ -324,6 +576,9 @@ class BalanceChart(QWidget):
         self.chart.addAxis(self.value_axis, Qt.AlignmentFlag.AlignLeft)
         self.chart.setBackgroundRoundness(0)
 
+        self.datetime_axis.rangeChanged.connect(self._on_time_axis_range_changed)
+        self.value_axis.rangeChanged.connect(self._on_value_axis_range_changed)
+
         # Attach axes
         self.line_series.attachAxis(self.datetime_axis)
         self.line_series.attachAxis(self.value_axis)
@@ -339,6 +594,8 @@ class BalanceChart(QWidget):
             highlight_radius=highlight_radius,
             btc_symbol=btc_symbol,
         )
+        self.chart_view.signal_reset_zoom.connect(self.reset_zoom)
+
         self._layout.addWidget(self.chart_view)
 
         self.chart.setBackgroundVisible(False)
@@ -383,16 +640,102 @@ class BalanceChart(QWidget):
         else:
             self.datetime_axis.setFormat("d MMM")
 
+    def _on_time_axis_range_changed(self, start: QDateTime, end: QDateTime) -> None:
+        start_dt = self._qdatetime_to_datetime(start)
+        end_dt = self._qdatetime_to_datetime(end)
+        self.set_time_axis_label_format([start_dt.timestamp(), end_dt.timestamp()])
+        if self._suppress_range_signal:
+            return
+        self.signal_time_range_changed.emit(start_dt, end_dt)
+        self.signal_zoom_state_changed.emit(self.is_zoomed())
+
+    def _on_value_axis_range_changed(self, _min: float, _max: float) -> None:
+        if self._suppress_range_signal:
+            return
+        self.signal_zoom_state_changed.emit(self.is_zoomed())
+
+    def get_full_range(self) -> tuple[datetime.datetime, datetime.datetime] | None:
+        """Get full range."""
+        return self._full_time_range
+
+    def set_time_range(self, start: datetime.datetime, end: datetime.datetime) -> None:
+        """Set time range."""
+        start, end = self._normalize_date_range(start, end)
+        if self._full_time_range:
+            full_start, full_end = self._full_time_range
+            start = max(start, full_start)
+            end = min(end, full_end)
+            if start > end:
+                start, end = full_start, full_end
+        self._suppress_range_signal = True
+        self.datetime_axis.setRange(
+            QDateTime.fromSecsSinceEpoch(int(start.timestamp())),
+            QDateTime.fromSecsSinceEpoch(int(end.timestamp())),
+        )
+        self._suppress_range_signal = False
+        self.set_time_axis_label_format([start.timestamp(), end.timestamp()])
+        self.signal_zoom_state_changed.emit(self.is_zoomed())
+
+    def reset_zoom(self) -> None:
+        """Reset zoom."""
+        if not self._full_time_range or not self._full_value_range:
+            return
+        full_start, full_end = self._full_time_range
+        full_min, full_max = self._full_value_range
+        self._suppress_range_signal = True
+        self.datetime_axis.setRange(
+            QDateTime.fromSecsSinceEpoch(int(full_start.timestamp())),
+            QDateTime.fromSecsSinceEpoch(int(full_end.timestamp())),
+        )
+        self.value_axis.setRange(full_min, full_max)
+        self._suppress_range_signal = False
+        self.set_time_axis_label_format([full_start.timestamp(), full_end.timestamp()])
+        self.signal_zoom_state_changed.emit(self.is_zoomed())
+        self.signal_zoom_reset.emit(full_start, full_end)
+
+    def is_zoomed(self) -> bool:
+        """Return True when chart ranges are not at their defaults."""
+        if not self._full_time_range or not self._full_value_range:
+            return False
+        full_start, full_end = self._full_time_range
+        full_min, full_max = self._full_value_range
+        current_start = self._qdatetime_to_datetime(self.datetime_axis.min())
+        current_end = self._qdatetime_to_datetime(self.datetime_axis.max())
+        if abs((current_start - full_start).total_seconds()) > 1:
+            return True
+        if abs((current_end - full_end).total_seconds()) > 1:
+            return True
+        if abs(self.value_axis.min() - full_min) > 1e-9:
+            return True
+        if abs(self.value_axis.max() - full_max) > 1e-9:
+            return True
+        return False
+
+    @staticmethod
+    def _normalize_date_range(
+        start: datetime.datetime, end: datetime.datetime
+    ) -> tuple[datetime.datetime, datetime.datetime]:
+        if start <= end:
+            return start, end
+        return end, start
+
+    @staticmethod
+    def _qdatetime_to_datetime(value: QDateTime) -> datetime.datetime:
+        return datetime.datetime.fromtimestamp(value.toSecsSinceEpoch())
+
     def update_chart(self, points: list[ChartPoint]) -> None:
         """Update chart."""
-        self.points = points
-        if len(points) == 0:
-            return
+        self.points = list(points)
         self.line_series.clear()
+        if len(self.points) == 0:
+            self.highlight_series.clear()
+            self._full_time_range = None
+            self._full_value_range = None
+            return
 
         self.datetime_axis.setTickCount(6)
-        x_values = [p.x for p in points]
-        y_values = [p.y for p in points]
+        x_values = [p.x for p in self.points]
+        y_values = [p.y for p in self.points]
         self.set_value_axis_label_format(max(y_values))
 
         # Variables to store the min/max values for the axes
@@ -400,24 +743,26 @@ class BalanceChart(QWidget):
         max_balance: float = 0
         min_timestamp = float("inf")
         max_timestamp = datetime.datetime.now().timestamp() if self.project_until_now else float("inf")
-        for p in points:
+        for p in self.points:
             max_balance = max(max_balance, p.y)
             min_balance = min(min_balance, p.y)
             max_timestamp = max(max_timestamp, p.x)
             min_timestamp = min(min_timestamp, p.x)
 
+        chart_points: list[ChartPoint] = []
         #  add the 0 balance as first data point
-        points.insert(0, ChartPoint(x=min_timestamp, y=0, id="initial balance"))
+        chart_points.append(ChartPoint(x=min_timestamp, y=0, id="initial balance"))
+        chart_points.extend(self.points)
 
         # add the current time as last point, if the data is in the past
         if self.project_until_now and datetime.datetime.now().timestamp() > max(x_values):
-            points.append(
-                ChartPoint(x=datetime.datetime.now().timestamp(), y=points[-1].y, id="today balance")
+            chart_points.append(
+                ChartPoint(x=datetime.datetime.now().timestamp(), y=chart_points[-1].y, id="today balance")
             )
 
         self.set_time_axis_label_format(x_values=x_values)
 
-        for p in points:
+        for p in chart_points:
             self.line_series.append(
                 QDateTime.fromSecsSinceEpoch(int(p.x)).toMSecsSinceEpoch(),
                 p.y,
@@ -432,11 +777,21 @@ class BalanceChart(QWidget):
             QDateTime.fromSecsSinceEpoch(int(min_timestamp - buffer_time)),
             QDateTime.fromSecsSinceEpoch(int(max_timestamp + buffer_time)),
         )
+        self._suppress_range_signal = True
         self.datetime_axis.setRange(min_x, max_x)
 
         buffer_factor = 0.1
         self.value_axis.setMin(0)
         self.value_axis.setMax(max_balance * (1 + buffer_factor))
+        self._suppress_range_signal = False
+
+        self._full_time_range = (
+            self._qdatetime_to_datetime(min_x),
+            self._qdatetime_to_datetime(max_x),
+        )
+        self._full_value_range = (self.value_axis.min(), self.value_axis.max())
+        self.signal_full_range_changed.emit(*self._full_time_range)
+        self.signal_zoom_state_changed.emit(self.is_zoomed())
 
         pen = QPen()
         pen.setColor(ColorScheme.OrangeBitcoin.as_color())
@@ -514,8 +869,8 @@ class WalletBalanceChart(BalanceChart):
         if not should_update:
             return
 
-        fallback_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
-        now_timestamp = datetime.datetime.now().timestamp()
+        fallback_timestamp = (datetime.datetime.now() - datetime.timedelta(minutes=10)).timestamp()
+        now = datetime.datetime.now()
 
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
@@ -528,11 +883,10 @@ class WalletBalanceChart(BalanceChart):
             [
                 (
                     transaction_details.get_height(unconfirmed_height=self.wallet.get_height()),
-                    self._get_transaction_datetime(
-                        transaction_details=transaction_details,
-                        fallback_timestamp=fallback_time.timestamp(),
+                    transaction_details.get_datetime(
+                        fallback_timestamp=fallback_timestamp,
                         current_height=current_height,
-                        now_timestamp=now_timestamp,
+                        now=now,
                     ),
                 )
                 for transaction_details in self.transactions
@@ -546,25 +900,6 @@ class WalletBalanceChart(BalanceChart):
 
         # Update BalanceChart
         self.update_chart(balance_data)
-
-    @staticmethod
-    def _get_transaction_datetime(
-        transaction_details: TransactionDetails,
-        fallback_timestamp: float,
-        current_height: int,
-        now_timestamp: float,
-    ) -> datetime.datetime:
-        """Return the chart datetime for a transaction."""
-        base_datetime = transaction_details.get_datetime(fallback_timestamp=fallback_timestamp)
-        if not is_local(transaction_details.chain_position):
-            return base_datetime
-        locktime = transaction_details.transaction.lock_time()
-        if locktime <= 0:
-            return base_datetime
-        estimated = estimate_locktime_datetime(locktime, current_height)
-        if estimated and estimated.timestamp() > now_timestamp:
-            return estimated.replace(tzinfo=None)
-        return base_datetime
 
 
 class TransactionSimulator(QMainWindow):

@@ -116,6 +116,7 @@ from .bitcoin_quick_receive import BitcoinQuickReceive
 from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
+from .history_range import HistoryRangeController
 from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
 
@@ -1300,6 +1301,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             parent=top_widget,
         )
         wallet_balance_chart.signal_click_transaction.connect(self.on_hist_chart_click)
+        self.history_range_controller = HistoryRangeController(
+            date_range_picker=history_list_with_toolbar.date_range_picker,
+            wallet_balance_chart=wallet_balance_chart,
+            history_list=history_list_with_toolbar.hist_list,
+            parent=tab,
+        )
 
         balance_group = QWidget(self)
         self.balance_label_title = QLabel()

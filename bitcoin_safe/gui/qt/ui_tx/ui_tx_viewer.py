@@ -29,7 +29,6 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
 from functools import partial
 from time import time
 from typing import Any, cast
@@ -74,7 +73,8 @@ from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.tx import estimate_locktime_datetime, is_nlocktime_already_valid, short_tx_id
+from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
+from bitcoin_safe.tx import short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -1553,14 +1553,7 @@ class UITx_Viewer(UITx_Base):
         if nlocktime is None:
             self.column_fee.set_nlocktime_visibility(False, current_height=chain_height, reset_on_hide=False)
         else:
-            estimated_datetime = estimate_locktime_datetime(nlocktime, chain_height)
-            if estimated_datetime is None:
-                self.column_fee.set_nlocktime_visibility(
-                    True, current_height=chain_height, reset_on_hide=False
-                )
-                self.update_nlocktime_warning(nlocktime, chain_height)
-                return
-            is_valid = datetime.now(timezone.utc) >= estimated_datetime
+            is_valid = is_nlocktime_already_valid(nlocktime, chain_height)
             self.column_fee.set_nlocktime_visibility(
                 not is_valid, current_height=chain_height, reset_on_hide=False
             )
