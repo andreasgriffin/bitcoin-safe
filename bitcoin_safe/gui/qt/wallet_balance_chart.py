@@ -650,6 +650,9 @@ class BalanceChart(QWidget):
         self.signal_zoom_state_changed.emit(self.is_zoomed())
 
     def _on_value_axis_range_changed(self, _min: float, _max: float) -> None:
+        visible_span = abs(_max - _min)
+        if visible_span > 0:
+            self.set_value_axis_label_format(visible_span)
         if self._suppress_range_signal:
             return
         self.signal_zoom_state_changed.emit(self.is_zoomed())
