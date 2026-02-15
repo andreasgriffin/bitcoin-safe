@@ -563,7 +563,7 @@ class BlockchainType(enum.Enum):
     @classmethod
     def active_types(cls, network: bdk.Network) -> list[BlockchainType]:
         """Active types."""
-        if network == bdk.Network.TESTNET:
+        if network in [bdk.Network.TESTNET, bdk.Network.TESTNET4]:
             return [cls.Electrum, cls.Esplora]
         return [cls.CompactBlockFilter, cls.Electrum, cls.Esplora]
 
