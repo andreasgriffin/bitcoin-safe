@@ -74,7 +74,8 @@ from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.tx import estimate_locktime_datetime, is_nlocktime_already_valid, short_tx_id
+from bitcoin_safe.locktime_estimation import estimate_locktime_datetime, is_nlocktime_already_valid
+from bitcoin_safe.tx import short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager

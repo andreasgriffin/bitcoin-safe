@@ -142,9 +142,20 @@ class WalletGraphView(QGraphicsView):
 
         timestamped: list[tuple[FullTxDetail, float]] = []
         fallback_base = time.time()
+        current_height = wallet.get_height()
+        now = datetime.datetime.now(datetime.timezone.utc)
         for index, detail in enumerate(details_list):
             fallback = fallback_base + index
-            timestamped.append((detail, self._detail_timestamp(detail, fallback=fallback)))
+            timestamped.append(
+                (
+                    detail,
+                    detail.tx.get_datetime(
+                        fallback_timestamp=fallback,
+                        current_height=current_height,
+                        now=now,
+                    ).timestamp(),
+                )
+            )
 
         timestamped.sort(key=lambda item: item[1])
         sorted_details = [item[0] for item in timestamped]
@@ -219,14 +230,6 @@ class WalletGraphView(QGraphicsView):
     def jump_to_transaction(self, txid: str) -> bool:
         """Jump to transaction."""
         return self.center_on_transaction(txid)
-
-    def _detail_timestamp(self, detail: FullTxDetail, fallback: float) -> float:
-        """Detail timestamp."""
-        try:
-            dt = detail.tx.get_datetime(fallback_timestamp=fallback)
-        except ValueError:
-            dt = datetime.datetime.fromtimestamp(fallback)
-        return dt.timestamp()
 
     def _max_output_value(self, details: Iterable[FullTxDetail]) -> int:
         """Max output value."""

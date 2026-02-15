@@ -64,6 +64,7 @@ from typing_extensions import Self
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo
+from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
 from bitcoin_safe.psbt_util import FeeInfo, FeeRate
@@ -96,20 +97,19 @@ from .pythonbdk_types import (
     TxOut,
     UtxosForInputs,
     enum,
+    is_local,
     robust_address_str_from_script,
     robust_address_str_from_txout,
 )
 from .signals import UpdateFilter, WalletFunctions
 from .storage import BaseSaveableClass, filtered_for_init
-from .tx import TxBuilderInfos, TxUiInfos, is_nlocktime_already_valid, short_tx_id
+from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
+from .tx_constants import LOCAL_TX_LAST_SEEN
 from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache, short_address
 
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker
 
 logger = logging.getLogger(__name__)
-
-
-LOCAL_TX_LAST_SEEN = 0
 
 
 class InconsistentBDKState(Exception):
@@ -138,22 +138,13 @@ class TxConfirmationStatus(enum.Enum):
             return translate("wallet", "Draft")
 
 
-def is_local(chain_position: bdk.ChainPosition | None) -> bool:
-    """Return True when the chain position matches a locally stored tx."""
-    return (
-        isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED)
-        and chain_position.timestamp == LOCAL_TX_LAST_SEEN
-    )
-
-
 def is_in_mempool(chain_position: bdk.ChainPosition | None) -> bool:
     """Return True if the chain position reflects a mempool transaction."""
     if chain_position is None:
         return False
     if isinstance(chain_position, bdk.ChainPosition.CONFIRMED):
         return False
-    local = is_local(chain_position=chain_position)
-    return not local
+    return not is_local(chain_position=chain_position)
 
 
 class TxStatus:

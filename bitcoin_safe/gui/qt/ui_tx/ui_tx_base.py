@@ -54,9 +54,13 @@ from bitcoin_safe.gui.qt.ui_tx.recipients import Recipients
 from bitcoin_safe.gui.qt.ui_tx.util import get_rbf_fee_label
 from bitcoin_safe.gui.qt.util import adjust_bg_color_for_darkmode
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
+from bitcoin_safe.locktime_estimation import (
+    LOCKTIME_THRESHOLD,
+    MAX_NLOCKTIME,
+    estimate_locktime_datetime,
+)
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import OutPoint, Recipient, TransactionDetails
-from bitcoin_safe.tx import LOCKTIME_THRESHOLD, MAX_NLOCKTIME, estimate_locktime_datetime
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager

@@ -30,12 +30,15 @@ from __future__ import annotations
 
 import logging
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta, timezone
 from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 
+from bitcoin_safe.locktime_estimation import (
+    LOCKTIME_THRESHOLD,
+    MAX_NLOCKTIME,
+)
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
@@ -51,62 +54,12 @@ from .pythonbdk_types import (
 
 logger = logging.getLogger(__name__)
 
-LOCKTIME_THRESHOLD = 500_000_000
-MAX_NLOCKTIME = 0xFFFFFFFF
-MEDIAN_TIME_PAST_LAG_MINUTES = 60
-
 
 def short_tx_id(txid: str | bdk.Txid) -> str:
     """Short tx id."""
     if isinstance(txid, bdk.Txid):
         txid = str(txid)
     return f"{txid[:4]}...{txid[-4:]}"
-
-
-def estimate_locktime_datetime(
-    nlocktime: int,
-    current_height: int | None,
-    now: datetime | None = None,
-    median_time_past_lag_minutes: int = MEDIAN_TIME_PAST_LAG_MINUTES,
-) -> datetime | None:
-    """Estimate the datetime for a given nlocktime.
-
-    - For timestamp locktimes (>= LOCKTIME_THRESHOLD), returns the UTC datetime.
-    - For block-height locktimes, estimates using 10 minutes per block.
-    """
-    now = now or datetime.now(timezone.utc)
-    if nlocktime >= LOCKTIME_THRESHOLD:
-        return datetime.fromtimestamp(nlocktime, tz=timezone.utc) + timedelta(
-            minutes=median_time_past_lag_minutes
-        )
-    if current_height is None:
-        return None
-    # see: https://en.bitcoin.it/wiki/NLockTime
-    block_delta = nlocktime - current_height
-    if block_delta <= 0:
-        return now
-    max_datetime = datetime.max.replace(tzinfo=timezone.utc)
-    max_minutes = int((max_datetime - now).total_seconds() // 60)
-    estimated_minutes = 10 * block_delta
-    if estimated_minutes >= max_minutes:
-        return max_datetime
-    return now + timedelta(minutes=estimated_minutes)
-
-
-def is_nlocktime_already_valid(
-    nlocktime: int,
-    current_height: int,
-    now: datetime | None = None,
-    median_time_past_lag_minutes: int = MEDIAN_TIME_PAST_LAG_MINUTES,
-) -> bool:
-    """Return whether a locktime is already valid."""
-    estimated_datetime = estimate_locktime_datetime(
-        nlocktime, current_height, now=now, median_time_past_lag_minutes=median_time_past_lag_minutes
-    )
-    if estimated_datetime is None:
-        return False
-    now = now or datetime.now(timezone.utc)
-    return estimated_datetime <= now
 
 
 def calc_minimum_rbf_fee_info(
