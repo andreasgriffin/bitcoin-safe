@@ -1120,6 +1120,41 @@ def set_no_margins(layout: QLayout) -> None:
     layout.setContentsMargins(0, 0, 0, 0)
 
 
+def add_item_with_top_spacer(
+    parent_layout: QBoxLayout,
+    item: QWidget | QLayout,
+    top_offset_px: int = 0,
+    restrict_to_macos: bool = True,
+    index: int | None = None,
+) -> None:
+    """Add a widget or layout, optionally wrapped with a top spacer."""
+    should_wrap = top_offset_px > 0 and (not restrict_to_macos or sys.platform == "darwin")
+    if should_wrap:
+        wrapped_layout = QVBoxLayout()
+        wrapped_layout.setContentsMargins(0, 0, 0, 0)
+        wrapped_layout.setSpacing(0)
+        wrapped_layout.addSpacing(top_offset_px)
+        if isinstance(item, QWidget):
+            wrapped_layout.addWidget(item)
+        else:
+            wrapped_layout.addLayout(item)
+        item_to_add: QWidget | QLayout = wrapped_layout
+    else:
+        item_to_add = item
+
+    if isinstance(item_to_add, QWidget):
+        if index is None:
+            parent_layout.addWidget(item_to_add)
+        else:
+            parent_layout.insertWidget(index, item_to_add)
+        return
+
+    if index is None:
+        parent_layout.addLayout(item_to_add)
+    else:
+        parent_layout.insertLayout(index, item_to_add)
+
+
 def set_translucent(widget: QWidget):
     """— make backgrounds transparent —"""
     widget.setObjectName(f"widget{id(widget)}")

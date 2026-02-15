@@ -45,10 +45,20 @@ from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from PyQt6.QtCore import QObject
 
+from .locktime_estimation import estimate_locktime_datetime
 from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from .tx_constants import LOCAL_TX_LAST_SEEN
 from .util import fast_version
 
 logger = logging.getLogger(__name__)
+
+
+def is_local(chain_position: bdk.ChainPosition | None) -> bool:
+    """Return True when the chain position matches a locally stored tx."""
+    return (
+        isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED)
+        and chain_position.timestamp == LOCAL_TX_LAST_SEEN
+    )
 
 
 def is_address(a: str, network: bdk.Network) -> bool:
@@ -375,16 +385,49 @@ class TransactionDetails:
             return unconfirmed_height
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
 
-    def get_datetime(self, fallback_timestamp: float = 0) -> datetime.datetime:
-        """Get datetime."""
+    def get_datetime(
+        self,
+        current_height: int,
+        fallback_timestamp: float = 0,
+        now: datetime.datetime | None = None,
+    ) -> datetime.datetime:
+        """Return an aware UTC datetime for this transaction."""
+        now_utc = (now or datetime.datetime.now(datetime.timezone.utc)).astimezone(datetime.timezone.utc)
         if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
             return datetime.datetime.fromtimestamp(
-                self.chain_position.confirmation_block_time.confirmation_time
+                self.chain_position.confirmation_block_time.confirmation_time,
+                tz=datetime.timezone.utc,
             )
         if isinstance(self.chain_position, bdk.ChainPosition.UNCONFIRMED):
-            return datetime.datetime.fromtimestamp(self.chain_position.timestamp or fallback_timestamp)
+            timestamp = self.chain_position.timestamp or fallback_timestamp
+            base_datetime = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+
+            # Local txs use timestamp=LOCAL_TX_LAST_SEEN; project future nLockTime.
+            if is_local(self.chain_position):
+                locktime = self.transaction.lock_time()
+                estimated = estimate_locktime_datetime(
+                    locktime,
+                    current_height=current_height,
+                    now=now_utc,
+                )
+                if estimated.timestamp() > now_utc.timestamp():
+                    return estimated.astimezone(datetime.timezone.utc)
+            return base_datetime
 
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
+
+    def get_timestamp(
+        self,
+        current_height: int,
+        fallback_timestamp: float = 0,
+        now: datetime.datetime | None = None,
+    ) -> float:
+        """Return the Unix timestamp for this transaction datetime."""
+        return self.get_datetime(
+            fallback_timestamp=fallback_timestamp,
+            current_height=current_height,
+            now=now,
+        ).timestamp()
 
 
 class FullTxDetail:

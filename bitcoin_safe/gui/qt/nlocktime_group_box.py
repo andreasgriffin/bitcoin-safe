@@ -50,8 +50,12 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.icon_label import IconLabel
+from bitcoin_safe.locktime_estimation import (
+    LOCKTIME_THRESHOLD,
+    MAX_NLOCKTIME,
+    MEDIAN_TIME_PAST_LAG_MINUTES,
+)
 from bitcoin_safe.signals import SignalProtocol
-from bitcoin_safe.tx import LOCKTIME_THRESHOLD, MAX_NLOCKTIME, MEDIAN_TIME_PAST_LAG_MINUTES
 
 logger = logging.getLogger(__name__)
 
