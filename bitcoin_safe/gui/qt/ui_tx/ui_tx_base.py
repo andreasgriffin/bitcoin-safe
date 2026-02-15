@@ -55,7 +55,6 @@ from bitcoin_safe.gui.qt.ui_tx.util import get_rbf_fee_label
 from bitcoin_safe.gui.qt.util import adjust_bg_color_for_darkmode
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.locktime_estimation import (
-    LOCKTIME_THRESHOLD,
     MAX_NLOCKTIME,
     estimate_locktime_datetime,
 )
@@ -177,23 +176,12 @@ class NLocktimeFutureWarningBar(NotificationBar):
         self.icon_label.setText(f"{title} {description}")
         self.setVisible(True)
 
-    def update_nlocktime_warning(self, nlocktime: int | None, current_height: int | None) -> None:
+    def update_nlocktime_warning(self, nlocktime: int | None, current_height: int) -> None:
         """Update nlocktime warning."""
         if nlocktime is None:
             self.setVisible(False)
             return
-        if nlocktime >= LOCKTIME_THRESHOLD:
-            locktime_datetime = estimate_locktime_datetime(nlocktime, current_height)
-            if locktime_datetime is None:
-                self.setVisible(False)
-                return
-            self._warn_far_future(locktime_datetime)
-            return
-        estimated_datetime = estimate_locktime_datetime(nlocktime, current_height)
-        if estimated_datetime is None:
-            self.setVisible(False)
-            return
-        self._warn_far_future(estimated_datetime)
+        self._warn_far_future(estimate_locktime_datetime(nlocktime, current_height))
 
 
 class UITx_Base(SearchableTab):

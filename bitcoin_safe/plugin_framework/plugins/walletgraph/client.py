@@ -312,7 +312,7 @@ class WalletGraphClient(PluginClient):
 
         fallback_base = time.time()
         wallet = self.graph_view.current_wallet
-        current_height = wallet.get_height() if wallet else None
+        current_height = wallet.get_height() if wallet else 0
         now = datetime.datetime.now(datetime.timezone.utc)
 
         timestamped_details = [

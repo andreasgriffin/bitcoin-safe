@@ -80,7 +80,6 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.locktime_estimation import estimate_locktime_datetime
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
@@ -490,24 +489,24 @@ class HistList(MyTreeView[str]):
         now = datetime.now()
         current_height = wallet.get_height()
         nlocktime = tx.transaction.lock_time()
-        nlocktime_datetime = estimate_locktime_datetime(
-            nlocktime,
-            current_height=current_height,
-            now=now.astimezone(),
-        )
-        tx_timestamp = tx.get_datetime(
+        tx_date_time_estimated = tx.get_datetime(
             fallback_timestamp=now.timestamp(),
             current_height=current_height,
             now=now,
-        ).timestamp()
+        )
+        tx_date_time_estimated_timestamp = tx_date_time_estimated.timestamp()
         items[self.Columns.NLOCKTIME].setText(str(nlocktime))
         items[self.Columns.NLOCKTIME].setData(nlocktime, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         items[self.Columns.NLOCKTIME].setData(nlocktime, MyItemDataRole.ROLE_SORT_ORDER)
         items[self.Columns.NLOCKTIME_TIME].setText(
-            nlocktime_datetime.astimezone().strftime("%Y-%m-%d %H:%M") if nlocktime_datetime else ""
+            tx_date_time_estimated.astimezone().strftime("%Y-%m-%d %H:%M")
         )
-        items[self.Columns.NLOCKTIME_TIME].setData(tx_timestamp, MyItemDataRole.ROLE_SORT_ORDER)
-        items[self.Columns.NLOCKTIME_TIME].setData(tx_timestamp, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.NLOCKTIME_TIME].setData(
+            tx_date_time_estimated_timestamp, MyItemDataRole.ROLE_SORT_ORDER
+        )
+        items[self.Columns.NLOCKTIME_TIME].setData(
+            tx_date_time_estimated_timestamp, MyItemDataRole.ROLE_CLIPBOARD_DATA
+        )
 
     def _init_row(
         self, wallet: Wallet, tx: TransactionDetails, status_sort_index: int, old_balance: int
@@ -629,7 +628,9 @@ class HistList(MyTreeView[str]):
         fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
         status_text = ""
         if tx.chain_position.is_confirmed():
-            status_text = tx.get_datetime().astimezone().strftime("%Y-%m-%d %H:%M")
+            status_text = (
+                tx.get_datetime(current_height=wallet.get_height()).astimezone().strftime("%Y-%m-%d %H:%M")
+            )
         else:
             if status.is_in_mempool():
                 status_text = confirmation_wait_formatted(

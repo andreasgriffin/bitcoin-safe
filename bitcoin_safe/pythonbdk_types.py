@@ -387,8 +387,8 @@ class TransactionDetails:
 
     def get_datetime(
         self,
+        current_height: int,
         fallback_timestamp: float = 0,
-        current_height: int | None = None,
         now: datetime.datetime | None = None,
     ) -> datetime.datetime:
         """Return an aware UTC datetime for this transaction."""
@@ -405,22 +405,21 @@ class TransactionDetails:
             # Local txs use timestamp=LOCAL_TX_LAST_SEEN; project future nLockTime.
             if is_local(self.chain_position):
                 locktime = self.transaction.lock_time()
-                if locktime > 0:
-                    estimated = estimate_locktime_datetime(
-                        locktime,
-                        current_height=current_height,
-                        now=now_utc,
-                    )
-                    if estimated and estimated.timestamp() > now_utc.timestamp():
-                        return estimated.astimezone(datetime.timezone.utc)
+                estimated = estimate_locktime_datetime(
+                    locktime,
+                    current_height=current_height,
+                    now=now_utc,
+                )
+                if estimated.timestamp() > now_utc.timestamp():
+                    return estimated.astimezone(datetime.timezone.utc)
             return base_datetime
 
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
 
     def get_timestamp(
         self,
+        current_height: int,
         fallback_timestamp: float = 0,
-        current_height: int | None = None,
         now: datetime.datetime | None = None,
     ) -> float:
         """Return the Unix timestamp for this transaction datetime."""

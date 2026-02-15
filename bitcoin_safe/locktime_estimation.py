@@ -37,22 +37,22 @@ MAX_NLOCKTIME = 0xFFFFFFFF
 
 def estimate_locktime_datetime(
     nlocktime: int,
-    current_height: int | None,
+    current_height: int,
     now: datetime | None = None,
     median_time_past_lag_minutes: int = MEDIAN_TIME_PAST_LAG_MINUTES,
-) -> datetime | None:
+) -> datetime:
     """Estimate the datetime for a given nlocktime.
 
     - For timestamp locktimes (>= LOCKTIME_THRESHOLD), returns the UTC datetime.
     - For block-height locktimes, estimates using 10 minutes per block.
     """
     now = now or datetime.now(timezone.utc)
+    if nlocktime == 0:
+        return now
     if nlocktime >= LOCKTIME_THRESHOLD:
         return datetime.fromtimestamp(nlocktime, tz=timezone.utc) + timedelta(
             minutes=median_time_past_lag_minutes
         )
-    if current_height is None:
-        return None
     # see: https://en.bitcoin.it/wiki/NLockTime
     block_delta = nlocktime - current_height
     if block_delta <= 0:
@@ -75,7 +75,5 @@ def is_nlocktime_already_valid(
     estimated_datetime = estimate_locktime_datetime(
         nlocktime, current_height, now=now, median_time_past_lag_minutes=median_time_past_lag_minutes
     )
-    if estimated_datetime is None:
-        return False
     now = now or datetime.now(timezone.utc)
     return estimated_datetime <= now
