@@ -67,6 +67,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.client import ProgressInfo, UpdateInfo
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
@@ -104,7 +105,6 @@ from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, Wallet
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...util import fast_version
 from ...wallet import (
-    LOCAL_TX_LAST_SEEN,
     DeltaCacheListTransactions,
     ProtoWallet,
     TxStatus,
@@ -116,6 +116,7 @@ from .bitcoin_quick_receive import BitcoinQuickReceive
 from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
+from .history_range import HistoryRangeController
 from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
 
@@ -1300,6 +1301,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             parent=top_widget,
         )
         wallet_balance_chart.signal_click_transaction.connect(self.on_hist_chart_click)
+        self.history_range_controller = HistoryRangeController(
+            date_range_picker=history_list_with_toolbar.date_range_picker,
+            wallet_balance_chart=wallet_balance_chart,
+            history_list=history_list_with_toolbar.hist_list,
+            parent=tab,
+        )
 
         balance_group = QWidget(self)
         self.balance_label_title = QLabel()

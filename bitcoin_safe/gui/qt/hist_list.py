@@ -75,7 +75,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QWidget
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN, MIN_RELAY_FEE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -89,9 +89,10 @@ from bitcoin_safe.util import fast_version
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...wallet import LOCAL_TX_LAST_SEEN, ToolsTxUiInfo, TxStatus, Wallet, get_wallets
+from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .cbf_progress_bar import CBFProgressBar
 from .drag_info import AddressDragInfo
+from .history_range import DateRangePicker
 from .my_treeview import (
     MyItemDataRole,
     MySortModel,
@@ -105,6 +106,7 @@ from .util import (
     ButtonInfoType,
     Message,
     MessageType,
+    add_item_with_top_spacer,
     block_explorer_URL,
     button_info,
     category_color,
@@ -147,7 +149,7 @@ class AddressTypeFilter(IntEnum):
 
 
 class HistList(MyTreeView[str]):
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
     }
@@ -179,6 +181,8 @@ class HistList(MyTreeView[str]):
         LABEL = enum.auto()
         AMOUNT = enum.auto()
         BALANCE = enum.auto()
+        NLOCKTIME = enum.auto()
+        NLOCKTIME_TIME = enum.auto()
 
     filter_columns = [
         Columns.WALLET_ID,
@@ -196,6 +200,8 @@ class HistList(MyTreeView[str]):
         Columns.LABEL: Qt.AlignmentFlag.AlignVCenter,
         Columns.AMOUNT: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
         Columns.BALANCE: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
+        Columns.NLOCKTIME: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
+        Columns.NLOCKTIME_TIME: Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft,
     }
 
     column_widths: dict[MyTreeView.Columns, int] = {Columns.TXID: 100, Columns.WALLET_ID: 100}
@@ -227,6 +233,8 @@ class HistList(MyTreeView[str]):
                 HistList.Columns.WALLET_ID,
                 HistList.Columns.BALANCE,
                 HistList.Columns.TXID,
+                HistList.Columns.NLOCKTIME,
+                HistList.Columns.NLOCKTIME_TIME,
             ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
@@ -242,6 +250,7 @@ class HistList(MyTreeView[str]):
         self.show_change = AddressTypeFilter.ALL  # type: AddressTypeFilter
         self.show_used = AddressUsageStateFilter.ALL  # type: AddressUsageStateFilter
         self.balance = 0
+        self._date_range: tuple[datetime, datetime] | None = None
         # self.change_button = QComboBox(self)
         # self.change_button.currentIndexChanged.connect(self.toggle_change)
         # for (
@@ -296,6 +305,11 @@ class HistList(MyTreeView[str]):
         if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
             cls._do_hidden_column_migration(dct)
 
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
+            dct["hidden_columns_enum"] = (dct.get("hidden_columns_enum") or []) + [
+                cls.Columns.NLOCKTIME.name,
+                cls.Columns.NLOCKTIME_TIME.name,
+            ]
         return super().from_dump_migration(dct=dct)
 
     def get_file_data(self, txid: str) -> Data | None:
@@ -369,6 +383,41 @@ class HistList(MyTreeView[str]):
         self.show_used = AddressUsageStateFilter(state)
         self.update_content()
 
+    def set_date_range(self, start: datetime, end: datetime) -> None:
+        """Set date range."""
+        start, end = self._normalize_date_range(start, end)
+        date_range = (start, end)
+        if self._date_range == date_range:
+            return
+        self._date_range = date_range
+        self.update_base_hidden_rows()
+        self.filter()
+
+    def update_base_hidden_rows(self) -> None:
+        """Update base hidden rows."""
+        self.base_hidden_rows.clear()
+        if not self._date_range:
+            return
+        start, end = self._date_range
+        start_ts = start.timestamp()
+        end_ts = end.timestamp()
+        model = self._source_model
+        for row in range(model.rowCount()):
+            timestamp = model.data(
+                model.index(row, self.Columns.NLOCKTIME_TIME),
+                role=MyItemDataRole.ROLE_CLIPBOARD_DATA,
+            )
+            if timestamp is None:
+                continue
+            if timestamp < start_ts or timestamp > end_ts:
+                self.base_hidden_rows.add(row)
+
+    @staticmethod
+    def _normalize_date_range(start: datetime, end: datetime) -> tuple[datetime, datetime]:
+        if start <= end:
+            return start, end
+        return end, start
+
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         """Update with filter."""
@@ -413,6 +462,7 @@ class HistList(MyTreeView[str]):
                 self.refresh_row(txid, row)
 
         logger.debug(f"Updated  {log_info}")
+        self.update_base_hidden_rows()
 
         self._after_update_content()
 
@@ -426,7 +476,37 @@ class HistList(MyTreeView[str]):
             self.Columns.AMOUNT: header_item(self.tr("Δ"), tooltip=self.tr("Delta Balance")),
             self.Columns.BALANCE: header_item(self.tr("Balance")),
             self.Columns.TXID: header_item(self.tr("Txid"), tooltip=self.tr("Transaction id")),
+            self.Columns.NLOCKTIME: header_item(self.tr("nLocktime")),
+            self.Columns.NLOCKTIME_TIME: header_item(self.tr("Estimated timestamp")),
         }
+
+    def _set_locktime_items(
+        self,
+        items: list[QStandardItem],
+        tx: TransactionDetails,
+        wallet: Wallet,
+    ) -> None:
+        now = datetime.now()
+        current_height = wallet.get_height()
+        nlocktime = tx.transaction.lock_time()
+        tx_date_time_estimated = tx.get_datetime(
+            fallback_timestamp=now.timestamp(),
+            current_height=current_height,
+            now=now,
+        )
+        tx_date_time_estimated_timestamp = tx_date_time_estimated.timestamp()
+        items[self.Columns.NLOCKTIME].setText(str(nlocktime))
+        items[self.Columns.NLOCKTIME].setData(nlocktime, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.NLOCKTIME].setData(nlocktime, MyItemDataRole.ROLE_SORT_ORDER)
+        items[self.Columns.NLOCKTIME_TIME].setText(
+            tx_date_time_estimated.astimezone().strftime("%Y-%m-%d %H:%M")
+        )
+        items[self.Columns.NLOCKTIME_TIME].setData(
+            tx_date_time_estimated_timestamp, MyItemDataRole.ROLE_SORT_ORDER
+        )
+        items[self.Columns.NLOCKTIME_TIME].setData(
+            tx_date_time_estimated_timestamp, MyItemDataRole.ROLE_CLIPBOARD_DATA
+        )
 
     def _init_row(
         self, wallet: Wallet, tx: TransactionDetails, status_sort_index: int, old_balance: int
@@ -518,6 +598,7 @@ class HistList(MyTreeView[str]):
                 self._source_model.insertRow(count, items)
                 self.refresh_row(tx.txid, count)
 
+        self.update_base_hidden_rows()
         super().update_content()
         self._after_update_content()
 
@@ -547,7 +628,9 @@ class HistList(MyTreeView[str]):
         fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
         status_text = ""
         if tx.chain_position.is_confirmed():
-            status_text = tx.get_datetime().strftime("%Y-%m-%d %H:%M")
+            status_text = (
+                tx.get_datetime(current_height=wallet.get_height()).astimezone().strftime("%Y-%m-%d %H:%M")
+            )
         else:
             if status.is_in_mempool():
                 status_text = confirmation_wait_formatted(
@@ -580,6 +663,7 @@ class HistList(MyTreeView[str]):
         item[self.Columns.CATEGORIES].setText(category)
         item[self.Columns.CATEGORIES].setData(categories, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         item[self.Columns.CATEGORIES].setBackground(category_color(category))
+        self._set_locktime_items(item, tx, wallet)
 
     def create_menu(self, position: QPoint) -> Menu:
         """Create menu."""
@@ -847,6 +931,7 @@ class HistList(MyTreeView[str]):
 
 class HistListWithToolbar(TreeViewWithToolbar):
     VERSION = "0.0.0"
+    _MACOS_DATE_RANGE_PICKER_TOP_OFFSET_PX = 3
     known_classes = {
         **BaseSaveableClass.known_classes,
         HistList.__name__: HistList,
@@ -878,12 +963,19 @@ class HistListWithToolbar(TreeViewWithToolbar):
             text="",
             svg_tools=svg_tools,
         )
-        self.sync_button.setFixedWidth(self.sync_button.height())
         self.sync_button.clicked.connect(self._on_sync_button_clicked)
         self.toolbar.insertWidget(0, self.sync_button)
 
         self.cbf_progress_bar = CBFProgressBar(config=config, parent=self)
         self.toolbar.insertWidget(1, self.cbf_progress_bar)
+
+        self.date_range_picker = DateRangePicker(self)
+        add_item_with_top_spacer(
+            self.toolbar,
+            self.date_range_picker,
+            top_offset_px=self._MACOS_DATE_RANGE_PICKER_TOP_OFFSET_PX,
+            index=2,
+        )
 
         # signals
         self.hist_list.signals.language_switch.connect(self.updateUi)

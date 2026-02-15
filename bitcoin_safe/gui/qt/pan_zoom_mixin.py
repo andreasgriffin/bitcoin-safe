@@ -37,8 +37,8 @@ from PyQt6.QtGui import QInputDevice, QNativeGestureEvent, QWheelEvent
 from PyQt6.QtWidgets import QScrollBar, QWidget
 
 
-class PanZoomView(Protocol):
-    """Structural API required by PanZoomMixin."""
+class TransformPanZoomView(Protocol):
+    """Structural API required by TransformPanZoomMixin."""
 
     def resetTransform(self) -> None: ...
     def viewport(self) -> QWidget | None: ...
@@ -49,28 +49,84 @@ class PanZoomView(Protocol):
     def verticalScrollBar(self) -> QScrollBar | None: ...
 
 
-class PanZoomMixin:
-    """Reusable pan/zoom behavior for compatible graphics/chart views."""
+class PanZoomInputMixin:
+    """Reusable input parsing/suppression for wheel + native pan/zoom gestures."""
 
-    DEFAULT_WHEEL_ZOOM_FACTOR = 1.2
     DEFAULT_TOUCHPAD_WHEEL_SUPPRESSION_SECONDS = 0.12
-    _pan_zoom_wheel_zoom_factor: float
     _pan_zoom_touchpad_wheel_suppression_seconds: float
     _pan_zoom_suppress_touchpad_wheel_until: float
 
-    def _pan_zoom_view(self) -> PanZoomView:
+    def init_pan_zoom_input(
+        self, touchpad_wheel_suppression_seconds: float = DEFAULT_TOUCHPAD_WHEEL_SUPPRESSION_SECONDS
+    ) -> None:
+        """Initialize shared input state."""
+        self._pan_zoom_touchpad_wheel_suppression_seconds = touchpad_wheel_suppression_seconds
+        self._pan_zoom_suppress_touchpad_wheel_until = 0.0
+
+    def pan_zoom_is_touchpad_event(self, event: QWheelEvent) -> bool:
+        """Return True when a wheel event is emitted by a touchpad."""
+        device = event.pointingDevice()
+        return bool(device and device.type() == QInputDevice.DeviceType.TouchPad)
+
+    def pan_zoom_touchpad_wheel_is_suppressed(self) -> bool:
+        """Return whether touchpad wheel handling should currently be suppressed."""
+        return time.monotonic() < self._pan_zoom_suppress_touchpad_wheel_until
+
+    def pan_zoom_wheel_pan_delta(self, event: QWheelEvent) -> QPointF:
+        """Best-effort pan delta for touchpad wheel events."""
+        pixel_delta = event.pixelDelta()
+        if not pixel_delta.isNull():
+            return QPointF(pixel_delta)
+        angle_delta = event.angleDelta()
+        return QPointF(float(angle_delta.x() / 8.0), float(angle_delta.y() / 8.0))
+
+    def pan_zoom_wheel_steps(self, event: QWheelEvent) -> float:
+        """Return wheel steps from angle delta (120 units per step)."""
+        return event.angleDelta().y() / 120.0
+
+    def pan_zoom_native_gesture_event(self, event: QEvent | None) -> QNativeGestureEvent | None:
+        """Return native gesture event when applicable."""
+        if not event or event.type() != QEvent.Type.NativeGesture:
+            return None
+        return cast(QNativeGestureEvent, event)
+
+    def pan_zoom_native_zoom_factor(self, event: QNativeGestureEvent) -> float | None:
+        """Return multiplicative zoom factor for native zoom gesture."""
+        if event.gestureType() != Qt.NativeGestureType.ZoomNativeGesture:
+            return None
+        return math.exp(event.value())
+
+    def pan_zoom_native_pan_delta(self, event: QNativeGestureEvent) -> QPointF | None:
+        """Return pan delta for native pan gesture."""
+        if event.gestureType() != Qt.NativeGestureType.PanNativeGesture:
+            return None
+        return event.delta()
+
+    def pan_zoom_suppress_touchpad_wheel_temporarily(self) -> None:
+        """Avoid handling duplicated touchpad wheel events after native gestures."""
+        self._pan_zoom_suppress_touchpad_wheel_until = (
+            time.monotonic() + self._pan_zoom_touchpad_wheel_suppression_seconds
+        )
+
+
+class TransformPanZoomMixin(PanZoomInputMixin):
+    """Transform-based pan/zoom behavior for graphics views."""
+
+    DEFAULT_WHEEL_ZOOM_FACTOR = 1.2
+    _pan_zoom_wheel_zoom_factor: float
+
+    def _pan_zoom_view(self) -> TransformPanZoomView:
         """Return self cast to the protocol expected by this mixin."""
-        return cast(PanZoomView, self)
+        return cast(TransformPanZoomView, self)
 
     def init_pan_zoom(
         self,
         wheel_zoom_factor: float = DEFAULT_WHEEL_ZOOM_FACTOR,
-        touchpad_wheel_suppression_seconds: float = DEFAULT_TOUCHPAD_WHEEL_SUPPRESSION_SECONDS,
+        touchpad_wheel_suppression_seconds: float = PanZoomInputMixin.DEFAULT_TOUCHPAD_WHEEL_SUPPRESSION_SECONDS,
     ) -> None:
-        """Initialize pan/zoom runtime state."""
+        """Initialize transform pan/zoom state."""
         self._pan_zoom_wheel_zoom_factor = wheel_zoom_factor
-        self._pan_zoom_touchpad_wheel_suppression_seconds = touchpad_wheel_suppression_seconds
-        self._pan_zoom_suppress_touchpad_wheel_until = 0.0
+        self.init_pan_zoom_input(touchpad_wheel_suppression_seconds=touchpad_wheel_suppression_seconds)
 
     def pan_zoom_reset_zoom(self, preserve_center: bool = True) -> None:
         """Reset transform; optionally keep current scene center."""
@@ -87,20 +143,19 @@ class PanZoomMixin:
         view.centerOn(current_center)
 
     def pan_zoom_zoom_by_factor(self, factor: float) -> None:
-        """OS-independent zoom method."""
+        """Transform zoom by multiplicative factor."""
         if factor <= 0:
             return
         self._pan_zoom_view().scale(factor, factor)
 
     def pan_zoom_zoom_by_steps(self, steps: float) -> None:
-        """OS-independent zoom method using wheel-like steps."""
+        """Transform zoom using wheel-like step units."""
         if steps == 0:
             return
-        base_factor = self._pan_zoom_wheel_zoom_factor
-        self.pan_zoom_zoom_by_factor(base_factor**steps)
+        self.pan_zoom_zoom_by_factor(self._pan_zoom_wheel_zoom_factor**steps)
 
     def pan_zoom_pan_by_pixels(self, delta: QPointF) -> None:
-        """OS-independent pan method."""
+        """Pan by pixel delta using scrollbars."""
         view = self._pan_zoom_view()
         horizontal = view.horizontalScrollBar()
         vertical = view.verticalScrollBar()
@@ -110,65 +165,44 @@ class PanZoomMixin:
             vertical.setValue(vertical.value() - int(round(delta.y())))
 
     def pan_zoom_handle_wheel_event(self, event: QWheelEvent, wheel_zooms: bool) -> bool:
-        """Handle wheel input for both mouse-wheel zoom and touchpad pan."""
-        if self._is_touchpad_event(event):
-            if time.monotonic() < self._pan_zoom_suppress_touchpad_wheel_until:
+        """Handle wheel input for transform-based views."""
+        if self.pan_zoom_is_touchpad_event(event):
+            if self.pan_zoom_touchpad_wheel_is_suppressed():
                 event.accept()
                 return True
-            delta = self._wheel_pan_delta(event)
+            delta = self.pan_zoom_wheel_pan_delta(event)
             if not delta.isNull():
-                self.pan_zoom_pan_by_pixels(QPointF(delta))
+                self.pan_zoom_pan_by_pixels(delta)
             event.accept()
             return True
-
         if not wheel_zooms:
             return False
-
-        delta_y = event.angleDelta().y()
-        if delta_y == 0:
+        steps = self.pan_zoom_wheel_steps(event)
+        if steps == 0:
             return False
-        steps = delta_y / 120.0
         self.pan_zoom_zoom_by_steps(steps)
         event.accept()
         return True
 
     def pan_zoom_handle_native_gesture(self, event: QNativeGestureEvent) -> bool:
-        """Handle native gestures and suppress duplicate touchpad wheel events."""
-        if event.gestureType() == Qt.NativeGestureType.ZoomNativeGesture:
-            self.pan_zoom_zoom_by_factor(math.exp(event.value()))
-            self._suppress_touchpad_wheel_temporarily()
+        """Handle native pan/zoom gestures for transform-based views."""
+        zoom_factor = self.pan_zoom_native_zoom_factor(event)
+        if zoom_factor is not None:
+            self.pan_zoom_zoom_by_factor(zoom_factor)
+            self.pan_zoom_suppress_touchpad_wheel_temporarily()
             event.accept()
             return True
-
-        if event.gestureType() == Qt.NativeGestureType.PanNativeGesture:
-            self.pan_zoom_pan_by_pixels(event.delta())
-            self._suppress_touchpad_wheel_temporarily()
+        pan_delta = self.pan_zoom_native_pan_delta(event)
+        if pan_delta is not None:
+            self.pan_zoom_pan_by_pixels(pan_delta)
+            self.pan_zoom_suppress_touchpad_wheel_temporarily()
             event.accept()
             return True
-
         return False
 
     def pan_zoom_handle_event(self, event: QEvent | None) -> bool:
-        """Handle generic Qt events relevant for pan/zoom behavior."""
-        if not event or event.type() != QEvent.Type.NativeGesture:
+        """Handle native gesture events for transform-based views."""
+        native_event = self.pan_zoom_native_gesture_event(event)
+        if not native_event:
             return False
-        return self.pan_zoom_handle_native_gesture(cast(QNativeGestureEvent, event))
-
-    def _is_touchpad_event(self, event: QWheelEvent) -> bool:
-        """Return whether wheel event is emitted by a touchpad."""
-        device = event.pointingDevice()
-        return bool(device and device.type() == QInputDevice.DeviceType.TouchPad)
-
-    def _wheel_pan_delta(self, event: QWheelEvent) -> QPoint:
-        """Best-effort pan delta for touchpad wheel events."""
-        pixel_delta = event.pixelDelta()
-        if not pixel_delta.isNull():
-            return pixel_delta
-        angle_delta = event.angleDelta()
-        return QPoint(int(round(angle_delta.x() / 8.0)), int(round(angle_delta.y() / 8.0)))
-
-    def _suppress_touchpad_wheel_temporarily(self) -> None:
-        """Avoid handling duplicated touchpad wheel events after native gestures."""
-        self._pan_zoom_suppress_touchpad_wheel_until = (
-            time.monotonic() + self._pan_zoom_touchpad_wheel_suppression_seconds
-        )
+        return self.pan_zoom_handle_native_gesture(native_event)

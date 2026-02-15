@@ -324,9 +324,18 @@ class WalletGraphClient(PluginClient):
 
         fallback_base = time.time()
         wallet = self.graph_view.current_wallet
+        current_height = wallet.get_height() if wallet else 0
+        now = datetime.datetime.now(datetime.timezone.utc)
 
         timestamped_details = [
-            (detail, self.graph_view._detail_timestamp(detail, fallback_base + idx))
+            (
+                detail,
+                detail.tx.get_datetime(
+                    fallback_timestamp=fallback_base + idx,
+                    current_height=current_height,
+                    now=now,
+                ).timestamp(),
+            )
             for idx, detail in enumerate(details)
         ]
         timestamped_details.sort(key=lambda item: item[1])
