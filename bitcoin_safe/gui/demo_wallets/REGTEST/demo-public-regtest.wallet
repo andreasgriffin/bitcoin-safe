@@ -45,7 +45,7 @@
             "fingerprint": "44250C36",
             "key_origin": "m/84h/1h/0h",
             "label": "Signer 1",
-            "mnemonic": null,
+            "mnemonic": "catch favorite drip bench plunge purity rabbit slam crouch globe vapor honey",
             "network": {
                 "__enum__": true,
                 "name": "Network",
