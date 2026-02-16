@@ -1107,7 +1107,7 @@ class ReceiveTest(BaseTab):
                     So before you send a substantial amount of Bitcoin into the wallet, it is <b>crucial</b> to spend from the wallet and test all signers.     
                     <br>
                     <br>
-                    <b>Do NOT send large funds into the wallet, yet. Please complete all send tests first!</b>   
+                    <b>Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!</b>   
                     """  # noqa: E501
                 ).format(test_amount=test_amount),
                 add_html_and_body=True,
@@ -1568,7 +1568,9 @@ class SendTest(BaseTab):
 
         if self.num_keystores() == 1:
             text = html_f(
-                self.tr("Complete the send test to ensure the hardware signer works!"),
+                self.tr(
+                    "Please complete the self-send test. Get familiar with sending and using the hardware signers!"
+                ),
                 add_html_and_body=True,
                 p=True,
                 size=12,
@@ -1767,12 +1769,12 @@ class Wizard(WizardBase):
         steps = self.get_send_tests_steps()
         tx_text = self.tx_text(latest_test_number)
         if latest_test_number >= len(steps) - 1:
-            Message(self.tr("All Send tests done successfully."), type=MessageType.Info, parent=self)
+            Message(self.tr("All Self-Send tests done successfully."), type=MessageType.Info, parent=self)
         else:
             Message(
                 self.tr(
                     "The test transaction \n'{tx_text}'\n was done successfully. "
-                    "Please proceed to do the send test: \n'{next_text}'"
+                    "Please proceed to do the self-send test: \n'{next_text}'"
                 ).format(tx_text=tx_text, next_text=self.tx_text(latest_test_number + 1)),
                 type=MessageType.Info,
                 parent=self,
@@ -1916,7 +1918,7 @@ class Wizard(WizardBase):
     def tx_text(self, test_number: int) -> str:
         """Tx text."""
         if self.num_keystores() == 1:
-            return self.tr("Send Test")
+            return self.tr("Self-Send Test")
         else:
             return self.tr("Sign with {label}").format(label=self.get_send_test_labels()[test_number])
 
@@ -2010,9 +2012,9 @@ class Wizard(WizardBase):
         }
         for i, tutoral_step in enumerate(self.get_send_tests_steps()):
             labels[tutoral_step] = (
-                self.tr("Send test {j}").format(j=i + 1)
+                self.tr("Self-Send test {j}").format(j=i + 1)
                 if len(self.get_send_tests_steps()) > 1
-                else self.tr("Send test")
+                else self.tr("Self-Send test")
             )
 
         self.step_container.set_labels([labels[key] for key in self.tab_generators if key in labels])
