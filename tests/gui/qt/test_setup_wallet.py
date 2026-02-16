@@ -434,7 +434,7 @@ def test_wizard(
                 assert [recipient.address for recipient in viewer.recipients.recipients] == [
                     "bcrt1qmx7ke6j0amadeca65xqxpwh0utju5g3uka2sj5"
                 ]
-                assert [recipient.label for recipient in viewer.recipients.recipients] == ["Send Test"]
+                assert [recipient.label for recipient in viewer.recipients.recipients] == ["Self-Send Test"]
                 assert [recipient.amount for recipient in viewer.recipients.recipients] == [999890]
                 assert viewer.fee_info
                 assert round(viewer.fee_info.fee_rate(), 1) == 1.0
@@ -458,7 +458,7 @@ def test_wizard(
                     )
                     qtbot.wait_until(lambda: bool(mock_message.call_count), timeout=10_000)
                     mock_message.assert_called_with(
-                        main_window.tr("All Send tests done successfully."),
+                        main_window.tr("All Self-Send tests done successfully."),
                         type=MessageType.Info,
                         parent=qt_wallet.wizard,
                     )
