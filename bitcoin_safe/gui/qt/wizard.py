@@ -1569,7 +1569,8 @@ class SendTest(BaseTab):
         if self.num_keystores() == 1:
             text = html_f(
                 self.tr(
-                    "Please complete the self-send test. Get familiar with sending and using the hardware signers!"
+                    """We are sending from your wallet to another address in your wallet (self-send).<br>
+This practices the signing flow and ensures all hardware signers are setup correctly."""
                 ),
                 add_html_and_body=True,
                 p=True,
