@@ -301,8 +301,9 @@ def get_widget_top_level(
     Returns:
     QWidget or False: The widget if found, otherwise False.
     """
+    scaled_timeout = scale_timeout(timeout)
     QApplication.processEvents()
-    qtbot.waitUntil(lambda: bool(_get_widget_top_level(cls=cls)), timeout=timeout)
+    qtbot.waitUntil(lambda: bool(_get_widget_top_level(cls=cls)), timeout=scaled_timeout)
     return _get_widget_top_level(cls=cls)
 
 
@@ -345,7 +346,7 @@ def do_modal_click(
         qtbot.mouseClick(click_pushbutton, button)
 
     QApplication.processEvents()
-    qtbot.waitUntil(lambda: dialog_was_opened, timeout=10_000)
+    qtbot.waitUntil(lambda: dialog_was_opened, timeout=scale_timeout(10_000))
 
 
 def get_called_args_message_box(
@@ -477,7 +478,7 @@ class CheckedDeletionContext:
         """Initialize instance."""
         self.graph_directory = graph_directory
         self.caplog = caplog
-        self.timeout = timeout
+        self.timeout = scale_timeout(timeout)
         self.qtbot = qtbot
         self.d = list_references
         self.check_for_destruction: list[QtCore.QObject] = [
@@ -575,3 +576,16 @@ class CheckedDeletionContext:
 
 def running_on_github() -> bool:
     return os.getenv("GITHUB_ACTIONS") == "true"
+
+
+def get_timeout_scale() -> float:
+    value = os.getenv("CI_TIMEOUT_SCALE", "1")
+    try:
+        scale = float(value)
+    except ValueError:
+        return 1.0
+    return scale if scale >= 1.0 else 1.0
+
+
+def scale_timeout(timeout: int | float) -> int:
+    return int(timeout * get_timeout_scale())

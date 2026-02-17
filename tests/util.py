@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from collections.abc import Callable
 from typing import cast
 
@@ -45,6 +46,19 @@ from bitcoin_safe.util import SATOSHIS_PER_BTC
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
+
+
+def get_timeout_scale() -> float:
+    value = os.getenv("CI_TIMEOUT_SCALE", "1")
+    try:
+        scale = float(value)
+    except ValueError:
+        return 1.0
+    return scale if scale >= 1.0 else 1.0
+
+
+def scale_timeout(timeout: float) -> float:
+    return timeout * get_timeout_scale()
 
 
 class MySignalclass(QObject):
@@ -103,6 +117,8 @@ def wait_for_sync(
     tx_count: int = 0,
     timeout: float = 10_000,
 ):
+    effective_timeout = scale_timeout(timeout)
+
     def info_message():
         logger.info(
             f"{wallet.id=}\n"
@@ -132,7 +148,7 @@ def wait_for_sync(
         # cbf node syncronization happens without any triggering in the background
         # we just have to wait
         try:
-            qtbot.waitUntil(condition, timeout=int(timeout))
+            qtbot.waitUntil(condition, timeout=int(effective_timeout))
         except Exception:
             raise
         finally:
@@ -142,7 +158,7 @@ def wait_for_sync(
         # electrum servers need active sync triggering
         async def wait_for_funds():
             """Wait for funds."""
-            deadline = asyncio.get_event_loop().time() + timeout
+            deadline = asyncio.get_event_loop().time() + effective_timeout
             original_funds = wallet.get_balance().total
             while not condition():
                 await asyncio.sleep(0.5)
