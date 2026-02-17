@@ -38,6 +38,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import partial
 from pathlib import Path
+from time import monotonic, sleep
 from types import FrameType
 from typing import Literal, cast
 
@@ -2256,7 +2257,7 @@ class MainWindow(QMainWindow):
         )
         logger.debug("wallet-setup debug: wallet-id dialog about to exec")
         exec_watchdog.start()
-        dialog_result = dialog.exec()
+        dialog_result = self._run_wallet_id_dialog(dialog)
         exec_watchdog.stop()
         exec_watchdog.deleteLater()
         logger.debug("wallet-setup debug: wallet-id dialog returned result=%s", dialog_result)
@@ -2326,6 +2327,26 @@ class MainWindow(QMainWindow):
 
         logger.debug("wallet-setup debug: create_qtprotowallet done id=%s", qt_protowallet.protowallet.id)
         return qt_protowallet
+
+    def _run_wallet_id_dialog(self, dialog: WalletIdDialog, timeout_seconds: float = 30.0) -> int:
+        """Run WalletIdDialog with a macOS pytest workaround for stuck exec() calls."""
+        if not (platform.system() == "Darwin" and os.getenv("PYTEST_CURRENT_TEST")):
+            return int(dialog.exec())
+
+        logger.debug("wallet-setup debug: using macOS pytest dialog.open workaround")
+        dialog.open()
+        deadline = monotonic() + timeout_seconds
+        while dialog.result() == 0 and monotonic() < deadline:
+            QApplication.processEvents()
+            sleep(0.01)
+
+        if dialog.result() == 0:
+            logger.error(
+                "wallet-setup debug: wallet-id dialog workaround timed out after %ss; rejecting dialog",
+                timeout_seconds,
+            )
+            dialog.reject()
+        return int(dialog.result())
 
     def create_qtwallet_from_protowallet_from_wizard_keystore(self, wizard: Wizard, protowallet_id: str):
         """The keystore from the wizard UI are the ones used for walle creation.
