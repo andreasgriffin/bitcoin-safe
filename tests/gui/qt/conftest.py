@@ -28,7 +28,12 @@
 
 from __future__ import annotations
 
+import platform
+from time import monotonic
+
 import pytest
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication, QWidget
 
 
 @pytest.fixture(autouse=True)
@@ -54,4 +59,29 @@ def mock__ask_if_wallet_should_remain_open(monkeypatch):
     monkeypatch.setattr(
         "bitcoin_safe.gui.qt.main.MainWindow._ask_if_wallet_should_remain_open", lambda self: False
     )
+    yield
+
+
+@pytest.fixture(autouse=True)
+def patch_wait_for_window_exposed_on_macos(monkeypatch: pytest.MonkeyPatch):
+    """
+    Qt's qWaitForWindowExposed can block indefinitely on macOS CI.
+    Replace it with an explicit deadline-based poll to keep GUI tests progressing.
+    """
+
+    if platform.system() != "Darwin":
+        yield
+        return
+
+    def safe_wait_for_window_exposed(widget: QWidget, timeout: int = 5_000) -> bool:
+        deadline = monotonic() + timeout / 1000
+        while monotonic() < deadline:
+            QApplication.processEvents()
+            window_handle = widget.windowHandle()
+            if widget.isVisible() and (window_handle is None or window_handle.isExposed()):
+                return True
+            QTest.qWait(10)
+        return False
+
+    monkeypatch.setattr(QTest, "qWaitForWindowExposed", safe_wait_for_window_exposed)
     yield
