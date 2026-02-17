@@ -28,8 +28,6 @@
 
 from __future__ import annotations
 
-import os
-
 import bdkpython as bdk
 import pytest
 from pytestqt.qtbot import QtBot
@@ -40,9 +38,6 @@ from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import SATOSHIS_PER_BTC
 
 from ...helpers import TestConfig
-
-# Ensure Qt runs headless before the QApplication fixture is created
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def _build_fx(config: TestConfig) -> FX:
