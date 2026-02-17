@@ -88,20 +88,36 @@ def test_custom_wallet_setup_custom_single_sig(
         shutter.save(main_window)
 
         button = main_window.welcome_screen.pushButton_custom_wallet
+        logger.debug(
+            "wallet-setup debug: custom-test before do_modal_click button_visible=%s button_enabled=%s",
+            button.isVisible(),
+            button.isEnabled(),
+        )
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             """On wallet id dialog."""
             # Provide a deterministic wallet name in the modal.
+            logger.debug("wallet-setup debug: custom-test wallet-id dialog opened")
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
 
+            logger.debug("wallet-setup debug: custom-test clicking wallet-id OK")
             dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+            logger.debug(
+                "wallet-setup debug: custom-test clicked wallet-id OK visible=%s",
+                dialog.isVisible(),
+            )
             shutter.save(main_window)
 
+        logger.debug("wallet-setup debug: custom-test invoking do_modal_click")
         do_modal_click(button, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
+        logger.debug("wallet-setup debug: custom-test do_modal_click returned")
 
-        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
+        node = main_window.tab_wallets.root.findNodeByTitle(wallet_name)
+        logger.debug("wallet-setup debug: custom-test node lookup result=%s", node)
+        assert node is not None, [tab.title for tab in main_window.tab_wallets.roots]
+        qt_protowallet = node.data
         assert isinstance(qt_protowallet, QTProtoWallet)
 
         def test_block_change_signals() -> None:

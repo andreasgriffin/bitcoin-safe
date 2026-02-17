@@ -284,6 +284,20 @@ class WalletIdDialog(QDialog):
             self.accept()  # Accept the dialog if wallet does not exist
             logger.debug("wallet-setup debug: WalletIdDialog accept returned")
 
+    def accept(self) -> None:
+        logger.debug("wallet-setup debug: WalletIdDialog.accept entered")
+        super().accept()
+        logger.debug("wallet-setup debug: WalletIdDialog.accept exited")
+
+    def done(self, a0: int) -> None:
+        logger.debug(
+            "wallet-setup debug: WalletIdDialog.done entered result=%s visible=%s",
+            a0,
+            self.isVisible(),
+        )
+        super().done(a0)
+        logger.debug("wallet-setup debug: WalletIdDialog.done exited result=%s", a0)
+
     @property
     def wallet_id(self) -> str:
         """Wallet id."""

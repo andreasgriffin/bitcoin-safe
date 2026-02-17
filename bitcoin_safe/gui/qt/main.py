@@ -2244,8 +2244,21 @@ class MainWindow(QMainWindow):
             show_tutorial,
         )
         dialog = WalletIdDialog(Path(self.config.wallet_dir), parent=self)
+        exec_watchdog = QTimer(self)
+        exec_watchdog.setInterval(1_000)
+        exec_watchdog.timeout.connect(
+            lambda: logger.debug(
+                "wallet-setup debug: waiting in WalletIdDialog.exec visible=%s result=%s title=%s",
+                dialog.isVisible(),
+                dialog.result(),
+                dialog.windowTitle(),
+            )
+        )
         logger.debug("wallet-setup debug: wallet-id dialog about to exec")
+        exec_watchdog.start()
         dialog_result = dialog.exec()
+        exec_watchdog.stop()
+        exec_watchdog.deleteLater()
         logger.debug("wallet-setup debug: wallet-id dialog returned result=%s", dialog_result)
         if dialog_result == QDialog.DialogCode.Accepted:
             wallet_id = dialog.wallet_id
