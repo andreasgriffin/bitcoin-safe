@@ -2083,7 +2083,9 @@ class MainWindow(QMainWindow):
 
     def click_custom_signature(self) -> None:
         """Click custom signature."""
+        logger.debug("wallet-setup debug: click_custom_signature start")
         self.create_qtprotowallet((3, 5), show_tutorial=False)
+        logger.debug("wallet-setup debug: click_custom_signature done")
 
     def new_wallet(self) -> None:
         """New wallet."""

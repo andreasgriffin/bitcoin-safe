@@ -236,6 +236,12 @@ class KeyStoreUI(QWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
+        logger.debug(
+            "wallet-setup debug: KeyStoreUI init start label=%s hardware_signer_label=%s slow_hwi_listing=%s",
+            label,
+            hardware_signer_label,
+            slow_hwi_listing,
+        )
         self.signals_min = signals_min
 
         self.label = label
@@ -335,6 +341,7 @@ class KeyStoreUI(QWidget):
         self.usb_gui = USBGui(
             self.network, initalization_label=self.hardware_signer_label, loop_in_thread=loop_in_thread
         )
+        logger.debug("wallet-setup debug: KeyStoreUI USBGui created label=%s", self.label)
         button_hwi = self.hardware_signer_interaction.add_hwi_button(
             signal_end_hwi_blocker=self.usb_gui.signal_end_hwi_blocker
         )
@@ -380,6 +387,7 @@ class KeyStoreUI(QWidget):
 
         self.edit_key_origin_input.textChanged.connect(self.format_all_fields)
         self.signals_min.language_switch.connect(self.updateUi)
+        logger.debug("wallet-setup debug: KeyStoreUI init done label=%s", self.label)
 
     def _process_input(self, s: str) -> None:
         """Process input."""

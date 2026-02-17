@@ -100,8 +100,11 @@ class NewWalletWelcomeScreen(QWidget):
 
     def on_pushButton_custom_wallet(self):
         """On pushButton custom wallet."""
+        logger.debug("wallet-setup debug: on_pushButton_custom_wallet emit start")
         self.signal_onclick_custom_signature.emit()
+        logger.debug("wallet-setup debug: on_pushButton_custom_wallet emit done")
         self.signal_remove_me.emit(self)
+        logger.debug("wallet-setup debug: on_pushButton_custom_wallet remove_me emitted")
 
     def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
         """Add new wallet welcome tab."""
