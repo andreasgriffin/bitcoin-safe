@@ -34,9 +34,7 @@ from time import monotonic
 
 import pytest
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication
-
-from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
+from PyQt6.QtWidgets import QApplication, QDialog
 
 
 def _running_on_github_macos() -> bool:
@@ -70,21 +68,27 @@ def mock__ask_if_wallet_should_remain_open(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
-def patch_wallet_id_dialog_exec_on_github_macos(monkeypatch: pytest.MonkeyPatch):
-    """Avoid macOS GitHub runner deadlock in WalletIdDialog.exec()."""
+def patch_qdialog_exec_on_github_macos(monkeypatch: pytest.MonkeyPatch):
+    """Avoid macOS GitHub runner deadlocks in QDialog.exec()."""
     if not _running_on_github_macos():
         yield
         return
 
-    def safe_exec(self: WalletIdDialog) -> int:
+    def safe_exec(self: QDialog) -> int:
         self.open()
         deadline = monotonic() + 30.0
-        while self.result() == 0 and monotonic() < deadline:
+        was_visible = False
+        while monotonic() < deadline:
             QApplication.processEvents()
             QTest.qWait(10)
-        if self.result() == 0:
+            if self.isVisible():
+                was_visible = True
+                continue
+            if was_visible or self.result() != 0:
+                break
+        if self.isVisible():
             self.reject()
         return int(self.result())
 
-    monkeypatch.setattr(WalletIdDialog, "exec", safe_exec)
+    monkeypatch.setattr(QDialog, "exec", safe_exec)
     yield

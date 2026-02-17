@@ -31,9 +31,8 @@ from __future__ import annotations
 import gc
 import inspect
 import logging
-import platform
 from datetime import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import bdkpython as bdk
 import pytest
@@ -54,7 +53,6 @@ from .helpers import (
     close_wallet,
     do_modal_click,
     main_window_context,
-    running_on_github,
     save_wallet,
 )
 
@@ -220,15 +218,6 @@ def test_custom_wallet_setup_custom_single_sig(
 
             def export_wallet_descriptor() -> None:
                 """Export wallet descriptor."""
-                if platform.system() == "Darwin" and running_on_github():
-                    with patch("bitcoin_safe.gui.qt.main.DescriptorExport") as mock_export_cls:
-                        mock_dialog = mock_export_cls.return_value
-                        mock_dialog.aboutToClose.connect = MagicMock()
-                        main_window.show_descriptor_export_window()
-                        mock_export_cls.assert_called_once()
-                        mock_dialog.show.assert_called_once()
-                    shutter.save(main_window)
-                    return
 
                 def on_dialog(dialog: DescriptorExport) -> None:
                     """On dialog."""
