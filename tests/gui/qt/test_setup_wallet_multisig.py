@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import inspect
 import logging
+import platform
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
@@ -73,6 +74,7 @@ from .helpers import (
     do_modal_click,
     get_called_args_message_box,
     main_window_context,
+    running_on_github,
     save_wallet,
     sign_tx,
 )
@@ -179,6 +181,22 @@ def test_wizard_multisig(
                 keystore.tabs_import_type.setCurrentWidget(keystore.tab_manual)
                 keystore.edit_seed.setText(next(seeds_iter))
                 shutter.save(main_window)
+
+            if platform.system() == "Darwin" and running_on_github():
+
+                def all_signers_ready() -> bool:
+                    for keystore in step.keystore_uis.getAllTabData().values():
+                        try:
+                            derived = keystore.get_ui_values_as_keystore()
+                        except Exception:
+                            return False
+                        if not derived.fingerprint:
+                            return False
+                        if not derived.xpub:
+                            return False
+                    return True
+
+                qtbot.waitUntil(all_signers_ready, timeout=30_000)
 
             # Save the wallet once all seeds have been entered.
             save_wallet(
