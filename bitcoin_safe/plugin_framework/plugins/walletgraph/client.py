@@ -492,28 +492,18 @@ class WalletGraphClient(PluginClient):
         category_value = ""
         timestamp_iso = ""
         origin_value = ""
-        spendable_value: bool | None | str = ""
+        spendable_value = True
 
         labels = wallet.labels if wallet else None
         if ref and labels:
-            category_value = labels.get_category_raw(ref) or ""
-
-            if not category_value and hasattr(labels, "get_category"):
-                category_value = labels.get_category(ref) or ""
+            category_value = labels.get_category(ref) if wallet and wallet.is_my_address(ref) else ""
 
             timestamp_iso = self._format_timestamp(labels.get_timestamp(ref)) or ""
 
-            label_entry = None
-            if hasattr(labels, "data"):
-                label_entry = labels.data.get(ref)
-
+            label_entry = labels.data.get(ref)
             if label_entry:
-                origin_value = getattr(label_entry, "origin", "") or ""
-                spendable = getattr(label_entry, "spendable", None)
-                if spendable is not None:
-                    spendable_value = bool(spendable)
-                else:
-                    spendable_value = ""
+                origin_value = label_entry.origin or ""
+                spendable_value = bool(label_entry.spendable)
 
         self._set_data(node, "d8", wallet_label_value)
         self._set_data(node, "d9", category_value)

@@ -522,7 +522,11 @@ class UTXOList(MyTreeView[OutPoint]):
             items[self.Columns.WALLET_ID].setData(wallet_id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
             txid = outpoint.txid_str
 
-            category = wallet.labels.get_category(address) if wallet and address else ""
+            category = (
+                wallet.labels.get_category(address)
+                if wallet and address and wallet.is_my_address(address)
+                else ""
+            )
 
             items[self.Columns.CATEGORY].setText(category if category else "")
             items[self.Columns.CATEGORY].setData(category, MyItemDataRole.ROLE_CLIPBOARD_DATA)
