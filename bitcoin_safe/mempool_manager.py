@@ -147,10 +147,22 @@ def fee_to_color(fee, colors=mempoolFeeColors) -> str:
     return colors[indizes[-1]]
 
 
+async def _read_response(resp: aiohttp.ClientResponse):
+    try:
+        if resp.content_type == "application/json":
+            return await resp.json()
+    except Exception:
+        pass
+
+    if resp.content_type.startswith("text/") or resp.content_type.endswith("xml"):
+        return await resp.text(errors="replace")
+
+    return await resp.read()
+
+
 async def fetch_from_url(
     url: str,
     proxies: dict[str, str] | None = None,
-    is_json: bool = True,
     timeout: float | Literal["default"] = "default",
 ) -> Any | None:
     """Fetch from url."""
@@ -168,10 +180,7 @@ async def fetch_from_url(
         async with aiohttp.ClientSession() as session:
             async with session.get(url, **conn_kwargs) as resp:
                 if resp.status == 200:
-                    if is_json:
-                        return await resp.json()
-                    else:
-                        return await resp.read()
+                    return await _read_response(resp)
                 else:
                     logger.error(f"Request failed with status code: {resp.status}")
                     return None
@@ -340,7 +349,7 @@ class MempoolManager(QObject):
         loop = self.loop_in_thread._loop
         return loop is not None and loop.is_running()
 
-    def fetch_block_tip_height(self) -> int:
+    def fetch_block_tip_height(self, fallback_height=0) -> int:
         """Fetch block tip height."""
         if not self._loop_is_running():
             logger.warning("Loop is not running; skipping mempool tip height fetch.")
@@ -355,7 +364,12 @@ class MempoolManager(QObject):
                 ),
             )
         )
-        return response if response else 0
+        if not response:
+            return fallback_height
+        try:
+            return int(response)
+        except Exception:
+            return fallback_height
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:
         """Fee rate to projected block index."""
