@@ -42,7 +42,7 @@ from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QDialogButtonBox, QMessageBox, QWidget
+from PyQt6.QtWidgets import QMessageBox, QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
@@ -144,10 +144,10 @@ def test_wizard(
             )
             shutter.save(dialog)
 
-            logger.debug("wallet-setup debug: clicking wallet-id dialog OK")
-            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+            logger.debug("wallet-setup debug: calling wallet-id check_wallet_existence")
+            dialog.check_wallet_existence()
             logger.debug(
-                "wallet-setup debug: clicked wallet-id dialog OK visible_after_click=%s",
+                "wallet-setup debug: wallet-id check_wallet_existence returned visible_after_call=%s",
                 dialog.isVisible(),
             )
             QCoreApplication.processEvents()

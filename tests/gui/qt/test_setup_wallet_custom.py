@@ -102,10 +102,10 @@ def test_custom_wallet_setup_custom_single_sig(
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
 
-            logger.debug("wallet-setup debug: custom-test clicking wallet-id OK")
-            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+            logger.debug("wallet-setup debug: custom-test calling check_wallet_existence")
+            dialog.check_wallet_existence()
             logger.debug(
-                "wallet-setup debug: custom-test clicked wallet-id OK visible=%s",
+                "wallet-setup debug: custom-test check_wallet_existence returned visible=%s",
                 dialog.isVisible(),
             )
             shutter.save(main_window)
