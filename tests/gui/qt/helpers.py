@@ -336,14 +336,17 @@ def do_modal_click(
         logger.debug("modal debug: on_open returned cls=%s", cls.__name__)
 
     QtCore.QTimer.singleShot(timer_delay, click)
+    logger.debug("modal debug: triggering click_pushbutton cls=%s", cls.__name__)
     if callable(click_pushbutton):
         click_pushbutton()
     elif isinstance(click_pushbutton, QAction):
         click_pushbutton.trigger()
     else:
         qtbot.mouseClick(click_pushbutton, button)
+    logger.debug("modal debug: click_pushbutton returned cls=%s", cls.__name__)
 
     QApplication.processEvents()
+    logger.debug("modal debug: entering waitUntil(dialog_was_opened) cls=%s", cls.__name__)
     qtbot.waitUntil(lambda: dialog_was_opened, timeout=10_000)
     logger.debug("modal debug: do_modal_click finished cls=%s", cls.__name__)
 
