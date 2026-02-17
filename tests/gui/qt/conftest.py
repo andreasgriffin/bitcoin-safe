@@ -36,7 +36,6 @@ import pytest
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 
-from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 
 
@@ -88,19 +87,4 @@ def patch_wallet_id_dialog_exec_on_github_macos(monkeypatch: pytest.MonkeyPatch)
         return int(self.result())
 
     monkeypatch.setattr(WalletIdDialog, "exec", safe_exec)
-    yield
-
-
-@pytest.fixture(autouse=True)
-def patch_descriptor_export_raise_on_github_macos(monkeypatch: pytest.MonkeyPatch):
-    """Avoid GitHub macOS CI hangs while raising DescriptorExport dialogs."""
-    if not _running_on_github_macos():
-        yield
-        return
-
-    def safe_raise(self: DescriptorExport) -> None:
-        # `raise_()` can hang on macOS GitHub runners; tests only need the dialog visible.
-        return None
-
-    monkeypatch.setattr(DescriptorExport, "raise_", safe_raise)
     yield
