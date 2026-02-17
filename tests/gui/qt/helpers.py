@@ -142,11 +142,33 @@ class Shutter:
         return Shutter.directory(self.name)
 
     @staticmethod
-    def save_screenshot(widget: QMainWindow, qtbot: QtBot, name: str) -> Path:
+    def save_screenshot(widget: QWidget, qtbot: QtBot, name: str) -> Path:
         """Saves a screenshot of the given main window using qtbot to the 'screenshots'
         directory with a timestamp."""
         # Ensure the 'screenshots' directory exists
         screenshots_dir = Shutter.directory(name)
+
+        if platform.system() == "Darwin" and running_on_github():
+            final_filepath = (
+                screenshots_dir
+                / f"{datetime.now().timestamp()}_{get_current_test_name()}_screenshot_{widget.__class__.__name__}.png"
+            )
+            pixmap = widget.grab()
+            if pixmap.isNull():
+                screen = QApplication.primaryScreen()
+                if screen is not None:
+                    pixmap = screen.grabWindow(int(widget.winId()))
+
+            if pixmap.isNull():
+                logger.warning(
+                    "Could not capture screenshot for %s on GitHub macOS runner",
+                    widget.__class__.__name__,
+                )
+                final_filepath.touch()
+                return final_filepath
+
+            pixmap.save(str(final_filepath))
+            return final_filepath
 
         # Take a screenshot using qtbot, which returns the path to the temporary saved file
         temp_filepath: Path = qtbot.screenshot(widget)
