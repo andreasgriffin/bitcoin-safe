@@ -2104,14 +2104,27 @@ class MainWindow(QMainWindow):
         self, protowallet: ProtoWallet, tutorial_index: int | None
     ) -> QTWallet:
         """Create qtwallet from protowallet."""
+        logger.debug(
+            "wallet-setup debug: create_qtwallet_from_protowallet start id=%s tutorial_index=%s backend=%s",
+            protowallet.id,
+            tutorial_index,
+            self.config.network_config.server_type,
+        )
         is_new_wallet = False
         if self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
+            logger.debug("wallet-setup debug: asking full-scan question for wallet id=%s", protowallet.id)
             answer = self._ask_if_full_scan()
+            logger.debug("wallet-setup debug: full-scan answer=%s for wallet id=%s", answer, protowallet.id)
             if answer is False:
                 is_new_wallet = True
             else:
                 is_new_wallet = False
 
+        logger.debug(
+            "wallet-setup debug: creating Wallet.from_protowallet id=%s is_new_wallet=%s",
+            protowallet.id,
+            is_new_wallet,
+        )
         wallet = Wallet.from_protowallet(
             protowallet,
             self.config,
@@ -2119,8 +2132,14 @@ class MainWindow(QMainWindow):
             is_new_wallet=is_new_wallet,
             loop_in_thread=self.loop_in_thread,
         )
+        logger.debug(
+            "wallet-setup debug: Wallet.from_protowallet done id=%s client_initialized=%s",
+            wallet.id,
+            wallet.client is not None,
+        )
         file_path = None
         password = None
+        logger.debug("wallet-setup debug: constructing QTWallet id=%s", wallet.id)
         qt_wallet = QTWallet(
             wallet,
             self.config,
@@ -2134,12 +2153,19 @@ class MainWindow(QMainWindow):
             loop_in_thread=self.loop_in_thread,
         )
 
+        logger.debug("wallet-setup debug: add_qt_wallet start id=%s", qt_wallet.wallet.id)
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
+        logger.debug("wallet-setup debug: add_qt_wallet done id=%s", qt_wallet.wallet.id)
         # adding these should only be done at wallet creation
         qt_wallet.category_core.add_default_categories()
+        logger.debug("wallet-setup debug: default categories added id=%s", qt_wallet.wallet.id)
         qt_wallet.uitx_creator.clear_ui()  # after the categories are updtaed, this selected the default category in the send tab
+        logger.debug("wallet-setup debug: save_qt_wallet start id=%s", qt_wallet.wallet.id)
         self.save_qt_wallet(qt_wallet)
+        logger.debug("wallet-setup debug: save_qt_wallet done id=%s", qt_wallet.wallet.id)
+        logger.debug("wallet-setup debug: initial qt_wallet.sync start id=%s", qt_wallet.wallet.id)
         qt_wallet.sync()
+        logger.debug("wallet-setup debug: initial qt_wallet.sync queued id=%s", qt_wallet.wallet.id)
         return qt_wallet
 
     def create_qtwallet_from_ui(
@@ -2151,15 +2177,40 @@ class MainWindow(QMainWindow):
     ) -> None:
         """Create qtwallet from ui."""
         try:
+            logger.debug(
+                "wallet-setup debug: create_qtwallet_from_ui start root_node_title=%s protowallet_id=%s",
+                root_node.title,
+                protowallet.id,
+            )
             if keystore_uis.ask_accept_unexpected_origins():
+                logger.debug(
+                    "wallet-setup debug: ask_accept_unexpected_origins accepted protowallet_id=%s",
+                    protowallet.id,
+                )
                 qt_wallet = self.create_qtwallet_from_protowallet(
                     protowallet=protowallet, tutorial_index=tutorial_index
                 )
+                logger.debug(
+                    "wallet-setup debug: create_qtwallet_from_protowallet returned id=%s",
+                    qt_wallet.wallet.id,
+                )
                 self.close_tab(root_node)
+                logger.debug(
+                    "wallet-setup debug: close_tab for protowallet node finished title=%s",
+                    root_node.title,
+                )
                 if qt_wallet.history_tab.isVisible():
                     qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
+                    logger.debug(
+                        "wallet-setup debug: history tab selected id=%s",
+                        qt_wallet.wallet.id,
+                    )
 
             else:
+                logger.debug(
+                    "wallet-setup debug: ask_accept_unexpected_origins rejected protowallet_id=%s",
+                    protowallet.id,
+                )
                 return
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
@@ -2185,50 +2236,80 @@ class MainWindow(QMainWindow):
     ) -> QTProtoWallet | None:
         # ask for wallet name
         """Create qtprotowallet."""
+        logger.debug(
+            "wallet-setup debug: create_qtprotowallet start m_of_n=%s show_tutorial=%s",
+            m_of_n,
+            show_tutorial,
+        )
         dialog = WalletIdDialog(Path(self.config.wallet_dir), parent=self)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
+        logger.debug("wallet-setup debug: wallet-id dialog about to exec")
+        dialog_result = dialog.exec()
+        logger.debug("wallet-setup debug: wallet-id dialog returned result=%s", dialog_result)
+        if dialog_result == QDialog.DialogCode.Accepted:
             wallet_id = dialog.wallet_id
             logger.info(f"new wallet name: {wallet_id}")
+            logger.debug("wallet-setup debug: accepted wallet-id=%s", wallet_id)
         else:
+            logger.debug("wallet-setup debug: wallet-id dialog rejected/cancelled")
             return None
 
         m, n = m_of_n
+        logger.debug(
+            "wallet-setup debug: building ProtoWallet id=%s threshold=%s signers=%s", wallet_id, m, n
+        )
         protowallet = ProtoWallet(
             threshold=m,
             keystores=[None for i in range(n)],
             network=self.config.network,
             wallet_id=wallet_id,
         )
+        logger.debug("wallet-setup debug: ProtoWallet created id=%s", protowallet.id)
 
+        logger.debug("wallet-setup debug: constructing QTProtoWallet id=%s", protowallet.id)
         qt_protowallet = QTProtoWallet(
             config=self.config,
             wallet_functions=self.wallet_functions,
             protowallet=protowallet,
             loop_in_thread=self.loop_in_thread,
         )
+        logger.debug("wallet-setup debug: QTProtoWallet created id=%s", qt_protowallet.protowallet.id)
 
         qt_protowallet.tabs.setIcon(svg_tools.get_QIcon("file.svg"))
         qt_protowallet.tabs.setTitle(qt_protowallet.protowallet.id)
 
         qt_protowallet.signal_close_wallet.connect(self.on_signal_close_qtprotowallet)
         qt_protowallet.signal_create_wallet.connect(self.on_signal_create_qtprotowallet)
+        logger.debug(
+            "wallet-setup debug: QTProtoWallet signals connected id=%s", qt_protowallet.protowallet.id
+        )
         self.tab_wallets.root.addChildNode(qt_protowallet.tabs)
+        logger.debug("wallet-setup debug: QTProtoWallet tab added id=%s", qt_protowallet.protowallet.id)
 
         # tutorial
         wizard = Wizard(
             qtwalletbase=qt_protowallet,
         )
         qt_protowallet.wizard = wizard
+        logger.debug(
+            "wallet-setup debug: wizard created for protowallet id=%s", qt_protowallet.protowallet.id
+        )
         qt_protowallet.wizard.signal_create_wallet.connect(
             partial(self.create_qtwallet_from_protowallet_from_wizard_keystore, wizard)
         )
+        logger.debug(
+            "wallet-setup debug: wizard signal_create_wallet connected id=%s",
+            qt_protowallet.protowallet.id,
+        )
 
         if show_tutorial:
+            logger.debug("wallet-setup debug: show_tutorial path id=%s", qt_protowallet.protowallet.id)
             qt_protowallet.wizard.set_current_index(0)
             qt_protowallet.wizard.set_visibilities()
         else:
+            logger.debug("wallet-setup debug: select tab path id=%s", qt_protowallet.protowallet.id)
             qt_protowallet.tabs.select()
 
+        logger.debug("wallet-setup debug: create_qtprotowallet done id=%s", qt_protowallet.protowallet.id)
         return qt_protowallet
 
     def create_qtwallet_from_protowallet_from_wizard_keystore(self, wizard: Wizard, protowallet_id: str):
@@ -2242,16 +2323,24 @@ class MainWindow(QMainWindow):
         Returns:
             _type_: _description_
         """
+        logger.debug(
+            "wallet-setup debug: create_qtwallet_from_protowallet_from_wizard_keystore start protowallet_id=%s",
+            protowallet_id,
+        )
         node = self.get_node(wallet_id=protowallet_id)
         if not node:
             logger.error(f"Could not find node with {protowallet_id=}")
             return
+        logger.debug(
+            "wallet-setup debug: found node title=%s for protowallet_id=%s", node.title, protowallet_id
+        )
         if not isinstance(node.data, QTProtoWallet):
             logger.error(f"wrong type  {type(node.data)=}. Not wizard")
             return
         qt_protowallet = node.data
 
         assert qt_protowallet.protowallet.id == protowallet_id
+        logger.debug("wallet-setup debug: node data is QTProtoWallet id=%s", qt_protowallet.protowallet.id)
 
         if not isinstance(
             tab_import_xpub := wizard.tab_generators.get(TutorialStep.import_xpub), ImportXpubs
@@ -2266,18 +2355,37 @@ class MainWindow(QMainWindow):
                 parent=self,
             )
             return
+        logger.debug("wallet-setup debug: keystore_uis available protowallet_id=%s", protowallet_id)
 
         org_protowallet = qt_protowallet.protowallet
+        logger.debug(
+            "wallet-setup debug: set_protowallet_from_keystore_ui start protowallet_id=%s", protowallet_id
+        )
         tab_import_xpub.keystore_uis.set_protowallet_from_keystore_ui()
+        logger.debug(
+            "wallet-setup debug: set_protowallet_from_keystore_ui done protowallet_id=%s", protowallet_id
+        )
         if org_protowallet.get_differences(qt_protowallet.protowallet).has_impact_on_addresses():
+            logger.debug(
+                "wallet-setup debug: protowallet differences detected with address impact protowallet_id=%s",
+                protowallet_id,
+            )
             Message("QtProtowallet inconsitent. Cannot create wallet", type=MessageType.Error, parent=self)
             return
 
+        logger.debug(
+            "wallet-setup debug: create_qtwallet_from_ui start from wizard protowallet_id=%s",
+            protowallet_id,
+        )
         self.create_qtwallet_from_ui(
             root_node=node,
             protowallet=qt_protowallet.protowallet,
             keystore_uis=tab_import_xpub.keystore_uis,
             tutorial_index=qt_protowallet.tutorial_index,
+        )
+        logger.debug(
+            "wallet-setup debug: create_qtwallet_from_ui returned from wizard protowallet_id=%s",
+            protowallet_id,
         )
 
     def on_signal_close_qtprotowallet(self, wallet_id: str):
@@ -2290,6 +2398,7 @@ class MainWindow(QMainWindow):
 
     def on_signal_create_qtprotowallet(self, wallet_id: str):
         """On signal create qtprotowallet."""
+        logger.debug("wallet-setup debug: on_signal_create_qtprotowallet wallet_id=%s", wallet_id)
         node = self.get_node(wallet_id=wallet_id)
         if not node:
             logger.error(f"Could not find node with {wallet_id=}")
@@ -2299,6 +2408,10 @@ class MainWindow(QMainWindow):
             logger.error(f"wrong type  {type(node.data)=}. Not QTProtoWallet")
             return
 
+        logger.debug(
+            "wallet-setup debug: on_signal_create_qtprotowallet dispatching create_qtwallet_from_qtprotowallet wallet_id=%s",
+            wallet_id,
+        )
         self.create_qtwallet_from_qtprotowallet(root_node=node, qt_protowallet=node.data)
 
     def on_set_tab_properties(self, tab: object, tab_text: str, icon_name: str, tooltip: str) -> None:
