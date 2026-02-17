@@ -150,7 +150,8 @@ def test_wizard(
                 "wallet-setup debug: clicked wallet-id dialog OK visible_after_click=%s",
                 dialog.isVisible(),
             )
-            shutter.save(main_window)
+            QCoreApplication.processEvents()
+            logger.debug("wallet-setup debug: processed events after wallet-id dialog OK")
 
         logger.debug("wallet-setup debug: invoking do_modal_click for wallet-id dialog")
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)

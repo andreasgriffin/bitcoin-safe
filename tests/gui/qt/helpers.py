@@ -123,10 +123,17 @@ class Shutter:
 
     def save(self, widget: QWidget, delay: float = 0.2) -> None:
         """Save."""
+        logger.debug(
+            "shutter debug: save start widget=%s visible=%s delay=%s",
+            widget.__class__.__name__,
+            widget.isVisible(),
+            delay,
+        )
         QApplication.processEvents()
         sleep(delay)
         QApplication.processEvents()
         self.save_screenshot(widget, self.qtbot, self.name)
+        logger.debug("shutter debug: save done widget=%s", widget.__class__.__name__)
 
     @staticmethod
     def directory(name: str) -> Path:
@@ -148,14 +155,21 @@ class Shutter:
         # Ensure the 'screenshots' directory exists
         screenshots_dir = Shutter.directory(name)
 
+        logger.debug(
+            "shutter debug: save_screenshot start widget=%s visible=%s",
+            widget.__class__.__name__,
+            widget.isVisible(),
+        )
         # Take a screenshot using qtbot, which returns the path to the temporary saved file
         temp_filepath: Path = qtbot.screenshot(widget)
+        logger.debug("shutter debug: qtbot.screenshot done path=%s", temp_filepath)
         final_filepath = (
             screenshots_dir / f"{datetime.now().timestamp()}_{get_current_test_name()}_{temp_filepath.name}"
         )
 
         # Copy the screenshot from the temporary location to the desired directory
         shutil.move(str(temp_filepath), str(final_filepath))
+        logger.debug("shutter debug: save_screenshot moved final_path=%s", final_filepath)
 
         return final_filepath
 
@@ -293,11 +307,18 @@ def do_modal_click(
 ) -> None:
     """Do modal click."""
     dialog_was_opened = False
+    logger.debug(
+        "modal debug: do_modal_click start cls=%s timeout=%s timer_delay=%s",
+        cls.__name__,
+        timeout,
+        timer_delay,
+    )
 
     def click() -> None:
         """Click."""
         QApplication.processEvents()
         print("\nwaiting for is_dialog_open")
+        logger.debug("modal debug: click callback start cls=%s", cls.__name__)
 
         try:
             dialog = get_widget_top_level(cls=cls, qtbot=qtbot, timeout=timeout)
@@ -310,7 +331,9 @@ def do_modal_click(
 
         print("is_dialog_open = True")
         print("Do on_open")
+        logger.debug("modal debug: invoking on_open cls=%s dialog=%s", cls.__name__, dialog)
         on_open(dialog)
+        logger.debug("modal debug: on_open returned cls=%s", cls.__name__)
 
     QtCore.QTimer.singleShot(timer_delay, click)
     if callable(click_pushbutton):
@@ -322,6 +345,7 @@ def do_modal_click(
 
     QApplication.processEvents()
     qtbot.waitUntil(lambda: dialog_was_opened, timeout=10_000)
+    logger.debug("modal debug: do_modal_click finished cls=%s", cls.__name__)
 
 
 def get_called_args_message_box(
