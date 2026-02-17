@@ -126,6 +126,8 @@ class Shutter:
         QApplication.processEvents()
         sleep(delay)
         QApplication.processEvents()
+        if platform.system() == "Darwin" and running_on_github():
+            return
         self.save_screenshot(widget, self.qtbot, self.name)
 
     @staticmethod
