@@ -30,3 +30,14 @@ jobs:
     with:
       os: windows-latest
       backend: ${{ matrix.backend }}
+
+  macos-tests:
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pytest-mac') }}
+    strategy:
+      matrix:
+        backend: [cbf]
+    uses: ./.github/workflows/python-tests.yml
+    secrets: inherit
+    with:
+      os: macos-latest
+      backend: ${{ matrix.backend }}

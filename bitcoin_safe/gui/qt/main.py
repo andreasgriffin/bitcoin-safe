@@ -1302,7 +1302,7 @@ class MainWindow(QMainWindow):
         old_id = qt_wallet.wallet.id
 
         # ask for wallet name
-        dialog = WalletIdDialog(Path(self.config.wallet_dir), prefilled=old_id)
+        dialog = WalletIdDialog(Path(self.config.wallet_dir), parent=self, prefilled=old_id)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             new_wallet_id = dialog.wallet_id
             logger.info(f"new wallet name: {new_wallet_id}")
@@ -2185,7 +2185,7 @@ class MainWindow(QMainWindow):
     ) -> QTProtoWallet | None:
         # ask for wallet name
         """Create qtprotowallet."""
-        dialog = WalletIdDialog(Path(self.config.wallet_dir))
+        dialog = WalletIdDialog(Path(self.config.wallet_dir), parent=self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             wallet_id = dialog.wallet_id
             logger.info(f"new wallet name: {wallet_id}")

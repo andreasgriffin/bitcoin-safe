@@ -32,27 +32,87 @@ import logging
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
 
 logger = logging.getLogger(__name__)
 
 
-def test_download_manifest_and_verify() -> None:
+class _MockResponse:
+    def __init__(self, status_code: int, content: bytes = b"", json_payload: dict | None = None) -> None:
+        self.status_code = status_code
+        self.content = content
+        self._json_payload = json_payload or {}
+
+    def raise_for_status(self) -> None:
+        if self.status_code >= 400:
+            raise RuntimeError(f"HTTP error: {self.status_code}")
+
+    def json(self) -> dict:
+        return self._json_payload
+
+
+def _mock_sparrow_manifest_download(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    release_api_url = "https://api.github.com/repos/sparrowwallet/sparrow/releases/tags/1.8.4"
+    manifest_url = (
+        "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt"
+    )
+    sig_url = (
+        "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt.asc"
+    )
+
+    fixture_dir = Path(__file__).resolve().parents[1] / "data"
+    manifest_bytes = (fixture_dir / "sparrow-1.8.4-manifest.txt").read_bytes()
+    sig_bytes = (fixture_dir / "sparrow-1.8.4-manifest.txt.asc").read_bytes()
+    requested_urls: list[str] = []
+
+    def fake_get(url: str, timeout: int, proxies: dict | None) -> _MockResponse:
+        del timeout, proxies
+        requested_urls.append(url)
+        if url == release_api_url:
+            return _MockResponse(
+                200,
+                json_payload={
+                    "tag_name": "1.8.4",
+                    "assets": [
+                        {"name": "sparrow-1.8.4-manifest.txt", "browser_download_url": manifest_url},
+                        {"name": "sparrow-1.8.4-manifest.txt.asc", "browser_download_url": sig_url},
+                    ],
+                },
+            )
+        if url == manifest_url:
+            return _MockResponse(200, content=manifest_bytes)
+        if url == sig_url:
+            return _MockResponse(200, content=sig_bytes)
+        return _MockResponse(404)
+
+    monkeypatch.setattr("bitcoin_safe.signature_manager.requests.get", fake_get)
+    return requested_urls
+
+
+def test_download_manifest_and_verify(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test download manifest and verify."""
+    requested_urls = _mock_sparrow_manifest_download(monkeypatch)
     manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
         logger.debug(f"tempdir {tempdir}")
-        try:
-            # Download the manifest signature from the web.
-            sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
-            assert sig_filename
-        except Exception:
-            raise
-            # pytest.skip(f"Skipping manifest download: {exc}")
+        # Download the manifest signature.
+        sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
+        assert sig_filename
         logger.debug(f"sig_filename {sig_filename}")
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
         assert sig_filename == Path(tempdir) / "sparrow-1.8.4-manifest.txt.asc"
+        assert "https://api.github.com/repos/sparrowwallet/sparrow/releases/tags/1.8.4" in requested_urls
+        assert (
+            "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt"
+            in requested_urls
+        )
+        assert (
+            "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt.asc"
+            in requested_urls
+        )
         # Verify the signature against the known public key.
         assert manager.is_signature_file_available(manifest_file)
         public_key = manager.import_public_key_block(KnownGPGKeys.craigraw.key)
@@ -63,23 +123,29 @@ def test_download_manifest_and_verify() -> None:
         )
 
 
-def test_download_manifest_and_verify_wrong_signature() -> None:
+def test_download_manifest_and_verify_wrong_signature(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test download manifest and verify wrong signature."""
+    requested_urls = _mock_sparrow_manifest_download(monkeypatch)
     manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
 
     with tempfile.TemporaryDirectory() as tempdir:
         logger.debug(f"tempdir {tempdir}")
-        try:
-            # Download the signature to a temp directory.
-            sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
-            assert sig_filename
-        except Exception:
-            raise
-            # pytest.skip(f"Skipping manifest download: {exc}")
+        # Download the signature to a temp directory.
+        sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
+        assert sig_filename
         logger.debug(f"sig_filename {sig_filename}")
 
         manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
         assert sig_filename == Path(tempdir) / "sparrow-1.8.4-manifest.txt.asc"
+        assert "https://api.github.com/repos/sparrowwallet/sparrow/releases/tags/1.8.4" in requested_urls
+        assert (
+            "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt"
+            in requested_urls
+        )
+        assert (
+            "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt.asc"
+            in requested_urls
+        )
 
         with open(sig_filename) as file:
             right_rig_content = file.read()

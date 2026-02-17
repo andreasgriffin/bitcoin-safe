@@ -90,12 +90,25 @@ BITCOIN_VERSION = "29.2"
 TEST_DIR = Path(__file__).parent  # If this script is in the tests directory
 BITCOIN_DIR = TEST_DIR / "bitcoin_core"
 BITCOIN_CONF = BITCOIN_DIR / "bdk.conf"
-BITCOIN_ARCHIVE = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
 BITCOIN_EXTRACT_DIR = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}"
 BITCOIN_BIN_DIR = BITCOIN_EXTRACT_DIR / "bin"
+BITCOIN_ARTIFACT_STAMP = BITCOIN_DIR / ".artifact_name"
 
 
 BITCOIN_executable = "bitcoind.exe" if platform.system() == "Windows" else "bitcoind"
+
+
+def bitcoin_release_artifact() -> str:
+    """Return the platform-specific archive filename for Bitcoin Core."""
+    system = platform.system()
+    machine = platform.machine().lower()
+
+    if system == "Windows":
+        return f"bitcoin-{BITCOIN_VERSION}-win64.zip"
+    if system == "Darwin":
+        architecture = "arm64" if machine in {"arm64", "aarch64"} else "x86_64"
+        return f"bitcoin-{BITCOIN_VERSION}-{architecture}-apple-darwin.tar.gz"
+    return f"bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
 
 
 def runcmd(cmd, background: bool = False):
@@ -208,41 +221,36 @@ def remove_bitcoin_regtest_folder(custom_datadir=None):
 
 def download_bitcoin():
     """Download bitcoin."""
-    system = platform.system()
+    artifact_name = bitcoin_release_artifact()
+    archive_extension = "zip" if artifact_name.endswith(".zip") else "tar.gz"
+    url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/{artifact_name}"
+    bitcoin_archive = BITCOIN_DIR / artifact_name
 
-    if system == "Windows":
-        archive_extension = "zip"
-        url = (
-            f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-win64.zip"
-        )
-    elif system == "Darwin":  # macOS
-        archive_extension = "tar.gz"
-        url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-x86_64-apple-darwin.tar.gz"
-    else:  # Assume Linux
-        archive_extension = "tar.gz"
-        url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
-
-    BITCOIN_ARCHIVE = BITCOIN_DIR / f"bitcoin-{BITCOIN_VERSION}.{archive_extension}"
+    if BITCOIN_ARTIFACT_STAMP.exists():
+        previous_artifact = BITCOIN_ARTIFACT_STAMP.read_text().strip()
+        if previous_artifact != artifact_name and BITCOIN_EXTRACT_DIR.exists():
+            shutil.rmtree(BITCOIN_EXTRACT_DIR)
 
     # Download Bitcoin Core if necessary
-    if not BITCOIN_ARCHIVE.exists():
+    if not bitcoin_archive.exists():
         logger.info(f"Downloading Bitcoin Core {BITCOIN_VERSION}...")
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        BITCOIN_ARCHIVE.write_bytes(response.content)
+        bitcoin_archive.write_bytes(response.content)
 
     # Extract Bitcoin Core if necessary
     if not BITCOIN_BIN_DIR.exists():
         logger.info(f"Extracting Bitcoin Core {BITCOIN_VERSION}...")
         if archive_extension == "tar.gz":
-            with tarfile.open(BITCOIN_ARCHIVE, "r:gz") as tar:
+            with tarfile.open(bitcoin_archive, "r:gz") as tar:
                 tar.extractall(path=BITCOIN_DIR)
         elif archive_extension == "zip":
-            with zipfile.ZipFile(BITCOIN_ARCHIVE, "r") as zip_ref:
+            with zipfile.ZipFile(bitcoin_archive, "r") as zip_ref:
                 zip_ref.extractall(path=BITCOIN_DIR)
         else:
             raise ValueError(f"Unsupported archive extension: {archive_extension}")
 
+    BITCOIN_ARTIFACT_STAMP.write_text(artifact_name)
     logger.info(f"Bitcoin Core {BITCOIN_VERSION} is ready to use.")
 
 
