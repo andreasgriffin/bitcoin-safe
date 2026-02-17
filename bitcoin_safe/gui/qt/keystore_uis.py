@@ -95,7 +95,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
     ) -> None:
         """Initialize instance."""
         super().__init__()
-        logger.debug("wallet-setup debug: KeyStoreUIs init start slow_hwi_listing=%s", slow_hwi_listing)
         self.tab_bar = OrderTrackingTabBar()
         self.setTabBar(self.tab_bar)
         self.setMovable(True)
@@ -108,7 +107,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         self.get_address_type = get_address_type
 
         for i, _keystore in enumerate(self.protowallet.keystores):
-            logger.debug("wallet-setup debug: KeyStoreUIs creating KeyStoreUI index=%s", i)
             keystore_ui = KeyStoreUI(
                 self.protowallet.network,
                 get_address_type=self.get_address_type,
@@ -125,7 +123,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 description=keystore_ui.label,
                 data=keystore_ui,
             )
-            logger.debug("wallet-setup debug: KeyStoreUIs created KeyStoreUI index=%s", i)
 
         for signal in (
             [ui.edit_xpub.input_field.textChanged for ui in self.getAllTabData().values()]
@@ -138,7 +135,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
 
         self.signal_tracker.connect(self.signals_min.language_switch, self.updateUi)
         self.signal_tracker.connect(self.tab_bar.signal_new_tab_order, self.on_tab_order_changed)
-        logger.debug("wallet-setup debug: KeyStoreUIs init done tabs=%s", self.count())
 
     def on_tab_order_changed(self, new_order: list[int]):
         """On tab order changed."""

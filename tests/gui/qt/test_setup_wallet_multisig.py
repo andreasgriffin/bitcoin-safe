@@ -40,7 +40,7 @@ import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QDialogButtonBox, QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
@@ -125,7 +125,7 @@ def test_wizard_multisig(
             dialog.name_input.setText(wallet_name)
             shutter.save(dialog)
 
-            dialog.check_wallet_existence()
+            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
             shutter.save(main_window)
 
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)

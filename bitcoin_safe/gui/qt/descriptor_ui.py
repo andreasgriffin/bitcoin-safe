@@ -95,11 +95,6 @@ class DescriptorUI(QWidget):
 
         self.edit_descriptor.signal_descriptor_change.connect(self.on_descriptor_change)
 
-        logger.debug(
-            "wallet-setup debug: DescriptorUI creating KeyStoreUIs wallet_id=%s slow_hwi_listing=%s",
-            self.protowallet.id,
-            True,
-        )
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=self.get_editable_protowallet,
             get_address_type=self.get_address_type_from_ui,
@@ -107,7 +102,6 @@ class DescriptorUI(QWidget):
             slow_hwi_listing=True,
             loop_in_thread=self.loop_in_thread,
         )
-        logger.debug("wallet-setup debug: DescriptorUI created KeyStoreUIs wallet_id=%s", self.protowallet.id)
         self._layout.addWidget(self.keystore_uis)
 
         self.keystore_uis.setCurrentIndex(0)

@@ -259,44 +259,21 @@ class WalletIdDialog(QDialog):
 
     def check_wallet_existence(self) -> None:
         """Check wallet existence."""
-        logger.debug(
-            "wallet-setup debug: WalletIdDialog.check_wallet_existence start wallet_id=%s filename=%s",
-            self.wallet_id,
-            self.filename,
-        )
         wallet_file = self.wallet_dir / self.filename
         if wallet_file.exists():
-            logger.debug("wallet-setup debug: WalletIdDialog wallet already exists path=%s", wallet_file)
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
                 self.tr("The wallet {filename} exists already.").format(filename=wallet_file),
             )
         elif not self.wallet_id:
-            logger.debug("wallet-setup debug: WalletIdDialog empty wallet id")
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
                 self.tr("Please choose a wallet name"),
             )
         else:
-            logger.debug("wallet-setup debug: WalletIdDialog accepting wallet_id=%s", self.wallet_id)
             self.accept()  # Accept the dialog if wallet does not exist
-            logger.debug("wallet-setup debug: WalletIdDialog accept returned")
-
-    def accept(self) -> None:
-        logger.debug("wallet-setup debug: WalletIdDialog.accept entered")
-        super().accept()
-        logger.debug("wallet-setup debug: WalletIdDialog.accept exited")
-
-    def done(self, a0: int) -> None:
-        logger.debug(
-            "wallet-setup debug: WalletIdDialog.done entered result=%s visible=%s",
-            a0,
-            self.isVisible(),
-        )
-        super().done(a0)
-        logger.debug("wallet-setup debug: WalletIdDialog.done exited result=%s", a0)
 
     @property
     def wallet_id(self) -> str:

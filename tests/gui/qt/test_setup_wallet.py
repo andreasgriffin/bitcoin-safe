@@ -42,7 +42,7 @@ from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QMessageBox, QWidget
+from PyQt6.QtWidgets import QDialogButtonBox, QMessageBox, QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
@@ -121,66 +121,23 @@ def test_wizard(
         shutter.save(main_window)
 
         w = main_window.welcome_screen.pushButton_singlesig
-        logger.debug(
-            "wallet-setup debug: before wallet-id dialog click button_visible=%s button_enabled=%s",
-            w.isVisible(),
-            w.isEnabled(),
-        )
 
         def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
             """On wallet id dialog."""
             # Provide a deterministic wallet name in the modal.
-            logger.debug(
-                "wallet-setup debug: wallet-id dialog opened title=%s text_before=%s",
-                dialog.windowTitle(),
-                dialog.name_input.text(),
-            )
             shutter.save(dialog)
             dialog.name_input.setText(wallet_name)
-            logger.debug(
-                "wallet-setup debug: wallet-id dialog text_after=%s exists_before_accept=%s",
-                dialog.name_input.text(),
-                (Path(main_window.config.wallet_dir) / f"{wallet_name}.wallet").exists(),
-            )
             shutter.save(dialog)
 
-            logger.debug("wallet-setup debug: calling wallet-id check_wallet_existence")
-            dialog.check_wallet_existence()
-            logger.debug(
-                "wallet-setup debug: wallet-id check_wallet_existence returned visible_after_call=%s",
-                dialog.isVisible(),
-            )
-            QCoreApplication.processEvents()
-            logger.debug("wallet-setup debug: processed events after wallet-id dialog OK")
+            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+            shutter.save(main_window)
 
-        logger.debug("wallet-setup debug: invoking do_modal_click for wallet-id dialog")
         do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
-        logger.debug(
-            "wallet-setup debug: do_modal_click finished roots=%s current_node_title=%s",
-            [node.title for node in main_window.tab_wallets.roots],
-            main_window.tab_wallets.currentNode().title if main_window.tab_wallets.currentNode() else None,
-        )
 
         # Resolve the proto wallet and wizard flow.
-        wallet_node = main_window.tab_wallets.root.findNodeByTitle(wallet_name)
-        logger.debug(
-            "wallet-setup debug: findNodeByTitle(%s) returned node=%s",
-            wallet_name,
-            wallet_node,
-        )
-        assert wallet_node is not None, [node.title for node in main_window.tab_wallets.roots]
-        qt_protowallet = wallet_node.data
-        logger.debug(
-            "wallet-setup debug: node.data type after wallet-id dialog=%s",
-            type(qt_protowallet).__name__,
-        )
+        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
         wizard = qt_protowallet.wizard
-        logger.debug(
-            "wallet-setup debug: qtwalletbase wizard type=%s current_index=%s",
-            type(wizard).__name__,
-            wizard.step_container.current_index() if wizard else None,
-        )
         assert isinstance(wizard, Wizard)
 
         def page1(wizard: Wizard) -> None:

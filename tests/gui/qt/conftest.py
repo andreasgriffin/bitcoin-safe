@@ -28,7 +28,20 @@
 
 from __future__ import annotations
 
+import os
+import platform
+from time import monotonic
+
 import pytest
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication
+
+from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
+from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
+
+
+def _running_on_github_macos() -> bool:
+    return platform.system() == "Darwin" and os.getenv("GITHUB_ACTIONS") == "true"
 
 
 @pytest.fixture(autouse=True)
@@ -54,4 +67,40 @@ def mock__ask_if_wallet_should_remain_open(monkeypatch):
     monkeypatch.setattr(
         "bitcoin_safe.gui.qt.main.MainWindow._ask_if_wallet_should_remain_open", lambda self: False
     )
+    yield
+
+
+@pytest.fixture(autouse=True)
+def patch_wallet_id_dialog_exec_on_github_macos(monkeypatch: pytest.MonkeyPatch):
+    """Avoid macOS GitHub runner deadlock in WalletIdDialog.exec()."""
+    if not _running_on_github_macos():
+        yield
+        return
+
+    def safe_exec(self: WalletIdDialog) -> int:
+        self.open()
+        deadline = monotonic() + 30.0
+        while self.result() == 0 and monotonic() < deadline:
+            QApplication.processEvents()
+            QTest.qWait(10)
+        if self.result() == 0:
+            self.reject()
+        return int(self.result())
+
+    monkeypatch.setattr(WalletIdDialog, "exec", safe_exec)
+    yield
+
+
+@pytest.fixture(autouse=True)
+def patch_descriptor_export_raise_on_github_macos(monkeypatch: pytest.MonkeyPatch):
+    """Avoid GitHub macOS CI hangs while raising DescriptorExport dialogs."""
+    if not _running_on_github_macos():
+        yield
+        return
+
+    def safe_raise(self: DescriptorExport) -> None:
+        # `raise_()` can hang on macOS GitHub runners; tests only need the dialog visible.
+        return None
+
+    monkeypatch.setattr(DescriptorExport, "raise_", safe_raise)
     yield
