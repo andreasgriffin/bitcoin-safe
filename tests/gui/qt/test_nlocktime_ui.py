@@ -134,6 +134,7 @@ def test_nlocktime_creator_viewer(
         qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
         creator = qt_wallet.uitx_creator
         creator.clear_ui()
+        qtbot.waitUntil(lambda: qt_wallet.wallet.get_height() > 0, timeout=10_000)
 
         # Enable the advanced nLocktime option so the UI becomes visible and initialized.
         creator.column_fee.action_set_nlocktime.setChecked(True)
