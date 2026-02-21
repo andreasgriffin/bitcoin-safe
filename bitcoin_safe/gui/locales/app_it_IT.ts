@@ -2520,10 +2520,7 @@ Vuoi nasconderli nella tray?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-        <translation>Usa l’altezza del blocco per ritardare fino a quando un blocco specifico viene minato.
-Usa data/ora per ritardare fino a un orario di rete specifico (median-time-past).
-Median-time-past è il timestamp mediano degli ultimi 11 blocchi,
-quindi è normalmente circa {minutes} minuti indietro rispetto alla punta.</translation>
+        <translation>Usa l’altezza del blocco per ritardare fino a quando un blocco specifico viene minato. Usa data/ora per ritardare fino a un orario di rete specifico (median-time-past). Median-time-past è il timestamp mediano degli ultimi 11 blocchi, quindi è normalmente circa {minutes} minuti indietro rispetto alla punta.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -4547,8 +4544,7 @@ In alternativa puoi trasmetterla tramite {url}</translation>
     <message>
         <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-        <translation>Questa transazione non è ancora valida (nLocktime impostato).
-La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
+        <translation>Questa transazione non è ancora valida (nLocktime impostato). La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
     </message>
     <name>UITx_Viewer</name>
     <message>
@@ -4727,7 +4723,7 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Failed to extract update archive.</source>
-        <translation>Tutti i test self-send sono stati completati con successo.</translation>
+        <translation>Failed to extract update archive.</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
