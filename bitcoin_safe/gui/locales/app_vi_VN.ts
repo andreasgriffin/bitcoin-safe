@@ -4,12 +4,12 @@
     <name>AboutTab</name>
     <message>
         <source>(newest version)</source>
-        <translation>(phiên bản mới nhất)</translation>
+        <translation>(Phiên bản mới nhất)</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>A secure bitcoin savings wallet for everyone.</source>
-        <translation>Ví tiết kiệm bitcoin an toàn cho mọi người.</translation>
+        <translation>Ví tiết kiệm bitcoin an toàn dành cho tất cả mọi người.</translation>
     </message>
     <name>AboutTab</name>
     <message>
@@ -34,12 +34,12 @@
     <name>AboutTab</name>
     <message>
         <source>Update available</source>
-        <translation>Có bản cập nhật</translation>
+        <translation>Có thể cập nhật</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>Update to {version} available</source>
-        <translation>Có bản cập nhật lên {version}</translation>
+        <translation>Có thể cập nhật tới {version}</translation>
     </message>
     <name>AboutTab</name>
     <message>
@@ -83,7 +83,7 @@
     <name>AddCategoryButton</name>
     <message>
         <source>KYC Exchange, Private, ...</source>
-        <translation>Sàn KYC, Riêng tư, ...</translation>
+        <translation>Trao đổi KYC, riêng tư,...</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     <name>AddressEdit</name>
     <message>
         <source>Enter address here</source>
-        <translation>Nhập địa chỉ tại đây</translation>
+        <translation>Nhập địa chỉ ở đây</translation>
     </message>
 </context>
 <context>
@@ -203,7 +203,7 @@
     <name>AddressList</name>
     <message>
         <source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-        <translation>Vui lòng chọn các địa chỉ từ cùng một ví để chọn UTXO để gửi.</translation>
+        <translation>Vui lòng chọn địa chỉ từ một ví duy nhất để chọn UTXO để gửi đi.</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -243,12 +243,12 @@
     <name>AddressList</name>
     <message>
         <source>change</source>
-        <translation>tiền thừa</translation>
+        <translation>thay đổi</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>change address</source>
-        <translation>địa chỉ tiền thừa</translation>
+        <translation>thay đổi địa chỉ</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -263,7 +263,7 @@
     <name>AddressList</name>
     <message>
         <source>{n} addresses have ben copied</source>
-        <translation>Đã sao chép {n} địa chỉ</translation>
+        <translation>{n} địa chỉ đã được sao chép</translation>
     </message>
 </context>
 <context>
@@ -275,7 +275,7 @@
     <name>AddressListWithToolbar</name>
     <message>
         <source>Generate to selected adddresses</source>
-        <translation>Tạo tới các địa chỉ đã chọn</translation>
+        <translation>Tạo theo địa chỉ đã chọn</translation>
     </message>
     <name>AddressListWithToolbar</name>
     <message>
@@ -292,7 +292,7 @@
     <name>AmountAnalyzer</name>
     <message>
         <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-        <translation>Số tiền quá lớn. Vui lòng nhấp vào một danh mục có đủ tiền ở bên trái, hoặc chọn coin trong tab nâng cao</translation>
+        <translation>Số tiền quá lớn. Vui lòng nhấp vào danh mục có đủ vốn ở bên trái hoặc chọn các loại tiền điện tử trong tab nâng cao</translation>
     </message>
     <name>AmountAnalyzer</name>
     <message>
@@ -343,12 +343,12 @@
     <name>BackupSeed</name>
     <message>
         <source>Please complete the previous steps.</source>
-        <translation>Vui lòng hoàn thành các bước trước.</translation>
+        <translation>Vui lòng hoàn thành bước trước đó.</translation>
     </message>
     <name>BackupSeed</name>
     <message>
         <source>Previous Step</source>
-        <translation>Bước trước</translation>
+        <translation>Bước trước đó</translation>
     </message>
     <name>BackupSeed</name>
     <message>
@@ -394,7 +394,7 @@
     <name>BaseDeviceItem</name>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation>Nhập tên thiết bị với {npub}</translation>
+        <translation>Nhập tên của thiết bị với {npub}</translation>
     </message>
     <name>BaseDeviceItem</name>
     <message>
@@ -418,7 +418,7 @@
     <name>BaseNostrSync</name>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation>Nhập tên thiết bị với {npub}</translation>
+        <translation>Nhập tên của thiết bị với {npub}</translation>
     </message>
     <name>BaseNostrSync</name>
     <message>
@@ -428,7 +428,7 @@
     <name>BaseNostrSync</name>
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation>Để hoàn tất kết nối, hãy chấp nhận yêu cầu {id} của tôi trên thiết bị khác {other}.</translation>
+        <translation>Để xác nhận kết nối, hãy chấp nhận {id} yêu cầu của tôi trên {other} thiết bị khác.</translation>
     </message>
 </context>
 <context>
@@ -449,7 +449,7 @@
     <name>BlockingWaitingDialog</name>
     <message>
         <source>Please wait</source>
-        <translation>Vui lòng chờ</translation>
+        <translation>Vui lòng đợi</translation>
     </message>
 </context>
 <context>
@@ -487,8 +487,12 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href=&quot;{url}&quot;&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-        <translation>Mua {number} thiết bị ký phần cứng                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe hỗ trợ tất cả các thiết bị ký phần cứng phổ biến: &lt;a href=&quot;{url}&quot;&gt;Xem danh sách đầy đủ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
+        <translation>Mua {number} thiết bị ký phần cứng                    
+    &lt;ul&gt;
+        {different_hint} 
+        &lt;li&gt;Bitcoin Safe hỗ trợ tất cả các loại ví cứng phổ biến: &lt;a href=&quot;{url}&quot;&gt;Xem danh sách đầy đủ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+        </translation>
     </message>
 </context>
 <context>
@@ -500,7 +504,7 @@
     <name>CBFProgressBar</name>
     <message>
         <source>{percent}% - Finished {remaining_time}</source>
-        <translation>{percent}% - Hoàn tất {remaining_time}</translation>
+        <translation>{percent}% - Hoàn thành trong {remaining_time}</translation>
     </message>
 </context>
 <context>
@@ -557,7 +561,7 @@ The combined parent+child fee rate should meet the target block.</source>
     <name>CategoryList</name>
     <message>
         <source>Received</source>
-        <translation>Đã nhận</translation>
+        <translation>Đã nhận</translation>
     </message>
     <name>CategoryList</name>
     <message>
@@ -572,7 +576,7 @@ The combined parent+child fee rate should meet the target block.</source>
     <name>CategoryList</name>
     <message>
         <source>UTXOs</source>
-        <translation>UTXO</translation>
+        <translation>UTXOs</translation>
     </message>
 </context>
 <context>
@@ -594,7 +598,7 @@ The combined parent+child fee rate should meet the target block.</source>
     <name>CategoryManager</name>
     <message>
         <source>Merge</source>
-        <translation>Hợp nhất</translation>
+        <translation>Gộp</translation>
     </message>
     <name>CategoryManager</name>
     <message>
@@ -605,15 +609,15 @@ The combined parent+child fee rate should meet the target block.</source>
     <message>
         <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-        <translation>Các địa chỉ {used_addresses}
-đã có giao dịch liên kết với các địa chỉ khác. Bạn có chắc muốn thay đổi danh mục không?</translation>
+        <translation>Địa chỉ {used_addresses}
+đã có các giao dịch liên kết với các địa chỉ khác. Bạn có chắc chắn muốn thay đổi danh mục không?</translation>
     </message>
     <name>CategoryManager</name>
     <message>
         <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-        <translation>Các địa chỉ {used_addresses}
-đã có giao dịch liên kết với các địa chỉ khác. Bạn có chắc muốn thay đổi danh mục của chúng không?</translation>
+        <translation>Địa chỉ {used_addresses}
+đã có các giao dịch liên kết với các địa chỉ khác. Bạn có chắc chắn muốn thay đổi danh mục không?</translation>
     </message>
 </context>
 <context>
@@ -642,12 +646,12 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ChatGui</name>
     <message>
         <source>Share a PSBT</source>
-        <translation>Chia sẻ một PSBT</translation>
+        <translation>Chia sẻ PSBT</translation>
     </message>
     <name>ChatGui</name>
     <message>
         <source>Type your message here...</source>
-        <translation>Nhập tin nhắn của bạn tại đây...</translation>
+        <translation>Nhập tin nhắn của bạn ở đây...</translation>
     </message>
 </context>
 <context>
@@ -664,17 +668,17 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>Client</name>
     <message>
         <source>Downloaded {count} blocks</source>
-        <translation>Đã tải xuống {count} block</translation>
+        <translation>Đã tải {count} khối</translation>
     </message>
     <name>Client</name>
     <message>
         <source>Syncing via Electrum</source>
-        <translation>Đang đồng bộ qua Electrum</translation>
+        <translation>Đồng bộ hóa thông qua Electrum</translation>
     </message>
     <name>Client</name>
     <message>
         <source>Syncing via Esplora</source>
-        <translation>Đang đồng bộ qua Esplora</translation>
+        <translation>Đồng bộ hóa thông qua Esplora</translation>
     </message>
 </context>
 <context>
@@ -701,7 +705,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnFee</name>
     <message>
         <source>Priority</source>
-        <translation>Ưu tiên</translation>
+        <translation>Mức ưu tiên</translation>
     </message>
     <name>ColumnFee</name>
     <message>
@@ -718,7 +722,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnInputs</name>
     <message>
         <source>Input total:</source>
-        <translation>Tổng đầu vào:</translation>
+        <translation>Nhập tổng:</translation>
     </message>
     <name>ColumnInputs</name>
     <message>
@@ -735,7 +739,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnRecipients</name>
     <message>
         <source>Sending total:</source>
-        <translation>Tổng gửi:</translation>
+        <translation>Gửi tổng:</translation>
     </message>
 </context>
 <context>
@@ -747,7 +751,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>ColumnSankey</name>
     <message>
         <source>Export svg</source>
-        <translation>Xuất svg</translation>
+        <translation>Xuất tệp svg</translation>
     </message>
 </context>
 <context>
@@ -773,19 +777,19 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Invalid Descriptor</source>
-        <translation>Descriptor không hợp lệ</translation>
+        <translation>Mô tả không hợp lệ</translation>
     </message>
     <name>DescriptorAnalyzer</name>
     <message>
         <source>Missing Descriptor</source>
-        <translation>Thiếu descriptor</translation>
+        <translation>Thiếu mô tả</translation>
     </message>
 </context>
 <context>
     <name>DescriptorEdit</name>
     <message>
         <source>Copy to clipboard</source>
-        <translation>Sao chép vào clipboard</translation>
+        <translation>Sao chép vào bộ nhớ tạm</translation>
     </message>
     <name>DescriptorEdit</name>
     <message>
@@ -795,7 +799,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>DescriptorEdit</name>
     <message>
         <source>Descriptor not valid</source>
-        <translation>Descriptor không hợp lệ</translation>
+        <translation>Mô tả không hợp lệ</translation>
     </message>
     <name>DescriptorEdit</name>
     <message>
@@ -815,7 +819,7 @@ have transactions linking to other addresses already. Are you sure you want to c
     <name>DescriptorEdit</name>
     <message>
         <source>Import from Clipboard</source>
-        <translation>Nhập từ clipboard</translation>
+        <translation>Nhập từ bộ nhớ tạm</translation>
     </message>
     <name>DescriptorEdit</name>
     <message>
@@ -863,7 +867,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorExport</name>
     <message>
         <source>Export Descriptor</source>
-        <translation>Xuất descriptor</translation>
+        <translation>Xuất mô tả</translation>
     </message>
 </context>
 <context>
@@ -875,7 +879,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Descriptor unchanged</source>
-        <translation>Descriptor không thay đổi</translation>
+        <translation>Mô tả không thay đổi</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -890,12 +894,12 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>New descriptor entered</source>
-        <translation>Đã nhập descriptor mới</translation>
+        <translation>Đã nhập mô tả mới</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
         <source>Required Signers</source>
-        <translation>Signer bắt buộc</translation>
+        <translation>Yêu cầu thiết bị ký</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -905,7 +909,7 @@ Please back up this descriptor to be able to recover the funds!</source>
     <name>DescriptorUI</name>
     <message>
         <source>Wallet Descriptor</source>
-        <translation>Descriptor ví</translation>
+        <translation>Mô tả ví</translation>
     </message>
     <name>DescriptorUI</name>
     <message>
@@ -923,7 +927,7 @@ Default 20</source>
     <name>DeviceDialog</name>
     <message>
         <source>Select the detected device</source>
-        <translation>Chọn thiết bị được phát hiện</translation>
+        <translation>Chọn thiết bị đã được phát hiện</translation>
     </message>
 </context>
 <context>
@@ -2033,7 +2037,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>A wallet with id {name} is already open. Please close it first.</source>
-        <translation>Ví có id {name} đã mở. Vui lòng đóng trước.</translation>
+        <translation>Ví với id {name} đang được mở. Vui lòng đóng nó trước.</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2048,7 +2052,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Close Tab</source>
-        <translation>Đóng tab</translation>
+        <translation>Đóng Tab</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2073,7 +2077,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Closing tab {name}</source>
-        <translation>Đang đóng tab {name}</translation>
+        <translation>Đóng tab {name}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2123,7 +2127,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Hide to tray</source>
-        <translation>Ẩn vào khay</translation>
+        <translation>Ẩn xuống thanh hệ thống</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2153,12 +2157,12 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>No file selected</source>
-        <translation>Không có tệp được chọn</translation>
+        <translation>Không có tệp nào được chọn</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-        <translation>Không có ví mở. Vui lòng mở ví gửi để chỉnh sửa giao dịch này.</translation>
+        <translation>Không có ví nào được mở. Vui lòng mở ví gửi để chỉnh sửa giao dịch.</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2173,7 +2177,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>On macOS only {n} wallets can be opened at the same time</source>
-        <translation>Trên macOS chỉ có thể mở {n} ví cùng lúc</translation>
+        <translation>Trên macOS chỉ có {n} ví được mở cùng lúc</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2203,7 +2207,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-        <translation>Dán giao dịch Bitcoin hoặc PSBT tại đây hoặc thả tệp</translation>
+        <translation>Dán giao dịch Bitcoin của bạn hoặc PSBT hoặc file ở đây</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2218,7 +2222,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-        <translation>Vui lòng dán giao dịch Bitcoin hoặc PSBT tại đây, hoặc thả tệp</translation>
+        <translation>Vui lòng dán giao dịch Bitcoin của bạn hoặc PSBT hoặc file ở đây</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2248,7 +2252,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>QR Scanner</source>
-        <translation>QR Scanner</translation>
+        <translation>Máy quét mã QR</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2283,7 +2287,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Selected file: {file_path}</source>
-        <translation>Tệp đã chọn: {file_path}</translation>
+        <translation>Chọn tệp: {file_path}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2303,7 +2307,7 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>Status: Disconnected</source>
-        <translation>Trạng thái: Đã ngắt kết nối</translation>
+        <translation>Trạng thái: Ngắt kết nối</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2323,29 +2327,29 @@ Do you want to proceed anyway?</source>
     <name>MainWindow</name>
     <message>
         <source>The wallet {file_path} is already open.</source>
-        <translation>Ví {file_path} đã mở.</translation>
+        <translation>Ví {file_path} đang được mở.</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-        <translation>Ví {file_path} đã mở. Bạn có muốn mở dù vậy không?</translation>
+        <translation>Ví {file_path} đang được mở.  Bạn có muốn mở ví?</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>There is no such file: {file_path}</source>
-        <translation>Không có tệp như vậy: {file_path}</translation>
+        <translation>Không tìm thấy tệp: {file_path}</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-        <translation>Ví này vẫn đang đồng bộ và việc đồng bộ sẽ phải bắt đầu lại nếu bạn đóng.
-Bạn có muốn giữ ví mở không?</translation>
+        <translation>Ví này đang đồng bộ và bạn sẽ phải bắt đầu lại từ đầu nếu tắt nó.
+Bạn có muốn giữ ví mở?</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Try connecting to: {ip}</source>
-        <translation>Thử kết nối tới: {ip}</translation>
+        <translation>Thử kết nối đến: {ip}</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2365,7 +2369,7 @@ Bạn có muốn giữ ví mở không?</translation>
     <name>MainWindow</name>
     <message>
         <source>Wallet already open</source>
-        <translation>Ví đã mở</translation>
+        <translation>Ví đang được mở</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2381,17 +2385,17 @@ Do you want to hide to tray instead?</source>
     <name>MainWindow</name>
     <message>
         <source>Wallets still syncing</source>
-        <translation>Ví vẫn đang đồng bộ</translation>
+        <translation>Ví vẫn đang được đồng bộ</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Was this wallet ever used before?</source>
-        <translation>Ví này đã từng được sử dụng chưa?</translation>
+        <translation>Ví này đã được dùng trước đây chưa?</translation>
     </message>
     <name>MainWindow</name>
     <message>
         <source>Yes, full scan for transactions</source>
-        <translation>Có, quét đầy đủ giao dịch</translation>
+        <translation>Vâng, quét đầy đủ giao dịch</translation>
     </message>
     <name>MainWindow</name>
     <message>
@@ -2408,7 +2412,7 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>Block {n}</source>
-        <translation>Block {n}</translation>
+        <translation>Khối {n}</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
@@ -2428,12 +2432,12 @@ Do you want to hide to tray instead?</source>
     <name>MempoolButtons</name>
     <message>
         <source>Next Block</source>
-        <translation>Block tiếp theo</translation>
+        <translation>Khối tiếp theo</translation>
     </message>
     <name>MempoolButtons</name>
     <message>
         <source>{n}. Block</source>
-        <translation>Block thứ {n}</translation>
+        <translation>{n}. Khối</translation>
     </message>
 </context>
 <context>
@@ -2460,17 +2464,17 @@ Do you want to hide to tray instead?</source>
     <name>MyTreeView</name>
     <message>
         <source>No file selected</source>
-        <translation>Không có tệp được chọn</translation>
+        <translation>Không có tệp nào được chọn</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>{n} rows have been copied as text</source>
-        <translation>Đã sao chép {n} dòng dưới dạng văn bản</translation>
+        <translation>{n} hàng đã được sao chép dưới dạng văn bản</translation>
     </message>
     <name>MyTreeView</name>
     <message>
         <source>{n} rows have ben copied as csv</source>
-        <translation>Đã sao chép {n} dòng dưới dạng csv</translation>
+        <translation>{n} hàng đã được sao chép dưới dạng csv</translation>
     </message>
 </context>
 <context>
@@ -2489,7 +2493,7 @@ Do you want to hide to tray instead?</source>
     <name>NLocktimeGroupBox</name>
     <message>
         <source>Block height</source>
-        <translation>Chiều cao block</translation>
+        <translation>Độ cao khối</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -6177,7 +6181,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
     <name>util</name>
     <message>
         <source>in about {} hours</source>
-        <translation>trong khoảng {} giờ</translation>
+        <translation>trong khoảng {} tiếng</translation>
     </message>
     <name>util</name>
     <message>
@@ -6192,7 +6196,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
     <name>util</name>
     <message>
         <source>in less than a minute</source>
-        <translation>trong chưa đầy một phút</translation>
+        <translation>trong ít hơn 1 phút</translation>
     </message>
     <name>util</name>
     <message>
@@ -6207,7 +6211,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
     <name>util</name>
     <message>
         <source>less than a minute ago</source>
-        <translation>chưa đầy một phút trước</translation>
+        <translation>ít hơn 1 phút trước</translation>
     </message>
     <name>util</name>
     <message>
@@ -6237,7 +6241,8 @@ since it descreases the total fee rate to {combined_rate}. Pick at least {parent
     <message>
         <source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-        <translation>Replace-By-Fee: Giao dịch này thay thế giao dịch {txid} với tỷ lệ phí {rate_org}. Hãy chọn phí cao hơn tỷ lệ phí tối thiểu {rate_min}.</translation>
+        <translation>Thay thế bằng phí: Giao dịch này thay thế giao dịch {txid} với mức phí {rate_org}.
+Chọn mức phí cao hơn mức phí tối thiểu {rate_min}.</translation>
     </message>
     <name>utils</name>
     <message>
@@ -6279,7 +6284,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO</source>
-        <translation>UTXO chưa xác nhận</translation>
+        <translation>UTXO chưa được xác nhận</translation>
     </message>
     <name>utxo_list</name>
     <message>
@@ -6393,12 +6398,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>wallet</name>
     <message>
         <source>Send to:</source>
-        <translation>Gửi tới:</translation>
+        <translation>Gửi cho:</translation>
     </message>
     <name>wallet</name>
     <message>
         <source>Unconfirmed</source>
-        <translation>Chưa xác nhận</translation>
+        <translation>Chưa được xác nhận</translation>
     </message>
     <name>wallet</name>
     <message>
