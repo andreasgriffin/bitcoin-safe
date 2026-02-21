@@ -753,6 +753,18 @@ ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres 
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Restablecer zoom</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>a</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1336,6 +1348,11 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>Marca de tiempo estimada</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Etiqueta</translation>
 		</message>
@@ -1388,6 +1405,11 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 		<message>
 			<source>Wallet</source>
 			<translation>Cartera</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2497,7 +2519,11 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Use la altura de bloque para retrasar hasta que se mine un bloque específico. Use fecha/hora para retrasar hasta una hora de red específica (median-time-past). Median-time-past es la marca de tiempo mediana de los últimos 11 bloques, por lo que normalmente está aproximadamente {minutes} minutos detrás de la punta.</translation>
+			<translation>Use la altura de bloque para retrasar hasta que se mine un bloque específico.
+Use fecha/hora para retrasar hasta una hora de red específica (median-time-past).
+Median-time-past es la marca de tiempo mediana de los últimos 11 bloques,
+por
+lo que normalmente está aproximadamente {minutes} minutos detrás de la punta.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -2568,10 +2594,9 @@ so it is typically about {minutes} minutes behind the tip.</source>
 
  Do you want to proceed anyway?</source>
 			<translation>Error en la conexión con el servidor.
-
 {responses}
 
-¿Quieres proceder de todos modos?</translation>
+ ¿Quieres proceder de todos modos?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3070,6 +3095,38 @@ Si hay algún problema, no dude en contactarnos en: [andreasgriffin@proton.me](m
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>    {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>  Reemplazada por TxID:
+{replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  Reemplazada por TxID: {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(no detectado)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID:
+{txid}
+  {replaced_by_block}
+  Qué ocurrió: {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Añadir como no confirmada en el mempool</translation>
 		</message>
@@ -3274,7 +3331,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>Transacción(es) eliminada(s) en el monedero '{wallet}':
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>Reemplazada en el Mempool.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>Guardar transacciones</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3310,24 +3381,27 @@ can only be added as unconfirmed in-mempool.
 Do you want to continue anyway?</source>
 			<translation>Las transacciones
 {}
-solo pueden añadirse como no confirmadas en el mempool. ¿Desea continuar de todos modos?</translation>
+solo pueden añadirse como no confirmadas en el mempool.
+¿Desea continuar de todos modos?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Las transacciones
-{txs}
-en la cartera '{wallet}' han sido eliminadas del historial!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>Esta transacción fue confirmada previamente y ahora ha sido eliminada. Esto indica una reorganización de la cadena (Reorg).</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>Esta transacción no estaba confirmada y ahora ha sido eliminada. Fue eliminada del Mempool, y actualmente este monedero no está rastreando ninguna transacción de reemplazo.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>Esto solo eliminará la transacción de esta vista del monedero.
-Ya se ha difundido a la red Bitcoin y probablemente se confirmará igualmente. ¿Desea eliminarla del monedero?</translation>
+			<translation>Esto solo eliminará la transacción de esta vista del monedero. Ya se ha difundido a la red Bitcoin y probablemente se confirmará igualmente.
+
+¿Desea eliminarla del monedero?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3458,11 +3532,11 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Recibe una &lt;b&gt;pequeña&lt;/b&gt; cantidad (menos de {test_amount}) a una dirección de este monedero.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar los gastos desde el monedero. &lt;br&gt; Así que antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes. &lt;br&gt; &lt;br&gt; &lt;b&gt;¡NO envíes grandes fondos al monedero todavía. Por favor, completa primero todas las pruebas de envío!&lt;/b&gt;   
-                    </translation>
+			<translation>Reciba una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menor que {test_amount}) en 1 dirección de este monedero.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt;                     Para saber si controla los fondos, debe probar el gasto desde el monedero. 
+                    &lt;br&gt;                     Por lo tanto, antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NO envíe grandes cantidades al monedero todavía. ¡Complete primero todas las pruebas self-send!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3745,13 +3819,14 @@ Si cometes un error aquí, ¡tu dinero se perderá!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Completa la prueba de envío para asegurar que el firmante de hardware funciona!</translation>
+			<source>Skip spend test?</source>
+			<translation>¿Omitir prueba de gasto?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>¿Omitir prueba de gasto?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>Estamos enviando desde su monedero a otra dirección en su monedero (self-send).&lt;br&gt; Esto practica el flujo de firma y asegura que todos los firmantes de hardware estén configurados correctamente.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4195,6 +4270,13 @@ Si desea seguir usando ambos, restablezca ahora la clave de sincronización de C
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Restablecer zoom</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4469,7 +4551,8 @@ O puedes difundirla vía {url}</translation>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Esta transacción aún no es válida (nLocktime establecido). La transmisión fallará. ¿Desea transmitir de todos modos?</translation>
+			<translation>Esta transacción aún no es válida (nLocktime establecido). La transmisión fallará.
+¿Desea transmitir de todos modos?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4648,7 +4731,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Ha fallado al extraer archivador de actualización.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4928,8 +5011,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Todas las pruebas de envío se realizaron con éxito.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>Todas las pruebas de self-send se completaron con éxito.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4973,18 +5056,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Prueba de Envío</translation>
+			<source>Self-Send Test</source>
+			<translation>Prueba self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Prueba de envío</translation>
+			<source>Self-Send test</source>
+			<translation>Prueba self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Prueba de envío {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>Prueba self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5000,9 +5083,10 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transacción de prueba '{tx_text}' se realizó con éxito. Por favor, procede a hacer la prueba de envío: '{next_text}'</translation>
+			<translation>La transacción de prueba  '{tx_text}'  se completó con éxito. Continúe con la prueba self-send: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6038,7 +6122,8 @@ Solo funciona en transacciones que señalan RBF y no se garantiza el éxito.</tr
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent gasta una salida de cambio de la transacción pendiente con una comisión mayor para arrastrar ambas a un bloque.
+			<translation>Child-Pays-For-Parent gasta una salida de cambio de la transacción pendiente
+con una comisión mayor para arrastrar ambas a un bloque.
 Solo funciona si tiene una salida de cambio disponible y aumenta la tasa combinada.</translation>
 		</message>
 		<name>util</name>
@@ -6196,19 +6281,22 @@ Requiere que la transacción original señale RBF y que el monedero posea una sa
 		<message>
 			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Child-Pays-For-Parent: Esta transacción acelera la confirmación de {parent_str}, ya que aumenta la tasa total a {combined_rate}.</translation>
+			<translation>Child-Pays-For-Parent: Esta transacción acelera la confirmación de {parent_str}, ya
+que aumenta la tasa total a {combined_rate}.</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
 since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
-			<translation>Child-Pays-For-Parent: La comisión de esta transacción es demasiado baja para acelerar la confirmación de {parent_str}, ya que reduce la tasa total a {combined_rate}. Elija al menos {parent_rate}.</translation>
+			<translation>Child-Pays-For-Parent: La comisión de esta transacción es demasiado baja para acelerar la confirmación 
+de {parent_str}, ya que reduce la tasa total a {combined_rate}. Elija al menos {parent_rate}.</translation>
 		</message>
 		<name>utils</name>
 		<message>
 			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-			<translation>Replace-By-Fee: Esta transacción reemplaza la transacción {txid} con una tasa de comisión {rate_org}. Elija una comisión por encima de la tasa mínima {rate_min}.</translation>
+			<translation>Replace-By-Fee: Esta transacción reemplaza la transacción {txid} con una tasa de comisión {rate_org}.
+Escoja una comisión por encima de la tasa mínima {rate_min}.</translation>
 		</message>
 		<name>utils</name>
 		<message>

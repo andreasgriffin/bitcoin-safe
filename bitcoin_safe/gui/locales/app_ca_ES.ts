@@ -753,6 +753,18 @@ ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar-ne
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Restableix el zoom</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>a</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1336,6 +1348,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>Marca de temps estimada</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Etiqueta</translation>
 		</message>
@@ -1388,6 +1405,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Wallet</source>
 			<translation>Cartera</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2497,7 +2519,10 @@ Vols amagar-la a la safata?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Utilitzeu l’alçada del bloc per retardar fins que es mineri un bloc específic. Utilitzeu data/hora per retardar fins a un temps de xarxa específic (median-time-past). Median-time-past és la marca de temps mediana dels últims 11 blocs, per tant normalment està aproximadament {minutes} minuts darrere de la punta.</translation>
+			<translation>Utilitzeu l’alçada del bloc per retardar fins que es mineri un bloc específic.
+Utilitzeu data/hora per retardar fins a un temps de xarxa específic (median-time-past).
+Median-time-past és la marca de temps mediana dels últims 11 blocs,
+per tant normalment està aproximadament {minutes} minuts darrere de la punta.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3068,6 +3093,37 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>{new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>Substituïda per TxID: {replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(no detectat)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID:
+{txid}
+  {replaced_by_block}
+  Què ha passat: {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Afegeix com a no confirmada al mempool</translation>
 		</message>
@@ -3272,7 +3328,21 @@ Voleu tornar a escanejar la cartera amb un límit de gap augmentat a {new_gap}</
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>Substituïda al Mempool.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>Desa les transaccions</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3312,12 +3382,13 @@ només es poden afegir com a no confirmades al mempool. Voleu continuar igualmen
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Les transaccions
-{txs}
-de la cartera '{wallet}' s'han eliminat de l'historial!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>Aquesta transacció havia estat confirmada prèviament i ara s'ha eliminat. Això indica una reorganització de la cadena (Reorg).</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>Aquesta transacció no estava confirmada i ara s'ha eliminat. S'ha eliminat del Mempool i actualment aquesta cartera no està seguint cap transacció de reemplaçament.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3456,12 +3527,9 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controles els fons, has de provar de gastar des de la cartera. 
-                    &lt;br&gt;                     Així que abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;No enviïs encara grans quantitats a la cartera. Completa primer totes les proves d'enviament!&lt;/b&gt;   
-                    </translation>
+			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera.                      &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; provar l'enviament i tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3744,13 +3812,14 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Completa la prova d'enviament per assegurar-te que el signador de maquinari funciona!</translation>
+			<source>Skip spend test?</source>
+			<translation>Ometre la prova de despesa?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Ometre la prova de despesa?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>Estem enviant des de la vostra cartera a una altra adreça de la vostra cartera (autoenviament).&lt;br&gt; Això permet practicar el flux de signatura i assegura que tots els signants de maquinari estiguin configurats correctament.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4194,6 +4263,13 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Restableix el zoom</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4468,7 +4544,8 @@ O bé la pots emetre via {url}</translation>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Aquesta transacció encara no és vàlida (nLocktime establert). La transmissió fallarà. Voleu transmetre igualment?</translation>
+			<translation>Aquesta transacció encara no és vàlida (nLocktime establert).
+La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4647,7 +4724,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Totes les proves d'autoenviament s'han completat correctament.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4927,8 +5004,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Totes les proves d'enviament s'han realitzat amb èxit.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4972,18 +5049,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Prova d'enviament</translation>
+			<source>Self-Send Test</source>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Prova d'enviament</translation>
+			<source>Self-Send test</source>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Prova d'enviament {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>Prova d'autoenviament {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4999,9 +5076,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transacció de prova '{tx_text}' s'ha realitzat amb èxit. Si us plau, continua amb la prova d'enviament: '{next_text}'</translation>
+			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

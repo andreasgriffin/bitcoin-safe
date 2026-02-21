@@ -751,6 +751,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>รีเซ็ตการซูม</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>ไปยัง</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1333,6 +1345,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>การประทับเวลาโดยประมาณ</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>ป้ายกำกับ</translation>
 		</message>
@@ -1385,6 +1402,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>กระเป๋าเงิน</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3060,6 +3082,37 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>{new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>ถูกแทนที่โดย TxID: {replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(ไม่พบ)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID:
+{txid}
+  {replaced_by_block}
+  เกิดอะไรขึ้น: {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>เพิ่มเป็นยังไม่ยืนยันใน mempool</translation>
 		</message>
@@ -3263,7 +3316,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>ธุรกรรมที่ถูกลบในกระเป๋าเงิน '{wallet}':
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>ถูกแทนที่ใน Mempool</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>บันทึกธุรกรรม</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3303,12 +3370,13 @@ Do you want to continue anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>ธุรกรรม
-{txs}
-ในกระเป๋าเงิน '{wallet}' ถูกลบออกจากประวัติ!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>ธุรกรรมนี้เคยได้รับการยืนยันก่อนหน้านี้และตอนนี้ถูกลบแล้ว สิ่งนี้บ่งชี้ว่ามีการจัดระเบียบบล็อกเชนใหม่ (Reorg)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>ธุรกรรมนี้ยังไม่ได้รับการยืนยันและตอนนี้ถูกลบแล้ว มันถูกลบออกจาก Mempool และขณะนี้ไม่พบธุรกรรมทดแทนที่กระเป๋าเงินนี้กำลังติดตาม</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3445,9 +3513,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยังหนึ่งในที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                     &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่งจำนวน Bitcoin ที่มากไปยังกระเป๋าเงิน มันเป็นเรื่อง&lt;b&gt;สำคัญ&lt;/b&gt;ที่จะต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด                         &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;โปรดอย่าส่งเงินจำนวนมากเข้ากระเป๋าเงินก่อนที่คุณจะทำการทดสอบการส่งเสร็จสิ้น!&lt;/b&gt;                    </translation>
+			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อให้ทราบว่าคุณควบคุมเงินได้ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                      &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากไปยังกระเป๋าเงิน จึงเป็นสิ่ง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่จะต้องทดสอบการใช้จ่ายและผู้ลงนามทั้งหมด                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;อย่าส่งเงินจำนวนมากไปยังกระเป๋าเงินในตอนนี้ โปรดทำการทดสอบ self-send ทั้งหมดให้เสร็จก่อน!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3729,13 +3797,14 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>เสร็จสิ้นการทดสอบการส่งเพื่อให้แน่ใจว่าผู้ลงนามฮาร์ดแวร์ทำงาน!</translation>
+			<source>Skip spend test?</source>
+			<translation>ข้ามการทดสอบการใช้จ่าย?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>ข้ามการทดสอบการใช้จ่าย?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>เรากำลังส่งจากกระเป๋าเงินของคุณไปยังที่อยู่อื่นในกระเป๋าเงินของคุณ (self-send)&lt;br&gt; สิ่งนี้ช่วยฝึกกระบวนการลงนามและทำให้แน่ใจว่าอุปกรณ์ลงนามทั้งหมดได้รับการตั้งค่าอย่างถูกต้อง</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4175,6 +4244,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>XPUBs</source>
 			<translation>XPUBs</translation>
+		</message>
+	</context>
+	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>รีเซ็ตการซูม</translation>
 		</message>
 	</context>
 	<context>
@@ -4626,7 +4702,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>การทดสอบ self-send ทั้งหมดเสร็จสมบูรณ์เรียบร้อยแล้ว</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4906,8 +4982,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>การทดสอบการส่งทั้งหมดเสร็จสมบูรณ์</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>การทดสอบ self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4951,18 +5027,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>ทดสอบการส่ง</translation>
+			<source>Self-Send Test</source>
+			<translation>การทดสอบ self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>ทดสอบการส่ง</translation>
+			<source>Self-Send test</source>
+			<translation>การทดสอบ self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>ทดสอบการส่ง {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>การทดสอบ self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4978,9 +5054,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>ธุรกรรมทดสอบ '{tx_text}' สำเร็จ โปรดดำเนินการทดสอบการส่ง: '{next_text}'</translation>
+			<translation>ธุรกรรมทดสอบ  '{tx_text}'  เสร็จสมบูรณ์เรียบร้อยแล้ว โปรดดำเนินการทดสอบ self-send ต่อไป:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

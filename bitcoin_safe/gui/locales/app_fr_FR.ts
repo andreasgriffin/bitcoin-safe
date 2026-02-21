@@ -752,6 +752,18 @@ ont déjà des transactions liées à d’autres adresses. Êtes‑vous sûr de 
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Réinitialiser le zoom</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>vers</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1335,6 +1347,11 @@ car la taille finale de la transaction est inconnue.</translation>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>Horodatage estimé</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Étiquette</translation>
 		</message>
@@ -1387,6 +1404,11 @@ car la taille finale de la transaction est inconnue.</translation>
 		<message>
 			<source>Wallet</source>
 			<translation>Portefeuille</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2496,7 +2518,10 @@ Voulez-vous le masquer dans la barre d’état système à la place ?</translati
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Utilisez la hauteur de bloc pour retarder jusqu’à ce qu’un bloc spécifique soit miné. Utilisez la date/heure pour retarder jusqu’à une heure réseau spécifique (median-time-past). Le median-time-past est l’horodatage médian des 11 derniers blocs, il est donc généralement d’environ {minutes} minutes en retard sur la pointe.</translation>
+			<translation>Utilisez la hauteur de bloc pour retarder jusqu’à ce qu’un bloc spécifique soit miné.
+Utilisez la date/heure pour retarder jusqu’à une heure réseau spécifique (median-time-past).
+Le median-time-past est l’horodatage médian des 11 derniers blocs,
+il est donc généralement d’environ {minutes} minutes en retard sur la pointe.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3067,6 +3092,37 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>{new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>Remplacé par TxID : {replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(non détecté)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID :
+{txid}
+  {replaced_by_block}
+  Ce qui s'est passé : {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Ajouter comme non confirmée dans le mempool</translation>
 		</message>
@@ -3271,7 +3327,21 @@ Voulez-vous rescanner le portefeuille avec une limite d’écart augmentée à {
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>Transaction(s) supprimée(s) dans le portefeuille '{wallet}' :
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>Remplacé dans le Mempool.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>Enregistrer les transactions</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3311,12 +3381,13 @@ ne peuvent être ajoutées que comme non confirmées dans le mempool. Voulez-vou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Les transactions
-{txs}
-dans le portefeuille '{wallet}' ont été supprimées de l'historique!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>Cette transaction était précédemment confirmée et est maintenant supprimée. Cela indique une réorganisation de la chaîne (Reorg).</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>Cette transaction n'était pas confirmée et est maintenant supprimée. Elle a été supprimée du Mempool et aucune transaction de remplacement n'est actuellement suivie par ce portefeuille.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3455,12 +3526,9 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Recevez une &lt;b&gt;petite&lt;/b&gt; somme (moins de {test_amount}) à une adresse de ce portefeuille.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester les dépenses depuis le portefeuille. 
-                    &lt;br&gt;                     Ainsi, avant d'envoyer une quantité substantielle de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Ne envoyez PAS encore de gros fonds dans le portefeuille. Veuillez d'abord compléter tous les tests d'envoi!&lt;/b&gt;   
-                    </translation>
+			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille.                      &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3743,13 +3811,14 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Compléter le test d'envoi pour vous assurer que le signataire matériel fonctionne!</translation>
+			<source>Skip spend test?</source>
+			<translation>Sauter le test de dépense?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Sauter le test de dépense?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>Nous envoyons depuis votre portefeuille vers une autre adresse de votre portefeuille (auto-envoi).&lt;br&gt; Cela permet de pratiquer le flux de signature et garantit que tous les signataires matériels sont correctement configurés.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4193,6 +4262,13 @@ Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser mainte
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Réinitialiser le zoom</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4467,7 +4543,8 @@ Sinon, vous pouvez la diffuser via {url}</translation>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Cette transaction n’est pas encore valide (nLocktime défini). La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
+			<translation>Cette transaction n’est pas encore valide (nLocktime défini).
+La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4646,7 +4723,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Tous les tests d'auto-envoi ont été effectués avec succès.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4926,8 +5003,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Tous les tests d'envoi ont été réalisés avec succès.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>Test d'auto-envoi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4971,18 +5048,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Test d'envoi</translation>
+			<source>Self-Send Test</source>
+			<translation>Test d'auto-envoi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Test d'envoi</translation>
+			<source>Self-Send test</source>
+			<translation>Test d'auto-envoi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Test d'envoi {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>Test d'auto-envoi {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4998,9 +5075,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transaction de test '{tx_text}' a été réalisée avec succès. Veuillez procéder au test d'envoi: '{next_text}'</translation>
+			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi :  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

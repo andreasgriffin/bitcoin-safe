@@ -752,6 +752,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>إعادة تعيين التكبير</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>إلى</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1334,6 +1346,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>الطابع الزمني التقديري</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>تصنيف</translation>
 		</message>
@@ -1386,6 +1403,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>محفظة</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2495,7 +2517,9 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>استخدم ارتفاع الكتلة للتأخير حتى يتم تعدين كتلة معينة. استخدم التاريخ/الوقت للتأخير حتى وقت شبكة محدد (median-time-past). median-time-past هو الطابع الزمني الوسيط لآخر 11 كتلة، لذلك يكون عادةً متأخرًا بحوالي {minutes} دقيقة عن قمة السلسلة.</translation>
+			<translation>استخدم ارتفاع الكتلة للتأخير حتى يتم تعدين كتلة معينة.
+استخدم التاريخ/الوقت للتأخير حتى وقت شبكة محدد (median-time-past).
+median-time-past هو الطابع الزمني الوسيط لآخر 11 كتلة، لذلك يكون عادةً متأخرًا بحوالي {minutes} دقيقة عن قمة السلسلة.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3068,6 +3092,37 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>{new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>تم الاستبدال بواسطة TxID: {replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(غير مكتشف)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID:
+{txid}
+  {replaced_by_block}
+  ماذا حدث: {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>إضافة كغير مؤكدة في mempool</translation>
 		</message>
@@ -3272,7 +3327,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>المعاملات التي تمت إزالتها في المحفظة '{wallet}':
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>تم استبدالها في الـ Mempool.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>حفظ المعاملات</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3312,12 +3381,13 @@ Do you want to continue anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>المعاملات
-{txs}
-في المحفظة '{wallet}' تم إزالتها من التاريخ!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>تم تأكيد هذه المعاملة سابقًا وتمت إزالتها الآن. يشير هذا إلى إعادة تنظيم السلسلة (Reorg).</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>لم يتم تأكيد هذه المعاملة وتمت إزالتها الآن. تمت إزالتها من الـ Mempool، ولا توجد حاليًا معاملة بديلة يتم تتبعها بواسطة هذه المحفظة.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3456,11 +3526,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة. 
-                    &lt;br&gt;                     لذا قبل أن ترسل كمية كبيرة من البيتكوين إلى المحفظة، من ال&lt;b&gt;ضروري&lt;/b&gt; أن تنفق من المحفظة وتختبر جميع الموقعين.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل أموالًا كبيرة إلى المحفظة بعد. الرجاء إكمال جميع اختبارات الإرسال أولاً!&lt;/b&gt;                    </translation>
+			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق وجميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3743,13 +3811,14 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>أكمل اختبار الإرسال للتأكد من عمل مُوقع الأجهزة!</translation>
+			<source>Skip spend test?</source>
+			<translation>هل تريد تخطي اختبار الإنفاق؟</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>هل تريد تخطي اختبار الإنفاق؟</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>نحن نرسل من محفظتك إلى عنوان آخر داخل محفظتك (إرسال ذاتي).&lt;br&gt; هذا يسمح بالتدرب على عملية التوقيع ويضمن أن جميع أجهزة التوقيع مهيأة بشكل صحيح.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4193,6 +4262,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>إعادة تعيين التكبير</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4463,7 +4539,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>هذه المعاملة غير صالحة بعد (تم تعيين nLocktime). سيفشل البث. هل تريد البث على أي حال؟</translation>
+			<translation>هذه المعاملة غير صالحة بعد (تم تعيين nLocktime).
+سيفشل البث. هل تريد البث على أي حال؟</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4642,7 +4719,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>تم إكمال جميع اختبارات الإرسال الذاتي بنجاح.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4922,8 +4999,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>تم إجراء جميع اختبارات الإرسال بنجاح.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4967,18 +5044,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>إرسال الاختبار</translation>
+			<source>Self-Send Test</source>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>إرسال الاختبار</translation>
+			<source>Self-Send test</source>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>إرسال الاختبار {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>اختبار الإرسال الذاتي {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4994,9 +5071,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>تم إجراء معاملة الاختبار '{tx_text}' بنجاح. يرجى المتابعة لإجراء اختبار الإرسال: '{next_text}'</translation>
+			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى متابعة اختبار الإرسال الذاتي:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

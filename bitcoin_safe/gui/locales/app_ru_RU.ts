@@ -753,6 +753,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Сбросить масштаб</translation>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation>к</translation>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1336,6 +1348,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation>Оценочная метка времени</translation>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Метка</translation>
 		</message>
@@ -1388,6 +1405,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>Кошелек</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2497,7 +2519,10 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Используйте высоту блока, чтобы отложить до добычи определённого блока. Используйте дату/время, чтобы отложить до определённого сетевого времени (median-time-past). Median-time-past — это медианная метка времени последних 11 блоков, поэтому обычно она примерно на {minutes} минут отстаёт от вершины цепи.</translation>
+			<translation>Используйте высоту блока,
+чтобы отложить до добычи определённого блока.
+Используйте дату/время, чтобы отложить до определённого сетевого времени (median-time-past).
+Median-time-past — это медианная метка времени последних 11 блоков, поэтому обычно она примерно на {minutes} минут отстаёт от вершины цепи.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3070,6 +3095,37 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>{new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>Заменено TxID: {replaced_by_lines}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  {new_txid}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation>(не обнаружено)</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation>- TxID:
+{txid}
+  {replaced_by_block}
+  Что произошло: {happened_text}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Добавить как неподтверждённую в mempool</translation>
 		</message>
@@ -3274,7 +3330,21 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation>Удалённые транзакции в кошельке '{wallet}':
+
+{txs}</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation>Заменено в Mempool.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
 			<translation>Сохранить транзакции</translation>
 		</message>
 		<name>QTWallet</name>
@@ -3314,12 +3384,13 @@ Do you want to continue anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Транзакции
-{txs}
-в кошельке '{wallet}' были удалены из истории!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation>Эта транзакция ранее была подтверждена и теперь удалена. Это указывает на реорганизацию цепи (Reorg).</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation>Эта транзакция не была подтверждена и теперь удалена. Она была удалена из Mempool, и в настоящее время этот кошелёк не отслеживает заменяющую транзакцию.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3458,11 +3529,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (менее {test_amount}) на один адрес этого кошелька.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt; Чтобы узнать, контролируете ли вы средства, вы должны тестировать расходы из кошелька. &lt;br&gt; Поэтому, прежде чем отправлять значительную сумму биткойнов в кошелек, &lt;b&gt;жизненно важно&lt;/b&gt; тратить из кошелька и тестировать всех подписантов. &lt;br&gt; &lt;br&gt; &lt;b&gt;Не отправляйте крупные суммы в кошелек, пока не завершите все тесты отправки!&lt;/b&gt;   
-                    </translation>
+			<translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (меньше {test_amount}) на 1 адрес этого кошелька.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt;                     Чтобы убедиться, что вы контролируете средства, необходимо протестировать отправку из кошелька.                      &lt;br&gt;                     Поэтому перед отправкой значительной суммы Bitcoin в кошелёк &lt;b&gt;крайне важно&lt;/b&gt; выполнить отправку и протестировать всех подписантов.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Пока НЕ отправляйте крупные суммы в кошелёк. Сначала завершите все тесты self-send!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3745,13 +3814,14 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Завершите тест отправки, чтобы убедиться, что аппаратное подписывающее устройство работает!</translation>
+			<source>Skip spend test?</source>
+			<translation>Пропустить тест на расход?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Пропустить тест на расход?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation>Мы отправляем средства из вашего кошелька на другой адрес в вашем кошельке (self-send).&lt;br&gt; Это позволяет отработать процесс подписи и гарантирует, что все аппаратные подписанты настроены правильно.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4195,6 +4265,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation>Сбросить масштаб</translation>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4469,7 +4546,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Эта транзакция ещё не действительна (установлен nLocktime). Трансляция завершится ошибкой. Вы всё равно хотите отправить?</translation>
+			<translation>Эта транзакция ещё не действительна (установлен nLocktime).
+Трансляция завершится ошибкой. Вы всё равно хотите отправить?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4648,7 +4726,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Все тесты self-send успешно завершены.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4928,8 +5006,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Все тесты отправки успешно выполнены.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4973,18 +5051,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Тест отправки</translation>
+			<source>Self-Send Test</source>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Провести тест отправки</translation>
+			<source>Self-Send test</source>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Провести тест отправки {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation>Тест self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5000,9 +5078,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Тестовая транзакция '{tx_text}' была успешно выполнена. Пожалуйста, продолжите тест отправки: '{next_text}'</translation>
+			<translation>Тестовая транзакция  '{tx_text}'  успешно выполнена. Пожалуйста, продолжите тест self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
