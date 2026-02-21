@@ -2518,9 +2518,7 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-        <translation>برای تأخیر تا استخراج یک بلاک مشخص از ارتفاع بلاک استفاده کنید.
-برای تأخیر تا زمان مشخص شبکه (median-time-past) از تاریخ/زمان استفاده کنید.
-median-time-past مهر زمانی میانه 11 بلاک اخیر است، بنابراین معمولاً حدود {minutes} دقیقه عقب‌تر از نوک زنجیره است.</translation>
+        <translation>برای تأخیر تا استخراج یک بلاک مشخص از ارتفاع بلاک استفاده کنید. برای تأخیر تا زمان مشخص شبکه (median-time-past) از تاریخ/زمان استفاده کنید. median-time-past مهر زمانی میانه 11 بلاک اخیر است، بنابراین معمولاً حدود {minutes} دقیقه عقب‌تر از نوک زنجیره است.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -4542,8 +4540,7 @@ Or you can broadcast via {url}</source>
     <message>
         <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-        <translation>این تراکنش هنوز معتبر نیست (nLocktime تنظیم شده است).
-پخش با شکست مواجه خواهد شد. آیا همچنان می‌خواهید پخش کنید؟</translation>
+        <translation>این تراکنش هنوز معتبر نیست (nLocktime تنظیم شده است). پخش با شکست مواجه خواهد شد. آیا همچنان می‌خواهید پخش کنید؟</translation>
     </message>
     <name>UITx_Viewer</name>
     <message>
@@ -4722,7 +4719,7 @@ Do you want to broadcast anyway?</source>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Failed to extract update archive.</source>
-        <translation>تمام تست‌های self-send با موفقیت انجام شدند.</translation>
+        <translation>Failed to extract update archive.</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
