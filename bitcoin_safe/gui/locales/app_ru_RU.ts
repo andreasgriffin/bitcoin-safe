@@ -3096,18 +3096,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (меньше {test_amount}) на 1 адрес этого кошелька.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt;                     Чтобы убедиться, что вы контролируете средства, необходимо протестировать отправку из кошелька.                      &lt;br&gt;                     Поэтому перед отправкой значительной суммы Bitcoin в кошелёк &lt;b&gt;крайне важно&lt;/b&gt; выполнить отправку из кошелька и протестировать всех подписантов.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Пока НЕ отправляйте крупные суммы в кошелёк. Сначала завершите все тесты self-send!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Заменено TxID: {new_txid}</translation>
+			<translation>Заменено TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3119,7 +3119,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Что произошло: {happened_text}</translation>
 		</message>
@@ -3332,7 +3333,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Удалённые транзакции в кошельке '{wallet}':  {txs}</translation>
+			<translation>Удалённые транзакции в кошельке '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3528,7 +3531,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (меньше {test_amount}) на 1 адрес этого кошелька.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt;                     Чтобы убедиться, что вы контролируете средства, необходимо протестировать отправку из кошелька.                      &lt;br&gt;                     Поэтому перед отправкой значительной суммы Bitcoin в кошелёк &lt;b&gt;крайне важно&lt;/b&gt; выполнить отправку и протестировать всех подписантов.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Пока НЕ отправляйте крупные суммы в кошелёк. Сначала завершите все тесты self-send!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5054,12 +5057,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Тест self-send {j}</translation>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Тестовая транзакция  '{tx_text}'  успешно выполнена. Пожалуйста, выполните следующий тест self-send:  '{next_text}'</translation>
+			<translation>Тест self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5077,7 +5080,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Заменено TxID: {replaced_by_lines}</translation>
+			<translation>Тестовая транзакция  '{tx_text}'  успешно выполнена. Пожалуйста, продолжите тест self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

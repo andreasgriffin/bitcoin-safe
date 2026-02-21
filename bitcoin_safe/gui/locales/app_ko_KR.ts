@@ -3089,18 +3089,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>다음 TxID로 대체됨: {new_txid}</translation>
+			<translation>다음 TxID로 대체됨: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3112,7 +3112,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   무슨 일이 일어났는지: {happened_text}</translation>
 		</message>
@@ -3325,7 +3326,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>지갑 '{wallet}' 에서 제거된 거래:  {txs}</translation>
+			<translation>지갑 '{wallet}' 에서 제거된 거래:
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3520,7 +3523,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5041,12 +5044,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send 테스트 {j}</translation>
+			<translation>Self-Send 테스트</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오:  '{next_text}'</translation>
+			<translation>Self-Send 테스트 {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5064,7 +5067,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>다음 TxID로 대체됨: {replaced_by_lines}</translation>
+			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

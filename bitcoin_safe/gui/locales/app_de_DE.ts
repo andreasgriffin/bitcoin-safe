@@ -3101,18 +3101,19 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Ersetzt durch TxID(s): {replaced_by_lines}</translation>
+			<translation>  Ersetzt durch TxID(s):
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>Ersetzt durch TxID(s): {new_txid}</translation>
+			<translation>  Ersetzt durch TxID(s): {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3124,7 +3125,8 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Was ist passiert: {happened_text}</translation>
 		</message>
@@ -3337,7 +3339,9 @@ Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scann
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Entfernte Transaktion(en) in Wallet '{wallet}':  {txs}</translation>
+			<translation>Entfernte Transaktion(en) in Wallet '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3535,7 +3539,9 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Funds haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also einen größeren Bitcoin-Betrag in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, eine Ausgabe durchzuführen und alle Signer zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch KEINE großen Beträge in das Wallet. Bitte schließen Sie zuerst alle Self-Send-Tests ab!&lt;/b&gt;</translation>
+			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieses Wallets.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Funds haben, müssen Sie das Ausgeben aus dem Wallet testen. 
+                    &lt;br&gt;                     Bevor Sie also einen größeren Bitcoin-Betrag in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, eine Ausgabe durchzuführen und alle Signer zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch KEINE großen Beträge in das Wallet. Bitte schließen Sie zuerst alle Self-Send-Tests ab!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -5089,7 +5095,8 @@ Möchten Sie trotzdem senden?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Die Testtransaktion  '{tx_text}'  wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Self-Send-Test fort:  '{next_text}'</translation>
+			<translation>Die Testtransaktion  '{tx_text}'  wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Self-Send-Test fort: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

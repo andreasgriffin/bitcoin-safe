@@ -3081,18 +3081,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ Wallet မှ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {new_txid}</translation>
+			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3104,7 +3104,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   ဘာဖြစ်ခဲ့သည်: {happened_text}</translation>
 		</message>
@@ -3316,7 +3317,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Wallet '{wallet}' တွင် ဖယ်ရှားထားသော Transaction(များ):  {txs}</translation>
+			<translation>Wallet '{wallet}' တွင် ဖယ်ရှားထားသော Transaction(များ):
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3510,7 +3513,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5028,12 +5031,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send test {j}</translation>
+			<translation>Self-Send Test</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ:  '{next_text}'</translation>
+			<translation>Self-Send Test {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5051,7 +5054,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {replaced_by_lines}</translation>
+			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

@@ -3094,18 +3094,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше {test_amount}) на 1 адресу цього гаманця.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt;                     Щоб переконатися, що ви контролюєте кошти, потрібно протестувати витрати з гаманця.                      &lt;br&gt;                     Тому перед надсиланням значної кількості Bitcoin у гаманець &lt;b&gt;критично важливо&lt;/b&gt; протестувати витрати та всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки НЕ надсилайте великі суми в гаманець. Спочатку завершіть усі тести self-send!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Замінено TxID: {new_txid}</translation>
+			<translation>Замінено TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3117,7 +3117,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Що сталося: {happened_text}</translation>
 		</message>
@@ -3330,7 +3331,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Видалені транзакції в гаманці '{wallet}':  {txs}</translation>
+			<translation>Видалені транзакції в гаманці '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3526,7 +3529,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше {test_amount}) на 1 адресу цього гаманця.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt;                     Щоб переконатися, що ви контролюєте кошти, потрібно протестувати витрати з гаманця.                      &lt;br&gt;                     Тому перед надсиланням значної кількості Bitcoin у гаманець &lt;b&gt;критично важливо&lt;/b&gt; протестувати витрати і всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки НЕ надсилайте великі суми в гаманець. Спочатку завершіть усі тести self-send!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5052,12 +5055,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Тест self-send {j}</translation>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Тестова транзакція  '{tx_text}'  успішно виконана. Будь ласка, продовжуйте тест self-send:  '{next_text}'</translation>
+			<translation>Тест self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5075,7 +5078,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Замінено TxID: {replaced_by_lines}</translation>
+			<translation>Тестова транзакція  '{tx_text}'  успішно виконана. Будь ласка, продовжуйте тест self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

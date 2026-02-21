@@ -3096,18 +3096,19 @@ Si hay algún problema, no dude en contactarnos en: [andreasgriffin@proton.me](m
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Reemplazada por TxID: {replaced_by_lines}</translation>
+			<translation>  Reemplazada por TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>Reemplazada por TxID: {new_txid}</translation>
+			<translation>  Reemplazada por TxID: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3119,7 +3120,8 @@ Si hay algún problema, no dude en contactarnos en: [andreasgriffin@proton.me](m
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Qué ocurrió: {happened_text}</translation>
 		</message>
@@ -3332,7 +3334,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Transacción(es) eliminada(s) en el monedero '{wallet}':  {txs}</translation>
+			<translation>Transacción(es) eliminada(s) en el monedero '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3530,7 +3534,9 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Reciba una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menor que {test_amount}) en 1 dirección de este monedero.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt;                     Para saber si controla los fondos, debe probar el gasto desde el monedero.                      &lt;br&gt;                     Por lo tanto, antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NO envíe grandes cantidades al monedero todavía. ¡Complete primero todas las pruebas self-send!&lt;/b&gt;</translation>
+			<translation>Reciba una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menor que {test_amount}) en 1 dirección de este monedero.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt;                     Para saber si controla los fondos, debe probar el gasto desde el monedero. 
+                    &lt;br&gt;                     Por lo tanto, antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NO envíe grandes cantidades al monedero todavía. ¡Complete primero todas las pruebas self-send!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -5079,7 +5085,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transacción de prueba  '{tx_text}'  se completó con éxito. Continúe con la prueba self-send:  '{next_text}'</translation>
+			<translation>La transacción de prueba  '{tx_text}'  se completó con éxito. Continúe con la prueba self-send: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

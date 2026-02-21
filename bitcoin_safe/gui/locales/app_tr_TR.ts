@@ -3094,18 +3094,18 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir.                      &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Şununla Değiştirildi TxID(ler): {new_txid}</translation>
+			<translation>Şununla Değiştirildi TxID(ler): {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3117,7 +3117,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Ne Oldu: {happened_text}</translation>
 		</message>
@@ -3330,7 +3331,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Cüzdan '{wallet}' içindeki Kaldırılan İşlem(ler):  {txs}</translation>
+			<translation>Cüzdan '{wallet}' içindeki Kaldırılan İşlem(ler):
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3526,7 +3529,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir.                      &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5052,12 +5055,12 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send testi {j}</translation>
+			<translation>Self-Send testi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin:  '{next_text}'</translation>
+			<translation>Self-Send testi {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5075,7 +5078,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Şununla Değiştirildi TxID(ler): {replaced_by_lines}</translation>
+			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

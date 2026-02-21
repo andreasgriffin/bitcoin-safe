@@ -3093,18 +3093,18 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Digantikan Oleh TxID: {new_txid}</translation>
+			<translation>Digantikan Oleh TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3116,7 +3116,8 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Apa yang terjadi: {happened_text}</translation>
 		</message>
@@ -3329,7 +3330,9 @@ Apakah Anda ingin memindai ulang dompet dengan batas celah yang ditingkatkan men
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Transaksi yang Dihapus di Dompet '{wallet}':  {txs}</translation>
+			<translation>Transaksi yang Dihapus di Dompet '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3525,7 +3528,7 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5051,12 +5054,12 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Tes self-send {j}</translation>
+			<translation>Tes self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send:  '{next_text}'</translation>
+			<translation>Tes self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5074,7 +5077,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Digantikan Oleh TxID: {replaced_by_lines}</translation>
+			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

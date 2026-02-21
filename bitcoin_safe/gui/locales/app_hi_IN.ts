@@ -3084,18 +3084,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी वॉलेट में बड़ी राशि न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>निम्न TxID द्वारा प्रतिस्थापित: {new_txid}</translation>
+			<translation>निम्न TxID द्वारा प्रतिस्थापित: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3107,7 +3107,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   क्या हुआ: {happened_text}</translation>
 		</message>
@@ -3319,7 +3320,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>वॉलेट '{wallet}' में हटाए गए लेनदेन:  {txs}</translation>
+			<translation>वॉलेट '{wallet}' में हटाए गए लेनदेन:
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3513,7 +3516,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, खर्च का परीक्षण करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी बड़ी राशि वॉलेट में न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5032,12 +5035,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send परीक्षण {j}</translation>
+			<translation>Self-Send परीक्षण</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें:  '{next_text}'</translation>
+			<translation>Self-Send परीक्षण {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5055,7 +5058,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>निम्न TxID द्वारा प्रतिस्थापित: {replaced_by_lines}</translation>
+			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

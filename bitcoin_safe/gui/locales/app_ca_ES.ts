@@ -3094,18 +3094,18 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera.                      &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; fer una despesa des de la cartera i provar tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Substituïda per TxID: {new_txid}</translation>
+			<translation>Substituïda per TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3117,7 +3117,8 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Què ha passat: {happened_text}</translation>
 		</message>
@@ -3330,7 +3331,9 @@ Voleu tornar a escanejar la cartera amb un límit de gap augmentat a {new_gap}</
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':  {txs}</translation>
+			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3526,7 +3529,7 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera.                      &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; provar l'enviament i tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5052,12 +5055,12 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Prova d'autoenviament {j}</translation>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament:  '{next_text}'</translation>
+			<translation>Prova d'autoenviament {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5075,7 +5078,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Substituïda per TxID: {replaced_by_lines}</translation>
+			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

@@ -3093,18 +3093,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق من المحفظة واختبار جميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>تم الاستبدال بواسطة TxID: {new_txid}</translation>
+			<translation>تم الاستبدال بواسطة TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3116,7 +3116,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   ماذا حدث: {happened_text}</translation>
 		</message>
@@ -3329,7 +3330,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>المعاملات التي تمت إزالتها في المحفظة '{wallet}':  {txs}</translation>
+			<translation>المعاملات التي تمت إزالتها في المحفظة '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3525,7 +3528,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق وجميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5047,12 +5050,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>اختبار الإرسال الذاتي {j}</translation>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى المتابعة لإجراء اختبار الإرسال الذاتي:  '{next_text}'</translation>
+			<translation>اختبار الإرسال الذاتي {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5070,7 +5073,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>تم الاستبدال بواسطة TxID: {replaced_by_lines}</translation>
+			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى متابعة اختبار الإرسال الذاتي:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

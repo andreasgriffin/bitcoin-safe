@@ -3080,18 +3080,18 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>このウォレットの 1 つのアドレスに &lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金を管理していることを確認するには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、ウォレットに多額の Bitcoin を送信する前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;非常に重要です&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだウォレットに多額の資金を送信しないでください。まずすべての Self-Send テストを完了してください！&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>次の TxID によって置き換えられました: {new_txid}</translation>
+			<translation>次の TxID によって置き換えられました: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3103,7 +3103,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   何が起こったか: {happened_text}</translation>
 		</message>
@@ -3315,7 +3316,9 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>ウォレット '{wallet}' で削除されたトランザクション:  {txs}</translation>
+			<translation>ウォレット '{wallet}' で削除されたトランザクション:
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3510,7 +3513,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>このウォレットの 1 つのアドレスに &lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金を管理していることを確認するには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、ウォレットに多額の Bitcoin を送信する前に、支出とすべての署名者のテストを行うことが&lt;b&gt;非常に重要です&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだウォレットに多額の資金を送信しないでください。まずすべての Self-Send テストを完了してください！&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5027,12 +5030,12 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send テスト {j}</translation>
+			<translation>Self-Send テスト</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>テストトランザクション  '{tx_text}'  は正常に完了しました。Self-Send テストを続行してください:  '{next_text}'</translation>
+			<translation>Self-Send テスト {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5050,7 +5053,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>次の TxID によって置き換えられました: {replaced_by_lines}</translation>
+			<translation>テストトランザクション  '{tx_text}'  は正常に完了しました。Self-Send テストを続行してください:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

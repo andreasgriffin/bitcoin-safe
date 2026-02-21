@@ -3093,18 +3093,18 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille.                      &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Remplacé par TxID : {new_txid}</translation>
+			<translation>Remplacé par TxID : {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3116,7 +3116,8 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID : {txid}
+			<translation>- TxID :
+{txid}
   {replaced_by_block}
   Ce qui s'est passé : {happened_text}</translation>
 		</message>
@@ -3329,7 +3330,9 @@ Voulez-vous rescanner le portefeuille avec une limite d’écart augmentée à {
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Transaction(s) supprimée(s) dans le portefeuille '{wallet}' :  {txs}</translation>
+			<translation>Transaction(s) supprimée(s) dans le portefeuille '{wallet}' :
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3525,7 +3528,7 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille.                      &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5051,12 +5054,12 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Test d'auto-envoi {j}</translation>
+			<translation>Test d'auto-envoi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi :  '{next_text}'</translation>
+			<translation>Test d'auto-envoi {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5074,7 +5077,7 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Remplacé par TxID : {replaced_by_lines}</translation>
+			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi :  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

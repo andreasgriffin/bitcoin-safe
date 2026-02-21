@@ -3097,18 +3097,18 @@ In caso di problemi, non esitare a contattarci a: [andreasgriffin@proton.me](mai
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>Ricevi una quantità &lt;b&gt;piccola&lt;/b&gt; (inferiore a {test_amount}) su 1 indirizzo di questo wallet.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt;                     Per sapere se controlli i fondi, devi testare una spesa dal wallet.                      &lt;br&gt;                     Quindi prima di inviare una quantità significativa di Bitcoin nel wallet, è &lt;b&gt;fondamentale&lt;/b&gt; effettuare una spesa dal wallet e testare tutti i firmatari.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NON inviare ancora grandi quantità al wallet. Completa prima tutti i test self-send!&lt;/b&gt;</translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Sostituita da TxID: {new_txid}</translation>
+			<translation>Sostituita da TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>  {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3120,7 +3120,8 @@ In caso di problemi, non esitare a contattarci a: [andreasgriffin@proton.me](mai
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   Cosa è successo: {happened_text}</translation>
 		</message>
@@ -3333,7 +3334,9 @@ Vuoi rieseguire la scansione del portafoglio con un limite di gap aumentato a {n
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>Transazione/i rimossa/e nel wallet '{wallet}':  {txs}</translation>
+			<translation>Transazione/i rimossa/e nel wallet '{wallet}':
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,7 +3532,7 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Ricevi una quantità &lt;b&gt;piccola&lt;/b&gt; (inferiore a {test_amount}) su 1 indirizzo di questo wallet.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt;                     Per sapere se controlli i fondi, devi testare una spesa dal wallet.                      &lt;br&gt;                     Quindi prima di inviare una quantità significativa di Bitcoin nel wallet, è &lt;b&gt;fondamentale&lt;/b&gt; effettuare una spesa e testare tutti i firmatari.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NON inviare ancora grandi quantità al wallet. Completa prima tutti i test self-send!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -5055,12 +5058,12 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Test self-send {j}</translation>
+			<translation>Test self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>La transazione di test  '{tx_text}'  è stata completata con successo. Procedi con il test self-send:  '{next_text}'</translation>
+			<translation>Test self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5078,7 +5081,7 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Sostituita da TxID: {replaced_by_lines}</translation>
+			<translation>La transazione di test  '{tx_text}'  è stata completata con successo. Procedi con il test self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

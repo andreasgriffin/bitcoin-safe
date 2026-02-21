@@ -3098,18 +3098,19 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>被以下 TxID 替换： {replaced_by_lines}</translation>
+			<translation>  被以下 TxID 替换：
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>被以下 TxID 替换： {new_txid}</translation>
+			<translation>  被以下 TxID 替换： {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3121,7 +3122,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid}
+			<translation>- TxID:
+{txid}
   {replaced_by_block}
   发生了什么: {happened_text}</translation>
 		</message>
@@ -3334,7 +3336,8 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>钱包 '{wallet}' 中移除的交易：  {txs}</translation>
+			<translation>钱包 '{wallet}' 中移除的交易： 
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3532,7 +3535,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>接收一笔&lt;b&gt;小额&lt;/b&gt;资金（小于 {test_amount}）到此钱包的 1 个地址。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;                     为了确认您控制这些资金，您必须测试从钱包中支出。                      &lt;br&gt;                     因此，在向钱包发送大量 Bitcoin 之前，从钱包支出并测试所有签名设备是&lt;b&gt;至关重要的&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;请暂时不要向钱包发送大量资金。请先完成所有 self-send 测试！&lt;/b&gt;</translation>
+			<translation>接收一笔&lt;b&gt;小额&lt;/b&gt;资金（小于 {test_amount}）到此钱包的 1 个地址。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;                     为了确认您控制这些资金，您必须测试从钱包中支出。                      &lt;br&gt;                     因此，在向钱包发送大量 Bitcoin 之前，从钱包支出并测试所有签名设备是&lt;b&gt;至关重要的&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;请暂时不要向钱包发送大量资金。请先完成所有 self-send 测试！&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
