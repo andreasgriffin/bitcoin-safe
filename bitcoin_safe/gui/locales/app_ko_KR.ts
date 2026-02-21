@@ -750,6 +750,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1332,6 +1344,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation/>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>명칭</translation>
 		</message>
@@ -1384,6 +1401,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>지갑</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation/>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2493,7 +2515,9 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>특정 블록이 채굴될 때까지 지연하려면 블록 높이를 사용하십시오. 특정 네트워크 시간(median-time-past)까지 지연하려면 날짜/시간을 사용하십시오. Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 일반적으로 체인 끝보다 약 {minutes}분 뒤에 있습니다.</translation>
+			<translation>특정 블록이 채굴될 때까지 지연하려면 블록 높이를 사용하십시오.
+특정 네트워크 시간(median-time-past)까지 지연하려면 날짜/시간을 사용하십시오.
+Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 일반적으로 체인 끝보다 약 {minutes}분 뒤에 있습니다.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3064,6 +3088,34 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>    </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>미확인 상태로 mempool에 추가</translation>
 		</message>
@@ -3268,8 +3320,20 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
-			<translation>거래 저장</translation>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3307,12 +3371,13 @@ Do you want to continue anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>트랜잭션
-{txs}
-이 지갑 '{wallet}'의 기록에서 제거되었습니다!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3451,11 +3516,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>이 지갑의 주소 하나로 &lt;b&gt;소량&lt;/b&gt; ( {test_amount} 미만)을 받으세요.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하고 있는지 알아보기 위해서는 지갑에서 지출을 테스트해야 합니다. 
-                    &lt;br&gt;                     따라서 지갑으로 상당한 양의 비트코인을 보내기 전에 지갑에서 지출을 하고 모든 서명자를 테스트하는 것이 &lt;b&gt;필수적&lt;/b&gt;입니다.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 큰 자금을 지갑으로 보내지 마세요. 모든 송금 테스트를 먼저 완료해주세요!&lt;/b&gt;                    </translation>
+			<translation>                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3738,13 +3801,14 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>하드웨어 서명 기계가 작동하는지 확인하기 위해 전송 테스트를 완료하세요!</translation>
+			<source>Skip spend test?</source>
+			<translation>송금 테스트를 건너뛰겠습니까?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>송금 테스트를 건너뛰겠습니까?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation/>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4188,6 +4252,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4457,7 +4528,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>이 거래는 아직 유효하지 않습니다(nLocktime 설정됨). 브로드캐스트가 실패합니다. 그래도 브로드캐스트하시겠습니까?</translation>
+			<translation>이 거래는 아직 유효하지 않습니다(nLocktime 설정됨).
+브로드캐스트가 실패합니다. 그래도 브로드캐스트하시겠습니까?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4916,8 +4988,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>모든 테스트 전송이 성공적으로 완료됨.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4961,18 +5033,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>테스트 전송</translation>
+			<source>Self-Send Test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>테스트 전송</translation>
+			<source>Self-Send test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>{j} 보내기 테스트</translation>
+			<source>Self-Send test {j}</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4988,9 +5060,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>테스트 트랜잭션 '{tx_text}'이(가) 성공적으로 완료됨. 보내기 테스트를 진행하세요: '{next_text}'</translation>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>

@@ -751,6 +751,18 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1334,6 +1346,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation/>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>लेबल</translation>
 		</message>
@@ -1386,6 +1403,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>वॉलेट</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation/>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2493,7 +2515,8 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>किसी विशिष्ट ब्लॉक के माइन होने तक विलंब करने के लिए ब्लॉक ऊँचाई का उपयोग करें। किसी विशिष्ट नेटवर्क समय (median-time-past) तक विलंब करने के लिए दिनांक/समय का उपयोग करें। Median-time-past पिछले 11 ब्लॉकों का मध्य टाइमस्टैम्प है, इसलिए यह आमतौर पर टिप से लगभग {minutes} मिनट पीछे होता है।</translation>
+			<translation>किसी विशिष्ट ब्लॉक के माइन होने तक विलंब करने के लिए ब्लॉक ऊँचाई का उपयोग करें। किसी विशिष्ट नेटवर्क समय (median-time-past) तक विलंब करने के लिए दिनांक/समय का उपयोग करें। Median-time-past पिछले 11 ब्लॉकों का मध्य टाइमस्टैम्प है,
+इसलिए यह आमतौर पर टिप से लगभग {minutes} मिनट पीछे होता है।</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3060,6 +3083,34 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>    </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>मेमपूल में अपुष्ट के रूप में जोड़ें</translation>
 		</message>
@@ -3263,8 +3314,20 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
-			<translation>लेन-देन सहेजें</translation>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3303,12 +3366,13 @@ Do you want to continue anyway?</source>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>वॉलेट '{wallet}' में लेन-देन
-{txs}
-इतिहास से हटा दिए गए थे!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3445,9 +3509,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>इस वॉलेट के एक पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (कम से कम {test_amount}) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए इससे पहले कि आप वॉलेट में बड़ी मात्रा में बिटकॉइन भेजें, वॉलेट से खर्च करना और सभी हस्ताक्षरकर्ताओं का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है। &lt;br&gt; &lt;br&gt; &lt;b&gt;कृपया सभी भेजने के परीक्षण पूरे होने तक बड़ी राशि वॉलेट में न भेजें!&lt;/b&gt;                    </translation>
+			<translation>                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3729,13 +3793,14 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>हार्डवेयर साइनर काम कर रहा है, इसे सुनिश्चित करने के लिए भेज परीक्षण पूरा करें!</translation>
+			<source>Skip spend test?</source>
+			<translation>खर्च परीक्षण छोड़ें?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>खर्च परीक्षण छोड़ें?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation/>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4175,6 +4240,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>XPUBs</source>
 			<translation>XPUBs</translation>
+		</message>
+	</context>
+	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
@@ -4907,8 +4979,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>सभी भेजने के परीक्षण सफलतापूर्वक किए गए।</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4952,18 +5024,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>परीक्षण भेजें</translation>
+			<source>Self-Send Test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>परीक्षण भेजें</translation>
+			<source>Self-Send test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>परीक्षण {j} भेजें</translation>
+			<source>Self-Send test {j}</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4979,9 +5051,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>परीक्षण लेनदेन '{tx_text}' सफलतापूर्वक किया गया। कृपया भेजने के परीक्षण के लिए आगे बढ़ें: '{next_text}'</translation>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>

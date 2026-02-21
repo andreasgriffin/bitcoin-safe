@@ -753,6 +753,18 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1335,6 +1347,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation/>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Label</translation>
 		</message>
@@ -1387,6 +1404,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>Dompet</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation/>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2496,7 +2518,10 @@ Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Gunakan tinggi blok untuk menunda hingga blok tertentu ditambang. Gunakan tanggal/waktu untuk menunda hingga waktu jaringan tertentu (median-time-past). Median-time-past adalah stempel waktu median dari 11 blok terakhir, sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation>
+			<translation>Gunakan tinggi blok untuk menunda hingga blok tertentu ditambang.
+Gunakan tanggal/waktu untuk menunda hingga waktu jaringan tertentu (median-time-past).
+Median-time-past adalah stempel waktu median dari 11 blok terakhir,
+sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3067,6 +3092,34 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>    </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Tambahkan sebagai belum terkonfirmasi di mempool</translation>
 		</message>
@@ -3271,8 +3324,20 @@ Apakah Anda ingin memindai ulang dompet dengan batas celah yang ditingkatkan men
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
-			<translation>Simpan transaksi</translation>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3311,12 +3376,13 @@ hanya dapat ditambahkan sebagai belum terkonfirmasi di mempool. Apakah Anda teta
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>Transaksi
-{txs}
-di dompet '{wallet}' dihapus dari riwayat!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3455,12 +3521,9 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dari dompet ini.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. 
-                    &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Jangan kirim dana besar ke dompet dulu. Harap selesaikan semua tes pengiriman terlebih dahulu!&lt;/b&gt;   
-                    </translation>
+			<translation>                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3743,13 +3806,14 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Selesaikan tes pengiriman untuk memastikan penanda tangan perangkat keras berfungsi!</translation>
+			<source>Skip spend test?</source>
+			<translation>Lewati tes pengeluaran?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Lewati tes pengeluaran?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation/>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4193,6 +4257,13 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4467,7 +4538,8 @@ Atau Anda bisa menyiarkan melalui {url}</translation>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Transaksi ini belum valid (nLocktime ditetapkan). Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
+			<translation>Transaksi ini belum valid (nLocktime ditetapkan).
+Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4926,8 +4998,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Semua tes Pengiriman berhasil dilakukan.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4971,18 +5043,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Tes Pengiriman</translation>
+			<source>Self-Send Test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Tes pengiriman</translation>
+			<source>Self-Send test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Tes pengiriman {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4998,9 +5070,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Transaksi uji '{tx_text}' berhasil dilakukan. Silakan lanjutkan untuk melakukan tes pengiriman: '{next_text}'</translation>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>

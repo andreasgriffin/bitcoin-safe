@@ -753,6 +753,18 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		</message>
 	</context>
 	<context>
+		<name>DateRangePicker</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+		<name>DateRangePicker</name>
+		<message>
+			<source>to</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>DemoWindow</name>
 		<message>
 			<source>Auto convert between fiat currencies</source>
@@ -1336,6 +1348,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>HistList</name>
 		<message>
+			<source>Estimated timestamp</source>
+			<translation/>
+		</message>
+		<name>HistList</name>
+		<message>
 			<source>Label</source>
 			<translation>Etiket</translation>
 		</message>
@@ -1388,6 +1405,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Wallet</source>
 			<translation>Cüzdan</translation>
+		</message>
+		<name>HistList</name>
+		<message>
+			<source>nLocktime</source>
+			<translation/>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -2497,7 +2519,10 @@ Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>Belirli bir blok kazılana kadar geciktirmek için blok yüksekliğini kullanın. Belirli bir ağ zamanına (median-time-past) kadar geciktirmek için tarih/saat kullanın. Median-time-past, son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan yaklaşık {minutes} dakika geridedir.</translation>
+			<translation>Belirli bir blok kazılana kadar geciktirmek için blok yüksekliğini kullanın.
+Belirli bir ağ zamanına (median-time-past) kadar geciktirmek için tarih/saat kullanın.
+Median-time-past,
+son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan yaklaşık {minutes} dakika geridedir.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3068,6 +3093,34 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 	<context>
 		<name>QTWallet</name>
 		<message>
+			<source>    {new_txid}</source>
+			<translation>    </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s):
+{replaced_by_lines}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>  Replaced By TxID(s): {new_txid}</source>
+			<translation>  </translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>(not detected)</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>- TxID: {txid}
+{replaced_by_block}
+  What Happened: {happened_text}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Add as unconfirmed in-mempool</source>
 			<translation>Onaylanmamış olarak mempool’a ekle</translation>
 		</message>
@@ -3272,8 +3325,20 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Save transactions</source>
-			<translation>İşlemleri kaydet</translation>
+			<source>Removed Transaction(s) in Wallet '{wallet}':
+
+{txs}</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Replaced in the Mempool.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Save Transactions</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3312,12 +3377,13 @@ yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek ist
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>The transactions 
-{txs}
- in wallet '{wallet}' were removed from the history!!!</source>
-			<translation>'{wallet}' cüzdanındaki
-{txs}
-işlemleri geçmişten silindi!!!</translation>
+			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3456,12 +3522,9 @@ Outputs stay the same; only the fee changes.</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount}'den az) gönderin.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol edip etmediğinizi bilmek için, cüzdandan harcama test etmeniz gerekir. 
-                    &lt;br&gt;                     Yani, cüzdana büyük miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;çok önemlidir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz büyük fonları cüzdana göndermeyin. Lütfen önce tüm gönderim testlerini tamamlayın!&lt;/b&gt;   
-                    </translation>
+			<translation>                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3744,13 +3807,14 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Complete the send test to ensure the hardware signer works!</source>
-			<translation>Donanım imzalayıcının çalıştığından emin olmak için gönderim testini tamamlayın!</translation>
+			<source>Skip spend test?</source>
+			<translation>Gönderim testi atla?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Gönderim testi atla?</translation>
+			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
+This practices the signing flow and ensures all hardware signers are setup correctly.</source>
+			<translation/>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4194,6 +4258,13 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 	</context>
 	<context>
+		<name>TrackingChartView</name>
+		<message>
+			<source>Reset zoom</source>
+			<translation/>
+		</message>
+	</context>
+	<context>
 		<name>TrayController</name>
 		<message>
 			<source>&amp;Exit</source>
@@ -4468,7 +4539,8 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>Bu işlem henüz geçerli değil (nLocktime ayarlı). Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</translation>
+			<translation>Bu işlem henüz geçerli değil (nLocktime ayarlı).
+Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4927,8 +4999,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Send tests done successfully.</source>
-			<translation>Tüm gönderim testleri başarıyla tamamlandı.</translation>
+			<source>All Self-Send tests done successfully.</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4972,18 +5044,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send Test</source>
-			<translation>Gönderim Testi</translation>
+			<source>Self-Send Test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test</source>
-			<translation>Gönderim testi</translation>
+			<source>Self-Send test</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Send test {j}</source>
-			<translation>Gönderim testi {j}</translation>
+			<source>Self-Send test {j}</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -4999,9 +5071,9 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The test transaction 
 '{tx_text}'
- was done successfully. Please proceed to do the send test: 
+ was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>'{tx_text}' test işlemi başarıyla yapıldı. Lütfen şu gönderim testine devam edin: '{next_text}'</translation>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
