@@ -4,12 +4,12 @@
     <name>AboutTab</name>
     <message>
         <source>(newest version)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Phiên bản mới nhất)</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>A secure bitcoin savings wallet for everyone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ví tiết kiệm bitcoin an toàn dành cho tất cả mọi người.</translation>
     </message>
     <name>AboutTab</name>
     <message>
@@ -29,22 +29,22 @@
     <name>AboutTab</name>
     <message>
         <source>Licence</source>
-        <translation type="unfinished"></translation>
+        <translation>Giấy phép</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>Update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể cập nhật</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>Update to {version} available</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể cập nhật tới {version}</translation>
     </message>
     <name>AboutTab</name>
     <message>
         <source>Version {version}</source>
-        <translation type="unfinished"></translation>
+        <translation>Phiên bản {version}</translation>
     </message>
     <name>AboutTab</name>
     <message>
@@ -56,7 +56,7 @@
     <name>AbstractSignatureImporter</name>
     <message>
         <source>No additional signatures were added</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có chữ ký bổ sung nào được thêm vào</translation>
     </message>
     <name>AbstractSignatureImporter</name>
     <message>
@@ -78,29 +78,29 @@
     <name>AddCategoryButton</name>
     <message>
         <source>Add new category</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm danh mục mới</translation>
     </message>
     <name>AddCategoryButton</name>
     <message>
         <source>KYC Exchange, Private, ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Trao đổi KYC, riêng tư,...</translation>
     </message>
 </context>
 <context>
     <name>AddressAnalyzer</name>
     <message>
         <source>Invalid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Địa chỉ không hợp lệ</translation>
     </message>
     <name>AddressAnalyzer</name>
     <message>
         <source>Missing Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiếu địa chỉ</translation>
     </message>
     <name>AddressAnalyzer</name>
     <message>
         <source>Valid Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Địa chỉ hợp lệ</translation>
     </message>
 </context>
 <context>
@@ -112,14 +112,14 @@
     <name>AddressDetailsAdvanced</name>
     <message>
         <source>Signed Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Tin nhắn đã ký</translation>
     </message>
 </context>
 <context>
     <name>AddressDialog</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Địa chỉ</translation>
     </message>
     <name>AddressDialog</name>
     <message>
@@ -129,31 +129,31 @@
     <name>AddressDialog</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Đóng</translation>
     </message>
     <name>AddressDialog</name>
     <message>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation>Xác thực</translation>
     </message>
 </context>
 <context>
     <name>AddressEdit</name>
     <message>
         <source>Enter address here</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập địa chỉ ở đây</translation>
     </message>
 </context>
 <context>
     <name>AddressList</name>
     <message>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Địa chỉ</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>Address {address}</source>
-        <translation type="unfinished"></translation>
+        <translation>Địa chỉ {address}</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -168,17 +168,17 @@
     <name>AddressList</name>
     <message>
         <source>Copy Addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép địa chỉ</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép dưới dạng csv</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Chi tiết</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -198,12 +198,12 @@
     <name>AddressList</name>
     <message>
         <source>Number of transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Số lượng giao dịch</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng chọn địa chỉ từ một ví duy nhất để chọn UTXO để gửi đi.</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -223,7 +223,7 @@
     <name>AddressList</name>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -238,17 +238,17 @@
     <name>AddressList</name>
     <message>
         <source>Wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Ví</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>thay đổi</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>change address</source>
-        <translation type="unfinished"></translation>
+        <translation>thay đổi địa chỉ</translation>
     </message>
     <name>AddressList</name>
     <message>
@@ -258,75 +258,75 @@
     <name>AddressList</name>
     <message>
         <source>receiving address</source>
-        <translation type="unfinished"></translation>
+        <translation>địa chỉ nhận</translation>
     </message>
     <name>AddressList</name>
     <message>
         <source>{n} addresses have ben copied</source>
-        <translation type="unfinished"></translation>
+        <translation>{n} địa chỉ đã được sao chép</translation>
     </message>
 </context>
 <context>
     <name>AddressListWithToolbar</name>
     <message>
         <source>Create new address</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo địa chỉ mới</translation>
     </message>
     <name>AddressListWithToolbar</name>
     <message>
         <source>Generate to selected adddresses</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo theo địa chỉ đã chọn</translation>
     </message>
     <name>AddressListWithToolbar</name>
     <message>
         <source>Manage Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Quản lý danh mục</translation>
     </message>
     <name>AddressListWithToolbar</name>
     <message>
         <source>for</source>
-        <translation type="unfinished"></translation>
+        <translation>cho</translation>
     </message>
 </context>
 <context>
     <name>AmountAnalyzer</name>
     <message>
         <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Số tiền quá lớn. Vui lòng nhấp vào danh mục có đủ vốn ở bên trái hoặc chọn các loại tiền điện tử trong tab nâng cao</translation>
     </message>
     <name>AmountAnalyzer</name>
     <message>
         <source>Amount too small</source>
-        <translation type="unfinished"></translation>
+        <translation>Số tiền quá nhỏ</translation>
     </message>
 </context>
 <context>
     <name>BTCSpinBox</name>
     <message>
         <source>Max ≈ {amount}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tối đa ≈ {amount}</translation>
     </message>
 </context>
 <context>
     <name>BackupNsecNotificationBar</name>
     <message>
         <source>Please backup your sync key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng sao lưu khóa đồng bộ của bạn.</translation>
     </message>
     <name>BackupNsecNotificationBar</name>
     <message>
         <source>Restore labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Khôi phục nhãn</translation>
     </message>
     <name>BackupNsecNotificationBar</name>
     <message>
         <source>Save sync key</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu khóa đồng bộ</translation>
     </message>
     <name>BackupNsecNotificationBar</name>
     <message>
         <source>Sync key of wallet {wallet_id}:  {nsec}</source>
-        <translation type="unfinished"></translation>
+        <translation>Khóa đồng bộ của ví {wallet_id}:  {nsec}</translation>
     </message>
 </context>
 <context>
@@ -343,12 +343,12 @@
     <name>BackupSeed</name>
     <message>
         <source>Please complete the previous steps.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng hoàn thành bước trước đó.</translation>
     </message>
     <name>BackupSeed</name>
     <message>
         <source>Previous Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Bước trước đó</translation>
     </message>
     <name>BackupSeed</name>
     <message>
@@ -365,12 +365,12 @@
     <name>Balance</name>
     <message>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Đã xác nhận</translation>
     </message>
     <name>Balance</name>
     <message>
         <source>Unconfirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Chưa xác nhận</translation>
     </message>
     <name>Balance</name>
     <message>
@@ -389,17 +389,17 @@
     <name>BaseDeviceItem</name>
     <message>
         <source>Device name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên thiết bị</translation>
     </message>
     <name>BaseDeviceItem</name>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập tên của thiết bị với {npub}</translation>
     </message>
     <name>BaseDeviceItem</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Đổi tên</translation>
     </message>
 </context>
 <context>
@@ -418,24 +418,24 @@
     <name>BaseNostrSync</name>
     <message>
         <source>Enter a name of device with {npub}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập tên của thiết bị với {npub}</translation>
     </message>
     <name>BaseNostrSync</name>
     <message>
         <source>Go to {untrusted}</source>
-        <translation type="unfinished"></translation>
+        <translation>Đi tới {untrusted}</translation>
     </message>
     <name>BaseNostrSync</name>
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Để xác nhận kết nối, hãy chấp nhận {id} yêu cầu của tôi trên {other} thiết bị khác.</translation>
     </message>
 </context>
 <context>
     <name>BitcoinDmChatGui</name>
     <message>
         <source>Me</source>
-        <translation type="unfinished"></translation>
+        <translation>Tôi</translation>
     </message>
 </context>
 <context>
@@ -449,7 +449,7 @@
     <name>BlockingWaitingDialog</name>
     <message>
         <source>Please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng đợi</translation>
     </message>
 </context>
 <context>
@@ -461,7 +461,7 @@
     <name>ButtonEdit</name>
     <message>
         <source>Scan again</source>
-        <translation type="unfinished"></translation>
+        <translation>Quét lại</translation>
     </message>
 </context>
 <context>
@@ -6024,117 +6024,117 @@ Requires the original transaction to signal RBF and your wallet to own a change 
     <name>util</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Không rõ</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 day ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng 1 ngày trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 hour ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng 1 giờ trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 month ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng 1 tháng trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about 1 year ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng 1 năm trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} days ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng {} ngày trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} hours ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng {} giờ trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} minutes ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng {} phút trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>about {} months ago</source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng {} tháng trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 day</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng 1 ngày</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 hour</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng 1 giờ</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 month</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng 1 tháng</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about 1 year</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng 1 năm</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} days</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng {} ngày</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} hours</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng {} tiếng</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng {} phút</translation>
     </message>
     <name>util</name>
     <message>
         <source>in about {} months</source>
-        <translation type="unfinished"></translation>
+        <translation>trong khoảng {} tháng</translation>
     </message>
     <name>util</name>
     <message>
         <source>in less than a minute</source>
-        <translation type="unfinished"></translation>
+        <translation>trong ít hơn 1 phút</translation>
     </message>
     <name>util</name>
     <message>
         <source>in over {} years</source>
-        <translation type="unfinished"></translation>
+        <translation>trong hơn {} năm</translation>
     </message>
     <name>util</name>
     <message>
         <source>in {} seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>trong {} giây</translation>
     </message>
     <name>util</name>
     <message>
         <source>less than a minute ago</source>
-        <translation type="unfinished"></translation>
+        <translation>ít hơn 1 phút trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>over {} years ago</source>
-        <translation type="unfinished"></translation>
+        <translation>hơn {} năm trước</translation>
     </message>
     <name>util</name>
     <message>
         <source>{} seconds ago</source>
-        <translation type="unfinished"></translation>
+        <translation>{} giây trước</translation>
     </message>
 </context>
 <context>
@@ -6154,7 +6154,8 @@ since it descreases the total fee rate to {combined_rate}. Pick at least {parent
     <message>
         <source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay thế bằng phí: Giao dịch này thay thế giao dịch {txid} với mức phí {rate_org}.
+Chọn mức phí cao hơn mức phí tối thiểu {rate_min}.</translation>
     </message>
     <name>utils</name>
     <message>
@@ -6164,7 +6165,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>utils</name>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>không rõ</translation>
     </message>
     <name>utils</name>
     <message>
@@ -6176,12 +6177,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>utxo_list</name>
     <message>
         <source>Confirmed UTXO</source>
-        <translation type="unfinished"></translation>
+        <translation>UTXO đã xác nhận</translation>
     </message>
     <name>utxo_list</name>
     <message>
         <source>Copy as csv</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép dưới dạng csv</translation>
     </message>
     <name>utxo_list</name>
     <message>
@@ -6191,12 +6192,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>utxo_list</name>
     <message>
         <source>Open transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở giao dịch</translation>
     </message>
     <name>utxo_list</name>
     <message>
         <source>Unconfirmed UTXO</source>
-        <translation type="unfinished"></translation>
+        <translation>UTXO chưa được xác nhận</translation>
     </message>
     <name>utxo_list</name>
     <message>
@@ -6243,7 +6244,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>video</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi</translation>
     </message>
     <name>video</name>
     <message>
@@ -6258,12 +6259,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>video</name>
     <message>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Màn hình</translation>
     </message>
     <name>video</name>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Cài đặt</translation>
     </message>
     <name>video</name>
     <message>
@@ -6290,7 +6291,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>wallet</name>
     <message>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Đã xác nhận</translation>
     </message>
     <name>wallet</name>
     <message>
@@ -6310,12 +6311,12 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
     <name>wallet</name>
     <message>
         <source>Send to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gửi cho:</translation>
     </message>
     <name>wallet</name>
     <message>
         <source>Unconfirmed</source>
-        <translation type="unfinished"></translation>
+        <translation>Chưa được xác nhận</translation>
     </message>
     <name>wallet</name>
     <message>
