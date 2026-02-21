@@ -49,6 +49,7 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
+from ...non_gui.test_signers import test_seeds
 from ...setup_bitcoin_core import bitcoin_cli
 from .helpers import (
     Shutter,
@@ -227,6 +228,7 @@ def test_reorg_keeps_tx_in_history_when_reincluded(
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
+            seed=test_seeds[0],
         )
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
         txid_a = _create_sign_and_broadcast_self_send(
@@ -308,6 +310,7 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
+            seed=test_seeds[0],
         )
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
         txid_a = _create_sign_and_broadcast_self_send(

@@ -76,7 +76,6 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
-from ...non_gui.test_signers import test_seeds
 from ...util import wait_for_sync
 
 logger = logging.getLogger(__name__)
@@ -193,6 +192,7 @@ def setup_single_sig_wallet(
     shutter: Shutter,
     test_config: TestConfig,
     wallet_name: str,
+    seed: str,
 ) -> QTWallet:
     """Create and save a single-sig wallet in the main window."""
 
@@ -215,7 +215,7 @@ def setup_single_sig_wallet(
     qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
     key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
     key.tabs_import_type.setCurrentWidget(key.tab_manual)
-    key.edit_seed.setText(test_seeds[0])
+    key.edit_seed.setText(seed)
     shutter.save(main_window)
 
     save_wallet(

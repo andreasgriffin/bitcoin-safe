@@ -45,6 +45,7 @@ from bitcoin_safe.tx import LOCKTIME_THRESHOLD
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
+from ...non_gui.test_signers import test_seeds
 from .helpers import (
     Shutter,
     broadcast_tx,
@@ -81,6 +82,7 @@ def test_nlocktime_creator_viewer(
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
+            seed=test_seeds[0],
         )
 
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
@@ -220,6 +222,7 @@ def test_nlocktime_menu_toggle_clears_locktime(
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
+            seed=test_seeds[0],
         )
 
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
@@ -321,6 +324,7 @@ def test_nlocktime_creator_viewer_starting_height_stays_visible(
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
+            seed=test_seeds[0],
         )
 
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
