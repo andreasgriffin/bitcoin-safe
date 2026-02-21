@@ -1699,8 +1699,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             while True:
                 result = await coro()
                 if result is None:
+                    await asyncio.sleep(0)
                     continue
                 signal.emit(result)
+                await asyncio.sleep(0)
         except asyncio.CancelledError:
             logger.debug(f"Cancelled bridge for {coro}")
         except Exception:
