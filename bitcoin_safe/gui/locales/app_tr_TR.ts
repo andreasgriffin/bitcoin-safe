@@ -756,12 +756,12 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Yakınlaştırmayı sıfırla</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>şuna</translation>
 		</message>
 	</context>
 	<context>
@@ -1349,7 +1349,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>Tahmini zaman damgası</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1409,7 +1409,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3094,30 +3094,32 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir.                      &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>Şununla Değiştirildi TxID(ler): {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(algılanmadı)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  Ne Oldu: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3328,17 +3330,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Cüzdan '{wallet}' içindeki Kaldırılan İşlem(ler):  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Mempool'da değiştirildi.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>İşlemleri Kaydet</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3378,12 +3380,12 @@ yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek ist
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>Bu işlem daha önce onaylanmıştı ve şimdi kaldırıldı. Bu, bir Zincir Yeniden Düzenlemesi (Reorg) olduğunu gösterir.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>Bu işlem onaylanmamıştı ve şimdi kaldırıldı. Mempool'dan kaldırıldı ve şu anda bu cüzdan tarafından izlenen bir yedek işlem yok.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3814,7 +3816,7 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>Cüzdanınızdan cüzdanınızdaki başka bir adrese gönderiyoruz (self-send).&lt;br&gt; Bu, imzalama akışını uygular ve tüm donanım imzalayıcılarının doğru şekilde kurulduğunu garanti eder.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4261,7 +4263,7 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Yakınlaştırmayı sıfırla</translation>
 		</message>
 	</context>
 	<context>
@@ -4719,7 +4721,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Tüm Self-Send testleri başarıyla tamamlandı.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5000,7 +5002,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Self-Send Testi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5045,17 +5047,17 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send testi</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send testi {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5073,7 +5075,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>Şununla Değiştirildi TxID(ler): {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

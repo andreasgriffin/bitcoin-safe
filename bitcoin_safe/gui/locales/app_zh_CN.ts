@@ -759,12 +759,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>重置缩放</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>到</translation>
 		</message>
 	</context>
 	<context>
@@ -1354,7 +1354,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>预计时间戳</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1414,7 +1414,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3098,30 +3098,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>被以下 TxID 替换： {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>被以下 TxID 替换： {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>（未检测到）</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  发生了什么: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3332,17 +3334,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>钱包 '{wallet}' 中移除的交易：  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>已在 Mempool 中被替换。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>保存交易</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3383,12 +3385,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>该交易之前已确认，现在已被移除。这表明发生了区块链重组（Reorg）。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>该交易未被确认，现在已被移除。它已从 Mempool 中移除，并且当前该钱包未跟踪任何替换交易。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3530,7 +3532,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>接收一笔&lt;b&gt;小额&lt;/b&gt;资金（小于 {test_amount}）到此钱包的 1 个地址。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;                     为了确认您控制这些资金，您必须测试从钱包中支出。                      &lt;br&gt;                     因此，在向钱包发送大量 Bitcoin 之前，从钱包支出并测试所有签名设备是&lt;b&gt;至关重要的&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;请暂时不要向钱包发送大量资金。请先完成所有 self-send 测试！&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3820,7 +3822,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>我们正在从您的钱包发送到您钱包中的另一个地址（self-send）。&lt;br&gt; 这用于练习签名流程，并确保所有硬件签名设备已正确设置。</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4267,7 +4269,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>重置缩放</translation>
 		</message>
 	</context>
 	<context>
@@ -5011,7 +5013,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>所有 self-send 测试已成功完成。</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5056,17 +5058,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send 测试</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send 测试</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Self-Send 测试 {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5084,7 +5086,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>测试交易  '{tx_text}'  已成功完成。请继续执行 self-send 测试：  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

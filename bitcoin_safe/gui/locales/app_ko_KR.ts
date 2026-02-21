@@ -753,12 +753,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>확대/축소 재설정</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>으로</translation>
 		</message>
 	</context>
 	<context>
@@ -1345,7 +1345,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>예상 타임스탬프</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1405,7 +1405,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3089,30 +3089,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>다음 TxID로 대체됨: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(감지되지 않음)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  무슨 일이 일어났는지: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3323,17 +3325,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>지갑 '{wallet}' 에서 제거된 거래:  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Mempool에서 대체됨.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>거래 저장</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3372,12 +3374,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>이 거래는 이전에 확인되었지만 이제 제거되었습니다. 이는 체인 재구성(Reorg)을 나타냅니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>이 거래는 확인되지 않았으며 이제 제거되었습니다. Mempool에서 제거되었으며 현재 이 지갑에서 추적하는 대체 거래가 없습니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3808,7 +3810,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>지갑에서 지갑 내의 다른 주소로 전송하고 있습니다 (self-send).&lt;br&gt; 이는 서명 흐름을 연습하고 모든 하드웨어 서명자가 올바르게 설정되었는지 확인합니다.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4255,7 +4257,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>확대/축소 재설정</translation>
 		</message>
 	</context>
 	<context>
@@ -4708,7 +4710,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>모든 Self-Send 테스트가 성공적으로 완료되었습니다.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4989,7 +4991,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Self-Send 테스트</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5034,17 +5036,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send 테스트</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send 테스트 {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5062,7 +5064,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>다음 TxID로 대체됨: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

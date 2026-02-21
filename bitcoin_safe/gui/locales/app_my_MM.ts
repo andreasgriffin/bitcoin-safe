@@ -754,12 +754,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>ဇူးမ်ကို ပြန်လည်သတ်မှတ်ရန်</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>သို့</translation>
 		</message>
 	</context>
 	<context>
@@ -1346,7 +1346,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>ခန့်မှန်းထားသော အချိန်တံဆိပ်</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1406,7 +1406,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3081,30 +3081,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ Wallet မှ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(မတွေ့ရှိပါ)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  ဘာဖြစ်ခဲ့သည်: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3314,17 +3316,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Wallet '{wallet}' တွင် ဖယ်ရှားထားသော Transaction(များ):  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Mempool တွင် အစားထိုးခဲ့သည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>Transaction များကို သိမ်းဆည်းမည်</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3364,12 +3366,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>ဤ Transaction ကို ယခင်က အတည်ပြုခဲ့ပြီး ယခု ဖယ်ရှားလိုက်ပါသည်။ ဤသည်မှာ Chain Reorganization (Reorg) ဖြစ်ပွားကြောင်း ပြသသည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>ဤ Transaction သည် အတည်မပြုရသေးဘဲ ယခု ဖယ်ရှားလိုက်ပါသည်။ ၎င်းကို Mempool မှ ဖယ်ရှားလိုက်ပြီး ယခု Wallet မှ အစားထိုး Transaction ကို မလိုက်လံစောင့်ကြည့်နေပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3797,7 +3799,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>သင့် Wallet မှ သင့် Wallet အတွင်းရှိ အခြား Address သို့ ပို့နေပါသည် (self-send)&lt;br&gt; ဤသည် Signing လုပ်ငန်းစဉ်ကို လေ့ကျင့်စေပြီး Hardware signer များအားလုံး မှန်ကန်စွာ ပြင်ဆင်ထားကြောင်း သေချာစေသည်။</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4243,7 +4245,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Zoom ကို ပြန်လည်သတ်မှတ်မည်</translation>
 		</message>
 	</context>
 	<context>
@@ -4695,7 +4697,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Self-Send test များအားလုံး အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါသည်။</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4976,7 +4978,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Self-Send Test</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5021,17 +5023,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send test</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send test {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5049,7 +5051,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

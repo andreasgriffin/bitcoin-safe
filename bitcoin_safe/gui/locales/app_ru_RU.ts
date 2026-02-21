@@ -756,12 +756,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Сбросить масштаб</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>к</translation>
 		</message>
 	</context>
 	<context>
@@ -1349,7 +1349,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>Оценочная метка времени</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1409,7 +1409,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3096,30 +3096,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>Получите &lt;b&gt;небольшую&lt;/b&gt; сумму (меньше {test_amount}) на 1 адрес этого кошелька.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt;                     Чтобы убедиться, что вы контролируете средства, необходимо протестировать отправку из кошелька.                      &lt;br&gt;                     Поэтому перед отправкой значительной суммы Bitcoin в кошелёк &lt;b&gt;крайне важно&lt;/b&gt; выполнить отправку из кошелька и протестировать всех подписантов.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Пока НЕ отправляйте крупные суммы в кошелёк. Сначала завершите все тесты self-send!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>Заменено TxID: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(не обнаружено)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  Что произошло: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3330,17 +3332,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Удалённые транзакции в кошельке '{wallet}':  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Заменено в Mempool.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>Сохранить транзакции</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3380,12 +3382,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>Эта транзакция ранее была подтверждена и теперь удалена. Это указывает на реорганизацию цепи (Reorg).</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>Эта транзакция не была подтверждена и теперь удалена. Она была удалена из Mempool, и в настоящее время этот кошелёк не отслеживает заменяющую транзакцию.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3816,7 +3818,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>Мы отправляем средства из вашего кошелька на другой адрес в вашем кошельке (self-send).&lt;br&gt; Это позволяет отработать процесс подписи и гарантирует, что все аппаратные подписанты настроены правильно.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4263,7 +4265,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Сбросить масштаб</translation>
 		</message>
 	</context>
 	<context>
@@ -4721,7 +4723,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Все тесты self-send успешно завершены.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5002,7 +5004,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5047,17 +5049,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Тест self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Тест self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Тестовая транзакция  '{tx_text}'  успешно выполнена. Пожалуйста, выполните следующий тест self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5075,7 +5077,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>Заменено TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

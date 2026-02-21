@@ -759,12 +759,12 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du s
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Zoom zurücksetzen</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>auf</translation>
 		</message>
 	</context>
 	<context>
@@ -1354,7 +1354,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>Geschätzter Zeitstempel</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1414,7 +1414,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3101,30 +3101,32 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>Ersetzt durch TxID(s): {replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>Ersetzt durch TxID(s): {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(nicht erkannt)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  Was ist passiert: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3335,17 +3337,17 @@ Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scann
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Entfernte Transaktion(en) in Wallet '{wallet}':  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Im Mempool ersetzt.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>Transaktionen speichern</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3386,12 +3388,12 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>Diese Transaktion wurde zuvor bestätigt und ist jetzt entfernt. Dies weist auf eine Chain-Reorganisation (Reorg) hin.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>Diese Transaktion war unbestätigt und ist jetzt entfernt. Sie wurde aus dem Mempool entfernt, und derzeit wird keine Ersatztransaktion von diesem Wallet verfolgt.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3533,7 +3535,7 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>                    </translation>
+			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Funds haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also einen größeren Bitcoin-Betrag in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, eine Ausgabe durchzuführen und alle Signer zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch KEINE großen Beträge in das Wallet. Bitte schließen Sie zuerst alle Self-Send-Tests ab!&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -3823,7 +3825,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>Wir senden von Ihrem Wallet an eine andere Adresse in Ihrem Wallet (Self-Send).&lt;br&gt; Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrekt eingerichtet sind.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4270,7 +4272,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Zoom zurücksetzen</translation>
 		</message>
 	</context>
 	<context>
@@ -5014,7 +5016,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Alle Self-Send-Tests erfolgreich abgeschlossen.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5059,17 +5061,17 @@ Möchten Sie trotzdem senden?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send-Test</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send-Test</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Self-Send-Test {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5087,7 +5089,7 @@ Möchten Sie trotzdem senden?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>Die Testtransaktion  '{tx_text}'  wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Self-Send-Test fort:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

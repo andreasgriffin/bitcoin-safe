@@ -756,12 +756,12 @@ ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar-ne
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Restableix el zoom</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>a</translation>
 		</message>
 	</context>
 	<context>
@@ -1349,7 +1349,7 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>Marca de temps estimada</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1409,7 +1409,7 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3094,30 +3094,32 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera.                      &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; fer una despesa des de la cartera i provar tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>Substituïda per TxID: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(no detectat)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  Què ha passat: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3328,17 +3330,17 @@ Voleu tornar a escanejar la cartera amb un límit de gap augmentat a {new_gap}</
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Substituïda al Mempool.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>Desa les transaccions</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3378,12 +3380,12 @@ només es poden afegir com a no confirmades al mempool. Voleu continuar igualmen
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>Aquesta transacció havia estat confirmada prèviament i ara s'ha eliminat. Això indica una reorganització de la cadena (Reorg).</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>Aquesta transacció no estava confirmada i ara s'ha eliminat. S'ha eliminat del Mempool i actualment aquesta cartera no està seguint cap transacció de reemplaçament.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3814,7 +3816,7 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>Estem enviant des de la vostra cartera a una altra adreça de la vostra cartera (autoenviament).&lt;br&gt; Això permet practicar el flux de signatura i assegura que tots els signants de maquinari estiguin configurats correctament.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4261,7 +4263,7 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Restableix el zoom</translation>
 		</message>
 	</context>
 	<context>
@@ -4719,7 +4721,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Totes les proves d'autoenviament s'han completat correctament.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5000,7 +5002,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5045,17 +5047,17 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Prova d'autoenviament</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Prova d'autoenviament {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5073,7 +5075,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>Substituïda per TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

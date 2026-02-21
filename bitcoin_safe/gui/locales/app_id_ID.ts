@@ -756,12 +756,12 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Atur ulang zoom</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>ke</translation>
 		</message>
 	</context>
 	<context>
@@ -1348,7 +1348,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>Stempel waktu perkiraan</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1408,7 +1408,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3093,30 +3093,32 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>Digantikan Oleh TxID: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(tidak terdeteksi)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  Apa yang terjadi: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3327,17 +3329,17 @@ Apakah Anda ingin memindai ulang dompet dengan batas celah yang ditingkatkan men
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>Transaksi yang Dihapus di Dompet '{wallet}':  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Digantikan di Mempool.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>Simpan Transaksi</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3377,12 +3379,12 @@ hanya dapat ditambahkan sebagai belum terkonfirmasi di mempool. Apakah Anda teta
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>Transaksi ini sebelumnya telah dikonfirmasi dan sekarang dihapus. Ini menunjukkan Reorganisasi Rantai (Reorg).</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>Transaksi ini belum dikonfirmasi dan sekarang dihapus. Transaksi ini dihapus dari Mempool, dan tidak ada transaksi pengganti yang saat ini dilacak oleh dompet ini.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3813,7 +3815,7 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>Kami mengirim dari dompet Anda ke alamat lain di dompet Anda (self-send).&lt;br&gt; Ini melatih alur penandatanganan dan memastikan semua penandatangan perangkat keras telah dikonfigurasi dengan benar.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4260,7 +4262,7 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>Atur ulang zoom</translation>
 		</message>
 	</context>
 	<context>
@@ -4718,7 +4720,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>Semua tes Self-Send berhasil diselesaikan.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4999,7 +5001,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Tes Self-Send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5044,17 +5046,17 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Tes self-send</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Tes self-send {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5072,7 +5074,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>Digantikan Oleh TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

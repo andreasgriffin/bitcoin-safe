@@ -754,12 +754,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>ज़ूम रीसेट करें</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>पर</translation>
 		</message>
 	</context>
 	<context>
@@ -1347,7 +1347,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>अनुमानित टाइमस्टैम्प</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1407,7 +1407,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3084,30 +3084,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी वॉलेट में बड़ी राशि न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>निम्न TxID द्वारा प्रतिस्थापित: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(पता नहीं चला)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  क्या हुआ: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3317,17 +3319,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>वॉलेट '{wallet}' में हटाए गए लेनदेन:  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>Mempool में प्रतिस्थापित।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>लेनदेन सहेजें</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3367,12 +3369,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>यह लेनदेन पहले पुष्टि किया गया था और अब हटा दिया गया है। यह चेन पुनर्गठन (Reorg) को दर्शाता है।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>यह लेनदेन अपुष्ट था और अब हटा दिया गया है। इसे Mempool से हटा दिया गया है, और वर्तमान में इस वॉलेट द्वारा कोई प्रतिस्थापन लेनदेन ट्रैक नहीं किया जा रहा है।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3800,7 +3802,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>हम आपके वॉलेट से आपके वॉलेट के दूसरे पते पर भेज रहे हैं (self-send)।&lt;br&gt; यह हस्ताक्षर प्रक्रिया का अभ्यास करता है और सुनिश्चित करता है कि सभी हार्डवेयर साइनर सही तरीके से सेटअप हैं।</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4246,7 +4248,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>ज़ूम रीसेट करें</translation>
 		</message>
 	</context>
 	<context>
@@ -4699,7 +4701,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>सभी self-send परीक्षण सफलतापूर्वक पूरे हो गए।</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4980,7 +4982,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>Self-Send परीक्षण</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5025,17 +5027,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>Self-Send परीक्षण</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>Self-Send परीक्षण {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5053,7 +5055,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>निम्न TxID द्वारा प्रतिस्थापित: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>

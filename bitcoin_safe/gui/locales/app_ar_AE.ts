@@ -755,12 +755,12 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>DateRangePicker</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>إعادة تعيين التكبير</translation>
 		</message>
 		<name>DateRangePicker</name>
 		<message>
 			<source>to</source>
-			<translation/>
+			<translation>إلى</translation>
 		</message>
 	</context>
 	<context>
@@ -1347,7 +1347,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>Estimated timestamp</source>
-			<translation/>
+			<translation>الطابع الزمني التقديري</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1407,7 +1407,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HistList</name>
 		<message>
 			<source>nLocktime</source>
-			<translation/>
+			<translation>nLocktime</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -3093,30 +3093,32 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>    </translation>
+			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق من المحفظة واختبار جميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>  </translation>
+			<translation>تم الاستبدال بواسطة TxID: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  </translation>
+			<translation>{new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>(not detected)</source>
-			<translation/>
+			<translation>(غير مكتشف)</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation/>
+			<translation>- TxID: {txid}
+  {replaced_by_block}
+  ماذا حدث: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3327,17 +3329,17 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation/>
+			<translation>المعاملات التي تمت إزالتها في المحفظة '{wallet}':  {txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Replaced in the Mempool.</source>
-			<translation/>
+			<translation>تم استبدالها في الـ Mempool.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Save Transactions</source>
-			<translation/>
+			<translation>حفظ المعاملات</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3377,12 +3379,12 @@ Do you want to continue anyway?</source>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation/>
+			<translation>تم تأكيد هذه المعاملة سابقًا وتمت إزالتها الآن. يشير هذا إلى إعادة تنظيم السلسلة (Reorg).</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation/>
+			<translation>لم يتم تأكيد هذه المعاملة وتمت إزالتها الآن. تمت إزالتها من الـ Mempool، ولا توجد حاليًا معاملة بديلة يتم تتبعها بواسطة هذه المحفظة.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3813,7 +3815,7 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation/>
+			<translation>نحن نرسل من محفظتك إلى عنوان آخر داخل محفظتك (إرسال ذاتي).&lt;br&gt; هذا يسمح بالتدرب على عملية التوقيع ويضمن أن جميع أجهزة التوقيع مهيأة بشكل صحيح.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4260,7 +4262,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TrackingChartView</name>
 		<message>
 			<source>Reset zoom</source>
-			<translation/>
+			<translation>إعادة تعيين التكبير</translation>
 		</message>
 	</context>
 	<context>
@@ -4714,7 +4716,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Failed to extract update archive.</source>
-			<translation/>
+			<translation>تم إكمال جميع اختبارات الإرسال الذاتي بنجاح.</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4995,7 +4997,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>All Self-Send tests done successfully.</source>
-			<translation/>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5040,17 +5042,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation/>
+			<translation>اختبار الإرسال الذاتي</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation/>
+			<translation>اختبار الإرسال الذاتي {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation/>
+			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى المتابعة لإجراء اختبار الإرسال الذاتي:  '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5068,7 +5070,7 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation/>
+			<translation>تم الاستبدال بواسطة TxID: {replaced_by_lines}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
