@@ -2521,10 +2521,7 @@ Czy chcesz ukryć ją w zasobniku systemowym?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-        <translation>Użyj wysokości bloku,
-aby opóźnić do momentu wydobycia określonego bloku.
-Użyj daty/godziny, aby opóźnić do określonego czasu sieciowego (median-time-past).
-median-time-past to medianowy znacznik czasu ostatnich 11 bloków, więc zwykle jest około {minutes} minut za końcem łańcucha.</translation>
+        <translation>Użyj wysokości bloku, aby opóźnić do momentu wydobycia określonego bloku. Użyj daty/godziny, aby opóźnić do określonego czasu sieciowego (median-time-past). median-time-past to medianowy znacznik czasu ostatnich 11 bloków, więc zwykle jest około {minutes} minut za końcem łańcucha.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -4552,8 +4549,7 @@ Możesz też rozgłosić przez {url}</translation>
     <message>
         <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-        <translation>Ta transakcja nie jest jeszcze ważna (ustawiono nLocktime).
-Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation>
+        <translation>Ta transakcja nie jest jeszcze ważna (ustawiono nLocktime). Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation>
     </message>
     <name>UITx_Viewer</name>
     <message>
@@ -4732,7 +4728,7 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
     <name>UpdateNotificationBar</name>
     <message>
         <source>Failed to extract update archive.</source>
-        <translation>Wszystkie testy self-send zakończone pomyślnie.</translation>
+        <translation>Failed to extract update archive.</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
