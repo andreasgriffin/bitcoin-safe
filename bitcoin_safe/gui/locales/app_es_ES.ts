@@ -2521,8 +2521,7 @@ Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
         <translation>Use la altura de bloque para retrasar hasta que se mine un bloque específico.
 Use fecha/hora para retrasar hasta una hora de red específica (median-time-past).
-Median-time-past es la marca de tiempo mediana de los últimos 11 bloques,
-por
+Median-time-past es la marca de tiempo mediana de los últimos 11 bloques, por
 lo que normalmente está aproximadamente {minutes} minutos detrás de la punta.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
