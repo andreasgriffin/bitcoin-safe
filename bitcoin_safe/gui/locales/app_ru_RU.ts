@@ -2519,10 +2519,7 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-        <translation>Используйте высоту блока,
-чтобы отложить до добычи определённого блока.
-Используйте дату/время, чтобы отложить до определённого сетевого времени (median-time-past).
-Median-time-past — это медианная метка времени последних 11 блоков, поэтому обычно она примерно на {minutes} минут отстаёт от вершины цепи.</translation>
+        <translation>Используйте высоту блока, чтобы отложить до добычи определённого блока. Используйте дату/время, чтобы отложить до определённого сетевого времени (median-time-past). Median-time-past — это медианная метка времени последних 11 блоков, поэтому обычно она примерно на {minutes} минут отстаёт от вершины цепи.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -4546,8 +4543,7 @@ Or you can broadcast via {url}</source>
     <message>
         <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-        <translation>Эта транзакция ещё не действительна (установлен nLocktime).
-Трансляция завершится ошибкой. Вы всё равно хотите отправить?</translation>
+        <translation>Эта транзакция ещё не действительна (установлен nLocktime). Трансляция завершится ошибкой. Вы всё равно хотите отправить?</translation>
     </message>
     <name>UITx_Viewer</name>
     <message>
@@ -4726,7 +4722,7 @@ Do you want to broadcast anyway?</source>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Failed to extract update archive.</source>
-        <translation>Все тесты self-send успешно завершены.</translation>
+        <translation>Failed to extract update archive.</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
