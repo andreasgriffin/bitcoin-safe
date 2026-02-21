@@ -2519,10 +2519,7 @@ Vols amagar-la a la safata?</translation>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-        <translation>Utilitzeu l’alçada del bloc per retardar fins que es mineri un bloc específic.
-Utilitzeu data/hora per retardar fins a un temps de xarxa específic (median-time-past).
-Median-time-past és la marca de temps mediana dels últims 11 blocs,
-per tant normalment està aproximadament {minutes} minuts darrere de la punta.</translation>
+        <translation>Utilitzeu l’alçada del bloc per retardar fins que es mineri un bloc específic. Utilitzeu data/hora per retardar fins a un temps de xarxa específic (median-time-past). Median-time-past és la marca de temps mediana dels últims 11 blocs, per tant normalment està aproximadament {minutes} minuts darrere de la punta.</translation>
     </message>
     <name>NLocktimeGroupBox</name>
     <message>
@@ -4544,8 +4541,7 @@ O bé la pots emetre via {url}</translation>
     <message>
         <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-        <translation>Aquesta transacció encara no és vàlida (nLocktime establert).
-La transmissió fallarà. Voleu transmetre igualment?</translation>
+        <translation>Aquesta transacció encara no és vàlida (nLocktime establert). La transmissió fallarà. Voleu transmetre igualment?</translation>
     </message>
     <name>UITx_Viewer</name>
     <message>
@@ -4724,7 +4720,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
     <name>UpdateNotificationBar</name>
     <message>
         <source>Failed to extract update archive.</source>
-        <translation>Totes les proves d&apos;autoenviament s&apos;han completat correctament.</translation>
+        <translation>Failed to extract update archive.</translation>
     </message>
     <name>UpdateNotificationBar</name>
     <message>
