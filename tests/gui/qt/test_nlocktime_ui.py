@@ -34,13 +34,10 @@ from datetime import datetime
 import pytest
 from PyQt6.QtCore import QDateTime
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication, QDialogButtonBox
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
-from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.nlocktime_group_box import NLocktimeMode
-from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import NLOCKTIME_FUTURE_YEARS
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
@@ -48,58 +45,14 @@ from bitcoin_safe.tx import LOCKTIME_THRESHOLD
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
-from ...non_gui.test_signers import test_seeds
 from .helpers import (
     Shutter,
     broadcast_tx,
-    do_modal_click,
     fund_wallet,
     main_window_context,
-    save_wallet,
+    setup_single_sig_wallet,
     sign_tx,
 )
-
-
-def _setup_single_sig_wallet(
-    main_window: MainWindow,
-    qtbot: QtBot,
-    shutter: Shutter,
-    test_config: TestConfig,
-    wallet_name: str,
-) -> QTWallet:
-    def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
-        shutter.save(dialog)
-        dialog.name_input.setText(wallet_name)
-        dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
-
-    do_modal_click(
-        main_window.welcome_screen.pushButton_custom_wallet,
-        on_wallet_id_dialog,
-        qtbot,
-        cls=WalletIdDialog,
-    )
-
-    qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
-    assert isinstance(qt_protowallet, QTProtoWallet)
-
-    qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
-    qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
-    key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-    key.tabs_import_type.setCurrentWidget(key.tab_manual)
-    key.edit_seed.setText(test_seeds[0])
-    shutter.save(main_window)
-
-    save_wallet(
-        test_config=test_config,
-        wallet_name=wallet_name,
-        save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-            QDialogButtonBox.StandardButton.Apply
-        ),
-    )
-
-    qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
-    assert isinstance(qt_wallet, QTWallet)
-    return qt_wallet
 
 
 @pytest.mark.marker_qt_2
@@ -122,7 +75,7 @@ def test_nlocktime_creator_viewer(
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)
         shutter.save(main_window)
 
-        qt_wallet = _setup_single_sig_wallet(
+        qt_wallet = setup_single_sig_wallet(
             main_window=main_window,
             qtbot=qtbot,
             shutter=shutter,
@@ -261,7 +214,7 @@ def test_nlocktime_menu_toggle_clears_locktime(
     with main_window_context(test_config=test_config) as main_window:
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)
         shutter.save(main_window)
-        qt_wallet = _setup_single_sig_wallet(
+        qt_wallet = setup_single_sig_wallet(
             main_window=main_window,
             qtbot=qtbot,
             shutter=shutter,
@@ -362,7 +315,7 @@ def test_nlocktime_creator_viewer_starting_height_stays_visible(
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)
         shutter.save(main_window)
 
-        qt_wallet = _setup_single_sig_wallet(
+        qt_wallet = setup_single_sig_wallet(
             main_window=main_window,
             qtbot=qtbot,
             shutter=shutter,

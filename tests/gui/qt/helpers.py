@@ -54,6 +54,7 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
     QApplication,
+    QDialogButtonBox,
     QFileDialog,
     QLineEdit,
     QMainWindow,
@@ -65,15 +66,17 @@ from PyQt6.QtWidgets import (
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.dialogs import PasswordCreation
+from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.main import MainWindow
-from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
+from ...helpers import TestConfig
+from ...non_gui.test_signers import test_seeds
 from ...util import wait_for_sync
 
 logger = logging.getLogger(__name__)
@@ -182,6 +185,50 @@ def fund_wallet(
     tx = faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
     wait_for_sync(wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=60_000, qtbot=qtbot)
     return address
+
+
+def setup_single_sig_wallet(
+    main_window: MainWindow,
+    qtbot: QtBot,
+    shutter: Shutter,
+    test_config: TestConfig,
+    wallet_name: str,
+) -> QTWallet:
+    """Create and save a single-sig wallet in the main window."""
+
+    def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+        shutter.save(dialog)
+        dialog.name_input.setText(wallet_name)
+        dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+
+    do_modal_click(
+        main_window.welcome_screen.pushButton_custom_wallet,
+        on_wallet_id_dialog,
+        qtbot,
+        cls=WalletIdDialog,
+    )
+
+    qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
+    assert isinstance(qt_protowallet, QTProtoWallet)
+
+    qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
+    qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
+    key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
+    key.tabs_import_type.setCurrentWidget(key.tab_manual)
+    key.edit_seed.setText(test_seeds[0])
+    shutter.save(main_window)
+
+    save_wallet(
+        test_config=test_config,
+        wallet_name=wallet_name,
+        save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
+            QDialogButtonBox.StandardButton.Apply
+        ),
+    )
+
+    qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
+    assert isinstance(qt_wallet, QTWallet)
+    return qt_wallet
 
 
 def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:

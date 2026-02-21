@@ -1309,8 +1309,11 @@ class UITx_Viewer(UITx_Base):
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
         self.fee_info = fee_info
 
-        if chain_position is None or isinstance(chain_position, bdk.ChainPosition.UNCONFIRMED):
-            chain_position = self.get_chain_position(str(tx.compute_txid()))
+        # Always prefer the latest wallet view of chain position so open tx viewers
+        # update their status/icon correctly across reorg state changes.
+        latest_chain_position = self.get_chain_position(str(tx.compute_txid()))
+        if latest_chain_position is not None:
+            chain_position = latest_chain_position
         self.chain_position = chain_position
 
         tx_status = self.get_tx_status(chain_position=chain_position)
