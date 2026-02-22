@@ -85,7 +85,6 @@ class UpdateArtifactFormat(enum.Enum):
     msi = "msi"
     exe_setup = "exe_setup"
     exe_portable = "exe_portable"
-    exe_other = "exe_other"
     unknown = "unknown"
 
 
@@ -132,11 +131,6 @@ class UpdateApplier:
             },
             "Windows": {
                 UpdateArtifactFormat.exe_setup: UpdateHandler(
-                    apply=self._start_windows_setup_exe,
-                    can_apply=self._can_apply_windows_setup_exe,
-                    dialog_texts=self._dialog_texts_for_start_installer,
-                ),
-                UpdateArtifactFormat.exe_other: UpdateHandler(
                     apply=self._start_windows_setup_exe,
                     can_apply=self._can_apply_windows_setup_exe,
                     dialog_texts=self._dialog_texts_for_start_installer,
@@ -273,11 +267,11 @@ class UpdateApplier:
         if lower_name.endswith(".msi"):
             return UpdateArtifactFormat.msi
         if lower_name.endswith(".exe"):
-            if "portable" in lower_name:
-                return UpdateArtifactFormat.exe_portable
             if "setup" in lower_name or "install" in lower_name:
                 return UpdateArtifactFormat.exe_setup
-            return UpdateArtifactFormat.exe_other
+            if "portable" in lower_name:
+                return UpdateArtifactFormat.exe_portable
+            return UpdateArtifactFormat.exe_portable
         return UpdateArtifactFormat.unknown
 
     def _replace_linux_appimage(self, artifact: Path) -> UpdateApplierResult:
