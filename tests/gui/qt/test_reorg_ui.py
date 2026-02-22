@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
@@ -59,6 +60,8 @@ from .helpers import (
     setup_single_sig_wallet,
     sign_tx,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _bitcoin_cli_json(bitcoin_core: Path, command: str) -> dict[str, Any] | list[Any]:
@@ -214,23 +217,35 @@ def test_reorg_keeps_tx_in_history_when_reincluded(
     amount: int = int(1e6),
 ) -> None:
     """Reorg to a longer chain that still includes tx A; tx A must remain in history."""
+    logger.info("Starting reorg reinclusion test wallet=%s amount=%s", wallet_name, amount)
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
     shutter.create_symlink(test_config=test_config)
+    logger.debug("Created shutter symlink for test artifacts")
 
     with main_window_context(test_config=test_config) as main_window:
+        logger.debug("Main window context entered, waiting for exposure")
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)
+        logger.debug("Main window exposed")
+        shutter.save(main_window)
 
+        logger.info("Setting up single-sig wallet for reinclusion test")
         qt_wallet = setup_single_sig_wallet(
             main_window=main_window,
             qtbot=qtbot,
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
-            seed=test_seeds[0],
+            seed=test_seeds[16],
         )
+        logger.debug("Wallet setup complete")
+        shutter.save(main_window)
+        logger.info("Funding wallet with amount=%s sats", amount)
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
+        logger.debug("Wallet funding completed")
+        shutter.save(main_window)
+        logger.info("Creating and broadcasting self-send transaction A")
         txid_a = _create_sign_and_broadcast_self_send(
             main_window=main_window,
             qt_wallet=qt_wallet,
@@ -238,49 +253,86 @@ def test_reorg_keeps_tx_in_history_when_reincluded(
             shutter=shutter,
             amount=amount,
         )
+        logger.info("Broadcasted tx A txid=%s", txid_a)
+        shutter.save(main_window)
 
         miner_address = str(faucet.wallet.get_address().address)
+        logger.debug("Using miner address=%s", miner_address)
+        logger.info("Mining one block to confirm tx A")
         mined_with_a = _bitcoin_cli_json(bitcoin_core, f"generatetoaddress 1 {miner_address}")
         assert isinstance(mined_with_a, list)
         assert len(mined_with_a) == 1
         confirmed_block_with_a = str(mined_with_a[0])
+        logger.info("Mined block including tx A block_hash=%s", confirmed_block_with_a)
+        shutter.save(main_window)
 
         tx_a_confirmed = _bitcoin_cli_json(bitcoin_core, f"getrawtransaction {txid_a} true")
         assert isinstance(tx_a_confirmed, dict)
+        logger.debug("getrawtransaction (confirmed) tx=%s", tx_a_confirmed)
         assert int(tx_a_confirmed["confirmations"]) == 1
         assert str(tx_a_confirmed["blockhash"]) == confirmed_block_with_a
+        logger.debug("Validating tx A is in block %s", confirmed_block_with_a)
         assert _block_contains_tx(bitcoin_core=bitcoin_core, block_hash=confirmed_block_with_a, txid=txid_a)
+        logger.debug("Waiting for tx A to appear in wallet history")
         _wait_for_history_tx_presence(qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, present=True)
+        logger.debug("Tx A is present in wallet history")
+        shutter.save(main_window)
 
         tip_before_reorg = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info(
+            "Tip before reorg hash=%s height=%s", tip_before_reorg["hash"], tip_before_reorg["height"]
+        )
         assert str(tip_before_reorg["hash"]) == confirmed_block_with_a
         tip_before_reorg_height = int(tip_before_reorg["height"])
 
+        logger.info("Invalidating block %s to trigger temporary reorg", confirmed_block_with_a)
         bitcoin_cli(f"invalidateblock {confirmed_block_with_a}", bitcoin_core)
         tip_after_invalidate = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info(
+            "Tip after invalidate hash=%s height=%s",
+            tip_after_invalidate["hash"],
+            tip_after_invalidate["height"],
+        )
         assert int(tip_after_invalidate["height"]) == tip_before_reorg_height - 1
+        shutter.save(main_window)
 
+        logger.info("Reconsidering block %s to restore original chain", confirmed_block_with_a)
         bitcoin_cli(f"reconsiderblock {confirmed_block_with_a}", bitcoin_core)
         tip_after_reconsider = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info(
+            "Tip after reconsider hash=%s height=%s",
+            tip_after_reconsider["hash"],
+            tip_after_reconsider["height"],
+        )
         assert str(tip_after_reconsider["hash"]) == confirmed_block_with_a
         assert int(tip_after_reconsider["height"]) == tip_before_reorg_height
+        shutter.save(main_window)
 
+        logger.info("Mining one more block to create a longer branch while keeping tx A included")
         longer_branch_blocks = _bitcoin_cli_json(bitcoin_core, f"generatetoaddress 1 {miner_address}")
         assert isinstance(longer_branch_blocks, list)
         assert len(longer_branch_blocks) == 1
         assert isinstance(longer_branch_blocks[0], str)
+        logger.debug("Longer branch block hashes=%s", longer_branch_blocks)
+        shutter.save(main_window)
 
         tip_after_reorg = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info("Tip after reorg hash=%s height=%s", tip_after_reorg["hash"], tip_after_reorg["height"])
         assert int(tip_after_reorg["height"]) == tip_before_reorg_height + 1
 
         tx_a_after_reorg = _bitcoin_cli_json(bitcoin_core, f"getrawtransaction {txid_a} true")
         assert isinstance(tx_a_after_reorg, dict)
+        logger.debug("getrawtransaction (after reorg) tx=%s", tx_a_after_reorg)
         assert int(tx_a_after_reorg["confirmations"]) >= 2
         block_hash_after_reorg = str(tx_a_after_reorg["blockhash"])
         assert block_hash_after_reorg == confirmed_block_with_a
+        logger.debug("Validating tx A still maps to block %s", block_hash_after_reorg)
         assert _block_contains_tx(bitcoin_core=bitcoin_core, block_hash=block_hash_after_reorg, txid=txid_a)
 
+        logger.debug("Final check: waiting for tx A to remain present in history")
         _wait_for_history_tx_presence(qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, present=True)
+        shutter.save(main_window)
+        logger.info("Reinclusion test finished successfully txid=%s", txid_a)
 
 
 @pytest.mark.marker_qt_2
@@ -294,25 +346,45 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
     backend: str,
     wallet_name: str = "test_reorged_out_tx_stays_unconfirmed_in_history",
     amount: int = int(1e6),
+    reorg_branch_blocks: int = 3,
 ) -> None:
     """Reorg tx A out of active chain; keep it in mempool and verify history/viewer status icon updates."""
+    assert reorg_branch_blocks >= 2
+    logger.info(
+        "Starting reorged-out tx test wallet=%s amount=%s backend=%s reorg_branch_blocks=%s",
+        wallet_name,
+        amount,
+        backend,
+        reorg_branch_blocks,
+    )
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
     shutter.create_symlink(test_config=test_config)
+    logger.debug("Created shutter symlink for test artifacts")
 
     with main_window_context(test_config=test_config) as main_window:
+        logger.debug("Main window context entered, waiting for exposure")
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)
+        logger.debug("Main window exposed")
+        shutter.save(main_window)
 
+        logger.info("Setting up single-sig wallet for reorged-out test")
         qt_wallet = setup_single_sig_wallet(
             main_window=main_window,
             qtbot=qtbot,
             shutter=shutter,
             test_config=test_config,
             wallet_name=wallet_name,
-            seed=test_seeds[0],
+            seed=test_seeds[17],
         )
+        logger.debug("Wallet setup complete")
+        shutter.save(main_window)
+        logger.info("Funding wallet with amount=%s sats", amount)
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
+        logger.debug("Wallet funding completed")
+        shutter.save(main_window)
+        logger.info("Creating and broadcasting self-send transaction A")
         txid_a = _create_sign_and_broadcast_self_send(
             main_window=main_window,
             qt_wallet=qt_wallet,
@@ -320,21 +392,33 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
             shutter=shutter,
             amount=amount,
         )
+        logger.info("Broadcasted tx A txid=%s", txid_a)
+        shutter.save(main_window)
 
         miner_address = str(faucet.wallet.get_address().address)
+        logger.debug("Using miner address=%s", miner_address)
+        logger.info("Mining one block to confirm tx A")
         mined_with_a = _bitcoin_cli_json(bitcoin_core, f"generatetoaddress 1 {miner_address}")
         assert isinstance(mined_with_a, list)
         assert len(mined_with_a) == 1
         confirmed_block_with_a = str(mined_with_a[0])
+        logger.info("Mined block including tx A block_hash=%s", confirmed_block_with_a)
+        shutter.save(main_window)
 
         tx_a_confirmed = _bitcoin_cli_json(bitcoin_core, f"getrawtransaction {txid_a} true")
         assert isinstance(tx_a_confirmed, dict)
+        logger.debug("getrawtransaction (confirmed) tx=%s", tx_a_confirmed)
         assert int(tx_a_confirmed["confirmations"]) == 1
         assert str(tx_a_confirmed["blockhash"]) == confirmed_block_with_a
+        logger.debug("Validating tx A is included in block %s", confirmed_block_with_a)
         assert _block_contains_tx(bitcoin_core=bitcoin_core, block_hash=confirmed_block_with_a, txid=txid_a)
+        logger.debug("Waiting for tx A to appear in wallet history")
         _wait_for_history_tx_presence(qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, present=True)
+        logger.debug("Tx A is present in wallet history")
+        shutter.save(main_window)
 
         # Open tx A in viewer and lock in the confirmed icon before the reorg.
+        logger.info("Opening tx A in viewer before reorg")
         qt_wallet.signals.open_tx_like.emit(txid_a)
         qtbot.waitUntil(
             lambda: isinstance(main_window.tab_wallets.currentNode().data, UITx_Viewer),
@@ -343,65 +427,122 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
         viewer = main_window.tab_wallets.currentNode().data
         assert isinstance(viewer, UITx_Viewer)
         assert viewer.txid() == txid_a
+        logger.debug("Viewer opened for txid=%s", viewer.txid())
+        logger.debug("Waiting for viewer tab icon to match confirmed status")
         _wait_for_tx_viewer_icon(main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a)
+        logger.debug("Viewer icon matches confirmed tx state")
+        shutter.save(main_window)
 
         tip_before_reorg = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info(
+            "Tip before reorg hash=%s height=%s", tip_before_reorg["hash"], tip_before_reorg["height"]
+        )
         assert str(tip_before_reorg["hash"]) == confirmed_block_with_a
         tip_before_reorg_height = int(tip_before_reorg["height"])
 
+        logger.info("Invalidating block %s to reorg tx A out", confirmed_block_with_a)
         bitcoin_cli(f"invalidateblock {confirmed_block_with_a}", bitcoin_core)
 
         tip_after_invalidate = _active_tip(bitcoin_core=bitcoin_core)
+        logger.info(
+            "Tip after invalidate hash=%s height=%s",
+            tip_after_invalidate["hash"],
+            tip_after_invalidate["height"],
+        )
         assert int(tip_after_invalidate["height"]) == tip_before_reorg_height - 1
         assert str(tip_after_invalidate["hash"]) != confirmed_block_with_a
+        shutter.save(main_window)
 
         mempool_after_invalidate = _bitcoin_cli_json(bitcoin_core, "getrawmempool")
         assert isinstance(mempool_after_invalidate, list)
+        logger.debug("Mempool after invalidate size=%s", len(mempool_after_invalidate))
         assert txid_a in mempool_after_invalidate
 
         mempool_entry = _bitcoin_cli_json(bitcoin_core, f"getmempoolentry {txid_a}")
         assert isinstance(mempool_entry, dict)
+        logger.debug("Mempool entry for tx A=%s", mempool_entry)
 
+        logger.info("Deprioritizing tx A before mining competing branch")
         deprioritize_result = bitcoin_cli(f"prioritisetransaction {txid_a} 0 -100000000", bitcoin_core)
+        logger.debug("Deprioritize RPC result=%s", deprioritize_result)
         assert deprioritize_result == "true"
+        shutter.save(main_window)
 
         try:
-            longer_branch_blocks = _bitcoin_cli_json(bitcoin_core, f"generatetoaddress 2 {miner_address}")
+            logger.info("Mining %s blocks for competing longer branch", reorg_branch_blocks)
+            longer_branch_blocks = _bitcoin_cli_json(
+                bitcoin_core, f"generatetoaddress {reorg_branch_blocks} {miner_address}"
+            )
             assert isinstance(longer_branch_blocks, list)
-            assert len(longer_branch_blocks) == 2
+            assert len(longer_branch_blocks) == reorg_branch_blocks
+            logger.debug("Longer branch block hashes=%s", longer_branch_blocks)
+            logger.info("Waiting 5 seconds for node to create CBFs after mining competing branch")
+            qtbot.wait(5_000)
             for block_hash in longer_branch_blocks:
                 assert isinstance(block_hash, str)
+                logger.debug("Checking tx A absent from block %s", block_hash)
                 assert not _block_contains_tx(bitcoin_core=bitcoin_core, block_hash=block_hash, txid=txid_a)
+            shutter.save(main_window)
 
             tip_after_reorg = _active_tip(bitcoin_core=bitcoin_core)
-            assert int(tip_after_reorg["height"]) == tip_before_reorg_height + 1
+            logger.info(
+                "Tip after reorg hash=%s height=%s", tip_after_reorg["hash"], tip_after_reorg["height"]
+            )
+            assert int(tip_after_reorg["height"]) == tip_before_reorg_height + reorg_branch_blocks - 1
 
             mempool_after_longer_chain = _bitcoin_cli_json(bitcoin_core, "getrawmempool")
             assert isinstance(mempool_after_longer_chain, list)
+            logger.debug("Mempool after longer chain size=%s", len(mempool_after_longer_chain))
             assert txid_a in mempool_after_longer_chain
 
             tx_a_after_reorg_out = _bitcoin_cli_json(bitcoin_core, f"getrawtransaction {txid_a} true")
             assert isinstance(tx_a_after_reorg_out, dict)
+            logger.debug("getrawtransaction (after reorg out) tx=%s", tx_a_after_reorg_out)
             assert int(tx_a_after_reorg_out.get("confirmations", 0)) == 0
             assert "blockhash" not in tx_a_after_reorg_out
 
+            logger.debug("Waiting for tx A to remain listed in history after reorg out")
             _wait_for_history_tx_presence(qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, present=True)
+            shutter.save(main_window)
             if backend == "fulcrum":
+                logger.info("Backend is fulcrum; waiting for explicit mempool-unconfirmed UI state")
                 _wait_for_unconfirmed_history_status(qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a)
                 tx_status = TxStatus.from_wallet(txid_a, qt_wallet.wallet)
+                logger.debug(
+                    "Fulcrum tx status: confirmed=%s unconfirmed=%s in_mempool=%s local=%s",
+                    tx_status.is_confirmed(),
+                    tx_status.is_unconfirmed(),
+                    tx_status.is_in_mempool(),
+                    tx_status.is_local(),
+                )
                 assert tx_status.is_unconfirmed()
                 assert tx_status.is_in_mempool()
                 assert not tx_status.is_local()
                 status_item = _history_status_item(qt_wallet=qt_wallet, txid=txid_a)
+                logger.debug(
+                    "History status item text=%s tooltip=%s",
+                    status_item.text(),
+                    status_item.toolTip(),
+                )
                 assert status_item.text() != qt_wallet.history_list.tr("Local")
+                shutter.save(main_window)
             else:
+                logger.info("Backend is %s; waiting for non-confirmed status transition", backend)
                 if not _wait_for_non_confirmed_tx_status(
                     qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, timeout_ms=180_000
                 ):
+                    logger.warning("CBF backend did not propagate non-confirmed state in time; skipping")
                     pytest.skip("CBF backend did not propagate non-confirmed reorg state in time")
+                shutter.save(main_window)
 
             # Regression check: when tx A is open in the viewer, its tab icon must update after reorg.
+            logger.debug("Waiting for tx viewer icon to update after reorg")
             _wait_for_tx_viewer_icon(main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a)
+            shutter.save(main_window)
+            logger.info("Reorged-out tx test finished successfully txid=%s", txid_a)
         finally:
+            logger.info("Re-prioritizing tx A in finally block")
             reprioritize_result = bitcoin_cli(f"prioritisetransaction {txid_a} 0 100000000", bitcoin_core)
+            logger.debug("Re-prioritize RPC result=%s", reprioritize_result)
             assert reprioritize_result == "true"
+            shutter.save(main_window)
