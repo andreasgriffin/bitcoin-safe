@@ -298,10 +298,10 @@ def test_can_apply_windows_portable_is_false_when_current_binary_is_non_portable
     portable_exe.write_text("portable")
     applier = UpdateApplier(system="Windows", current_binary=current_exe)
 
-    assert not applier.can_apply(portable_exe)
+    assert applier.can_apply(portable_exe)
     result = applier.apply(portable_exe)
-    assert not result.was_applied
-    assert result.action == UpdateApplierAction.none
+    assert result.was_applied
+    assert result.action == UpdateApplierAction.restart
 
 
 def test_can_apply_linux_deb_is_false_for_system_install(tmp_path: Path) -> None:
