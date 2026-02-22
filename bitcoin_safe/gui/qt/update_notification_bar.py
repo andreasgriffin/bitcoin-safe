@@ -229,7 +229,7 @@ class UpdateNotificationBar(NotificationBar):
         self._ask_and_apply_verified_update(extracted_artifact_path)
 
     def _ask_and_apply_verified_update(self, prepared_path: Path) -> None:
-        dialog_texts = self.update_applier.get_apply_dialog_texts(prepared_path, self.tr)
+        dialog_texts = self.update_applier.get_apply_dialog_texts(prepared_path)
         selection = question_dialog(
             text=dialog_texts.text,
             title=dialog_texts.title,

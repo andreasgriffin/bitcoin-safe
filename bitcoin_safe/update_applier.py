@@ -41,12 +41,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.pyqt6_restart import resolve_windows_runtime_executable
 
 logger = logging.getLogger(__name__)
-
-CapabilityChecker = Callable[[Path], bool]
-Translator = Callable[[str], str]
 
 
 class UpdateApplierAction(enum.Enum):
@@ -74,8 +72,8 @@ class UpdateApplierResult:
 @dataclass(frozen=True)
 class UpdateHandler:
     apply: Callable[[Path], UpdateApplierResult]
-    can_apply: CapabilityChecker
-    dialog_texts: Callable[[Translator], UpdateApplyDialogTexts]
+    can_apply: Callable[[Path], bool]
+    dialog_texts: Callable[[], UpdateApplyDialogTexts]
     enabled: bool = True
 
 
@@ -226,39 +224,39 @@ class UpdateApplier:
         )
         return can_apply
 
-    def get_apply_dialog_texts(self, artifact_path: Path, translate: Translator) -> UpdateApplyDialogTexts:
+    def get_apply_dialog_texts(self, artifact_path: Path) -> UpdateApplyDialogTexts:
         artifact = artifact_path.resolve(strict=False)
         binary_format = self.detect_format(artifact)
         update_handler = self._handlers.get(self.system, {}).get(binary_format)
         if update_handler is None:
-            return self._dialog_texts_for_apply_update(translate)
-        return update_handler.dialog_texts(translate)
+            return self._dialog_texts_for_apply_update()
+        return update_handler.dialog_texts()
 
     @staticmethod
-    def _dialog_texts_for_apply_update(translate: Translator) -> UpdateApplyDialogTexts:
+    def _dialog_texts_for_apply_update() -> UpdateApplyDialogTexts:
         return UpdateApplyDialogTexts(
-            title=translate("Apply update"),
-            text=translate("Update verified. Do you want to apply the update now?"),
-            true_button=translate("Apply update"),
-            false_button=translate("Open download folder"),
+            title=translate("updater", "Apply update"),
+            text=translate("updater", "Update verified. Do you want to apply the update now?"),
+            true_button=translate("updater", "Apply update"),
+            false_button=translate("updater", "Open download folder"),
         )
 
     @staticmethod
-    def _dialog_texts_for_start_installer(translate: Translator) -> UpdateApplyDialogTexts:
+    def _dialog_texts_for_start_installer() -> UpdateApplyDialogTexts:
         return UpdateApplyDialogTexts(
-            title=translate("Start installer"),
-            text=translate("Update verified. Do you want to start the installer now?"),
-            true_button=translate("Start installer"),
-            false_button=translate("Open download folder"),
+            title=translate("updater", "Start installer"),
+            text=translate("updater", "Update verified. Do you want to start the installer now?"),
+            true_button=translate("updater", "Start installer"),
+            false_button=translate("updater", "Open download folder"),
         )
 
     @staticmethod
-    def _dialog_texts_for_open_update(translate: Translator) -> UpdateApplyDialogTexts:
+    def _dialog_texts_for_open_update() -> UpdateApplyDialogTexts:
         return UpdateApplyDialogTexts(
-            title=translate("Open update"),
-            text=translate("Update verified. Do you want to open the update file now?"),
-            true_button=translate("Open update"),
-            false_button=translate("Open download folder"),
+            title=translate("updater", "Open update"),
+            text=translate("updater", "Update verified. Do you want to open the update file now?"),
+            true_button=translate("updater", "Open update"),
+            false_button=translate("updater", "Open download folder"),
         )
 
     @staticmethod

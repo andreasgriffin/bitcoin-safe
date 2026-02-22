@@ -402,7 +402,7 @@ def test_dialog_texts_open_update_for_macos_dmg(tmp_path: Path) -> None:
     dmg_file = tmp_path / "Bitcoin-Safe-1.8.0-arm64.dmg"
     dmg_file.write_text("dmg")
     applier = UpdateApplier(system="Darwin")
-    texts = applier.get_apply_dialog_texts(dmg_file, lambda text: text)
+    texts = applier.get_apply_dialog_texts(dmg_file)
 
     assert texts.title == "Open update"
     assert texts.true_button == "Open update"
