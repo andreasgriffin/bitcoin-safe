@@ -304,6 +304,75 @@ jobs:
             }
             Write-Log "Verified 'pyzbar could be loaded successfully' in application log."
 
+            function Get-ProcessIdsForPath([string]$ExecutablePath) {
+              $exeName = [System.IO.Path]::GetFileName($ExecutablePath)
+              $procs = Get-CimInstance Win32_Process -Filter "Name='$exeName'" -ErrorAction SilentlyContinue |
+                Where-Object { $_.ExecutablePath -eq $ExecutablePath } |
+                Select-Object -ExpandProperty ProcessId
+              if ($null -eq $procs) {
+                return @()
+              }
+              return @($procs)
+            }
+
+            function Wait-ProcessExitById([int]$Pid, [int]$TimeoutSeconds) {
+              for ($i = 0; $i -lt $TimeoutSeconds; $i++) {
+                if (-not (Get-Process -Id $Pid -ErrorAction SilentlyContinue)) {
+                  return $true
+                }
+                Start-Sleep -Seconds 1
+              }
+              return $false
+            }
+
+            function Wait-NewProcessIdByPath([string]$ExecutablePath, [int]$OldPid, [int]$TimeoutSeconds) {
+              for ($i = 0; $i -lt $TimeoutSeconds; $i++) {
+                $ids = Get-ProcessIdsForPath -ExecutablePath $ExecutablePath
+                foreach ($id in $ids) {
+                  if ($id -ne $OldPid) {
+                    return $id
+                  }
+                }
+                Start-Sleep -Seconds 1
+              }
+              return $null
+            }
+
+            $initialPid = $process.Id
+            Write-Log "Initial app PID before restart test: $initialPid"
+
+            Add-Type -AssemblyName Microsoft.VisualBasic
+            [void][Microsoft.VisualBasic.Interaction]::AppActivate($process.Id)
+            Start-Sleep -Milliseconds 700
+            [System.Windows.Forms.SendKeys]::SendWait("^{,}")
+            Start-Sleep -Seconds 2
+            [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+            Start-Sleep -Milliseconds 500
+            [System.Windows.Forms.SendKeys]::SendWait("y")
+            Start-Sleep -Milliseconds 500
+            [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+            Write-Log "Triggered restart via keyboard sequence (Ctrl+, then Enter)."
+
+            if (-not (Wait-ProcessExitById -Pid $initialPid -TimeoutSeconds 120)) {
+              throw "Old process $initialPid did not exit after restart request."
+            }
+            Write-Log "Old process exited as expected."
+
+            $newPid = Wait-NewProcessIdByPath -ExecutablePath $portableExe.FullName -OldPid $initialPid -TimeoutSeconds 120
+            if (-not $newPid) {
+              throw "No new process found for $($portableExe.FullName) after restart request."
+            }
+            Write-Log "Detected restarted process with PID $newPid."
+
+            Start-Sleep -Seconds 5
+            $restartedProcess = Get-Process -Id $newPid -ErrorAction SilentlyContinue
+            if (-not $restartedProcess) {
+              throw "Restarted process exited unexpectedly (PID $newPid)."
+            }
+
+            $process = $restartedProcess
+            Write-Log "Restart verification succeeded."
+
           } finally {
             if ($process -and -not $process.HasExited) {
               Write-Log "Stopping process $($process.Id)."

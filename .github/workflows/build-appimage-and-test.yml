@@ -298,6 +298,90 @@ jobs:
             exit 1
           fi
 
+      - name: Verify restart from Network Settings on AppImage
+        if: matrix.package == 'appimage'
+        run: |
+          set -euo pipefail
+
+          APP_CMD=$(cat package_path.txt)
+
+          find_app_pids() {
+            pgrep -f -- "$APP_CMD" || true
+          }
+
+          wait_for_pid_to_exit() {
+            target_pid="$1"
+            timeout_seconds="$2"
+            for _ in $(seq 1 "$timeout_seconds"); do
+              if ! kill -0 "$target_pid" 2>/dev/null; then
+                return 0
+              fi
+              sleep 1
+            done
+            return 1
+          }
+
+          wait_for_new_pid() {
+            old_pid="$1"
+            timeout_seconds="$2"
+            for _ in $(seq 1 "$timeout_seconds"); do
+              for pid in $(find_app_pids); do
+                if [ "$pid" != "$old_pid" ]; then
+                  echo "$pid"
+                  return 0
+                fi
+              done
+              sleep 1
+            done
+            return 1
+          }
+
+          INITIAL_PID=$(find_app_pids | head -n 1)
+          if [ -z "$INITIAL_PID" ]; then
+            echo "Could not determine initial app PID before restart test."
+            exit 1
+          fi
+          echo "Initial app PID: $INITIAL_PID"
+
+          WINDOW_ID=$(xdotool search --name "Bitcoin Safe" | head -n 1 || true)
+          if [ -z "$WINDOW_ID" ]; then
+            echo "Could not find Bitcoin Safe window for restart test."
+            exit 1
+          fi
+          echo "Using window id: $WINDOW_ID"
+
+          xdotool windowactivate --sync "$WINDOW_ID"
+          xdotool key --clearmodifiers ctrl+comma
+          sleep 2
+          xdotool key --clearmodifiers Return
+
+          # If a confirmation dialog appears, try to accept it.
+          sleep 1
+          xdotool key --clearmodifiers y || true
+          xdotool key --clearmodifiers Return || true
+
+          if wait_for_pid_to_exit "$INITIAL_PID" 120; then
+            echo "Old process exited as expected."
+          else
+            echo "Old process (PID $INITIAL_PID) did not exit after restart request."
+            exit 1
+          fi
+
+          NEW_PID=$(wait_for_new_pid "$INITIAL_PID" 120 || true)
+          if [ -z "$NEW_PID" ]; then
+            echo "No new process detected after restart request."
+            exit 1
+          fi
+          echo "Detected restarted app with new PID: $NEW_PID"
+          echo "$NEW_PID" > app_launch.pid
+
+          sleep 5
+          if ! kill -0 "$NEW_PID" 2>/dev/null; then
+            echo "Restarted process exited unexpectedly (PID $NEW_PID)."
+            exit 1
+          fi
+          echo "Restart verification succeeded."
+
       - name: Capture screenshot
         run: |
           xwd -root -silent -display "$DISPLAY" -out "screenshot-${{ matrix.package }}.xwd"

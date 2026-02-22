@@ -126,6 +126,39 @@ jobs:
 
       - name: Start DMG file on ${{ matrix.arch }}
         run: |
+          set -euo pipefail
+
+          find_app_pids() {
+            pgrep -f "/Bitcoin Safe.app/Contents/MacOS/Bitcoin Safe" || true
+          }
+
+          wait_for_pid_to_exit() {
+            target_pid="$1"
+            timeout_seconds="$2"
+            for _ in $(seq 1 "$timeout_seconds"); do
+              if ! kill -0 "$target_pid" 2>/dev/null; then
+                return 0
+              fi
+              sleep 1
+            done
+            return 1
+          }
+
+          wait_for_new_pid() {
+            old_pid="$1"
+            timeout_seconds="$2"
+            for _ in $(seq 1 "$timeout_seconds"); do
+              for pid in $(find_app_pids); do
+                if [ "$pid" != "$old_pid" ]; then
+                  echo "$pid"
+                  return 0
+                fi
+              done
+              sleep 1
+            done
+            return 1
+          }
+
           # Find the DMG file from the downloaded artifacts.
           DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
           if [ -z "$DMG_FILE" ]; then
@@ -193,10 +226,88 @@ jobs:
           else
             echo "Bitcoin Safe is running." | tee -a test_dmg.log
           fi
- 
-          # Optionally, you can run further tests against the application.
-          
-          
+
+          # Capture a baseline PID and verify restart via the Network Settings UI.
+          INITIAL_PID=$(find_app_pids | head -n 1)
+          if [ -z "$INITIAL_PID" ]; then
+            echo "Could not determine initial app PID before restart test." | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Initial app PID: $INITIAL_PID" | tee -a test_dmg.log
+
+          echo "Opening Network Settings and clicking 'Apply and restart'..." | tee -a test_dmg.log
+          osascript <<'APPLESCRIPT'
+          tell application "Bitcoin Safe" to activate
+          delay 1
+          tell application "System Events"
+            tell process "Bitcoin Safe"
+              set frontmost to true
+              keystroke "," using command down
+            end tell
+          end tell
+          APPLESCRIPT
+
+          # Wait until the settings dialog is available, then click Apply and restart.
+          for i in $(seq 1 20); do
+            if osascript <<'APPLESCRIPT'
+            tell application "System Events"
+              tell process "Bitcoin Safe"
+                if exists (window "Network Settings") then
+                  click button "Apply and restart" of window "Network Settings"
+                  return "clicked"
+                end if
+              end tell
+            end tell
+            APPLESCRIPT
+            then
+              echo "Clicked Apply and restart." | tee -a test_dmg.log
+              break
+            fi
+            if [ "$i" -eq 20 ]; then
+              echo "Network Settings dialog or Apply and restart button not found." | tee -a test_dmg.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # If server checks fail, a confirmation dialog can appear; accept it.
+          osascript <<'APPLESCRIPT' || true
+          tell application "System Events"
+            tell process "Bitcoin Safe"
+              repeat 5 times
+                try
+                  if exists button "Yes" of window 1 then
+                    click button "Yes" of window 1
+                    exit repeat
+                  end if
+                end try
+                delay 1
+              end repeat
+            end tell
+          end tell
+          APPLESCRIPT
+
+          if wait_for_pid_to_exit "$INITIAL_PID" 90; then
+            echo "Old process exited as expected." | tee -a test_dmg.log
+          else
+            echo "Old process (PID $INITIAL_PID) did not exit after restart request." | tee -a test_dmg.log
+            exit 1
+          fi
+
+          NEW_PID=$(wait_for_new_pid "$INITIAL_PID" 90 || true)
+          if [ -z "$NEW_PID" ]; then
+            echo "No new process detected after restart request." | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Detected restarted app with new PID: $NEW_PID" | tee -a test_dmg.log
+
+          # Confirm the app process remains alive after restart.
+          sleep 5
+          if ! kill -0 "$NEW_PID" 2>/dev/null; then
+            echo "Restarted process exited unexpectedly (PID $NEW_PID)." | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Restart verification succeeded." | tee -a test_dmg.log
         shell: bash
 
 
