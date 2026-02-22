@@ -78,11 +78,11 @@ class NotificationBar(QWidget):
         )
 
         # Icon Label
-        self.icon_label = IconLabel(text=text)
+        self.icon_label = IconLabel(text=text, parent=self)
         self._layout.addWidget(self.icon_label)
 
         # Optional Button
-        self.optionalButton = QPushButton()
+        self.optionalButton = QPushButton(self)
         self.optionalButton.setVisible(bool(optional_button_text))  # Hidden by default
         self.optionalButton.setText(optional_button_text if optional_button_text else "")
         if callback_optional_button:
@@ -92,7 +92,7 @@ class NotificationBar(QWidget):
 
         self._layout.addStretch()
         # Close Button
-        self.closeButton = CloseButton()
+        self.closeButton = CloseButton(parent=self)
         self.closeButton.clicked.connect(self.hide)
         self._layout.addWidget(self.closeButton)
         self.set_has_close_button(has_close_button=has_close_button)
@@ -101,6 +101,8 @@ class NotificationBar(QWidget):
 
     def add_styled_widget(self, widget: QWidget):
         """Add styled widget."""
+        if widget.parent() is not self:
+            widget.setParent(self)
         if self.color:
             self.style_widget(widget, color=self.color)
         self._layout.insertWidget(self._layout.count() - 2, widget)

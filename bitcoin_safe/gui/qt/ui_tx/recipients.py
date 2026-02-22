@@ -357,12 +357,14 @@ class NotificationBarRecipient(NotificationBar):
         self,
         signals_min: SignalsMin,
         has_close_button=True,
+        parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=has_close_button,
+            parent=parent,
         )
         self.signals_min = signals_min
         self.wallet_id: str | None = None
@@ -426,7 +428,9 @@ class RecipientBox(QWidget):
         )
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.notification_bar = NotificationBarRecipient(
-            signals_min=wallet_functions.signals, has_close_button=allow_edit
+            signals_min=wallet_functions.signals,
+            has_close_button=allow_edit,
+            parent=self,
         )
         self.notification_bar.setHidden(not show_header_bar)
         self._layout.addWidget(self.notification_bar)

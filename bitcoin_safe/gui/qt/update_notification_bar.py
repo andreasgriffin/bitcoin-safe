@@ -125,7 +125,7 @@ class UpdateNotificationBar(NotificationBar):
         self.assets: list[Asset] = []
         self.setVisible(False)
 
-        self.download_container = QWidget()
+        self.download_container = QWidget(self)
         self.download_container_layout = QHBoxLayout(self.download_container)
 
         set_margins(

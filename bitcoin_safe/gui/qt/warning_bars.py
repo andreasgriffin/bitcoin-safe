@@ -32,7 +32,7 @@ import logging
 
 import numpy as np
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QSizePolicy
+from PyQt6.QtWidgets import QSizePolicy, QWidget
 
 from bitcoin_safe.address_comparer import FuzzyMatch
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -46,12 +46,13 @@ logger = logging.getLogger(__name__)
 
 
 class LinkingWarningBar(NotificationBar):
-    def __init__(self, signals_min: SignalsMin) -> None:
+    def __init__(self, signals_min: SignalsMin, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=True,
+            parent=parent,
         )
         self.category_dict: dict[str, set[str]] = {}
         self.signals_min = signals_min
@@ -102,12 +103,13 @@ class LinkingWarningBar(NotificationBar):
 
 
 class PoisoningWarningBar(NotificationBar):
-    def __init__(self, signals_min: SignalsMin) -> None:
+    def __init__(self, signals_min: SignalsMin, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=True,
+            parent=parent,
         )
         self.signals_min = signals_min
         self.poisonous_matches: list[tuple[str, str, FuzzyMatch]] = []

@@ -32,7 +32,7 @@ import logging
 from collections.abc import Callable
 
 from PyQt6.QtCore import QLocale
-from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QPushButton, QWidget
 
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -64,6 +64,7 @@ class NotificationBarCBF(NotificationBar):
         callback_enable_button: Callable,
         network_config: NetworkConfig,
         signals_min: SignalsMin,
+        parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
@@ -71,6 +72,7 @@ class NotificationBarCBF(NotificationBar):
             optional_button_text="",
             callback_optional_button=callback_open_network_setting,
             has_close_button=True,
+            parent=parent,
         )
         self.network_config = network_config
         self.callback_enable_button = callback_enable_button
@@ -79,10 +81,10 @@ class NotificationBarCBF(NotificationBar):
         # color = adjust_bg_color_for_darkmode(QColor("#7ad19f"))
         self.set_icon(svg_tools.get_QIcon("node.svg"))
 
-        self.learn_more_button = IconLabel()
+        self.learn_more_button = IconLabel(parent=self)
         self._layout.insertWidget(1, self.learn_more_button)
 
-        self.enable_button = QPushButton()
+        self.enable_button = QPushButton(self)
         self.enable_button.clicked.connect(self.callback_enable_button)
         self._layout.insertWidget(2, self.enable_button)
 

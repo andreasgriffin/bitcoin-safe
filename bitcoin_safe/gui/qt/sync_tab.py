@@ -43,7 +43,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction, QColor
-from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QPushButton, QWidget
 
 from bitcoin_safe.descriptor_export_tools import shorten_filename
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
@@ -62,13 +62,14 @@ logger = logging.getLogger(__name__)
 
 
 class BackupNsecNotificationBar(NotificationBar):
-    def __init__(self) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="Save",
             has_close_button=True,
             callback_optional_button=self.on_optional_button,
+            parent=parent,
         )
         self.nsec = ""
         self.wallet_id = ""
@@ -78,7 +79,7 @@ class BackupNsecNotificationBar(NotificationBar):
         self.setVisible(False)
         self.icon_label.textLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.import_button = QPushButton()
+        self.import_button = QPushButton(self)
         self.import_button.setIcon(svg_tools.get_QIcon("bi--upload.svg"))
         self.add_styled_widget(self.import_button)
 
@@ -141,7 +142,7 @@ class SyncTab(ControlledGroupbox):
 
         self.groupbox_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
-        self.backup_nsec_notificationbar = BackupNsecNotificationBar()
+        self.backup_nsec_notificationbar = BackupNsecNotificationBar(parent=self)
         self.groupbox_layout.addWidget(self.backup_nsec_notificationbar)
 
         self.nostr_sync = (
