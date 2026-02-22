@@ -475,6 +475,8 @@ class MainWindow(QMainWindow):
                 else None
             ),
         )
+        self.update_notification_bar.signal_restart_requested.connect(partial(self.restart, None))
+        self.update_notification_bar.signal_close_requested.connect(self.close)
         self.update_notification_bar.check()
         vbox.addWidget(self.update_notification_bar)
 
@@ -2658,14 +2660,10 @@ class MainWindow(QMainWindow):
         except RuntimeError:
             logger.exception("Failed to disconnect signals from self during shutdown")
 
-    def restart(self, new_startup_network: bdk.Network | None = None) -> None:
-        """Currently only works in Linux and then it seems that it freezes. So do not
-        use.
-
-        Args:
-            new_startup_network (bdk.Network | None, optional): _description_. Defaults to None.
-        """
-
+    def restart(
+        self, new_startup_network: bdk.Network | None = None, restart_command: list[str] | None = None
+    ) -> None:
+        """Restart application."""
         args: list[str] = []  #  sys.argv[1:]
         self.new_startup_network = new_startup_network
 
@@ -2675,7 +2673,7 @@ class MainWindow(QMainWindow):
                 return
 
         self._before_close()
-        restart_application(args)
+        restart_application(args, restart_command=restart_command)
 
     def shutdown(self, new_startup_network: bdk.Network | None = None) -> None:
         """Shutdown."""

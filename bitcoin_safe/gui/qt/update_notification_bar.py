@@ -29,7 +29,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import platform
 import re
 import shutil
@@ -40,6 +39,7 @@ from typing import Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
@@ -47,6 +47,10 @@ from bitcoin_safe.gui.qt.downloader import Downloader, DownloadWorker
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.signals import SignalsMin
+from bitcoin_safe.update_applier import (
+    UpdateApplier,
+    UpdateApplierAction,
+)
 
 from ... import __version__
 from ...html_utils import html_f
@@ -57,6 +61,7 @@ from ...signature_manager import (
     SignatureVerifyer,
 )
 from ...util import fast_version
+from ...util_os import xdg_open_file
 from .util import Message, MessageType, set_margins
 
 logger = logging.getLogger(__name__)
@@ -89,6 +94,8 @@ class UpdateNotificationBar(NotificationBar):
     ]
 
     signal_on_success = cast(SignalProtocol[[]], pyqtSignal())
+    signal_restart_requested = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
+    signal_close_requested = cast(SignalProtocol[[]], pyqtSignal())
 
     key = KnownGPGKeys.andreasgriffin
 
@@ -110,6 +117,7 @@ class UpdateNotificationBar(NotificationBar):
         )
         self.loop_in_thread = loop_in_thread
         self.signals_min = signals_min
+        self.update_applier = UpdateApplier()
         refresh_icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.optionalButton.setIcon(refresh_icon)
 
@@ -138,8 +146,7 @@ class UpdateNotificationBar(NotificationBar):
         if self.assets:
             tag = self.assets[-1].tag
             return tag
-        else:
-            return None
+        return None
 
     def is_new_version_available(self) -> bool:
         """Is new version available."""
@@ -150,15 +157,11 @@ class UpdateNotificationBar(NotificationBar):
 
     def refresh(self) -> None:
         """Refresh."""
-        self.optionalButton.setText(self.tr("Check for Update"))
-
-        # clear layout
         while self.download_container_layout.count():
-            if (layout_item := self.download_container_layout.takeAt(0)) and (
-                _widget := layout_item.widget()
-            ):
-                _widget.close()
+            if (layout_item := self.download_container_layout.takeAt(0)) and (widget := layout_item.widget()):
+                widget.close()
 
+        self.optionalButton.setText(self.tr("Check for Update"))
         self.download_container.setVisible(bool(self.assets))
         if self.assets:
             if self.is_new_version_available():
@@ -172,7 +175,7 @@ class UpdateNotificationBar(NotificationBar):
                     downloader = Downloader(
                         url=asset.url, destination_dir=tempfile.gettempdir(), proxies=self.proxies
                     )
-                    downloader.finished.connect(self.on_download_finished)
+                    downloader.finished.connect(self._verify_and_apply_update)
                     self.download_container_layout.addWidget(downloader)
             else:
                 self.icon_label.setText(self.tr("You have already the newest version."))
@@ -181,21 +184,20 @@ class UpdateNotificationBar(NotificationBar):
             self.icon_label.setText(self.tr("No update found"))
             self.optionalButton.setVisible(True)
 
-    def on_download_finished(self, download_thread: DownloadWorker) -> None:
-        """On download finished."""
-        sig_file_path = self.verifyer.get_signature_from_web(download_thread.filename)
-        if not sig_file_path:
+    def _verify_and_apply_update(self, download_thread: DownloadWorker) -> None:
+        artifact_path = download_thread.filename
+        if not artifact_path.exists():
+            Message(self.tr("Selected update file does not exist."), type=MessageType.Error, parent=self)
+            return
+
+        signature_file = self.verifyer.get_signature_from_web(artifact_path)
+        if not signature_file:
             Message(self.tr("Could not verify the download. Please try again later."), parent=self)
             self.refresh()
             self.setVisible(False)
             return
 
-        destination = self.get_download_folder()
-        was_signature_verified = None
-
-        was_signature_verified = self.verifyer.verify_signature(
-            download_thread.filename, expected_public_key=self.key
-        )
+        was_signature_verified = self.verifyer.verify_signature(artifact_path, expected_public_key=self.key)
         if not was_signature_verified:
             Message(
                 self.tr("Signature doesn't match!!! Please try again."),
@@ -208,22 +210,68 @@ class UpdateNotificationBar(NotificationBar):
 
         self.icon_label.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
 
-        # overwrite the download_thread.filename so the show-button still works
-        download_thread.filename = self.move_and_overwrite(download_thread.filename, destination)
-        if sig_file_path:
-            self.move_and_overwrite(sig_file_path, destination)
+        destination = self.get_download_folder()
+        prepared_path = self.move_and_overwrite(artifact_path, destination)
+        download_thread.filename = prepared_path
 
-        self.post_download_and_verify_action(download_thread)
+        if signature_file.exists():
+            self.move_and_overwrite(signature_file, destination)
+
+        prepared_path = self.post_download_and_verify_action(prepared_path, download_thread=download_thread)
+        if not self.update_applier.can_apply(prepared_path):
+            self.icon_label.setText(self.tr("Signature verified. Update downloaded."))
+            return
+
+        self._ask_and_apply_verified_update(prepared_path)
+
+    def _ask_and_apply_verified_update(self, prepared_path: Path) -> None:
+        dialog_texts = self.update_applier.get_apply_dialog_texts(prepared_path, self.tr)
+        selection = question_dialog(
+            text=dialog_texts.text,
+            title=dialog_texts.title,
+            true_button=dialog_texts.true_button,
+            false_button=dialog_texts.false_button,
+        )
+        if selection is True:
+            self._apply_binary_replacement(prepared_path)
+            return
+        if selection is False:
+            xdg_open_file(prepared_path.parent)
+
+    def _apply_binary_replacement(self, prepared_path: Path) -> None:
+        replace_result = self.update_applier.apply(prepared_path)
+        logger.info("Update applier result: %s", replace_result.message)
+
+        if not replace_result.was_applied:
+            Message(
+                self.tr("Update file was verified but no automatic install was performed:\n{reason}").format(
+                    reason=replace_result.message
+                ),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
+
+        if replace_result.action == UpdateApplierAction.restart:
+            self.icon_label.setText(self.tr("Update applied. Restarting Bitcoin Safe..."))
+            self.signal_restart_requested.emit(replace_result.launch_command or [])
+            return
+
+        if replace_result.action == UpdateApplierAction.close:
+            self.icon_label.setText(self.tr("Installer started. Closing Bitcoin Safe..."))
+            self.signal_close_requested.emit()
+            return
+
+        self.icon_label.setText(self.tr("Update applied."))
 
     @staticmethod
     def move_and_overwrite(source: Path, destination: Path) -> Path:
-        # convert destination to destination with filename
         """Move and overwrite."""
         if destination.is_dir():
             destination = destination / source.name
 
-        if os.path.exists(destination):
-            os.remove(destination)
+        if destination.exists():
+            destination.unlink()
         shutil.move(source, destination)
         return destination
 
@@ -232,18 +280,24 @@ class UpdateNotificationBar(NotificationBar):
         """Get download folder."""
         return Path.home() / "Downloads"
 
-    def post_download_and_verify_action(self, download_thread: DownloadWorker) -> None:
+    def post_download_and_verify_action(
+        self, download_path: Path, download_thread: DownloadWorker | None
+    ) -> Path:
         """Post-download action after successful verification."""
-        download_path = download_thread.filename
-        if self._is_appimage_tarball(download_path):
-            try:
-                extracted_files = self._extract_tarball(download_path, download_path.parent)
-                extracted_appimage = self._select_appimage_file(extracted_files)
-                if extracted_appimage and extracted_appimage.exists():
+        if not self._is_appimage_tarball(download_path):
+            return download_path
+
+        try:
+            extracted_files = self._extract_tarball(download_path, download_path.parent)
+            extracted_appimage = self._select_appimage_file(extracted_files)
+            if extracted_appimage and extracted_appimage.exists():
+                if download_thread:
                     download_thread.highlight_filename = extracted_appimage
-            except (tarfile.TarError, OSError, ValueError) as exc:
-                logger.error("Failed to extract update archive %s: %s", download_path, exc)
-                Message(self.tr("Failed to extract update archive."), type=MessageType.Error, parent=self)
+                return extracted_appimage
+        except (tarfile.TarError, OSError, ValueError) as exc:
+            logger.error("Failed to extract update archive %s: %s", download_path, exc)
+            Message(self.tr("Failed to extract update archive."), type=MessageType.Error, parent=self)
+        return download_path
 
     @staticmethod
     def _is_appimage_tarball(download_path: Path) -> bool:
@@ -280,35 +334,32 @@ class UpdateNotificationBar(NotificationBar):
         system = platform.system()
         machine = platform.machine().lower()
 
-        # Normalize architecture
         current_arch_aliases = ["arm64", "aarch64"] if "arm" in machine else ["x86_64", "amd64"]
 
         for asset in assets:
-            # --- OS FORMAT FILTERING ---
             if system == "Windows" and not any(
                 asset.name.endswith(ending) for ending in self.Win_Recognized_endings
             ):
                 continue
 
-            elif system == "Linux" and not any(
+            if system == "Linux" and not any(
                 asset.name.endswith(ending) for ending in self.Linux_Recognized_endings
             ):
                 continue
 
-            elif system == "Darwin":
+            if system == "Darwin":
                 if not any(asset.name.endswith(ending) for ending in self.Mac_Recognized_endings):
                     continue
 
                 lower_name = asset.name.lower()
-
-                # Extract arch tags found in filename
                 arch_tags = re.findall(r"(arm64|aarch64|x86_64|amd64)", lower_name)
+                if (
+                    arch_tags
+                    and current_arch_aliases
+                    and not any(tag in current_arch_aliases for tag in arch_tags)
+                ):
+                    continue
 
-                if arch_tags and current_arch_aliases:  # only enforce filtering if tags exist
-                    if not any(tag in current_arch_aliases for tag in arch_tags):
-                        continue
-
-            # --- CHECK IF ASSET BELONGS TO THIS KEY ---
             if not self.key.get_tag_if_mine(asset.name):
                 continue
 
@@ -323,17 +374,9 @@ class UpdateNotificationBar(NotificationBar):
             """Do."""
             return GitHubAssetDownloader(self.key.repository, proxies=self.proxies).get_assets_latest()
 
-        def on_done(result) -> None:
-            """On done."""
-            pass
-
         def on_success(assets: list[Asset] | None) -> None:
-            # filter the assets, by recognized and for the platform
-
             """On success."""
-            if not assets:
-                return
-            self.assets = self.get_filtered_assets(assets)
+            self.assets = self.get_filtered_assets(assets or [])
             self.refresh()
             self.signal_on_success.emit()
 
@@ -343,7 +386,6 @@ class UpdateNotificationBar(NotificationBar):
 
         self.loop_in_thread.run_task(
             do(),
-            on_done=on_done,
             on_success=on_success,
             on_error=on_error,
             key=f"{id(self)}notificationbar",
