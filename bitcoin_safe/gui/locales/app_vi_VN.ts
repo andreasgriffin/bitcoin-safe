@@ -4823,7 +4823,7 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
     <name>WalletGraphClient</name>
     <message>
         <source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
-        <translation>Kéo để khám phá dòng thời gian. Nhấp hoặc nhấp chuột phải một giao dịch, txid, hoặc UTXO để xem tùy chọn.</translation>
+        <translation>Kéo để khám phá dòng thời gian. Nhấp chuột trái hoặc phải vào một giao dịch, txid, hoặc UTXO để xem tùy chọn.</translation>
     </message>
     <name>WalletGraphClient</name>
     <message>
