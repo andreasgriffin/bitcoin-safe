@@ -38,7 +38,7 @@ import subprocess
 import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 from bitcoin_safe.i18n import translate
@@ -532,12 +532,31 @@ class UpdateApplier:
             return False
         target_directory = self._get_windows_target_directory(artifact)
         can_apply = target_directory.exists() and os.access(target_directory, os.W_OK)
+        if can_apply and self._is_windows_protected_target_directory(target_directory):
+            logger.debug(
+                "Can-apply Windows portable denied: protected system directory: %s",
+                target_directory,
+            )
+            return False
         if not can_apply:
             logger.debug(
                 "Can-apply Windows portable denied: target directory invalid or not writable: %s",
                 target_directory,
             )
         return can_apply
+
+    def _is_windows_protected_target_directory(self, target_directory: Path) -> bool:
+        path = PureWindowsPath(str(target_directory).replace("/", "\\"))
+        if path.drive.upper() != "C:":
+            return False
+        relative_parts = tuple(part.casefold() for part in path.parts[1:])
+        protected_roots = (
+            ("program files",),
+            ("program files (x86)",),
+            ("programdata",),
+            ("windows",),
+        )
+        return any(relative_parts[: len(root)] == root for root in protected_roots)
 
     def _can_apply_windows_msi(self, _artifact: Path) -> bool:
         has_msiexec = self._command_exists("msiexec")

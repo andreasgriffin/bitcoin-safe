@@ -28,7 +28,10 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
+
+from _pytest.monkeypatch import MonkeyPatch
 
 from bitcoin_safe.update_applier import (
     UpdateApplier,
@@ -302,6 +305,22 @@ def test_can_apply_windows_portable_is_false_when_current_binary_is_non_portable
     result = applier.apply(portable_exe)
     assert result.was_applied
     assert result.action == UpdateApplierAction.restart
+
+
+def test_can_apply_windows_portable_is_false_for_protected_windows_directory(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
+    current_exe = tmp_path / "Bitcoin-Safe-portable.exe"
+    current_exe.write_text("current")
+    portable_exe = tmp_path / "Bitcoin-Safe-1.8.0-portable.exe"
+    portable_exe.write_text("portable")
+    protected_directory = Path("C:/Program Files/Bitcoin Safe")
+    applier = UpdateApplier(system="Windows", current_binary=current_exe)
+
+    monkeypatch.setattr(applier, "_get_windows_target_directory", lambda _artifact: protected_directory)
+    monkeypatch.setattr(os, "access", lambda _target, _mode: True)
+
+    assert not applier.can_apply(portable_exe)
 
 
 def test_can_apply_linux_deb_is_false_for_system_install(tmp_path: Path) -> None:
