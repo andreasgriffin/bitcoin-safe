@@ -211,18 +211,22 @@ class UpdateNotificationBar(NotificationBar):
         self.icon_label.setText(html_f(self.tr("Signature verified."), color="green", bf=True))
 
         destination = self.get_download_folder()
-        prepared_path = self.move_and_overwrite(artifact_path, destination)
-        download_thread.filename = prepared_path
+        moved_artifact_path = self.move_and_overwrite(artifact_path, destination)
+        download_thread.filename = moved_artifact_path
 
         if signature_file.exists():
             self.move_and_overwrite(signature_file, destination)
 
-        prepared_path = self.post_download_and_verify_action(prepared_path, download_thread=download_thread)
-        if not self.update_applier.can_apply(prepared_path):
+        # extract
+        extracted_artifact_path = self.extract_artifact(moved_artifact_path)
+        download_thread.highlight_filename = extracted_artifact_path
+
+        # apply if possible
+        if not self.update_applier.can_apply(extracted_artifact_path):
             self.icon_label.setText(self.tr("Signature verified. Update downloaded."))
             return
 
-        self._ask_and_apply_verified_update(prepared_path)
+        self._ask_and_apply_verified_update(extracted_artifact_path)
 
     def _ask_and_apply_verified_update(self, prepared_path: Path) -> None:
         dialog_texts = self.update_applier.get_apply_dialog_texts(prepared_path, self.tr)
@@ -280,9 +284,7 @@ class UpdateNotificationBar(NotificationBar):
         """Get download folder."""
         return Path.home() / "Downloads"
 
-    def post_download_and_verify_action(
-        self, download_path: Path, download_thread: DownloadWorker | None
-    ) -> Path:
+    def extract_artifact(self, download_path: Path) -> Path:
         """Post-download action after successful verification."""
         if not self._is_appimage_tarball(download_path):
             return download_path
@@ -291,8 +293,6 @@ class UpdateNotificationBar(NotificationBar):
             extracted_files = self._extract_tarball(download_path, download_path.parent)
             extracted_appimage = self._select_appimage_file(extracted_files)
             if extracted_appimage and extracted_appimage.exists():
-                if download_thread:
-                    download_thread.highlight_filename = extracted_appimage
                 return extracted_appimage
         except (tarfile.TarError, OSError, ValueError) as exc:
             logger.error("Failed to extract update archive %s: %s", download_path, exc)
