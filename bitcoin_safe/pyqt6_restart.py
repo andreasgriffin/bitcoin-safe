@@ -34,7 +34,7 @@ import logging
 import os
 import subprocess
 import sys
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -46,6 +46,51 @@ from PyQt6.QtCore import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _pyinstaller_temp_directory(env: Mapping[str, str]) -> Path | None:
+    for env_key in ("_MEIPASS", "_MEIPASS2", "_PYI_APPLICATION_HOME_DIR"):
+        meipass = env.get(env_key)
+        if meipass:
+            return Path(meipass).resolve(strict=False)
+    return None
+
+
+def _is_pyinstaller_temp_path(path: Path) -> bool:
+    return any(part.lower().startswith("_mei") for part in path.parts)
+
+
+def resolve_windows_runtime_executable(
+    current_binary: Path | None = None,
+    runtime_entrypoint: Path | None = None,
+    env: Mapping[str, str] | None = None,
+    os_name: str | None = None,
+) -> Path:
+    binary = (current_binary or Path(sys.executable)).resolve(strict=False)
+    resolved_os_name = os.name if os_name is None else os_name
+    if resolved_os_name != "nt":
+        return binary
+    if binary.suffix.lower() != ".exe":
+        return binary
+
+    entrypoint = (runtime_entrypoint or Path(sys.argv[0])).resolve(strict=False)
+    if entrypoint.suffix.lower() != ".exe" or not entrypoint.exists():
+        return binary
+
+    binary_directory = binary.parent.resolve(strict=False)
+    entrypoint_directory = entrypoint.parent.resolve(strict=False)
+    if entrypoint_directory == binary_directory:
+        return binary
+
+    environment = dict(os.environ) if env is None else dict(env)
+    meipass = _pyinstaller_temp_directory(environment)
+    if meipass and meipass == binary_directory:
+        return entrypoint
+
+    if _is_pyinstaller_temp_path(binary_directory):
+        return entrypoint
+
+    return binary
 
 
 def build_restart_command(params: Iterable[str] | None = None) -> list[str]:
@@ -69,24 +114,26 @@ def build_restart_command(params: Iterable[str] | None = None) -> list[str]:
         # the original path is unavailable (e.g., when invoked from a temporary
         # location during development).
         if os.name == "nt":
-            meipass = getattr(sys, "_MEIPASS", None)
-            exe_dir = Path(sys.executable).resolve().parent
-            portable_exe = Path(sys.argv[0]).resolve()
-            logger.debug(
-                "PyInstaller frozen build detected meipass=%s exe_dir=%s portable_exe=%s portable_exists=%s",
-                meipass,
-                exe_dir,
-                portable_exe,
-                portable_exe.exists(),
+            runtime_executable = resolve_windows_runtime_executable(
+                current_binary=Path(sys.executable),
+                runtime_entrypoint=Path(sys.argv[0]),
+                env=os.environ,
             )
-            if meipass and portable_exe.exists() and Path(meipass).resolve() != exe_dir:
+            meipass = getattr(sys, "_MEIPASS", None)
+            logger.debug(
+                "PyInstaller frozen build detected meipass=%s sys_executable=%s runtime_executable=%s",
+                meipass,
+                sys.executable,
+                runtime_executable,
+            )
+            if runtime_executable.resolve(strict=False) != Path(sys.executable).resolve(strict=False):
                 logger.info(
-                    "Using portable executable for restart portable_exe=%s bootloader_exe=%s argv=%s",
-                    portable_exe,
+                    "Using portable executable for restart runtime_executable=%s bootloader_exe=%s argv=%s",
+                    runtime_executable,
                     sys.executable,
                     argv,
                 )
-                return [str(portable_exe), *argv]
+                return [str(runtime_executable), *argv]
 
         logger.info(
             "Falling back to frozen executable for restart executable=%s argv=%s",
@@ -103,9 +150,28 @@ def build_restart_command(params: Iterable[str] | None = None) -> list[str]:
 
 def restart_application(
     params: Iterable[str] | None = None,
+    restart_command: Sequence[str] | None = None,
 ) -> None:
     env = os.environ.copy()
-    base_cmd = build_restart_command(params)
+    if restart_command is not None:
+        base_cmd = list(restart_command)
+        logger.debug("Using provided restart command directly: %s", base_cmd)
+    else:
+        base_cmd = build_restart_command(params)
+    if os.name == "nt" and getattr(sys, "frozen", False) and base_cmd:
+        current_command_binary = Path(base_cmd[0])
+        normalized_runtime_binary = resolve_windows_runtime_executable(
+            current_binary=current_command_binary,
+            runtime_entrypoint=Path(sys.argv[0]),
+            env=env,
+        )
+        if normalized_runtime_binary.resolve(strict=False) != current_command_binary.resolve(strict=False):
+            logger.info(
+                "Normalized Windows restart executable from %s to %s",
+                current_command_binary,
+                normalized_runtime_binary,
+            )
+            base_cmd[0] = str(normalized_runtime_binary)
     logger.debug(
         "Restarting application base_cmd=%s cwd=%s frozen=%s os_name=%s sys_executable=%s sys_argv=%s _MEIPASS=%s _MEIPASS2=%s PATH_head=%s PYTHONPATH=%s",
         base_cmd,

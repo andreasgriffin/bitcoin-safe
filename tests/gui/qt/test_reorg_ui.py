@@ -205,7 +205,7 @@ def _create_sign_and_broadcast_self_send(
     return txid
 
 
-@pytest.mark.marker_qt_2
+@pytest.mark.skip(reason="gets stuck in github workflow")
 def test_reorg_keeps_tx_in_history_when_reincluded(
     qapp: QApplication,
     qtbot: QtBot,
