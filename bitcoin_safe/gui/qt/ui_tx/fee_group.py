@@ -75,12 +75,13 @@ BTC_FEE_MARK_RED = 100_000
 
 
 class FeeRateWarningBar(NotificationBar):
-    def __init__(self, network: bdk.Network) -> None:
+    def __init__(self, network: bdk.Network, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=False,
+            parent=parent,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
@@ -121,12 +122,13 @@ class FeeRateWarningBar(NotificationBar):
 
 
 class FeeWarningBar(NotificationBar):
-    def __init__(self, network: bdk.Network, btc_symbol: str) -> None:
+    def __init__(self, network: bdk.Network, btc_symbol: str, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=False,
+            parent=parent,
         )
         self.network = network
         self.btc_symbol = btc_symbol

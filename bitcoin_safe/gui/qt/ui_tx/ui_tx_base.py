@@ -207,28 +207,28 @@ class UITx_Base(SearchableTab):
 
         self._layout = QVBoxLayout(self)
 
-        self.high_fee_rate_warning_label = FeeRateWarningBar(network=self.config.network)
+        self.high_fee_rate_warning_label = FeeRateWarningBar(network=self.config.network, parent=self)
         self.high_fee_rate_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_rate_warning_label)
 
         self.high_fee_warning_label = FeeWarningBar(
-            network=self.config.network, btc_symbol=self.fx.config.bitcoin_symbol.value
+            network=self.config.network, btc_symbol=self.fx.config.bitcoin_symbol.value, parent=self
         )
         self.high_fee_warning_label.setHidden(True)
         self._layout.addWidget(self.high_fee_warning_label)
 
-        self.nlocktime_warning_label = NLocktimeFutureWarningBar(network=self.config.network)
+        self.nlocktime_warning_label = NLocktimeFutureWarningBar(network=self.config.network, parent=self)
         self.nlocktime_warning_label.setHidden(True)
         self._layout.addWidget(self.nlocktime_warning_label)
 
         # category_linking_warning_bar
-        self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals)
+        self.category_linking_warning_bar = LinkingWarningBar(signals_min=self.signals, parent=self)
         self._layout.addWidget(self.category_linking_warning_bar)
 
-        self.rbf_bar = RBFBar(network=self.config.network, text="")
+        self.rbf_bar = RBFBar(network=self.config.network, text="", parent=self)
         self._layout.addWidget(self.rbf_bar)
 
-        self.cpfp_bar = CPFPBar(network=self.config.network, text="")
+        self.cpfp_bar = CPFPBar(network=self.config.network, text="", parent=self)
         self._layout.addWidget(self.cpfp_bar)
 
     def update_nlocktime_warning(self, nlocktime: int | None, current_height: int) -> None:

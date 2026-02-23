@@ -129,12 +129,13 @@ logger = logging.getLogger(__name__)
 
 
 class PSBTAlreadyBroadcastedBar(NotificationBar):
-    def __init__(self) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=True,
+            parent=parent,
         )
         color = adjust_bg_color_for_darkmode(QColor("lightblue"))
         self.set_background_color(color)
@@ -210,11 +211,11 @@ class UITx_Viewer(UITx_Base):
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
 
         # address_poisoning
-        self.address_poisoning_warning_bar = PoisoningWarningBar(signals_min=self.signals)
+        self.address_poisoning_warning_bar = PoisoningWarningBar(signals_min=self.signals, parent=self)
         self._layout.addWidget(self.address_poisoning_warning_bar)
 
         # PSBTAlreadyBroadcastedBar
-        self.psbt_already_broadcasted_bar = PSBTAlreadyBroadcastedBar()
+        self.psbt_already_broadcasted_bar = PSBTAlreadyBroadcastedBar(parent=self)
         self._layout.addWidget(self.psbt_already_broadcasted_bar)
 
         # tx label

@@ -107,12 +107,13 @@ class ScreenshotsTutorial(QWidget):
 
 
 class SeedWarningBar(NotificationBar):
-    def __init__(self) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(
             text="",
             optional_button_text="",
             has_close_button=False,
+            parent=parent,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
         self.set_icon(svg_tools.get_QIcon("warning.svg"))
@@ -132,7 +133,7 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
         self.image_widgets: dict[str, EnlargableImageWidgetWithButton] = {}
         self.tabs: dict[str, QWidget] = {}
 
-        self.never_label = SeedWarningBar()
+        self.never_label = SeedWarningBar(parent=self)
         self._layout.insertWidget(1, self.never_label)
 
         for hardware_signer in self.enabled_hardware_signers:

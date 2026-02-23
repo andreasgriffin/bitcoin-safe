@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import QApplication  # noqa: E402
 from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
 from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette  # noqa: E402
 from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
+from bitcoin_safe.gui.qt.startup_window_probe import StartupWindowProbe  # noqa: E402
 from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
 
 
@@ -26,6 +27,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
     parser.add_argument(
         "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
+    )
+    parser.add_argument(
+        "--trace-startup-windows",
+        action="store_true",
+        help="Log transient startup windows for debugging UI flashing",
     )
     parser.add_argument(
         "open_files_at_startup",
@@ -54,6 +60,8 @@ def main() -> None:
         set_dark_palette(app)
 
     window = MainWindow(**vars(args))
+    if args.trace_startup_windows:
+        app._startup_window_probe = StartupWindowProbe(app=app, expected_main_window=window)  # type: ignore
     window.show()
     app.exec()
 
