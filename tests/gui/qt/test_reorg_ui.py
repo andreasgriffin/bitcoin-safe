@@ -68,6 +68,9 @@ def _bitcoin_cli_json(bitcoin_core: Path, command: str) -> dict[str, Any] | list
     """Run an RPC command and parse JSON output, retrying transient RPC failures."""
     for _ in range(20):
         result = bitcoin_cli(command, bitcoin_core)
+        if "generatetoaddress" in command:
+            # give bitcoind time to build the CBF
+            time.sleep(0.5)
         if result:
             return json.loads(result)
         time.sleep(1)
