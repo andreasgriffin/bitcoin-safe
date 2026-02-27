@@ -28,6 +28,7 @@
 
 from __future__ import annotations
 
+import enum
 import logging
 from dataclasses import dataclass
 
@@ -84,6 +85,12 @@ class SignMessageRequestQrExportTypes:
         ]
 
 
+class FeatureLevel(enum.Enum):
+    not_capable = enum.auto()
+    capable = enum.auto()
+    supported = enum.auto()
+
+
 @dataclass
 class HardwareSigner:
     name: str
@@ -91,6 +98,7 @@ class HardwareSigner:
     usb_preferred: bool
     qr_types: list[QrExportType]
     descriptor_export_types: list[DescriptorExportType]
+    bluetooth: FeatureLevel = FeatureLevel.not_capable
 
     @property
     def generate_seed_png(self):
@@ -151,6 +159,7 @@ class HardwareSigners:
         usb_preferred=True,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[],
+        bluetooth=FeatureLevel.supported,
     )
     passport = HardwareSigner(
         "passport",
