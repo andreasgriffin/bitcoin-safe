@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Conecta tu firmador de hardwaren2. Haz clic en Escanearn3. Desbloquea el dispositivon4. Selecciona el dispositivo</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Dispositivos detectados</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Escaneo de dispositivo</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Error en el escaneo del dispositivo: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Instalar reglas de udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>No se encontraron dispositivos</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Escanear dispositivos Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Escanear dispositivos USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Buscando firmadores de hardware Bluetooth compatibles.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Seleccionar el dispositivo detectado</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Intenta {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Desbloquea tu firmador de hardware</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>instalar reglas udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>o</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>escanear dispositivos Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>escanear dispositivos USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4031,8 +4114,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Firma USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB y Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4575,18 +4658,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>El escaneo Bluetooth no está disponible en este entorno.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>La compatibilidad con Bluetooth está deshabilitada por la configuración.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Instalar manualmente las reglas de udev</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>No se han encontrado dispositivos USB. Podría deberse a la falta de reglas de udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Ningún dispositivo seleccionado</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4600,11 +4683,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Por favor, desbloquee los dispositivos USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Registrar carteras multisig a través de USB no es compatible con {device_type}. Por favor, use tarjetas sd o escanee el código QR.</translation>
 		</message>
@@ -4612,16 +4690,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>Reiniciar computadora</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositivos USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Desbloquear dispositivos USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4735,6 +4803,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Instalador iniciado. Cerrando Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nueva versión disponible {tag}</translation>
 		</message>
@@ -4745,6 +4818,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>El archivo de actualización seleccionado no existe.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>¡La firma no coincide! Inténtelo de nuevo.</translation>
 		</message>
@@ -4752,6 +4830,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Firma verificada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Firma verificada. Actualización descargada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Actualización aplicada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Actualización aplicada. Reiniciando Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>El archivo de actualización fue verificado pero no se realizó una instalación automática: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5232,11 +5331,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>No se encontraron dispositivos USB</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>No se encontró un emulador de terminal adecuado.</translation>
 		</message>
@@ -5244,11 +5338,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>La parte de la red {network_str} del origen de la clave {key_origin} debe ser endurecida con una h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositivos USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6087,6 +6176,43 @@ Haz clic aquí para saber más.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Aceleración de {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Aplicar actualización</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Abrir carpeta de descargas</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Abrir actualización</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Iniciar instalador</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Actualización verificada. ¿Deseas aplicar la actualización ahora?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Actualización verificada. ¿Deseas abrir el archivo de actualización ahora?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Actualización verificada. ¿Deseas iniciar el instalador ahora?</translation>
 		</message>
 	</context>
 	<context>

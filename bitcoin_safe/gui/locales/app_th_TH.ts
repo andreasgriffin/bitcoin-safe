@@ -922,8 +922,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. เชื่อมต่ออุปกรณ์ลงนามฮาร์ดแวร์ของคุณn2. คลิก สแกนn3. ปลดล็อกอุปกรณ์n4. เลือกอุปกรณ์</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>อุปกรณ์ที่ตรวจพบ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>สแกนอุปกรณ์</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>การสแกนอุปกรณ์ล้มเหลว: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>ติดตั้งกฎ udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>ไม่พบอุปกรณ์</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>สแกนอุปกรณ์ Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>สแกนอุปกรณ์ USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>กำลังสแกนอุปกรณ์ลงนามฮาร์ดแวร์ Bluetooth ที่รองรับ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>เลือกอุปกรณ์ที่ตรวจพบ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>ลอง {actions}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>ปลดล็อกอุปกรณ์ลงนามฮาร์ดแวร์ของคุณ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>ติดตั้งกฎ udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>หรือ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>สแกนอุปกรณ์ Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>สแกนอุปกรณ์ USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3083,13 +3166,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>ถูกแทนที่โดย TxID: {replaced_by_lines}</translation>
+			<translation>  ถูกแทนที่โดย TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3515,7 +3599,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อให้ทราบว่าคุณควบคุมเงินได้ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                      &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากไปยังกระเป๋าเงิน จึงเป็นสิ่ง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่จะต้องทดสอบการใช้จ่ายและผู้ลงนามทั้งหมด                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;อย่าส่งเงินจำนวนมากไปยังกระเป๋าเงินในตอนนี้ โปรดทำการทดสอบ self-send ทั้งหมดให้เสร็จก่อน!&lt;/b&gt;</translation>
+			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อให้ทราบว่าคุณควบคุมเงินได้ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                      &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากไปยังกระเป๋าเงิน จึงเป็นสิ่ง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่จะต้องทดสอบการใช้จ่ายและผู้ลงนามทั้งหมด                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;อย่าส่งเงินจำนวนมากไปยังกระเป๋าเงินในตอนนี้ โปรดทำการทดสอบ self-send ทั้งหมดให้เสร็จก่อน!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4009,8 +4093,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>การลงนามด้วย USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB และ Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4546,18 +4630,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>ไม่สามารถสแกน Bluetooth ได้ในสภาพแวดล้อมนี้</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>การรองรับ Bluetooth ถูกปิดใช้งานโดยการกำหนดค่า</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>ติดตั้งกฎ udev ด้วยตนเอง</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>ไม่พบอุปกรณ์ USB อาจเป็นเพราะไม่มีการติดตั้งกฎ udev</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>ไม่ได้เลือกอุปกรณ์</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4571,11 +4655,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>โปรดปลดล็อกอุปกรณ์ USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>การลงทะเบียนกระเป๋าเงิน multisig ผ่าน USB ไม่ได้รับการสนับสนุนโดย {device_type} โปรดใช้ sd-cards หรือสแกนรหัส QR</translation>
 		</message>
@@ -4583,16 +4662,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>รีสตาร์ทคอมพิวเตอร์</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>อุปกรณ์ USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>ปลดล็อกอุปกรณ์ USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4706,6 +4775,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>ตัวติดตั้งเริ่มทำงาน กำลังปิด Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>เวอร์ชันใหม่ที่พร้อมใช้งาน {tag}</translation>
 		</message>
@@ -4716,6 +4790,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>ไฟล์อัปเดตที่เลือกไม่มีอยู่</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>ลายเซ็นไม่ตรง!!! โปรดลองอีกครั้ง</translation>
 		</message>
@@ -4723,6 +4802,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>ลายเซ็นได้รับการยืนยัน</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>ตรวจสอบลายเซ็นแล้ว ดาวน์โหลดอัปเดตแล้ว</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>ติดตั้งอัปเดตแล้ว</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>ติดตั้งอัปเดตแล้ว กำลังรีสตาร์ท Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>ไฟล์อัปเดตได้รับการตรวจสอบแล้ว แต่ไม่มีการติดตั้งอัตโนมัติ: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5056,7 +5156,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>ธุรกรรมทดสอบ  '{tx_text}'  เสร็จสมบูรณ์เรียบร้อยแล้ว โปรดดำเนินการทดสอบ self-send ต่อไป:  '{next_text}'</translation>
+			<translation>ธุรกรรมทดสอบ  '{tx_text}'  เสร็จสมบูรณ์เรียบร้อยแล้ว โปรดดำเนินการทดสอบ self-send ต่อไป: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5202,11 +5303,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>ไม่พบอุปกรณ์ USB</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>ไม่พบเทอร์มินัลเอมูเลเตอร์ที่เหมาะสม</translation>
 		</message>
@@ -5214,11 +5310,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>ส่วน network {network_str} ของ key origin {key_origin} ต้องเป็น hardened</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>อุปกรณ์ USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6053,6 +6144,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>เร่งความเร็วของ {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>ติดตั้งอัปเดต</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>เปิดโฟลเดอร์ดาวน์โหลด</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>เปิดไฟล์อัปเดต</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>เริ่มตัวติดตั้ง</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>ตรวจสอบอัปเดตแล้ว คุณต้องการติดตั้งอัปเดตตอนนี้หรือไม่?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>ตรวจสอบอัปเดตแล้ว คุณต้องการเปิดไฟล์อัปเดตตอนนี้หรือไม่?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>ตรวจสอบอัปเดตแล้ว คุณต้องการเริ่มตัวติดตั้งตอนนี้หรือไม่?</translation>
 		</message>
 	</context>
 	<context>

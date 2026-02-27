@@ -921,8 +921,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. 하드웨어 서명 장치를 연결하세요n2. 스캔을 클릭하세요n3. 장치를 잠금 해제하세요n4. 장치를 선택하세요</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>감지된 장치</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>장치 스캔</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>장치 스캔 실패: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>udev 규칙 설치</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>장치를 찾을 수 없습니다</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Bluetooth 장치 스캔</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>USB 장치 스캔</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>호환되는 Bluetooth 하드웨어 서명 장치를 검색 중입니다.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>감지된 장치 선택</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions}을(를) 시도하세요.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>하드웨어 서명 장치를 잠금 해제하세요</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>udev 규칙 설치</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>또는</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>Bluetooth 장치 스캔</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>USB 장치 스캔</translation>
 		</message>
 	</context>
 	<context>
@@ -3089,13 +3172,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>다음 TxID로 대체됨: {replaced_by_lines}</translation>
+			<translation>  다음 TxID로 대체됨:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3523,7 +3607,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;</translation>
+			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다. 
+                    &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4018,8 +4104,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>USB 서명</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB 및 Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4557,18 +4643,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>이 환경에서는 Bluetooth 스캔을 사용할 수 없습니다.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>구성에 의해 Bluetooth 지원이 비활성화되었습니다.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>udev 규칙 수동 설치</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB 장치를 찾을 수 없습니다. udev 규칙이 누락되었을 수 있습니다.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>장치가 선택되지 않음</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4582,11 +4668,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>USB 장치를 잠금 해제하세요</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>{device_type}에서는 USB를 통한 멀티시그 지갑 등록을 지원하지 않습니다. SD 카드를 사용하거나 QR 코드를 스캔하세요.</translation>
 		</message>
@@ -4594,16 +4675,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>컴퓨터 재시작</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB 장치</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>USB 장치 잠금 해제</translation>
 		</message>
 	</context>
 	<context>
@@ -4717,6 +4788,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>설치 프로그램이 시작되었습니다. Bitcoin Safe를 종료하는 중...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>새 버전 {tag} 사용 가능</translation>
 		</message>
@@ -4727,6 +4803,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>선택한 업데이트 파일이 존재하지 않습니다.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>서명이 일치하지 않습니다!!! 다시 시도하세요.</translation>
 		</message>
@@ -4734,6 +4815,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>서명이 검증됨.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>서명이 확인되었습니다. 업데이트가 다운로드되었습니다.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>업데이트가 적용되었습니다.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>업데이트가 적용되었습니다. Bitcoin Safe를 다시 시작하는 중...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>업데이트 파일이 확인되었지만 자동 설치는 수행되지 않았습니다: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5067,7 +5169,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오:  '{next_text}'</translation>
+			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5213,11 +5316,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USB 장치를 찾을 수 없음</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>적합한 터미널 에뮬레이터를 찾을 수 없음.</translation>
 		</message>
@@ -5225,11 +5323,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>키 출처 {key_origin}의 네트워크 부분 {network_str}은 h로 강화되어야 합니다</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB 장치</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6066,6 +6159,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>{txid} 가속</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>업데이트 적용</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>다운로드 폴더 열기</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>업데이트 열기</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>설치 프로그램 시작</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>업데이트가 확인되었습니다. 지금 업데이트를 적용하시겠습니까?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>업데이트가 확인되었습니다. 지금 업데이트 파일을 여시겠습니까?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>업데이트가 확인되었습니다. 지금 설치 프로그램을 시작하시겠습니까?</translation>
 		</message>
 	</context>
 	<context>

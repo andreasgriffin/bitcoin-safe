@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. امضاکننده سخت‌افزاری خود را متصل کنیدn2. روی اسکن کلیک کنیدn3. دستگاه را باز کنیدn4. دستگاه را انتخاب کنید</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>دستگاه‌های شناسایی‌شده</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>اسکن دستگاه</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>اسکن دستگاه ناموفق بود: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>قواعد udev را نصب کنید</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>هیچ دستگاهی یافت نشد</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>اسکن دستگاه‌های Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>اسکن دستگاه‌های USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>در حال اسکن امضاکننده‌های سخت‌افزاری Bluetooth سازگار.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>دستگاه شناسایی‌شده را انتخاب کنید</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions} را امتحان کنید.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>امضاکننده سخت‌افزاری خود را باز کنید</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>نصب قوانین udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>یا</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>اسکن دستگاه‌های Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>اسکن دستگاه‌های USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3093,13 +3176,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>جایگزین شده توسط TxID: {replaced_by_lines}</translation>
+			<translation>  جایگزین شده توسط TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3528,7 +3612,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>یک مقدار &lt;b&gt;کم&lt;/b&gt; (کمتر از {test_amount}) را به 1 آدرس این کیف‌پول دریافت کنید.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج کردن از کیف‌پول را آزمایش کنید.                      &lt;br&gt;                     بنابراین قبل از ارسال مقدار قابل توجهی Bitcoin به کیف‌پول، آزمایش خرج کردن و همه امضاکنندگان &lt;b&gt;بسیار مهم&lt;/b&gt; است.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;هنوز مقادیر بزرگ به کیف‌پول ارسال نکنید. لطفاً ابتدا تمام تست‌های self-send را کامل کنید!&lt;/b&gt;</translation>
+			<translation>یک مقدار &lt;b&gt;کم&lt;/b&gt; (کمتر از {test_amount}) را به 1 آدرس این کیف‌پول دریافت کنید.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج کردن از کیف‌پول را آزمایش کنید. 
+                    &lt;br&gt;                     بنابراین قبل از ارسال مقدار قابل توجهی Bitcoin به کیف‌پول، آزمایش خرج کردن و همه امضاکنندگان &lt;b&gt;بسیار مهم&lt;/b&gt; است.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;هنوز مقادیر بزرگ به کیف‌پول ارسال نکنید. لطفاً ابتدا تمام تست‌های self-send را کامل کنید!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4023,8 +4109,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>امضای USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB و Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4566,18 +4652,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>اسکن Bluetooth در این محیط در دسترس نیست.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>پشتیبانی Bluetooth توسط پیکربندی غیرفعال شده است.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>نصب دستی قوانین udev</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>هیچ دستگاه USB یافت نشد. ممکن است به‌خاطر نبود قواعد udev باشد.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>هیچ دستگاهی انتخاب نشد</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4591,11 +4677,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>لطفاً دستگاه‌های USB را قفل‌گشایی کنید</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>ثبت کیف پول‌های چندامضایی از طریق USB توسط {device_type} پشتیبانی نمی‌شود. لطفاً از کارت SD استفاده کنید یا کد QR را اسکن کنید.</translation>
 		</message>
@@ -4603,16 +4684,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>راه‌اندازی مجدد رایانه</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>دستگاه‌های USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>قفل‌گشایی دستگاه‌های USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4726,6 +4797,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>نصب‌کننده شروع شد. در حال بستن Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>نسخهٔ جدید موجود است {tag}</translation>
 		</message>
@@ -4736,6 +4812,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>فایل به‌روزرسانی انتخاب‌شده وجود ندارد.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>امضا مطابقت ندارد!!! لطفاً دوباره تلاش کنید.</translation>
 		</message>
@@ -4743,6 +4824,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>امضا تأیید شد.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>امضا تأیید شد. به‌روزرسانی دانلود شد.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>به‌روزرسانی اعمال شد.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>به‌روزرسانی اعمال شد. در حال راه‌اندازی مجدد Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>فایل به‌روزرسانی تأیید شد اما نصب خودکار انجام نشد: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5076,7 +5178,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>تراکنش آزمایشی  '{tx_text}'  با موفقیت انجام شد. لطفاً تست self-send را ادامه دهید:  '{next_text}'</translation>
+			<translation>تراکنش آزمایشی  '{tx_text}'  با موفقیت انجام شد. لطفاً تست self-send را ادامه دهید: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5222,11 +5325,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>هیچ دستگاه USB یافت نشد</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>شبیه‌ساز ترمینال مناسب پیدا نشد.</translation>
 		</message>
@@ -5234,11 +5332,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>بخش شبکهٔ {network_str} از منشأ کلید {key_origin} باید با عامل h سخت‌سازی شود</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>دستگاه‌های USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6077,6 +6170,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>تسریع تراکنش {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>اعمال به‌روزرسانی</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>باز کردن پوشه دانلود</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>باز کردن به‌روزرسانی</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>شروع نصب‌کننده</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>به‌روزرسانی تأیید شد. آیا می‌خواهید اکنون به‌روزرسانی را اعمال کنید؟</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>به‌روزرسانی تأیید شد. آیا می‌خواهید اکنون فایل به‌روزرسانی را باز کنید؟</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>به‌روزرسانی تأیید شد. آیا می‌خواهید اکنون نصب‌کننده را شروع کنید؟</translation>
 		</message>
 	</context>
 	<context>

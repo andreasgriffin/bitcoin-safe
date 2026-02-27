@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Donanım imzalayıcınızı bağlayınn2. Tara’ya tıklayınn3. Cihazın kilidini açınn4. Cihazı seçin</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Algılanan cihazlar</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Cihaz taraması</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Cihaz taraması başarısız oldu: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>udev kurallarını yükle</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Hiçbir cihaz bulunamadı</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Bluetooth cihazlarını tara</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>USB cihazlarını tara</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Uyumlu Bluetooth donanım imzalayıcıları taranıyor.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Algılanan cihazı seç</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions} deneyin.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Donanım imzalayıcınızın kilidini açın</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>udev kurallarını yükleyin</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>veya</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>Bluetooth cihazlarını tara</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>USB cihazlarını tara</translation>
 		</message>
 	</context>
 	<context>
@@ -3094,13 +3177,14 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Şununla Değiştirildi TxID(ler): {replaced_by_lines}</translation>
+			<translation>  Şununla Değiştirildi TxID(ler):
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,7 +3613,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir.                      &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;</translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir. 
+                    &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4024,8 +4110,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>USB İmzalama</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB ve Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4568,18 +4654,18 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>Bu ortamda Bluetooth taraması mevcut değil.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Bluetooth desteği yapılandırma tarafından devre dışı bırakılmıştır.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>udev kurallarını elle yükle</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB cihazı bulunamadı. udev kurallarının eksik olması nedeniyle olabilir.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Cihaz seçilmedi</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4593,11 +4679,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Lütfen USB cihazlarının kilidini açın</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB üzerinden multisig cüzdan kaydı {device_type} tarafından desteklenmiyor. Lütfen sd-kart veya QR Kod tarayın.</translation>
 		</message>
@@ -4605,16 +4686,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Restart computer</source>
 			<translation>Bilgisayarı yeniden başlat</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB Cihazları</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>USB cihazlarının kilidini aç</translation>
 		</message>
 	</context>
 	<context>
@@ -4728,6 +4799,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Yükleyici başlatıldı. Bitcoin Safe kapatılıyor...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Yeni sürüm mevcut {tag}</translation>
 		</message>
@@ -4738,6 +4814,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>Seçilen güncelleme dosyası mevcut değil.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>İmza eşleşmiyor!!! Lütfen tekrar deneyin.</translation>
 		</message>
@@ -4745,6 +4826,27 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Signature verified.</source>
 			<translation>İmza doğrulandı.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>İmza doğrulandı. Güncelleme indirildi.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Güncelleme uygulandı.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Güncelleme uygulandı. Bitcoin Safe yeniden başlatılıyor...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>Güncelleme dosyası doğrulandı ancak otomatik kurulum yapılmadı: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5078,7 +5180,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin:  '{next_text}'</translation>
+			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5224,11 +5327,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USB cihazı bulunamadı</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Uygun terminal emülatörü bulunamadı.</translation>
 		</message>
@@ -5236,11 +5334,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>{key_origin} anahtar kökeninin {network_str} ağ kısmı h ile sertleştirilmiş olmalıdır</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB Cihazları</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6079,6 +6172,43 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>{txid} hızlandırması</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Güncellemeyi uygula</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>İndirme klasörünü aç</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Güncellemeyi aç</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Yükleyiciyi başlat</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Güncelleme doğrulandı. Güncellemeyi şimdi uygulamak istiyor musunuz?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Güncelleme doğrulandı. Güncelleme dosyasını şimdi açmak istiyor musunuz?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Güncelleme doğrulandı. Yükleyiciyi şimdi başlatmak istiyor musunuz?</translation>
 		</message>
 	</context>
 	<context>
