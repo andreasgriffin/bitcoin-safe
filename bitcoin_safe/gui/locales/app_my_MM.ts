@@ -922,8 +922,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. သင်၏ ဟာ့ဒ်ဝဲ လက်မှတ်ရေးထိုးကိရိယာကို ချိတ်ဆက်ပါn2. စကန်ကို နှိပ်ပါn3. ကိရိယာကို လော့ခ်ဖွင့်ပါn4. ကိရိယာကို ရွေးချယ်ပါ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>တွေ့ရှိထားသော ကိရိယာများ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>ကိရိယာ စကန်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>ကိရိယာ စကန် မအောင်မြင်ပါ: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>udev စည်းမျဉ်းများ ထည့်သွင်းပါ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>ကိရိယာ မတွေ့ရှိပါ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Bluetooth ကိရိယာများ စကန်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>USB ကိရိယာများ စကန်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>ကိုက်ညီသော Bluetooth ဟာ့ဒ်ဝဲ လက်မှတ်ရေးထိုးကိရိယာများကို စကန်လုပ်နေသည်။</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>ယုံကြည်ရန်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions} ကို စမ်းကြည့်ပါ။</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>သင်၏ ဟာ့ဒ်ဝဲ လက်မှတ်ရေးထိုးကိရိယာကို လော့ခ်ဖွင့်ပါ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>udev စည်းမျဉ်းများ ထည့်သွင်းပါ</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>သို့မဟုတ်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>Bluetooth ကိရိယာများ စကန်</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>USB ကိရိယာများ စကန်</translation>
 		</message>
 	</context>
 	<context>
@@ -3081,13 +3164,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>TxID ဖြင့် အစားထိုးခဲ့သည်: {replaced_by_lines}</translation>
+			<translation>  TxID ဖြင့် အစားထိုးခဲ့သည်:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3513,7 +3597,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;</translation>
+			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4007,8 +4091,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>USB ဖြင့် လက်မှတ်ထိုးခြင်း</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB နှင့် Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4544,18 +4628,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>ဤပတ်ဝန်းကျင်တွင် Bluetooth စကန် မရရှိနိုင်ပါ။</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Bluetooth ပံ့ပိုးမှုကို ဖွဲ့စည်းမှုမှ ပိတ်ထားသည်။</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>udev စည်းမျဉ်းများကို ကိုယ်တိုင် ထည့်သွင်းရန်</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB စက်ပစ္စည်း မတွေ့ပါ။ udev စည်းမျဉ်းများ မရှိခြင်းကြောင့် ဖြစ်နိုင်ပါသည်။</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>ကိရိယာမရွေးရသေးပါ</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4569,11 +4653,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>USB ကိရိယာများကိုဖွင့်ပါ</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>{device_type} မှတဆင့် multisig ပိုက်ဆံအိတ်များကို USB မှတဆင့်မှတ်ပုံတင်ရန်မ</translation>
 		</message>
@@ -4581,16 +4660,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>ကွန်ပျူတာပြန်စတင်ပါ</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB ကိရိယာများ</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>USB ကိရိယာများဖွင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -4704,6 +4773,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Installer စတင်ခဲ့သည်။ Bitcoin Safe ကို ပိတ်နေသည်...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>နယူးဗားရှင်းအသစ် {tag} ရှိပါတယ်</translation>
 		</message>
@@ -4714,6 +4788,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>ရွေးချယ်ထားသော အပ်ဒိတ်ဖိုင် မရှိပါ။</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>လက်မှတ်မကိုက်ညီပါ!!! နောက်တစ်ခါထပ်လုပ်ပါ။</translation>
 		</message>
@@ -4721,6 +4800,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>လက်မှတ်အတည်ပြုပြီးပါပြီ။</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>လက်မှတ် စစ်ဆေးပြီးပါပြီ။ အပ်ဒိတ် ဒေါင်းလုဒ်လုပ်ပြီးပါပြီ။</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>အပ်ဒိတ် လုပ်ဆောင်ပြီးပါပြီ။</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>အပ်ဒိတ် လုပ်ဆောင်ပြီးပါပြီ။ Bitcoin Safe ကို ပြန်လည်စတင်နေသည်...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>အပ်ဒိတ်ဖိုင်ကို စစ်ဆေးပြီးဖြစ်သော်လည်း အလိုအလျောက် တင်သွင်းမှု မပြုလုပ်ခဲ့ပါ: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5054,7 +5154,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ:  '{next_text}'</translation>
+			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5200,11 +5301,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USB ကိရိယာများမတွေ့ပါ။</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>သင့်စနစ်တွင်သင့်တော်သောမင်္ဂလာပြုစနစ်မရှိပါ။</translation>
 		</message>
@@ -5212,11 +5308,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>{key_origin} ၏ ကွန်ယက်ပိုင်း {network_str} သည် h ဖြင့်မာကျောခိုင်မြဲစေရမည်။</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB ကိရိယာများ</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6051,6 +6142,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>{txid} အတွက် အရှိန်မြှင့်ခြင်း</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>အပ်ဒိတ် လုပ်ဆောင်ပါ</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>ဒေါင်းလုဒ် ဖိုလ်ဒါ ဖွင့်ပါ</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>အပ်ဒိတ် ဖွင့်ပါ</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Installer စတင်ပါ</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>အပ်ဒိတ် စစ်ဆေးပြီးပါပြီ။ ယခု အပ်ဒိတ် လုပ်ဆောင်လိုပါသလား?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>အပ်ဒိတ် စစ်ဆေးပြီးပါပြီ။ ယခု အပ်ဒိတ်ဖိုင်ကို ဖွင့်လိုပါသလား?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>အပ်ဒိတ် စစ်ဆေးပြီးပါပြီ။ ယခု Installer ကို စတင်လိုပါသလား?</translation>
 		</message>
 	</context>
 	<context>

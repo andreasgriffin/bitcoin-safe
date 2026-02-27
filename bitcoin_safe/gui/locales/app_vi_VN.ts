@@ -500,7 +500,7 @@
 		<name>CBFProgressBar</name>
 		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
-			<translation>{percent}% - Hoàn tất {remaining_time}</translation>
+			<translation>{percent}% - Hoàn tất trong {remaining_time}</translation>
 		</message>
 	</context>
 	<context>
@@ -917,14 +917,98 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-			<translation>Trong khi quét blockchain, ví sẽ tạo thêm địa chỉ để phát hiện giao dịch Mặc định 20</translation>
+			<translation>Trong khi quét blockchain, ví sẽ tạo thêm địa chỉ để phát hiện giao dịch
+Mặc định 20</translation>
 		</message>
 	</context>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Kết nối thiết bị ký phần cứng của bạnn2. Nhấp vào Quétn3. Mở khóa thiết bịn4. Chọn thiết bị</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Thiết bị đã phát hiện</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Quét thiết bị</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Quét thiết bị thất bại: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Cài đặt quy tắc udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Không tìm thấy thiết bị</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Quét thiết bị Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Quét thiết bị USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Đang quét các thiết bị ký phần cứng Bluetooth tương thích.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Chọn thiết bị được phát hiện</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Hãy thử {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Mở khóa thiết bị ký phần cứng của bạn</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>cài đặt quy tắc udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>hoặc</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>quét thiết bị Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>quét thiết bị USB</translation>
 		</message>
 	</context>
 	<context>
@@ -1679,7 +1763,7 @@ Bạn có muốn tiếp tục không?</translation>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Proceed anyway</source>
-			<translation>Tiếp tục dù vậy</translation>
+			<translation>Vẫn tiếp tục</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2063,7 +2147,7 @@ Bạn có muốn tiếp tục không?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Close anyway</source>
-			<translation>Đóng dù vậy</translation>
+			<translation>Vẫn đóng</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2203,7 +2287,7 @@ Bạn có muốn tiếp tục không?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Open anyway</source>
-			<translation>Mở dù vậy</translation>
+			<translation>Vẫn mở</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2747,7 +2831,7 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>Ví đa chữ ký 2 trên 3</translation>
+			<translation>2 trên 3 ví đa chữ ký</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3186,7 +3270,7 @@ Bạn có muốn quét lại ví với gap limit tăng lên {new_gap} không</tr
 		<name>QTWallet</name>
 		<message>
 			<source>Cannot move the wallet file, because {file_path} exists</source>
-			<translation>Không thể di chuyển tệp ví, vì {file_path} tồn tại</translation>
+			<translation>Không thể di chuyển tệp ví, vì tệp {file_path} đã tồn tại</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4024,8 +4108,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Ký qua USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB và Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4566,18 +4650,18 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>Không thể quét Bluetooth trong môi trường này.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Hỗ trợ Bluetooth đã bị vô hiệu hóa bởi cấu hình.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Cài đặt quy tắc udev thủ công</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Không tìm thấy thiết bị USB. Có thể do thiếu quy tắc udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Chưa chọn thiết bị</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4591,11 +4675,6 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Vui lòng mở khóa thiết bị USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Đăng ký ví multisig qua USB không được {device_type} hỗ trợ. Vui lòng dùng thẻ SD hoặc quét mã QR.</translation>
 		</message>
@@ -4603,16 +4682,6 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Restart computer</source>
 			<translation>Khởi động lại máy tính</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Thiết bị USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Mở khóa thiết bị USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4726,6 +4795,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Trình cài đặt đã khởi động. Đang đóng Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Có phiên bản mới {tag}</translation>
 		</message>
@@ -4736,6 +4810,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>Tệp cập nhật đã chọn không tồn tại.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>Chữ ký không khớp!!! Vui lòng thử lại.</translation>
 		</message>
@@ -4743,6 +4822,27 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Signature verified.</source>
 			<translation>Đã xác minh chữ ký.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Chữ ký đã được xác minh. Đã tải xuống bản cập nhật.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Đã áp dụng bản cập nhật.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Đã áp dụng bản cập nhật. Đang khởi động lại Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>Tệp cập nhật đã được xác minh nhưng không thực hiện cài đặt tự động: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -4822,7 +4922,7 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
-			<translation>Kéo để khám phá dòng thời gian. Nhấp hoặc nhấp chuột phải một giao dịch, txid, hoặc UTXO để xem tùy chọn.</translation>
+			<translation>Kéo để khám phá dòng thời gian. Nhấp chuột trái hoặc phải vào một giao dịch, txid, hoặc UTXO để xem tùy chọn.</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
@@ -5222,11 +5322,6 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>Không tìm thấy thiết bị USB</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Không tìm thấy trình giả lập terminal phù hợp.</translation>
 		</message>
@@ -5234,11 +5329,6 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>Phần mạng {network_str} của nguồn gốc khóa {key_origin} phải được hardened bằng ký tự h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Thiết bị USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6075,6 +6165,43 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Tăng tốc {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Áp dụng cập nhật</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Mở thư mục tải xuống</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Mở bản cập nhật</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Bắt đầu trình cài đặt</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Bản cập nhật đã được xác minh. Bạn có muốn áp dụng cập nhật ngay bây giờ không?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Bản cập nhật đã được xác minh. Bạn có muốn mở tệp cập nhật ngay bây giờ không?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Bản cập nhật đã được xác minh. Bạn có muốn bắt đầu trình cài đặt ngay bây giờ không?</translation>
 		</message>
 	</context>
 	<context>

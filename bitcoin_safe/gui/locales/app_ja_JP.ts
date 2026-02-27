@@ -922,8 +922,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. ハードウェア署名デバイスを接続してくださいn2. スキャンをクリックn3. デバイスをロック解除n4. デバイスを選択</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>検出されたデバイス</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>デバイススキャン</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>デバイススキャンに失敗しました: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>udevルールをインストール</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>デバイスが見つかりません</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Bluetoothデバイスをスキャン</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>USBデバイスをスキャン</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>互換性のあるBluetoothハードウェア署名デバイスをスキャン中です。</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>検出されたデバイスを選択する</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions} を試してください。</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>ハードウェア署名デバイスをロック解除してください</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>udevルールをインストール</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>または</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>Bluetoothデバイスをスキャン</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>USBデバイスをスキャン</translation>
 		</message>
 	</context>
 	<context>
@@ -3080,13 +3163,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>次の TxID によって置き換えられました: {replaced_by_lines}</translation>
+			<translation>  次の TxID によって置き換えられました:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3513,7 +3597,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>このウォレットの 1 つのアドレスに &lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金を管理していることを確認するには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、ウォレットに多額の Bitcoin を送信する前に、支出とすべての署名者のテストを行うことが&lt;b&gt;非常に重要です&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだウォレットに多額の資金を送信しないでください。まずすべての Self-Send テストを完了してください！&lt;/b&gt;</translation>
+			<translation>このウォレットの 1 つのアドレスに &lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金を管理していることを確認するには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、ウォレットに多額の Bitcoin を送信する前に、支出とすべての署名者のテストを行うことが&lt;b&gt;非常に重要です&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだウォレットに多額の資金を送信しないでください。まずすべての Self-Send テストを完了してください！&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4007,8 +4091,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>USB署名</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USBとBluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4543,18 +4627,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>この環境ではBluetoothスキャンは利用できません。</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Bluetoothサポートは設定により無効化されています。</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>udev ルールを手動でインストール</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USBデバイスが見つかりません。udevルールが欠如している可能性があります。</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>デバイスが選択されていません</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4568,11 +4652,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>USBデバイスをアンロックしてください</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB 経由でのマルチシグウォレットの登録は {device_type} によってサポートされていません。sdカードを使用するか、QR コードをスキャンしてください。</translation>
 		</message>
@@ -4580,16 +4659,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>コンピュータを再起動する</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USBデバイス</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>USBデバイスをアンロックする</translation>
 		</message>
 	</context>
 	<context>
@@ -4703,6 +4772,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>インストーラーを開始しました。Bitcoin Safeを終了しています...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>新しいバージョンが利用可能{tag}</translation>
 		</message>
@@ -4713,6 +4787,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>選択したアップデートファイルは存在しません。</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>署名が一致しません!!! もう一度お試しください。</translation>
 		</message>
@@ -4720,6 +4799,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>署名が確認されました。</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>署名を確認しました。アップデートをダウンロードしました。</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>アップデートを適用しました。</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>アップデートを適用しました。Bitcoin Safeを再起動しています...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>アップデートファイルは検証されましたが、自動インストールは実行されませんでした: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5053,7 +5153,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>テストトランザクション  '{tx_text}'  は正常に完了しました。Self-Send テストを続行してください:  '{next_text}'</translation>
+			<translation>テストトランザクション  '{tx_text}'  は正常に完了しました。Self-Send テストを続行してください: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5199,11 +5300,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USBデバイスが見つかりません</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>適切なターミナルエミュレータが見つかりませんでした。</translation>
 		</message>
@@ -5211,11 +5307,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>キーの起源{key_origin}のネットワーク部分{network_str}はhで硬化する必要があります</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USBデバイス</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6049,6 +6140,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>{txid} の高速化</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>アップデートを適用</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>ダウンロードフォルダを開く</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>アップデートを開く</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>インストーラーを開始</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>アップデートが検証されました。今すぐ適用しますか？</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>アップデートが検証されました。今すぐアップデートファイルを開きますか？</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>アップデートが検証されました。今すぐインストーラーを開始しますか？</translation>
 		</message>
 	</context>
 	<context>

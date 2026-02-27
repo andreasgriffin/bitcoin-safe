@@ -923,8 +923,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Connectez votre dispositif de signature matérieln2. Cliquez sur Scannern3. Déverrouillez l’appareiln4. Sélectionnez l’appareil</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Appareils détectés</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Analyse de l’appareil</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Échec de l’analyse de l’appareil : {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Installez les règles udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Aucun appareil trouvé</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Scanner les appareils Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Scanner les appareils USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Recherche de dispositifs de signature matériel Bluetooth compatibles.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Sélectionnez l'appareil détecté</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Essayez de {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Déverrouillez votre dispositif de signature matériel</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>installer les règles udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>ou</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>scanner les appareils Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>scanner les appareils USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3093,13 +3176,14 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Remplacé par TxID : {replaced_by_lines}</translation>
+			<translation>  Remplacé par TxID :
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3528,7 +3612,9 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille.                      &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;</translation>
+			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. 
+                    &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4023,8 +4109,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Signature USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB et Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4567,18 +4653,18 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>La recherche Bluetooth n’est pas disponible dans cet environnement.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>La prise en charge Bluetooth est désactivée par la configuration.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Installer manuellement les règles udev</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Aucun périphérique USB trouvé. Cela peut être dû à l’absence des règles udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Aucun appareil sélectionné</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4592,11 +4678,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Veuillez déverrouiller les appareils USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>L'enregistrement de portefeuilles multisig via USB n'est pas pris en charge par {device_type}. Veuillez utiliser des cartes SD ou scanner le code QR.</translation>
 		</message>
@@ -4604,16 +4685,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Redémarrer l'ordinateur</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Appareils USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Déverrouiller les appareils USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4727,6 +4798,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Installateur démarré. Fermeture de Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nouvelle version disponible {tag}</translation>
 		</message>
@@ -4737,6 +4813,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>Le fichier de mise à jour sélectionné n’existe pas.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>La signature ne correspond pas !!! Veuillez réessayer.</translation>
 		</message>
@@ -4744,6 +4825,27 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Signature vérifiée.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Signature vérifiée. Mise à jour téléchargée.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Mise à jour appliquée.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Mise à jour appliquée. Redémarrage de Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>Le fichier de mise à jour a été vérifié mais aucune installation automatique n’a été effectuée : {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5077,7 +5179,8 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi :  '{next_text}'</translation>
+			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi : 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5223,11 +5326,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>Aucun appareil USB trouvé</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Aucun émulateur de terminal adapté trouvé.</translation>
 		</message>
@@ -5235,11 +5333,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>La partie réseau {network_str} de l'origine de la clé {key_origin} doit être renforcée avec un h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Appareils USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6078,6 +6171,43 @@ Cliquez ici pour en savoir plus.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Accélération de {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Appliquer la mise à jour</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Ouvrir le dossier de téléchargement</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Ouvrir la mise à jour</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Démarrer l’installateur</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Mise à jour vérifiée. Voulez-vous appliquer la mise à jour maintenant ?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Mise à jour vérifiée. Voulez-vous ouvrir le fichier de mise à jour maintenant ?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Mise à jour vérifiée. Voulez-vous démarrer l’installateur maintenant ?</translation>
 		</message>
 	</context>
 	<context>

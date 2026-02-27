@@ -922,8 +922,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. अपने हार्डवेयर साइनर को कनेक्ट करेंn2. स्कैन पर क्लिक करेंn3. डिवाइस अनलॉक करेंn4. डिवाइस चुनें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>पता लगाए गए डिवाइस</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>डिवाइस स्कैन</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>डिवाइस स्कैन विफल: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>udev नियम इंस्टॉल करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>कोई डिवाइस नहीं मिला</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Bluetooth डिवाइस स्कैन करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>USB डिवाइस स्कैन करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>संगत Bluetooth हार्डवेयर साइनर खोजे जा रहे हैं।</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>पता लगाए गए उपकरण का चयन करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>{actions} का प्रयास करें।</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>अपने हार्डवेयर साइनर को अनलॉक करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>udev नियम इंस्टॉल करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>या</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>Bluetooth डिवाइस स्कैन करें</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>USB डिवाइस स्कैन करें</translation>
 		</message>
 	</context>
 	<context>
@@ -3084,13 +3167,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>निम्न TxID द्वारा प्रतिस्थापित: {replaced_by_lines}</translation>
+			<translation>  निम्न TxID द्वारा प्रतिस्थापित:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3516,7 +3600,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, खर्च का परीक्षण करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी बड़ी राशि वॉलेट में न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;</translation>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, खर्च का परीक्षण करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी बड़ी राशि वॉलेट में न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4010,8 +4094,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>USB हस्ताक्षर</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB और Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4548,18 +4632,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>इस वातावरण में Bluetooth स्कैन उपलब्ध नहीं है।</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>कॉन्फ़िगरेशन द्वारा Bluetooth समर्थन अक्षम है।</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>udev नियमों को मैन्युअल रूप से इंस्टॉल करें</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>कोई USB उपकरण नहीं मिला। यह udev नियमों की कमी के कारण हो सकता है।</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>कोई उपकरण चयनित नहीं</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4573,11 +4657,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>कृपया यूएसबी उपकरणों को अनलॉक करें</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB के माध्यम से मल्टीसिग वॉलेट्स का पंजीकरण {device_type} द्वारा समर्थित नहीं है। कृपया sd-कार्ड्स का उपयोग करें या QR कोड स्कैन करें।</translation>
 		</message>
@@ -4585,16 +4664,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>कंप्यूटर पुनरारंभ करें</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB उपकरण</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>यूएसबी उपकरणों को अनलॉक करें</translation>
 		</message>
 	</context>
 	<context>
@@ -4708,6 +4777,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>इंस्टॉलर शुरू हुआ। Bitcoin Safe बंद किया जा रहा है...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>नया संस्करण उपलब्ध {tag}</translation>
 		</message>
@@ -4718,6 +4792,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>चयनित अपडेट फ़ाइल मौजूद नहीं है।</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>हस्ताक्षर मेल नहीं खाता!!! कृपया पुनः प्रयास करें।</translation>
 		</message>
@@ -4725,6 +4804,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>हस्ताक्षर सत्यापित हुआ।</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>हस्ताक्षर सत्यापित। अपडेट डाउनलोड किया गया।</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>अपडेट लागू किया गया।</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>अपडेट लागू किया गया। Bitcoin Safe पुनः प्रारंभ हो रहा है...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>अपडेट फ़ाइल सत्यापित हुई लेकिन स्वचालित इंस्टॉल नहीं किया गया: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5058,7 +5158,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें:  '{next_text}'</translation>
+			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5204,11 +5305,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USB उपकरण नहीं मिले</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>कोई उपयुक्त टर्मिनल एमुलेटर नहीं मिला।</translation>
 		</message>
@@ -5216,11 +5312,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>कुंजी मूल {key_origin} के नेटवर्क भाग {network_str} को h के साथ कठोर किया जाना चाहिए</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB उपकरण</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6055,6 +6146,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>{txid} का स्पीडअप</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>अपडेट लागू करें</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>डाउनलोड फ़ोल्डर खोलें</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>अपडेट खोलें</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>इंस्टॉलर प्रारंभ करें</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>अपडेट सत्यापित। क्या आप अभी अपडेट लागू करना चाहते हैं?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>अपडेट सत्यापित। क्या आप अभी अपडेट फ़ाइल खोलना चाहते हैं?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>अपडेट सत्यापित। क्या आप अभी इंस्टॉलर शुरू करना चाहते हैं?</translation>
 		</message>
 	</context>
 	<context>

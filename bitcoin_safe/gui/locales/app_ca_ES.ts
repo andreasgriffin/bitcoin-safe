@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Connecteu el vostre dispositiu signador de maquinarin2. Feu clic a Escanejan3. Desbloquegeu el dispositiun4. Seleccioneu el dispositiu</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Dispositius detectats</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Escaneig de dispositiu</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Error en l’escaneig del dispositiu: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Instal·la les regles udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>No s’ha trobat cap dispositiu</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Escaneja dispositius Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Escaneja dispositius USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>S’estan cercant dispositius signadors de maquinari Bluetooth compatibles.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Selecciona el dispositiu detectat</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Proveu {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Desbloquegeu el vostre dispositiu signador de maquinari</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>instal·lar regles udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>o</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>escaneja dispositius Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>escaneja dispositius USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3094,13 +3177,14 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Substituïda per TxID: {replaced_by_lines}</translation>
+			<translation>  Substituïda per TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,7 +3613,9 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera.                      &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; provar l'enviament i tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;</translation>
+			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera. 
+                    &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; provar l'enviament i tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4024,8 +4110,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Signatura USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB i Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4568,18 +4654,18 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>L’escaneig Bluetooth no està disponible en aquest entorn.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>El suport Bluetooth està desactivat per la configuració.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Instal·lar manualment les regles d'udev</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Cap dispositiu USB trobat. Pot ser degut a la manca de regles udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Cap dispositiu seleccionat</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4593,11 +4679,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Desbloqueja dispositius USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>El registre de carteres multisignatura via USB no és compatible amb {device_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
 		</message>
@@ -4605,16 +4686,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Reinicia ordinador</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositius USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Desbloca dispositius USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4728,6 +4799,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Instal·lador iniciat. Tancant Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nova versió disponible {tag}</translation>
 		</message>
@@ -4738,6 +4814,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>El fitxer d’actualització seleccionat no existeix.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>La signatura no coincideix!!! Torna-ho a intentar.</translation>
 		</message>
@@ -4745,6 +4826,27 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Signatura verificada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Signatura verificada. Actualització descarregada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Actualització aplicada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Actualització aplicada. Reiniciant Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>El fitxer d’actualització s’ha verificat però no s’ha fet cap instal·lació automàtica: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5078,7 +5180,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament:  '{next_text}'</translation>
+			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5224,11 +5327,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>No s'han trobat dispositius USB</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>No s'ha trobat un emulador de terminal adequat.</translation>
 		</message>
@@ -5236,11 +5334,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>La part de xarxa {network_str} de l'origen de clau {key_origin} ha d'estar protegida amb una h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositius USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6079,6 +6172,43 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Acceleració de {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Aplica l’actualització</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Obre la carpeta de descàrregues</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Obre l’actualització</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Inicia l’instal·lador</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Actualització verificada. Voleu aplicar l’actualització ara?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Actualització verificada. Voleu obrir el fitxer d’actualització ara?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Actualització verificada. Voleu iniciar l’instal·lador ara?</translation>
 		</message>
 	</context>
 	<context>

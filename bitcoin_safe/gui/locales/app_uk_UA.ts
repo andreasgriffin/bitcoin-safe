@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Підключіть ваш апаратний підписувачn2. Натисніть Скануватиn3. Розблокуйте пристрійn4. Виберіть пристрій</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Виявлені пристрої</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Сканування пристрою</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Помилка сканування пристрою: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Встановити правила udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Пристрої не знайдено</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Сканувати пристрої Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Сканувати пристрої USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Пошук сумісних апаратних підписувачів Bluetooth.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Виберіть виявлений пристрій</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Спробуйте {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Розблокуйте ваш апаратний підписувач</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>встановити правила udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>або</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>сканувати пристрої Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>сканувати пристрої USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3094,13 +3177,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Замінено TxID: {replaced_by_lines}</translation>
+			<translation>  Замінено TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,7 +3613,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше {test_amount}) на 1 адресу цього гаманця.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt;                     Щоб переконатися, що ви контролюєте кошти, потрібно протестувати витрати з гаманця.                      &lt;br&gt;                     Тому перед надсиланням значної кількості Bitcoin у гаманець &lt;b&gt;критично важливо&lt;/b&gt; протестувати витрати і всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки НЕ надсилайте великі суми в гаманець. Спочатку завершіть усі тести self-send!&lt;/b&gt;</translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше {test_amount}) на 1 адресу цього гаманця.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt;                     Щоб переконатися, що ви контролюєте кошти, потрібно протестувати витрати з гаманця. 
+                    &lt;br&gt;                     Тому перед надсиланням значної кількості Bitcoin у гаманець &lt;b&gt;критично важливо&lt;/b&gt; протестувати витрати і всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки НЕ надсилайте великі суми в гаманець. Спочатку завершіть усі тести self-send!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4024,8 +4110,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Підписання через USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB і Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4568,18 +4654,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>Сканування Bluetooth недоступне в цьому середовищі.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Підтримку Bluetooth вимкнено конфігурацією.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Встановити правила udev вручну</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>USB-пристрої не знайдено. Це може бути через відсутні правила udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Пристрій не вибрано</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4593,11 +4679,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Будь ласка, розблокуйте USB-пристрої</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Реєстрація мультисиг-гаманців через USB не підтримується {device_type}. Будь ласка, використайте SD-карти або скануйте QR-код.</translation>
 		</message>
@@ -4605,16 +4686,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>Перезавантажити комп’ютер</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB-пристрої</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Розблокувати USB-пристрої</translation>
 		</message>
 	</context>
 	<context>
@@ -4728,6 +4799,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Інсталятор запущено. Закриття Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Доступна нова версія {tag}</translation>
 		</message>
@@ -4738,6 +4814,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>Вибраний файл оновлення не існує.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>Підпис не збігається!!! Будь ласка, спробуйте ще раз.</translation>
 		</message>
@@ -4745,6 +4826,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Підпис перевірено.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Підпис перевірено. Оновлення завантажено.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Оновлення застосовано.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Оновлення застосовано. Перезапуск Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>Файл оновлення перевірено, але автоматичне встановлення не виконано: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5078,7 +5180,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Тестова транзакція  '{tx_text}'  успішно виконана. Будь ласка, продовжуйте тест self-send:  '{next_text}'</translation>
+			<translation>Тестова транзакція  '{tx_text}'  успішно виконана. Будь ласка, продовжуйте тест self-send: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5224,11 +5327,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>USB-пристроїв не знайдено</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Не знайдено відповідного емулятора термінала.</translation>
 		</message>
@@ -5236,11 +5334,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>Мережева частина {network_str} походження ключа {key_origin} має бути загартована літерою h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>USB-пристрої</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6079,6 +6172,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Прискорення {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Застосувати оновлення</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Відкрити папку завантажень</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Відкрити оновлення</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Запустити інсталятор</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Оновлення перевірено. Застосувати оновлення зараз?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Оновлення перевірено. Відкрити файл оновлення зараз?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Оновлення перевірено. Запустити інсталятор зараз?</translation>
 		</message>
 	</context>
 	<context>

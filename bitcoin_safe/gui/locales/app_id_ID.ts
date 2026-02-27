@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Hubungkan penandatangan perangkat keras Andan2. Klik Pindain3. Buka kunci perangkatn4. Pilih perangkat</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Perangkat terdeteksi</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Pemindaian perangkat</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Pemindaian perangkat gagal: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Pasang aturan udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Tidak ada perangkat ditemukan</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Pindai perangkat Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Pindai perangkat USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Memindai penandatangan perangkat keras Bluetooth yang kompatibel.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Pilih perangkat yang terdeteksi</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Coba {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Buka kunci penandatangan perangkat keras Anda</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>instal aturan udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>atau</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>pindai perangkat Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>pindai perangkat USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3093,13 +3176,14 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Digantikan Oleh TxID: {replaced_by_lines}</translation>
+			<translation>  Digantikan Oleh TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3528,7 +3612,9 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.                      &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;</translation>
+			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. 
+                    &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4023,8 +4109,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Penandatanganan USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB dan Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4567,18 +4653,18 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>Pemindaian Bluetooth tidak tersedia di lingkungan ini.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>Dukungan Bluetooth dinonaktifkan oleh konfigurasi.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Pasang aturan udev secara manual</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Tidak ada perangkat USB yang ditemukan. Mungkin karena aturan udev hilang.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Tidak ada perangkat yang dipilih</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4592,11 +4678,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Harap buka kunci perangkat USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Mendaftarkan dompet multisig melalui USB tidak didukung oleh {device_type}. Harap gunakan kartu sd atau pindai Kode QR.</translation>
 		</message>
@@ -4604,16 +4685,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Mulai ulang komputer</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Perangkat USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Buka kunci perangkat USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4727,6 +4798,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Penginstal dimulai. Menutup Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Versi baru tersedia {tag}</translation>
 		</message>
@@ -4737,6 +4813,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>File pembaruan yang dipilih tidak ada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>Tanda tangan tidak cocok!!! Harap coba lagi.</translation>
 		</message>
@@ -4744,6 +4825,27 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Tanda tangan terverifikasi.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Tanda tangan terverifikasi. Pembaruan diunduh.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Pembaruan diterapkan.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Pembaruan diterapkan. Memulai ulang Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>File pembaruan telah diverifikasi tetapi tidak dilakukan instalasi otomatis: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5077,7 +5179,8 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send:  '{next_text}'</translation>
+			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5223,11 +5326,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>Tidak ada perangkat USB yang ditemukan</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Tidak ada emulator terminal yang sesuai ditemukan.</translation>
 		</message>
@@ -5235,11 +5333,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>Bagian jaringan {network_str} dari asal kunci {key_origin} harus dibuat hardened dengan h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Perangkat USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6078,6 +6171,43 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Percepatan dari {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Terapkan pembaruan</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Buka folder unduhan</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Buka pembaruan</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Mulai penginstal</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Pembaruan terverifikasi. Apakah Anda ingin menerapkan pembaruan sekarang?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Pembaruan terverifikasi. Apakah Anda ingin membuka file pembaruan sekarang?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Pembaruan terverifikasi. Apakah Anda ingin memulai penginstal sekarang?</translation>
 		</message>
 	</context>
 	<context>

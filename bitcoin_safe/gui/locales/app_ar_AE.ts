@@ -923,8 +923,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. قم بتوصيل جهاز التوقيع المادي الخاص بكn2. انقر على فحصn3. افتح قفل الجهازn4. اختر الجهاز</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>الأجهزة المكتشفة</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>فحص الجهاز</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>فشل فحص الجهاز: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>تثبيت قواعد udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>لم يتم العثور على أجهزة</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>فحص أجهزة Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>فحص أجهزة USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>جارٍ البحث عن أجهزة توقيع مادية متوافقة عبر Bluetooth.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>اختر الجهاز المكتشف</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>حاول {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>افتح قفل جهاز التوقيع المادي الخاص بك</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>تثبيت قواعد udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>أو</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>فحص أجهزة Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>فحص أجهزة USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3093,13 +3176,14 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>تم الاستبدال بواسطة TxID: {replaced_by_lines}</translation>
+			<translation>  تم الاستبدال بواسطة TxID:
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3528,7 +3612,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة.                      &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق وجميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;</translation>
+			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد في هذه المحفظة.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt;                     لمعرفة ما إذا كنت تتحكم في الأموال، يجب عليك اختبار الإنفاق من المحفظة. 
+                    &lt;br&gt;                     لذلك قبل إرسال مبلغ كبير من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; اختبار الإنفاق وجميع أجهزة التوقيع.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;لا ترسل مبالغ كبيرة إلى المحفظة بعد. يرجى إكمال جميع اختبارات الإرسال الذاتي أولاً!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4023,8 +4109,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>توقيع USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB وBluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4563,18 +4649,18 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>فحص Bluetooth غير متاح في هذه البيئة.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>دعم Bluetooth معطل بواسطة الإعدادات.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>تثبيت قواعد udev يدويًا</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>لم يتم العثور على أجهزة USB. قد يكون ذلك بسبب غياب قواعد udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>لم يتم اختيار جهاز</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4588,11 +4674,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>يرجى إلغاء قفل أجهزة USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>تسجيل محافظ متعددة التوقيعات عبر USB غير مدعوم بواسطة {device_type}. يرجى استخدام بطاقات sd أو مسح رمز ال QR.</translation>
 		</message>
@@ -4600,16 +4681,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Restart computer</source>
 			<translation>إعادة تشغيل الكمبيوتر</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>أجهزة USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>إلغاء قفل أجهزة USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4723,6 +4794,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>تم بدء برنامج التثبيت. يتم إغلاق Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>الإصدار الجديد متاح {tag}</translation>
 		</message>
@@ -4733,6 +4809,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>ملف التحديث المحدد غير موجود.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>التوقيع غير مطابق!!! يرجى المحاولة مرة أخرى.</translation>
 		</message>
@@ -4740,6 +4821,27 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Signature verified.</source>
 			<translation>تم التحقق من التوقيع.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>تم التحقق من التوقيع. تم تنزيل التحديث.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>تم تطبيق التحديث.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>تم تطبيق التحديث. جارٍ إعادة تشغيل Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>تم التحقق من ملف التحديث ولكن لم يتم إجراء تثبيت تلقائي: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5073,7 +5175,8 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى متابعة اختبار الإرسال الذاتي:  '{next_text}'</translation>
+			<translation>تم تنفيذ معاملة الاختبار  '{tx_text}'  بنجاح. يرجى متابعة اختبار الإرسال الذاتي: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5219,11 +5322,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>لم يتم العثور على أجهزة USB</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>لم يتم العثور على محاكي طرفية مناسب.</translation>
 		</message>
@@ -5231,11 +5329,6 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>أجهزة USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6072,6 +6165,43 @@ Click here to learn more.</source>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>تسريع المعاملة {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>تطبيق التحديث</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>فتح مجلد التنزيل</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>فتح التحديث</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>بدء برنامج التثبيت</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>تم التحقق من التحديث. هل تريد تطبيق التحديث الآن؟</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>تم التحقق من التحديث. هل تريد فتح ملف التحديث الآن؟</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>تم التحقق من التحديث. هل تريد بدء برنامج التثبيت الآن؟</translation>
 		</message>
 	</context>
 	<context>

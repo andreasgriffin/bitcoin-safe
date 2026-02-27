@@ -924,8 +924,91 @@ Default 20</source>
 	<context>
 		<name>DeviceDialog</name>
 		<message>
+			<source>1. Connect your hardware signer
+2. Click Scan
+3. Unlock the device
+4. Select the device</source>
+			<translation>1. Conecte seu dispositivo assinador de hardwaren2. Clique em Escanearn3. Desbloqueie o dispositivon4. Selecione o dispositivo</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Detected devices</source>
+			<translation>Dispositivos detectados</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan</source>
+			<translation>Varredura de dispositivo</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Device scan failed: {error}</source>
+			<translation>Falha na varredura do dispositivo: {error}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Install udev rules</source>
+			<translation>Instalar regras udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>No devices found</source>
+			<translation>Nenhum dispositivo encontrado</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>SN {serial}</source>
+			<translation>SN {serial}</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan Bluetooth devices</source>
+			<translation>Escanear dispositivos Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scan USB devices</source>
+			<translation>Escanear dispositivos USB</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Scanning for compatible Bluetooth hardware signers.</source>
+			<translation>Procurando assinadores de hardware Bluetooth compatíveis.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
 			<source>Select the detected device</source>
 			<translation>Selecionar o dispositivo detectado</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Try to {actions}.</source>
+			<translation>Tente {actions}.</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>Unlock your hardware signer</source>
+			<translation>Desbloqueie seu assinador de hardware</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>install udev rules</source>
+			<translation>instalar regras udev</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>or</source>
+			<translation>ou</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan Bluetooth devices</source>
+			<translation>escanear dispositivos Bluetooth</translation>
+		</message>
+		<name>DeviceDialog</name>
+		<message>
+			<source>scan USB devices</source>
+			<translation>escanear dispositivos USB</translation>
 		</message>
 	</context>
 	<context>
@@ -3094,13 +3177,14 @@ Se houver algum problema, não hesite em nos contatar em: [andreasgriffin@proton
 		<name>QTWallet</name>
 		<message>
 			<source>    {new_txid}</source>
-			<translation>{new_txid}</translation>
+			<translation>    {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s):
 {replaced_by_lines}</source>
-			<translation>Substituída por TxID(s): {replaced_by_lines}</translation>
+			<translation>  Substituída por TxID(s):
+{replaced_by_lines}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,7 +3613,9 @@ As saídas permanecem as mesmas; apenas a taxa muda.</translation>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>Receba uma quantia &lt;b&gt;pequena&lt;/b&gt; (menor que {test_amount}) em 1 endereço desta carteira.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Por quê?&lt;/b&gt; &lt;br&gt;                     Para saber se você controla os fundos, você precisa testar o gasto a partir da carteira.                      &lt;br&gt;                     Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar da carteira e testar todos os signatários.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NÃO envie grandes quantias para a carteira ainda. Por favor, conclua todos os testes de autoenvio primeiro!&lt;/b&gt;</translation>
+			<translation>Receba uma quantia &lt;b&gt;pequena&lt;/b&gt; (menor que {test_amount}) em 1 endereço desta carteira.
+                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Por quê?&lt;/b&gt; &lt;br&gt;                     Para saber se você controla os fundos, você precisa testar o gasto a partir da carteira. 
+                    &lt;br&gt;                     Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar da carteira e testar todos os signatários.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NÃO envie grandes quantias para a carteira ainda. Por favor, conclua todos os testes de autoenvio primeiro!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4024,8 +4110,8 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
-			<source>USB Signing</source>
-			<translation>Assinatura via USB</translation>
+			<source>USB and Bluetooth</source>
+			<translation>USB e Bluetooth</translation>
 		</message>
 	</context>
 	<context>
@@ -4568,18 +4654,18 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 	<context>
 		<name>USBGui</name>
 		<message>
+			<source>Bluetooth scanning is not available in this environment.</source>
+			<translation>A varredura Bluetooth não está disponível neste ambiente.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
+			<source>Bluetooth support is disabled by configuration.</source>
+			<translation>O suporte a Bluetooth está desativado pela configuração.</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Manually install udev rules</source>
 			<translation>Instalar regras udev manualmente</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No USB devices found. It could be due to missing udev rules.</source>
-			<translation>Nenhum dispositivo USB encontrado. Pode ser devido à falta de regras udev.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>No device selected</source>
-			<translation>Nenhum dispositivo selecionado</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -4593,11 +4679,6 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
-			<source>Please unlock USB devices</source>
-			<translation>Por favor, desbloqueie os dispositivos USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Registrar carteiras multisig via USB não é suportado por {device_type}. Use cartões SD ou escaneie o código QR.</translation>
 		</message>
@@ -4605,16 +4686,6 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		<message>
 			<source>Restart computer</source>
 			<translation>Reiniciar computador</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositivos USB</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Unlock USB devices</source>
-			<translation>Desbloquear dispositivos USB</translation>
 		</message>
 	</context>
 	<context>
@@ -4728,6 +4799,11 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Installer started. Closing Bitcoin Safe...</source>
+			<translation>Instalador iniciado. Fechando o Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>New version available {tag}</source>
 			<translation>Nova versão disponível {tag}</translation>
 		</message>
@@ -4738,6 +4814,11 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
+			<source>Selected update file does not exist.</source>
+			<translation>O arquivo de atualização selecionado não existe.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
 			<source>Signature doesn't match!!! Please try again.</source>
 			<translation>A assinatura não confere!!! Tente novamente.</translation>
 		</message>
@@ -4745,6 +4826,27 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		<message>
 			<source>Signature verified.</source>
 			<translation>Assinatura verificada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Signature verified. Update downloaded.</source>
+			<translation>Assinatura verificada. Atualização baixada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied.</source>
+			<translation>Atualização aplicada.</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update applied. Restarting Bitcoin Safe...</source>
+			<translation>Atualização aplicada. Reiniciando o Bitcoin Safe...</translation>
+		</message>
+		<name>UpdateNotificationBar</name>
+		<message>
+			<source>Update file was verified but no automatic install was performed:
+{reason}</source>
+			<translation>O arquivo de atualização foi verificado, mas nenhuma instalação automática foi realizada: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5078,7 +5180,8 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>A transação de teste  '{tx_text}'  foi concluída com sucesso. Por favor, prossiga para realizar o teste de autoenvio:  '{next_text}'</translation>
+			<translation>A transação de teste  '{tx_text}'  foi concluída com sucesso. Por favor, prossiga para realizar o teste de autoenvio: 
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5224,11 +5327,6 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
-			<source>No USB devices found</source>
-			<translation>Nenhum dispositivo USB encontrado</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
 			<source>No suitable terminal emulator found.</source>
 			<translation>Nenhum emulador de terminal adequado encontrado.</translation>
 		</message>
@@ -5236,11 +5334,6 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		<message>
 			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
 			<translation>A parte de rede {network_str} da origem da chave {key_origin} deve ser reforçada com um h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB Devices</source>
-			<translation>Dispositivos USB</translation>
 		</message>
 		<name>bitcoin_usb</name>
 		<message>
@@ -6079,6 +6172,43 @@ Clique aqui para saber mais.</translation>
 		<message>
 			<source>Speedup of {txid}</source>
 			<translation>Aceleração de {txid}</translation>
+		</message>
+	</context>
+	<context>
+		<name>updater</name>
+		<message>
+			<source>Apply update</source>
+			<translation>Aplicar atualização</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open download folder</source>
+			<translation>Abrir pasta de downloads</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Open update</source>
+			<translation>Abrir atualização</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Start installer</source>
+			<translation>Iniciar instalador</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to apply the update now?</source>
+			<translation>Atualização verificada. Deseja aplicar a atualização agora?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to open the update file now?</source>
+			<translation>Atualização verificada. Deseja abrir o arquivo de atualização agora?</translation>
+		</message>
+		<name>updater</name>
+		<message>
+			<source>Update verified. Do you want to start the installer now?</source>
+			<translation>Atualização verificada. Deseja iniciar o instalador agora?</translation>
 		</message>
 	</context>
 	<context>
