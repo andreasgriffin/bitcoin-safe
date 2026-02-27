@@ -412,7 +412,7 @@ class SignatureImporterUSB(SignatureImporterQR):
         label: str | None = None,
     ) -> None:
         """Initialize instance."""
-        label = label if label else self.tr("USB Signing")
+        label = label if label else self.tr("USB and Bluetooth")
         super().__init__(
             network=network,
             signature_available=signature_available,
