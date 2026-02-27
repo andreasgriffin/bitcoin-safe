@@ -212,7 +212,7 @@ class LabelSyncer(QObject):
             )
             return
 
-        changed_labels = self.labels.import_dumps_data(data.data)
+        changed_labels = self.labels.import_bip329_jsonlines(data.data)
         if not changed_labels:
             logger.debug("no labels changed in on_nostr_label_bip329_received")
             return
