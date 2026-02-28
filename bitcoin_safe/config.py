@@ -51,7 +51,7 @@ from .network_config import (
     get_electrum_configs,
     get_esplora_urls,
 )
-from .storage import BaseSaveableClass
+from .storage import BaseSaveableClass, Encrypt
 from .util import fast_version
 
 logger = logging.getLogger(__name__)
@@ -61,6 +61,8 @@ NO_FEE_WARNING_BELOW = 10  # sat/vB
 
 
 RECENT_WALLET_MAXLEN = 15
+APP_LOCK_ENCRYPT_ITERATIONS = 600_000
+APP_LOCK_VERIFIER_MESSAGE = b"bitcoin-safe-app-lock-verifier"
 
 
 class UserConfig(BaseSaveableClass):
@@ -84,6 +86,7 @@ class UserConfig(BaseSaveableClass):
         bdk.Network.TESTNET: [0.0, 1000],
         bdk.Network.TESTNET4: [0.0, 1000],
     }
+    _app_lock_encryptor = Encrypt()
 
     def __init__(self) -> None:
         """Initialize instance."""
@@ -102,6 +105,7 @@ class UserConfig(BaseSaveableClass):
         self.rates: dict[str, dict[str, Any]] = {}
         self.last_tab_title: list[str] = []
         self.auto_label_change_addresses: bool = False
+        self.app_lock_password_hash: str | None = None
 
     def clean_recently_open_wallet(self):
         """Clean recently open wallet."""
@@ -307,3 +311,39 @@ class UserConfig(BaseSaveableClass):
     def save(self) -> None:  # type: ignore
         """Save."""
         super().save(self.config_file)
+
+    @classmethod
+    def _serialize_app_lock_password_hash(cls, password: str) -> str:
+        encrypted_verifier = cls._app_lock_encryptor.password_encrypt(
+            message=APP_LOCK_VERIFIER_MESSAGE,
+            password=password,
+            iterations=APP_LOCK_ENCRYPT_ITERATIONS,
+        )
+        return encrypted_verifier.decode("ascii")
+
+    @staticmethod
+    def _decode_app_lock_password_hash(password_hash: str | None) -> bytes | None:
+        if not password_hash:
+            return None
+        try:
+            return password_hash.encode("ascii")
+        except UnicodeEncodeError:
+            return None
+
+    def has_app_lock_password(self) -> bool:
+        return bool(self.app_lock_password_hash)
+
+    def set_app_lock_password(self, password: str | None) -> None:
+        self.app_lock_password_hash = self._serialize_app_lock_password_hash(password) if password else None
+
+    def verify_app_lock_password(self, password: str) -> bool:
+        token = self._decode_app_lock_password_hash(self.app_lock_password_hash)
+        if not token:
+            return False
+
+        try:
+            decrypted_verifier = self._app_lock_encryptor.password_decrypt(token, password)
+        except Exception:
+            return False
+
+        return decrypted_verifier == APP_LOCK_VERIFIER_MESSAGE

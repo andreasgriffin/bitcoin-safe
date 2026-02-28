@@ -29,12 +29,18 @@
 from __future__ import annotations
 
 import logging
+from typing import cast
 
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
     QFormLayout,
+    QHBoxLayout,
     QLabel,
+    QMessageBox,
+    QPushButton,
     QWidget,
 )
 
@@ -46,12 +52,21 @@ from bitcoin_safe.gui.qt.language_chooser import (
 
 from ...fx import FX
 from .currency_combobox import CurrencyComboBox, CurrencyGroup, CurrencyGroupFormatting
+from .dialogs import PasswordCreation
 
 logger = logging.getLogger(__name__)
 
 
 class InterfaceSettingsUi(QWidget):
-    def __init__(self, fx: FX, language_chooser: LanguageChooser, config: UserConfig, parent=None):
+    signal_app_lock_password_changed = cast(SignalProtocol[[]], pyqtSignal())
+
+    def __init__(
+        self,
+        fx: FX,
+        language_chooser: LanguageChooser,
+        config: UserConfig,
+        parent=None,
+    ):
         """Initialize instance."""
         super().__init__(parent)
         self.fx = fx
@@ -88,18 +103,35 @@ class InterfaceSettingsUi(QWidget):
         self.label_language = QLabel("")
         self.label_currency = QLabel("")
         self.label_bitcoin_symbol = QLabel("")
+        self.label_app_lock_password = QLabel("")
+
+        self.app_lock_password_status = QLabel("")
+        self.button_set_app_lock_password = QPushButton(self)
+        self.button_clear_app_lock_password = QPushButton(self)
+
+        self.app_lock_controls = QWidget(self)
+        app_lock_layout = QHBoxLayout(self.app_lock_controls)
+        app_lock_layout.setContentsMargins(0, 0, 0, 0)
+        app_lock_layout.addWidget(self.app_lock_password_status, 1)
+        app_lock_layout.addWidget(self.button_set_app_lock_password)
+        app_lock_layout.addWidget(self.button_clear_app_lock_password)
+
         form.addRow(self.label_language, self.language_combo)
         form.addRow(self.label_currency, self.currency_combo)
         form.addRow(self.label_bitcoin_symbol, self.bitcoin_symbol_combo)
+        form.addRow(self.label_app_lock_password, self.app_lock_controls)
 
         # 4) initial selection
         self.data_updated()
+        self.refresh_app_lock_status()
 
         # signals
         self.fx.signal_data_updated.connect(self.data_updated)
         self.language_combo.currentIndexChanged.connect(self._on_language_changed)
         self.currency_combo.currentIndexChanged.connect(self._on_currency_changed)
         self.bitcoin_symbol_combo.currentIndexChanged.connect(self._on_bitcoin_symbol_changed)
+        self.button_set_app_lock_password.clicked.connect(self._on_set_app_lock_password)
+        self.button_clear_app_lock_password.clicked.connect(self._on_clear_app_lock_password)
 
     def data_updated(self):
         """Data updated."""
@@ -126,8 +158,56 @@ class InterfaceSettingsUi(QWidget):
         self.config.bitcoin_symbol = symbol or BitcoinSymbol.ISO
         self.language_chooser.signals_currency_switch.emit()
 
+    def refresh_app_lock_status(self) -> None:
+        has_password = self.config.has_app_lock_password()
+        self.app_lock_password_status.setText(
+            self.tr("Configured") if has_password else self.tr("Not configured")
+        )
+        self.button_set_app_lock_password.setText(self.tr("Change") if has_password else self.tr("Set"))
+        self.button_clear_app_lock_password.setEnabled(has_password)
+
+    def _on_set_app_lock_password(self) -> None:
+        while True:
+            password = PasswordCreation(
+                parent=self,
+                window_title=self.tr("App lock password"),
+                label_text=self.tr("Enter app lock password:"),
+            ).get_password()
+            if password is None:
+                return
+            if password:
+                self.config.set_app_lock_password(password)
+                self.config.save()
+                self.refresh_app_lock_status()
+                self.signal_app_lock_password_changed.emit()
+                return
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid password"),
+                self.tr("App lock password cannot be empty."),
+            )
+
+    def _on_clear_app_lock_password(self) -> None:
+        if not self.config.has_app_lock_password():
+            return
+        answer = QMessageBox.question(
+            self,
+            self.tr("Clear app lock password"),
+            self.tr("Remove the app lock password?"),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer == QMessageBox.StandardButton.Yes:
+            self.config.set_app_lock_password(None)
+            self.config.save()
+            self.refresh_app_lock_status()
+            self.signal_app_lock_password_changed.emit()
+
     def updateUi(self):
         """UpdateUi."""
         self.label_language.setText("Language")
         self.label_currency.setText("Currency")
         self.label_bitcoin_symbol.setText("Bitcoin symbol")
+        self.label_app_lock_password.setText("App lock")
+        self.button_clear_app_lock_password.setText("Clear")
+        self.refresh_app_lock_status()
