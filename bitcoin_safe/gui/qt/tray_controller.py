@@ -212,7 +212,7 @@ class TrayController(QSystemTrayIcon):
             label = self._format_tray_notification_label(notification)
             action = self._tray_menu_past_notifications.add_action(
                 text=label,
-                slot=partial(self._show_past_notification, notification),
+                slot=partial(self._show_notification, notification),
             )
             action.setEnabled(True)
         self._tray_menu_past_notifications.addSeparator()
@@ -239,9 +239,6 @@ class TrayController(QSystemTrayIcon):
         self._tray_notifications = []
         self.setIcon(self._tray_icon_default)
         self._refresh_tray_notifications_menu()
-
-    def _show_past_notification(self, message: Message) -> None:
-        self._show_notification(message)
 
     def _show_notification(self, message: Message) -> None:
         icon, _ = message.get_icon_and_title()
