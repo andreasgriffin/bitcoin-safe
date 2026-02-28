@@ -32,70 +32,79 @@ from functools import partial
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QRectF, Qt, pyqtSignal
+from PyQt6.QtCore import QRectF, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
-from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QWidget
+from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QWidget
 
+from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 MAX_TRAY_NOTIFICATIONS = 10
+SUPPRESSED_NOTIFICATION_REPLAY_DELAY_MS = 2000
 
 
 class TrayController(QSystemTrayIcon):
     signal_on_close = cast(SignalProtocol[[]], pyqtSignal())
 
-    def __init__(self, parent: QMainWindow) -> None:
+    def __init__(self, parent: UnlockableMainWindow) -> None:
         tray_icon_default = svg_tools.get_QIcon("logo.svg")
         super().__init__(tray_icon_default, parent)
         self._parent = parent
         self._tray_visible_windows: list[QWidget] = []
         self._tray_prev_active: QWidget | None = None
         self._tray_hidden = False
+        self._is_locked = False
         self._tray_notifications: list[Message] = []
+        self._suppressed_notifications: list[Message] = []
         self._tray_icon_default = tray_icon_default
         self._tray_icon_notification = self._build_tray_notification_icon()
 
         self.setToolTip("Bitcoin Safe")
 
-        menu = Menu(parent)
-        menu.add_action(text=parent.tr("Show/Hide"), slot=self.toggle_window_visibility)
-        self._tray_menu_past_notifications = menu.add_menu(parent.tr("Past notifications"))
+        self._menu = Menu(parent)
+        self._action_toggle_visibility = self._menu.add_action(slot=self.toggle_window_visibility)
+        self._action_lock_and_minimize = self._menu.add_action(slot=self._parent.lock_application)
+        self._tray_menu_past_notifications = self._menu.add_menu(parent.tr("Past notifications"))
         self._refresh_tray_notifications_menu()
-        menu.addSeparator()
-        menu.add_action(text=parent.tr("&Exit"), slot=self.on_tray_close)
+        self._menu.addSeparator()
+        self._menu.add_action(text=parent.tr("&Exit"), slot=self.on_tray_close)
+        self._menu.aboutToShow.connect(self._refresh_tray_primary_actions)
 
-        self.setContextMenu(menu)
+        self.setContextMenu(self._menu)
         self.activated.connect(self._on_tray_activated)
+        self._refresh_tray_primary_actions()
         self.show()
 
     def set_hidden(self, hidden: bool) -> None:
         self._tray_hidden = hidden
         if not hidden:
             self.setIcon(self._tray_icon_default)
+        self._refresh_tray_primary_actions()
+
+    def set_locked(self, locked: bool) -> None:
+        self._is_locked = locked
+        if locked:
+            self.setIcon(self._tray_icon_default)
+        self._refresh_tray_primary_actions()
+        self._refresh_tray_notifications_menu()
 
     def is_available(self) -> bool:
         return QSystemTrayIcon.isSystemTrayAvailable()
 
     def show_message(self, message: Message) -> None:
-        icon, _ = message.get_icon_and_title()
-        tray_icon = Message.system_tray_icon(icon)
-        title = message.title or "Bitcoin Safe"
         self._record_tray_notification(message=message)
-        if message.msecs:
-            self.showMessage(title, message.msg, tray_icon, message.msecs)
+        if self._is_locked:
+            self._queue_suppressed_notification(message)
             return
-        self.showMessage(title, message.msg, tray_icon)
+        self._show_notification(message)
 
     def show_message_as_tray_notification(self, message: Message) -> None:
         """Show message as tray notification without recording past notifications."""
-        icon, _ = message.get_icon_and_title()
-        tray_icon = Message.system_tray_icon(icon)
-        title = message.title or "Bitcoin Safe"
-        if message.msecs:
-            self.showMessage(title, message.msg, tray_icon, message.msecs)
+        if self._is_locked:
+            self._queue_suppressed_notification(message)
             return
-        self.showMessage(title, message.msg, tray_icon)
+        self._show_notification(message)
 
     def _on_tray_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason in (
@@ -131,6 +140,12 @@ class TrayController(QSystemTrayIcon):
 
     def restore_from_tray(self) -> None:
         """Restore from tray."""
+        started_locked = self._is_locked
+        if started_locked:
+            if not self._parent.try_unlock_application():
+                return
+            self._show_suppressed_notifications()
+
         if not self._tray_visible_windows:
             self._parent.show()
             self._parent.setWindowState(
@@ -181,6 +196,12 @@ class TrayController(QSystemTrayIcon):
 
     def _refresh_tray_notifications_menu(self) -> None:
         self._tray_menu_past_notifications.clear()
+        if self._is_locked:
+            hidden_action = self._tray_menu_past_notifications.add_action(
+                text=self._parent.tr("Notifications hidden while app is locked")
+            )
+            hidden_action.setEnabled(False)
+            return
         if not self._tray_notifications:
             empty_action = self._tray_menu_past_notifications.add_action(
                 text=self._parent.tr("No notifications")
@@ -191,7 +212,7 @@ class TrayController(QSystemTrayIcon):
             label = self._format_tray_notification_label(notification)
             action = self._tray_menu_past_notifications.add_action(
                 text=label,
-                slot=partial(self._show_past_notification, notification),
+                slot=partial(self._show_notification, notification),
             )
             action.setEnabled(True)
         self._tray_menu_past_notifications.addSeparator()
@@ -219,17 +240,49 @@ class TrayController(QSystemTrayIcon):
         self.setIcon(self._tray_icon_default)
         self._refresh_tray_notifications_menu()
 
-    def _show_past_notification(self, message: Message) -> None:
+    def _show_notification(self, message: Message) -> None:
         icon, _ = message.get_icon_and_title()
         tray_icon = Message.system_tray_icon(icon)
         title = message.title or "Bitcoin Safe"
         safe_title = title.replace("\n", " ").strip() or "Bitcoin Safe"
         safe_message = message.msg.replace("\n", " ").strip()
-        self.showMessage(
-            safe_title,
-            safe_message,
-            tray_icon,
-        )
+        if message.msecs:
+            self.showMessage(safe_title, safe_message, tray_icon, message.msecs)
+            return
+        self.showMessage(safe_title, safe_message, tray_icon)
+
+    def _show_notifications(self, messages: list[Message]) -> None:
+        for index, message in enumerate(messages):
+            QTimer.singleShot(
+                SUPPRESSED_NOTIFICATION_REPLAY_DELAY_MS * index,
+                partial(self._show_notification, message),
+            )
+
+    def _queue_suppressed_notification(self, message: Message) -> None:
+        suppressed = message.clone()
+        suppressed.strip_parent()
+        self._suppressed_notifications.append(suppressed)
+
+    def _show_suppressed_notifications(self) -> None:
+        self._show_notifications(self._suppressed_notifications)
+        self._suppressed_notifications.clear()
+
+    def _refresh_tray_primary_actions(self) -> None:
+        is_minimized = self._is_parent_minimized_or_hidden()
+        if is_minimized:
+            action_text = self._parent.tr("Unlock to show") if self._is_locked else self._parent.tr("Show")
+        else:
+            action_text = self._parent.tr("Minimize to tray")
+        self._action_toggle_visibility.setText(action_text)
+
+        self._action_lock_and_minimize.setText(self._parent.tr("&Lock and minimize to tray"))
+        self._action_lock_and_minimize.setVisible(not is_minimized)
+        self._action_lock_and_minimize.setEnabled(not self._is_locked)
+
+    def _is_parent_minimized_or_hidden(self) -> bool:
+        if self._parent.isHidden():
+            return True
+        return bool(self._parent.windowState() & Qt.WindowState.WindowMinimized)
 
     def _build_tray_notification_icon(self) -> QIcon:
         base_pixmap = self._tray_icon_default.pixmap(64, 64)

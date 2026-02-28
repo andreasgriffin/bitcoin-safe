@@ -73,7 +73,6 @@ from PyQt6.QtWidgets import (
     QDialog,
     QFileDialog,
     QLabel,
-    QMainWindow,
     QMessageBox,
     QSizePolicy,
     QStyle,
@@ -142,6 +141,7 @@ from .new_wallet_welcome_screen import NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
 from .sign_message import SignAndVerifyMessage
 from .tray_controller import TrayController
+from .unlockable_main_window import UnlockableMainWindow
 from .util import (
     ELECTRUM_SERVER_DELAY_BLOCK,
     ELECTRUM_SERVER_DELAY_MEMPOOL_TX,
@@ -159,7 +159,7 @@ logger = logging.getLogger(__name__)
 MAC_OPEN_WALLET_LIMIT = 5
 
 
-class MainWindow(QMainWindow):
+class MainWindow(UnlockableMainWindow):
     signal_recently_open_wallet_changed = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
     signal_remove_attached_widget = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
 
@@ -242,6 +242,7 @@ class MainWindow(QMainWindow):
             fx=self.fx,
             language_chooser=self.language_chooser,
         )
+        self.settings.langauge_ui.signal_app_lock_password_changed.connect(self.on_app_lock_password_changed)
         self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.restart)
         self.signals.show_network_settings.connect(self.open_settings_ui)
         self.settings.signal_update_action_requested.connect(
@@ -386,6 +387,8 @@ class MainWindow(QMainWindow):
         title = "Bitcoin Safe"
         if self.config.network != bdk.Network.BITCOIN and not DEMO_MODE:
             title += f" - {self.config.network.name}"
+        if self.app_is_locked:
+            title += f" - {self.tr('Locked')}"
         if qt_wallet := self.get_qt_wallet():
             title += f" - {qt_wallet.wallet.id}"
         self.setWindowTitle(title)
@@ -929,6 +932,13 @@ class MainWindow(QMainWindow):
 
         self.menu_view.addSeparator()
 
+        self.menu_action_toggle_app_lock = self.menu_view.add_action(
+            "",
+            self.toggle_app_lock,
+            icon=svg_tools.get_QIcon("ic--outline-password.svg"),
+        )
+        self.menu_action_toggle_app_lock.setShortcut(QKeySequence("CTRL+SHIFT+L"))
+
         self.menu_action_minimize_to_tray = self.menu_view.add_action(
             "",
             self.tray_controller.minimize_to_tray_from_menu,
@@ -1164,6 +1174,7 @@ class MainWindow(QMainWindow):
         self.menu_action_register_multisig.setText(self.tr("&Register Multisig with hardware signers"))
         self.menu_tools.setTitle(self.tr("&Tools"))
         self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
+        self.update_app_lock_action_text()
         self.menu_action_minimize_to_tray.setText(self.tr("&Minimize to tray"))
         self.update_fullscreen_action_text()
         self.menu_load_transaction.setTitle(self.tr("&Load Transaction or PSBT"))
@@ -1207,6 +1218,36 @@ class MainWindow(QMainWindow):
     def focus_search_box(self):
         """Focus search box."""
         self.search_box.search_field.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+    def on_app_lock_password_changed(self) -> None:
+        if not self.config.has_app_lock_password() and self.app_is_locked:
+            self._set_app_locked(False)
+        self.update_app_lock_action_text()
+
+    def on_app_lock_state_changed(self, locked: bool) -> None:
+        self.tray_controller.set_locked(locked)
+        self.update_app_lock_action_text()
+        self.set_title()
+
+    def verify_app_lock_password(self, password: str) -> bool:
+        return self.config.verify_app_lock_password(password)
+
+    def lock_application(self) -> None:
+        if not self.config.has_app_lock_password():
+            Message(
+                self.tr("Set an app lock password first in Settings -> General."),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
+        self._set_app_locked(True)
+        self.tray_controller.minimize_to_tray_from_menu()
+
+    def toggle_app_lock(self) -> None:
+        if self.app_is_locked:
+            self._ask_for_unlock()
+            return
+        self.lock_application()
 
     def toggle_fullscreen(self) -> None:
         """Toggle between full screen and the previous window state."""
@@ -1283,6 +1324,12 @@ class MainWindow(QMainWindow):
             self.menu_action_toggle_fullscreen.setText(
                 self.tr("&Exit Full Screen") if self.isFullScreen() else self.tr("&Full Screen")
             )
+
+    def update_app_lock_action_text(self) -> None:
+        if self.app_is_locked:
+            self.menu_action_toggle_app_lock.setText(self.tr("&Unlock app"))
+            return
+        self.menu_action_toggle_app_lock.setText(self.tr("&Lock and minimize to tray"))
 
     def populate_recent_wallets_menu(self, recently_open_wallets: Iterable[str]) -> None:
         """Populate recent wallets menu."""
@@ -1368,15 +1415,21 @@ class MainWindow(QMainWindow):
 
     def open_settings_ui(self) -> None:
         """Open settings."""
+        if not self._ask_for_unlock():
+            return
         self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.langauge_ui)
 
     def open_network_settings(self) -> None:
+        if not self._ask_for_unlock():
+            return
         self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.network_settings_ui)
 
     def open_about_tab(self) -> None:
         """Open the About tab in settings."""
+        if not self._ask_for_unlock():
+            return
         self._show_settings_window()
         self.settings.setCurrentWidget(self.settings.about_tab)
 
