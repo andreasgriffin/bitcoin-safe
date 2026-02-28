@@ -31,22 +31,30 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-from PyQt6.QtWidgets import QMainWindow
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.tray_controller import TrayController
+from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message
 
 
-class _UnlockingMainWindow(QMainWindow):
+class _UnlockingMainWindow(UnlockableMainWindow):
     def __init__(self, unlock_result: bool) -> None:
         super().__init__()
         self._unlock_result = unlock_result
         self.unlock_calls = 0
+        self.lock_calls = 0
 
     def try_unlock_application(self) -> bool:
         self.unlock_calls += 1
         return self._unlock_result
+
+    def verify_app_lock_password(self, password: str) -> bool:
+        del password
+        return False
+
+    def lock_application(self) -> None:
+        self.lock_calls += 1
 
 
 @pytest.mark.marker_qt_3
@@ -63,7 +71,8 @@ def test_tray_notifications_are_suppressed_while_locked(qtbot: QtBot) -> None:
         tray.set_locked(True)
         tray.show_message(Message("second", no_show=True))
         assert mock_show_message.call_count == 1
-        assert len(tray._tray_notifications) == 1
+        assert len(tray._tray_notifications) == 2
+        assert len(tray._suppressed_notifications) == 1
 
     actions = tray._tray_menu_past_notifications.actions()
     assert len(actions) == 1
