@@ -65,6 +65,8 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateFilterReason(Enum):
+    WalletOpened = enum.auto()
+    WalletClosed = enum.auto()
     UserInput = enum.auto()
     UserImport = enum.auto()
     SourceLabelSyncer = enum.auto()
@@ -260,8 +262,6 @@ class Signals(SignalsMin):
 
     open_file_path = cast(SignalProtocol[[str]], pyqtSignal(str))
     open_tx_like = cast(SignalProtocol[[Any]], pyqtSignal(object))
-    event_wallet_tab_closed = cast(SignalProtocol[[]], pyqtSignal())
-    event_wallet_tab_added = cast(SignalProtocol[[]], pyqtSignal())
 
     tab_history_backward = cast(SignalProtocol[[]], pyqtSignal())
     tab_history_forward = cast(SignalProtocol[[]], pyqtSignal())

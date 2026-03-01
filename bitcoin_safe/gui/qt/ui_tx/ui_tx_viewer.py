@@ -414,7 +414,7 @@ class UITx_Viewer(UITx_Base):
         self.signal_tracker.connect(self.signals.language_switch, self._on_lang_switch)
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
-        self.signal_tracker.connect(self.signals.any_wallet_updated, self.reload)
+        self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
         self.signals.currency_switch.connect(self.update_all_totals)
         self.utxo_list.signal_finished_update.connect(self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
@@ -751,6 +751,12 @@ class UITx_Viewer(UITx_Base):
             self._forced_update = False
         return defer
 
+    def on_any_wallet_update(self, update_filter: UpdateFilter) -> None:
+        if update_filter.reason in {UpdateFilterReason.WalletClosed}:
+            self._set_blockchain()
+
+        self.reload(update_filter=update_filter)
+
     def reload(self, update_filter: UpdateFilter) -> None:
         # update the tab icons no matter what, since the chain_height can advance,
         # needing a change in the icon
@@ -776,6 +782,11 @@ class UITx_Viewer(UITx_Base):
             or update_filter.reason == UpdateFilterReason.TransactionChange
             and self.txid() in update_filter.txids
         ):
+            should_update = True
+        if should_update or update_filter.reason in {
+            UpdateFilterReason.WalletOpened,
+            UpdateFilterReason.WalletClosed,
+        }:
             should_update = True
 
         if not should_update:
