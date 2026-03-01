@@ -165,11 +165,9 @@ class AddressValidateTab(QWidget):
 
 
 class QRAddress(QRCodeWidgetSVG):
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, parent=None) -> None:
         """Initialize instance."""
-        super().__init__(clickable=False)
+        super().__init__(parent=parent, clickable=False)
         self.setMaximumSize(150, 150)
 
     def set_address(self, bdk_address: bdk.Address):
@@ -270,7 +268,7 @@ class AddressDialog(QWidget):
         if self.tab_validate:
             self.recipient_tabs.addTab(self.tab_validate, "")
 
-        self.qr_code = QRAddress()
+        self.qr_code = QRAddress(self)
         self.qr_code.set_address(self.bdk_address)
         self.upper_widget_layout.addWidget(self.qr_code)
 

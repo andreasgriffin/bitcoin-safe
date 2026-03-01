@@ -678,7 +678,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         self._set_data(data)
 
         # qr
-        self.qr_label = QRCodeWidgetSVG(always_animate=True)
+        self.qr_label = QRCodeWidgetSVG(always_animate=True, parent=self.group_qr)
         self.qr_label.set_always_animate(True)
         self.group_qr._layout.insertWidget(0, self.qr_label)
 

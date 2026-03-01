@@ -378,7 +378,7 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "bed3bd0b4796e98713b632697602db18beaa5023"
+resolved_reference = "fe2e61ef380e8e7aa5c2918d731ef2d1b81c9cda"
 
 [[package]]
 name = "bitcoin-safe-lib"
@@ -1293,14 +1293,14 @@ woff = ["brotli (>=1.0.1) ; platform_python_implementation == \"CPython\"", "bro
 
 [[package]]
 name = "fpdf2"
-version = "2.8.6"
+version = "2.8.7"
 description = "Simple & fast PDF generation for Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "fpdf2-2.8.6-py3-none-any.whl", hash = "sha256:464658b896c6b0fcbf883abb316b8f0a52d582eb959d71822ba254d6c790bfdd"},
-    {file = "fpdf2-2.8.6.tar.gz", hash = "sha256:5132f26bbeee69a7ca6a292e4da1eb3241147b5aea9348b35e780ecd02bf5fc2"},
+    {file = "fpdf2-2.8.7-py3-none-any.whl", hash = "sha256:d391fc508a3ce02fc43a577c830cda4fe6f37646f2d143d489839940932fbc19"},
+    {file = "fpdf2-2.8.7.tar.gz", hash = "sha256:7060ccee5a9c7ab0a271fb765a36a23639f83ef8996c34e3d46af0a17ede57f9"},
 ]
 
 [package.dependencies]
@@ -1311,7 +1311,7 @@ Pillow = ">=8.3.2,<9.2.dev0 || >=9.3.dev0"
 [package.extras]
 dev = ["bandit", "black", "mypy", "pre-commit", "pylint", "pyright", "semgrep", "zizmor"]
 docs = ["lxml", "mkdocs", "mkdocs-git-revision-date-localized-plugin", "mkdocs-include-markdown-plugin", "mkdocs-macros-plugin", "mkdocs-material", "mkdocs-minify-plugin", "mkdocs-redirects", "mkdocs-with-pdf", "mknotebooks", "pdoc3"]
-test = ["brotli", "camelot-py[base]", "endesive[full]", "pytest", "pytest-cov", "qrcode", "tabula-py", "typing-extensions (>=4.0) ; python_version < \"3.11\"", "uharfbuzz"]
+test = ["brotli", "camelot-py[base]", "endesive[full]", "pytest", "pytest-cov", "qrcode", "tabula-py", "uharfbuzz"]
 
 [[package]]
 name = "frozenlist"
@@ -4234,14 +4234,14 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [[package]]
 name = "virtualenv"
-version = "21.0.0"
+version = "21.1.0"
 description = "Virtual Python Environment builder"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "virtualenv-21.0.0-py3-none-any.whl", hash = "sha256:d44e70637402c7f4b10f48491c02a6397a3a187152a70cba0b6bc7642d69fb05"},
-    {file = "virtualenv-21.0.0.tar.gz", hash = "sha256:e8efe4271b4a5efe7a4dce9d60a05fd11859406c0d6aa8464f4cf451bc132889"},
+    {file = "virtualenv-21.1.0-py3-none-any.whl", hash = "sha256:164f5e14c5587d170cf98e60378eb91ea35bf037be313811905d3a24ea33cc07"},
+    {file = "virtualenv-21.1.0.tar.gz", hash = "sha256:1990a0188c8f16b6b9cf65c9183049007375b26aad415514d377ccacf1e4fb44"},
 ]
 
 [package.dependencies]
