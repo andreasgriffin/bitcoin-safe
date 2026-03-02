@@ -933,10 +933,10 @@ zu entdecken Standard 20</translation>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-        <translation>1. Verbinden Sie Ihr Hardware-Signaturgerät.
-2. Klicken Sie auf „Scannen“.
-3. Entsperren Sie das Gerät.
-4. Wählen Sie das Gerät aus.</translation>
+        <translation>1. Verbinden Sie Ihr Hardware-Signaturgerät
+2. Klicken Sie auf Scannen
+3. Entsperren Sie das Gerät
+4. Wählen Sie das Gerät aus</translation>
     </message>
     <name>DeviceDialog</name>
     <message>
@@ -4304,7 +4304,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
     <name>ToolGui</name>
     <message>
         <source>Install udev rules</source>
-        <translation>Installieren Sie udev-Regeln.</translation>
+        <translation>Installieren Sie udev-Regeln</translation>
     </message>
     <name>ToolGui</name>
     <message>
