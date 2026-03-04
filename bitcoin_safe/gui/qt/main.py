@@ -34,9 +34,11 @@ import os
 import platform
 import signal as syssignal
 import sys
+import traceback
 from collections.abc import Iterable
 from datetime import datetime
 from functools import partial
+from json import JSONDecodeError
 from pathlib import Path
 from types import FrameType
 from typing import Literal, cast
@@ -51,6 +53,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import rel_home_path_to_abs_path
 from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
 from bitcoin_usb.tool_gui import ToolGui
+from cryptography.fernet import InvalidToken
 from PyQt6.QtCore import (
     QCoreApplication,
     QLocale,
@@ -2017,6 +2020,14 @@ class MainWindow(UnlockableMainWindow):
             )
             return None
 
+        def is_likely_password_error(exc: Exception, password_attempt: str | None) -> bool:
+            if password_attempt and isinstance(exc, InvalidToken):
+                return True
+
+            if isinstance(exc, JSONDecodeError):
+                return True
+            return False
+
         def try_load_without_error(password: str | None) -> QTWallet | tuple[Exception, OptExcInfo]:
             """Try load without error."""
             try:
@@ -2030,17 +2041,21 @@ class MainWindow(UnlockableMainWindow):
                     loop_in_thread=self.loop_in_thread,
                 )
             except Exception as e:
+                logger.error(f"Wallet load traceback for '{file_path}':\n{traceback.format_exc()}")
                 return e, sys.exc_info()
 
         def try_load(file_path: str) -> tuple[QTWallet | None, str | None]:
             """Try load."""
 
             password = None
+
+            # if no password, then try loading
             if not Storage().has_password(file_path):
                 result = try_load_without_error(password=None)
                 if isinstance(result, QTWallet):
                     return result, password
 
+            # try loading with a cached password
             if password := self.password_cache.get_password("wallet"):
                 result = try_load_without_error(password=password)
                 if isinstance(result, QTWallet):
@@ -2058,16 +2073,23 @@ class MainWindow(UnlockableMainWindow):
                 result = try_load_without_error(password=password)
                 if isinstance(result, QTWallet):
                     return result, password
+                # the file could also be corrupted, but the "wrong password" is by far the likliest
                 if isinstance(result, tuple):
                     e, exc_info = result
-                    # the file could also be corrupted, but the "wrong password" is by far the likliest
+                    if is_likely_password_error(e, password_attempt=password):
+                        Message(
+                            self.tr("Wrong password. Wallet could not be loaded."),
+                            title=self.tr("Wrong password"),
+                            type=MessageType.Error,
+                        )
+                        continue
                     caught_exception_message(
                         e,
-                        "Wrong password. Wallet could not be loaded.",
+                        self.tr("Wallet could not be loaded. See logs for details."),
                         exc_info=exc_info,
                         parent=self,
                     )
-                    continue
+                    return None, password
                 return None, password  # type: ignore[unreachable]
 
         if (_guess_wallet_id := Path(file_path).stem) in self.qt_wallets:
@@ -2629,12 +2651,15 @@ class MainWindow(UnlockableMainWindow):
         """On tray close."""
         if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
             # if i close it via the tray (hidden), then it shouldnt ask this question
-            if self.ask_to_minimize_only_because_cbf_sync():
+            if res := self.ask_to_minimize_only_because_cbf_sync():
                 self.tray_controller.minimize_to_tray()
                 return
+            elif res is None:
+                return
+
         self.close()
 
-    def ask_to_minimize_only_because_cbf_sync(self) -> bool:
+    def ask_to_minimize_only_because_cbf_sync(self) -> bool | None:
         """Ask to minimize only because cbf sync."""
         res = question_dialog(
             text=self.tr(
@@ -2644,7 +2669,7 @@ class MainWindow(UnlockableMainWindow):
             true_button=self.tr("Hide to tray"),
             false_button=self.tr("Close anyway"),
         )
-        return bool(res)
+        return res
 
     def _before_close(self):
         if self._before_close_was_run:
@@ -2689,9 +2714,12 @@ class MainWindow(UnlockableMainWindow):
         if a0.spontaneous() and not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
             # event.spontaneous() == True → originated from the window system (user click, Alt+F4, OS session end).
             # if i close it via the tray (hidden), then it shouldnt ask this question
-            if self.ask_to_minimize_only_because_cbf_sync():
+            if res := self.ask_to_minimize_only_because_cbf_sync():
                 a0.ignore()
                 self.tray_controller.minimize_to_tray()
+                return
+            elif res is None:
+                a0.ignore()
                 return
 
         self._before_close()
@@ -2721,8 +2749,10 @@ class MainWindow(UnlockableMainWindow):
         self.new_startup_network = new_startup_network
 
         if not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
-            if self.ask_to_minimize_only_because_cbf_sync():
+            if res := self.ask_to_minimize_only_because_cbf_sync():
                 self.tray_controller.minimize_to_tray()
+                return
+            elif res is None:
                 return
 
         self._before_close()

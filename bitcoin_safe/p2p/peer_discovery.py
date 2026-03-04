@@ -43,8 +43,87 @@ from .p2p_client import Peer
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_REQUIRED_SERVICE_FLAGS = (1 << 0) | (1 << 3)
-CBF_REQUIRED_SERVICE_FLAGS = DEFAULT_REQUIRED_SERVICE_FLAGS | (1 << 6)
+# Bitcoin P2P service flags (nServices field in version message)
+
+# Reference:
+# https://github.com/bitcoin/bitcoin/blob/master/src/protocol.h
+
+# --------------------------------------------------------------------
+# Core blockchain serving capabilities
+# --------------------------------------------------------------------
+
+# (1 << 0)
+# NODE_NETWORK
+# The node can serve the complete blockchain (not pruned).
+# Required for historical block serving.
+NODE_NETWORK = 1 << 0
+
+# (1 << 1)
+# NODE_GETUTXO (deprecated / unused in practice)
+# Supports the BIP64 getutxo protocol (never widely deployed).
+NODE_GETUTXO = 1 << 1
+
+# (1 << 2)
+# NODE_BLOOM (deprecated)
+# Supports BIP37 bloom filtering (used by old SPV wallets).
+# Disabled by default in modern Bitcoin Core.
+NODE_BLOOM = 1 << 2
+
+# (1 << 3)
+# NODE_WITNESS
+# Supports SegWit (BIP141) and serves witness data.
+# Mandatory for modern nodes.
+NODE_WITNESS = 1 << 3
+
+# (1 << 4)
+# NODE_XTHIN (obsolete, Bitcoin XT extension)
+# Not part of Bitcoin Core consensus network.
+NODE_XTHIN = 1 << 4
+
+# (1 << 5)
+# NODE_NETWORK_LIMITED
+# Can serve the last 288 blocks (~2 days) but is pruned.
+# Introduced in BIP159.
+NODE_NETWORK_LIMITED = 1 << 5
+
+# (1 << 6)
+# NODE_COMPACT_FILTERS
+# Supports BIP157/158 compact block filters (Neutrino).
+# Required for client-side block filtering.
+NODE_COMPACT_FILTERS = 1 << 6
+
+# (1 << 7)
+# NODE_DOUBLE_SPEND_PROOFS (not active in Bitcoin Core)
+# Proposal for double-spend proofs (never standardized).
+NODE_DOUBLE_SPEND_PROOFS = 1 << 7
+
+# (1 << 8)
+# NODE_UTXO_SNAPSHOT
+# Supports assumeutxo / UTXO snapshot service.
+NODE_UTXO_SNAPSHOT = 1 << 8
+
+# --------------------------------------------------------------------
+# Common combinations
+# --------------------------------------------------------------------
+
+# Typical modern full node:
+FULL_NODE_SERVICE_FLAGS = NODE_NETWORK | NODE_WITNESS
+
+# Modern pruned node:
+PRUNED_NODE_SERVICE_FLAGS = NODE_NETWORK_LIMITED | NODE_WITNESS
+
+# Neutrino-compatible full node:
+CBF_FULL_NODE_SERVICE_FLAGS = NODE_NETWORK | NODE_WITNESS | NODE_COMPACT_FILTERS
+
+# Neutrino-compatible pruned node (rare but valid):
+CBF_PRUNED_NODE_SERVICE_FLAGS = NODE_NETWORK_LIMITED | NODE_WITNESS | NODE_COMPACT_FILTERS
+
+# Flag for default node (segwit required to recieve full segwit transactions)
+DEFAULT_REQUIRED_SERVICE_FLAGS = NODE_NETWORK | NODE_WITNESS
+
+# Compact Block filter node
+CBF_REQUIRED_SERVICE_FLAGS = DEFAULT_REQUIRED_SERVICE_FLAGS | NODE_COMPACT_FILTERS
+
 
 # Mapping of networks to their DNS seeds and default port
 DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
@@ -119,6 +198,7 @@ class PeerDiscovery:
         self.network = network
         self._loop_in_thread = loop_in_thread or LoopInThread()
         self._owns_loop_in_thread = loop_in_thread is None
+        self.total_discovered_peers: set[Peer] = set()
 
     def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
         """Seed with service bits."""
@@ -212,7 +292,9 @@ class PeerDiscovery:
             logger.warning(f"Peer discovery timed out after {timeout} seconds")
             return {peer for batch in partial_results for peer in batch}
 
-        return {peer for batch in batches for peer in batch}
+        peers = {peer for batch in batches for peer in batch}
+        self.total_discovered_peers.update(peers)
+        return peers
 
     async def get_bitcoin_peer(
         self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS
