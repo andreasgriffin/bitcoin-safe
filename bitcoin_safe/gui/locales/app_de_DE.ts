@@ -71,7 +71,7 @@
     <name>AbstractSignatureImporter</name>
     <message>
         <source>bdk libary error. The txid should not be changed during finalizing</source>
-        <translation>bdk-Bibliotheksfehler. Die Transaktions-ID (txid) sollte während der Finalisierung nicht geändert werden</translation>
+        <translation>bdk-Bibliotheksfehler. Die txid sollte während der Finalisierung nicht geändert werden.</translation>
     </message>
 </context>
 <context>
@@ -333,12 +333,12 @@
     <name>BackupSeed</name>
     <message>
         <source>Glue the {number} word seed onto the matching printed pdf.</source>
-        <translation>Das {number}-Wort-Seed auf das passende gedruckte PDF kleben.</translation>
+        <translation>Das {number} Wort-Seed auf das passende gedruckte PDF kleben.</translation>
     </message>
     <name>BackupSeed</name>
     <message>
         <source>Glue the {number} word seed onto the printed pdf.</source>
-        <translation>Das {number}-Wort-Seed auf das gedruckte PDF kleben.</translation>
+        <translation>Das {number} Wort-Seed auf das gedruckte PDF kleben.</translation>
     </message>
     <name>BackupSeed</name>
     <message>
@@ -358,7 +358,7 @@
     <name>BackupSeed</name>
     <message>
         <source>Print the pdf (it also contains the wallet descriptor)</source>
-        <translation>Das PDF drucken (enthält auch den Wallet-Descriptor)</translation>
+        <translation>Drucken Sie die PDF-Datei aus (sie enthält auch die Wallet-Beschreibung).</translation>
     </message>
 </context>
 <context>
@@ -862,7 +862,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
     <name>DescriptorEdit</name>
     <message>
         <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-        <translation>Wallet-Setup nicht abgeschlossen. Bitte beenden Sie dies, bevor Sie ein Backup-PDF erstellen.</translation>
+        <translation>Die Einrichtung der Wallet ist noch nicht abgeschlossen. Bitte schließen Sie diese ab, bevor Sie eine Sicherungskopie im PDF-Format erstellen.</translation>
     </message>
 </context>
 <context>
@@ -2635,7 +2635,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
     <name>NetworkSettingsUI</name>
     <message>
         <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
-        <translation>Sind Sie sicher, dass &apos;{scheme}&apos; in der esplora URL korrekt ist?</translation>
+        <translation>Sind Sie sicher, dass „{scheme}” in der esplora-URL korrekt ist?</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2660,7 +2660,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
     <name>NetworkSettingsUI</name>
     <message>
         <source>Click to open the mempool url</source>
-        <translation>Klicken, um die Mempool‑URL zu öffnen</translation>
+        <translation>Klicken, um die Mempool‑URL zu öffnen.</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -2748,12 +2748,12 @@ Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translat
     <name>NetworkSettingsUI</name>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
-        <translation>Bitte entfernen Sie &apos;{scheme}&apos; aus der electrum URL</translation>
+        <translation>Bitte entfernen Sie „{scheme}” aus der Electrum-URL.</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
         <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
-        <translation>Bitte versuchen Sie &apos;{scheme}&apos; am Anfang der mempool URL</translation>
+        <translation>Bitte versuchen Sie „{scheme}” am Anfang der Mempool-URL.</translation>
     </message>
     <name>NetworkSettingsUI</name>
     <message>
@@ -4142,7 +4142,7 @@ Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrek
     <name>SignatureImporterWallet</name>
     <message>
         <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-        <translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
+        <translation>Die txid der signierten psbt stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
     </message>
 </context>
 <context>
@@ -6106,7 +6106,7 @@ Klicke hier, um mehr zu erfahren.</translation>
     <name>signatures</name>
     <message>
         <source>Invalid recovery id in signature.</source>
-        <translation>Ungültige Recovery-ID in der Signatur.</translation>
+        <translation>Ungültige Wiederherstellungs-ID in der Signatur.</translation>
     </message>
     <name>signatures</name>
     <message>
