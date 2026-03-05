@@ -105,7 +105,14 @@ from .pythonbdk_types import (
 from .signals import UpdateFilter, WalletFunctions
 from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from .util import CacheManager, calculate_ema, fast_version, instance_lru_cache, short_address
+from .util import (
+    AddressBalanceDict,
+    CacheManager,
+    calculate_ema,
+    fast_version,
+    instance_lru_cache,
+    short_address,
+)
 
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker
 
@@ -1397,15 +1404,32 @@ class Wallet(BaseSaveableClass, CacheManager):
         # create a new address
         return self.get_force_new_address(is_change=is_change)
 
+    def get_summed_output_address_and_amount_dict(self, transaction: bdk.Transaction) -> AddressBalanceDict:
+        """Sums the amount for each output address."""
+        txid = str(transaction.compute_txid())
+
+        res = AddressBalanceDict()
+        for vout, output in enumerate(transaction.output()):
+            address = self.bdkwallet.get_address_of_txout(txid=txid, vout=vout, txout=TxOut.from_bdk(output))
+            if not address:
+                continue
+            if address not in res:
+                res[address] = 0
+            res[address] += output.value.to_sat()
+        return res
+
     def get_output_addresses(self, transaction: bdk.Transaction) -> list[str]:
-        # print(f'Getting output addresses for txid {transaction.txid}')
         """Return destination addresses for the given transaction."""
         txid = str(transaction.compute_txid())
-        output_addresses = [
-            self.bdkwallet.get_address_of_txout(txid=txid, vout=vout, txout=TxOut.from_bdk(output))
+        return [
+            address
             for vout, output in enumerate(transaction.output())
+            if (
+                address := self.bdkwallet.get_address_of_txout(
+                    txid=txid, vout=vout, txout=TxOut.from_bdk(output)
+                )
+            )
         ]
-        return [a for a in output_addresses if a]
 
     @time_logger
     def fill_commonly_used_caches_min(self) -> None:
@@ -2718,11 +2742,16 @@ def get_tx_details(
     txid: str, wallet_functions: WalletFunctions
 ) -> tuple[TransactionDetails, Wallet] | tuple[None, None]:
     """Return transaction details from the owning wallet."""
+    candidate: tuple[TransactionDetails, Wallet] | tuple[None, None] = (None, None)
     for wallet in get_wallets(wallet_functions):
         tx = wallet.get_tx(txid=txid)
-        if tx:
-            return tx, wallet
-    return None, None
+        if not tx:
+            continue
+        candidate = tx, wallet
+        if tx.fee is not None:
+            # if all info is available, return immediately
+            return candidate
+    return candidate
 
 
 def get_fulltxdetail(

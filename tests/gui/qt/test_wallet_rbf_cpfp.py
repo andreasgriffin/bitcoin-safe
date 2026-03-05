@@ -31,7 +31,6 @@ from __future__ import annotations
 import inspect
 import logging
 from datetime import datetime
-from unittest.mock import patch
 
 import pytest
 from PyQt6.QtTest import QTest
@@ -73,6 +72,8 @@ def test_rbf_cpfp_flow(
     amount: int = int(1e6),
 ) -> None:
     """Test rbf cpfp flow."""
+    caplog.set_level(logging.INFO, logger="bitcoin_safe.gui.qt.qt_wallet")
+
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
@@ -104,7 +105,7 @@ def test_rbf_cpfp_flow(
         qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
         key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
         key.tabs_import_type.setCurrentWidget(key.tab_manual)
-        key.edit_seed.setText(test_seeds[0])
+        key.edit_seed.setText(test_seeds[22])
         shutter.save(main_window)
 
         save_wallet(
@@ -157,13 +158,7 @@ def test_rbf_cpfp_flow(
             assert not viewer_rbf.button_rbf.isVisible()
 
             sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer_rbf)
-            with patch("bitcoin_safe.gui.qt.qt_wallet.question_dialog") as mock_message:
-                mock_message.return_value = False
-
-                # Broadcast and ensure any replace prompt is handled.
-                broadcast_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer_rbf)
-                qtbot.waitUntil(lambda: mock_message.call_count >= 1, timeout=10_000)
-                mock_message.assert_called_once()
+            broadcast_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer_rbf)
 
             assert not viewer_rbf.button_cpfp_tx.isVisible()
             assert not viewer_rbf.button_rbf.isVisible()
@@ -213,6 +208,13 @@ def test_rbf_cpfp_flow(
         txids = [tx.txid for tx in qt_wallet.wallet.bdkwallet.list_transactions()]
         assert txid_a not in txids
         assert txid_rbf in txids
+        qtbot.waitUntil(
+            lambda: any(
+                "Suppressed removed-tx notifications for replacements" in record.getMessage()
+                for record in caplog.records
+            ),
+            timeout=10_000,
+        )
 
         viewer_cpfp, txid_cpfp = create_CPFP_transaction(viewer_rbf, qt_wallet)
         txids = [tx.txid for tx in qt_wallet.wallet.bdkwallet.list_transactions()]

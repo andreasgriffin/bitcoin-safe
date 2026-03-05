@@ -1586,11 +1586,18 @@ class MainWindow(UnlockableMainWindow):
             wallet = ToolsTxUiInfo.get_likely_source_wallet(txlike, self.wallet_functions)
 
             if not wallet:
-                logger.info(
-                    "Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
-                )
-                current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
-                wallet = current_qt_wallet.wallet if current_qt_wallet else None
+                if txlike.utxos_read_only:
+                    Message(
+                        self.tr("Could not identify the wallet belonging to the transaction inputs."),
+                        type=MessageType.Warning,
+                    )
+                    return
+                else:
+                    logger.info(
+                        "Could not identify the wallet belonging to the transaction inputs. Trying to open anyway..."
+                    )
+                    current_qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
+                    wallet = current_qt_wallet.wallet if current_qt_wallet else None
             if not wallet:
                 Message(
                     self.tr("No wallet open. Please open the sender wallet to edit this transaction."),
