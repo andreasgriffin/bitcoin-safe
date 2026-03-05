@@ -130,7 +130,7 @@ from ...pythonbdk_types import (
     TransactionDetails,
     get_prev_outpoints,
 )
-from ...signals import Signals, UpdateFilter, WalletFunctions
+from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
 from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from ...util import fast_version
@@ -270,11 +270,10 @@ class MainWindow(UnlockableMainWindow):
         self.signals.add_qt_wallet.connect(self.add_qt_wallet)
         self.signals.close_qt_wallet.connect(self.remove_qt_wallet_by_id)
 
-        self.signals.event_wallet_tab_added.connect(self.event_wallet_tab_added)
-        self.signals.event_wallet_tab_closed.connect(self.event_wallet_tab_closed)
         self.signals.chain_data_changed.connect(self.sync)
         self.signals.request_manual_sync.connect(self.manual_sync)
         self.signals.open_wallet.connect(self.open_wallet)
+        self.signals.any_wallet_updated.connect(self.on_any_wallet_updated)
         self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
         self.signals.language_switch.connect(self.updateUI)
         self.signal_recently_open_wallet_changed.connect(self.populate_recent_wallets_menu)
@@ -2441,9 +2440,9 @@ class MainWindow(UnlockableMainWindow):
 
         self.language_chooser.add_signal_language_switch(self.signals.language_switch)
         self.wallet_functions.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
-        self.signals.event_wallet_tab_added.emit()
 
         self.p2p_listening_update_lists(UpdateFilter())
+        qt_wallet.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletOpened))
 
         # this is a
         self.last_qtwallet = qt_wallet
@@ -2517,9 +2516,11 @@ class MainWindow(UnlockableMainWindow):
         # necessary to remove old qt_wallets from memory
         self.rebuild_current_wallet_tab_menu()
 
-    def event_wallet_tab_added(self) -> None:
-        """Event wallet tab added."""
-        self.rebuild_current_wallet_tab_menu()
+    def on_any_wallet_updated(self, update_filter: UpdateFilter) -> None:
+        if update_filter.reason == UpdateFilterReason.WalletOpened:
+            self.rebuild_current_wallet_tab_menu()
+        elif update_filter.reason == UpdateFilterReason.WalletClosed:
+            self.event_wallet_tab_closed()
 
     def remove_qt_wallet_by_id(self, wallet_id: str) -> None:
         """Remove qt wallet by id."""
@@ -2537,7 +2538,7 @@ class MainWindow(UnlockableMainWindow):
                 root.removeNode()
 
         qt_protowallet.close()
-        self.event_wallet_tab_closed()
+        self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
 
     def _remove_qt_wallet(self, qt_wallet: QTWallet | None) -> None:
         """Remove qt wallet."""
@@ -2554,8 +2555,8 @@ class MainWindow(UnlockableMainWindow):
             self.last_qtwallet = None
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
-        self.event_wallet_tab_closed()
         self.p2p_listening_update_lists(UpdateFilter())
+        self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         """Add recently open wallet."""
