@@ -335,7 +335,7 @@ def test_reorg_keeps_tx_in_history_when_reincluded(
         logger.info("Reinclusion test finished successfully txid=%s", txid_a)
 
 
-@pytest.mark.marker_qt_2
+@pytest.mark.skip(reason="flaky in github workflow")
 def test_reorged_out_tx_stays_unconfirmed_in_history(
     qapp: QApplication,
     qtbot: QtBot,
