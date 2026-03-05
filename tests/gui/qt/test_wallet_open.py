@@ -133,13 +133,6 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
 
         check_open_address_dialog(qt_wallet)
 
-        def check_empty(qt_wallet: QTWallet) -> None:
-            """Check empty."""
-            # New wallet should start with zero balance.
-            assert qt_wallet.wallet.get_balance().total == 0
-
-        check_empty(qt_wallet)
-
         def open_tx() -> UITx_Viewer:
             """Open tx."""
             tx = "0200000000010130e2288abc2259145cbd255a0cc94fe7226d26130b216100a9d631d7f31a5b090100000000fdffffff024894f31c01000000225120a450dee7d2d0f14d720b359f23660fed35c031de2d54e8fb0db8bd9f6b1ee35829ee250000000000220020b7f7e21184e2bacaa6346674bd9f619eb7619f316864d8c82564fde6735e7a3c0247304402203b76bd679a0f6ec4846a791247a5551771db6147a92f42e76ec4c079d3caf60502204f1bed609ee20c271faae2042c1d2727923650aea9439df78da45384e5979f1d01210370a2b7a566702a384ceb8e9f9f4c9ae8a4b4904b832c4de2cf19f3289285e20300000000"

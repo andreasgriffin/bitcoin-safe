@@ -104,7 +104,7 @@ from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
 from ...mempool_manager import MempoolManager
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from ...util import fast_version
+from ...util import AddressBalanceDict, dict_intersection, fast_version
 from ...wallet import (
     DeltaCacheListTransactions,
     ProtoWallet,
@@ -980,96 +980,167 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             ]
         )
 
-    def _get_replacing_txids_for_removed_tx(self, tx: TransactionDetails) -> list[str]:
-        """Return candidate txids that now spend the same inputs as the removed tx."""
-        if not self.wallet:
-            return []
+    def _get_txids_of_likely_receive_replacements(
+        self, removed_txs: list[TransactionDetails], appended_txs: list[TransactionDetails]
+    ) -> tuple[list[TransactionDetails], dict[str, set[str]]]:
+        """
+        Return unreplaced txs and candidate txids with same is_mine(output_addresses) and summed amounts.
+        """
+        if not removed_txs:
+            return removed_txs, {}
+        if any(tx.sent > 0 for tx in (removed_txs + appended_txs)):
+            return removed_txs, {}
 
-        conflicting_python_txos = self.wallet.get_conflicting_python_txos(get_prev_outpoints(tx.transaction))
-        replacing_txids = {
-            python_utxo.is_spent_by_txid
-            for python_utxo in conflicting_python_txos
-            if python_utxo.is_spent_by_txid and python_utxo.is_spent_by_txid != tx.txid
-        }
-        return sorted(replacing_txids)
+        unreplaced_txs: list[TransactionDetails] = []
+        replacement_txids_by_removed_txid: dict[str, set[str]] = {}
 
-    def _format_removed_txs_details(self, removed_txs: list[TransactionDetails]) -> tuple[str, bool]:
-        """Format removed tx details and indicate whether replacements were detected."""
-        blocks: list[str] = []
-        has_replacement = False
+        wallet_addresses = self.wallet.get_addresses()
+
+        def sum_wallet_amounts(txs: list[TransactionDetails]):
+            return sum(
+                AddressBalanceDict(
+                    dict_intersection(
+                        self.wallet.get_summed_output_address_and_amount_dict(tx.transaction),
+                        wallet_addresses,
+                    )
+                )
+                for tx in txs
+            )
+
+        available_amounts = sum_wallet_amounts(appended_txs)
+        removed_amounts = sum_wallet_amounts(removed_txs)
+
+        if removed_amounts == available_amounts:
+            for removed_tx in removed_txs:
+                # since we don't know any better we associate all with all
+                replacement_txids_by_removed_txid[removed_tx.txid] = set(
+                    appended_tx.txid for appended_tx in appended_txs
+                )
+        else:
+            unreplaced_txs = removed_txs
+
+        return unreplaced_txs, replacement_txids_by_removed_txid
+
+    def _get_replacing_txids_for_removed_tx(
+        self, removed_txs: list[TransactionDetails]
+    ) -> tuple[list[TransactionDetails], dict[str, set[str]]]:
+        """Return unreplaced txs and candidate txids that now spend the same inputs.
+
+        This only works if the inputs of the txs are known to the wallet  (which is not the case for CBF)
+        """
+        unreplaced_txs: list[TransactionDetails] = []
+        replacement_txids_by_removed_txid: dict[str, set[str]] = {}
+
         for tx in removed_txs:
-            old_txid_short = tx.txid
-            replacing_txids = self._get_replacing_txids_for_removed_tx(tx)
-            was_confirmed = isinstance(tx.chain_position, bdk.ChainPosition.CONFIRMED)
+            conflicting_python_txos = self.wallet.get_conflicting_python_txos(
+                get_prev_outpoints(tx.transaction)
+            )
+            replacing_txids = {
+                python_utxo.is_spent_by_txid
+                for python_utxo in conflicting_python_txos
+                if python_utxo.is_spent_by_txid and python_utxo.is_spent_by_txid != tx.txid
+            }
 
             if replacing_txids:
-                has_replacement = True
-                happened_text = self.tr("Replaced in the Mempool.")
-                replaced_by_lines = "\n".join(
-                    [self.tr("    {new_txid}").format(new_txid=(txid)) for txid in replacing_txids]
-                )
-                replaced_by_block = self.tr("  Replaced By TxID(s):\n{replaced_by_lines}").format(
-                    replaced_by_lines=replaced_by_lines
-                )
+                replacement_txids_by_removed_txid[tx.txid] = replacing_txids
             else:
-                if was_confirmed:
-                    happened_text = self.tr(
-                        "This transaction was previously confirmed and is now removed. "
-                        "This indicates a Chain Reorganization (Reorg)."
-                    )
-                else:
-                    happened_text = self.tr(
-                        "This transaction was unconfirmed and is now removed. "
-                        "It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet."
-                    )
-                replaced_by_block = self.tr("  Replaced By TxID(s): {new_txid}").format(
-                    new_txid=self.tr("(not detected)")
+                unreplaced_txs.append(tx)
+
+        return unreplaced_txs, replacement_txids_by_removed_txid
+
+    def _format_removed_txs_details(self, removed_txs: list[TransactionDetails]) -> str:
+        """Format details for removed transactions that have no detected replacement."""
+        blocks: list[str] = []
+        for tx in removed_txs:
+            was_confirmed = isinstance(tx.chain_position, bdk.ChainPosition.CONFIRMED)
+
+            happened_text = (
+                self.tr(
+                    "This transaction was previously confirmed and is now removed. "
+                    "This indicates a Chain Reorganization (Reorg)."
                 )
+                if was_confirmed
+                else self.tr(
+                    "This transaction was unconfirmed and is now removed. "
+                    "It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet."
+                )
+            )
+            replaced_by_block = self.tr("  Replaced By TxID(s): {new_txid}").format(
+                new_txid=self.tr("(not detected)")
+            )
 
             blocks.append(
                 self.tr("- TxID: {txid}\n{replaced_by_block}\n  What Happened: {happened_text}").format(
-                    txid=old_txid_short,
+                    txid=tx.txid,
                     replaced_by_block=replaced_by_block,
                     happened_text=happened_text,
                 )
             )
-        return "\n\n".join(blocks), has_replacement
+        return "\n\n".join(blocks)
 
-    def hanlde_removed_txs(self, removed_txs: list[TransactionDetails]) -> None:
+    def handle_removed_txs(
+        self, removed_txs: list[TransactionDetails], appended_txs: list[TransactionDetails]
+    ) -> None:
         """Hanlde removed txs."""
         if not removed_txs:
             return
+        self.notified_tx_ids -= set(tx.txid for tx in removed_txs)
 
-        txs_details, has_replacement = self._format_removed_txs_details(removed_txs)
-        message_content = self.tr("Removed Transaction(s) in Wallet '{wallet}':\n\n{txs}").format(
-            txs=txs_details, wallet=self.wallet.id
+        unreplaced_txs, replacement_txids_by_removed_txid = self._get_replacing_txids_for_removed_tx(
+            removed_txs=removed_txs
         )
-        Message(
-            message_content,
-            no_show=True,
-            parent=self,
-        ).emit_with(self.signals.notification)
-        if question_dialog(
-            message_content + "\n\n" + self.tr("Do you want to save a copy of these transactions?"),
-            true_button=self.tr("Save Transactions"),
-            false_button=QMessageBox.StandardButton.No,
-            default_is_true_button=not has_replacement,
-        ):
-            folder_path = QFileDialog.getExistingDirectory(
-                self, "Select Folder to save the removed transactions"
+        unreplaced_txs, likely_replacement_txids_by_removed_txid = (
+            self._get_txids_of_likely_receive_replacements(
+                removed_txs=unreplaced_txs, appended_txs=appended_txs
             )
+        )
+        if replacement_txids_by_removed_txid:
+            logger.info(
+                f"Suppressed removed-tx notifications for replacements: {replacement_txids_by_removed_txid}"
+            )
+        if likely_replacement_txids_by_removed_txid:
+            Message(
+                self.tr(
+                    "Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}"
+                ).format(
+                    txs=", ".join(likely_replacement_txids_by_removed_txid),
+                    name=self.wallet.id,
+                    new_txs=", ".join([tx.txid for tx in appended_txs]),
+                ),
+                type=MessageType.Info,
+                no_show=True,
+            ).emit_with(self.signals.notification)
 
-            if folder_path:
-                for tx in removed_txs:
-                    data = Data.from_tx(tx.transaction, network=self.wallet.network)
-                    filename = Path(folder_path) / f"{short_tx_id(tx.txid)}.tx"
+        if unreplaced_txs:
+            txs_details = self._format_removed_txs_details(unreplaced_txs)
+            message_content = self.tr("Removed Transaction(s) in Wallet '{wallet}':\n\n{txs}").format(
+                txs=txs_details, wallet=self.wallet.id
+            )
+            Message(
+                message_content,
+                no_show=True,
+                parent=self,
+            ).emit_with(self.signals.notification)
+            if question_dialog(
+                message_content + "\n\n" + self.tr("Do you want to save a copy of these transactions?"),
+                true_button=self.tr("Save Transactions"),
+                false_button=QMessageBox.StandardButton.No,
+                default_is_true_button=True,
+            ):
+                folder_path = QFileDialog.getExistingDirectory(
+                    self, "Select Folder to save the removed transactions"
+                )
 
-                    # create a file descriptor
-                    fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
-                    data.write_to_filedescriptor(fd)
-                    logger.info(f"Exported {tx.txid} to {filename}")
+                if folder_path:
+                    for tx in unreplaced_txs:
+                        data = Data.from_tx(tx.transaction, network=self.wallet.network)
+                        filename = Path(folder_path) / f"{short_tx_id(tx.txid)}.tx"
 
-        self.notified_tx_ids -= set([tx.txid for tx in removed_txs])
+                        # create a file descriptor
+                        fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+                        data.write_to_filedescriptor(fd)
+                        logger.info(f"Exported {tx.txid} to {filename}")
+
         # all the lists must be updated
         self.refresh_caches_and_ui_lists(force_ui_refresh=True)
 
@@ -1099,11 +1170,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 parent=self,
             ).emit_with(self.signals.notification)
 
-        self.notified_tx_ids = self.notified_tx_ids.union([tx.txid for tx in appended_txs])
+        self.notified_tx_ids.update([tx.txid for tx in appended_txs])
 
     def handle_delta_txs(self, delta_txs: DeltaCacheListTransactions) -> None:
         """Handle delta txs."""
-        self.hanlde_removed_txs(delta_txs.removed)
+        self.handle_removed_txs(delta_txs.removed, appended_txs=delta_txs.appended)
         self.handle_appended_txs(delta_txs.appended)
 
     @time_logger

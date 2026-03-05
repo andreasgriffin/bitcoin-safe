@@ -32,7 +32,7 @@ import json
 import logging
 import math
 import os
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from datetime import datetime, timedelta
 from functools import cache, lru_cache, wraps
 from pathlib import Path
@@ -48,6 +48,10 @@ from typing import (
 
 import numpy as np
 from packaging.version import Version
+
+K = TypeVar("K")
+V = TypeVar("V")
+
 
 OptExcInfo = tuple[type[BaseException] | None, BaseException | None, TracebackType | None]
 SATOSHIS_PER_BTC = 100_000_000
@@ -271,3 +275,42 @@ def default_timeout(proxies: Any, timeout: float | Literal["default"] = "default
     if timeout == "default":
         return 10 if proxies else 2
     return timeout
+
+
+def dict_intersection(d: Mapping[K, V], keys: Iterable[K]) -> dict[K, V]:
+    """
+    Return a dictionary containing only items from `d`
+    whose keys appear in `keys`.
+
+    Works with:
+        - another dict
+        - a set
+        - any iterable of keys
+    """
+    keyset = set(keys)
+    return {k: v for k, v in d.items() if k in keyset}
+
+
+class AddressBalanceDict(dict[str, int]):
+    """Dictionary where + merges and sums values of matching keys."""
+
+    def __add__(self, other: dict[str, int]) -> AddressBalanceDict:
+        result = AddressBalanceDict(self)
+        for k, v in other.items():
+            result[k] = result.get(k, 0) + v
+        return result
+
+    def __iadd__(self, other: dict[str, int]) -> AddressBalanceDict:
+        for k, v in other.items():
+            self[k] = self.get(k, 0) + v
+        return self
+
+    def __radd__(self, other):
+        # needed for sum([...]) which starts with 0
+        if other == 0:
+            return AddressBalanceDict(self)
+
+        if isinstance(other, Mapping):
+            return AddressBalanceDict(other) + self
+
+        return NotImplemented
