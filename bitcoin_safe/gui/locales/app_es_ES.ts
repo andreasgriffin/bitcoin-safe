@@ -928,7 +928,10 @@ Default 20</source>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-        <translation>1. Conecta tu firmante de hardwaren2. Haz clic en Escanearn3. Desbloquea el dispositivon4. Selecciona el dispositivo</translation>
+        <translation>1. Conecta tu firmante de hardware
+2. Pulse en Escanear
+3. Desbloquea el dispositivo
+4. Selecciona el dispositivo</translation>
     </message>
     <name>DeviceDialog</name>
     <message>
@@ -5767,9 +5770,9 @@ Haz clic aquí para saber más.</translation>
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
         <translation>1. Adjunta la &apos;Hoja de Recuperación&apos; ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt;
-  2. Dobla este papel en la línea de abajo&lt;br/&gt;
-  3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt;
-  4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)   
+2. Dobla este papel en la línea de abajo&lt;br/&gt;
+3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt;
+4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)   
                 </translation>
     </message>
     <name>pdf</name>
