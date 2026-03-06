@@ -44,7 +44,6 @@ from PyQt6.QtGui import (
     QPainter,
     QPainterPath,
     QPaintEvent,
-    QPalette,
     QPen,
     QRadialGradient,
 )
@@ -563,7 +562,7 @@ class InitialCbfSyncWidget(QWidget):
 
         self.map_widget.set_points(node_points + p2p_points + cbf_points)
 
-        gray = self.palette().color(QPalette.ColorRole.Mid).name()
+        gray = self.map_widget._LAND_FILL.name()
         self.peer_legend_label.setText(
             self.tr(
                 "<span style='color:{color}'>●</span> P2P listener peers: {total} "
