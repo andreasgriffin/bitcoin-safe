@@ -145,6 +145,9 @@ class P2pListener(QObject):
         self._current_peers[slot_id] = connection_info
         self.signal_current_peers_change.emit(self.active_connections)
 
+    def get_current_peers(self):
+        return [connection for connection in self._current_peers.values() if connection]
+
     def on_tx(self, tx: bdk.Transaction):
         """On tx."""
         if (self.address_filter is not None) and address_match(

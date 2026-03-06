@@ -20,6 +20,7 @@ include = [
     { path = "bitcoin_safe/gui/screenshots/**",  format = ["sdist", "wheel"] },
     { path = "bitcoin_safe/gui/locales/**",      format = ["sdist", "wheel"] },
     { path = "bitcoin_safe/gui/demo_wallets/**", format = ["sdist", "wheel"] },
+    { path = "bitcoin_safe/data/**",             format = ["sdist", "wheel"] },
 ]
 
 [tool.poetry-version-plugin]

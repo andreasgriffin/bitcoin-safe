@@ -658,6 +658,17 @@ class MainWindow(UnlockableMainWindow):
             label.setText(text)
             label.setToolTip(tooltip)
 
+        self.update_all_history_initial_sync_widgets()
+
+    def update_all_history_initial_sync_widgets(self):
+        for qt_wallet in self.qt_wallets.values():
+            qt_wallet.update_history_initial_sync_widgets(
+                total_discovered_peers=self.p2p_listener.peer_discovery.total_discovered_peers
+                if self.p2p_listener
+                else None,
+                p2p_connections=self.p2p_listener.get_current_peers() if self.p2p_listener else None,
+            )
+
     def on_signal_close_tabs_with_txids(self, items: list[str]):
         """On signal close tabs with txids."""
         for item in items:
@@ -2450,8 +2461,8 @@ class MainWindow(UnlockableMainWindow):
 
         self.p2p_listening_update_lists(UpdateFilter())
         qt_wallet.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletOpened))
+        self.update_all_history_initial_sync_widgets()
 
-        # this is a
         self.last_qtwallet = qt_wallet
         return qt_wallet
 

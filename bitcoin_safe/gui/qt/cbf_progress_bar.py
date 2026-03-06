@@ -43,10 +43,13 @@ logger = logging.getLogger(__name__)
 
 
 class CBFProgressBar(QProgressBar):
-    def __init__(self, config: UserConfig, parent: QWidget | None = None) -> None:
+    def __init__(
+        self, config: UserConfig, show_rich_infos: bool = True, parent: QWidget | None = None
+    ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent)
         self.config = config
+        self.show_rich_infos = show_rich_infos
         self.setMinimumWidth(300)
         self.setRange(0, 100)
         self.set_progressbar(progress=0, text="0%", tooltip="")
@@ -61,17 +64,18 @@ class CBFProgressBar(QProgressBar):
             minutes, seconds = divmod(remainder, 60)
             return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
+        percent = int(progress_info.progress * 100)
         text = (
             progress_info.status_msg
             if progress_info.status_msg
             else self.tr("{percent}% - Finished {remaining_time}").format(
-                percent=int(progress_info.progress * 100),
+                percent=percent,
                 remaining_time=age(from_date=progress_info.remaining_time),
             )
         )
 
         self.set_progressbar(
-            progress=int(progress_info.progress * 100),
+            progress=percent,
             text=text,
             tooltip=self.tr("Past time: {passed_time}").format(
                 passed_time=format_timedelta(progress_info.passed_time)
@@ -97,10 +101,14 @@ class CBFProgressBar(QProgressBar):
         if progress is not None:
             self.setValue(progress)
         self._set_visibility()
+        format_text = text
+        if self.show_rich_infos:
+            self.setFormat(format_text)
+        else:
+            self.resetFormat()
+            format_text = self.tr("{percent}%").format(percent=self.value())
 
         if sys.platform.startswith("darwin"):
-            self.setFormat(text)  # not visible
-            self.setToolTip(text + "\n" + tooltip)
+            self.setToolTip(format_text + "\n" + tooltip)
         else:
-            self.setFormat(text)
             self.setToolTip(tooltip)

@@ -61,6 +61,7 @@ from PyQt6.QtWidgets import (
     QMenu,
     QMessageBox,
     QSplitter,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -84,6 +85,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
+from bitcoin_safe.network_config import ConnectionInfo, Peer
 from bitcoin_safe.pdf_statement import make_and_open_pdf_statement
 from bitcoin_safe.plugin_framework.plugin_list_widget import PluginListWidget
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManager
@@ -118,6 +120,7 @@ from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
 from .history_range import HistoryRangeController
+from .initial_cbf_sync_widget import InitialCbfSyncWidget
 from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
 
@@ -403,6 +406,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_tracker.connect(self.signal_wallet_update, self._handle_client_update)
         self.signal_tracker.connect(self.signal_refresh_sync_status, self.update_sync_status)
 
+        #
+        self.signal_tracker.connect(self.signal_progress_info, self._on_history_initial_sync_progress_info)
+        self.signal_tracker.connect(
+            self.history_list.signal_finished_update,
+            self._update_history_initial_sync_overlay_visibility,
+        )
+
+        self._update_history_initial_sync_overlay_visibility()
         self._start_progress_update_timer()
         self._start_sync_retry_timer()
         self._start_sync_regularly_timer()
@@ -578,6 +589,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             address_infos=[address_info for address_info in address_infos if address_info]
         )
         self.update_display_balance()
+        self._update_history_initial_sync_overlay_visibility()
 
     def updateUi(self) -> None:
         """UpdateUi."""
@@ -596,6 +608,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.fiat_value_label_title.setText(self.tr("Value"))
         self.category_manager.updateUi()
         self.quick_receive.updateUi()
+        self.history_initial_sync_widget.updateUi()
+        self._update_history_initial_sync_overlay_visibility()
 
     def update_display_balance(self):
         """Update display balance."""
@@ -664,6 +678,23 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not self.wallet.client:
             return
         self.signal_progress_info.emit(self.wallet.client.progress_info)
+
+    def _on_history_initial_sync_progress_info(self, progress_info: ProgressInfo) -> None:
+        self.history_initial_sync_widget.set_progress_info(progress_info)
+        self.history_initial_sync_widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        self._update_history_initial_sync_overlay_visibility()
+
+    def should_show_initial_sync_placeholder(self) -> bool:
+        has_empty_history = not self.wallet.sorted_delta_list_transactions()
+        is_cbf = self.config.network_config.server_type == BlockchainType.CompactBlockFilter
+        inital_sync = not self.wallet.has_checkpoint()
+        return is_cbf and has_empty_history and inital_sync
+
+    def _update_history_initial_sync_overlay_visibility(self) -> None:
+        if self.should_show_initial_sync_placeholder():
+            self.history_tab_content_stack.setCurrentWidget(self.history_initial_sync_widget)
+        else:
+            self.history_tab_content_stack.setCurrentWidget(self.history_tab_content)
 
     def _start_sync_retry_timer(self, delay_retry_sync=30) -> None:
         """Start sync retry timer."""
@@ -1387,8 +1418,19 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         tab_layout = QVBoxLayout(tab)
         tab_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
+        self.history_tab_content_stack = QStackedWidget(tab)
+        tab_layout.addWidget(self.history_tab_content_stack)
+
+        self.history_tab_content = QWidget(tab)
+        history_tab_content_layout = QVBoxLayout(self.history_tab_content)
+        history_tab_content_layout.setContentsMargins(0, 0, 0, 0)
+
         splitter = QSplitter(orientation=Qt.Orientation.Vertical)
-        tab_layout.addWidget(splitter)
+        history_tab_content_layout.addWidget(splitter)
+        self.history_tab_content_stack.addWidget(self.history_tab_content)
+
+        self.history_initial_sync_widget = InitialCbfSyncWidget(config=self.config, parent=tab)
+        self.history_tab_content_stack.addWidget(self.history_initial_sync_widget)
 
         if history_list_with_toolbar:
             history_list_with_toolbar.hist_list.set_wallets(wallets=[self.wallet])
@@ -1833,6 +1875,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 key=f"{id(self)}sync",
                 multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
             )
+
+    def update_history_initial_sync_widgets(
+        self, total_discovered_peers: set[Peer] | None, p2p_connections: list[ConnectionInfo] | None
+    ):
+        if p2p_connections is not None:
+            self.history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
+        if total_discovered_peers is not None:
+            self.history_initial_sync_widget.set_nodes(total_discovered_peers)
 
     async def _sync_revealed_spks(self):
         "Syncs all revealed skps"

@@ -32,6 +32,7 @@ import asyncio
 import logging
 import random
 import socket
+from contextlib import suppress
 from ipaddress import ip_address
 from typing import Any
 
@@ -200,6 +201,36 @@ class PeerDiscovery:
         self._owns_loop_in_thread = loop_in_thread is None
         self.total_discovered_peers: set[Peer] = set()
 
+    @staticmethod
+    def _requires_reachability_probe(seed_host: str) -> bool:
+        """Return True when seed entries should be verified by connecting."""
+        return seed_host in {"127.0.0.1", "::1", "localhost"}
+
+    async def _is_peer_reachable(self, peer: Peer, timeout: float = 0.35) -> bool:
+        """Check whether a TCP peer can be reached."""
+        try:
+            _, writer = await asyncio.wait_for(asyncio.open_connection(peer.host, peer.port), timeout=timeout)
+        except Exception:
+            return False
+
+        writer.close()
+        with suppress(Exception):
+            await writer.wait_closed()
+        return True
+
+    async def _resolve_seed_to_peers(self, seed_host: str, required_services: int | None) -> list[Peer]:
+        """Resolve a single seed and optionally probe reachability."""
+        seed_info = Peer.parse(seed_host, self.network)
+        candidate_seed = self._seed_with_service_bits(
+            seed_info.host,
+            required_services if required_services else None,
+        )
+        peers = await self._resolve_dns_seed(candidate_seed, seed_info.port)
+        if self._requires_reachability_probe(seed_info.host):
+            return [peer for peer in peers if await self._is_peer_reachable(peer)]
+        else:
+            return peers
+
     def _seed_with_service_bits(self, host: str, required_services: int | None) -> str:
         """Seed with service bits."""
         if required_services is None:
@@ -262,15 +293,15 @@ class PeerDiscovery:
             DEFAULT_REQUIRED_SERVICE_FLAGS if required_services is None else required_services
         )
 
+        def return_results(results: list[list[Peer]]):
+            peers = {peer for batch in results for peer in batch}
+            self.total_discovered_peers.update(peers)
+            return peers
+
         partial_results: list[list[Peer]] = []
 
         async def resolve(seed_host: str) -> list[Peer]:
-            seed_info = Peer.parse(seed_host, self.network)
-            candidate_seed = self._seed_with_service_bits(
-                seed_info.host,
-                effective_required_services if effective_required_services else None,
-            )
-            peers = await self._resolve_dns_seed(candidate_seed, seed_info.port)
+            peers = await self._resolve_seed_to_peers(seed_host, effective_required_services)
             partial_results.append(peers)
             return peers
 
@@ -290,11 +321,9 @@ class PeerDiscovery:
             )
         except asyncio.TimeoutError:
             logger.warning(f"Peer discovery timed out after {timeout} seconds")
-            return {peer for batch in partial_results for peer in batch}
+            return return_results(partial_results)
 
-        peers = {peer for batch in batches for peer in batch}
-        self.total_discovered_peers.update(peers)
-        return peers
+        return return_results(batches)
 
     async def get_bitcoin_peer(
         self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS
