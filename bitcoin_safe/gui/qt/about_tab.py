@@ -133,6 +133,20 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</p>    
+
+<p><b>GeoIP rough location data</b></p>
+
+<p>This software includes rough IP geolocation data generated from two open datasets:</p>
+
+<p><b>DB-IP City Lite</b><br>
+Contains IP geolocation data from DB-IP (https://db-ip.com).<br>
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)<br>
+https://creativecommons.org/licenses/by/4.0/</p>
+
+<p><b>Natural Earth country geometries</b><br>
+Contains country geometry data from Natural Earth.<br>
+License: Public Domain<br>
+https://www.naturalearthdata.com/about/terms-of-use/</p>
                     
                        """.format(link=link("https://www.gnu.org/licenses/gpl-3.0.html")),
             self,

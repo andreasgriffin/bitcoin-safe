@@ -784,6 +784,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.apply_unconfirmed_txs(txs=initial_txs)
         self.mark_all_labeled_addresses_used(include_receiving_addresses=False)
 
+    def has_checkpoint(self) -> bool:
+        return bool(self.bdkwallet.latest_checkpoint().height)
+
     def get_cbf_data_dir(
         self,
     ) -> Path:

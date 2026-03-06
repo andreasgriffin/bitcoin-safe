@@ -45,6 +45,7 @@ datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/SIGNET/*", f"{PYPKG}/gui/demo_wallets/SIGNET"), 
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET/*", f"{PYPKG}/gui/demo_wallets/TESTNET"), 
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET4/*", f"{PYPKG}/gui/demo_wallets/TESTNET4"), 
+    (f"{PROJECT_ROOT}/{PYPKG}/data/*", f"{PYPKG}/data"), 
 ]
 
 ##### data of included modules 
