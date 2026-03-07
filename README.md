@@ -146,6 +146,9 @@
 poetry run pre-commit run --all-files
 ```
 
+Python file headers are updated automatically by `add-license-header` during pre-commit.
+If the hook rewrites a file, re-stage it and re-run the commit.
+
 #### Regtest docker environement with electrs and mempool
 
 * install docker
