@@ -167,7 +167,7 @@ def estimate_tx_weight(
 
 class FeeRate(bdk.FeeRate):
     @classmethod
-    def from_fee_rate(cls, fee_rate: bdk.FeeRate) -> FeeRate:
+    def from_fee_rate(cls, fee_rate: bdk.FeeRate):
         """From fee rate."""
         return cls.from_sat_per_kwu(fee_rate.to_sat_per_kwu())
 
@@ -177,9 +177,10 @@ class FeeRate(bdk.FeeRate):
         sat_per_kwu = int(250 * fee_rate)
         return cls.from_sat_per_kwu(sat_per_kwu)
 
-    def to_sats_per_vb(self) -> float:
+    @classmethod
+    def to_sats_per_vb(cls, fee_rate: bdk.FeeRate) -> float:
         """To sats per vb."""
-        return self.to_sat_per_kwu() / 250
+        return fee_rate.to_sat_per_kwu() / 250
 
 
 class FeeInfo:

@@ -190,11 +190,9 @@ class CbfSync:
             self.wallet.derivation_index(keychain=bdk.KeychainKind.INTERNAL) or 0,
         )
         if self.is_new_wallet and self.wallet.latest_checkpoint().height == 0:
-            scan_type = cast(
-                bdk.ScanType,
-                bdk.ScanType.RECOVERY(
-                    used_script_index=derivation_index, checkpoint=bdk.RecoveryPoint.TAPROOT_ACTIVATION
-                ),
+            scan_type = bdk.ScanType.RECOVERY(
+                used_script_index=derivation_index,
+                checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.TAPROOT_ACTIVATION()),
             )
         else:
             if self.wallet.latest_checkpoint().height == 0:
@@ -204,13 +202,16 @@ class CbfSync:
                     ).address_type,
                     network=self.wallet.network(),
                 )
-                scan_type = cast(
-                    bdk.ScanType,
-                    bdk.ScanType.RECOVERY(used_script_index=derivation_index, checkpoint=recovery_point),
+                scan_type = bdk.ScanType.RECOVERY(
+                    used_script_index=derivation_index, checkpoint=recovery_point
                 )
             else:
-                scan_type = cast(bdk.ScanType, bdk.ScanType.SYNC())
-        builder = bdk.CbfBuilder().scan_type(scan_type=scan_type).data_dir(data_dir=str(self.data_dir))
+                scan_type = bdk.ScanType.SYNC()
+        builder = (
+            bdk.CbfBuilder()
+            .scan_type(scan_type=cast(bdk.ScanType, scan_type))
+            .data_dir(data_dir=str(self.data_dir))
+        )
         if self.proxy_info:
             builder = builder.socks5_proxy(proxy=self.proxy_info.to_bdk())
         if self.peers:

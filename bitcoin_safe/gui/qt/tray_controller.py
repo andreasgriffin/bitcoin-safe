@@ -244,13 +244,12 @@ class TrayController(QSystemTrayIcon):
     def _show_notification(self, message: Message) -> None:
         icon, _ = message.get_icon_and_title()
         tray_icon = Message.system_tray_icon(icon)
-        title = message.title or "Bitcoin Safe"
-        safe_title = title.replace("\n", " ").strip() or "Bitcoin Safe"
-        safe_message = message.msg.replace("\n", " ").strip()
+        title = (message.title or "Bitcoin Safe").strip()
+        content = message.msg.strip()
         if message.msecs:
-            self.showMessage(safe_title, safe_message, tray_icon, message.msecs)
+            self.showMessage(title, content, tray_icon, message.msecs)
             return
-        self.showMessage(safe_title, safe_message, tray_icon)
+        self.showMessage(title, content, tray_icon)
 
     def _show_notifications(self, messages: list[Message]) -> None:
         for index, message in enumerate(messages):
