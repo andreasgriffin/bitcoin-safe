@@ -685,7 +685,7 @@ def custom_message_box(
         if isinstance(icon, QPixmap):
             pixmap_icon = icon
         if isinstance(icon, QIcon):
-            pixmap_icon = icon.pixmap(60, 60)
+            pixmap_icon = icon.pixmap(QSize(60, 60), d.devicePixelRatioF())
 
         if pixmap_icon:
             d.setIconPixmap(pixmap_icon)

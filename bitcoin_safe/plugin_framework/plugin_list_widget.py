@@ -35,7 +35,7 @@ from collections.abc import Sequence
 from typing import Protocol, cast, runtime_checkable
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QApplication,
@@ -84,7 +84,7 @@ class PluginWidget(QWidget):
 
         # Icon label
         self.icon_label = QLabel()
-        self.icon_label.setPixmap(plugin.icon.pixmap(*icon_size))
+        self.icon_label.setPixmap(plugin.icon.pixmap(QSize(*icon_size), self.devicePixelRatioF()))
         self._layout.addWidget(self.icon_label, alignment=Qt.AlignmentFlag.AlignTop)
 
         # Text container (title, provider, description)
