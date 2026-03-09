@@ -1,12 +1,22 @@
 repos:
-  - repo: local
+  - repo: https://github.com/arkinmodi/add-license-header
+    rev: 36c225c4bed76d7612040d3d3be9dd70357ac55a  # frozen: v2.4.1
     hooks:
-      - id: check-header
-        name: Check Python File Headers
-        entry: python tools/check_header.py
-        language: system
+      - id: add-license-header
+        name: Update Python File Headers
+        args:
+          - --unmanaged
+          - --single-year-if-same
+          - --year-delimiter=-
+          - --author-name
+          - Andreas Griffin
+          - --license-file
+          - tools/license_header.txt
         types: [python]
         files: '\.py$'
+
+  - repo: local
+    hooks:
       - id: ensure-desktop-newline
         name: Ensure desktop files end with newline
         entry: python tools/ensure_desktop_newline.py
