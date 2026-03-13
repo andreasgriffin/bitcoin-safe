@@ -101,7 +101,7 @@ class IconLabel(QWidget):
             line_height = fm.height()
 
             pixmap_sizes = [s if s else line_height for s in sizes]
-            self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes)))
+            self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes), self.devicePixelRatioF()))
             self.icon_label.setFixedSize(QSize(*pixmap_sizes))
 
     def on_icon_click(self):

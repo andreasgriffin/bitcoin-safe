@@ -226,7 +226,7 @@ class AddCategoryButton(TitledComponent):
         self.caption_label_sub = add_label(size=11)
 
         icon = svg_tools.get_QIcon("bi--plus-lg.svg")
-        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36)))
+        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36), self.devicePixelRatioF()))
         opacity_effect = QGraphicsOpacityEffect()
         opacity_effect.setOpacity(0.6)  # 0.0 = transparent, 1.0 = opaque
         self.icon_label.setGraphicsEffect(opacity_effect)

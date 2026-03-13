@@ -45,6 +45,7 @@ import requests
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import (
+    QSize,
     Qt,
     QTimer,
     QUrl,
@@ -497,7 +498,7 @@ class DonateDialog(QWidget):
 
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo_label.setPixmap(svg_tools.get_QIcon("logo.svg").pixmap(96, 96))
+        logo_label.setPixmap(svg_tools.get_QIcon("logo.svg").pixmap(QSize(96, 96), self.devicePixelRatioF()))
         layout.addWidget(logo_label)
 
         title_label = QLabel(self.tr("Help Bitcoin Safe grow as Free and Open Source Software."))
