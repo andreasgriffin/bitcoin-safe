@@ -1872,7 +1872,7 @@ class MainWindow(UnlockableMainWindow):
                             fee_amount = psbt.fee()
                             fee_info = FeeInfo.from_fee_rate(
                                 fee_amount=fee_amount,
-                                fee_rate=fee_rate.to_sats_per_vb(),
+                                fee_rate=FeeRate.to_sats_per_vb(fee_rate),
                                 fee_rate_is_estimated=False,
                                 fee_amount_is_estimated=False,
                             )

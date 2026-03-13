@@ -186,17 +186,21 @@ async def run_sync(args: argparse.Namespace) -> None:
 
     if args.recovery_height is not None:
         scan_type = bdk.ScanType.RECOVERY(
-            used_script_index=100, checkpoint=bdk.RecoveryPoint.SEGWIT_ACTIVATION
+            used_script_index=100, checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.SEGWIT_ACTIVATION())
         )
     elif args.new_wallet or wallet.latest_checkpoint().height == 0:
         scan_type = bdk.ScanType.RECOVERY(
-            used_script_index=100, checkpoint=bdk.RecoveryPoint.TAPROOT_ACTIVATION
+            used_script_index=100, checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.TAPROOT_ACTIVATION())
         )
     else:
         scan_type = bdk.ScanType.SYNC()
 
-    scan_type = cast(bdk.ScanType, scan_type)
-    builder = bdk.CbfBuilder().scan_type(scan_type).data_dir(str(data_dir)).connections(args.connections)
+    builder = (
+        bdk.CbfBuilder()
+        .scan_type(cast(bdk.ScanType, scan_type))
+        .data_dir(str(data_dir))
+        .connections(args.connections)
+    )
 
     peers = build_peers(args.peers)
     if peers:

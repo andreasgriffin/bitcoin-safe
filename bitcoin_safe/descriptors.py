@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Sequence
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport
@@ -153,12 +154,12 @@ def is_taproot(a: AddressType):  # P2TR (v1)
 def get_recovery_point(address_type: AddressType, network: bdk.Network) -> bdk.RecoveryPoint:
     """Get recovery point."""
     if is_legacy(address_type):
-        return bdk.RecoveryPoint.GENESIS_BLOCK
+        return cast(bdk.RecoveryPoint, bdk.RecoveryPoint.GENESIS_BLOCK())
     elif is_segwit_v0(address_type):
-        return bdk.RecoveryPoint.SEGWIT_ACTIVATION
+        return cast(bdk.RecoveryPoint, bdk.RecoveryPoint.SEGWIT_ACTIVATION())
     elif is_taproot(address_type):
-        return bdk.RecoveryPoint.TAPROOT_ACTIVATION
-    return bdk.RecoveryPoint.GENESIS_BLOCK
+        return cast(bdk.RecoveryPoint, bdk.RecoveryPoint.TAPROOT_ACTIVATION())
+    return cast(bdk.RecoveryPoint, bdk.RecoveryPoint.GENESIS_BLOCK())
 
 
 def min_blockheight(address_type: AddressType, network: bdk.Network) -> int:

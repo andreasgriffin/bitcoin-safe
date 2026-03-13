@@ -38,6 +38,7 @@ from time import time
 from typing import (
     Any,
     Final,
+    cast,
 )
 from uuid import uuid4
 
@@ -528,10 +529,10 @@ class BdkWallet(bdk.Wallet, CacheManager):
             persister=persister,
             lookahead=20 if lookahead is _LOOKAHEAD_SENTINEL else lookahead,
         )
-        CacheManager.__init__(wallet)
-        wallet._init_cache()
+        CacheManager.__init__(wallet)  # type: ignore
+        wallet._init_cache()  # type: ignore
         logger.info(f"Created bdk.Wallet for network {wallet.network()}")
-        return wallet
+        return cast(BdkWallet, wallet)
 
     @instance_lru_cache(always_keep=True)
     def peek_address(self, keychain: bdk.KeychainKind, index: int) -> bdk.AddressInfo:
@@ -2213,7 +2214,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         logger.info(f"Created PSBT {str(psbt.extract_tx().compute_txid())[:4]=}")
         fee_rate = self.bdkwallet.calculate_fee_rate(psbt.extract_tx())
         if fee_rate is not None:
-            logger.info(f"psbt fee after finalized {FeeRate.from_fee_rate(fee_rate).to_sats_per_vb()}")
+            logger.info(f"psbt fee after finalized {FeeRate.to_sats_per_vb(FeeRate.from_fee_rate(fee_rate))}")
 
         recipient_category = self.determine_recipient_category(utxos_for_input.utxos)
 
