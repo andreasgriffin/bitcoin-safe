@@ -52,7 +52,8 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, M
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe_lib.util import fast_version, time_logger
 from PyQt6.QtCore import QLocale, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
     QFileDialog,
@@ -98,7 +99,6 @@ from bitcoin_safe.pythonbdk_types import (
     get_prev_outpoints,
     python_utxo_balance,
 )
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
@@ -107,7 +107,7 @@ from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
 from ...mempool_manager import MempoolManager
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from ...util import AddressBalanceDict, dict_intersection, fast_version
+from ...util import AddressBalanceDict, dict_intersection
 from ...wallet import (
     DeltaCacheListTransactions,
     ProtoWallet,

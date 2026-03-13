@@ -69,7 +69,8 @@ from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import confirmation_wait_formatted
-from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.util import fast_version, time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QStandardItem
@@ -85,9 +86,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
-from bitcoin_safe.storage import BaseSaveableClass
 from bitcoin_safe.tx import short_tx_id
-from bitcoin_safe.util import fast_version
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions

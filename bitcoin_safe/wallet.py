@@ -52,9 +52,11 @@ from bitcoin_qr_tools.multipath_descriptor import (
 )
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 from bitcoin_safe_lib.util import (
     clean_list,
+    fast_version,
     hash_string,
     replace_non_alphanumeric,
     time_logger,
@@ -105,13 +107,11 @@ from .pythonbdk_types import (
     robust_address_str_from_txout,
 )
 from .signals import UpdateFilter, WalletFunctions
-from .storage import BaseSaveableClass, filtered_for_init
 from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
 from .util import (
     AddressBalanceDict,
     CacheManager,
     calculate_ema,
-    fast_version,
     instance_lru_cache,
     short_address,
 )

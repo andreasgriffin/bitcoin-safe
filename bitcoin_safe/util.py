@@ -35,7 +35,7 @@ import math
 import os
 from collections.abc import Callable, Iterable, Mapping
 from datetime import datetime, timedelta
-from functools import cache, lru_cache, wraps
+from functools import lru_cache, wraps
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -48,7 +48,6 @@ from typing import (
 )
 
 import numpy as np
-from packaging.version import Version
 
 K = TypeVar("K")
 V = TypeVar("V")
@@ -58,12 +57,6 @@ OptExcInfo = tuple[type[BaseException] | None, BaseException | None, TracebackTy
 SATOSHIS_PER_BTC = 100_000_000
 
 logger = logging.getLogger(__name__)
-
-
-@cache
-def fast_version(s: str) -> Version:
-    """Fast version."""
-    return Version(s)
 
 
 def current_project_dir() -> Path:

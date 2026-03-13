@@ -41,6 +41,7 @@ from typing import Any, cast
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
@@ -61,7 +62,6 @@ from ...signature_manager import (
     KnownGPGKeys,
     SignatureVerifyer,
 )
-from ...util import fast_version
 from ...util_os import xdg_open_file
 from .util import Message, MessageType, set_margins
 

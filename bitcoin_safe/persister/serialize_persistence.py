@@ -30,12 +30,12 @@
 from typing import Any
 
 import bdkpython as bdk
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 
 from bitcoin_safe.persister.changeset_converter import (
     DEFAULT_CHAIN_PRUNE_DEPTH,
     ChangeSetConverter,
 )
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 
 class SerializePersistence(bdk.Persistence, BaseSaveableClass):

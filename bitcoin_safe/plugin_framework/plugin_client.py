@@ -34,6 +34,8 @@ from abc import abstractmethod
 from typing import Any, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
@@ -41,8 +43,6 @@ from PyQt6.QtWidgets import QWidget
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.util import fast_version
 
 logger = logging.getLogger(__name__)
 

@@ -36,15 +36,15 @@ from typing import Any
 from urllib.parse import urlparse
 
 import bdkpython as bdk
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe_lib.util import fast_version
 
 from bitcoin_safe.mempool_data import MempoolData
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.pythonbdk_types import BlockchainType, IpAddress
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .html_utils import link
 from .i18n import translate
-from .util import fast_version
 
 logger = logging.getLogger(__name__)
 

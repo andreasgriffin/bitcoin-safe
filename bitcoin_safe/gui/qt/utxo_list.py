@@ -64,7 +64,8 @@ from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from bitcoin_safe_lib.util import clean_list, time_logger
+from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.util import clean_list, fast_version, time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QModelIndex, QPoint, Qt
 from PyQt6.QtGui import QStandardItem
@@ -73,9 +74,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
-from bitcoin_safe.storage import BaseSaveableClass
 from bitcoin_safe.tx import short_tx_id
-from bitcoin_safe.util import fast_version
 
 from ...config import UserConfig
 from ...i18n import translate

@@ -35,6 +35,8 @@ from typing import Any, Literal
 
 import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
+from bitcoin_safe_lib.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
+from bitcoin_safe_lib.util import fast_version
 from bitcoin_usb.address_types import (
     AddressTypes,
     ConstDerivationPaths,
@@ -46,9 +48,6 @@ from bitcoin_safe.wallet_util import (
     WalletDifferences,
     WalletDifferenceType,
 )
-
-from .storage import BaseSaveableClass, SaveAllClass, filtered_for_init
-from .util import fast_version
 
 logger = logging.getLogger(__name__)
 

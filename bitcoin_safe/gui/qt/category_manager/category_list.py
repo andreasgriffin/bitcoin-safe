@@ -36,7 +36,8 @@ from typing import Any, cast
 
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.util import fast_version, time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QDropEvent, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QTreeView, QWidget
@@ -55,8 +56,6 @@ from bitcoin_safe.gui.qt.my_treeview import (
     header_item,
 )
 from bitcoin_safe.gui.qt.util import category_color, create_color_circle
-from bitcoin_safe.storage import BaseSaveableClass
-from bitcoin_safe.util import fast_version
 
 from ....signals import Signals, UpdateFilter, UpdateFilterReason
 

@@ -41,6 +41,7 @@ from bitcoin_nostr_chat.ui.chat_gui import FileObject
 from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.storage import filtered_for_init
 from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction, QColor
@@ -56,7 +57,6 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
 )
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.storage import filtered_for_init
 from bitcoin_safe.util import filename_clean
 
 logger = logging.getLogger(__name__)
