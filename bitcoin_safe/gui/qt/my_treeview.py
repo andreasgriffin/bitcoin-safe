@@ -75,6 +75,7 @@ from typing import (
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import str_to_qbytearray
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.util import unique_elements
 from PyQt6 import QtCore
 from PyQt6.QtCore import (
@@ -129,7 +130,6 @@ from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig

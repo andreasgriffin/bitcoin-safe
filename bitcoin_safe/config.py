@@ -39,6 +39,8 @@ from typing import Any
 import appdirs
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
+from bitcoin_safe_lib.storage import BaseSaveableClass, Encrypt
+from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import QCoreApplication
 
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
@@ -52,8 +54,6 @@ from .network_config import (
     get_electrum_configs,
     get_esplora_urls,
 )
-from .storage import BaseSaveableClass, Encrypt
-from .util import fast_version
 
 logger = logging.getLogger(__name__)
 

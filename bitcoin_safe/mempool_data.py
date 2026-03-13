@@ -32,8 +32,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
+
 from bitcoin_safe.constants import MIN_RELAY_FEE
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 logger = logging.getLogger(__name__)
 

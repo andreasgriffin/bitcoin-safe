@@ -41,6 +41,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QShowEvent
@@ -57,7 +58,6 @@ from bitcoin_safe.gui.qt.ui_tx.columns import ColumnFee, ColumnInputs, ColumnRec
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio

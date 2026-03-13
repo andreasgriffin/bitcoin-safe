@@ -32,9 +32,9 @@ from __future__ import annotations
 import logging
 import platform
 
-from bitcoin_safe.gui.qt.util import caught_exception_message
+from bitcoin_safe_lib.util import fast_version
 
-from .util import fast_version
+from bitcoin_safe.gui.qt.util import caught_exception_message
 
 logger = logging.getLogger(__name__)
 

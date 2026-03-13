@@ -34,6 +34,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
 
 from bitcoin_safe.locktime_estimation import (
@@ -42,7 +43,6 @@ from bitcoin_safe.locktime_estimation import (
 )
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
 
 from .pythonbdk_types import (
     OutPoint,

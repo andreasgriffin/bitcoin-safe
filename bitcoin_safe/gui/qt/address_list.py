@@ -63,7 +63,8 @@ from typing import Any, cast
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.util import fast_version, time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QDropEvent, QFont, QStandardItem
@@ -86,8 +87,6 @@ from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
-from bitcoin_safe.storage import BaseSaveableClass
-from bitcoin_safe.util import fast_version
 
 from ...config import UserConfig
 from ...i18n import translate

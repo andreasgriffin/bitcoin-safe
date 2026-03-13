@@ -33,11 +33,11 @@ import json
 from pathlib import Path
 
 import bdkpython as bdk
+from bitcoin_safe_lib.storage import Storage
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.network_config import get_electrum_configs
 from bitcoin_safe.pythonbdk_types import BlockchainType
-from bitcoin_safe.storage import Storage
 from bitcoin_safe.wallet import Wallet
 
 from ..helpers import TestConfig

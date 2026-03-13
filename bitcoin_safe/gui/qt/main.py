@@ -51,7 +51,8 @@ from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descripto
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from bitcoin_safe_lib.util import rel_home_path_to_abs_path
+from bitcoin_safe_lib.storage import Storage
+from bitcoin_safe_lib.util import fast_version, rel_home_path_to_abs_path
 from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
 from bitcoin_usb.tool_gui import ToolGui
 from cryptography.fernet import InvalidToken
@@ -132,9 +133,7 @@ from ...pythonbdk_types import (
     get_prev_outpoints,
 )
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...storage import Storage
 from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from ...util import fast_version
 from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets

@@ -37,6 +37,8 @@ import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
+from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
@@ -48,8 +50,6 @@ from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, Plugin
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.walletgraph.client import WalletGraphClient
 from bitcoin_safe.signals import T, WalletFunctions
-from bitcoin_safe.storage import BaseSaveableClass, filtered_for_init
-from bitcoin_safe.util import fast_version
 
 logger = logging.getLogger(__name__)
 
