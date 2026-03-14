@@ -1632,7 +1632,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P-Listener-Peers: {total} &lt;span style='color:{gray}'&gt;(zugeordnet: {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P-Listener-Peers: {total} &lt;span style='color:{gray}'&gt;(zugeordnet: {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -2260,7 +2260,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Ein Wallet mit der ID {name} ist bereits geöffnet.</translation>
+			<translation>Ein Wallet mit der ID {name} ist bereits geöffnet.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -4608,7 +4608,8 @@ Signatures:
 
 
 </source>
-			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert.
+			<translation>Transaktion mit dem privaten Schlüssel von {label}
+signiert.
 
 Signaturen:
 {signatures}
@@ -5055,7 +5056,8 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt: {reason}</translation>
+			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

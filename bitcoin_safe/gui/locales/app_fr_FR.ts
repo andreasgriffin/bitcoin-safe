@@ -1624,7 +1624,7 @@ car la taille finale de la transaction est inconnue.</translation>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Pairs écouteurs P2P : {total} &lt;span style='color:{gray}'&gt;(mappés : {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Pairs écouteurs P2P : {total} &lt;span style='color:{gray}'&gt;(mappés : {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5418,7 +5418,9 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP : {ip} Pays : {country}</translation>
+			<translation>{source}
+IP : {ip}
+Pays : {country}</translation>
 		</message>
 	</context>
 	<context>

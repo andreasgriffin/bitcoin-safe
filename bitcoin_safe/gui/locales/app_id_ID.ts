@@ -1624,7 +1624,7 @@ since the final size of the transaction is unknown.</source>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(terpetakan: {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(terpetakan: {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5418,7 +5418,9 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} Negara: {country}</translation>
+			<translation>{source}
+IP: {ip}
+Negara: {country}</translation>
 		</message>
 	</context>
 	<context>
