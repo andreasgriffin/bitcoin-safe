@@ -499,6 +499,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - पूर्ण {remaining_time}</translation>
 		</message>
@@ -1605,6 +1610,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; बिटकॉइन नोड्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF पीयर्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P लिसनर पीयर्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) वॉलेट को आपके पते निजी रखते हुए संबंधित लेनदेन खोजने की अनुमति देते हैं।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>खोजे गए बिटकॉइन नोड्स।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>पहली सिंक के दौरान Bitcoin Safe कई बिटकॉइन नोड्स से कॉम्पैक्ट ब्लॉक सारांश प्राप्त करता है। यह ब्लॉक डेटा डाउनलोड करने का एक निजी तरीका है।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>बीत चुका समय {elapsed} | अनुमानित शेष {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>निजी सिंक तैयार किया जा रहा है…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>हाल ही में प्रसारित संदेश इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>बिटकॉइन ब्लॉकचेन स्कैन किया जा रहा है</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>संक्षिप्त सारांश (Compact Block Filters) और बिटकॉइन ब्लॉक इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>सिंक प्रगति: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>यह गोपनीयता की रक्षा क्यों करता है (और जानें)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>ऐप लॉक पासवर्ड</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>ऐप लॉक पासवर्ड खाली नहीं हो सकता।</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>परिवर्तन</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>ऐप लॉक पासवर्ड साफ़ करें</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>कॉन्फ़िगर किया गया</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>ऐप लॉक पासवर्ड दर्ज करें:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>अमान्य पासवर्ड</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>कॉन्फ़िगर नहीं किया गया</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>ऐप लॉक पासवर्ड हटाएँ?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>सेट करें</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1989,6 +2115,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;लॉक करें और ट्रे में न्यूनतम करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;श्रेणियाँ प्रबंधित करें</translation>
 		</message>
@@ -2094,6 +2225,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;ऐप अनलॉक करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;देखें</translation>
 		</message>
@@ -2174,6 +2310,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>लेनदेन इनपुट से संबंधित वॉलेट की पहचान नहीं की जा सकी।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>PSBT खोली नहीं जा सकी</translation>
 		</message>
@@ -2216,6 +2357,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>खुला रखें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>लॉक किया गया</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2374,6 +2520,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>पहले सेटिंग्स -&gt; सामान्य में ऐप लॉक पासवर्ड सेट करें।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>हस्ताक्षरित संदेश</translation>
 		</message>
@@ -2455,6 +2606,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>वॉलेट लोड नहीं किया जा सका। विवरण के लिए लॉग देखें।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>वॉलेट सिंक हो रहा है</translation>
 		</message>
@@ -2473,6 +2629,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>क्या इस वॉलेट का उपयोग पहले कभी हुआ है?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>गलत पासवर्ड</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>गलत पासवर्ड। वॉलेट लोड नहीं किया जा सका।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3166,18 +3332,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  निम्न TxID द्वारा प्रतिस्थापित:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3410,11 +3564,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Mempool में प्रतिस्थापित।</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>लेनदेन सहेजें</translation>
 		</message>
@@ -3469,6 +3618,11 @@ Do you want to continue anyway?</source>
 
 Do you want to remove it from the wallet anyway?</source>
 			<translation>यह केवल इस वॉलेट दृश्य से लेन-देन हटाएगा। यह पहले ही बिटकॉइन नेटवर्क पर प्रसारित हो चुका है और संभवतः फिर भी पुष्टि हो जाएगा। क्या फिर भी वॉलेट से हटाना चाहते हैं?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>आने वाला लेनदेन अपडेट किया गया: आपके प्राप्ति पते और राशियाँ अपरिवर्तित रहीं। पुराना txid={txs}। नया txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4346,8 +4500,18 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;लॉक करें और ट्रे में न्यूनतम करें</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>सूचनाएँ साफ़ करें</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>ट्रे में न्यूनतम करें</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4356,13 +4520,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>ऐप लॉक होने पर सूचनाएँ छिपी रहती हैं</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>पिछली सूचनाएँ</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>दिखाएँ/छिपाएँ</translation>
+			<source>Show</source>
+			<translation>दिखाएँ</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>दिखाने के लिए अनलॉक करें</translation>
 		</message>
 	</context>
 	<context>
@@ -4748,6 +4922,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>ऐप लॉक पासवर्ड दर्ज करें:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>गलत ऐप लॉक पासवर्ड।</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4824,7 +5010,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>अपडेट फ़ाइल सत्यापित हुई लेकिन स्वचालित इंस्टॉल नहीं किया गया: {reason}</translation>
+			<translation>अपडेट फ़ाइल सत्यापित हुई लेकिन स्वचालित इंस्टॉल नहीं किया गया:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5182,6 +5369,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>विज़ार्ड</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>बिटकॉइन नोड</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>CBF पीयर</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P लिसनर पीयर</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>अज्ञात</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} देश: {country}</translation>
 		</message>
 	</context>
 	<context>

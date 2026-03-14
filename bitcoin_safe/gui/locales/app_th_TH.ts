@@ -499,6 +499,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - เสร็จสิ้น {remaining_time}</translation>
 		</message>
@@ -1604,6 +1609,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; โหนด Bitcoin: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ CBF: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ตัวฟัง P2P: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) ช่วยให้วอลเล็ตค้นพบธุรกรรมที่เกี่ยวข้องในขณะที่ยังคงรักษาความเป็นส่วนตัวของที่อยู่ของคุณ</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>ค้นพบโหนด bitcoin แล้ว</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>ในระหว่างการซิงก์ครั้งแรก Bitcoin Safe จะดึงสรุปบล็อกแบบ compact จากหลายโหนด Bitcoin นี่เป็นวิธีส่วนตัวในการดาวน์โหลดข้อมูลบล็อก</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>เวลาที่ผ่านไป {elapsed} | เวลาที่เหลือโดยประมาณ {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>กำลังเตรียมการซิงก์แบบส่วนตัว…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>ข้อความที่เพิ่งถูกเผยแพร่จะได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>กำลังสแกนบล็อกเชน Bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>สรุปสั้น ๆ (Compact Block Filters) และบล็อก bitcoin ได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>ความคืบหน้าการซิงก์: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>เหตุใดสิ่งนี้จึงปกป้องความเป็นส่วนตัว (เรียนรู้เพิ่มเติม)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>รหัสผ่านล็อกแอป</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>รหัสผ่านล็อกแอปต้องไม่ว่างเปล่า</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>เปลี่ยน</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>ล้างรหัสผ่านล็อกแอป</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>ตั้งค่าแล้ว</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>ป้อนรหัสผ่านล็อกแอป:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>รหัสผ่านไม่ถูกต้อง</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>ยังไม่ได้ตั้งค่า</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>ลบรหัสผ่านล็อกแอปหรือไม่?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>ตั้งค่า</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1990,6 +2116,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;ล็อกและย่อไปที่ถาด</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;จัดการหมวดหมู่</translation>
 		</message>
@@ -2095,6 +2226,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;ปลดล็อกแอป</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;ดู</translation>
 		</message>
@@ -2175,6 +2311,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>ไม่สามารถระบุวอลเล็ตที่เป็นของอินพุตธุรกรรมได้</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>ไม่สามารถเปิด PSBT ได้</translation>
 		</message>
@@ -2217,6 +2358,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>คงเปิดไว้</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>ถูกล็อก</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2375,6 +2521,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>ตั้งค่ารหัสผ่านล็อกแอปก่อนใน การตั้งค่า -&gt; ทั่วไป</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>ข้อความที่ลงนามแล้ว</translation>
 		</message>
@@ -2456,6 +2607,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>ไม่สามารถโหลดวอลเล็ตได้ ดูบันทึกเพื่อดูรายละเอียด</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>กำลังซิงค์กระเป๋าเงิน</translation>
 		</message>
@@ -2474,6 +2630,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>กระเป๋าเงินนี้เคยถูกใช้มาก่อนหรือไม่?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>รหัสผ่านไม่ถูกต้อง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>รหัสผ่านไม่ถูกต้อง ไม่สามารถโหลดวอลเล็ตได้</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3165,18 +3331,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  ถูกแทนที่โดย TxID:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3409,11 +3563,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>ถูกแทนที่ใน Mempool</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>บันทึกธุรกรรม</translation>
 		</message>
@@ -3468,6 +3617,11 @@ Do you want to continue anyway?</source>
 
 Do you want to remove it from the wallet anyway?</source>
 			<translation>การดำเนินการนี้จะลบธุรกรรมออกจากมุมมองกระเป๋าเงินนี้เท่านั้น ธุรกรรมได้ถูกกระจายไปยังเครือข่าย Bitcoin แล้วและมีแนวโน้มว่าจะยังได้รับการยืนยัน ต้องการลบออกจากกระเป๋าเงินหรือไม่?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>อัปเดตธุรกรรมขาเข้าแล้ว: ที่อยู่รับและจำนวนของคุณยังคงไม่เปลี่ยนแปลง txid เก่า={txs}. txid ใหม่={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4345,8 +4499,18 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;ล็อกและย่อไปที่ถาด</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>ล้างการแจ้งเตือน</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>ย่อไปที่ถาด</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4355,13 +4519,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>การแจ้งเตือนถูกซ่อนเมื่อแอปถูกล็อก</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>การแจ้งเตือนก่อนหน้า</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>แสดง/ซ่อน</translation>
+			<source>Show</source>
+			<translation>แสดง</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>ปลดล็อกเพื่อแสดง</translation>
 		</message>
 	</context>
 	<context>
@@ -4746,6 +4920,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>ป้อนรหัสผ่านล็อกแอป:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>รหัสผ่านล็อกแอปไม่ถูกต้อง</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4822,7 +5008,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>ไฟล์อัปเดตได้รับการตรวจสอบแล้ว แต่ไม่มีการติดตั้งอัตโนมัติ: {reason}</translation>
+			<translation>ไฟล์อัปเดตได้รับการตรวจสอบแล้ว แต่ไม่มีการติดตั้งอัตโนมัติ:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5180,6 +5367,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>ตัวช่วยสร้าง</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>โหนด Bitcoin</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>เพียร์ CBF</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>เพียร์ตัวฟัง P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>ไม่ทราบ</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} ประเทศ: {country}</translation>
 		</message>
 	</context>
 	<context>
