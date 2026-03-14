@@ -500,6 +500,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - Finalizado {remaining_time}</translation>
 		</message>
@@ -928,7 +933,10 @@ Default 20</source>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-			<translation>1. Conecta tu firmador de hardwaren2. Haz clic en Escanearn3. Desbloquea el dispositivon4. Selecciona el dispositivo</translation>
+			<translation>1. Conecta tu firmante de hardware
+2. Pulse en Escanear
+3. Desbloquea el dispositivo
+4. Selecciona el dispositivo</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1607,6 +1615,127 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodos Bitcoin: {total} &lt;span style='color:{gray}'&gt;(asignados: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers CBF: {total} &lt;span style='color:{gray}'&gt;(asignados: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers listener P2P: {total} &lt;span style='color:{gray}'&gt;(asignados: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) permiten a las carteras descubrir transacciones relevantes mientras mantienen privadas tus direcciones.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Nodos bitcoin descubiertos.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>Durante la primera sincronización, Bitcoin Safe obtiene resúmenes compactos de bloques desde múltiples nodos Bitcoin. Esta es una forma privada de descargar datos de bloques.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Tiempo transcurrido {elapsed} | Restante estimado {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Preparando sincronización privada…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Los mensajes transmitidos recientemente se reciben de estos peers a través de la red bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Escaneando la blockchain de Bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Los resúmenes cortos (Compact Block Filters) y los bloques bitcoin se reciben de estos peers a través de la red bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Progreso de sincronización: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Por qué esto protege la privacidad (más información)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>Contraseña de bloqueo de la aplicación</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>La contraseña de bloqueo de la aplicación no puede estar vacía.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>Cambio</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>Borrar contraseña de bloqueo de la aplicación</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>Configurado</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>Introduzca la contraseña de bloqueo de la aplicación:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>Contraseña inválida</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>No configurado</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>¿Eliminar la contraseña de bloqueo de la aplicación?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>Establecer</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1991,6 +2120,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Bloquear y minimizar a la bandeja</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;Gestionar categorías</translation>
 		</message>
@@ -2096,6 +2230,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;Desbloquear aplicación</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;Ver</translation>
 		</message>
@@ -2176,6 +2315,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>No se pudo identificar la cartera que pertenece a las entradas de la transacción.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>No se pudo abrir la PSBT</translation>
 		</message>
@@ -2218,6 +2362,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>Mantener abierto</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Bloqueado</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2376,6 +2525,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Primero configure una contraseña de bloqueo de la aplicación en Configuración -&gt; General.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>Mensaje firmado</translation>
 		</message>
@@ -2458,6 +2612,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>No se pudo cargar la cartera. Consulte los registros para más detalles.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Cartera sincronizando</translation>
 		</message>
@@ -2477,6 +2636,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>¿Se ha utilizado esta cartera antes?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>Contraseña incorrecta</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>Contraseña incorrecta. No se pudo cargar la cartera.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3178,18 +3347,6 @@ Si hay algún problema, no dude en contactarnos en: [andreasgriffin@proton.me](m
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  Reemplazada por TxID:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  Reemplazada por TxID: {new_txid}</translation>
 		</message>
@@ -3423,11 +3580,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Reemplazada en el Mempool.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>Guardar transacciones</translation>
 		</message>
@@ -3485,6 +3637,11 @@ Do you want to remove it from the wallet anyway?</source>
 			<translation>Esto solo eliminará la transacción de esta vista del monedero. Ya se ha difundido a la red Bitcoin y probablemente se confirmará igualmente.
 
 ¿Desea eliminarla del monedero?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>Transacción entrante actualizada: sus direcciones de recepción y montos permanecieron sin cambios. Txid antiguo={txs}. Nuevo txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3618,8 +3775,15 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
 			<translation>Reciba una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menor que {test_amount}) en 1 dirección de este monedero.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt;                     Para saber si controla los fondos, debe probar el gasto desde el monedero. 
-                    &lt;br&gt;                     Por lo tanto, antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;NO envíe grandes cantidades al monedero todavía. ¡Complete primero todas las pruebas self-send!&lt;/b&gt;                    </translation>
+                                            &lt;br&gt;&lt;br&gt;
+                                           &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt;
+                                           Para saber si controla los fondos, debe probar el gasto desde el monedero. 
+                                           &lt;br&gt;
+                                           Por lo tanto, antes de enviar una cantidad sustancial de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.  
+                                           &lt;br&gt;
+                                           &lt;br&gt;
+                                           &lt;b&gt;NO envíe grandes cantidades al monedero todavía. ¡Complete primero todas las pruebas self-send!&lt;/b&gt;   
+                    </translation>
 		</message>
 	</context>
 	<context>
@@ -3909,7 +4073,8 @@ Si cometes un error aquí, ¡tu dinero se perderá!</translation>
 		<message>
 			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
 This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Estamos enviando desde su monedero a otra dirección en su monedero (self-send).&lt;br&gt; Esto practica el flujo de firma y asegura que todos los firmantes de hardware estén configurados correctamente.</translation>
+			<translation>Estamos enviando desde su monedero a otra dirección en su monedero (self-send).&lt;br&gt;
+Esto practica el flujo de firma y asegura que todos los firmantes de hardware estén configurados correctamente.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4367,8 +4532,18 @@ Si desea seguir usando ambos, restablezca ahora la clave de sincronización de C
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Bloquear y minimizar a la bandeja</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>Borrar notificaciones</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>Minimizar a la bandeja</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4377,13 +4552,23 @@ Si desea seguir usando ambos, restablezca ahora la clave de sincronización de C
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>Notificaciones ocultas mientras la aplicación está bloqueada</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>Notificaciones anteriores</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Mostrar/Ocultar</translation>
+			<source>Show</source>
+			<translation>Mostrar</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>Desbloquear para mostrar</translation>
 		</message>
 	</context>
 	<context>
@@ -4774,6 +4959,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>Introduzca la contraseña de bloqueo de la aplicación:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>Contraseña de bloqueo de la aplicación incorrecta.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4850,7 +5047,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>El archivo de actualización fue verificado pero no se realizó una instalación automática: {reason}</translation>
+			<translation>El archivo de actualización fue verificado pero no se realizó una instalación automática:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5184,7 +5382,9 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>La transacción de prueba  '{tx_text}'  se completó con éxito. Continúe con la prueba self-send: 
+			<translation>La transacción de prueba 
+'{tx_text}'
+ se completó correctamente. Continúe con la prueba self-send: 
 '{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
@@ -5208,6 +5408,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>Asistente</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Nodo Bitcoin</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>Peer CBF</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>Peer listener P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Desconocido</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} País: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -5757,7 +5986,10 @@ Haz clic aquí para saber más.</translation>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)   
+			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt;
+2. Dobla este papel en la línea de abajo&lt;br/&gt;
+3. Coloca cada papel en un lugar seguro diferente, donde solo tú tengas acceso&lt;br/&gt;
+4. Puedes poner los firmantes de hardware ya sea a) juntos con la copia de seguridad de semillas correspondiente en papel, o b) cada uno en otro lugar seguro (si está disponible)   
                 </translation>
 		</message>
 		<name>pdf</name>
@@ -5767,7 +5999,10 @@ Haz clic aquí para saber más.</translation>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt; 2. Dobla este papel en la línea de abajo&lt;br/&gt; 3. Coloca este papel en un lugar seguro, donde solo tú tengas acceso&lt;br/&gt; 4. Puedes poner el firmante de hardware ya sea a) junto con la copia de seguridad de semillas en papel, o b) en otro lugar seguro (si está disponible)   
+			<translation>1. Adjunta la 'Hoja de Recuperación' ({number} palabras) a este papel o duplica las palabras 12/24 en este papel.&lt;br/&gt;
+2. Dobla este papel en la línea de abajo&lt;br/&gt;
+3. Coloca este papel en un lugar seguro, donde solo tú tengas acceso&lt;br/&gt;
+4. Puedes poner el firmante de hardware ya sea a) junto con la copia de seguridad de semillas en papel, o b) en otro lugar seguro (si está disponible)   
                 </translation>
 		</message>
 		<name>pdf</name>

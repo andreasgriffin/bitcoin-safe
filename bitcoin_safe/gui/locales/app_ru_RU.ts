@@ -500,6 +500,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - Завершено {remaining_time}</translation>
 		</message>
@@ -1607,6 +1612,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Узлы Bitcoin: {total} &lt;span style='color:{gray}'&gt;(сопоставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Пиры CBF: {total} &lt;span style='color:{gray}'&gt;(сопоставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P слушающие пиры: {total} &lt;span style='color:{gray}'&gt;(сопоставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) позволяют кошелькам обнаруживать релевантные транзакции, сохраняя ваши адреса приватными.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Обнаруженные узлы bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>Во время первой синхронизации Bitcoin Safe получает компактные сводки блоков от нескольких узлов Bitcoin. Это приватный способ загрузки данных блоков.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Прошло {elapsed} | Оценка оставшегося времени {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Подготовка приватной синхронизации…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Недавно отправленные сообщения получаются от этих пиров через сеть bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Сканирование блокчейна Bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Короткие сводки (Compact Block Filters) и блоки bitcoin получаются от этих пиров через сеть bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Прогресс синхронизации: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Почему это защищает приватность (узнать больше)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>Пароль блокировки приложения</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>Пароль блокировки приложения не может быть пустым.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>Сдача</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>Очистить пароль блокировки приложения</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>Настроено</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>Введите пароль блокировки приложения:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>Неверный пароль</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>Не настроено</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>Удалить пароль блокировки приложения?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>Установить</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1991,6 +2117,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Заблокировать и свернуть в трей</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;Управлять категориями</translation>
 		</message>
@@ -2096,6 +2227,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;Разблокировать приложение</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;Просмотр</translation>
 		</message>
@@ -2176,6 +2312,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>Не удалось определить кошелек, относящийся к входам транзакции.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>Не удалось открыть PSBT</translation>
 		</message>
@@ -2218,6 +2359,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>Оставить открытым</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Заблокировано</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2376,6 +2522,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Сначала установите пароль блокировки приложения в Настройки -&gt; Общие.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>Подписанное сообщение</translation>
 		</message>
@@ -2458,6 +2609,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>Кошелек не удалось загрузить. Подробности смотрите в журналах.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Синхронизация кошелька</translation>
 		</message>
@@ -2477,6 +2633,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>Этот кошелёк когда-нибудь использовался ранее?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>Неверный пароль</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>Неверный пароль. Кошелек не удалось загрузить.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3178,18 +3344,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  Заменено TxID:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3423,11 +3577,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Заменено в Mempool.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>Сохранить транзакции</translation>
 		</message>
@@ -3483,6 +3632,11 @@ Do you want to continue anyway?</source>
 Do you want to remove it from the wallet anyway?</source>
 			<translation>Это удалит транзакцию только из этого представления кошелька.
 Она уже была транслирована в сеть Bitcoin и, вероятно, всё равно будет подтверждена. Удалить её из кошелька?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>Обновлена входящая транзакция: ваши адреса получения и суммы остались без изменений. Старый txid={txs}. Новый txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4365,8 +4519,18 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Заблокировать и свернуть в трей</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>Очистить уведомления</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>Свернуть в трей</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4375,13 +4539,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>Уведомления скрыты, пока приложение заблокировано</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>Прошлые уведомления</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Показать/Скрыть</translation>
+			<source>Show</source>
+			<translation>Показать</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>Разблокируйте для отображения</translation>
 		</message>
 	</context>
 	<context>
@@ -4772,6 +4946,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>Введите пароль блокировки приложения:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>Неверный пароль блокировки приложения.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4848,7 +5034,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Файл обновления проверен, но автоматическая установка не выполнена: {reason}</translation>
+			<translation>Файл обновления проверен, но автоматическая установка не выполнена:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5206,6 +5393,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>Мастер</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Узел Bitcoin</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>Пир CBF</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P слушающий пир</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Неизвестно</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} Страна: {country}</translation>
 		</message>
 	</context>
 	<context>

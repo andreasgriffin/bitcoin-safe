@@ -499,6 +499,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - 완료 {remaining_time}</translation>
 		</message>
@@ -1603,6 +1608,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; 비트코인 노드: {total} &lt;span style='color:{gray}'&gt;(매핑됨: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF 피어: {total} &lt;span style='color:{gray}'&gt;(매핑됨: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P 리스너 피어: {total} &lt;span style='color:{gray}'&gt;(매핑됨: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158)는 지갑이 주소를 비공개로 유지하면서 관련 거래를 발견할 수 있도록 합니다.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>발견된 비트코인 노드.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>첫 동기화 동안 Bitcoin Safe는 여러 비트코인 노드에서 컴팩트 블록 요약을 가져옵니다. 이는 블록 데이터를 다운로드하는 비공개 방식입니다.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>경과 시간 {elapsed} | 예상 남은 시간 {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>비공개 동기화 준비 중…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>최근 브로드캐스트된 메시지는 비트코인 네트워크를 통해 이 피어들로부터 수신됩니다.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>비트코인 블록체인 스캔 중</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>짧은 요약(Compact Block Filters)과 비트코인 블록이 비트코인 네트워크를 통해 이 피어들로부터 수신됩니다.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>동기화 진행률: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>왜 이것이 개인정보를 보호하는지 (자세히 알아보기)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>앱 잠금 비밀번호</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>앱 잠금 비밀번호는 비워둘 수 없습니다.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>변경</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>앱 잠금 비밀번호 지우기</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>구성됨</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>앱 잠금 비밀번호 입력:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>잘못된 비밀번호</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>구성되지 않음</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>앱 잠금 비밀번호를 제거하시겠습니까?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>설정</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1987,6 +2113,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;잠그고 트레이로 최소화</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;카테고리 관리</translation>
 		</message>
@@ -2092,6 +2223,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;앱 잠금 해제</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;보기</translation>
 		</message>
@@ -2172,6 +2308,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>거래 입력에 해당하는 지갑을 식별할 수 없습니다.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>PSBT를 열 수 없습니다</translation>
 		</message>
@@ -2214,6 +2355,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>열어 두기</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>잠김</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2372,6 +2518,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>먼저 설정 -&gt; 일반에서 앱 잠금 비밀번호를 설정하세요.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>서명된 메시지</translation>
 		</message>
@@ -2454,6 +2605,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>지갑을 불러올 수 없습니다. 자세한 내용은 로그를 확인하세요.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>지갑 동기화 중</translation>
 		</message>
@@ -2473,6 +2629,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>이 지갑이 이전에 사용된 적이 있습니까?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>잘못된 비밀번호</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>잘못된 비밀번호입니다. 지갑을 불러올 수 없습니다.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3171,18 +3337,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  다음 TxID로 대체됨:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3416,11 +3570,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Mempool에서 대체됨.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>거래 저장</translation>
 		</message>
@@ -3475,6 +3624,11 @@ Do you want to continue anyway?</source>
 Do you want to remove it from the wallet anyway?</source>
 			<translation>이는 이 지갑 보기에서만 거래를 제거합니다.
 이미 비트코인 네트워크에 브로드캐스트되었으며 여전히 확인될 가능성이 큽니다. 그래도 지갑에서 제거하시겠습니까?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>수신 거래 업데이트됨: 수신 주소와 금액이 변경되지 않았습니다. 이전 txid={txs}. 새 txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4357,8 +4511,18 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;잠그고 트레이로 최소화</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>알림 지우기</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>트레이로 최소화</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4367,13 +4531,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>앱이 잠겨 있는 동안 알림이 숨겨집니다</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>지난 알림</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>표시/숨기기</translation>
+			<source>Show</source>
+			<translation>표시</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>표시하려면 잠금 해제</translation>
 		</message>
 	</context>
 	<context>
@@ -4759,6 +4933,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>앱 잠금 비밀번호 입력:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>잘못된 앱 잠금 비밀번호입니다.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4835,7 +5021,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>업데이트 파일이 확인되었지만 자동 설치는 수행되지 않았습니다: {reason}</translation>
+			<translation>업데이트 파일이 확인되었지만 자동 설치는 수행되지 않았습니다:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5193,6 +5380,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>마법사</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>비트코인 노드</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>CBF 피어</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P 리스너 피어</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>알 수 없음</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} 국가: {country}</translation>
 		</message>
 	</context>
 	<context>

@@ -71,7 +71,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk-Bibliotheksfehler. Die Transaktions-ID (txid) sollte während der Finalisierung nicht geändert werden</translation>
+			<translation>bdk-Bibliotheksfehler. Die txid sollte während der Finalisierung nicht geändert werden.</translation>
 		</message>
 	</context>
 	<context>
@@ -333,12 +333,12 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Das {number}-Wort-Seed auf das passende gedruckte PDF kleben.</translation>
+			<translation>Das {number} Wort-Seed auf das passende gedruckte PDF kleben.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Das {number}-Wort-Seed auf das gedruckte PDF kleben.</translation>
+			<translation>Das {number} Wort-Seed auf das gedruckte PDF kleben.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
@@ -358,7 +358,7 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Das PDF drucken (enthält auch den Wallet-Descriptor)</translation>
+			<translation>Drucken Sie die PDF-Datei aus (sie enthält auch die Wallet-Beschreibung).</translation>
 		</message>
 	</context>
 	<context>
@@ -500,6 +500,11 @@
 		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Verstrichene Zeit: {passed_time}</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
@@ -862,7 +867,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-			<translation>Wallet-Setup nicht abgeschlossen. Bitte beenden Sie dies, bevor Sie ein Backup-PDF erstellen.</translation>
+			<translation>Die Einrichtung der Wallet ist noch nicht abgeschlossen. Bitte schließen Sie diese ab, bevor Sie eine Sicherungskopie im PDF-Format erstellen.</translation>
 		</message>
 	</context>
 	<context>
@@ -933,7 +938,10 @@ zu entdecken Standard 20</translation>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-			<translation>1. Verbinden Sie Ihren Hardware-Signern2. Klicken Sie auf Scannenn3. Entsperren Sie das Gerätn4. Wählen Sie das Gerät aus</translation>
+			<translation>1. Verbinden Sie Ihr Hardware-Signaturgerät
+2. Klicken Sie auf Scannen
+3. Entsperren Sie das Gerät
+4. Wählen Sie das Gerät aus</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -953,7 +961,7 @@ zu entdecken Standard 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>udev-Regeln installieren</translation>
+			<translation>Installieren Sie udev-Regeln</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -998,7 +1006,7 @@ zu entdecken Standard 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>install udev rules</source>
-			<translation>udev-Regeln installieren</translation>
+			<translation>Installieren Sie udev-Regeln.</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1612,6 +1620,127 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin-Knoten: {total} &lt;span style='color:{gray}'&gt;(zugeordnet: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF-Peers: {total} &lt;span style='color:{gray}'&gt;(zugeordnet: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P-Listener-Peers: {total} &lt;span style='color:{gray}'&gt;(zugeordnet: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) ermöglichen es Wallets, relevante Transaktionen zu entdecken, während Ihre Adressen privat bleiben.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Entdeckte Bitcoin-Knoten.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>Während der ersten Synchronisierung lädt Bitcoin Safe kompakte Blockzusammenfassungen von mehreren Bitcoin-Knoten herunter. Dies ist eine private Methode, um Blockdaten zu erhalten.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Vergangene Zeit {elapsed} | Geschätzt verbleibend {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Private Synchronisierung wird vorbereitet…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Kürzlich gesendete Nachrichten werden von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Bitcoin-Blockchain wird gescannt</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Kurze Zusammenfassungen (Compact Block Filters) und Bitcoin-Blöcke werden von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Synchronisationsfortschritt: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Warum dies die Privatsphäre schützt (mehr erfahren)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>App-Sperrpasswort</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>Das App-Sperrpasswort darf nicht leer sein.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>Wechsel</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>App-Sperrpasswort löschen</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>Konfiguriert</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>App-Sperrpasswort eingeben:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>Ungültiges Passwort</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>Nicht konfiguriert</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>App-Sperrpasswort entfernen?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>Festlegen</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1996,6 +2125,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Sperren und in den Tray minimieren</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;Kategorien verwalten</translation>
 		</message>
@@ -2101,6 +2235,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;App entsperren</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;Anzeigen</translation>
 		</message>
@@ -2181,6 +2320,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>Das Wallet, das zu den Transaktionseingängen gehört, konnte nicht identifiziert werden.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>PSBT konnte nicht geöffnet werden</translation>
 		</message>
@@ -2223,6 +2367,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>Keep open</source>
 			<translation>Offen halten</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Gesperrt</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2381,6 +2530,11 @@ Möchten Sie trotzdem fortfahren?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Legen Sie zuerst ein App-Sperrpasswort unter Einstellungen -&gt; Allgemein fest.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>Signierte Nachricht</translation>
 		</message>
@@ -2463,6 +2617,11 @@ Möchten Sie die Wallet geöffnet lassen?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>Wallet konnte nicht geladen werden. Details siehe Logs.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Wallet synchronisiert</translation>
 		</message>
@@ -2482,6 +2641,16 @@ Möchten Sie sie stattdessen in die Taskleiste minimieren?</translation>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>Wurde dieses Wallet schon einmal verwendet?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>Falsches Passwort</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>Falsches Passwort. Wallet konnte nicht geladen werden.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2632,7 +2801,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>Sind Sie sicher, dass '{scheme}' in der esplora URL korrekt ist?</translation>
+			<translation>Sind Sie sicher, dass „{scheme}” in der esplora-URL korrekt ist?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2657,7 +2826,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Click to open the mempool url</source>
-			<translation>Klicken, um die Mempool‑URL zu öffnen</translation>
+			<translation>Klicken, um die Mempool‑URL zu öffnen.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2745,12 +2914,12 @@ Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translat
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>Bitte entfernen Sie '{scheme}' aus der electrum URL</translation>
+			<translation>Bitte entfernen Sie „{scheme}” aus der Electrum-URL.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>Bitte versuchen Sie '{scheme}' am Anfang der mempool URL</translation>
+			<translation>Bitte versuchen Sie „{scheme}” am Anfang der Mempool-URL.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3183,18 +3352,6 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  Ersetzt durch TxID(s):
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  Ersetzt durch TxID(s): {new_txid}</translation>
 		</message>
@@ -3427,11 +3584,6 @@ Möchten Sie die Wallet mit einem auf {new_gap} erhöhten Gap-Limit erneut scann
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Im Mempool ersetzt.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>Transaktionen speichern</translation>
 		</message>
@@ -3489,6 +3641,11 @@ Do you want to remove it from the wallet anyway?</source>
 			<translation>Dadurch wird die Transaktion nur aus dieser Wallet-Ansicht entfernt. Sie wurde bereits an das Bitcoin-Netzwerk übertragen und wird wahrscheinlich weiterhin bestätigt werden.
 
 Möchten Sie sie trotzdem aus der Wallet entfernen?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>Eingehende Transaktion aktualisiert: Ihre Empfangsadressen und Beträge blieben unverändert. Alte txid={txs}. Neue txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4139,7 +4296,7 @@ Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrek
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
+			<translation>Die txid der signierten psbt stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
 		</message>
 	</context>
 	<context>
@@ -4301,7 +4458,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>udev-Regeln installieren</translation>
+			<translation>Installieren Sie udev-Regeln</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4379,8 +4536,18 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Sperren und in den Tray minimieren</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>Benachrichtigungen löschen</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>In den Tray minimieren</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4389,13 +4556,23 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>Benachrichtigungen werden ausgeblendet, solange die App gesperrt ist</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>Frühere Benachrichtigungen</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Anzeigen/Verbergen</translation>
+			<source>Show</source>
+			<translation>Anzeigen</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>Zum Anzeigen entsperren</translation>
 		</message>
 	</context>
 	<context>
@@ -4791,6 +4968,18 @@ Möchten Sie trotzdem senden?</translation>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>App-Sperrpasswort eingeben:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>Falsches App-Sperrpasswort.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4867,7 +5056,8 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt: {reason}</translation>
+			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5227,6 +5417,35 @@ wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Self-Send-Test fort:
 		<message>
 			<source>Wizard</source>
 			<translation>Assistent</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Bitcoin-Knoten</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>CBF-Peer</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P-Listener-Peer</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Unbekannt</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} Land: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -6102,7 +6321,7 @@ Klicke hier, um mehr zu erfahren.</translation>
 		<name>signatures</name>
 		<message>
 			<source>Invalid recovery id in signature.</source>
-			<translation>Ungültige Recovery-ID in der Signatur.</translation>
+			<translation>Ungültige Wiederherstellungs-ID in der Signatur.</translation>
 		</message>
 		<name>signatures</name>
 		<message>

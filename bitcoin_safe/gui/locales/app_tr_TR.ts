@@ -500,6 +500,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - Tamamlandı {remaining_time}</translation>
 		</message>
@@ -1607,6 +1612,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin düğümleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF eşleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P dinleyici eşleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158), cüzdanların adreslerinizi gizli tutarken ilgili işlemleri keşfetmesini sağlar.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Keşfedilen bitcoin düğümleri.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>İlk senkronizasyon sırasında Bitcoin Safe, birden fazla Bitcoin düğümünden compact blok özetlerini getirir. Bu, blok verilerini indirmenin gizli bir yoludur.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Geçen süre {elapsed} | Tahmini kalan {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Özel senkronizasyon hazırlanıyor…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Son yayınlanan mesajlar bu eşlerden bitcoin ağı üzerinden alınır.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Bitcoin blok zinciri taranıyor</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Kısa özetler (Compact Block Filters) ve bitcoin blokları bu eşlerden bitcoin ağı üzerinden alınır.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Senkronizasyon ilerlemesi: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Bu neden gizliliği korur (daha fazla bilgi)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>Uygulama kilit parolası</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>Uygulama kilit parolası boş olamaz.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>Değişim</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>Uygulama kilit parolasını temizle</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>Yapılandırıldı</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>Uygulama kilit parolasını girin:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>Geçersiz parola</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>Yapılandırılmadı</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>Uygulama kilit parolası kaldırılsın mı?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>Ayarla</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1991,6 +2117,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Kilitle ve tepsiye küçült</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;Kategorileri Yönet</translation>
 		</message>
@@ -2096,6 +2227,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;Uygulamayı kilidini aç</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;Görüntüle</translation>
 		</message>
@@ -2176,6 +2312,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>İşlem girdilerine ait cüzdan tanımlanamadı.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>PSBT açılamadı</translation>
 		</message>
@@ -2218,6 +2359,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>Keep open</source>
 			<translation>Açık tut</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Kilitli</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2376,6 +2522,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Önce Ayarlar -&gt; Genel bölümünde bir uygulama kilit parolası ayarlayın.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>İmzalanmış Mesaj</translation>
 		</message>
@@ -2458,6 +2609,11 @@ Cüzdanı açık tutmak istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>Cüzdan yüklenemedi. Ayrıntılar için günlükleri inceleyin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Cüzdan senkronize ediliyor</translation>
 		</message>
@@ -2477,6 +2633,16 @@ Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>Bu cüzdan daha önce hiç kullanıldı mı?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>Yanlış parola</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>Yanlış parola. Cüzdan yüklenemedi.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3176,18 +3342,6 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  Şununla Değiştirildi TxID(ler):
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3421,11 +3575,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Mempool'da değiştirildi.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>İşlemleri Kaydet</translation>
 		</message>
@@ -3481,6 +3630,11 @@ yalnızca onaylanmamış olarak mempool’a eklenebilir. Yine de devam etmek ist
 Do you want to remove it from the wallet anyway?</source>
 			<translation>Bu, işlemi yalnızca bu cüzdan görünümünden kaldırır.
 İşlem Bitcoin ağına zaten yayınlandı ve büyük olasılıkla yine de onaylanacaktır. Yine de cüzdandan kaldırmak istiyor musunuz?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>Güncellenmiş gelen işlem: Alım adresleriniz ve miktarlarınız değişmeden kaldı. Eski txid={txs}. Yeni txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4363,8 +4517,18 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Kilitle ve tepsiye küçült</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>Bildirimleri temizle</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>Tepsiye küçült</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4373,13 +4537,23 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>Uygulama kilitliyken bildirimler gizlenir</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>Geçmiş bildirimler</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Göster/Gizle</translation>
+			<source>Show</source>
+			<translation>Göster</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>Göstermek için kilidi aç</translation>
 		</message>
 	</context>
 	<context>
@@ -4770,6 +4944,18 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>Uygulama kilit parolasını girin:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>Yanlış uygulama kilit parolası.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4846,7 +5032,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Güncelleme dosyası doğrulandı ancak otomatik kurulum yapılmadı: {reason}</translation>
+			<translation>Güncelleme dosyası doğrulandı ancak otomatik kurulum yapılmadı:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5204,6 +5391,35 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Wizard</source>
 			<translation>Sihirbaz</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Bitcoin düğümü</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>CBF eşi</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P dinleyici eşi</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Bilinmeyen</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} Ülke: {country}</translation>
 		</message>
 	</context>
 	<context>

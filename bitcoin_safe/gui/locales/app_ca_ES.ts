@@ -500,6 +500,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - Acabat {remaining_time}</translation>
 		</message>
@@ -1607,6 +1612,127 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodes Bitcoin: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers CBF: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers listener P2P: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) permeten que les carteres descobreixin transaccions rellevants mantenint les vostres adreces privades.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Nodes bitcoin descoberts.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>Durant la primera sincronització, Bitcoin Safe obté resums compactes de blocs de diversos nodes Bitcoin. Aquesta és una manera privada de descarregar dades de blocs.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Temps transcorregut {elapsed} | Restant estimat {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Preparant sincronització privada…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Els missatges recentment emesos es reben d’aquests peers a través de la xarxa bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Escanejant la blockchain de Bitcoin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Resums curts (Compact Block Filters) i blocs bitcoin es reben d’aquests peers a través de la xarxa bitcoin.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Progrés de sincronització: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Per què això protegeix la privadesa (més informació)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>Contrasenya de bloqueig de l’aplicació</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>La contrasenya de bloqueig de l’aplicació no pot estar buida.</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>Canvi</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>Esborrar la contrasenya de bloqueig de l’aplicació</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>Configurat</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>Introduïu la contrasenya de bloqueig de l’aplicació:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>Contrasenya no vàlida</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>No configurat</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>Eliminar la contrasenya de bloqueig de l’aplicació?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>Establir</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1991,6 +2117,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Bloquejar i minimitzar a la safata</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;Gestionar categories</translation>
 		</message>
@@ -2096,6 +2227,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;Desbloquejar l’aplicació</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;Visualitza</translation>
 		</message>
@@ -2176,6 +2312,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>No s’ha pogut identificar la cartera que pertany a les entrades de la transacció.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>No s'ha pogut obrir la PSBT</translation>
 		</message>
@@ -2218,6 +2359,11 @@ Vols continuar igualment?</translation>
 		<message>
 			<source>Keep open</source>
 			<translation>Mantenir obert</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Bloquejat</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2376,6 +2522,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Primer configureu una contrasenya de bloqueig de l’aplicació a Configuració -&gt; General.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>Missatge signat</translation>
 		</message>
@@ -2458,6 +2609,11 @@ Vols mantenir la cartera oberta?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>No s’ha pogut carregar la cartera. Vegeu els registres per a més detalls.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Sincronització del moneder</translation>
 		</message>
@@ -2477,6 +2633,16 @@ Vols amagar-la a la safata?</translation>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>Aquest moneder s’ha utilitzat abans?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>Contrasenya incorrecta</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>Contrasenya incorrecta. No s’ha pogut carregar la cartera.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3176,18 +3342,6 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  Substituïda per TxID:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3421,11 +3575,6 @@ Voleu tornar a escanejar la cartera amb un límit de gap augmentat a {new_gap}</
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Substituïda al Mempool.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>Desa les transaccions</translation>
 		</message>
@@ -3481,6 +3630,11 @@ només es poden afegir com a no confirmades al mempool. Voleu continuar igualmen
 Do you want to remove it from the wallet anyway?</source>
 			<translation>Això només eliminarà la transacció d’aquesta vista del moneder.
 Ja s’ha difós a la xarxa Bitcoin i probablement encara es confirmarà. Voleu eliminar-la del moneder igualment?</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>Transacció entrant actualitzada: les vostres adreces de recepció i quantitats s’han mantingut sense canvis. Txid antic={txs}. Txid nou={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4363,8 +4517,18 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Bloquejar i minimitzar a la safata</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>Esborra les notificacions</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>Minimitzar a la safata</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4373,13 +4537,23 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>Notificacions ocultes mentre l’aplicació està bloquejada</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>Notificacions passades</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>Mostra/Amaga</translation>
+			<source>Show</source>
+			<translation>Mostrar</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>Desbloquejar per mostrar</translation>
 		</message>
 	</context>
 	<context>
@@ -4770,6 +4944,18 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>Introduïu la contrasenya de bloqueig de l’aplicació:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>Contrasenya de bloqueig de l’aplicació incorrecta.</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4846,7 +5032,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>El fitxer d’actualització s’ha verificat però no s’ha fet cap instal·lació automàtica: {reason}</translation>
+			<translation>El fitxer d’actualització s’ha verificat però no s’ha fet cap instal·lació automàtica:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5204,6 +5391,35 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Wizard</source>
 			<translation>Assistent</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Node Bitcoin</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>Peer CBF</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>Peer listener P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Desconegut</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} País: {country}</translation>
 		</message>
 	</context>
 	<context>

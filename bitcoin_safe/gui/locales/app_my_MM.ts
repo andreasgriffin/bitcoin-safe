@@ -499,6 +499,11 @@
 		</message>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>{percent}%</source>
+			<translation>{percent}%</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>{percent}% - Finished {remaining_time}</source>
 			<translation>{percent}% - ပြီးစီး {remaining_time}</translation>
 		</message>
@@ -1604,6 +1609,127 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin node များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peer များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peer များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) သည် wallet များအား သင့်လိပ်စာများ၏ ကိုယ်ရေးလုံခြုံမှုကို ထိန်းသိမ်းထားစဉ် ဆက်စပ်သော transaction များကို ရှာဖွေခွင့်ပြုသည်။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>တွေ့ရှိထားသော bitcoin node များ။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
+			<translation>ပထမဆုံး sync လုပ်စဉ်အတွင်း Bitcoin Safe သည် Bitcoin node အများအပြားထံမှ compact block summary များကို ရယူသည်။ ဤသည်မှာ block data များကို ကိုယ်ရေးလုံခြုံစွာ download လုပ်ရန် နည်းလမ်းတစ်ခုဖြစ်သည်။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>ကြာမြင့်ချိန် {elapsed} | ခန့်မှန်းကျန်ရှိချိန် {remaining}</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>ကိုယ်ရေးလုံခြုံသော sync ကို ပြင်ဆင်နေသည်…</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>မကြာသေးမီက broadcast လုပ်ထားသော message များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Bitcoin blockchain ကို scan လုပ်နေသည်</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>အကျဉ်းချုပ်များ (Compact Block Filters) နှင့် bitcoin block များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Sync တိုးတက်မှု: {percent}%</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>ဤအရာက ကိုယ်ရေးလုံခြုံမှုကို မည်သို့ကာကွယ်ပေးသနည်း (ပိုမိုလေ့လာရန်)</translation>
+		</message>
+	</context>
+	<context>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password</source>
+			<translation>App lock စကားဝှက်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>App lock password cannot be empty.</source>
+			<translation>App lock စကားဝှက်သည် အလွတ်မဖြစ်ရ။</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Change</source>
+			<translation>ပြောင်းလဲလိပ်စာ</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Clear app lock password</source>
+			<translation>App lock စကားဝှက်ကို ဖျက်မည်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Configured</source>
+			<translation>သတ်မှတ်ပြီး</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Enter app lock password:</source>
+			<translation>App lock စကားဝှက်ကို ထည့်ပါ:</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Invalid password</source>
+			<translation>မမှန်ကန်သော စကားဝှက်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Not configured</source>
+			<translation>မသတ်မှတ်ရသေးပါ</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Remove the app lock password?</source>
+			<translation>App lock စကားဝှက်ကို ဖယ်ရှားမလား?</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Set</source>
+			<translation>သတ်မှတ်မည်</translation>
+		</message>
+	</context>
+	<context>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>Missing Key origin</source>
@@ -1988,6 +2114,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Lock လုပ်ပြီး tray သို့ minimize လုပ်မည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Manage Categories</source>
 			<translation>&amp;အမျိုးအစားများ စီမံရန်</translation>
 		</message>
@@ -2093,6 +2224,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Unlock app</source>
+			<translation>&amp;App ကို unlock လုပ်မည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;View</source>
 			<translation>&amp;ကြည့်ရှုပါ</translation>
 		</message>
@@ -2173,6 +2309,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Could not identify the wallet belonging to the transaction inputs.</source>
+			<translation>Transaction input များနှင့် သက်ဆိုင်သော wallet ကို မသတ်မှတ်နိုင်ပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Could not open PSBT</source>
 			<translation>PSBT ကို ဖွင့်၍ မရပါ</translation>
 		</message>
@@ -2215,6 +2356,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Keep open</source>
 			<translation>ဖွင့်ထားပါ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Locked</source>
+			<translation>Lock လုပ်ထားသည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2373,6 +2519,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Set an app lock password first in Settings -&gt; General.</source>
+			<translation>Settings -&gt; General တွင် app lock စကားဝှက်ကို အရင်သတ်မှတ်ပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Signed Message</source>
 			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
 		</message>
@@ -2454,6 +2605,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet could not be loaded. See logs for details.</source>
+			<translation>Wallet ကို load မလုပ်နိုင်ပါ။ အသေးစိတ်အတွက် logs ကိုကြည့်ပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>ပိုက်ဆံအိတ်ကို သင်တင်ဆက်နေပါသည်</translation>
 		</message>
@@ -2472,6 +2628,16 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Was this wallet ever used before?</source>
 			<translation>ဤပိုက်ဆံအိတ်ကို ယခင်က အသုံးပြုခဲ့ဖူးပါသလား?</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password</source>
+			<translation>စကားဝှက်မှားနေသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Wrong password. Wallet could not be loaded.</source>
+			<translation>စကားဝှက်မှားနေသည်။ Wallet ကို load မလုပ်နိုင်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3163,18 +3329,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 	<context>
 		<name>QTWallet</name>
 		<message>
-			<source>    {new_txid}</source>
-			<translation>    {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s):
-{replaced_by_lines}</source>
-			<translation>  TxID ဖြင့် အစားထိုးခဲ့သည်:
-{replaced_by_lines}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
 			<translation>  {new_txid}</translation>
 		</message>
@@ -3407,11 +3561,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Replaced in the Mempool.</source>
-			<translation>Mempool တွင် အစားထိုးခဲ့သည်။</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Save Transactions</source>
 			<translation>Transaction များကို သိမ်းဆည်းမည်</translation>
 		</message>
@@ -3466,6 +3615,11 @@ Do you want to continue anyway?</source>
 
 Do you want to remove it from the wallet anyway?</source>
 			<translation>ဤသည်မှာ ဤဝေါလက်မြင်ကွင်းမှသာ အရောင်းအဝယ်ကို ဖယ်ရှားပါမည်။ ၎င်းကို Bitcoin ကွန်ယက်သို့ ထုတ်လွှင့်ပြီးသားဖြစ်ပြီး အများအားဖြင့် အတည်ပြုခံရမည်ဖြစ်သည်။ သို့တိုင်အောင် ဝေါလက်မှ ဖယ်ရှားလိုပါသလား။</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+			<translation>ဝင်လာသော transaction ကို update လုပ်ပြီးဖြစ်သည်: သင့်လက်ခံရန် လိပ်စာများနှင့် ပမာဏများမှာ မပြောင်းလဲပါ။ ဟောင်းသော txid={txs}။ အသစ်သော txid={new_txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4343,8 +4497,18 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>&amp;Lock and minimize to tray</source>
+			<translation>&amp;Lock လုပ်ပြီး tray သို့ minimize လုပ်မည်</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Clear notifications</source>
 			<translation>အသိပေးချက်များကို ရှင်းလင်းပါ</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Minimize to tray</source>
+			<translation>tray သို့ minimize လုပ်မည်</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4353,13 +4517,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TrayController</name>
 		<message>
+			<source>Notifications hidden while app is locked</source>
+			<translation>App ကို lock လုပ်ထားစဉ် notifications များကို ဖျောက်ထားမည်</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
 			<source>Past notifications</source>
 			<translation>ယခင် အသိပေးချက်များ</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
-			<source>Show/Hide</source>
-			<translation>ပြ/ဖျောက်</translation>
+			<source>Show</source>
+			<translation>ပြမည်</translation>
+		</message>
+		<name>TrayController</name>
+		<message>
+			<source>Unlock to show</source>
+			<translation>ပြရန် unlock လုပ်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -4744,6 +4918,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Enter the app lock password:</source>
+			<translation>App lock စကားဝှက်ကို ထည့်ပါ:</translation>
+		</message>
+		<name>UnlockableMainWindow</name>
+		<message>
+			<source>Wrong app lock password.</source>
+			<translation>App lock စကားဝှက်မှားနေသည်။</translation>
+		</message>
+	</context>
+	<context>
 		<name>UntrustedDeviceItem</name>
 		<message>
 			<source>Trust</source>
@@ -4820,7 +5006,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>အပ်ဒိတ်ဖိုင်ကို စစ်ဆေးပြီးဖြစ်သော်လည်း အလိုအလျောက် တင်သွင်းမှု မပြုလုပ်ခဲ့ပါ: {reason}</translation>
+			<translation>အပ်ဒိတ်ဖိုင်ကို စစ်ဆေးပြီးဖြစ်သော်လည်း အလိုအလျောက် တင်သွင်းမှု မပြုလုပ်ခဲ့ပါ:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5178,6 +5365,35 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Wizard</source>
 			<translation>လမ်းညွှန်</translation>
+		</message>
+	</context>
+	<context>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Bitcoin node</source>
+			<translation>Bitcoin node</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>CBF peer</source>
+			<translation>CBF peer</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>P2P listener peer</source>
+			<translation>P2P listener peer</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Unknown</source>
+			<translation>မသိ</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>{source}
+IP: {ip}
+Country: {country}</source>
+			<translation>{source} IP: {ip} နိုင်ငံ: {country}</translation>
 		</message>
 	</context>
 	<context>
