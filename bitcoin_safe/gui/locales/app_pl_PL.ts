@@ -1627,7 +1627,7 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peery nasłuchujące P2P: {total} &lt;span style='color:{gray}'&gt;(zmapowane: {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peery nasłuchujące P2P: {total} &lt;span style='color:{gray}'&gt;(zmapowane: {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5427,7 +5427,9 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} Kraj: {country}</translation>
+			<translation>{source}
+IP: {ip}
+Kraj: {country}</translation>
 		</message>
 	</context>
 	<context>

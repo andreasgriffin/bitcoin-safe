@@ -1625,7 +1625,7 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5414,7 +5414,9 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} Quốc gia: {country}</translation>
+			<translation>{source}
+IP: {ip}
+Quốc gia: {country}</translation>
 		</message>
 	</context>
 	<context>

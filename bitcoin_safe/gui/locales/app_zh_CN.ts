@@ -1630,7 +1630,7 @@ since the final size of the transaction is unknown.</source>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P 监听节点：{total} &lt;span style='color:{gray}'&gt;(已映射：{mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P 监听节点：{total} &lt;span style='color:{gray}'&gt;(已映射：{mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5425,7 +5425,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP：{ip} 国家：{country}</translation>
+			<translation>{source}
+IP：{ip}
+国家：{country}</translation>
 		</message>
 	</context>
 	<context>

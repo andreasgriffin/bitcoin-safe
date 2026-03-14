@@ -1625,7 +1625,7 @@ since the final size of the transaction is unknown.</source>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P слушающие пиры: {total} &lt;span style='color:{gray}'&gt;(сопоставлено: {mapped})&lt;/span&gt;</translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P слушающие пиры: {total} &lt;span style='color:{gray}'&gt;(сопоставлено: {mapped})&lt;/span&gt; </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -5421,7 +5421,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} Страна: {country}</translation>
+			<translation>{source}
+IP: {ip}
+Страна: {country}</translation>
 		</message>
 	</context>
 	<context>
