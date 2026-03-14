@@ -9,7 +9,7 @@
 		<name>AboutTab</name>
 		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
-			<translation>Eine sichere Bitcoin-Spargeldbörse für alle.</translation>
+			<translation>Eine sichere Bitcoin-Spar-Geldbörse für alle.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -71,7 +71,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk-Bibliotheksfehler. Die txid sollte während der Finalisierung nicht geändert werden.</translation>
+			<translation>bdk-Bibliotheksfehler. Die Transaktions-ID (txid) sollte während der Finalisierung nicht geändert werden</translation>
 		</message>
 	</context>
 	<context>
@@ -243,7 +243,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>change</source>
-			<translation>Wechsel</translation>
+			<translation>Ändern</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -311,7 +311,7 @@
 		<name>BackupNsecNotificationBar</name>
 		<message>
 			<source>Please backup your sync key.</source>
-			<translation>Bitte sichere deinen Sync‑Schlüssel.</translation>
+			<translation>Bitte sichern Sie Ihren Sync‑Schlüssel.</translation>
 		</message>
 		<name>BackupNsecNotificationBar</name>
 		<message>
@@ -333,12 +333,12 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Das {number} Wort-Seed auf das passende gedruckte PDF kleben.</translation>
+			<translation>Das {number}-Wort-Seed auf das passende gedruckte PDF kleben.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
 			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Das {number} Wort-Seed auf das gedruckte PDF kleben.</translation>
+			<translation>Das {number}-Wort-Seed auf das gedruckte PDF kleben.</translation>
 		</message>
 		<name>BackupSeed</name>
 		<message>
@@ -358,7 +358,7 @@
 		<name>BackupSeed</name>
 		<message>
 			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Drucken Sie die PDF-Datei aus (sie enthält auch die Wallet-Beschreibung).</translation>
+			<translation>Das PDF drucken (enthält auch den Wallet-Descriptor)</translation>
 		</message>
 	</context>
 	<context>
@@ -475,7 +475,7 @@
 		<name>ButtonList</name>
 		<message>
 			<source>Open containing folder</source>
-			<translation>Öffnen des enthaltenden Ordners</translation>
+			<translation>Enthaltenden Ordner öffnen</translation>
 		</message>
 	</context>
 	<context>
@@ -623,7 +623,7 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie 
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
 			<translation>Die Adressen {used_addresses}
-haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du sicher, dass du ihre Kategorie ändern möchtest?</translation>
+haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie sicher, dass Sie deren Kategorie ändern möchten?</translation>
 		</message>
 	</context>
 	<context>
@@ -805,7 +805,7 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Bist du s
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Descriptor not valid</source>
-			<translation>Fehlender Descriptor</translation>
+			<translation>Deskriptor nicht gültig</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -867,14 +867,14 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-			<translation>Die Einrichtung der Wallet ist noch nicht abgeschlossen. Bitte schließen Sie diese ab, bevor Sie eine Sicherungskopie im PDF-Format erstellen.</translation>
+			<translation>Wallet-Setup nicht abgeschlossen. Bitte beenden Sie dies, bevor Sie ein Backup-PDF erstellen.</translation>
 		</message>
 	</context>
 	<context>
 		<name>DescriptorExport</name>
 		<message>
 			<source>Export Descriptor</source>
-			<translation>Exportiere Deskriptor</translation>
+			<translation>Deskriptor exportieren</translation>
 		</message>
 	</context>
 	<context>
@@ -927,8 +927,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 Default 20</source>
-			<translation>Während des Scannens der Blockchain erstellt die Wallet zusätzliche Adressen, um Transaktionen
-zu entdecken Standard 20</translation>
+			<translation>Während des Scannens der Blockchain erstellt die Wallet zusätzliche Adressen, um Transaktionen zu entdecken. Standard: 20</translation>
 		</message>
 	</context>
 	<context>
@@ -938,7 +937,7 @@ zu entdecken Standard 20</translation>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-			<translation>1. Verbinden Sie Ihr Hardware-Signaturgerät
+			<translation>1. Verbinden Sie Ihren Hardware-Signer
 2. Klicken Sie auf Scannen
 3. Entsperren Sie das Gerät
 4. Wählen Sie das Gerät aus</translation>
@@ -961,7 +960,7 @@ zu entdecken Standard 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>Installieren Sie udev-Regeln</translation>
+			<translation>udev-Regeln installieren</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1006,7 +1005,7 @@ zu entdecken Standard 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>install udev rules</source>
-			<translation>Installieren Sie udev-Regeln.</translation>
+			<translation>udev-Regeln installieren</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1040,7 +1039,7 @@ zu entdecken Standard 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Wählen Sie die sicheren Orte sorgfältig aus, unter Berücksichtigung, dass Sie zu {m} von {n} gehen müssen, um von Ihrem Multisig-Wallet auszugeben.</translation>
+			<translation>Wählen Sie die sicheren Orte sorgfältig aus. Beachten Sie, dass Sie {m} von {n} Standorten aufsuchen müssen, um von Ihrem Multisig-Wallet auszugeben.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1237,7 +1236,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>FeeRateWarningBar</name>
 		<message>
 			<source>The high priority mempool fee rate is {rate}</source>
-			<translation>Die hohe Priorität Mempool-Gebühr beträgt {rate}</translation>
+			<translation>Die Mempool-Gebühr mit hoher Priorität beträgt {rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -1420,7 +1419,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>HistList</name>
 		<message>
 			<source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-			<translation>Brieftasche für Transaktion {txid} nicht gefunden. Bitte öffnen Sie zuerst die entsprechende Brieftasche.</translation>
+			<translation>Wallet für Transaktion {txid} nicht gefunden. Bitte öffnen Sie zuerst das entsprechende Wallet.</translation>
 		</message>
 		<name>HistList</name>
 		<message>
@@ -1648,12 +1647,12 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Während der ersten Synchronisierung lädt Bitcoin Safe kompakte Blockzusammenfassungen von mehreren Bitcoin-Knoten herunter. Dies ist eine private Methode, um Blockdaten zu erhalten.</translation>
+			<translation>Während der ersten Synchronisierung lädt Bitcoin Safe kompakte Blockzusammenfassungen von mehreren Bitcoin-Knoten herunter. Dies ist eine private Methode, um Blockdaten herunterzuladen.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Vergangene Zeit {elapsed} | Geschätzt verbleibend {remaining}</translation>
+			<translation>Vergangene Zeit: {elapsed} | Geschätzt verbleibend: {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1664,7 +1663,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<message>
 			<source>Recently broadcasted messages are received
 from these peers via the bitcoin network.</source>
-			<translation>Kürzlich gesendete Nachrichten werden von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
+			<translation>Kürzlich gesendete Nachrichten werden über das Bitcoin-Netzwerk von diesen Peers empfangen.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1702,7 +1701,7 @@ received from these peers via the bitcoin network.</source>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>Change</source>
-			<translation>Wechsel</translation>
+			<translation>Ändern</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1887,7 +1886,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>Füllen Sie alle {number} Signer mit den Fingerabdrücken {fingerprints}</translation>
+			<translation>Befüllen Sie alle {number} Signer mit den Fingerabdrücken {fingerprints}.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2101,7 +2100,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Feedback</source>
-			<translation>&amp; Feedback</translation>
+			<translation>&amp;Feedback</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2161,7 +2160,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Nostr DM</source>
-			<translation>&amp; Nostr DM</translation>
+			<translation>&amp;Nostr DM</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2261,7 +2260,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>Ein Wallet mit der ID {name} ist bereits geöffnet.  </translation>
+			<translation>Ein Wallet mit der ID {name} ist bereits geöffnet.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2531,7 +2530,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
-			<translation>Legen Sie zuerst ein App-Sperrpasswort unter Einstellungen -&gt; Allgemein fest.</translation>
+			<translation>Legen Sie zuerst ein App-Sperrpasswort unter Einstellungen → Allgemein fest.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2734,7 +2733,7 @@ Möchten Sie sie stattdessen in die Taskleiste minimieren?</translation>
 		<name>MyTreeView</name>
 		<message>
 			<source>{n} rows have ben copied as csv</source>
-			<translation>{n} Zeilen wurden als csv kopiert</translation>
+			<translation>{n} Zeilen wurden als CSV kopiert</translation>
 		</message>
 	</context>
 	<context>
@@ -2801,7 +2800,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>Sind Sie sicher, dass „{scheme}” in der esplora-URL korrekt ist?</translation>
+			<translation>Sind Sie sicher, dass '{scheme}' in der esplora URL korrekt ist?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2826,7 +2825,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Click to open the mempool url</source>
-			<translation>Klicken, um die Mempool‑URL zu öffnen.</translation>
+			<translation>Klicken, um die Mempool‑URL zu öffnen</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2914,12 +2913,12 @@ Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translat
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>Bitte entfernen Sie „{scheme}” aus der Electrum-URL.</translation>
+			<translation>Bitte entfernen Sie '{scheme}' aus der electrum URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>Bitte versuchen Sie „{scheme}” am Anfang der Mempool-URL.</translation>
+			<translation>Bitte versuchen Sie '{scheme}' am Anfang der mempool URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3073,7 +3072,7 @@ Wallet erstellen oder importieren</translation>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Wenn Sie Hacker dazu bringen, Ihren Seed preiszugeben, wird Ihr Bitcoin sofort gestohlen</translation>
+			<translation>Wenn Sie von Hackern dazu gebracht werden, Ihren Seed preiszugeben, wird Ihr Bitcoin sofort gestohlen.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3131,7 +3130,7 @@ Wallet erstellen oder importieren</translation>
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
-			<translation>Verbinde dich mit Bitcoin-Knoten (p2p) und lade relevante Blöcke von ihnen herunter.</translation>
+			<translation>Verbinden Sie sich mit Bitcoin-Knoten (p2p) und laden Sie relevante Blöcke von ihnen herunter.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -3219,7 +3218,7 @@ Wallet erstellen oder importieren</translation>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Submit</source>
-			<translation>Einreichen</translation>
+			<translation>Bestätigen</translation>
 		</message>
 	</context>
 	<context>
@@ -4296,7 +4295,7 @@ Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrek
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>Die txid der signierten psbt stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
+			<translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein. Abbruch</translation>
 		</message>
 	</context>
 	<context>
@@ -4313,7 +4312,7 @@ Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrek
 		<name>StickerTheHardware</name>
 		<message>
 			<source>Put the following stickers on your hardware:</source>
-			<translation>Kleben Sie die folgenden Aufkleber auf Ihr Hardware:</translation>
+			<translation>Kleben Sie die folgenden Aufkleber auf Ihre Hardware:</translation>
 		</message>
 	</context>
 	<context>
@@ -4377,7 +4376,7 @@ Dies übt den Signaturablauf und stellt sicher, dass alle Hardware-Signer korrek
 		<name>SyncClient</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>Öffnung {name} von {author}</translation>
+			<translation>Öffnen von {name} durch {author}</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4414,7 +4413,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>SyncClient</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author} : {description}</translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
@@ -4431,12 +4430,12 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>SyncTab</name>
 		<message>
 			<source>Opening {name} from {author}</source>
-			<translation>Öffnung {name} von {author}</translation>
+			<translation>Öffnen von {name} durch {author}</translation>
 		</message>
 		<name>SyncTab</name>
 		<message>
 			<source>{author}: {description}</source>
-			<translation>{author} : {description}</translation>
+			<translation>{author}: {description}</translation>
 		</message>
 	</context>
 	<context>
@@ -4458,7 +4457,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>ToolGui</name>
 		<message>
 			<source>Install udev rules</source>
-			<translation>Installieren Sie udev-Regeln</translation>
+			<translation>udev-Regeln installieren</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4557,7 +4556,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TrayController</name>
 		<message>
 			<source>Notifications hidden while app is locked</source>
-			<translation>Benachrichtigungen werden ausgeblendet, solange die App gesperrt ist</translation>
+			<translation>Benachrichtigungen werden ausgeblendet, solange die App gesperrt ist.</translation>
 		</message>
 		<name>TrayController</name>
 		<message>
@@ -4609,7 +4608,7 @@ Signatures:
 
 
 </source>
-			<translation>Transaktion mit dem privaten Schlüssel von {label}
+			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert.
 
 Signaturen:
 {signatures}
@@ -4622,7 +4621,7 @@ Signaturen:
 		<name>UI</name>
 		<message>
 			<source>Export sync key</source>
-			<translation>Sync-Key exportierenb</translation>
+			<translation>Sync-Key exportieren</translation>
 		</message>
 		<name>UI</name>
 		<message>
@@ -4738,7 +4737,7 @@ txid:outpoint ein</translation>
 		<name>UITx_Creator</name>
 		<message>
 			<source>Reduce future fees by merging UTXOs below {rate}</source>
-			<translation>Reduziere künftige Gebühren, indem du UTXOs unterhalb von {rate} zusammenführst</translation>
+			<translation>Reduzieren Sie künftige Gebühren, indem Sie UTXOs unterhalb von {rate} zusammenführen.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4796,13 +4795,13 @@ txid:outpoint ein</translation>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>Bitte zuerst eine Wallet öffnen, um die Transaktion zu senden.
-Alternativ kannst du über {url} senden</translation>
+			<translation>Bitte öffnen Sie zuerst eine Wallet, um die Transaktion zu senden.
+Alternativ können Sie über {url} senden.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
-			<translation>Bitte entferne zuerst die vorhandene lokale Transaktion des Wallets.</translation>
+			<translation>Bitte entfernen Sie zuerst die vorhandene lokale Transaktion des Wallets.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -4868,7 +4867,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>USBGui</name>
 		<message>
 			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
-			<translation>Bitte das folgende Skript in ein Terminal kopieren und einfügen, um die udev-Regeln zu installieren:</translation>
+			<translation>Bitte kopieren Sie das folgende Skript in ein Terminal und fügen es ein, um die udev-Regeln zu installieren:</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
@@ -5056,8 +5055,7 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt:
-{reason}</translation>
+			<translation>Update-Datei wurde verifiziert, aber keine automatische Installation durchgeführt: {reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5445,7 +5443,9 @@ wurde erfolgreich durchgeführt. Bitte fahren Sie mit dem Self-Send-Test fort:
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} Land: {country}</translation>
+			<translation>{source}
+IP: {ip}
+Land: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -5506,7 +5506,7 @@ Country: {country}</source>
 		<name>address_list</name>
 		<message>
 			<source>Change</source>
-			<translation>Wechsel</translation>
+			<translation>Ändern</translation>
 		</message>
 		<name>address_list</name>
 		<message>
@@ -5808,7 +5808,7 @@ Country: {country}</source>
 		<name>hist_list</name>
 		<message>
 			<source>Change</source>
-			<translation>Wechsel</translation>
+			<translation>Ändern</translation>
 		</message>
 		<name>hist_list</name>
 		<message>
@@ -5911,12 +5911,12 @@ Country: {country}</source>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=testnet4"</source>
-			<translation>Starte deinen bitcoind mit "bitcoind -chain=testnet4"</translation>
+			<translation>Starten Sie Ihren bitcoind mit "bitcoind -chain=testnet4"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
 			<source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-			<translation>Signet wählt {electrum} und einen Block-Explorer auf {mempool_url}. Es gibt einen {faucet} für kostenlose Testmünzen。</translation>
+			<translation>Signet wählt {electrum} und einen Block-Explorer auf {mempool_url}. Es gibt einen {faucet} für kostenlose Testmünzen.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -5984,8 +5984,8 @@ This does not reveal anything about your wallet.
 Click here to learn more.</source>
 			<translation>Passiv den Bitcoin‑p2p‑Traffic abhören (wie ein Bitcoin‑Knoten),
 um neu ausgestrahlte Transaktionen sofort zu erkennen.
-Das verrät nichts über deine Wallet.
-Klicke hier, um mehr zu erfahren.</translation>
+Das verrät nichts über Ihre Wallet.
+Klicken Sie hier, um mehr zu erfahren.</translation>
 		</message>
 	</context>
 	<context>
@@ -6296,7 +6296,7 @@ Klicke hier, um mehr zu erfahren.</translation>
 		<name>signatures</name>
 		<message>
 			<source>Address does not match recovered public key.</source>
-			<translation>Adresse stimmt nicht mit der wiederhergestellten öffentlichen Schlüssel überein.</translation>
+			<translation>Die Adresse stimmt nicht mit dem wiederhergestellten öffentlichen Schlüssel überein.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -6321,7 +6321,7 @@ Klicke hier, um mehr zu erfahren.</translation>
 		<name>signatures</name>
 		<message>
 			<source>Invalid recovery id in signature.</source>
-			<translation>Ungültige Wiederherstellungs-ID in der Signatur.</translation>
+			<translation>Ungültige Recovery-ID in der Signatur.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
@@ -6471,7 +6471,7 @@ Klicke hier, um mehr zu erfahren.</translation>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>Bitte vergleichen und bestätigen Sie den Pairing-Code auf Ihrer BitBox02
+			<translation>Bitte vergleichen und bestätigen Sie den Pairing-Code auf Ihrem BitBox02:
 
 {code}</translation>
 		</message>
@@ -6653,7 +6653,7 @@ Erfordert, dass die ursprüngliche Transaktion RBF signalisiert und Ihre Wallet 
 		<message>
 			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Kind-bezahlt-für-Elternteil: Diese Transaktion beschleunigt die Bestätigung des {parent_str},
+			<translation>Kind-zahlt-für-Elternteil: Diese Transaktion beschleunigt die Bestätigung des {parent_str},
 da sie den Gesamtgebührensatz auf {combined_rate} erhöht.</translation>
 		</message>
 		<name>utils</name>
