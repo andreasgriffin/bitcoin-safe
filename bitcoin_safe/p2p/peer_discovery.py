@@ -285,7 +285,7 @@ class PeerDiscovery:
         self,
         lower_bound: int | None,
         required_services: int | None,
-        timeout: int = 5,
+        timeout: float = 5,
     ):
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
