@@ -31,11 +31,12 @@ from __future__ import annotations
 
 import sys
 from dataclasses import dataclass
+from html import escape
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtGui import QFont, QMouseEvent, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -49,8 +50,10 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe import __version__
+from bitcoin_safe.bitcoin_quotes import BitcoinQuote, get_random_quote
 from bitcoin_safe.gui.qt.util import get_icon_path, svg_tools
 from bitcoin_safe.html_utils import link
+from bitcoin_safe.util_os import webopen
 
 
 class LicenseDialog(QDialog):
@@ -178,6 +181,77 @@ class UpdateStatus:
     latest_version: str | None
 
 
+class RandomQuoteLabel(QLabel):
+    _refresh_href = "bitcoin-safe://next"
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent=parent)
+        self._current_quote: BitcoinQuote | None = None
+
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setWordWrap(True)
+        self.setTextFormat(Qt.TextFormat.RichText)
+        self.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        self.setOpenExternalLinks(False)
+        self.setToolTip(self.tr("Click the quote or the link below to show another item"))
+        self.setMaximumWidth(420)
+        self.linkActivated.connect(self._handle_link_activated)
+
+        self.refresh_quote()
+
+    def refresh_quote(self) -> None:
+        self._current_quote = get_random_quote(self._current_quote)
+        if self._current_quote.url:
+            self.unsetCursor()
+        else:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setText(self._format_quote(self._current_quote))
+
+    def mousePressEvent(self, ev: QMouseEvent | None) -> None:
+        if (
+            ev
+            and ev.button() == Qt.MouseButton.LeftButton
+            and self._current_quote
+            and not self._current_quote.url
+        ):
+            self.refresh_quote()
+            ev.accept()
+            return
+        super().mousePressEvent(ev)
+
+    def _handle_link_activated(self, href: str) -> None:
+        if href == self._refresh_href:
+            self.refresh_quote()
+            return
+        webopen(href)
+        self.refresh_quote()
+
+    def _format_quote(self, quote: BitcoinQuote) -> str:
+        if quote.url:
+            return self._format_resource(quote)
+        return self._format_quote_entry(quote)
+
+    def _format_quote_entry(self, quote: BitcoinQuote) -> str:
+        escaped_quote = escape(quote.title)
+        escaped_author = escape(quote.author)
+        return (
+            '<div style="text-align: center;">'
+            f'<span style="font-style: italic;">{escaped_quote}</span><br>'
+            f"<span>{escaped_author}</span>"
+            "</div>"
+        )
+
+    def _format_resource(self, resource: BitcoinQuote) -> str:
+        escaped_title = escape(resource.title)
+        escaped_author = escape(resource.author)
+        return (
+            '<div style="text-align: center;">'
+            f'<a href="{escape(resource.url or "")}">{escaped_title}</a><br>'
+            f"<span>{escaped_author}</span>"
+            "</div>"
+        )
+
+
 class AboutTab(QWidget):
     signal_update_action_requested = cast(SignalProtocol[[]], pyqtSignal())
 
@@ -257,6 +331,8 @@ class AboutTab(QWidget):
         licence_label.setCursor(Qt.CursorShape.PointingHandCursor)
         licence_label.linkActivated.connect(license_dialog.exec)
 
+        quote_label = RandomQuoteLabel(parent=self)
+
         layout.addStretch()
         layout.addWidget(logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_label)
@@ -267,6 +343,8 @@ class AboutTab(QWidget):
         layout.addWidget(foss_label)
         layout.addWidget(reproducible_label)
         layout.addWidget(licence_label)
+        layout.addSpacing(6)
+        layout.addWidget(quote_label, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addStretch()
 
         self._version_status_label = version_status_label
