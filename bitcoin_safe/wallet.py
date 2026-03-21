@@ -735,7 +735,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         network: bdk.Network,
         config: UserConfig,
         loop_in_thread: LoopInThread | None,
-        gap=20,
+        gap: int = 20,
         labels: Labels | None = None,
         initialization_tips: list[int] | None = None,
         refresh_wallet=False,
@@ -760,7 +760,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         assert self.network == config.network, (
             f"Cannot load a wallet for {self.network}, when the network {config.network} is configured"
         )
-        self.gap = gap
+        self.gap: int = gap
         self.keystores = keystores
         self.config: UserConfig = config
         self.labels: Labels = labels if labels else Labels(default_category=default_category)
@@ -2378,6 +2378,15 @@ class Wallet(BaseSaveableClass, CacheManager):
             sorted_confirmed + sorted_unconfirmed + sorted_initial_transactions + sorted_local
         )
         return [fx.tx for fx in all_sorted]
+
+    def confirmed_balances(self) -> list[int]:
+        confirmed_balance = 0
+        confirmed_balances = []
+        for transaction in self.sorted_delta_list_transactions():
+            if transaction.chain_position.is_confirmed():
+                confirmed_balance += transaction.received - transaction.sent
+                confirmed_balances.append(confirmed_balance)
+        return confirmed_balances
 
     def _split_by_confirmation(
         self, dict_full: dict[str, FullTxDetail]

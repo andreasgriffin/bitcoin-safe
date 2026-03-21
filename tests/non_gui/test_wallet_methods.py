@@ -29,6 +29,8 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import bdkpython as bdk
 import pytest
 
@@ -217,3 +219,29 @@ def test_get_mn_tuple() -> None:
 
     # Multisig should return (m, n).
     assert wallet.get_mn_tuple() == (2, 3)
+
+
+def test_has_negative_confirmed_balance_in_history_detects_negative_confirmed_running_balance() -> None:
+    """Test negative confirmed running balance detection."""
+    wallet = SimpleNamespace(
+        sorted_delta_list_transactions=lambda: [
+            SimpleNamespace(received=200, sent=0, chain_position=SimpleNamespace(is_confirmed=lambda: True)),
+            SimpleNamespace(received=0, sent=300, chain_position=SimpleNamespace(is_confirmed=lambda: True)),
+        ]
+    )
+
+    balances = Wallet.confirmed_balances(wallet)
+    assert any(balance < 0 for balance in balances)
+
+
+def test_has_negative_confirmed_balance_in_history_ignores_unconfirmed_negative_balance() -> None:
+    """Test unconfirmed negative running balance does not trigger corruption detection."""
+    wallet = SimpleNamespace(
+        sorted_delta_list_transactions=lambda: [
+            SimpleNamespace(received=200, sent=0, chain_position=SimpleNamespace(is_confirmed=lambda: True)),
+            SimpleNamespace(received=0, sent=300, chain_position=SimpleNamespace(is_confirmed=lambda: False)),
+        ]
+    )
+
+    balances = Wallet.confirmed_balances(wallet)
+    assert not any(balance < 0 for balance in balances)
