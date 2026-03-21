@@ -154,19 +154,19 @@ class TotalsBox(HeightSyncedWidget):
         self._layout.addWidget(line, 0, 0, 1, 4)
 
         self._layout.addWidget(
-            self.c0, 1, 0, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+            self.c0, 1, 1, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
         self._layout.addWidget(
-            self.c1, 1, 1, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+            self.c1, 1, 2, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
         self._layout.addWidget(
             self.c2, 1, 3, alignment=Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
         )
 
         # Make both columns expand evenly
-        self._layout.setColumnStretch(0, 0)
+        self._layout.setColumnStretch(0, 1)  # the empty column
         self._layout.setColumnStretch(1, 0)
-        self._layout.setColumnStretch(2, 1)  # the empty column
+        self._layout.setColumnStretch(2, 0)
         self._layout.setColumnStretch(3, 0)
 
         self.setLayout(self._layout)
