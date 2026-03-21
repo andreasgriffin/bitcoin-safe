@@ -170,6 +170,8 @@ def get_export_icon(export_type: DescriptorExportType | QrExportType) -> QIcon:
 
 
 class FileToolButton(QToolButton):
+    signal_exported = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self,
         data: Data,
@@ -243,6 +245,7 @@ class FileToolButton(QToolButton):
         fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
 
         self.data.write_to_filedescriptor(fd)
+        self.signal_exported.emit()
         return filename
 
     def export_to_pdf(self, filepath: Path | None = None) -> str | None:
@@ -284,6 +287,7 @@ class FileToolButton(QToolButton):
         )
         pdf.save_pdf(str(filepath))
         pdf.open_pdf(str(filepath))
+        self.signal_exported.emit()
         return str(filepath)
 
     def updateUi(self) -> None:
@@ -393,6 +397,7 @@ class FileToolButton(QToolButton):
         """Copy if available."""
         if s:
             do_copy(s)
+            self.signal_exported.emit()
         else:
             Message(self.tr("Not available"), parent=self)
 
@@ -410,6 +415,8 @@ class FileToolButton(QToolButton):
 
 
 class SyncChatToolButton(QToolButton):
+    signal_exported = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self,
         data: Data,
@@ -512,6 +519,7 @@ class SyncChatToolButton(QToolButton):
             self.to_dm(use_compression=sync_client.nostr_sync.group_chat.use_compression),
             receiver_public_key,
         )
+        self.signal_exported.emit()
 
     def to_dm(self, use_compression: bool) -> ChatDM:
         """To dm."""
@@ -540,6 +548,7 @@ class SyncChatToolButton(QToolButton):
             self.to_dm(use_compression=sync_client.nostr_sync.group_chat.use_compression),
             send_also_to_me=False,
         )
+        self.signal_exported.emit()
 
 
 class QrComboBox(QComboBox):
@@ -933,6 +942,8 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
 
 class QrToolButton(QToolButton):
+    signal_exported = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self,
         data: Data,
@@ -976,6 +987,7 @@ class QrToolButton(QToolButton):
             return
         self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
         self.export_qr_widget.show()
+        self.signal_exported.emit()
 
     def _fill_menu(self):
         """Fill menu."""

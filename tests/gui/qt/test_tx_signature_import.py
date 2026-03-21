@@ -115,6 +115,10 @@ def test_signature_import_of_psbt_without_utxos(
             shutter.save(dialog)
             dialog.button_ok.click()
 
+        assert not widget_import_export.file.button_import.buttons[0].isEnabled()
+        widget_import_export.file.button_export.action_copy_txid.trigger()
+        assert widget_import_export.file.button_import.buttons[0].isEnabled()
+
         assert widget_import_export.file
         do_modal_click(
             widget_import_export.file.button_import.buttons[0].click, text_entry, qtbot, cls=ImportDialog

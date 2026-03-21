@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterable
+from functools import partial
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -44,6 +45,7 @@ from bitcoin_safe.gui.qt.export_data import (
     SyncChatToolButton,
 )
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signer import (
     AbstractSignatureImporter,
@@ -58,7 +60,29 @@ from ...signals import SignalsMin
 logger = logging.getLogger(__name__)
 
 
-class HorizontalImportExportQR(QGroupBox):
+class PairedImportExportGroupBox(QGroupBox):
+    def _connect_export_state(
+        self,
+        export_button: FileToolButton | QrToolButton | SyncChatToolButton,
+        import_button: QWidget,
+    ) -> None:
+        """Enable the import step only after export has happened."""
+        import_button.setEnabled(False)
+        export_button.signal_exported.connect(
+            partial(self._mark_export_complete, export_button, import_button)
+        )
+
+    def _mark_export_complete(
+        self,
+        export_button: FileToolButton | QrToolButton | SyncChatToolButton,
+        import_button: QWidget,
+    ) -> None:
+        """Mark export as completed and unlock import."""
+        export_button.setIcon(svg_tools.get_QIcon("checkmark.svg"))
+        import_button.setEnabled(True)
+
+
+class HorizontalImportExportQR(PairedImportExportGroupBox):
     def __init__(
         self,
         psbt: bdk.Psbt,
@@ -89,6 +113,7 @@ class HorizontalImportExportQR(QGroupBox):
             signer_ui = SignerUI(list(signature_importers)[:1], psbt, network, button_prefix="2. ")
             signer_ui.layout_keystore_buttons.setContentsMargins(0, 0, 0, 0)
             self.button_import = signer_ui
+            self._connect_export_state(self.button_export, self.button_import)
 
             self._layout.addWidget(self.button_export)
             self._layout.addWidget(self.button_import)
@@ -132,7 +157,7 @@ class HorizontalImportExportUSB(QGroupBox):
         self.setTitle(self.tr("Sign with USB"))
 
 
-class HorizontalImportExportFile(QGroupBox):
+class HorizontalImportExportFile(PairedImportExportGroupBox):
     def __init__(
         self,
         psbt: bdk.Psbt,
@@ -160,6 +185,7 @@ class HorizontalImportExportFile(QGroupBox):
             signer_ui = SignerUI(list(signature_importers)[:1], psbt, network, button_prefix="2. ")
             signer_ui.layout_keystore_buttons.setContentsMargins(0, 0, 0, 0)
             self.button_import = signer_ui
+            self._connect_export_state(self.button_export, self.button_import)
 
             self._layout.addWidget(self.button_export)
             self._layout.addWidget(self.button_import)
@@ -171,7 +197,7 @@ class HorizontalImportExportFile(QGroupBox):
         self.setTitle(self.tr("Sign with File"))
 
 
-class HorizontalImportExportClipboard(QGroupBox):
+class HorizontalImportExportClipboard(PairedImportExportGroupBox):
     def __init__(
         self,
         psbt: bdk.Psbt,
@@ -199,6 +225,7 @@ class HorizontalImportExportClipboard(QGroupBox):
             signer_ui = SignerUI(list(signature_importers)[:1], psbt, network, button_prefix="2. ")
             signer_ui.layout_keystore_buttons.setContentsMargins(0, 0, 0, 0)
             self.button_import = signer_ui
+            self._connect_export_state(self.button_sync_share, self.button_import)
 
             self._layout.addWidget(self.button_import)
 
