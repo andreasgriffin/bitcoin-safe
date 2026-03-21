@@ -30,9 +30,11 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
+from typing import cast
 
 import numpy as np
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QSizePolicy, QWidget
 
@@ -175,9 +177,10 @@ class PoisoningWarningBar(NotificationBar):
 
 
 class TooSmallGapLimitWarningBar(NotificationBar):
+    signal_clicked_recreate = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self,
-        callback_recreate_wallet: Callable[[], None],
         new_gap: int,
         signals_min: SignalsMin,
         parent: QWidget | None = None,
@@ -186,7 +189,7 @@ class TooSmallGapLimitWarningBar(NotificationBar):
         super().__init__(
             text="",
             optional_button_text="",
-            callback_optional_button=callback_recreate_wallet,
+            callback_optional_button=self.click_recreate,
             has_close_button=False,
             parent=parent,
         )
@@ -203,6 +206,9 @@ class TooSmallGapLimitWarningBar(NotificationBar):
         self.setVisible(False)
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
+
+    def click_recreate(self):
+        self.signal_clicked_recreate.emit()
 
     def set_text(self, text: str):
         self.text = text

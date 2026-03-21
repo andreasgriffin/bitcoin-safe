@@ -1439,10 +1439,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         new_gap = self._suggested_increased_gap()
         self.wallet_corruption_warning_bar = TooSmallGapLimitWarningBar(
-            callback_recreate_wallet=partial(self.recreate_wallet_with_increased_gap, new_gap),
             signals_min=self.signals,
             parent=self.history_tab_content,
             new_gap=new_gap,
+        )
+        self.signal_tracker.connect(
+            self.wallet_corruption_warning_bar.signal_clicked_recreate,
+            partial(self.recreate_wallet_with_increased_gap, new_gap),
         )
         history_tab_content_layout.addWidget(self.wallet_corruption_warning_bar)
 
