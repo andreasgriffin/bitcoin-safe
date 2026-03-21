@@ -252,7 +252,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
     @property
     def label(self) -> str:
         """Label."""
-        return self.tr("Seed of '{wallet_id}'").format(wallet_id=self.wallet_id)
+        return self.wallet_id
 
 
 class SignatureImporterQR(AbstractSignatureImporter):

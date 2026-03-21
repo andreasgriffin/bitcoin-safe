@@ -280,7 +280,7 @@ def test_wallet_send(
                 signer_ui = widget.wallet_importers.signer_ui
                 assert isinstance(signer_ui, SignerUI)
                 for button in signer_ui.findChildren(QPushButton):
-                    assert button.text() == f"Seed of '{qt_wallet.wallet.id}'"
+                    assert button.text() == f"{qt_wallet.wallet.id}"
                     assert button.isVisible()
                     button.click()
 
