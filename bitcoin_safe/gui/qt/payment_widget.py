@@ -29,9 +29,12 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import platform
+import shutil
 import socket
-import threading
+import webbrowser
 from concurrent.futures import Future
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -52,7 +55,7 @@ from PyQt6.QtCore import (
     pyqtBoundSignal,
     pyqtSignal,
 )
-from PyQt6.QtGui import QCloseEvent, QDesktopServices
+from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -63,11 +66,11 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.execute_config import DONATION_ADDRESS
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.util import OptExcInfo
+from bitcoin_safe.util_os import webopen
 
 from ...fx import FX
 from .ui_tx.spinbox import FiatSpinBox
@@ -83,7 +86,7 @@ INVOICE_TIMEOUT = timedelta(minutes=15)
 class CallbackServerState:
     invoice_id: str
     server: HTTPServer
-    thread: threading.Thread
+    serve_future: Future[Any]
     port: int
     started_at: datetime
     invoice_url: str | None = None
@@ -104,11 +107,8 @@ class PaymentButton(QPushButton):
         self.amount: float | None = None
         self.currency_iso: str | None = None
         self.loop_in_thread = loop_in_thread
-        self.use_external_browser = True
-        self._use_external_browser_current = True
         self._callback_server_state: CallbackServerState | None = None
         self._callback_timeout_timer: QTimer | None = None
-        self._external_callback_seen = False
         self.future_invoice: Future[Any] | None = None
 
         self.clicked.connect(self.create_invoice)
@@ -126,34 +126,27 @@ class PaymentButton(QPushButton):
         # cancel old creation
         self.cancel_invoice_task()
         self._stop_callback_server()
-        self._external_callback_seen = False
-        self._use_external_browser_current = True
 
         if not self.amount or not self.currency_iso:
             self.signal_update_status.emit(self.tr("Please choose a donation amount and a currency."))
             return
 
-        redirect_url_override: str | None = None
-        if self._use_external_browser_current:
-            redirect_url_override = self._start_callback_server()
-            if not redirect_url_override:
-                self._use_external_browser_current = False
-                self.signal_update_status.emit(
-                    self.tr(
-                        "Could not start the local callback server. Opening the invoice in your browser without automatic confirmation."
-                    )
-                )
-                self.signal_update_status.emit(self.tr("Requesting invoice..."))
-        else:
-            self.signal_update_status.emit(self.tr("Requesting invoice..."))
-
-        self.setEnabled(False)
-        if self._use_external_browser_current:
+        redirect_url_override = self._start_callback_server()
+        if redirect_url_override:
             self.signal_update_status.emit(
                 self.tr(
                     "Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally."
                 )
             )
+        else:
+            self.signal_update_status.emit(
+                self.tr(
+                    "Could not start the local callback server. Opening the invoice in your browser without automatic confirmation."
+                )
+            )
+            self.signal_update_status.emit(self.tr("Requesting invoice..."))
+
+        self.setEnabled(False)
 
         self.future_invoice = self.loop_in_thread.run_task(
             self._create_invoice_request(self.amount, self.currency_iso, redirect_url_override),
@@ -191,7 +184,7 @@ class PaymentButton(QPushButton):
     # ---------- callbacks ----------
 
     def _on_invoice_created(self, result: tuple[int, str | None, str | None, str]) -> None:
-        status_code, invoice_url, _, redirect_url = result
+        status_code, invoice_url, _, _ = result
         self.setEnabled(True)
 
         if not invoice_url:
@@ -210,27 +203,24 @@ class PaymentButton(QPushButton):
         if self._callback_server_state:
             self._callback_server_state.invoice_url = invoice_url
 
-        if self._use_external_browser_current:
-            if self._open_invoice_in_browser(invoice_url):
-                self.signal_update_status.emit(
-                    self.tr(
-                        "Complete the payment in your browser.\n"
-                        "If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me"
-                    )
-                )
-                return
+        callback_available = self._callback_server_state is not None
+        if not self._open_invoice_in_browser(invoice_url):
+            self._show_browser_open_failure()
+            return
+
+        if callback_available:
             self.signal_update_status.emit(
-                self.tr("Could not open your browser automatically. Please open the invoice link manually:")
+                self.tr(
+                    "Complete the payment in your browser.\n"
+                    "If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me"
+                )
             )
-            self._stop_callback_server()
-            self.signal_update_status.emit(invoice_url)
         else:
             self.signal_update_status.emit(
                 self.tr(
                     "Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available."
                 )
             )
-            self._open_invoice_in_browser(invoice_url)
 
     def _on_invoice_error(self, exc_info: OptExcInfo) -> None:
         exc_info_for_logger: tuple[type[BaseException], BaseException, TracebackType | None] | None = None
@@ -242,9 +232,7 @@ class PaymentButton(QPushButton):
         logger.error("Failed to create donation invoice", exc_info=exc_info_for_logger)
         self.setEnabled(True)
         self.signal_update_status.emit(
-            self.tr("Unable to reach the donation server. You can donate to: {address}").format(
-                address=DONATION_ADDRESS
-            )
+            self.tr("Unable to reach the donation server. Please try again later.")
         )
         self.signal_payment_completed.emit(False)
         self._stop_callback_server()
@@ -340,27 +328,47 @@ class PaymentButton(QPushButton):
             logger.exception("Failed to start the callback HTTP server on port %s", port)
             return None
 
-        thread = threading.Thread(target=server.serve_forever, daemon=True)
-        thread.start()
+        serve_future = self.loop_in_thread.run_background(asyncio.to_thread(server.serve_forever))
 
         self._callback_server_state = CallbackServerState(
-            invoice_id=invoice_id, server=server, thread=thread, port=port, started_at=datetime.now()
+            invoice_id=invoice_id,
+            server=server,
+            serve_future=serve_future,
+            port=port,
+            started_at=datetime.now(),
         )
         logger.info(f"started  callback_server  {invoice_id=}, {port=}")
         self._start_callback_timeout_timer()
         return f"http://127.0.0.1:{port}/donation/callback?invoice={invoice_id}"
 
-    def _request_stop_callback_server(self) -> None:
-        threading.Thread(target=self._stop_callback_server, daemon=True).start()
+    def _request_stop_callback_server(self, state: CallbackServerState | None = None) -> None:
+        self._stop_callback_server(state)
 
-    def _stop_callback_server(self) -> None:
-        if self._callback_timeout_timer is not None:
-            self._callback_timeout_timer.stop()
-        state = self._callback_server_state
-        self._callback_server_state = None
+    def _stop_callback_server(self, state: CallbackServerState | None = None) -> None:
+        state = self._consume_callback_server_state(state)
         if not state:
             return
 
+        self.loop_in_thread.run_background(self._shutdown_callback_server(state))
+
+    def _consume_callback_server_state(
+        self, state: CallbackServerState | None = None
+    ) -> CallbackServerState | None:
+        if self._callback_timeout_timer is not None:
+            self._callback_timeout_timer.stop()
+
+        if state is None:
+            state = self._callback_server_state
+            self._callback_server_state = None
+        elif self._callback_server_state is state:
+            self._callback_server_state = None
+
+        return state
+
+    async def _shutdown_callback_server(self, state: CallbackServerState) -> None:
+        await asyncio.to_thread(self._shutdown_callback_server_blocking, state)
+
+    def _shutdown_callback_server_blocking(self, state: CallbackServerState) -> None:
         try:
             state.server.shutdown()
         except Exception:
@@ -369,8 +377,11 @@ class PaymentButton(QPushButton):
             state.server.server_close()
         except Exception:
             logger.exception("Failed to close callback server socket cleanly")
-        if state.thread.is_alive() and threading.current_thread() is not state.thread:
-            state.thread.join(timeout=2)
+        if not state.serve_future.done():
+            try:
+                state.serve_future.result(timeout=2)
+            except Exception:
+                logger.exception("Failed while waiting for callback server thread to stop")
 
     def _handle_callback_request(self, invoice_id: str) -> None:
         state = self._callback_server_state
@@ -381,14 +392,88 @@ class PaymentButton(QPushButton):
                 self.tr("A browser callback arrived after the invoice expired. Please try again.")
             )
             return
-        if self._external_callback_seen:
-            return
-        self._external_callback_seen = True
+        self._callback_server_state = None
+        self._request_stop_callback_server(state)
         self.signal_update_status.emit(self.tr("Payment confirmed via browser callback. Thank you!"))
         self.signal_payment_completed.emit(True)
 
+    def _show_browser_open_failure(self) -> None:
+        self._stop_callback_server()
+        self.signal_update_status.emit(
+            self.tr("Could not open your browser automatically. Please try again.")
+        )
+
+    def _has_url_handler(self, url: QUrl) -> bool:
+        if not url.isValid():
+            return False
+
+        scheme = url.scheme().lower()
+        if scheme not in {"http", "https"}:
+            return False
+
+        system = platform.system()
+        if system == "Windows":
+            return self._has_windows_url_handler(scheme) or self._has_stdlib_browser_handler()
+        if system == "Darwin":
+            return bool(shutil.which("open")) or self._has_stdlib_browser_handler()
+        if system == "Linux":
+            return any(shutil.which(helper) for helper in ("xdg-open", "gio", "gvfs-open")) or (
+                self._has_stdlib_browser_handler()
+            )
+
+        return self._has_stdlib_browser_handler()
+
+    def _has_stdlib_browser_handler(self) -> bool:
+        try:
+            webbrowser.get()
+        except webbrowser.Error:
+            return False
+        return True
+
+    def _has_windows_url_handler(self, scheme: str) -> bool:
+        try:
+            import winreg
+        except ImportError:
+            return False
+
+        winreg_module = cast(Any, winreg)
+        key_candidates: list[tuple[Any, str]] = []
+        try:
+            with winreg_module.OpenKey(
+                winreg_module.HKEY_CURRENT_USER,
+                rf"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\{scheme}\UserChoice",
+            ) as key:
+                prog_id, _ = winreg_module.QueryValueEx(key, "ProgId")
+                if prog_id:
+                    key_candidates.append((winreg_module.HKEY_CLASSES_ROOT, rf"{prog_id}\shell\open\command"))
+        except OSError:
+            pass
+
+        key_candidates.append((winreg_module.HKEY_CLASSES_ROOT, rf"{scheme}\shell\open\command"))
+
+        for root_key, key_path in key_candidates:
+            try:
+                with winreg_module.OpenKey(root_key, key_path) as key:
+                    command, _ = winreg_module.QueryValueEx(key, "")
+                    if isinstance(command, str) and command.strip():
+                        return True
+            except OSError:
+                continue
+
+        return False
+
     def _open_invoice_in_browser(self, invoice_url: str) -> bool:
-        opened = QDesktopServices.openUrl(QUrl(invoice_url))
+        url = QUrl(invoice_url)
+        if not url.isValid():
+            logger.warning("Donation invoice URL is invalid: %s", invoice_url)
+            return False
+
+        if not self._has_url_handler(url):
+            logger.warning("No browser handler detected for donation invoice URL: %s", invoice_url)
+
+        opened = webopen(invoice_url)
+        if not opened:
+            logger.warning("Failed to open donation invoice URL in browser: %s", invoice_url)
         return bool(opened)
 
 
