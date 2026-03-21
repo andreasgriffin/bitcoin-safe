@@ -38,7 +38,6 @@ import shutil
 from collections.abc import Callable, Coroutine, Iterable
 from concurrent.futures import Future
 from datetime import timedelta
-from functools import partial
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -703,10 +702,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def _suggested_increased_gap(self) -> int:
         return self.wallet.gap + max(self.wallet.gap, 100)
 
-    def recreate_wallet_with_increased_gap(self, new_gap: int) -> None:
+    def recreate_wallet_with_increased_gap(self, new_gap: int | None = None) -> None:
         """Recreate the wallet from its descriptor and labels, discarding persisted history state."""
         new_wallet = self.wallet.clone_without_peristence()
-        new_wallet.set_gap(new_gap)
+        new_wallet.set_gap(new_gap if new_gap is not None else self._suggested_increased_gap())
         self._recreate_qt_wallet(new_wallet)
 
     def _start_sync_retry_timer(self, delay_retry_sync=30) -> None:
@@ -1445,7 +1444,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         self.signal_tracker.connect(
             self.wallet_corruption_warning_bar.signal_clicked_recreate,
-            partial(self.recreate_wallet_with_increased_gap, new_gap),
+            self.recreate_wallet_with_increased_gap,
         )
         history_tab_content_layout.addWidget(self.wallet_corruption_warning_bar)
 
