@@ -38,6 +38,7 @@ import shutil
 from collections.abc import Callable, Coroutine, Iterable
 from concurrent.futures import Future
 from datetime import timedelta
+from functools import partial
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -124,6 +125,7 @@ from .history_range import HistoryRangeController
 from .initial_cbf_sync_widget import InitialCbfSyncWidget
 from .util import Message, MessageType, caught_exception_message
 from .wallet_balance_chart import WalletBalanceChart
+from .warning_bars import TooSmallGapLimitWarningBar
 
 logger = logging.getLogger(__name__)
 
@@ -610,6 +612,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.category_manager.updateUi()
         self.quick_receive.updateUi()
         self.history_initial_sync_widget.updateUi()
+        self.wallet_corruption_warning_bar.updateUi()
         self._update_history_initial_sync_overlay_visibility()
 
     def update_display_balance(self):
@@ -696,6 +699,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.history_tab_content_stack.setCurrentWidget(self.history_initial_sync_widget)
         else:
             self.history_tab_content_stack.setCurrentWidget(self.history_tab_content)
+
+    def _suggested_increased_gap(self) -> int:
+        return self.wallet.gap + max(self.wallet.gap, 100)
+
+    def recreate_wallet_with_increased_gap(self, new_gap: int) -> None:
+        """Recreate the wallet from its descriptor and labels, discarding persisted history state."""
+        new_wallet = self.wallet.clone_without_peristence()
+        new_wallet.set_gap(new_gap)
+        self._recreate_qt_wallet(new_wallet)
 
     def _start_sync_retry_timer(self, delay_retry_sync=30) -> None:
         """Start sync retry timer."""
@@ -1225,23 +1237,22 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             txid for txid in change_without_input_txids if txid not in self._warned_change_without_input_txids
         ]
 
+        if any(balance < 0 for balance in self.wallet.confirmed_balances()):
+            self.wallet_corruption_warning_bar.setVisible(True)
+            self.wallet_corruption_warning_bar.set_text(
+                self.tr(
+                    "Negative confirmed balances detected. This is most likely due to a too low gap limit."
+                )
+            )
+
         if new_tx_warnings:
             self._warned_change_without_input_txids.update(new_tx_warnings)
-            new_gap = max(100, self.wallet.gap * 2)
-            if question_dialog(
+            self.wallet_corruption_warning_bar.setVisible(True)
+            self.wallet_corruption_warning_bar.set_text(
                 self.tr(
-                    "An indication for a low gap limit was detected (received Bitcoin to change addresses)."
-                    "\nDo you want to rescan the wallet with an increased gap limit of {new_gap}"
-                ).format(txids="\n".join(new_tx_warnings), new_gap=new_gap),
-                title=self.tr("Gap limit may be too low"),
-                true_button=QMessageBox.StandardButton.Yes,
-                false_button=QMessageBox.StandardButton.No,
-                default_is_true_button=False,
-            ):
-                new_wallet = self.wallet.clone_without_peristence()
-                new_wallet.set_gap(new_gap)
-                self._recreate_qt_wallet(new_wallet)
-                return
+                    "An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit."
+                )
+            )
 
         delta_txs = self.get_delta_txs()
         change_dict = delta_txs.was_changed()
@@ -1425,6 +1436,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.history_tab_content = QWidget(tab)
         history_tab_content_layout = QVBoxLayout(self.history_tab_content)
         history_tab_content_layout.setContentsMargins(0, 0, 0, 0)
+
+        new_gap = self._suggested_increased_gap()
+        self.wallet_corruption_warning_bar = TooSmallGapLimitWarningBar(
+            callback_recreate_wallet=partial(self.recreate_wallet_with_increased_gap, new_gap),
+            signals_min=self.signals,
+            parent=self.history_tab_content,
+            new_gap=new_gap,
+        )
+        history_tab_content_layout.addWidget(self.wallet_corruption_warning_bar)
 
         splitter = QSplitter(orientation=Qt.Orientation.Vertical)
         history_tab_content_layout.addWidget(splitter)

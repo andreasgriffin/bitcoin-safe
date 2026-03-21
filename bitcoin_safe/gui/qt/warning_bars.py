@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 
 import numpy as np
 from PyQt6.QtGui import QColor
@@ -171,3 +172,48 @@ class PoisoningWarningBar(NotificationBar):
         """UpdateUi."""
         super().updateUi()
         self.icon_label.setText(self.get_warning_text(self.poisonous_matches))
+
+
+class TooSmallGapLimitWarningBar(NotificationBar):
+    def __init__(
+        self,
+        callback_recreate_wallet: Callable[[], None],
+        new_gap: int,
+        signals_min: SignalsMin,
+        parent: QWidget | None = None,
+    ) -> None:
+        """Initialize instance."""
+        super().__init__(
+            text="",
+            optional_button_text="",
+            callback_optional_button=callback_recreate_wallet,
+            has_close_button=False,
+            parent=parent,
+        )
+        self.text = ""
+        self.signals_min = signals_min
+        self.new_gap = new_gap
+        # self.set_background_color(adjust_bg_color_for_darkmode(QColor("#f5c2c7")))
+        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+
+        self.optionalButton.setVisible(True)
+        self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.setVisible(False)
+        self.updateUi()
+        self.signals_min.language_switch.connect(self.updateUi)
+
+    def set_text(self, text: str):
+        self.text = text
+        self.updateUi()
+
+    def updateUi(self) -> None:
+        """UpdateUi."""
+        super().updateUi()
+        self.optionalButton.setText(
+            self.tr("Increase gap limit")
+            if self.new_gap == 0
+            else self.tr("Increase gap limit to {gap}").format(gap=self.new_gap)
+        )
+        self.icon_label.setText(self.text if self.text else self.tr("Gap limit may be too small."))
