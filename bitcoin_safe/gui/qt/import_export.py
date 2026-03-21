@@ -97,7 +97,7 @@ class HorizontalImportExportQR(QGroupBox):
 
     def updateUI(self):
         """UpdateUI."""
-        self.setTitle(self.tr("QR"))
+        self.setTitle(self.tr("Sign with QR"))
 
 
 class HorizontalImportExportUSB(QGroupBox):
@@ -129,7 +129,7 @@ class HorizontalImportExportUSB(QGroupBox):
 
     def updateUI(self):
         """UpdateUI."""
-        self.setTitle(self.tr("USB"))
+        self.setTitle(self.tr("Sign with USB"))
 
 
 class HorizontalImportExportFile(QGroupBox):
@@ -168,7 +168,7 @@ class HorizontalImportExportFile(QGroupBox):
 
     def updateUI(self):
         """UpdateUI."""
-        self.setTitle(self.tr("File"))
+        self.setTitle(self.tr("Sign with File"))
 
 
 class HorizontalImportExportClipboard(QGroupBox):
@@ -235,7 +235,7 @@ class HorizontalImportExportWallet(QGroupBox):
 
     def updateUI(self):
         """UpdateUI."""
-        self.setTitle(self.tr("Seed"))
+        self.setTitle(self.tr("Sign with seed"))
 
 
 class HorizontalImportExportAll(QWidget):

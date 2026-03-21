@@ -255,7 +255,7 @@ def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWa
     signer_ui = widget.wallet_importers.signer_ui
     assert isinstance(signer_ui, SignerUI)
     for button in signer_ui.findChildren(QPushButton):
-        assert button.text() == f"Seed of '{qt_wallet.wallet.id}'"
+        assert button.text() == f"{qt_wallet.wallet.id}"
         assert button.isVisible()
         with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
             button.click()
