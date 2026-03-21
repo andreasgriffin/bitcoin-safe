@@ -66,7 +66,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.execute_config import DONATION_ADDRESS
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
 from bitcoin_safe.network_utils import ProxyInfo
@@ -233,9 +232,7 @@ class PaymentButton(QPushButton):
         logger.error("Failed to create donation invoice", exc_info=exc_info_for_logger)
         self.setEnabled(True)
         self.signal_update_status.emit(
-            self.tr("Unable to reach the donation server. You can donate to: {address}").format(
-                address=DONATION_ADDRESS
-            )
+            self.tr("Unable to reach the donation server. Please try again later.")
         )
         self.signal_payment_completed.emit(False)
         self._stop_callback_server()
