@@ -139,7 +139,7 @@ class AddressEdit(ButtonEdit):
     def _add_mempool_button(self) -> SquareButton:
         """Add mempool button."""
         copy_button = self.add_button(
-            get_icon_path("block-explorer.svg"),
+            get_icon_path("lucide--external-link.svg"),
             self._on_click,
             tooltip=translate("d", "View on block explorer"),
         )
