@@ -210,12 +210,7 @@ class MainWindow(UnlockableMainWindow):
             signals_currency_switch=self.signals.currency_switch,
         )
         if not config_present:
-            os_language_code = self.language_chooser.get_os_language_code()
-            self.config.language_code = (
-                os_language_code
-                if os_language_code in self.language_chooser.get_languages()
-                else self.language_chooser.dialog_choose_language(self)
-            )
+            self.config.language_code = self.language_chooser.choose_startup_language(self)
             self.config.currency = self.fx.get_currency_iso(QLocale(self.config.language_code))
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network, loop_in_thread=self.loop_in_thread)
