@@ -270,12 +270,48 @@ class LanguageChooser(QObject):
             self.installed_translators.append(translator_qt)
 
     def get_os_language_code(self) -> str:
-        # Retrieve the system locale
-        """Get os language code."""
-        locale = QLocale.system()
-        # get the locale code (e.g., "en_US")
-        locale_code = locale.name()
+        """Get the preferred OS UI language code."""
+        system_locale = QLocale.system()
+        for language_tag in system_locale.uiLanguages():
+            locale_code = QLocale(language_tag).name()
+            if locale_code:
+                logger.debug(
+                    "Selected OS UI language %s from uiLanguages=%s (system locale=%s)",
+                    locale_code,
+                    system_locale.uiLanguages(),
+                    system_locale.name(),
+                )
+                return locale_code
+
+        locale_code = system_locale.name()
+        logger.debug("Falling back to system locale %s", locale_code)
         return locale_code
+
+    @staticmethod
+    def find_matching_language_code(locale_code: str, languages: dict[str, str]) -> str | None:
+        """Return the best available language for a locale code."""
+        if locale_code in languages:
+            return locale_code
+
+        locale = QLocale(locale_code)
+        language = locale.language()
+        if language == QLocale.Language.AnyLanguage:
+            return None
+
+        for available_code in languages:
+            if QLocale(available_code).language() == language:
+                return available_code
+
+        return None
+
+    def choose_startup_language(self, parent: QWidget) -> str:
+        """Select the initial language for a first app start."""
+        languages = self.get_languages()
+        os_language_code = self.get_os_language_code()
+        matching_language_code = self.find_matching_language_code(os_language_code, languages)
+        if matching_language_code:
+            return matching_language_code
+        return self.dialog_choose_language(parent)
 
     def set_language(self, langCode: str | None) -> None:
         """Set language."""
