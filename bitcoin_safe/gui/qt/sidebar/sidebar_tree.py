@@ -395,7 +395,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
         self._sync_content_visibility()
         self._sync_toggle_button_visibility()
-        if focus:
+        if focus and (node.stack is not None or node._ensure_stack_link()):
             node.select()
 
     def removeChildNode(self, node: SidebarNode[TT]) -> None:
@@ -461,8 +461,9 @@ class SidebarNode(QFrame, Generic[TT]):
             self._ensure_stack_link()
         if not self.stack:
             logger.warning(
-                f"SidebarNode {self.title}.select(): node {self.objectName()} "
-                "is not attached to a SidebarTree stack"
+                "SidebarNode %s.select(): node %s is not attached to a SidebarTree stack",
+                self.title,
+                self.objectName(),
             )
             return False
 
