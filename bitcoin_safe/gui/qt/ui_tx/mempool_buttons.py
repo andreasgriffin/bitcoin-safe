@@ -254,7 +254,7 @@ class ButtonExplorerIcon(FlatSquareButton):
         """Initialize instance."""
         super().__init__(
             qicon=svg_tools.get_QIcon(
-                "block-explorer.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
+                "lucide--external-link.svg", auto_theme=False, replace_tuples=(("currentColor", "#ffffff"),)
             ),
             size=size,
             parent=parent,

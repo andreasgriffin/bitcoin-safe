@@ -366,7 +366,7 @@ class ColumnFee(BaseColumn):
         tx_status = self.fee_group.mempool_buttons.tx_status
         icon_text = sort_id_to_icon(tx_status.sort_id())
         if tx_status.confirmation_status in [TxConfirmationStatus.DRAFT, TxConfirmationStatus.PSBT]:
-            icon_text = "block-explorer.svg"
+            icon_text = "lucide--external-link.svg"
             title = self.tr("Priority")
         elif tx_status.confirmation_status in [TxConfirmationStatus.LOCAL, TxConfirmationStatus.UNCONFIRMED]:
             title = self.tr("Mempool position")

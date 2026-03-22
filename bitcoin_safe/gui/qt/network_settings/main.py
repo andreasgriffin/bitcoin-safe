@@ -331,15 +331,15 @@ class NetworkSettingsUI(QWidget):
         # mempool
         self.groupbox_blockexplorer = QGroupBox()
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
-        self.button_mempool = QPushButton(self)
-        self.button_mempool.setIcon(svg_tools.get_QIcon("block-explorer.svg"))
-        self.button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
         )
-        self.groupbox_blockexplorer_layout.addWidget(self.button_mempool)
+        self.button_mempool = QPushButton(self)
+        self.button_mempool.setIcon(svg_tools.get_QIcon("lucide--external-link.svg"))
+        self.button_mempool.clicked.connect(self.on_button_mempool_clicked)
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
+        self.groupbox_blockexplorer_layout.addWidget(self.button_mempool)
         self._layout.addWidget(self.groupbox_blockexplorer)
 
         # p2p listener

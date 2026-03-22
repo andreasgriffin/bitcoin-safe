@@ -838,7 +838,7 @@ class AddressList(MyTreeView[str]):
                 menu.add_action(
                     self.tr("View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=svg_tools.get_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("lucide--external-link.svg"),
                 )
 
         menu.add_action(

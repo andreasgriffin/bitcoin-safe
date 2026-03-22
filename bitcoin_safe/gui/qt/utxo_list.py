@@ -310,7 +310,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
                     partial(webopen, txid_URL),
-                    icon=svg_tools.get_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("lucide--external-link.svg"),
                 )
 
             wallet_ids: list[str] = clean_list(
