@@ -1862,7 +1862,9 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         return label
 
-    def get_label_for_txid(self, txid: str, autofill_from_addresses=True, verbose_label=False) -> str:
+    def get_label_for_txid(
+        self, txid: str, autofill_from_addresses=True, verbose_label=False, include_change_addresses=False
+    ) -> str:
         """Return the stored label for a transaction."""
         stored_label = self.labels.get_label(txid, "")
         if stored_label:
@@ -1875,23 +1877,18 @@ class Wallet(BaseSaveableClass, CacheManager):
             if not python_utxos:
                 return label
 
-            if verbose_label:
-                address_labels = [
-                    (
-                        self.get_label_for_address(python_utxo.address, autofill_from_txs=False)
-                        or python_utxo.address
-                    )
-                    for python_utxo in python_utxos
-                ]
-                label = translate("wallet", "") + "Sending to addresses: " + ", ".join(address_labels)
-            else:
-                address_labels = clean_list(
-                    [
-                        (self.get_label_for_address(python_utxo.address, autofill_from_txs=False))
-                        for python_utxo in python_utxos
-                    ]
+            address_labels = [
+                (
+                    self.get_label_for_address(python_utxo.address, autofill_from_txs=False)
+                    or (python_utxo.address if verbose_label else "")
                 )
-                label = ", ".join(address_labels)
+                for python_utxo in python_utxos
+                if (include_change_addresses or not self.is_change(python_utxo.address))
+            ]
+            if verbose_label:
+                label = translate("wallet", "Sending to addresses: ") + ", ".join(address_labels)
+            else:
+                label = ", ".join(clean_list(address_labels))
 
         return label
 
