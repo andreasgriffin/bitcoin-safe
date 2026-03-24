@@ -72,7 +72,7 @@ class UserConfig(BaseSaveableClass):
         NetworkConfigs.__name__: NetworkConfigs,
         BitcoinSymbol.__name__: BitcoinSymbol,
     }
-    VERSION = "0.2.9"
+    VERSION = "0.2.10"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -105,7 +105,7 @@ class UserConfig(BaseSaveableClass):
         self.bitcoin_symbol: BitcoinSymbol = BitcoinSymbol.ISO
         self.rates: dict[str, dict[str, Any]] = {}
         self.last_tab_title: list[str] = []
-        self.auto_label_change_addresses: bool = False
+        self.auto_label_change_addresses: bool = True
         self.app_lock_password_hash: str | None = None
 
     def clean_recently_open_wallet(self):
@@ -258,6 +258,10 @@ class UserConfig(BaseSaveableClass):
                     testnet4_config.server_type = BlockchainType.Electrum
                     testnet4_config.electrum_url = testnet4_config.electrum_url or electrum_default.url
                     testnet4_config.electrum_use_ssl = electrum_default.use_ssl
+
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.10"):
+            # enable labeling of change
+            dct["auto_label_change_addresses"] = True
 
         return super().from_dump_migration(dct=dct)
 
