@@ -90,7 +90,7 @@ class LinkingWarningBar(NotificationBar):
     @classmethod
     def get_warning_text(cls, category_dict: dict[str, set[str]]) -> str:
         """Get warning text."""
-        s = ",<br>and ".join(
+        s = ", and ".join(
             [
                 cls.format_category_and_wallet_ids(category, wallet_ids)
                 for category, wallet_ids in category_dict.items()
