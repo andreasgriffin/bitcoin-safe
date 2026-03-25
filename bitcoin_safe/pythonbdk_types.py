@@ -412,8 +412,7 @@ class TransactionDetails:
                     current_height=current_height,
                     now=now_utc,
                 )
-                if estimated.timestamp() > now_utc.timestamp():
-                    return estimated.astimezone(datetime.timezone.utc)
+                return max(estimated.astimezone(datetime.timezone.utc), now_utc)
             return base_datetime
 
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")
