@@ -32,6 +32,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+from collections.abc import Mapping
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -47,7 +48,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, M
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
 from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtSignal
-from PyQt6.QtGui import QCloseEvent, QIcon, QShowEvent
+from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
     QComboBox,
@@ -62,6 +63,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
@@ -185,6 +187,8 @@ class FileToolButton(QToolButton):
         self.wallet_id = wallet_id
         self.network = network
         self.button_prefix = button_prefix
+        self.address_labels_dict: dict[str, str] = {}
+        self.action_export_recipients_csv: QAction | None = None
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._menu = Menu(self)
@@ -290,6 +294,29 @@ class FileToolButton(QToolButton):
         self.signal_exported.emit()
         return str(filepath)
 
+    def export_recipients_csv(self) -> Path | None:
+        """Export recipients as CSV for transaction-like data."""
+        path = export_recipients_csv(
+            recipients=get_recipients_from_data(
+                data=self.data,
+                network=self.network,
+                address_labels_dict=self.address_labels_dict,
+            ),
+            network=self.network,
+            parent=self,
+        )
+        if path:
+            self.signal_exported.emit()
+        return path
+
+    def add_meta_data(self, address_labels_dict: Mapping[str, str]) -> None:
+        """Add address labels used by recipient CSV export."""
+        self.address_labels_dict.update(address_labels_dict)
+
+    def _supports_recipient_csv_export(self) -> bool:
+        """Return whether this button can derive recipients from its data."""
+        return bool(get_recipients_from_data(data=self.data, network=self.network))
+
     def updateUi(self) -> None:
         """UpdateUi."""
         self.setText(self.button_prefix + self.tr("Export"))
@@ -298,6 +325,8 @@ class FileToolButton(QToolButton):
         )
         self.action_copy_txid.setText(self.tr("Copy TxId"))
         self.action_json.setText(self.tr("Copy JSON"))
+        if self.action_export_recipients_csv:
+            self.action_export_recipients_csv.setText(translate("Recipients", "Export Recipients CSV"))
 
     def set_data(self, data: Data):
         """Set data."""
@@ -305,6 +334,7 @@ class FileToolButton(QToolButton):
         self.serialized = data.data_as_string()
         self.txid = get_txid(data)
         self.json_data = get_json_data(data, network=self.network)
+        self.address_labels_dict.clear()
         self._fill_menu()
         self.updateUi()
 
@@ -368,6 +398,7 @@ class FileToolButton(QToolButton):
         file_icon = svg_tools.get_QIcon("bi--download.svg")
         with QSignalBlocker(menu):
             menu.clear()
+            self.action_export_recipients_csv = None
             menu.add_action(
                 self.tr("Export to file"),
                 self.export_to_file,
@@ -392,6 +423,13 @@ class FileToolButton(QToolButton):
             self.action_json = menu.add_action(
                 "", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg")
             )
+            if self._supports_recipient_csv_export():
+                menu.addSeparator()
+                self.action_export_recipients_csv = menu.add_action(
+                    translate("Recipients", "Export Recipients CSV"),
+                    self.export_recipients_csv,
+                    icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
+                )
 
     def copy_if_available(self, s: str | None) -> None:
         """Copy if available."""
