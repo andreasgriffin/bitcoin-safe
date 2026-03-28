@@ -250,17 +250,11 @@ class ColumnSankey(BaseColumn):
         self.sankey_bitcoin = SankeyBitcoin(network=fx.config.network, wallet_functions=wallet_functions)
         self.sankey_bitcoin.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        self.button_export_svg = QPushButton()
-        self.button_export_svg.setIcon(svg_tools.get_QIcon("bi--filetype-svg.svg"))
-        self.button_export_svg.clicked.connect(self.sankey_bitcoin.export_to_svg)
-        self.header_widget.h_laylout.addWidget(self.button_export_svg)
-
         self.insert_middle_widget(self.sankey_bitcoin)
 
     def updateUi(self) -> None:
         """UpdateUi."""
         self.header_widget.label_title.setText(self.tr("Diagram"))
-        self.button_export_svg.setText(self.tr("Export svg"))
 
     def is_available(self) -> bool:
         """Is available."""
