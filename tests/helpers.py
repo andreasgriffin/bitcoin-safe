@@ -93,9 +93,10 @@ def test_config_session(backend: str, fulcrum: str | None) -> TestConfig:
 
 
 @pytest.fixture()
-def test_config_main_chain() -> TestConfig:
+def test_config_main_chain(backend: str, fulcrum: str | None) -> TestConfig:
     """Test config main chain."""
     config = TestConfig()
     logger.info(f"Setting config_dir = {config.config_dir} and config_file = {config.config_file}")
+    _configure_network_backend(config, backend, fulcrum)
 
     return config
