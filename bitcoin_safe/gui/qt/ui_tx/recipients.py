@@ -31,12 +31,11 @@ from __future__ import annotations
 
 import csv
 import logging
-from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
-from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, unit_sat_str
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
@@ -61,6 +60,7 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipient_csv_header
 from bitcoin_safe.gui.qt.ui_tx.header_widget import HeaderWidget
 from bitcoin_safe.gui.qt.util import (
     Message,
@@ -631,25 +631,9 @@ class Recipients(QWidget):
         for recipient_tab_widget in self.recipient_list.content_widget.findChildren(RecipientBox):
             recipient_tab_widget.set_allow_edit(allow_edit=allow_edit)
 
-    def as_list(self, recipients: list[Recipient], include_header=True) -> list[list[Any]]:
-        """As list."""
-        table: list[list[Any]] = []
-
-        if include_header:
-            table.append(self._get_csv_header())
-
-        for recipient in recipients:
-            row: list[Any] = [recipient.address, recipient.amount, recipient.label]
-            table.append(row)
-        return table
-
-    def _get_csv_header(self) -> list[str]:
-        """Get csv header."""
-        return [
-            self.tr("Address"),
-            self.tr("Amount [{unit}]").format(unit=unit_sat_str(self.network)),
-            self.tr("Label"),
-        ]
+    def set_csv_toolbutton_visible(self, visible: bool) -> None:
+        """Set whether the CSV toolbutton is visible."""
+        self.toolbutton_csv.setVisible(visible)
 
     def on_action_export_csv_template(self):
         """On action export csv template."""
@@ -659,26 +643,14 @@ class Recipients(QWidget):
         """On action export csv."""
         self.export_csv(self.recipients)
 
-    def export_csv(self, recipients: list[Recipient], file_path: str | Path | None = None) -> Path | None:
+    def export_csv(self, recipients: list[Recipient], file_path: str | None = None):
         """Export csv."""
-        if not file_path:
-            file_path, _ = QFileDialog.getSaveFileName(
-                self,
-                self.tr("Export csv"),
-                "recipients.csv",
-                self.tr("All Files (*);;Wallet Files (*.csv)"),
-            )
-            if not file_path:
-                logger.info(self.tr("No file selected"))
-                return None
-
-        table = self.as_list(recipients)
-        with open(str(file_path), "w", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerows(table)
-
-        logger.debug(f"CSV Table saved to {file_path}")
-        return Path(file_path)
+        return export_recipients_csv(
+            recipients=recipients,
+            network=self.network,
+            parent=self,
+            file_path=file_path,
+        )
 
     def import_csv(self, file_path: str | None = None):
         """Import csv."""
@@ -698,7 +670,7 @@ class Recipients(QWidget):
             data = list(reader)
             header = data[0]
 
-        if self._get_csv_header() != header:
+        if get_recipient_csv_header(self.network) != header:
             Message(
                 self.tr("Please use the CSV template and include the header row."),
                 type=MessageType.Error,
@@ -828,6 +800,14 @@ class Recipients(QWidget):
     def get_recipient_group_boxes(self) -> list[RecipientBox]:
         """Get recipient group boxes."""
         return self.recipient_list.findChildren(RecipientBox)
+
+    def get_address_labels_dict(self) -> dict[str, str]:
+        """Get non-empty labels keyed by address."""
+        return {
+            recipient_box.address: recipient_box.label
+            for recipient_box in self.get_recipient_group_boxes()
+            if recipient_box.address and recipient_box.label
+        }
 
     def count(self) -> int:
         """Count."""

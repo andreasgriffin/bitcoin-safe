@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -77,7 +78,11 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.add_button(self.export_qr_button)
 
         ## file
-        self.button_export_file = FileToolButton(data=self.data, network=network, parent=self)
+        self.button_export_file = FileToolButton(
+            data=self.data,
+            network=network,
+            parent=self,
+        )
         self.add_button(self.button_export_file)
 
         # Sync & Chat
@@ -102,6 +107,10 @@ class TxExport(BaseHardwareSignerInteractionWidget):
         self.button_sync_share.set_data(data=data, sync_clients=sync_client)
 
         self.updateUi()
+
+    def add_meta_data(self, address_labels_dict: Mapping[str, str]) -> None:
+        """Add address label metadata used by export widgets."""
+        self.button_export_file.add_meta_data(address_labels_dict)
 
     def set_minimum_size_as_floating_window(self):
         """Set minimum size as floating window."""

@@ -337,6 +337,7 @@ class UITx_Viewer(UITx_Base):
             sync_client=get_syncclients(wallet_functions=self.wallet_functions),
         )
         self._layout.addWidget(self.export_data_simple)
+        self.recipients.set_csv_toolbutton_visible(False)
 
         # buttons
 
@@ -1368,6 +1369,7 @@ class UITx_Viewer(UITx_Base):
         self.export_data_simple.set_data(
             data=self.data, sync_client=get_syncclients(wallet_functions=self.wallet_functions)
         )
+        self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
 
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
@@ -1542,6 +1544,7 @@ class UITx_Viewer(UITx_Base):
         self.set_psbt_already_broadcasted_bar()
         self.set_tab_properties(chain_position=None)
         self.update_all_totals()
+        self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
         self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
