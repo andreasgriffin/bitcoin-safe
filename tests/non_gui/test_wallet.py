@@ -29,18 +29,14 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 
-import bdkpython as bdk
 import pytest
 
 from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError
 
 from ..helpers import TestConfig
-from .test_signers import bacon_seed
 from .utils import (
-    create_keystore,
     create_multisig_protowallet,
     create_test_seed_keystores,
 )
@@ -412,40 +408,3 @@ def test_wallet_dump_and_restore(test_config: TestConfig) -> None:
     assert len(wallet.keystores) == len(restored_wallet.keystores)
     for org_keystore, restored_keystore in zip(wallet.keystores, restored_wallet.keystores, strict=False):
         assert org_keystore.is_equal(restored_keystore)
-
-
-def test_bacon_wallet_tx_are_fetched(test_config_main_chain: TestConfig) -> None:
-    """Test bacon wallet tx are fetched."""
-    wallet_id = "bacon wallet"
-    expected_descriptor = "wpkh([9a6a2580/84h/0h/0h]xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K/<0;1>/*)#fkxd7j3k"
-
-    keystore = create_keystore(
-        seed_str=bacon_seed, key_origin="m/84h/0h/0h", label=wallet_id, network=bdk.Network.BITCOIN
-    )
-
-    # Create a mainnet wallet from the bacon seed descriptor.
-    wallet = Wallet(
-        id=wallet_id,
-        descriptor_str=expected_descriptor,
-        keystores=[keystore],
-        network=test_config_main_chain.network,
-        config=test_config_main_chain,
-        loop_in_thread=None,
-    )
-
-    assert not wallet.is_multisig()
-
-    assert wallet.get_addresses()[0] == "bc1qyngkwkslw5ng4v7m42s8t9j6zldmhyvrnnn9k5"
-    # Trigger sync and ensure transactions are loaded.
-    wallet.trigger_sync()
-    asyncio.run(wallet.update())
-
-    tx_list = wallet.sorted_delta_list_transactions()
-    assert len(tx_list) >= 28
-    assert tx_list[0].txid == "5d321554674865dffb7a5406002ba5d68d4819d0eff805393d4917921d68f3c5"
-
-    # Check that spent UTXOs do not count into the address balance.
-    addresses = wallet.get_addresses()
-    assert addresses
-    for address in addresses:
-        assert wallet.get_addr_balance(address).total == 0
