@@ -31,7 +31,6 @@ from __future__ import annotations
 
 import csv
 import inspect
-import shutil
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
@@ -53,11 +52,11 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.pythonbdk_types import Recipient
 from tests.faucet import Faucet
 from tests.non_gui.test_psbt_util import p2wsh_psbt_0_1of1
+from tests.non_gui.test_signers import test_seeds
 
 from ...helpers import TestConfig
 from ...util import wait_for_sync
-from .helpers import Shutter, fund_wallet, main_window_context
-from .test_wallet_send import SEND_TEST_WALLET_FUND_AMOUNT
+from .helpers import Shutter, fund_wallet, main_window_context, setup_single_sig_wallet
 
 
 def _action_texts(button: FileToolButton) -> list[str]:
@@ -153,8 +152,8 @@ def test_viewer_hides_recipients_csv_toolbutton_and_moves_export_into_file_menu(
     mytest_start_time: datetime,
     test_config: TestConfig,
     faucet: Faucet,
-    tmp_path: Path,
-    wallet_file: str = "send_test.wallet",
+    wallet_name: str = "test_recipient_csv_viewer",
+    amount: int = int(1e6),
 ) -> None:
     frame = inspect.currentframe()
     assert frame
@@ -165,14 +164,16 @@ def test_viewer_hides_recipients_csv_toolbutton_and_moves_export_into_file_menu(
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
-        temp_wallet_path = tmp_path / wallet_file
-        shutil.copy(Path("tests") / "data" / wallet_file, temp_wallet_path)
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name=wallet_name,
+            seed=test_seeds[51],
+        )
 
-        qt_wallet = main_window.open_wallet(str(temp_wallet_path))
-        assert qt_wallet
-
-        if not qt_wallet.wallet.sorted_delta_list_transactions():
-            fund_wallet(faucet=faucet, qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT, qtbot=qtbot)
+        fund_wallet(faucet=faucet, qt_wallet=qt_wallet, amount=amount, qtbot=qtbot)
 
         wait_for_sync(wallet=qt_wallet.wallet, minimum_funds=1, qtbot=qtbot)
 
