@@ -552,7 +552,7 @@ class UITx_Viewer(UITx_Base):
         if not self.column_sankey.is_available():
             return
 
-        export_svg_action = QAction(self.tr("Export to svg"), menu)
+        export_svg_action = QAction(self.tr("SVG"), menu)
         export_svg_action.setObjectName("action_export_svg")
         export_svg_action.setIcon(svg_tools.get_QIcon("bi--filetype-svg.svg"))
         export_svg_action.triggered.connect(self.column_sankey.sankey_bitcoin.export_to_svg)

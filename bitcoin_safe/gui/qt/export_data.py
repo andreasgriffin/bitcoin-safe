@@ -333,7 +333,7 @@ class FileToolButton(QToolButton):
         self.action_copy_txid.setText(self.tr("Copy TxId"))
         self.action_json.setText(self.tr("Copy JSON"))
         if self.action_export_recipients_csv:
-            self.action_export_recipients_csv.setText(translate("Recipients", "Export Recipients CSV"))
+            self.action_export_recipients_csv.setText(translate("Recipients", "Recipients CSV"))
 
     def set_data(self, data: Data):
         """Set data."""
@@ -406,18 +406,24 @@ class FileToolButton(QToolButton):
             menu.clear()
             self.action_export_recipients_csv = None
             menu.add_action(
-                self.tr("Export to file"),
+                self.tr("File"),
                 self.export_to_file,
                 icon=file_icon,
             )
 
             self.action_pdf_export = menu.add_action(
-                self.tr("Export to PDF"),
+                self.tr("PDF"),
                 self.export_to_pdf,
                 icon=svg_tools.get_QIcon("bi--filetype-pdf.svg"),
             )
             self.action_pdf_export.setVisible(self.data.data_type in [DataType.Tx, DataType.PSBT])
 
+            if self._supports_recipient_csv_export():
+                self.action_export_recipients_csv = menu.add_action(
+                    translate("Recipients", "Recipients CSV"),
+                    self.export_recipients_csv,
+                    icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
+                )
             menu.addSeparator()
 
             self.action_copy_data = menu.add_action(
@@ -429,13 +435,6 @@ class FileToolButton(QToolButton):
             self.action_json = menu.add_action(
                 "", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg")
             )
-            if self._supports_recipient_csv_export():
-                menu.addSeparator()
-                self.action_export_recipients_csv = menu.add_action(
-                    translate("Recipients", "Export Recipients CSV"),
-                    self.export_recipients_csv,
-                    icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
-                )
 
     def copy_if_available(self, s: str | None) -> None:
         """Copy if available."""

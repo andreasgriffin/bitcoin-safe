@@ -428,7 +428,7 @@ class SankeyWidget(QWidget):
         if a0.button() == Qt.MouseButton.RightButton:
             # Right-click detected, show context menu
             menu = QMenu(self)
-            export_action = QAction(self.tr("Export to svg"), self)
+            export_action = QAction(self.tr("Export to SVG"), self)
             export_action.setIcon(svg_tools.get_QIcon("bi--filetype-svg.svg"))
             menu.addAction(export_action)
             # Connect the action to the export method
