@@ -543,8 +543,7 @@ class InitialCbfSyncWidget(QWidget):
         self.title_label.setText(self.tr("Scanning Bitcoin blockchain"))
         self.subtitle_label.setText(
             self.tr(
-                "During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. "
-                "This is a private way to download block data."
+                "Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast."
             )
         )
         self.privacy_help_label.set_icon_as_help(
