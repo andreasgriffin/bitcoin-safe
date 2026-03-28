@@ -95,14 +95,14 @@ def test_file_toolbutton_adds_recipients_action_only_for_transaction_data(
         network=bdk.Network.REGTEST,
     )
     qtbot.addWidget(non_tx_button)
-    assert "Export Recipients CSV" not in _action_texts(non_tx_button)
+    assert "Recipients CSV" not in _action_texts(non_tx_button)
 
     tx_button = FileToolButton(
         data=Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST),
         network=bdk.Network.REGTEST,
     )
     qtbot.addWidget(tx_button)
-    assert "Export Recipients CSV" in _action_texts(tx_button)
+    assert "Recipients CSV" in _action_texts(tx_button)
 
 
 def test_get_recipients_from_data_uses_address_label_metadata() -> None:
@@ -188,4 +188,4 @@ def test_viewer_hides_recipients_csv_toolbutton_and_moves_export_into_file_menu(
         assert isinstance(viewer, UITx_Viewer)
 
         assert viewer.recipients.toolbutton_csv.isHidden()
-        assert "Export Recipients CSV" in _action_texts(viewer.export_data_simple.button_export_file)
+        assert "Recipients CSV" in _action_texts(viewer.export_data_simple.button_export_file)
