@@ -34,7 +34,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
 
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
-from bitcoin_safe.gui.qt.buttonedit import SquareButton
+from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import block_explorer_URL, do_copy, set_no_margins, svg_tools
 
 from ....config import UserConfig
@@ -59,9 +59,11 @@ class TxidLabel(QWidget):
         self.label_txid = ElidedLabel(elide_mode=Qt.TextElideMode.ElideMiddle)
         self.label_txid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         self.label_txid.setMinimumWidth(1)
-        self.button_copy_txid = SquareButton(svg_tools.get_QIcon("bi--copy.svg"), self)
+        self.button_copy_txid = FlatSquareButton(svg_tools.get_QIcon("bi--copy.svg"), parent=self)
         self.button_copy_txid.clicked.connect(self.copy_txid)
-        self.button_txid_link = SquareButton(svg_tools.get_QIcon("lucide--external-link.svg"), self)
+        self.button_txid_link = FlatSquareButton(
+            svg_tools.get_QIcon("lucide--external-link.svg"), parent=self
+        )
         self.button_txid_link.clicked.connect(self.open_txid_in_block_explorer)
 
         layout.addWidget(self.label_txid_title)
