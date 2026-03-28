@@ -69,6 +69,7 @@ from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
 from bitcoin_safe.gui.qt.tx_util import advance_tip_for_addresses
 from bitcoin_safe.gui.qt.ui_tx.toggle_button_group import ToggleButtonGroup
+from bitcoin_safe.gui.qt.ui_tx.txid_label import TxidLabel
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
@@ -280,6 +281,8 @@ class UITx_Viewer(UITx_Base):
         self.recipients = self.column_recipients.recipients
         self.splitter.addWidget(self.column_recipients)
 
+        self.txid_label = TxidLabel(config=self.config, parent=self)
+        self.txid_label.set_txid(self.txid())
         self.header_button_group = ToggleButtonGroup(self)
 
         # sankey
@@ -302,7 +305,7 @@ class UITx_Viewer(UITx_Base):
             is_viewer=True,
             tx_status=self.get_tx_status(chain_position=chain_position),
         )
-        self.column_fee.header_widget.h_laylout.insertWidget(0, self.header_button_group)
+        self._place_header_controls(self.column_fee.header_widget)
         self.splitter.addWidget(self.column_fee)
 
         self.splitter.setSizes([1, 10, 1, 1])
@@ -528,7 +531,7 @@ class UITx_Viewer(UITx_Base):
             if focus_widget == widget:
                 self.header_button_group.setCurrentIndex(i)
 
-        focus_widget.header_widget.h_laylout.insertWidget(0, self.header_button_group)
+        self._place_header_controls(focus_widget.header_widget)
         focus_widget.header_widget.label_title.setVisible(False)
         focus_widget.header_widget.icon.setVisible(False)
 
@@ -561,6 +564,15 @@ class UITx_Viewer(UITx_Base):
 
         menu.addAction(export_svg_action)
 
+    def _place_header_controls(self, header_widget) -> None:
+        """Place txid and actions on opposite sides of the header stretch."""
+        header_widget.h_laylout.insertWidget(2, self.txid_label)
+        header_widget.h_laylout.addWidget(self.header_button_group)
+
+    def _update_txid_controls(self) -> None:
+        """Refresh txid text and txid-related actions."""
+        self.txid_label.set_txid(self.txid())
+
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
@@ -590,6 +602,7 @@ class UITx_Viewer(UITx_Base):
             self.column_recipients.header_widget,
             self.column_sankey.header_widget,
         )
+        self._update_txid_controls()
         self.export_data_simple.updateUi()
         self.update_all_totals()
 
@@ -1400,6 +1413,7 @@ class UITx_Viewer(UITx_Base):
             data=self.data, sync_client=get_syncclients(wallet_functions=self.wallet_functions)
         )
         self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
+        self._update_txid_controls()
 
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
@@ -1577,6 +1591,7 @@ class UITx_Viewer(UITx_Base):
         self.update_all_totals()
         self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
         self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
+        self._update_txid_controls()
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
