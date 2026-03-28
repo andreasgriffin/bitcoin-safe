@@ -56,13 +56,19 @@ def _configure_network_backend(config: TestConfig, backend: str, fulcrum: str | 
         config.network_config.manual_peers.append(
             Peer.parse(url=f"{BITCOIN_HOST}:{BITCOIN_LISTEN_PORT}", network=config.network)
         )
-        config.network_config.p2p_autodiscover_additional_peers = False
+
+        # additional peers only on mainnet
+        config.network_config.p2p_autodiscover_additional_peers = config.network == bdk.Network.BITCOIN
     else:
         assert fulcrum, "Fulcrum backend requested but no server URL provided"
         config.network_config.server_type = BlockchainType.Electrum
-        config.network_config.electrum_url = fulcrum
-        config.network_config.electrum_use_ssl = False
-        config.network_config.p2p_listener_type = P2pListenerType.deactive
+
+        if config.network == bdk.Network.BITCOIN:
+            pass
+        else:
+            config.network_config.electrum_url = fulcrum
+            config.network_config.electrum_use_ssl = False
+            config.network_config.p2p_listener_type = P2pListenerType.deactive
 
 
 class TestConfig(UserConfig):
