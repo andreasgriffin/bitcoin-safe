@@ -173,6 +173,7 @@ def get_export_icon(export_type: DescriptorExportType | QrExportType) -> QIcon:
 
 class FileToolButton(QToolButton):
     signal_exported = cast(SignalProtocol[[]], pyqtSignal())
+    signal_on_menu_updated = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -213,6 +214,12 @@ class FileToolButton(QToolButton):
                 )
             else:
                 self.fill_file_menu_export_actions(self._menu)
+        self.signal_on_menu_updated.emit()
+
+    def refresh_menu(self) -> None:
+        """Refresh the export menu."""
+        self._fill_menu()
+        self.updateUi()
 
     def export_to_file(self, default_filename=None) -> str | None:
         """Export to file."""
@@ -335,8 +342,7 @@ class FileToolButton(QToolButton):
         self.txid = get_txid(data)
         self.json_data = get_json_data(data, network=self.network)
         self.address_labels_dict.clear()
-        self._fill_menu()
-        self.updateUi()
+        self.refresh_menu()
 
     @classmethod
     def _save_file(
@@ -406,7 +412,7 @@ class FileToolButton(QToolButton):
             )
 
             self.action_pdf_export = menu.add_action(
-                self.tr("PDF Export"),
+                self.tr("Export to PDF"),
                 self.export_to_pdf,
                 icon=svg_tools.get_QIcon("bi--filetype-pdf.svg"),
             )

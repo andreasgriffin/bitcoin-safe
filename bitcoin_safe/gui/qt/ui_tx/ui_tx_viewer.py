@@ -41,7 +41,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QShowEvent
+from PyQt6.QtGui import QAction, QColor, QShowEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
@@ -336,6 +336,10 @@ class UITx_Viewer(UITx_Base):
             parent=self,
             sync_client=get_syncclients(wallet_functions=self.wallet_functions),
         )
+        self.export_data_simple.button_export_file.signal_on_menu_updated.connect(
+            self._on_export_file_menu_updated
+        )
+        self.export_data_simple.button_export_file.refresh_menu()
         self._layout.addWidget(self.export_data_simple)
         self.recipients.set_csv_toolbutton_visible(False)
 
@@ -530,6 +534,32 @@ class UITx_Viewer(UITx_Base):
 
         if focus_widget == self.column_sankey:
             self.update_all_totals()
+
+    def _on_export_file_menu_updated(self) -> None:
+        """Keep the file export menu aligned with the available viewer exports."""
+        menu = self.export_data_simple.button_export_file.menu()
+        if not menu:
+            return
+
+        for action in list(menu.actions()):
+            if action.objectName() == "action_export_svg":
+                menu.removeAction(action)
+                action.deleteLater()
+
+        if not self.column_sankey.is_available():
+            return
+
+        export_svg_action = QAction(self.tr("Export to svg"), menu)
+        export_svg_action.setObjectName("action_export_svg")
+        export_svg_action.setIcon(svg_tools.get_QIcon("bi--filetype-svg.svg"))
+        export_svg_action.triggered.connect(self.column_sankey.sankey_bitcoin.export_to_svg)
+
+        separator_action = next((action for action in menu.actions() if action.isSeparator()), None)
+        if separator_action:
+            menu.insertAction(separator_action, export_svg_action)
+            return
+
+        menu.addAction(export_svg_action)
 
     def updateUi(self) -> None:
         """UpdateUi."""
@@ -1412,6 +1442,7 @@ class UITx_Viewer(UITx_Base):
 
         def on_success(success: bool | None) -> None:
             """On success."""
+            self.export_data_simple.button_export_file.refresh_menu()
             self.fill_button_group()
             if not success:
                 self.set_tab_focus(UiElements.default)
