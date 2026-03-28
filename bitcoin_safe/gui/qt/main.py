@@ -2453,6 +2453,9 @@ class MainWindow(UnlockableMainWindow):
 
         self.language_chooser.add_signal_language_switch(self.signals.language_switch)
         self.wallet_functions.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)
+        self.signal_tracker.connect(
+            qt_wallet.signal_request_open_network_settings, self.open_network_settings
+        )
 
         self.p2p_listening_update_lists(UpdateFilter())
         qt_wallet.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletOpened))
