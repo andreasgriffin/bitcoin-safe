@@ -26,4 +26,4 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-__version__ = "1.8.1"
+__version__ = "2.0.0rc0"
