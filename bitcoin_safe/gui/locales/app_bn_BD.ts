@@ -2248,12 +2248,12 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>{id} {name} সহ একটি wallet ইতিমধ্যেই খোলা আছে।  </translation>
+			<translation>{name} আইডি সহ একটি ওয়ালেট ইতিমধ্যেই খোলা আছে।  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open. Please close it first.</source>
-			<translation>{id} {name} সহ একটি ওয়ালেট ইতিমধ্যেই খোলা আছে। অনুগ্রহ করে আগে এটি বন্ধ করুন।</translation>
+			<translation>{name} আইডি সহ একটি ওয়ালেট ইতিমধ্যেই খোলা আছে। অনুগ্রহ করে প্রথমে এটি বন্ধ করুন।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2714,7 +2714,7 @@ Do you want to hide to tray instead?</source>
 		<name>MyTreeView</name>
 		<message>
 			<source>{n} rows have been copied as text</source>
-			<translation>{text} হিসেবে {n} টি সারি কপি করা হয়েছে</translation>
+			<translation>{n} টি সারি টেক্সট হিসেবে কপি করা হয়েছে</translation>
 		</message>
 		<name>MyTreeView</name>
 		<message>
@@ -6643,12 +6643,12 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>আপনি {setup} সেটআপ করতে পারেন যেখানে {server}-এ একটি esplora server এবং {explorer}-এ একটি block explorer থাকবে</translation>
+			<translation>আপনি {server} এ একটি Electrum সার্ভার এবং {explorer} এ একটি ব্লক এক্সপ্লোরার দিয়ে {electrum} সেট আপ করতে পারেন</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
 			<source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-			<translation>আপনি {electrum} সেটআপ করতে পারেন যেখানে {server}-এ একটি electrum server এবং {explorer}-এ একটি block explorer থাকবে</translation>
+			<translation>আপনি {server} এ একটি Esplora সার্ভার এবং {explorer} এ একটি ব্লক এক্সপ্লোরার দিয়ে {setup} সেট আপ করতে পারেন</translation>
 		</message>
 	</context>
 	<context>
