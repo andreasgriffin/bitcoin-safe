@@ -749,11 +749,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 			<source>Diagram</source>
 			<translation>နမူနာ</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>svg ထုတ်ပို့ပါ</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1288,8 +1283,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>ဖိုင်ထုတ်ပို့ပါ</translation>
+			<source>File</source>
+			<translation>ဖိုင်</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1298,8 +1293,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>PDF ထုတ်ယူ</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1524,29 +1519,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>ဖိုင်</translation>
+			<source>Sign with File</source>
+			<translation>ဖိုင်ဖြင့် လက်မှတ်ထိုးပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>QR ဖြင့် လက်မှတ်ထိုးပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>USB</translation>
+			<source>Sign with USB</source>
+			<translation>USB ဖြင့် လက်မှတ်ထိုးပါ</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>မျိုးစေ့</translation>
+			<source>Sign with seed</source>
+			<translation>seed ဖြင့် လက်မှတ်ထိုးပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -3246,8 +3241,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>သင့်ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍ မရပါ။ အင်ဗွိုက်စ် လင့်ခ်ကို လက်ဖြင့် ဖွင့်ပါ:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3301,8 +3296,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>လှူဒါန်းမှု ဆာဗာကို မရောက်ရှိနိုင်ပါ။ အောက်ပါလိပ်စာသို့ လှူဒါန်းနိုင်ပါသည်: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>လှူဒါန်းမှု ဆာဗာကို ဆက်သွယ်၍မရပါ။ နောက်မှ ထပ်မံကြိုးစားပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -3384,9 +3379,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>အနိမ့် gap limit အညွှန်းကို တွေ့ရှိခဲ့ပါသည် (ပြန်လည်ပေးအပ်လိပ်စာများသို့ ဘစ်ကွိုင်း လက်ခံရရှိသည်)။ gap limit ကို {new_gap} အထိ တိုးမြှင့်ပြီး ပိုက်ဆံအိတ်ကို ပြန်လည် စကန်လုပ်လိုပါသလား</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>gap limit နည်းနေသည်ဟု အချက်ပြချက် တွေ့ရှိခဲ့သည် (change address များသို့ Bitcoin လက်ခံရရှိသည်)။ ဤသည်မှာ gap limit နည်းလွန်းသောကြောင့် ဖြစ်နိုင်သည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3465,11 +3459,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>ကြား ဟန့် လီမစ် နည်းစွာ ဖြစ်နိုင်သည်</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>သမိုင်း</translation>
 		</message>
@@ -3487,6 +3476,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>ရှိပြီးသားကို ထိန်းသိမ်းပါ</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>အတည်ပြုပြီးသော လက်ကျန်ငွေများ အနုတ်ဖြစ်နေသည်ကို တွေ့ရှိခဲ့သည်။ ဤသည်မှာ gap limit နည်းလွန်းသောကြောင့် ဖြစ်နိုင်သည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3692,6 +3686,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>အခြားအရာကို ပြသရန် အောက်ပါ quote သို့မဟုတ် လင့်ကို နှိပ်ပါ</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3886,6 +3887,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>လက်ခံသူများ CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} သည်တရားဝင်လိပ်စာမဟုတ်ပါ!</translation>
 		</message>
@@ -3963,6 +3969,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>svg ထုတ်ပို့ပါ</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>SVG သို့ ထုတ်ယူပါ</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4252,11 +4263,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>'{wallet_id}' ၏ Seed</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်မကိုက်ညီပါ။ ဖျက်သိမ်းပါ။</translation>
 		</message>
@@ -4398,6 +4404,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>gap limit သည် နည်းလွန်းနိုင်သည်။</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>gap limit တိုးမြှင့်ပါ</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>gap limit ကို {gap} သို့ တိုးမြှင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -4573,6 +4596,28 @@ Signatures:
 			<translation>{label}
 သို့ ဆိုင်သော private key ဖြင့် လင်ဒင်းကို စာချုပ်ထိုးပြီး  လက်မှတ်များ:
 {signatures}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>Transaction ID ကို ကူးယူပါ</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>Transaction ID</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>ဘလော့ခ်ရှာဖွေရေးကြည့်ပါ</translation>
 		</message>
 	</context>
 	<context>
@@ -4759,6 +4804,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>ယခင်အဆင့်</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5494,6 +5544,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>ယခင်အဆင့်</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>21 သင်ခန်းစာများ: Bitcoin မှ ကျွန်ုပ် သင်ယူခဲ့သည့် အရာများ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>node တစ်ခုသည် အရာအားလုံးကို ကိုယ်တိုင် စစ်ဆေးအတည်ပြုသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>Bitcoin သည် လွတ်လပ်ရေးအတွက် Trojan horse တစ်ခုဖြစ်သည်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>Bitcoin Whitepaper</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>Bitcoin Whitepaper (Nakamoto Institute)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>Bitcoin သည် လှုံ့ဆော်မှုများကို ကမ္ဘာလုံးဆိုင်ရာ အဆင့်တွင် ကိုက်ညီစေသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>Bitcoin သည် ခွင့်ပြုချက်မလိုဘဲ ဆန်းသစ်တီထွင်မှုကို ခွင့်ပြုသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>Bitcoin သည် အရာအားလုံးကို ပြောင်းလဲစေသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>Bitcoin သည် တန်ဖိုးကို လွှဲပြောင်းရန် အရေးကြီးဆုံး နည်းလမ်းများထဲမှ တစ်ခု ဖြစ်လာနိုင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>Bitcoin ကို အသုံးပြုရန် ခွင့်ပြုချက် မလိုအပ်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>Bitcoin သည် ကြားခံမလိုဘဲ တန်ဖိုး လွှဲပြောင်းမှုကို ခွင့်ပြုသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>Bitcoin သည် browser မတိုင်မီက အင်တာနက်ကဲ့သို့ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>Bitcoin သည် paradigm shift ဖြစ်ပေါ်နေကြောင်း အမှတ်အသားအားလုံး ရှိသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>Bitcoin ၏ အခြေခံတွင် လှုံ့ဆော်မှုများ ကိုက်ညီထားသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>Bitcoin သည် ပထမဆုံး ကမ္ဘာလုံးဆိုင်ရာ ငွေကြေး ဖြစ်လာနိုင်သော အလားအလာရှိသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>Bitcoin သည် အချိန်ဖြစ်သည်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>Bitcoin သည် စိစစ်ခြင်းကို ခံနိုင်ရည်ရှိသော တန်ဖိုးသိုလှောင်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>Bitcoin သည် ဗဟိုမဲ့ပြီး ကုဒ်နည်းပညာအခြေခံသော ငွေကြေး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>Bitcoin သည် ကမ္ဘာလုံးဆိုင်ရာ၊ နယ်နိမိတ်မဲ့ အရင်းအနှီး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>Bitcoin သည် ငွေကြေးဖောင်းပွမှုကို ကာကွယ်ရန် နည်းလမ်းတစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>Bitcoin သည် ငွေကြေးဆိုင်ရာ မတရားမှုများကို ကာကွယ်ရန် နည်းလမ်းတစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>Bitcoin သည် နိုင်ငံရေးမှ လွတ်လပ်သော သင်္ချာဆိုင်ရာ စနစ်တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>Bitcoin သည် ငွေကြေးဆိုင်ရာ ပြုပြင်ပြောင်းလဲမှု တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>Bitcoin သည် အမှန်တရား၏ ကွန်ယက် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>Bitcoin သည် ငွေကြေး လှုပ်ရှားမှုကို ထိရောက်စေရန် စနစ်အသစ် တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>Bitcoin သည် ငြိမ်းချမ်းသော ပြုပြင်ပြောင်းလဲမှု တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>Bitcoin သည် program လုပ်နိုင်သော စာရင်းမှတ်တမ်း ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>Bitcoin သည် တန်ဖိုး လွှဲပြောင်းရန် protocol ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>Bitcoin သည် ကုမ္ပဏီမဟုတ်ဘဲ protocol ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>Bitcoin သည် ထူးခြားသော ကုဒ်နည်းပညာ အောင်မြင်မှု တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>Bitcoin သည် အနာဂတ်ကို မြင်နိုင်သော အင်ဂျင်နီယာများက ဒီဇိုင်းပြုလုပ်ထားသော ဉာဏ်ရည်မြင့် ငွေကြေး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>Bitcoin သည် ယုံကြည်မှုမဟုတ်ဘဲ လှုံ့ဆော်မှု စနစ်တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>Bitcoin သည် နည်းပညာဆိုင်ရာ ထူးချွန်မှု တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>Bitcoin သည် လူ့အခွင့်အရေးအတွက် ကိရိယာတစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>Bitcoin သည် စနစ်မှ ထွက်ခွာရန် နည်းလမ်းတစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>Bitcoin သည် လှုံ့ဆော်မှုများဖြင့် ကာကွယ်ထားသော စီးပွားရေး ကွန်ယက် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>Bitcoin သည် အချိန်ရောက်လာသော အတွေးအခေါ် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>Bitcoin သည် နိုင်ငံတကာ အရင်းအနှီး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>Bitcoin သည် ဖွင့်လှစ်ထားသော ငွေကြေး ကွန်ယက် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>Bitcoin သည် antifragile ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>Bitcoin သည် ကုဒ်နည်းပညာ အထောက်အထားအပေါ် အခြေခံသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>Bitcoin သည် နယ်နိမိတ်မဲ့ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>Bitcoin သည် စိစစ်ခြင်းကို ခံနိုင်ရည်ရှိသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>Bitcoin သည် ကုဒ် ဖြစ်ပြီး ကတိမဟုတ်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>Bitcoin သည် ဒီဇိုင်းအရ ဗဟိုမဲ့ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>Bitcoin သည် ဗဟိုမဲ့ အမှန်တရား ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>Bitcoin သည် ဒစ်ဂျစ်တယ် အရင်းအနှီး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>Bitcoin သည် ဒစ်ဂျစ်တယ် ရွှေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>Bitcoin သည် ဒစ်ဂျစ်တယ် ချို့တဲ့မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>Bitcoin သည် အသုံးပြုမှုနှင့် အသုံးပြုသူလက်ခံမှုဖြင့် မောင်းနှင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>Bitcoin သည် စီးပွားရေး လွတ်လပ်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>Bitcoin သည် စွမ်းအင်ကို ငွေဖြစ်စေသော အရာ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>Bitcoin သည် ဒီဇိုင်းပြုလုပ်ထားသော ချို့တဲ့မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>Bitcoin သည် တန်ဖိုးကို သိမ်းဆည်းရန် ဒီဇိုင်းပြုလုပ်ထားသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>Bitcoin သည် ကြားခံများကို ဖယ်ရှားသောကြောင့် စိတ်ဝင်စားဖွယ် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>Bitcoin သည် ငွေကြေး လွတ်လပ်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>Bitcoin သည် လွတ်လပ်ရေး၏ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>Bitcoin သည် ဒစ်ဂျစ်တယ် ကမ္ဘာအတွက် ကမ္ဘာလုံးဆိုင်ရာ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>Bitcoin သည် ကမ္ဘာလုံးဆိုင်ရာ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>Bitcoin သည် အာဏာမဟုတ်ဘဲ သဘောတူညီချက်ဖြင့် စီမံခန့်ခွဲသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>Bitcoin သည် ဆက်လက်တည်ရှိမည် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>Bitcoin သည် မပြောင်းလဲနိုင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>Bitcoin သည် အ فساد မဖြစ်နိုင်သော ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>Bitcoin သည် အ فساد မဖြစ်နိုင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>Bitcoin သည် လွတ်လပ်သော ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>Bitcoin သည် ဗဟိုဘဏ်များမှ လွတ်လပ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>Bitcoin သည် သင်္ချာအခြေခံ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>Bitcoin သည် ငွေကြေး အာဏာပိုင်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>Bitcoin သည် အင်တာနက် protocol ပေါ်ရှိ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>Bitcoin သည် အနာဂတ်အတွက် လိုအပ်ပြီး အရေးကြီးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>Bitcoin သည် နယ်နိမိတ်မဲ့ ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>Bitcoin သည် ငွေတင်မက ယုံကြည်မှု စနစ်တစ်ခု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>Bitcoin သည် open source ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>Bitcoin သည် လူတိုင်းအတွက် ဖွင့်ထားသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>Bitcoin သည် ဘဏ်များကို အစားထိုးသော peer-to-peer ဘဏ္ဍာရေး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>Bitcoin သည် ခွင့်ပြုချက်မလိုဘဲ ဆန်းသစ်တီထွင်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>Bitcoin သည် program လုပ်နိုင်သော ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>Bitcoin သည် အစိုးရများမဟုတ်ဘဲ သင်္ချာဖြင့် ထိန်းချုပ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>Bitcoin သည် ခံနိုင်ရည်ရှိသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>Bitcoin သည် စိစစ်ခြင်းနှင့် ထိန်းချုပ်မှုကို ဆန့်ကျင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>Bitcoin သည် စုဆောင်းမှု နည်းပညာ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>Bitcoin သည် ဒီဇိုင်းအရ ချို့တဲ့သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>Bitcoin သည် စွမ်းအင်နှင့် ကွန်ပျူတာတွက်ချက်မှုဖြင့် ကာကွယ်ထားသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>Bitcoin သည် ကောင်းမွန်သော ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>Bitcoin သည် လူသားမျိုးနွယ်၏ အမြင့်ဆုံး ပိုင်ဆိုင်မှု ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>Bitcoin သည် ငွေ၏ အခြေခံအလွှာ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>Bitcoin သည် ကြီးမားသော အရာတစ်ခု၏ စတင်ခြင်း ဖြစ်သည်: အစိုးရမရှိသော ငွေကြေး။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>Bitcoin သည် ထွက်ခွာရာလမ်း ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>Bitcoin သည် တန်ဖိုးလျော့မသွားနိုင်သော ပထမဆုံး ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>Bitcoin သည် fiat ငွေကြေး၏ ပထမဆုံး အစားထိုး အမှန် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>Bitcoin သည် အခိုင်မာဆုံး အရင်းအနှီး ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>Bitcoin သည် တည်ဆောက်ခဲ့သမျှ အခိုင်မာဆုံး ငွေ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>Bitcoin သည် ငွေ၏ အင်တာနက် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>Bitcoin သည် အချိန် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>Bitcoin သည် ပွင့်လင်းမြင်သာသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>Bitcoin သည် ယုံကြည်မှုကို လျှော့ချပေးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>Bitcoin သည် ကုဒ်ထဲရှိ အမှန်တရား ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>Bitcoin သည် စိစစ်၍မရနိုင်၊ သိမ်းယူ၍မရနိုင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>Bitcoin သည် မရပ်တန့်နိုင်သော ကုဒ် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>Bitcoin သည် မရပ်တန့်နိုင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>Bitcoin သည် စစ်ဆေးနိုင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>Bitcoin သည် PayPal တည်ဆောက်ရန် ကြိုးစားခဲ့သည့် အရာ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>Bitcoin သည် ကမ္ဘာလုံးဆိုင်ရာ ငွေကြေးသို့ ဦးတည်နိုင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>Bitcoin သည် ရိုးရာစနစ်များထက် လျော့နည်းသော ကုန်ကျစရိတ်များ ပေးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>Bitcoin သည် ဗဟိုထိန်းချုပ်မှုမရှိဘဲ လည်ပတ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>Bitcoin သည် ယုံကြည်ရသော အဖွဲ့အစည်းများ၏ အခန်းကဏ္ဍကို ကုဒ်ဖြင့် အစားထိုးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>Bitcoin သည် ယုံကြည်မှုကို စစ်ဆေးမှုဖြင့် အစားထိုးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>Bitcoin သည် ငွေကြေးတွင် အရေးကြီးသော တိုးတက်မှုကို ကိုယ်စားပြုသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>Bitcoin ၏ ချို့တဲ့မှုကို သင်္ချာနှင့် စွမ်းအင်ဖြင့် အတည်ပြုထားသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>Bitcoin သည် ငွေကို အစိုးရမှ ခွဲထုတ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>Bitcoin သည် ဘဏ်များအတွက် email သည် စာတိုက်လုပ်ငန်းအတွက် ပြုလုပ်ခဲ့သည့် အရာကို ပြုလုပ်မည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>Bitcoin သည် ရွှေထက် ပိုကောင်းစွာ လုပ်ဆောင်နိုင်မည် ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>Bitcoin: ကုဒ်နည်းပညာတစ်ခုတည်း မလုံလောက်ပါ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>Bitcoin သည် ပါလက်စတိုင်း၏ လွတ်လပ်ရေး ငွေ ဖြစ်နိုင်ပါသလား</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>သဘောတူညီချက်သည် Bitcoin ကို သတ်မှတ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>ယုံကြည်မနေပါနှင့်၊ စစ်ဆေးပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>open-source code ဖြင့် ငွေကြေးဆိုင်ရာ ကိုလိုနီဝါဒကို ဆန့်ကျင်ခြင်း</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>ငွေကို ပြင်ဆင်ပါ၊ ကမ္ဘာကို ပြင်ဆင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>အမေရိကန် ဒေါ်လာသည် ကမ္ဘာ့ အရန်ငွေကြေး ဖြစ်လာပုံ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>Bitcoin သည် နောက်ဆုံးတွင် ဘဏ်များ၏ အရန်ငွေ ဖြစ်လာမည်ဟု ကျွန်ုပ် မြင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>ကျွန်ုပ် အမြင်အရ ၎င်းသည် ထူးချွန်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>သင် မယုံကြည်ပါက သို့မဟုတ် နားမလည်ပါက၊ သင့်ကို ယုံကြည်စေရန် အချိန်မရှိပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>Bitcoin ကို ကျွန်ုပ်အား သင်ကြားပါ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (open source)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>ငွေသည် ချို့တဲ့မှုရှိပြီး ကြာရှည်ခံနိုင်ပြီး စစ်ဆေးနိုင်ရမည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>သင့်သော့ မဟုတ်ပါက သင့် coin မဟုတ်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>အမြန်ဆုံး မြင်းကို ပိုင်ဆိုင်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>bitcoin ကို လည်ပတ်ပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>လုံခြုံရေးသည် throughput ထက် ပိုအရေးကြီးသည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Shelling Out: ငွေ၏ မူလအစ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>နှိမ့်ချပါ၊ sats များ စုဆောင်းပါ။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>Structural Adjustment: IMF နှင့် ကမ္ဘာ့ဘဏ်သည် ဆင်းရဲသော နိုင်ငံများကို မည်သို့ ဖိနှိပ်သည်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>Bitcoin အတွက် bullish အမြင်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>Quantitative easing ခေတ်တွင် စစ်၏ မမြင်နိုင်သော ကုန်ကျစရိတ်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Jan/2009 ဘဏ်များအတွက် ဒုတိယ bailout အနီးကပ်</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>Blockchain သည် transaction များသာမက အထောက်အထားများကို မှတ်တမ်းတင်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>စုစုပေါင်း လည်ပတ်မှုသည် coin ၂၁ သန်း ဖြစ်မည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>ယုံကြည်ရသော တတိယပုဂ္ဂိုလ်များသည် လုံခြုံရေး အားနည်းချက်များ ဖြစ်သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>ယုံကြည်မှုမလိုဘဲ အီလက်ထရွန်းနစ် လုပ်ငန်းများအတွက် စနစ်တစ်ခုကို ကျွန်ုပ်တို့ အဆိုပြုခဲ့သည်။</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>ကုဒ်နည်းပညာ အထောက်အထားအပေါ် အခြေခံသော e-currency နှင့် ယုံကြည်မှုမလိုဘဲ။</translation>
 		</message>
 	</context>
 	<context>
@@ -6756,6 +7508,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>ပို့ရန်:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>လိပ်စာများသို့ ပို့နေသည်:</translation>
 		</message>
 		<name>wallet</name>
 		<message>

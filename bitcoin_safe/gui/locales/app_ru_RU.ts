@@ -751,11 +751,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 			<source>Diagram</source>
 			<translation>Диаграмма</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>Экспорт svg</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1291,8 +1286,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>Экспорт в файл</translation>
+			<source>File</source>
+			<translation>Файл</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1301,8 +1296,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>Экспорт PDF</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1527,29 +1522,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>Файл</translation>
+			<source>Sign with File</source>
+			<translation>Подписать файлом</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>Подписать с помощью QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>USB</translation>
+			<source>Sign with USB</source>
+			<translation>Подписать через USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>Семя</translation>
+			<source>Sign with seed</source>
+			<translation>Подписать сид-фразой</translation>
 		</message>
 	</context>
 	<context>
@@ -3261,8 +3256,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>Не удалось автоматически открыть ваш браузер. Пожалуйста, откройте ссылку на счет вручную:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Не удалось автоматически открыть браузер. Пожалуйста, попробуйте снова.</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3316,8 +3311,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>Не удалось связаться с сервером пожертвований. Вы можете сделать пожертвование на: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Не удалось связаться с сервером пожертвований. Пожалуйста, попробуйте позже.</translation>
 		</message>
 	</context>
 	<context>
@@ -3399,10 +3394,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Обнаружено указание на низкий лимит разрыва (получение биткойнов на адреса сдачи).
-Хотите пересканировать кошелёк с увеличенным лимитом разрыва до {new_gap}</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>Обнаружен признак слишком малого gap limit (биткоины получены на адреса сдачи). Скорее всего, это связано с слишком низким значением gap limit.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3481,11 +3474,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>Возможно, предел разрыва слишком низкий</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>История</translation>
 		</message>
@@ -3503,6 +3491,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>Сохранить существующее</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>Обнаружены отрицательные подтверждённые балансы. Скорее всего, это связано с слишком низким значением gap limit.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3710,6 +3703,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>Нажмите на цитату или ссылку ниже, чтобы показать другой элемент</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3906,6 +3906,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>Получатели CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} не является действительным адресом!</translation>
 		</message>
@@ -3983,6 +3988,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>Экспорт svg</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>Экспорт в SVG</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4273,11 +4283,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>Сид '{wallet_id}'</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>Идентификатор транзакции подписанного psbt не совпадает с оригинальным Идентификатором транзакции. Прерывание</translation>
 		</message>
@@ -4420,6 +4425,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>Возможно, значение gap limit слишком мало.</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>Увеличить gap limit</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>Увеличить gap limit до {gap}</translation>
 		</message>
 	</context>
 	<context>
@@ -4598,6 +4620,28 @@ Signatures:
 
 
 </translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>Скопировать ID транзакции</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>ID транзакции</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>Посмотреть в блок-эксплорере</translation>
 		</message>
 	</context>
 	<context>
@@ -4786,6 +4830,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>Предыдущий шаг</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5522,6 +5571,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>Предыдущий шаг</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>21 урок: чему я научился у Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>Нода проверяет всё самостоятельно.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>Bitcoin — троянский конь для свободы</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>Whitepaper Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>Whitepaper Bitcoin (Nakamoto Institute)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>Bitcoin выравнивает стимулы по всему миру.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>Bitcoin позволяет инновации без разрешения.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>Bitcoin меняет всё.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>Bitcoin может стать одним из самых важных способов передачи ценности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>Bitcoin не требует разрешения для использования.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>Bitcoin позволяет передавать ценность без посредников.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>Bitcoin ощущается как интернет до появления браузера.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>Bitcoin имеет все признаки смены парадигмы.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>В основе Bitcoin лежат согласованные стимулы.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>Bitcoin имеет потенциал стать первой глобальной валютой.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>Bitcoin — это время</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>Bitcoin — это средство сохранения стоимости, устойчивое к цензуре.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>Bitcoin — это децентрализованная криптографическая валюта.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>Bitcoin — это глобальный нейтральный актив.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>Bitcoin — это защита от инфляции.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>Bitcoin — это защита от денежной безответственности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>Bitcoin — это математическая система, свободная от политики.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>Bitcoin — это денежная революция.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>Bitcoin — это сеть истины.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>Bitcoin — это новая экосистема для эффективного перемещения денег.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>Bitcoin — это мирная революция.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>Bitcoin — это программируемый реестр.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>Bitcoin — это протокол для передачи ценности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>Bitcoin — это протокол, а не компания.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>Bitcoin — это выдающееся криптографическое достижение.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>Bitcoin — это умная валюта, разработанная дальновидными инженерами.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>Bitcoin — это система стимулов, а не доверия.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>Bitcoin — это технологический шедевр.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>Bitcoin — это инструмент для прав человека.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>Bitcoin — это способ выйти из системы.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>Bitcoin — это экономическая сеть, защищённая стимулами.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>Bitcoin — это идея, время которой пришло.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>Bitcoin — это международный актив.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>Bitcoin — это открытая денежная сеть.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>Bitcoin антихрупок.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>Bitcoin основан на криптографическом доказательстве.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>Bitcoin — это деньги без границ.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>Bitcoin устойчив к цензуре.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>Bitcoin — это код, а не обещания.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>Bitcoin децентрализован по своей природе.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>Bitcoin — это децентрализованная истина.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>Bitcoin — это цифровой капитал.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>Bitcoin — это цифровое золото.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>Bitcoin — это цифровая редкость.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>Bitcoin движется за счёт принятия и использования пользователями.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>Bitcoin — это экономическая свобода.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>Bitcoin — это энергия, преобразованная в деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>Bitcoin — это спроектированная редкость.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>Bitcoin создан для хранения ценности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>Bitcoin захватывает, потому что устраняет посредников.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>Bitcoin — это финансовая свобода.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>Bitcoin — это деньги свободы.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>Bitcoin — это глобальные деньги для цифрового мира.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>Bitcoin — это глобальные деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>Bitcoin управляется консенсусом, а не властью.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>Bitcoin здесь надолго.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>Bitcoin неизменяем.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>Bitcoin — это неподкупные деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>Bitcoin неподкупен.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>Bitcoin — это независимые деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>Bitcoin независим от центральных банков.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>Bitcoin — это деньги, основанные на математике.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>Bitcoin — это денежный суверенитет.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>Bitcoin — это деньги поверх интернет-протокола.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>Bitcoin необходим и важен для будущего.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>Bitcoin — это нейтральные деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>Bitcoin — это не просто деньги, это система доверия.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>Bitcoin — это деньги с открытым исходным кодом.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>Bitcoin открыт для всех.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>Bitcoin — это одноранговые финансы, заменяющие банки.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>Bitcoin — это инновации без разрешения.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>Bitcoin — это программируемые деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>Bitcoin регулируется математикой, а не правительствами.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>Bitcoin устойчив.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>Bitcoin устойчив к цензуре и контролю.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>Bitcoin — это технология сбережений.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>Bitcoin редок по своей природе.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>Bitcoin защищён энергией и вычислениями.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>Bitcoin — это надёжные деньги.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>Bitcoin — это высшая форма собственности человечества.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>Bitcoin — это базовый слой денег.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>Bitcoin — это начало чего-то великого: валюты без государства.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>Bitcoin — это выход.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>Bitcoin — это первые деньги, которые нельзя обесценить.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>Bitcoin — это первая настоящая альтернатива фиатным деньгам.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>Bitcoin — самый надёжный актив.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>Bitcoin — самые надёжные деньги из когда-либо созданных.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>Bitcoin — это интернет денег.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>Bitcoin — это время.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>Bitcoin прозрачен.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>Bitcoin минимизирует доверие.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>Bitcoin — это истина в коде.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>Bitcoin нельзя цензурировать и конфисковать.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>Bitcoin — это неудержимый код.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>Bitcoin неудержим.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>Bitcoin можно проверить.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>Bitcoin — это то, что пытался создать PayPal.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>Bitcoin может привести к мировой валюте.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>Bitcoin предлагает более низкие комиссии, чем традиционные системы.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>Bitcoin работает без центрального контроля.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>Bitcoin заменяет роль доверенных институтов кодом.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>Bitcoin заменяет доверие проверкой.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>Bitcoin представляет собой значительный шаг вперёд в развитии денег.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>Редкость Bitcoin обеспечивается математикой и энергией.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>Bitcoin отделяет деньги от государства.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>Bitcoin сделает с банками то же, что email сделал с почтовой индустрией.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>Bitcoin, вероятно, будет работать лучше золота.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>Bitcoin: криптографии недостаточно</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>Может ли Bitcoin стать валютой свободы для Палестины?</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>Консенсус определяет Bitcoin.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>Не доверяй, проверяй.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>Борьба с денежным колониализмом с помощью открытого кода</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>Исправь деньги — исправишь мир.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>Как доллар США стал мировой резервной валютой</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>Я вижу Bitcoin в конечном итоге резервной валютой для банков.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>Я думаю, это гениально.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>Если вы мне не верите или не понимаете, у меня нет времени вас убеждать.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>Научи меня Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (открытый исходный код)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>Деньги должны быть редкими, долговечными и проверяемыми.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>Не ваши ключи — не ваши монеты.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>Владей самой быстрой лошадью.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>Запуск bitcoin.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>Безопасность важнее пропускной способности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Shelling Out: происхождение денег</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>Оставайся скромным, накапливай sats.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>Структурная корректировка: как МВФ и Всемирный банк подавляют бедные страны</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>Бычий кейс для Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>Невидимая стоимость войны в эпоху количественного смягчения</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Jan/2009 Канцлер на грани второго спасения банков.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>Блокчейн записывает доказательства, а не только транзакции.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>Общий объём составит 21 миллион монет.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>Доверенные третьи стороны — это уязвимости безопасности.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>Мы предложили систему электронных транзакций без опоры на доверие.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>С электронной валютой, основанной на криптографическом доказательстве, без доверия.</translation>
 		</message>
 	</context>
 	<context>
@@ -6791,6 +7542,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>Отправить:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>Отправка на адреса:</translation>
 		</message>
 		<name>wallet</name>
 		<message>

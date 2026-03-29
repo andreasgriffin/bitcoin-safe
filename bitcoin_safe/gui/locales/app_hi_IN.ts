@@ -749,11 +749,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 			<source>Diagram</source>
 			<translation>आरेख</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>एसवीजी निर्यात करें</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1289,8 +1284,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>फ़ाइल में निर्यात करें</translation>
+			<source>File</source>
+			<translation>फ़ाइल</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1299,8 +1294,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>PDF निर्यात</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1525,29 +1520,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>फ़ाइल</translation>
+			<source>Sign with File</source>
+			<translation>फ़ाइल से हस्ताक्षर करें</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>QR से हस्ताक्षर करें</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>यूएसबी</translation>
+			<source>Sign with USB</source>
+			<translation>USB से हस्ताक्षर करें</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>बीज</translation>
+			<source>Sign with seed</source>
+			<translation>सीड से हस्ताक्षर करें</translation>
 		</message>
 	</context>
 	<context>
@@ -3249,8 +3244,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>आपका ब्राउज़र स्वचालित रूप से नहीं खुल सका। कृपया इनवॉइस लिंक को मैन्युअल रूप से खोलें:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>आपका ब्राउज़र स्वचालित रूप से नहीं खुल सका। कृपया पुनः प्रयास करें।</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3304,8 +3299,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>दान सर्वर तक पहुंचने में असमर्थ। आप इस पते पर दान कर सकते हैं: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>डोनेशन सर्वर तक पहुँचने में असमर्थ। कृपया बाद में पुनः प्रयास करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -3387,9 +3382,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>कम गैप सीमा का संकेत पाया गया (चेंज पतों पर बिटकॉइन प्राप्त हुए)। क्या आप गैप सीमा को {new_gap} तक बढ़ाकर वॉलेट को पुनः स्कैन करना चाहते हैं</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>कम गैप लिमिट का संकेत मिला (चेंज एड्रेस पर बिटकॉइन प्राप्त हुआ)। यह संभवतः बहुत कम गैप लिमिट के कारण है।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3468,11 +3462,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>गैप लिमिट बहुत कम हो सकती है</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>इतिहास</translation>
 		</message>
@@ -3490,6 +3479,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>मौजूदा रखें</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>नकारात्मक पुष्टि किए गए बैलेंस पाए गए। यह संभवतः बहुत कम गैप लिमिट के कारण है।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3695,6 +3689,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>उद्धरण या नीचे दिए गए लिंक पर क्लिक करके अन्य आइटम देखें</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3889,6 +3890,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>प्राप्तकर्ता CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} एक मान्य पता नहीं है!</translation>
 		</message>
@@ -3966,6 +3972,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>एसवीजी निर्यात करें</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>SVG में निर्यात करें</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4255,11 +4266,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>'{wallet_id}' का सीड</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>हस्ताक्षरित psbt का txid मूल Transaction Identifier से मेल नहीं खाता। रद्द करना</translation>
 		</message>
@@ -4401,6 +4407,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>गैप लिमिट बहुत कम हो सकती है।</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>गैप लिमिट बढ़ाएँ</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>गैप लिमिट को {gap} तक बढ़ाएँ</translation>
 		</message>
 	</context>
 	<context>
@@ -4576,6 +4599,28 @@ Signatures:
 			<translation>{label}
 की निजी कुंजी से लेन-देन पर हस्ताक्षर किए गए  हस्ताक्षर:
 {signatures}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>लेनदेन आईडी कॉपी करें</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>लेनदेन आईडी</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>ब्लॉक एक्सप्लोरर पर देखें</translation>
 		</message>
 	</context>
 	<context>
@@ -4763,6 +4808,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>पिछला चरण</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5498,6 +5548,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>पिछला चरण</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>21 सबक: मैंने बिटकॉइन से क्या सीखा</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>एक नोड सब कुछ स्वयं सत्यापित करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>बिटकॉइन स्वतंत्रता के लिए एक ट्रोजन हॉर्स है</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>बिटकॉइन श्वेतपत्र</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>बिटकॉइन श्वेतपत्र (नाकामोटो इंस्टीट्यूट)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>बिटकॉइन वैश्विक स्तर पर प्रोत्साहनों को संरेखित करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>बिटकॉइन बिना अनुमति के नवाचार की अनुमति देता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>बिटकॉइन सब कुछ बदल देता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>बिटकॉइन मूल्य स्थानांतरण के सबसे महत्वपूर्ण तरीकों में से एक बन सकता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>बिटकॉइन उपयोग के लिए अनुमति की आवश्यकता नहीं है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>बिटकॉइन मध्यस्थों के बिना मूल्य स्थानांतरण सक्षम करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>बिटकॉइन ब्राउज़र से पहले के इंटरनेट जैसा लगता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>बिटकॉइन में प्रतिमान परिवर्तन के सभी संकेत हैं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>बिटकॉइन के मूल में संरेखित प्रोत्साहन हैं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>बिटकॉइन में पहली वैश्विक मुद्रा बनने की क्षमता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>बिटकॉइन समय है</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>बिटकॉइन एक सेंसरशिप-प्रतिरोधी मूल्य भंडार है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>बिटकॉइन एक विकेंद्रीकृत और क्रिप्टोग्राफिक मुद्रा है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>बिटकॉइन एक वैश्विक, तटस्थ संपत्ति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>बिटकॉइन मुद्रास्फीति के खिलाफ बचाव है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>बिटकॉइन मौद्रिक गैर-जिम्मेदारी के खिलाफ बचाव है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>बिटकॉइन राजनीति से मुक्त एक गणितीय ढांचा है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>बिटकॉइन एक मौद्रिक क्रांति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>बिटकॉइन सत्य का नेटवर्क है。</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>बिटकॉइन कुशल धन संचलन के लिए एक नया पारिस्थितिकी तंत्र है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>बिटकॉइन एक शांतिपूर्ण क्रांति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>बिटकॉइन एक प्रोग्राम करने योग्य लेजर है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>बिटकॉइन मूल्य स्थानांतरण के लिए एक प्रोटोकॉल है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>बिटकॉइन एक प्रोटोकॉल है, कंपनी नहीं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>बिटकॉइन एक उल्लेखनीय क्रिप्टोग्राफिक उपलब्धि है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>बिटकॉइन दूरदर्शी इंजीनियरों द्वारा डिज़ाइन की गई एक स्मार्ट मुद्रा है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>बिटकॉइन विश्वास नहीं, बल्कि प्रोत्साहनों की प्रणाली है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>बिटकॉइन एक तकनीकी उत्कृष्टता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>बिटकॉइन मानवाधिकारों के लिए एक उपकरण है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>बिटकॉइन सिस्टम से बाहर निकलने का एक तरीका है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>बिटकॉइन प्रोत्साहनों द्वारा सुरक्षित आर्थिक नेटवर्क है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>बिटकॉइन एक ऐसा विचार है जिसका समय आ गया है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>बिटकॉइन एक अंतरराष्ट्रीय संपत्ति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>बिटकॉइन एक खुला मौद्रिक नेटवर्क है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>बिटकॉइन एंटीफ्रैजाइल है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>बिटकॉइन क्रिप्टोग्राफिक प्रमाण पर आधारित है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>बिटकॉइन सीमाहीन धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>बिटकॉइन सेंसरशिप-प्रतिरोधी है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>बिटकॉइन कोड है, वादे नहीं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>बिटकॉइन डिजाइन द्वारा विकेंद्रीकृत है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>बिटकॉइन विकेंद्रीकृत सत्य है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>बिटकॉइन डिजिटल पूंजी है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>बिटकॉइन डिजिटल सोना है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>बिटकॉइन डिजिटल दुर्लभता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>बिटकॉइन अपनाने और उपयोगकर्ता स्वीकृति द्वारा संचालित है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>बिटकॉइन आर्थिक स्वतंत्रता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>बिटकॉइन ऊर्जा को धन में परिवर्तित करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>बिटकॉइन इंजीनियर की गई दुर्लभता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>बिटकॉइन मूल्य संग्रहीत करने के लिए डिज़ाइन किया गया है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>बिटकॉइन रोमांचक है क्योंकि यह मध्यस्थों को हटाता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>बिटकॉइन वित्तीय स्वतंत्रता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>बिटकॉइन स्वतंत्रता का धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>बिटकॉइन डिजिटल दुनिया के लिए वैश्विक धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>बिटकॉइन वैश्विक धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>बिटकॉइन सहमति द्वारा संचालित है, अधिकार द्वारा नहीं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>बिटकॉइन यहाँ रहने के लिए है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>बिटकॉइन अपरिवर्तनीय है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>बिटकॉइन भ्रष्ट न होने वाला धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>बिटकॉइन भ्रष्ट नहीं हो सकता।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>बिटकॉइन स्वतंत्र धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>बिटकॉइन केंद्रीय बैंकों से स्वतंत्र है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>बिटकॉइन गणित-आधारित धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>बिटकॉइन मौद्रिक संप्रभुता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>बिटकॉइन इंटरनेट प्रोटोकॉल पर धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>बिटकॉइन भविष्य के लिए आवश्यक और महत्वपूर्ण है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>बिटकॉइन तटस्थ धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>बिटकॉइन सिर्फ धन नहीं है, यह एक विश्वास प्रणाली है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>बिटकॉइन ओपन सोर्स धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>बिटकॉइन सभी के लिए खुला है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>बिटकॉइन पीयर-टू-पीयर वित्त है जो बैंकों को प्रतिस्थापित करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>बिटकॉइन अनुमति रहित नवाचार है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>बिटकॉइन प्रोग्राम करने योग्य धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>बिटकॉइन गणित द्वारा नियंत्रित है, सरकारों द्वारा नहीं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>बिटकॉइन लचीला है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>बिटकॉइन सेंसरशिप और नियंत्रण के प्रति प्रतिरोधी है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>बिटकॉइन बचत तकनीक है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>बिटकॉइन डिजाइन द्वारा दुर्लभ है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>बिटकॉइन ऊर्जा और गणना द्वारा सुरक्षित है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>बिटकॉइन साउंड मनी है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>बिटकॉइन मानव जाति की सर्वोच्च संपत्ति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>बिटकॉइन धन की आधार परत है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>बिटकॉइन किसी महान चीज़ की शुरुआत है: बिना सरकार की मुद्रा।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>बिटकॉइन निकास है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>बिटकॉइन पहला धन है जिसे अवमूल्यित नहीं किया जा सकता।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>बिटकॉइन फिएट मुद्रा का पहला वास्तविक विकल्प है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>बिटकॉइन सबसे मजबूत संपत्ति है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>बिटकॉइन अब तक बनाया गया सबसे मजबूत धन है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>बिटकॉइन धन का इंटरनेट है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>बिटकॉइन समय है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>बिटकॉइन पारदर्शी है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>बिटकॉइन विश्वास को न्यूनतम करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>बिटकॉइन कोड में सत्य है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>बिटकॉइन को सेंसर या जब्त नहीं किया जा सकता।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>बिटकॉइन अवरोधन-असंभव कोड है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>बिटकॉइन अवरोधन-असंभव है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>बिटकॉइन सत्यापनीय है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>बिटकॉइन वही है जिसे PayPal बनाने की कोशिश कर रहा था।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>बिटकॉइन वैश्विक मुद्रा की ओर ले जा सकता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>बिटकॉइन पारंपरिक प्रणालियों की तुलना में कम लेनदेन लागत प्रदान करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>बिटकॉइन केंद्रीय नियंत्रण के बिना संचालित होता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>बिटकॉइन विश्वसनीय संस्थानों की भूमिका को कोड से बदल देता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>बिटकॉइन विश्वास को सत्यापन से बदल देता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>बिटकॉइन धन में एक महत्वपूर्ण छलांग का प्रतिनिधित्व करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>बिटकॉइन की दुर्लभता गणित और ऊर्जा द्वारा लागू की जाती है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>बिटकॉइन धन को राज्य से अलग करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>बिटकॉइन बैंकों के साथ वही करेगा जो ईमेल ने डाक उद्योग के साथ किया।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>बिटकॉइन संभवतः सोने से बेहतर काम करेगा।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>बिटकॉइन: क्रिप्टोग्राफी पर्याप्त नहीं है</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>क्या बिटकॉइन फिलिस्तीन की स्वतंत्रता की मुद्रा बन सकता है?</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>सहमति ही बिटकॉइन को परिभाषित करती है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>विश्वास मत करो, सत्यापित करो।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>ओपन-सोर्स कोड के साथ मौद्रिक उपनिवेशवाद से लड़ना</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>पैसे को ठीक करो, दुनिया को ठीक करो।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>अमेरिकी डॉलर कैसे विश्व की आरक्षित मुद्रा बना</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>मैं बिटकॉइन को अंततः बैंकों की आरक्षित मुद्रा बनते देखता हूँ।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>मुझे लगता है यह शानदार है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>यदि आप मुझ पर विश्वास नहीं करते या इसे नहीं समझते, तो मेरे पास आपको मनाने का समय नहीं है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>मुझे बिटकॉइन सिखाओ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (ओपन सोर्स)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>पैसा दुर्लभ, टिकाऊ और सत्यापन योग्य होना चाहिए।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>आपकी चाबियाँ नहीं, आपके कॉइन नहीं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>सबसे तेज़ घोड़े का मालिक बनो।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>बिटकॉइन चलाना।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>सुरक्षा थ्रूपुट से अधिक महत्वपूर्ण है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Shelling Out: पैसे की उत्पत्ति</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>विनम्र रहो, sats जमा करो।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>संरचनात्मक समायोजन: IMF और विश्व बैंक गरीब देशों को कैसे दबाते हैं</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>बिटकॉइन के लिए बुलिश केस</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>मात्रात्मक सहजता के युग में युद्ध की अदृश्य लागत</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Jan/2009 चांसलर बैंकों के दूसरे बेलआउट के कगार पर।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>ब्लॉकचेन केवल लेनदेन ही नहीं, प्रमाण भी रिकॉर्ड करता है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>कुल परिसंचरण 21 मिलियन कॉइन होगा।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>विश्वसनीय तीसरे पक्ष सुरक्षा कमजोरियाँ हैं।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>हमने विश्वास पर निर्भर हुए बिना इलेक्ट्रॉनिक लेनदेन के लिए एक प्रणाली प्रस्तावित की है।</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>क्रिप्टोग्राफिक प्रमाण पर आधारित ई-करेंसी के साथ, बिना विश्वास।</translation>
 		</message>
 	</context>
 	<context>
@@ -6759,6 +7511,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>भेजें:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>पते पर भेजा जा रहा है:</translation>
 		</message>
 		<name>wallet</name>
 		<message>

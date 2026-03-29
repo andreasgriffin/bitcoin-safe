@@ -751,11 +751,6 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 			<source>Diagram</source>
 			<translation>Diyagram</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>svg dışa aktar</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1291,8 +1286,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>Dosyaya dışa aktar</translation>
+			<source>File</source>
+			<translation>Dosya</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1301,8 +1296,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>PDF Dışa Aktar</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1527,29 +1522,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>Dosya</translation>
+			<source>Sign with File</source>
+			<translation>Dosya ile imzala</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>QR ile imzala</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>USB</translation>
+			<source>Sign with USB</source>
+			<translation>USB ile imzala</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>Seed</translation>
+			<source>Sign with seed</source>
+			<translation>Tohum ile imzala</translation>
 		</message>
 	</context>
 	<context>
@@ -3259,8 +3254,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen fatura bağlantısını manuel olarak açın:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen tekrar deneyin.</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3314,8 +3309,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>Bağış sunucusuna ulaşılamıyor. Şu adrese bağış yapabilirsiniz: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Bağış sunucusuna ulaşılamıyor. Lütfen daha sonra tekrar deneyin.</translation>
 		</message>
 	</context>
 	<context>
@@ -3397,10 +3392,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>Düşük bir boşluk sınırı göstergesi algılandı (değişim adreslerine Bitcoin alındı).
-{new_gap} artırılmış boşluk sınırıyla cüzdanı yeniden taramak ister misiniz</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>Düşük bir boşluk limiti göstergesi tespit edildi (değişim adreslerine Bitcoin alındı). Bu büyük olasılıkla çok düşük bir boşluk limiti nedeniyledir.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3479,11 +3472,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>Gap limiti çok düşük olabilir</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>Geçmiş</translation>
 		</message>
@@ -3501,6 +3489,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>Mevcut olanı koru</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>Negatif onaylanmış bakiyeler tespit edildi. Bu büyük olasılıkla çok düşük bir boşluk limiti nedeniyledir.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3708,6 +3701,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>Başka bir öğeyi göstermek için alıntıya veya aşağıdaki bağlantıya tıklayın</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3904,6 +3904,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>Alıcılar CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} geçerli bir adres değil!</translation>
 		</message>
@@ -3981,6 +3986,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>svg dışa aktar</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>SVG olarak dışa aktar</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4271,11 +4281,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>'{wallet_id}' Seed’i</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>İmzalanan psbt’nin txid’si orijinal txid ile eşleşmiyor. İşlem iptal edildi</translation>
 		</message>
@@ -4418,6 +4423,23 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>Boşluk limiti çok küçük olabilir.</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>Boşluk limitini artır</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>Boşluk limitini {gap} değerine artır</translation>
 		</message>
 	</context>
 	<context>
@@ -4596,6 +4618,28 @@ ait özel anahtar ile imzalandı İmzalar:
 
 
 </translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>İşlem kimliğini kopyala</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>İşlem Kimliği</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>Blok gezgininde görüntüle</translation>
 		</message>
 	</context>
 	<context>
@@ -4784,6 +4828,11 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		<message>
 			<source>Previous step</source>
 			<translation>Önceki adım</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5520,6 +5569,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>Önceki Adım</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>21 Ders: Bitcoin'den Öğrendiklerim</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>Bir düğüm her şeyi kendisi doğrular.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>Bitcoin Özgürlük İçin Bir Truva Atıdır</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>Bitcoin Whitepaper</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>Bitcoin Whitepaper (Nakamoto Institute)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>Bitcoin teşvikleri küresel olarak hizalar.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>Bitcoin izinsiz inovasyona izin verir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>Bitcoin her şeyi değiştirir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>Bitcoin, değeri aktarmanın en önemli yollarından biri olabilir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>Bitcoin kullanmak için izin gerektirmez.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>Bitcoin aracısız değer transferini mümkün kılar.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>Bitcoin tarayıcı öncesi internet gibidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>Bitcoin bir paradigma değişiminin tüm işaretlerine sahiptir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>Bitcoin özünde hizalanmış teşviklere sahiptir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>Bitcoin ilk küresel para olma potansiyeline sahiptir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>Bitcoin Zamandır</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>Bitcoin sansüre dayanıklı bir değer saklama aracıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>Bitcoin merkezi olmayan ve kriptografik bir para birimidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>Bitcoin küresel, tarafsız bir varlıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>Bitcoin enflasyona karşı bir korunmadır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>Bitcoin parasal sorumsuzluğa karşı bir korunmadır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>Bitcoin siyasetten bağımsız matematiksel bir çerçevedir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>Bitcoin parasal bir devrimdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>Bitcoin bir doğruluk ağıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>Bitcoin verimli para hareketi için yeni bir ekosistemdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>Bitcoin barışçıl bir devrimdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>Bitcoin programlanabilir bir defterdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>Bitcoin değer transferi için bir protokoldür.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>Bitcoin bir protokoldür, bir şirket değil.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>Bitcoin olağanüstü bir kriptografik başarıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>Bitcoin ileri görüşlü mühendisler tarafından tasarlanmış akıllı bir para birimidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>Bitcoin güven değil, teşvikler sistemidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>Bitcoin teknolojik bir şaheserdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>Bitcoin insan hakları için bir araçtır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>Bitcoin sistemden çıkmanın bir yoludur.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>Bitcoin teşviklerle güvence altına alınmış ekonomik bir ağdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>Bitcoin zamanı gelmiş bir fikirdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>Bitcoin uluslararası bir varlıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>Bitcoin açık bir parasal ağdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>Bitcoin antifragildir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>Bitcoin kriptografik kanıta dayanır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>Bitcoin sınır tanımayan paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>Bitcoin sansüre dayanıklıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>Bitcoin koddur, vaat değil.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>Bitcoin tasarım gereği merkezi değildir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>Bitcoin merkeziyetsiz gerçektir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>Bitcoin dijital sermayedir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>Bitcoin dijital altındır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>Bitcoin dijital kıtlıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>Bitcoin benimseme ve kullanıcı kabulüyle yönlendirilir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>Bitcoin ekonomik özgürlüktür.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>Bitcoin enerjiye dönüştürülmüş paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>Bitcoin tasarlanmış kıtlıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>Bitcoin değer saklamak için tasarlanmıştır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>Bitcoin heyecan vericidir çünkü aracılar ortadan kalkar.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>Bitcoin finansal özgürlüktür.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>Bitcoin özgürlük parasıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>Bitcoin dijital dünya için küresel paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>Bitcoin küresel paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>Bitcoin otoriteyle değil, uzlaşıyla yönetilir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>Bitcoin kalıcıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>Bitcoin değiştirilemez.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>Bitcoin yozlaştırılamayan paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>Bitcoin yozlaştırılamaz.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>Bitcoin bağımsız paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>Bitcoin merkez bankalarından bağımsızdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>Bitcoin matematiğe dayalı paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>Bitcoin parasal egemenliktir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>Bitcoin internet protokolü üzerinden paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>Bitcoin gelecek için gerekli ve önemlidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>Bitcoin tarafsız paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>Bitcoin sadece para değil, bir güven sistemidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>Bitcoin açık kaynak paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>Bitcoin herkese açıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>Bitcoin bankaların yerini alan eşler arası finanstır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>Bitcoin izinsiz inovasyondur.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>Bitcoin programlanabilir paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>Bitcoin hükümetler değil, matematik tarafından düzenlenir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>Bitcoin dayanıklıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>Bitcoin sansür ve kontrole dirençlidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>Bitcoin tasarruf teknolojisidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>Bitcoin tasarım gereği kıttır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>Bitcoin enerji ve hesaplama ile güvence altındadır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>Bitcoin sağlam paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>Bitcoin insanlığın en üst düzey mülküdür.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>Bitcoin paranın temel katmanıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>Bitcoin büyük bir şeyin başlangıcıdır: hükümetsiz bir para birimi.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>Bitcoin çıkıştır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>Bitcoin değeri düşürülemeyen ilk paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>Bitcoin fiat paraya ilk gerçek alternatiftir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>Bitcoin en sağlam varlıktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>Bitcoin şimdiye kadar yaratılmış en sağlam paradır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>Bitcoin paranın internetidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>Bitcoin zamandır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>Bitcoin şeffaftır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>Bitcoin güveni minimize eder.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>Bitcoin koddaki gerçektir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>Bitcoin sansürlenemez ve el konulamaz.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>Bitcoin durdurulamaz koddur.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>Bitcoin durdurulamaz.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>Bitcoin doğrulanabilirdir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>Bitcoin PayPal'ın yaratmaya çalıştığı şeydir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>Bitcoin dünya para birimine yol açabilir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>Bitcoin geleneksel sistemlere göre daha düşük işlem maliyetleri sunar.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>Bitcoin merkezi kontrol olmadan çalışır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>Bitcoin güvenilir kurumların rolünü kod ile değiştirir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>Bitcoin güveni doğrulama ile değiştirir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>Bitcoin parada önemli bir sıçramayı temsil eder.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>Bitcoin kıtlığı matematik ve enerji ile uygulanır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>Bitcoin parayı devletten ayırır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>Bitcoin bankalara e-postanın posta sektörüne yaptığını yapacak.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>Bitcoin muhtemelen altından daha iyi çalışacaktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>Bitcoin: Kriptografi Yeterli Değil</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>Bitcoin Filistin'in Özgürlük Parası Olabilir mi?</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>Uzlaşı Bitcoin'i tanımlar.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>Güvenme, doğrula.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>Açık Kaynak Kod ile Parasal Sömürgeciliğe Karşı Mücadele</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>Parayı düzelt, dünyayı düzelt.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>ABD Doları Nasıl Dünya Rezerv Para Birimi Oldu</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>Bitcoin'in sonunda bankalar için rezerv para birimi olacağını düşünüyorum.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>Bence bu dahiyane.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>Bana inanmıyorsanız veya anlamıyorsanız, sizi ikna etmeye çalışacak zamanım yok.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>Bana Bitcoin’i öğret</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (açık kaynak)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>Para kıt, dayanıklı ve doğrulanabilir olmalıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>Anahtarların yoksa, coinlerin de yok.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>En hızlı ata sahip ol.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>Bitcoin çalıştırmak.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>Güvenlik verimden daha önemlidir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Kabuk Para: Paranın Kökenleri</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>Mütevazı kal, sats biriktir.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>Yapısal Uyum: IMF ve Dünya Bankası Yoksul Ülkeleri Nasıl Baskılar</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>Bitcoin İçin Boğa Durumu</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>Niceliksel Genişleme Çağında Savaşın Görünmez Maliyeti</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Oca/2009 Şansölye bankalar için ikinci kurtarma paketinin eşiğinde.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>Blok zinciri sadece işlemleri değil, kanıtları kaydeder.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>Toplam arz 21 milyon coin olacaktır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>Güvenilir üçüncü taraflar güvenlik açıklarıdır.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>Güvene dayanmadan elektronik işlemler için bir sistem önerdik.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>Kriptografik kanıta dayalı e-para ile, güven olmadan.</translation>
 		</message>
 	</context>
 	<context>
@@ -6789,6 +7540,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>Gönderilecek:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>Adreslere gönderiliyor:</translation>
 		</message>
 		<name>wallet</name>
 		<message>
