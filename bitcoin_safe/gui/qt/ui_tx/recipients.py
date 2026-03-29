@@ -384,8 +384,9 @@ class NotificationBarRecipient(NotificationBar):
             self.icon_label.setText("")
         else:
             self.icon_label.setText(
-                self.tr("Address of wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
+                self.tr("This address belongs to wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
             )
+            self.set_icon(svg_tools.get_QIcon("bi--wallet2.svg"))
 
     def set_wallet_id(self, wallet_id: str | None):
         """Set wallet id."""
