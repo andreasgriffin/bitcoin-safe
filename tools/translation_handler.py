@@ -174,6 +174,12 @@ class TranslationHandler:
         autodetected_lang_files = list(self.ts_folder.glob("*.ts"))
         self.languages = [file.stem[len(prefix) + 1 :] for file in autodetected_lang_files]
 
+        for language in self.languages:
+            assert language in FLAGS
+
+        self.log_translation_text()
+
+    def log_translation_text(self):
         logger.info("=" * 20)
         logger.info(
             f"""
@@ -190,9 +196,6 @@ Content to translate:
 """
         )
         logger.info("=" * 20)
-
-        for language in self.languages:
-            assert language in FLAGS
 
     def delete_po_files(self):
         """Delete po files."""
@@ -268,6 +271,7 @@ Content to translate:
 
         self.delete_po_files()
         self.compile()
+        self.log_translation_text()
 
     def assert_no_escaped_quotes(self, ts_file: Path):
         """Assert no escaped quotes."""

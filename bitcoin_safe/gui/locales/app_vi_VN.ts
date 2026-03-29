@@ -3132,8 +3132,8 @@ import custom wallet</source>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>Địa chỉ ví: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>Địa chỉ này thuộc về ví: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4629,7 +4629,7 @@ Signatures:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7538,7 +7538,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>Đang gửi đến địa chỉ:</translation>
+			<translation>Đang gửi đến địa chỉ: </translation>
 		</message>
 		<name>wallet</name>
 		<message>

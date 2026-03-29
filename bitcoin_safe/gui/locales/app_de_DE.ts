@@ -3144,8 +3144,8 @@ Wallet erstellen oder importieren</translation>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>Adresse der Wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>Diese Adresse gehört zur Wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4657,7 +4657,7 @@ Signaturen:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7586,7 +7586,7 @@ Wählen Sie eine Gebühr, die über dem Mindestgebührensatz {rate_min} liegt.</
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>Senden an Adressen:</translation>
+			<translation>Senden an Adressen: </translation>
 		</message>
 		<name>wallet</name>
 		<message>
