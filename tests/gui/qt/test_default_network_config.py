@@ -95,8 +95,16 @@ def test_default_network_config_works(
 
                 shutter.save(main_window)
 
+                tx_list = qt_wallet.wallet.sorted_delta_list_transactions()
                 # Sanity check that some transaction history is available.
-                assert len(qt_wallet.wallet.sorted_delta_list_transactions()) >= 28
+                assert len(tx_list) >= 28
+                assert tx_list[0].txid == "5d321554674865dffb7a5406002ba5d68d4819d0eff805393d4917921d68f3c5"
+
+                # The bacon wallet fixture has only spent outputs, so each address balance is zero.
+                addresses = qt_wallet.wallet.get_addresses()
+                assert addresses
+                for address in addresses:
+                    assert qt_wallet.wallet.get_addr_balance(address).total == 0
 
             sync()
 

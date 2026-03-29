@@ -256,6 +256,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     signal_client_log_str = cast(SignalProtocol[[str]], pyqtSignal(str))
     signal_wallet_update = cast(SignalProtocol[[UpdateInfo]], pyqtSignal(UpdateInfo))
     signal_refresh_sync_status = cast(SignalProtocol[[]], pyqtSignal())
+    signal_request_open_network_settings = cast(SignalProtocol[[]], pyqtSignal())
 
     @staticmethod
     def cls_kwargs(
@@ -1453,6 +1454,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.history_tab_content_stack.addWidget(self.history_tab_content)
 
         self.history_initial_sync_widget = InitialCbfSyncWidget(config=self.config, parent=tab)
+        self.signal_tracker.connect(
+            self.history_initial_sync_widget.signal_request_open_network_settings,
+            self.signal_request_open_network_settings.emit,
+        )
         self.history_tab_content_stack.addWidget(self.history_initial_sync_widget)
 
         if history_list_with_toolbar:
