@@ -1233,11 +1233,21 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
     def get_filter_data_from_coordinate(self, row: int, col: int) -> str:
         """Get filter data from coordinate."""
         filter_data = self.get_role_data_from_coordinate(row, col, role=MyItemDataRole.ROLE_FILTER_DATA)
-        if filter_data:
-            return filter_data
-        txt: str = self.get_text_from_coordinate(row, col)
-        txt = txt.lower()
-        return txt
+        base_text = (
+            str(filter_data).lower()
+            if filter_data is not None
+            else self.get_text_from_coordinate(row, col).lower()
+        )
+
+        clipboard_data = self.get_role_data_from_coordinate(row, col, role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        if clipboard_data is None:
+            return base_text
+
+        clipboard_text = str(clipboard_data).lower()
+        if not clipboard_text or clipboard_text == base_text:
+            return base_text
+
+        return f"{base_text} {clipboard_text}"
 
     def any_needs_frequent_flag(self) -> bool:
         """Any needs frequent flag."""
