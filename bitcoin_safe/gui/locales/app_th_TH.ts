@@ -749,11 +749,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 			<source>Diagram</source>
 			<translation>แผนภูมิ</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>ส่งออก svg</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1288,8 +1283,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>ส่งออกเป็นไฟล์</translation>
+			<source>File</source>
+			<translation>ไฟล์</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1298,8 +1293,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>ส่งออก PDF</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1524,29 +1519,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>ไฟล์</translation>
+			<source>Sign with File</source>
+			<translation>ลงนามด้วยไฟล์</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>ลงนามด้วย QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>USB</translation>
+			<source>Sign with USB</source>
+			<translation>ลงนามด้วย USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>เมล็ดพันธุ์</translation>
+			<source>Sign with seed</source>
+			<translation>ลงนามด้วย seed</translation>
 		</message>
 	</context>
 	<context>
@@ -3248,8 +3243,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติ โปรดเปิดลิงก์ใบแจ้งหนี้ด้วยตนเอง:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติได้ กรุณาลองอีกครั้ง</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3303,8 +3298,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>ไม่สามารถติดต่อเซิร์ฟเวอร์การบริจาคได้ คุณสามารถบริจาคไปที่: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์รับบริจาคได้ กรุณาลองใหม่ภายหลัง</translation>
 		</message>
 	</context>
 	<context>
@@ -3386,9 +3381,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>ตรวจพบตัวบ่งชี้ขีดจำกัดช่องว่างต่ำ (ได้รับบิตคอยน์ไปยังที่อยู่เงินทอน) คุณต้องการสแกนกระเป๋าเงินใหม่ด้วยขีดจำกัดช่องว่างที่เพิ่มเป็น {new_gap} หรือไม่</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>ตรวจพบข้อบ่งชี้ว่าค่า gap limit ต่ำ (ได้รับ Bitcoin ไปยังที่อยู่ change) ซึ่งน่าจะเกิดจากค่า gap limit ต่ำเกินไป</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3467,11 +3461,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>ขีด จำกัด gap อาจต่ำเกินไป</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>ประวัติ</translation>
 		</message>
@@ -3489,6 +3478,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>เก็บของเดิมไว้</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>ตรวจพบยอดคงเหลือที่ยืนยันแล้วเป็นค่าลบ ซึ่งน่าจะเกิดจากค่า gap limit ต่ำเกินไป</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3694,6 +3688,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>คลิกที่คำพูดอ้างอิงหรือลิงก์ด้านล่างเพื่อแสดงรายการอื่น</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3888,6 +3889,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>ผู้รับ CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} ไม่ใช่ที่อยู่ที่ถูกต้อง!</translation>
 		</message>
@@ -3965,6 +3971,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>ส่งออก svg</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>ส่งออกเป็น SVG</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4254,11 +4265,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>ซี้ดของ '{wallet_id}'</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม การดำเนินการถูกยกเลิก</translation>
 		</message>
@@ -4400,6 +4406,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>ค่า gap limit อาจต่ำเกินไป</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>เพิ่มค่า gap limit</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>เพิ่มค่า gap limit เป็น {gap}</translation>
 		</message>
 	</context>
 	<context>
@@ -4575,6 +4598,28 @@ Signatures:
 			<translation>ธุรกรรมถูกลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}
  ลายเซ็น:
 {signatures}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>คัดลอก ID ธุรกรรม</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>ID ธุรกรรม</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>ดูบน block explorer</translation>
 		</message>
 	</context>
 	<context>
@@ -4761,6 +4806,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5496,6 +5546,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>21 บทเรียน: สิ่งที่ฉันได้เรียนรู้จาก Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>โหนดตรวจสอบทุกอย่างด้วยตัวเอง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>Bitcoin คือม้าโทรจันเพื่ออิสรภาพ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>Bitcoin Whitepaper</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>Bitcoin Whitepaper (Nakamoto Institute)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>Bitcoin ปรับแรงจูงใจให้สอดคล้องกันทั่วโลก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>Bitcoin อนุญาตให้เกิดนวัตกรรมโดยไม่ต้องขออนุญาต</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>Bitcoin เปลี่ยนทุกอย่าง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>Bitcoin อาจกลายเป็นหนึ่งในวิธีที่สำคัญที่สุดในการโอนมูลค่า</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>Bitcoin ไม่ต้องการการอนุญาตในการใช้งาน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>Bitcoin ช่วยให้โอนมูลค่าโดยไม่ต้องมีตัวกลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>Bitcoin ให้ความรู้สึกเหมือนอินเทอร์เน็ตก่อนมีเบราว์เซอร์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>Bitcoin มีสัญญาณทั้งหมดของการเปลี่ยนแปลงกระบวนทัศน์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>Bitcoin มีแรงจูงใจที่สอดคล้องกันเป็นแกนหลัก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>Bitcoin มีศักยภาพที่จะกลายเป็นสกุลเงินโลกสกุลแรก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>Bitcoin คือเวลา</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>Bitcoin เป็นแหล่งเก็บมูลค่าที่ต้านทานการเซ็นเซอร์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>Bitcoin เป็นสกุลเงินแบบกระจายศูนย์และเข้ารหัส</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>Bitcoin เป็นสินทรัพย์ระดับโลกที่เป็นกลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>Bitcoin เป็นเครื่องมือป้องกันเงินเฟ้อ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>Bitcoin เป็นเครื่องมือป้องกันความไร้ความรับผิดชอบทางการเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>Bitcoin เป็นกรอบทางคณิตศาสตร์ที่ปราศจากการเมือง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>Bitcoin เป็นการปฏิวัติทางการเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>Bitcoin เป็นเครือข่ายแห่งความจริง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>Bitcoin เป็นระบบนิเวศใหม่สำหรับการเคลื่อนย้ายเงินอย่างมีประสิทธิภาพ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>Bitcoin เป็นการปฏิวัติอย่างสันติ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>Bitcoin เป็นบัญชีแยกประเภทที่สามารถตั้งโปรแกรมได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>Bitcoin เป็นโปรโตคอลสำหรับการโอนมูลค่า</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>Bitcoin เป็นโปรโตคอล ไม่ใช่บริษัท</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>Bitcoin เป็นความสำเร็จด้านการเข้ารหัสที่น่าทึ่ง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>Bitcoin เป็นสกุลเงินอัจฉริยะที่ออกแบบโดยวิศวกรที่มีวิสัยทัศน์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>Bitcoin เป็นระบบแรงจูงใจ ไม่ใช่ความไว้วางใจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>Bitcoin เป็นผลงานทางเทคโนโลยีชั้นยอด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>Bitcoin เป็นเครื่องมือเพื่อสิทธิมนุษยชน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>Bitcoin เป็นวิธีออกจากระบบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>Bitcoin เป็นเครือข่ายเศรษฐกิจที่ปลอดภัยด้วยแรงจูงใจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>Bitcoin เป็นแนวคิดที่ถึงเวลาแล้ว</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>Bitcoin เป็นสินทรัพย์ระหว่างประเทศ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>Bitcoin เป็นเครือข่ายการเงินแบบเปิด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>Bitcoin มีความทนทานต่อความผันผวน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>Bitcoin อิงตามหลักฐานเชิงเข้ารหัส</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>Bitcoin เป็นเงินไร้พรมแดน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>Bitcoin ทนต่อการเซ็นเซอร์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>Bitcoin คือโค้ด ไม่ใช่คำสัญญา</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>Bitcoin ถูกกระจายศูนย์โดยการออกแบบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>Bitcoin คือความจริงแบบกระจายศูนย์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>Bitcoin คือทุนดิจิทัล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>Bitcoin คือทองคำดิจิทัล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>Bitcoin คือความขาดแคลนดิจิทัล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>Bitcoin ถูกขับเคลื่อนด้วยการยอมรับของผู้ใช้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>Bitcoin คือเสรีภาพทางเศรษฐกิจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>Bitcoin คือพลังงานที่แปลงเป็นเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>Bitcoin คือความขาดแคลนที่ถูกออกแบบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>Bitcoin ถูกออกแบบเพื่อเก็บมูลค่า</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>Bitcoin น่าตื่นเต้นเพราะกำจัดตัวกลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>Bitcoin คือเสรีภาพทางการเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>Bitcoin คือเงินแห่งเสรีภาพ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>Bitcoin คือเงินระดับโลกสำหรับโลกดิจิทัล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>Bitcoin คือเงินระดับโลก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>Bitcoin ถูกกำกับโดยฉันทามติ ไม่ใช่อำนาจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>Bitcoin อยู่ต่อไปแน่นอน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>Bitcoin ไม่สามารถเปลี่ยนแปลงได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>Bitcoin คือเงินที่ไม่สามารถทุจริตได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>Bitcoin ไม่สามารถทุจริตได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>Bitcoin คือเงินอิสระ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>Bitcoin เป็นอิสระจากธนาคารกลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>Bitcoin คือเงินที่อิงคณิตศาสตร์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>Bitcoin คืออธิปไตยทางการเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>Bitcoin คือเงินบนโปรโตคอลอินเทอร์เน็ต</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>Bitcoin มีความจำเป็นและสำคัญต่ออนาคต</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>Bitcoin คือเงินที่เป็นกลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>Bitcoin ไม่ใช่แค่เงิน แต่เป็นระบบแห่งความไว้วางใจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>Bitcoin คือเงินโอเพนซอร์ส</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>Bitcoin เปิดให้ทุกคน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>Bitcoin คือการเงินแบบเพียร์ทูเพียร์ที่แทนที่ธนาคาร</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>Bitcoin คือการนวัตกรรมโดยไม่ต้องขออนุญาต</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>Bitcoin คือเงินที่ตั้งโปรแกรมได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>Bitcoin ถูกควบคุมโดยคณิตศาสตร์ ไม่ใช่รัฐบาล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>Bitcoin มีความยืดหยุ่น</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>Bitcoin ต้านทานการเซ็นเซอร์และการควบคุม</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>Bitcoin คือเทคโนโลยีการออม</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>Bitcoin มีความขาดแคลนโดยการออกแบบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>Bitcoin ได้รับการรักษาความปลอดภัยด้วยพลังงานและการคำนวณ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>Bitcoin คือเงินที่มั่นคง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>Bitcoin คือทรัพย์สินสูงสุดของมนุษยชาติ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>Bitcoin คือชั้นฐานของเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>Bitcoin คือจุดเริ่มต้นของสิ่งยิ่งใหญ่: สกุลเงินที่ไม่มีรัฐบาล</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>Bitcoin คือทางออก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>Bitcoin คือเงินชนิดแรกที่ไม่สามารถลดค่าได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>Bitcoin คือทางเลือกจริงตัวแรกของเงิน fiat</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>Bitcoin คือสินทรัพย์ที่แข็งแกร่งที่สุด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>Bitcoin คือเงินที่แข็งแกร่งที่สุดที่เคยถูกสร้าง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>Bitcoin คืออินเทอร์เน็ตของเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>Bitcoin คือเวลา</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>Bitcoin โปร่งใส</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>Bitcoin ลดความจำเป็นของความไว้วางใจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>Bitcoin คือความจริงในโค้ด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>Bitcoin ไม่สามารถถูกเซ็นเซอร์หรือยึดได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>Bitcoin คือโค้ดที่หยุดไม่ได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>Bitcoin หยุดไม่ได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>Bitcoin ตรวจสอบได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>Bitcoin คือสิ่งที่ PayPal พยายามสร้าง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>Bitcoin อาจนำไปสู่สกุลเงินโลก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>Bitcoin ให้ค่าธรรมเนียมธุรกรรมต่ำกว่าระบบดั้งเดิม</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>Bitcoin ทำงานโดยไม่มีการควบคุมจากศูนย์กลาง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>Bitcoin แทนที่บทบาทของสถาบันที่เชื่อถือได้ด้วยโค้ด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>Bitcoin แทนที่ความไว้วางใจด้วยการตรวจสอบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>Bitcoin แสดงถึงก้าวกระโดดครั้งใหญ่ของเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>ความขาดแคลนของ Bitcoin ถูกบังคับด้วยคณิตศาสตร์และพลังงาน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>Bitcoin แยกเงินออกจากรัฐ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>Bitcoin จะทำกับธนาคารเหมือนที่อีเมลทำกับอุตสาหกรรมไปรษณีย์</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>Bitcoin อาจทำงานได้ดีกว่าทองคำ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>Bitcoin: การเข้ารหัสอย่างเดียวไม่เพียงพอ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>Bitcoin สามารถเป็นสกุลเงินแห่งอิสรภาพของปาเลสไตน์ได้หรือไม่</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>ฉันทามติคือสิ่งที่กำหนด Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>อย่าเชื่อ ตรวจสอบ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>ต่อสู้กับลัทธิล่าอาณานิคมทางการเงินด้วยโอเพนซอร์ส</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>แก้เงิน แก้โลก</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>ดอลลาร์สหรัฐกลายเป็นสกุลเงินสำรองของโลกได้อย่างไร</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>ฉันมองว่า Bitcoin ในที่สุดจะกลายเป็นสกุลเงินสำรองของธนาคาร</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>ฉันคิดว่ามันยอดเยี่ยม</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>ถ้าคุณไม่เชื่อหรือไม่เข้าใจ ฉันไม่มีเวลาจะโน้มน้าวคุณ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>สอนฉันเกี่ยวกับ Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (โอเพนซอร์ส)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>เงินควรหายาก ทนทาน และตรวจสอบได้</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>ไม่ใช่กุญแจของคุณ ไม่ใช่เหรียญของคุณ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>เป็นเจ้าของม้าที่เร็วที่สุด</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>รัน bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>ความปลอดภัยสำคัญกว่าปริมาณงาน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Shelling Out: ต้นกำเนิดของเงิน</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>ถ่อมตัวและสะสม sats</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>การปรับโครงสร้าง: IMF และธนาคารโลกกดขี่ประเทศยากจนอย่างไร</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>กรณีขาขึ้นของ Bitcoin</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>ต้นทุนที่มองไม่เห็นของสงครามในยุคผ่อนคลายเชิงปริมาณ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Jan/2009 นายกรัฐมนตรีใกล้การช่วยเหลือธนาคารครั้งที่สอง</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>บล็อกเชนบันทึกหลักฐาน ไม่ใช่แค่ธุรกรรม</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>อุปทานรวมจะอยู่ที่ 21 ล้านเหรียญ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>บุคคลที่สามที่เชื่อถือได้คือช่องโหว่ด้านความปลอดภัย</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>เราได้เสนอระบบสำหรับธุรกรรมอิเล็กทรอนิกส์โดยไม่ต้องพึ่งพาความไว้วางใจ</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>ด้วยสกุลเงินอิเล็กทรอนิกส์ที่อิงหลักฐานเชิงเข้ารหัส โดยไม่ต้องมีความไว้วางใจ</translation>
 		</message>
 	</context>
 	<context>
@@ -6757,6 +7509,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>ส่งไปยัง:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>กำลังส่งไปยังที่อยู่:</translation>
 		</message>
 		<name>wallet</name>
 		<message>

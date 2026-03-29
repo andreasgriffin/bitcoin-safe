@@ -751,11 +751,6 @@ have transactions linking to other addresses already. Are you sure you want to c
 			<source>Diagram</source>
 			<translation>نمودار</translation>
 		</message>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Export svg</source>
-			<translation>خروجی‌ SVG</translation>
-		</message>
 	</context>
 	<context>
 		<name>DateRangePicker</name>
@@ -1290,8 +1285,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>Export to file</source>
-			<translation>ذخیره به فایل</translation>
+			<source>File</source>
+			<translation>فایل</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1300,8 +1295,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>FileToolButton</name>
 		<message>
-			<source>PDF Export</source>
-			<translation>خروجی PDF</translation>
+			<source>PDF</source>
+			<translation>PDF</translation>
 		</message>
 		<name>FileToolButton</name>
 		<message>
@@ -1526,29 +1521,29 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>HorizontalImportExportFile</name>
 		<message>
-			<source>File</source>
-			<translation>فایل</translation>
+			<source>Sign with File</source>
+			<translation>امضا با فایل</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportQR</name>
 		<message>
-			<source>QR</source>
-			<translation>QR</translation>
+			<source>Sign with QR</source>
+			<translation>امضا با QR</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportUSB</name>
 		<message>
-			<source>USB</source>
-			<translation>USB</translation>
+			<source>Sign with USB</source>
+			<translation>امضا با USB</translation>
 		</message>
 	</context>
 	<context>
 		<name>HorizontalImportExportWallet</name>
 		<message>
-			<source>Seed</source>
-			<translation>سید</translation>
+			<source>Sign with seed</source>
+			<translation>امضا با seed</translation>
 		</message>
 	</context>
 	<context>
@@ -3258,8 +3253,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please open the invoice link manually:</source>
-			<translation>امکان باز کردن خودکار مرورگر شما وجود ندارد. لطفاً لینک فاکتور را به‌صورت دستی باز کنید:</translation>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>مرورگر شما به‌صورت خودکار باز نشد. لطفاً دوباره تلاش کنید.</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3313,8 +3308,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>PaymentButton</name>
 		<message>
-			<source>Unable to reach the donation server. You can donate to: {address}</source>
-			<translation>امکان دسترسی به سرور اهداء وجود ندارد. می‌توانید به این آدرس اهداء کنید: {address}</translation>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>امکان دسترسی به سرور کمک‌های مالی وجود ندارد. لطفاً بعداً دوباره تلاش کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -3396,10 +3391,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses).
-Do you want to rescan the wallet with an increased gap limit of {new_gap}</source>
-			<translation>نشانه‌ای از حد فاصله پایین شناسایی شد (دریافت بیت‌کوین به آدرس‌های باقی‌مانده).
-آیا می‌خواهید کیف پول را با حد فاصله افزایش‌یافته به {new_gap} دوباره اسکن کنید</translation>
+			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+			<translation>نشانه‌ای از gap limit پایین شناسایی شد (بیت‌کوین به آدرس‌های change دریافت شده است). این به‌احتمال زیاد به دلیل gap limit بیش از حد پایین است.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3478,11 +3471,6 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Gap limit may be too low</source>
-			<translation>حد شکاف ممکن است بسیار پایین باشد</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>History</source>
 			<translation>تاریخچه</translation>
 		</message>
@@ -3500,6 +3488,11 @@ Do you want to rescan the wallet with an increased gap limit of {new_gap}</sourc
 		<message>
 			<source>Keep existing</source>
 			<translation>موجود را نگه‌دار</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+			<translation>موجودی‌های تأییدشده منفی شناسایی شدند. این به‌احتمال زیاد به دلیل gap limit بیش از حد پایین است.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3707,6 +3700,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RandomQuoteLabel</name>
+		<message>
+			<source>Click the quote or the link below to show another item</source>
+			<translation>برای نمایش موردی دیگر، روی نقل‌قول یا پیوند زیر کلیک کنید</translation>
+		</message>
+	</context>
+	<context>
 		<name>ReceiveGroup</name>
 		<message>
 			<source>Address</source>
@@ -3903,6 +3903,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>Recipients</name>
 		<message>
+			<source>Recipients CSV</source>
+			<translation>گیرندگان CSV</translation>
+		</message>
+		<name>Recipients</name>
+		<message>
 			<source>{address} is not a valid address!</source>
 			<translation>{address} یک آدرس معتبر نیست!</translation>
 		</message>
@@ -3980,6 +3985,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Export svg</source>
 			<translation>خروجی‌ SVG</translation>
+		</message>
+		<name>SankeyWidget</name>
+		<message>
+			<source>Export to SVG</source>
+			<translation>خروجی به SVG</translation>
 		</message>
 		<name>SankeyWidget</name>
 		<message>
@@ -4270,11 +4280,6 @@ This practices the signing flow and ensures all hardware signers are setup corre
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>Seed of '{wallet_id}'</source>
-			<translation>سید '{wallet_id}'</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>txid در psbt امضاشده با txid اصلی مطابقت ندارد. در حال لغو</translation>
 		</message>
@@ -4417,6 +4422,23 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>{author}: {description}</source>
 			<translation>{author}: {description}</translation>
+		</message>
+	</context>
+	<context>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Gap limit may be too small.</source>
+			<translation>ممکن است gap limit خیلی پایین باشد.</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit</source>
+			<translation>افزایش gap limit</translation>
+		</message>
+		<name>TooSmallGapLimitWarningBar</name>
+		<message>
+			<source>Increase gap limit to {gap}</source>
+			<translation>افزایش gap limit به {gap}</translation>
 		</message>
 	</context>
 	<context>
@@ -4595,6 +4617,28 @@ Signatures:
 
 
 </translation>
+		</message>
+	</context>
+	<context>
+		<name>TxidLabel</name>
+		<message>
+			<source>Copy transaction ID</source>
+			<translation>کپی شناسه تراکنش</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Transaction ID</source>
+			<translation>شناسه تراکنش</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>Txid: </source>
+			<translation>Txid:</translation>
+		</message>
+		<name>TxidLabel</name>
+		<message>
+			<source>View on block explorer</source>
+			<translation>مشاهده در کاوش‌گر بلاک</translation>
 		</message>
 	</context>
 	<context>
@@ -4782,6 +4826,11 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Previous step</source>
 			<translation>مرحلهٔ قبل</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>SVG</source>
+			<translation>SVG</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5518,6 +5567,708 @@ IP: {ip}
 		<message>
 			<source>Previous Step</source>
 			<translation>مرحلهٔ قبل</translation>
+		</message>
+	</context>
+	<context>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>21 Lessons: What I've Learned from Bitcoin</source>
+			<translation>۲۱ درس: آنچه از بیت‌کوین آموخته‌ام</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>A node verifies everything itself.</source>
+			<translation>یک نود همه‌چیز را خودش تأیید می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Is A Trojan Horse For Freedom</source>
+			<translation>بیت‌کوین اسب تروای آزادی است</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper</source>
+			<translation>وایت‌پیپر بیت‌کوین</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+			<translation>وایت‌پیپر بیت‌کوین (مؤسسه ناکاموتو)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin aligns incentives globally.</source>
+			<translation>بیت‌کوین مشوق‌ها را در سطح جهانی هم‌راستا می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin allows innovation without permission.</source>
+			<translation>بیت‌کوین نوآوری بدون مجوز را ممکن می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin changes everything.</source>
+			<translation>بیت‌کوین همه‌چیز را تغییر می‌دهد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin could become one of the most important ways to transfer value.</source>
+			<translation>بیت‌کوین می‌تواند به یکی از مهم‌ترین روش‌های انتقال ارزش تبدیل شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin does not require permission to use.</source>
+			<translation>برای استفاده از بیت‌کوین نیازی به مجوز نیست.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin enables value transfer without intermediaries.</source>
+			<translation>بیت‌کوین انتقال ارزش بدون واسطه را ممکن می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin feels like the internet before the browser.</source>
+			<translation>بیت‌کوین شبیه اینترنت پیش از مرورگر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has all the signs of a paradigm shift.</source>
+			<translation>بیت‌کوین همه نشانه‌های یک تغییر پارادایم را دارد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has incentives aligned at its core.</source>
+			<translation>بیت‌کوین در هسته خود مشوق‌های هم‌راستا دارد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin has the potential to become the first global currency.</source>
+			<translation>بیت‌کوین این ظرفیت را دارد که به نخستین ارز جهانی تبدیل شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is Time</source>
+			<translation>بیت‌کوین زمان است</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a censorship-resistant store of value.</source>
+			<translation>بیت‌کوین ذخیره ارزش مقاوم در برابر سانسور است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+			<translation>بیت‌کوین یک ارز غیرمتمرکز و رمزنگاری‌شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a global, neutral asset.</source>
+			<translation>بیت‌کوین یک دارایی جهانی و بی‌طرف است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against inflation.</source>
+			<translation>بیت‌کوین پوششی در برابر تورم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
+			<translation>بیت‌کوین پوششی در برابر بی‌مسئولیتی پولی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a mathematical framework free of politics.</source>
+			<translation>بیت‌کوین یک چارچوب ریاضی فارغ از سیاست است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a monetary revolution.</source>
+			<translation>بیت‌کوین یک انقلاب پولی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a network of truth.</source>
+			<translation>بیت‌کوین شبکه‌ای از حقیقت است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
+			<translation>بیت‌کوین یک اکوسیستم جدید برای جابه‌جایی کارآمد پول است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a peaceful revolution.</source>
+			<translation>بیت‌کوین یک انقلاب صلح‌آمیز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a programmable ledger.</source>
+			<translation>بیت‌کوین یک دفترکل قابل‌برنامه‌ریزی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol for value transfer.</source>
+			<translation>بیت‌کوین پروتکلی برای انتقال ارزش است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a protocol, not a company.</source>
+			<translation>بیت‌کوین یک پروتکل است، نه یک شرکت.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a remarkable cryptographic achievement.</source>
+			<translation>بیت‌کوین یک دستاورد چشمگیر رمزنگاری است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+			<translation>بیت‌کوین یک ارز هوشمند است که توسط مهندسان آینده‌نگر طراحی شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a system of incentives, not trust.</source>
+			<translation>بیت‌کوین یک سیستم مشوق‌هاست، نه اعتماد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a technological tour de force.</source>
+			<translation>بیت‌کوین یک شاهکار فناورانه است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a tool for human rights.</source>
+			<translation>بیت‌کوین ابزاری برای حقوق بشر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is a way to opt out.</source>
+			<translation>بیت‌کوین راهی برای خروج از سیستم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an economic network secured by incentives.</source>
+			<translation>بیت‌کوین یک شبکه اقتصادی است که با مشوق‌ها ایمن شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an idea whose time has come.</source>
+			<translation>بیت‌کوین ایده‌ای است که زمانش فرا رسیده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an international asset.</source>
+			<translation>بیت‌کوین یک دارایی بین‌المللی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is an open monetary network.</source>
+			<translation>بیت‌کوین یک شبکه پولی باز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is antifragile.</source>
+			<translation>بیت‌کوین ضدشکننده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is based on cryptographic proof.</source>
+			<translation>بیت‌کوین بر پایه اثبات رمزنگاری استوار است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is borderless money.</source>
+			<translation>بیت‌کوین پولی بدون مرز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is censorship resistant.</source>
+			<translation>بیت‌کوین در برابر سانسور مقاوم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is code, not promises.</source>
+			<translation>بیت‌کوین کد است، نه وعده.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized by design.</source>
+			<translation>بیت‌کوین ذاتاً غیرمتمرکز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is decentralized truth.</source>
+			<translation>بیت‌کوین حقیقت غیرمتمرکز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital capital.</source>
+			<translation>بیت‌کوین سرمایه دیجیتال است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital gold.</source>
+			<translation>بیت‌کوین طلای دیجیتال است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is digital scarcity.</source>
+			<translation>بیت‌کوین کمیابی دیجیتال است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is driven by adoption and user acceptance.</source>
+			<translation>بیت‌کوین با پذیرش و قبول کاربران پیش می‌رود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is economic freedom.</source>
+			<translation>بیت‌کوین آزادی اقتصادی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is energy transformed into money.</source>
+			<translation>بیت‌کوین انرژیِ تبدیل‌شده به پول است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered scarcity.</source>
+			<translation>بیت‌کوین کمیابیِ مهندسی‌شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is engineered to store value.</source>
+			<translation>بیت‌کوین برای ذخیره ارزش طراحی شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is exciting because it removes intermediaries.</source>
+			<translation>بیت‌کوین هیجان‌انگیز است چون واسطه‌ها را حذف می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is financial freedom.</source>
+			<translation>بیت‌کوین آزادی مالی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is freedom money.</source>
+			<translation>بیت‌کوین پول آزادی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money for a digital world.</source>
+			<translation>بیت‌کوین پول جهانی برای دنیای دیجیتال است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is global money.</source>
+			<translation>بیت‌کوین پول جهانی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is governed by consensus, not authority.</source>
+			<translation>بیت‌کوین با اجماع اداره می‌شود، نه با اقتدار.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is here to stay.</source>
+			<translation>بیت‌کوین آمده تا بماند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is immutable.</source>
+			<translation>بیت‌کوین تغییرناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible money.</source>
+			<translation>بیت‌کوین پولی فسادناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is incorruptible.</source>
+			<translation>بیت‌کوین فسادناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent money.</source>
+			<translation>بیت‌کوین پولی مستقل است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is independent of central banks.</source>
+			<translation>بیت‌کوین از بانک‌های مرکزی مستقل است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is math-based money.</source>
+			<translation>بیت‌کوین پولی مبتنی بر ریاضیات است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is monetary sovereignty.</source>
+			<translation>بیت‌کوین حاکمیت پولی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is money over internet protocol.</source>
+			<translation>بیت‌کوین پول بر بستر پروتکل اینترنت است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is necessary and important for the future.</source>
+			<translation>بیت‌کوین برای آینده ضروری و مهم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is neutral money.</source>
+			<translation>بیت‌کوین پولی بی‌طرف است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is not just money, it's a system of trust.</source>
+			<translation>بیت‌کوین فقط پول نیست، بلکه یک سیستم اعتماد است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open source money.</source>
+			<translation>بیت‌کوین پولی متن‌باز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is open to everyone.</source>
+			<translation>بیت‌کوین برای همه باز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
+			<translation>بیت‌کوین مالی همتابه‌همتاست که جایگزین بانک‌ها می‌شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is permissionless innovation.</source>
+			<translation>بیت‌کوین نوآوری بدون مجوز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is programmable money.</source>
+			<translation>بیت‌کوین پولی قابل‌برنامه‌ریزی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is regulated by math, not governments.</source>
+			<translation>بیت‌کوین با ریاضیات تنظیم می‌شود، نه با دولت‌ها.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resilient.</source>
+			<translation>بیت‌کوین تاب‌آور است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is resistant to censorship and control.</source>
+			<translation>بیت‌کوین در برابر سانسور و کنترل مقاوم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is savings technology.</source>
+			<translation>بیت‌کوین فناوری پس‌انداز است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is scarce by design.</source>
+			<translation>بیت‌کوین ذاتاً کمیاب است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is secured by energy and computation.</source>
+			<translation>بیت‌کوین با انرژی و محاسبات ایمن می‌شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is sound money.</source>
+			<translation>بیت‌کوین پول سالم است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the apex property of the human race.</source>
+			<translation>بیت‌کوین عالی‌ترین شکل دارایی بشر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the base layer of money.</source>
+			<translation>بیت‌کوین لایه پایه پول است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
+			<translation>بیت‌کوین آغاز چیزی بزرگ است: ارزی بدون دولت.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the exit.</source>
+			<translation>بیت‌کوین راه خروج است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first money that cannot be debased.</source>
+			<translation>بیت‌کوین نخستین پولی است که نمی‌توان ارزش آن را کاهش داد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the first real alternative to fiat money.</source>
+			<translation>بیت‌کوین نخستین جایگزین واقعی برای پول فیات است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest asset.</source>
+			<translation>بیت‌کوین سخت‌ترین دارایی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the hardest money ever created.</source>
+			<translation>بیت‌کوین سخت‌ترین پولی است که تاکنون ایجاد شده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is the internet of money.</source>
+			<translation>بیت‌کوین اینترنت پول است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is time.</source>
+			<translation>بیت‌کوین زمان است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is transparent.</source>
+			<translation>بیت‌کوین شفاف است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is trust minimized.</source>
+			<translation>بیت‌کوین نیاز به اعتماد را به حداقل می‌رساند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is truth in code.</source>
+			<translation>بیت‌کوین حقیقت در کد است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is uncensorable and unconfiscatable.</source>
+			<translation>بیت‌کوین سانسورناپذیر و مصادره‌ناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable code.</source>
+			<translation>بیت‌کوین کدی توقف‌ناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is unstoppable.</source>
+			<translation>بیت‌کوین توقف‌ناپذیر است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is verifiable.</source>
+			<translation>بیت‌کوین قابل‌تأیید است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin is what PayPal tried to create.</source>
+			<translation>بیت‌کوین همان چیزی است که PayPal سعی داشت بسازد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin might lead to a world currency.</source>
+			<translation>بیت‌کوین ممکن است به یک ارز جهانی منجر شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
+			<translation>بیت‌کوین هزینه تراکنش کمتری نسبت به سیستم‌های سنتی ارائه می‌دهد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin operates without central control.</source>
+			<translation>بیت‌کوین بدون کنترل مرکزی عمل می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces the role of trusted institutions with code.</source>
+			<translation>بیت‌کوین نقش نهادهای مورد اعتماد را با کد جایگزین می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin replaces trust with verification.</source>
+			<translation>بیت‌کوین اعتماد را با تأیید جایگزین می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin represents a significant leap forward in money.</source>
+			<translation>بیت‌کوین نمایانگر جهشی بزرگ در پول است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+			<translation>کمیابی بیت‌کوین با ریاضیات و انرژی تضمین می‌شود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin separates money from state.</source>
+			<translation>بیت‌کوین پول را از دولت جدا می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will do to banks what email did to the postal industry.</source>
+			<translation>بیت‌کوین با بانک‌ها همان کاری را خواهد کرد که ایمیل با صنعت پست کرد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin will probably work better than gold.</source>
+			<translation>بیت‌کوین احتمالاً بهتر از طلا عمل خواهد کرد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Bitcoin: Cryptography is Not Enough</source>
+			<translation>بیت‌کوین: رمزنگاری به‌تنهایی کافی نیست</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
+			<translation>آیا بیت‌کوین می‌تواند ارز آزادی فلسطین باشد؟</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Consensus is what defines Bitcoin.</source>
+			<translation>اجماع همان چیزی است که بیت‌کوین را تعریف می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Don't trust, verify.</source>
+			<translation>اعتماد نکن، تأیید کن.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fighting Monetary Colonialism With Open-Source Code</source>
+			<translation>مبارزه با استعمار پولی با کد متن‌باز</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Fix the money, fix the world.</source>
+			<translation>پول را درست کن، دنیا را درست کن.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+			<translation>چگونه دلار آمریکا به ارز ذخیره جهانی تبدیل شد</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+			<translation>من بیت‌کوین را در نهایت به‌عنوان ارز ذخیره برای بانک‌ها می‌بینم.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>I think it's brilliant.</source>
+			<translation>فکر می‌کنم این فوق‌العاده است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
+			<translation>اگر حرفم را باور نمی‌کنید یا متوجه نمی‌شوید، وقت ندارم که قانعتان کنم.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Learn Me A Bitcoin</source>
+			<translation>بیت‌کوین را به من یاد بده</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Mastering Bitcoin (open source)</source>
+			<translation>Mastering Bitcoin (متن‌باز)</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Money should be scarce, durable, and verifiable.</source>
+			<translation>پول باید کمیاب، بادوام و قابل‌تأیید باشد.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Not your keys, not your coins.</source>
+			<translation>اگر کلیدها مال تو نیست، کوین‌ها هم مال تو نیست.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Own the fastest horse.</source>
+			<translation>سریع‌ترین اسب را داشته باش.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Running bitcoin.</source>
+			<translation>اجرای bitcoin.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Security matters more than throughput.</source>
+			<translation>امنیت مهم‌تر از توان عملیاتی است.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Shelling Out: The Origins of Money</source>
+			<translation>Shelling Out: خاستگاه پول</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Stay humble, stack sats.</source>
+			<translation>فروتن بمان، sats جمع کن.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+			<translation>تعدیل ساختاری: چگونه صندوق بین‌المللی پول و بانک جهانی کشورهای فقیر را سرکوب می‌کنند</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Bullish Case for Bitcoin</source>
+			<translation>استدلال صعودی برای بیت‌کوین</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+			<translation>هزینه پنهان جنگ در عصر تسهیل کمی</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+			<translation>The Times 03/Jan/2009 صدر اعظم در آستانه دومین بسته نجات برای بانک‌ها.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>The blockchain records proofs, not just transactions.</source>
+			<translation>بلاک‌چین فقط تراکنش‌ها را ثبت نمی‌کند، بلکه اثبات‌ها را هم ثبت می‌کند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Total circulation will be 21 million coins.</source>
+			<translation>کل میزان در گردش ۲۱ میلیون کوین خواهد بود.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>Trusted third parties are security holes.</source>
+			<translation>طرف‌های ثالث مورد اعتماد، حفره‌های امنیتی هستند.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>We have proposed a system for electronic transactions without relying on trust.</source>
+			<translation>ما سیستمی برای تراکنش‌های الکترونیکی بدون اتکا به اعتماد پیشنهاد کرده‌ایم.</translation>
+		</message>
+		<name>bitcoin_quotes</name>
+		<message>
+			<source>With e-currency based on cryptographic proof, without trust.</source>
+			<translation>با پول الکترونیکی مبتنی بر اثبات رمزنگاری، بدون اعتماد.</translation>
 		</message>
 	</context>
 	<context>
@@ -6787,6 +7538,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Send to:</source>
 			<translation>ارسال به:</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Sending to addresses: </source>
+			<translation>ارسال به آدرس‌ها:</translation>
 		</message>
 		<name>wallet</name>
 		<message>
