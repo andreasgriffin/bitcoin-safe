@@ -2566,6 +2566,7 @@ class MainWindow(UnlockableMainWindow):
 
         if self.last_qtwallet == qt_wallet:
             self.last_qtwallet = None
+        qt_wallet.save()
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
         self.p2p_listening_update_lists(UpdateFilter())
