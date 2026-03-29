@@ -394,7 +394,8 @@ class CategoryList(MyTreeView[CategoryInfo]):
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
         if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
-            del dct["hidden_columns_enum"]
+            if "hidden_columns_enum" in dct:
+                del dct["hidden_columns_enum"]
 
         return super().from_dump_migration(dct=dct)
 
