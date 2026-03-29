@@ -3131,8 +3131,8 @@ import custom wallet</source>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>عنوان المحفظة: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>هذا العنوان ينتمي إلى المحفظة: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4630,7 +4630,7 @@ Signatures:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7537,7 +7537,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>جارٍ الإرسال إلى العناوين:</translation>
+			<translation>جارٍ الإرسال إلى العناوين: </translation>
 		</message>
 		<name>wallet</name>
 		<message>

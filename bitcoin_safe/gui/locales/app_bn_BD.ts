@@ -487,7 +487,8 @@
         &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
         </source>
-			<translation>{number} টি hardware signer কিনুন                              &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe সব প্রধান hardware signer সমর্থন করে: &lt;a href="{url}"&gt;পূর্ণ তালিকা দেখুন&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;</translation>
+			<translation>{number} টি hardware signer কিনুন                              &lt;ul&gt;         {different_hint} 
+        &lt;li&gt;Bitcoin Safe সব প্রধান hardware signer সমর্থন করে: &lt;a href="{url}"&gt;পূর্ণ তালিকা দেখুন&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -609,13 +610,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>ঠিকানাগুলি {used_addresses} ইতিমধ্যেই অন্যান্য ঠিকানার সাথে সংযুক্ত লেনদেন রয়েছে। আপনি কি নিশ্চিত যে আপনি ক্যাটেগরি পরিবর্তন করতে চান?</translation>
+			<translation>ঠিকানাগুলি {used_addresses}
+ইতিমধ্যেই অন্যান্য ঠিকানার সাথে সংযুক্ত লেনদেন রয়েছে। আপনি কি নিশ্চিত যে আপনি ক্যাটেগরি পরিবর্তন করতে চান?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>ঠিকানাগুলি {used_addresses} ইতিমধ্যেই অন্যান্য ঠিকানার সাথে সংযুক্ত লেনদেন রয়েছে। আপনি কি নিশ্চিত যে আপনি তাদের ক্যাটেগরি পরিবর্তন করতে চান?</translation>
+			<translation>ঠিকানাগুলি {used_addresses}
+ইতিমধ্যেই অন্যান্য ঠিকানার সাথে সংযুক্ত লেনদেন রয়েছে। আপনি কি নিশ্চিত যে আপনি তাদের ক্যাটেগরি পরিবর্তন করতে চান?</translation>
 		</message>
 	</context>
 	<context>
@@ -1239,7 +1242,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>লেনদেন ফি: {fee}, এবং {sent} পাঠানো হয়েছে!</translation>
+			<translation>লেনদেন ফি:
+{fee}, এবং {sent} পাঠানো হয়েছে!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1616,7 +1620,7 @@ since the final size of the transaction is unknown.</source>
 		<name>InitialCbfSyncWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;   </translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;    </translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1775,7 +1779,8 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Name of signing device: ......
 Location of signing device: .....</source>
-			<translation>স্বাক্ষরকারী ডিভাইসের নাম: ...... স্বাক্ষরকারী ডিভাইসের অবস্থান: .....</translation>
+			<translation>স্বাক্ষরকারী ডিভাইসের নাম: ......
+স্বাক্ষরকারী ডিভাইসের অবস্থান: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1856,7 +1861,8 @@ Location of signing device: .....</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} তবুও কি এগোতে চান?</translation>
+			<translation>{msg}
+তবুও কি এগোতে চান?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2017,7 +2023,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>অনুগ্রহ করে এই ট্রানজ্যাকশন সম্পাদনা করতে sender wallet খুলুন।</translation>
+			<translation> অনুগ্রহ করে এই ট্রানজ্যাকশন সম্পাদনা করতে sender wallet খুলুন।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2242,7 +2248,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>{id} {name} সহ একটি wallet ইতিমধ্যেই খোলা আছে।</translation>
+			<translation>{id} {name} সহ একটি wallet ইতিমধ্যেই খোলা আছে।  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2755,7 +2761,8 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>নির্দিষ্ট কোনো ব্লক mined হওয়া পর্যন্ত বিলম্ব করতে ব্লক উচ্চতা ব্যবহার করুন। নির্দিষ্ট কোনো নেটওয়ার্ক সময় (median-time-past) পর্যন্ত বিলম্ব করতে তারিখ/সময় ব্যবহার করুন। Median-time-past হলো শেষ ১১টি ব্লকের median timestamp, তাই এটি সাধারণত tip-এর থেকে প্রায় {minutes} মিনিট পিছিয়ে থাকে।</translation>
+			<translation>নির্দিষ্ট কোনো ব্লক mined হওয়া পর্যন্ত বিলম্ব করতে ব্লক উচ্চতা ব্যবহার করুন। নির্দিষ্ট কোনো নেটওয়ার্ক সময় (median-time-past) পর্যন্ত বিলম্ব করতে তারিখ/সময় ব্যবহার করুন। Median-time-past হলো শেষ ১১টি ব্লকের median timestamp,
+তাই এটি সাধারণত tip-এর থেকে প্রায় {minutes} মিনিট পিছিয়ে থাকে।</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -2825,7 +2832,9 @@ so it is typically about {minutes} minutes behind the tip.</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>সার্ভার সংযোগে ত্রুটি। {responses}   তবুও কি এগোতে চান?</translation>
+			<translation>সার্ভার সংযোগে ত্রুটি।
+{responses}
+  তবুও কি এগোতে চান?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2913,7 +2922,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>প্রতিক্রিয়াসমূহ:     {name}: {status}     Mempool Instance: {server}</translation>
+			<translation>প্রতিক্রিয়াসমূহ:
+    {name}: {status}
+    Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3318,7 +3329,7 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>প্রতিস্থাপিত হয়েছে TxID(s) দ্বারা: {new_txid}</translation>
+			<translation>  প্রতিস্থাপিত হয়েছে TxID(s) দ্বারা: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3330,9 +3341,10 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID: {txid} 
+			<translation>- TxID: {txid}
+
 {replaced_by_block}
-  কী ঘটেছে: {happened_text} </translation>
+  কী ঘটেছে: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3483,7 +3495,8 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>ওয়ালেট '{wallet}'-এ নতুন ট্রানজ্যাকশন: {txs}</translation>
+			<translation>ওয়ালেট '{wallet}'-এ নতুন ট্রানজ্যাকশন:
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3540,7 +3553,9 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
 {txs}</source>
-			<translation>ওয়ালেট '{wallet}'-এ সরানো ট্রানজ্যাকশন(সমূহ):  {txs}</translation>
+			<translation>ওয়ালেট '{wallet}'-এ সরানো ট্রানজ্যাকশন(সমূহ):
+
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3578,7 +3593,9 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>ট্রানজ্যাকশনগুলো {} শুধুমাত্র unconfirmed in-mempool হিসেবে যোগ করা যেতে পারে।  আপনি কি তবুও চালিয়ে যেতে চান?</translation>
+			<translation>ট্রানজ্যাকশনগুলো
+{}
+শুধুমাত্র unconfirmed in-mempool হিসেবে যোগ করা যেতে পারে।  আপনি কি তবুও চালিয়ে যেতে চান?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3636,7 +3653,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>ওয়ালেট '{wallet}'-এ {number} টি নতুন ট্রানজ্যাকশন: {txs}</translation>
+			<translation>ওয়ালেট '{wallet}'-এ {number} টি নতুন ট্রানজ্যাকশন:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -3738,7 +3756,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
                     </source>
-			<translation>এই wallet-এর ১টি address-এ &lt;b&gt;অল্প&lt;/b&gt; পরিমাণ ( {test_amount} এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি সত্যিই ফান্ড নিয়ন্ত্রণ করেন কি না জানতে, wallet থেকে খরচ করে পরীক্ষা করতে হবে। &lt;br&gt; তাই wallet-এ উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে wallet থেকে খরচ করে এবং সব signer পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;। &lt;br&gt; &lt;br&gt; &lt;b&gt;এখনই wallet-এ বড় অঙ্কের ফান্ড পাঠাবেন না। অনুগ্রহ করে আগে সব self-send test সম্পন্ন করুন!&lt;/b&gt;</translation>
+			<translation>এই wallet-এর ১টি address-এ &lt;b&gt;অল্প&lt;/b&gt; পরিমাণ ( {test_amount} এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি সত্যিই ফান্ড নিয়ন্ত্রণ করেন কি না জানতে, wallet থেকে খরচ করে পরীক্ষা করতে হবে। &lt;br&gt; তাই wallet-এ উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে wallet থেকে খরচ করে এবং সব signer পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;। &lt;br&gt; &lt;br&gt; &lt;b&gt;এখনই wallet-এ বড় অঙ্কের ফান্ড পাঠাবেন না। অনুগ্রহ করে আগে সব self-send test সম্পন্ন করুন!&lt;/b&gt;                    </translation>
 		</message>
 	</context>
 	<context>
@@ -4301,7 +4319,7 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		<name>SyncClient</name>
 		<message>
 			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
-			<translation>- ক্লাউডে আপনার label এবং coin category-র backup রাখুন।&lt;br&gt;- একাধিক কম্পিউটারের মধ্যে আপনার label এবং coin category synchronize করুন। {synclink}&lt;br&gt;- আপনি পৃথিবীর যেখানেই থাকুন না কেন, অন্যদের সাথে যৌথভাবে transaction sign করুন। {videolink}&lt;br&gt;- সবকিছু সবসময় encrypted থাকে ({protocol_link} সম্পর্কে আরও জানুন) </translation>
+			<translation>- ক্লাউডে আপনার label এবং coin category-র backup রাখুন।&lt;br&gt;- একাধিক কম্পিউটারের মধ্যে আপনার label এবং coin category synchronize করুন। {synclink}&lt;br&gt;- আপনি পৃথিবীর যেখানেই থাকুন না কেন, অন্যদের সাথে যৌথভাবে transaction sign করুন। {videolink}&lt;br&gt;- সবকিছু সবসময় encrypted থাকে ({protocol_link} সম্পর্কে আরও জানুন)</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -4579,7 +4597,8 @@ Signatures:
 
 
 </source>
-			<translation>{label}-এর private key দিয়ে transaction স্বাক্ষরিত হয়েছে  স্বাক্ষরসমূহ: {signatures}</translation>
+			<translation>{label}-এর private key দিয়ে transaction স্বাক্ষরিত হয়েছে  স্বাক্ষরসমূহ:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -4596,7 +4615,7 @@ Signatures:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -4642,7 +4661,10 @@ Signatures:
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>আপনার sync key হলো:  {sync_key}   এটি সংরক্ষণ করুন, এবং যখন আপনি 'import sync key' ক্লিক করবেন, তখন এটি nostr relay থেকে আপনার label পুনরুদ্ধার করবে।</translation>
+			<translation>আপনার sync key হলো:
+
+{sync_key}
+  এটি সংরক্ষণ করুন, এবং যখন আপনি 'import sync key' ক্লিক করবেন, তখন এটি nostr relay থেকে আপনার label পুনরুদ্ধার করবে।</translation>
 		</message>
 	</context>
 	<context>
@@ -4696,7 +4718,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>অনুগ্রহ করে fee rate অন্তত {minimum} করুন, নইলে আপনি এটি broadcast করতে নাও পারেন।</translation>
+			<translation>অনুগ্রহ করে fee rate অন্তত {minimum} করুন,
+নইলে আপনি এটি broadcast করতে নাও পারেন।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -4754,7 +4777,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Label:</translation>
+			<translation>Label: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5038,7 +5061,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>update file যাচাই করা হয়েছিল কিন্তু কোনো স্বয়ংক্রিয় install করা হয়নি: {reason}</translation>
+			<translation>update file যাচাই করা হয়েছিল কিন্তু কোনো স্বয়ংক্রিয় install করা হয়নি:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5294,7 +5318,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>এবং</translation>
+			<translation> এবং </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5423,7 +5447,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 IP: {ip}
 Country: {country}</source>
-			<translation>{source} IP: {ip} দেশ: {country}</translation>
+			<translation>{source}
+IP: {ip}
+দেশ: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -6672,7 +6698,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>১. এই কাগজের সাথে 'Recovery sheet' ({number} words) যুক্ত করুন অথবা 12/24 টি words এই কাগজে নকল করে লিখুন।&lt;br/&gt;                 ২. নিচের লাইনে এই কাগজটি ভাঁজ করুন &lt;br/&gt;                 ৩. প্রতিটি কাগজ আলাদা নিরাপদ স্থানে রাখুন, যেখানে শুধু আপনারই প্রবেশাধিকার থাকবে&lt;br/&gt;                 ৪. hardware signer-গুলো হয় a) সংশ্লিষ্ট কাগজের seed backup-এর সাথে একত্রে রাখতে পারেন, অথবা b)   প্রতিটিকে আরও আলাদা নিরাপদ স্থানে রাখতে পারেন (যদি সম্ভব হয়) </translation>
+			<translation>১. এই কাগজের সাথে 'Recovery sheet' ({number} words) যুক্ত করুন অথবা 12/24 টি words এই কাগজে নকল করে লিখুন।&lt;br/&gt;                 ২. নিচের লাইনে এই কাগজটি ভাঁজ করুন &lt;br/&gt;                 ৩. প্রতিটি কাগজ আলাদা নিরাপদ স্থানে রাখুন, যেখানে শুধু আপনারই প্রবেশাধিকার থাকবে&lt;br/&gt;                 ৪. hardware signer-গুলো হয় a) সংশ্লিষ্ট কাগজের seed backup-এর সাথে একত্রে রাখতে পারেন, অথবা b)   প্রতিটিকে আরও আলাদা নিরাপদ স্থানে রাখতে পারেন (যদি সম্ভব হয়)                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -6681,7 +6707,7 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>১. এই কাগজের সাথে 'Recovery sheet' ({number} words) যুক্ত করুন অথবা 12/24 টি words এই কাগজে নকল করে লিখুন।&lt;br/&gt; ২. নিচের লাইনে এই কাগজটি ভাঁজ করুন &lt;br/&gt; ৩. এই কাগজটি একটি নিরাপদ স্থানে রাখুন, যেখানে শুধু আপনারই প্রবেশাধিকার থাকবে&lt;br/&gt; ৪. hardware signer-টি হয় a) কাগজের seed backup-এর সাথে একত্রে রাখতে পারেন, অথবা b) অন্য একটি নিরাপদ স্থানে রাখতে পারেন (যদি সম্ভব হয়)</translation>
+			<translation>১. এই কাগজের সাথে 'Recovery sheet' ({number} words) যুক্ত করুন অথবা 12/24 টি words এই কাগজে নকল করে লিখুন।&lt;br/&gt; ২. নিচের লাইনে এই কাগজটি ভাঁজ করুন &lt;br/&gt; ৩. এই কাগজটি একটি নিরাপদ স্থানে রাখুন, যেখানে শুধু আপনারই প্রবেশাধিকার থাকবে&lt;br/&gt; ৪. hardware signer-টি হয় a) কাগজের seed backup-এর সাথে একত্রে রাখতে পারেন, অথবা b) অন্য একটি নিরাপদ স্থানে রাখতে পারেন (যদি সম্ভব হয়)                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -7139,7 +7165,9 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>অনুগ্রহ করে আপনার BitBox02-এ pairing code মিলিয়ে নিশ্চিত করুন:  {code}</translation>
+			<translation>অনুগ্রহ করে আপনার BitBox02-এ pairing code মিলিয়ে নিশ্চিত করুন:
+
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -7487,7 +7515,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>ঠিকানাগুলোতে পাঠানো হচ্ছে:</translation>
+			<translation>ঠিকানাগুলোতে পাঠানো হচ্ছে: </translation>
 		</message>
 		<name>wallet</name>
 		<message>
@@ -7497,7 +7525,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Unknown</source>
-			<translation>অজানা </translation>
+			<translation>অজানা</translation>
 		</message>
 	</context>
 </TS>

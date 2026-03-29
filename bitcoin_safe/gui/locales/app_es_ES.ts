@@ -3137,8 +3137,8 @@ import custom wallet</source>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>Dirección de la cartera: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>Esta dirección pertenece a la cartera: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4649,7 +4649,7 @@ Firmas:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7571,7 +7571,7 @@ Escoja una comisión por encima de la tasa mínima {rate_min}.</translation>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>Enviando a direcciones:</translation>
+			<translation>Enviando a direcciones: </translation>
 		</message>
 		<name>wallet</name>
 		<message>

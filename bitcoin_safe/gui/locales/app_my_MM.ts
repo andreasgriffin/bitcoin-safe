@@ -3120,8 +3120,8 @@ import custom wallet</source>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>ပိုက်ဆံအိတ် လိပ်စာ: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>ဤလိပ်စာသည် wallet &lt;b&gt;{wallet_id}&lt;/b&gt; နှင့် သက်ဆိုင်သည်</translation>
 		</message>
 	</context>
 	<context>
@@ -4612,7 +4612,7 @@ Signatures:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7512,7 +7512,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>လိပ်စာများသို့ ပို့နေသည်:</translation>
+			<translation>လိပ်စာများသို့ ပို့နေသည်: </translation>
 		</message>
 		<name>wallet</name>
 		<message>

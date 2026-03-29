@@ -3144,8 +3144,8 @@ importar carteira personalizada</translation>
 	<context>
 		<name>NotificationBarRecipient</name>
 		<message>
-			<source>Address of wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>Endereço da carteira: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+			<translation>Este endereço pertence à carteira: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -4657,7 +4657,7 @@ Assinaturas:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -7585,7 +7585,7 @@ Escolha uma taxa acima da taxa mínima {rate_min}.</translation>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>A enviar para endereços:</translation>
+			<translation>A enviar para endereços: </translation>
 		</message>
 		<name>wallet</name>
 		<message>
