@@ -40,7 +40,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QShowEvent
+from PyQt6.QtGui import QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
     QFileDialog,
@@ -382,6 +382,7 @@ class NotificationBarRecipient(NotificationBar):
         super().updateUi()
         if self.wallet_id is None:
             self.icon_label.setText("")
+            self.set_icon(QIcon())
         else:
             self.icon_label.setText(
                 self.tr("This address belongs to wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
