@@ -2033,7 +2033,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>Bitte öffnen Sie das Wallet des Absenders, um diese Transaktion zu bearbeiten.</translation>
+			<translation> Bitte öffnen Sie das Wallet des Absenders, um diese Transaktion zu bearbeiten.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
