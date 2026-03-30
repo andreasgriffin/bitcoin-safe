@@ -9,7 +9,7 @@
 		<name>AboutTab</name>
 		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
-			<translation>Eine sichere Bitcoin-Spar-Geldbörse für alle.</translation>
+			<translation>Eine sichere Bitcoin-Sparwallet für alle.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -253,7 +253,7 @@
 		<name>AddressList</name>
 		<message>
 			<source>receiving</source>
-			<translation>empfangend</translation>
+			<translation>eingehend</translation>
 		</message>
 		<name>AddressList</name>
 		<message>
@@ -1087,7 +1087,7 @@ Standardwert 20</translation>
 		<name>DonateDialog</name>
 		<message>
 			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Helfen Sie Bitcoin Safe, als Freie und Open-Source-Software zu wachsen.</translation>
+			<translation>Helfen Sie Bitcoin Safe, als freie und Open-Source-Software zu wachsen.</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -2026,7 +2026,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>LoadingWalletTab</name>
 		<message>
 			<source>Loading, please wait...</source>
-			<translation>Laden, bitte warten...</translation>
+			<translation>Wird geladen, bitte warten...</translation>
 		</message>
 	</context>
 	<context>
@@ -2615,7 +2615,7 @@ Möchten Sie die Wallet geöffnet lassen?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Wallet could not be loaded. See logs for details.</source>
-			<translation>Wallet konnte nicht geladen werden. Details siehe Logs.</translation>
+			<translation>Wallet konnte nicht geladen werden. Details finden Sie in den Logs.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2911,12 +2911,12 @@ Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translat
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>Bitte entfernen Sie '{scheme}' aus der electrum URL</translation>
+			<translation>Bitte entfernen Sie '{scheme}' aus der Electrum URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>Bitte versuchen Sie '{scheme}' am Anfang der mempool URL</translation>
+			<translation>Bitte versuchen Sie '{scheme}' am Anfang der Mempool URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2955,7 +2955,7 @@ Mempool-Instanz: {server}</translation>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The format for tor addresses should be '{scheme}'</source>
-			<translation>Das Format für tor Adressen sollte '{scheme}' sein</translation>
+			<translation>Das Format für Tor-Adressen sollte '{scheme}' sein</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3317,7 +3317,7 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		<name>PaymentButton</name>
 		<message>
 			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Rechnung wird angefordert... Ein Browser wird geöffnet und Bitcoin Safe hört lokal auf den Callback.</translation>
+			<translation>Rechnung wird angefordert... Ein Browser wird geöffnet und Bitcoin Safe wartet lokal auf den Callback.</translation>
 		</message>
 		<name>PaymentButton</name>
 		<message>
@@ -3336,7 +3336,7 @@ Bei Problemen wenden Sie sich bitte an: andreasgriffin@proton.me</translation>
 		<name>PoisoningWarningBar</name>
 		<message>
 			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
-			<translation>Warnung! Diese Transaktion beinhaltet täuschend ähnliche Adressen. Es könnte sich um einen Adressen-Poisoning-Angriff handeln. Ähnliche Adressen sind &lt;br&gt;{addresses}.&lt;br&gt; Überprüfen Sie alle Transaktionsdetails sorgfältig!</translation>
+			<translation>Warnung! Diese Transaktion beinhaltet täuschend ähnliche Adressen. Es könnte sich um einen Adressvergiftungsangriff handeln. Ähnliche Adressen sind &lt;br&gt;{addresses}.&lt;br&gt; Überprüfen Sie alle Transaktionsdetails sorgfältig!</translation>
 		</message>
 	</context>
 	<context>
@@ -5190,7 +5190,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>WalletGraphClient</name>
 		<message>
 			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
-			<translation>Ziehen, um die Zeitleiste zu erkunden. Klicken oder rechtsklicken Sie auf eine Transaktion, txid oder ein UTXO, um Optionen zu sehen.</translation>
+			<translation>Ziehen Sie, um die Zeitleiste zu erkunden. Klicken Sie oder klicken Sie mit der rechten Maustaste auf eine Transaktion, eine TXID oder ein UTXO, um Optionen anzuzeigen.</translation>
 		</message>
 		<name>WalletGraphClient</name>
 		<message>
