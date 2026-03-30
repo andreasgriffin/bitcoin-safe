@@ -80,7 +80,7 @@ class GridFormLayout(QGridLayout):
         # Fetch the row index of the item
         row, _, _, _ = self.getItemPosition(idx)
         if row is None:
-            return
+            return  # type: ignore
 
         # Toggle visibility on every column in that row
         for col in range(self.columnCount()):

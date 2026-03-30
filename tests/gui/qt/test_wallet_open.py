@@ -96,16 +96,20 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         # QIcon.cacheKey() uniquely identifies the rendered icon, so matching cache keys
         # verifies that the expected asset is set on the tab.
         qtbot.waitUntil(
-            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
-            and _node.icon
-            and _node.icon.cacheKey() == waiting_icon.cacheKey(),
+            lambda: (
+                (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
+                and _node.icon
+                and _node.icon.cacheKey() == waiting_icon.cacheKey()
+            ),
             timeout=10000,
         )
 
         qtbot.waitUntil(
-            lambda: (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
-            and _node.icon
-            and _node.icon.cacheKey() == connected_icon.cacheKey(),
+            lambda: (
+                (_node := main_window.tab_wallets.root.findNodeByWidget(qt_wallet.tabs))  # noqa: F821
+                and _node.icon
+                and _node.icon.cacheKey() == connected_icon.cacheKey()
+            ),
             timeout=10000,
         )
 
