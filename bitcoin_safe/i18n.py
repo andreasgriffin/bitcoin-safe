@@ -39,8 +39,8 @@ logger = logging.getLogger(__name__)
 # this function must eb named identical to QCoreApplication.translate
 # otherwise lupdate doesnt recognize it
 def translate(
-    context: str | None,
-    sourceText: str | None,
+    context: str,
+    sourceText: str,
     disambiguation: str | None = None,
     n: int = 1,
     no_translate=False,
@@ -48,4 +48,4 @@ def translate(
     """Translate."""
     if no_translate:
         return sourceText if sourceText else ""
-    return QCoreApplication.translate(context, sourceText, disambiguation=disambiguation, n=n)
+    return QCoreApplication.translate(context, sourceText, disambiguation=disambiguation, n=n)  # type: ignore

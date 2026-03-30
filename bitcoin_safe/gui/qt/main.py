@@ -2141,11 +2141,6 @@ class MainWindow(UnlockableMainWindow):
             qt_wallet.save()
             self.add_recently_open_wallet(qt_wallet.file_path)
 
-    def save_all_wallets(self) -> None:
-        """Save all wallets."""
-        for qt_wallet in self.qt_wallets.values():
-            self.save_qt_wallet(qt_wallet=qt_wallet)
-
     def write_current_open_txs_to_config(self) -> None:
         """Write current open txs to config."""
         txs = []
@@ -2698,7 +2693,6 @@ class MainWindow(UnlockableMainWindow):
             self.config.network_config.discovered_peers = self.p2p_listener.discovered_peers
         self.write_current_open_txs_to_config()
         self.config.save()
-        self.save_all_wallets()
 
         self.mempool_manager.close()
         self.fx.close()

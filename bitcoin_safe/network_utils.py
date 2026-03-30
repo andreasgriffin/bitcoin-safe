@@ -134,7 +134,7 @@ def send_request_to_electrum_server(
         Optional[Dict[str, Any]]: The server's response as a dictionary, or None on failure.
     """
     sock = None
-    ssock = None
+    ssock: socket.socket | None | ssl.SSLContext = None
     timeout = default_timeout(proxy_info, timeout)
     try:
         # Set up the proxy if provided.
@@ -178,7 +178,7 @@ def send_request_to_electrum_server(
 
     finally:
         # Attempt to close the SSL-wrapped socket if it was created.
-        if ssock is not None:
+        if isinstance(ssock, socket.socket):
             try:
                 ssock.close()
             except Exception as close_err:
