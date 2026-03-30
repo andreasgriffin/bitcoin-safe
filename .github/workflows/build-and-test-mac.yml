@@ -35,7 +35,7 @@ jobs:
     steps:
       # 1) clone the default branch with full history
       - name: Checkout default branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -51,7 +51,7 @@ jobs:
       # When skip_build_and_test_release_tag is non-empty on workflow_dispatch, the release-download path is used instead.
       - name: Set up Python environment
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
