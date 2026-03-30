@@ -260,7 +260,7 @@ class SignatureVerifyer:
         if isinstance(public_key, pgpy.PGPKey):
             fingerprint = str(public_key.fingerprint)
             self.public_keys[fingerprint] = public_key
-            logger.info(f"Public key imported with fingerprint: {public_key.fingerprint}")
+            print(f"Public key imported with fingerprint: {public_key.fingerprint}")
             return public_key
 
         raise Exception(f"Could not process result f{result}")
@@ -732,7 +732,7 @@ class GPGSignatureVerifyer:
         # The 'fingerprint' attribute is available in the import result.
         # For multiple keys, this simple implementation assumes you're interested in the first.
         fingerprint = import_result.results[0]["fingerprint"]
-        logger.info(f"Public key imported with fingerprint: {fingerprint}")
+        print(f"Public key imported with fingerprint: {fingerprint}")
         return fingerprint
 
 
@@ -762,12 +762,20 @@ class SignatureSigner(GPGSignatureVerifyer):
     def sign_files(self, key: SimpleGPGKey) -> list[Path]:
         """Sign files."""
         my_fingerprint = self.import_public_key_block(key.key)
+
         files = self.get_files_to_sign()
         for file_path in files:
-            self.gpg.sign_file(
-                open(file_path, "rb"), keyid=my_fingerprint, detach=True, output=str(file_path) + ".asc"
-            )
-            logger.info(f"File signed: {file_path.name}.asc")
+            with open(file_path, "rb") as f:
+                result = self.gpg.sign_file(
+                    f,
+                    keyid=f"{my_fingerprint}!",
+                    detach=True,
+                    output=str(file_path) + ".asc",
+                )
+            if not result:
+                raise RuntimeError(f"Signing failed for {file_path}")
+            print(f"File signed: {file_path.name}.asc")
+
         return files
 
 
