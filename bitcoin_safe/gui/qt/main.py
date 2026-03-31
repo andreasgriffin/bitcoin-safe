@@ -240,6 +240,8 @@ class MainWindow(UnlockableMainWindow):
             fx=self.fx,
             language_chooser=self.language_chooser,
         )
+        self.settings.addAction(self.menu_action_settings_ui)
+        self.settings.addAction(self.menu_action_settings_network)
         self.settings.langauge_ui.signal_app_lock_password_changed.connect(self.on_app_lock_password_changed)
         self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.restart)
         self.signals.show_network_settings.connect(self.open_settings_ui)
