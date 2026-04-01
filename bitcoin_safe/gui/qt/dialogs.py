@@ -252,7 +252,9 @@ class WalletIdDialog(QDialog):
         layout.addWidget(self.name_input)
 
         # Add buttons
-        self.buttonbox, self.buttons = create_button_box(self.check_wallet_existence, self.reject)
+        self.buttonbox, self.buttons = create_button_box(
+            self.check_wallet_existence, self.reject, parent=self
+        )
         layout.addWidget(self.buttonbox)
 
         # Set the layout
