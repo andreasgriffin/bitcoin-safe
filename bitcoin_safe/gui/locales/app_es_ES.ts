@@ -4917,6 +4917,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Por favor, intenta desconectar y volver a conectar el dispositivo</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Registrar carteras multisig a través de USB no es compatible con {device_type}. Por favor, use tarjetas sd o escanee el código QR.</translation>
 		</message>

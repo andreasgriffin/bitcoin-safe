@@ -4904,6 +4904,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Пожалуйста, попробуйте отключить и снова подключить устройство</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Регистрация мультиподписных кошельков через USB не поддерживается {device_type}. Пожалуйста, используйте sd-карты или отсканируйте QR-код.</translation>
 		</message>

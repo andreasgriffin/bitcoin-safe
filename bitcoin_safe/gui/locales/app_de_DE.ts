@@ -4930,6 +4930,11 @@ Möchten Sie trotzdem senden?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Bitte versuchen Sie, das Gerät zu trennen und erneut zu verbinden</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Die Registrierung von Multisig-Wallets über USB wird von {device_type} nicht unterstützt. Bitte verwenden Sie SD-Karten oder scannen Sie den QR-Code.</translation>
 		</message>
