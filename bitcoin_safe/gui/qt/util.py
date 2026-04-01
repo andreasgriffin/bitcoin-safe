@@ -280,12 +280,14 @@ def center_in_widget(
     return outer_layout
 
 
-def generate_help_button(help_widget: QWidget, title: str | None = None) -> QPushButton:
+def generate_help_button(
+    help_widget: QWidget, title: str | None = None, parent: QWidget | None = None
+) -> QPushButton:
     """Generate help button."""
     if title is None:
         title = translate("help", "Help")
     # add the help buttonbox
-    button_help = QPushButton()
+    button_help = QPushButton(parent)
     button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     button_help.setText(title)
     button_help.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
@@ -761,11 +763,15 @@ def one_time_signal_connection(signal: SignalProtocol, f: Callable):
 
 
 def create_button_box(
-    callback_ok, callback_cancel, ok_text=None, cancel_text=None
+    callback_ok,
+    callback_cancel,
+    ok_text=None,
+    cancel_text=None,
+    parent: QWidget | None = None,
 ) -> tuple[QDialogButtonBox, list[QPushButton]]:
     # Create the QDialogButtonBox instance
     """Create button box."""
-    button_box = QDialogButtonBox()
+    button_box = QDialogButtonBox(parent)
     buttons: list[QPushButton] = []
 
     # Add an 'Ok' button
@@ -774,7 +780,7 @@ def create_button_box(
         if ok_button:
             buttons.append(ok_button)
     else:
-        custom_yes_button = QPushButton(ok_text)
+        custom_yes_button = QPushButton(ok_text, button_box)
         buttons.append(custom_yes_button)
         button_box.addButton(custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
         custom_yes_button.clicked.connect(callback_ok)
@@ -785,7 +791,7 @@ def create_button_box(
         if cancel_button:
             buttons.append(cancel_button)
     else:
-        custom_cancel_button = QPushButton(cancel_text)
+        custom_cancel_button = QPushButton(cancel_text, button_box)
         buttons.append(custom_cancel_button)
         button_box.addButton(custom_cancel_button, QDialogButtonBox.ButtonRole.RejectRole)
         custom_cancel_button.clicked.connect(callback_cancel)

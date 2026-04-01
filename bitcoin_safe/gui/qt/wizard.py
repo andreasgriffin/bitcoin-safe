@@ -289,6 +289,7 @@ class BaseTab(QObject):
             self.refs.go_to_previous_index,
             ok_text="",
             cancel_text="",
+            parent=refs.container,
         )
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.refs.qtwalletbase.signals.language_switch), self.updateUi
@@ -684,11 +685,11 @@ class ValidateBackup(BaseTab):
         self.never_label.setMinimumWidth(300)
         widget_layout.addWidget(self.never_label)
 
-        buttonbox = QDialogButtonBox()
-        self.custom_yes_button = QPushButton()
+        buttonbox = QDialogButtonBox(widget)
+        self.custom_yes_button = QPushButton(buttonbox)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
-        self.custom_cancel_button = QPushButton()
+        self.custom_cancel_button = QPushButton(buttonbox)
         self.custom_cancel_button.clicked.connect(self.refs.go_to_previous_index)
         buttonbox.addButton(self.custom_cancel_button, QDialogButtonBox.ButtonRole.RejectRole)
 
@@ -745,9 +746,9 @@ class ImportXpubs(BaseTab):
 
         self.label_import = QLabel()
         # handle protowallet and qt_wallet differently:
-        self.button_previous_signer = QPushButton("")
-        self.button_next_signer = QPushButton("")
-        self.button_create_wallet = QPushButton("")
+        self.button_previous_signer = QPushButton("", self.buttonbox)
+        self.button_next_signer = QPushButton("", self.buttonbox)
+        self.button_create_wallet = QPushButton("", self.buttonbox)
         if self.refs.qt_wallet:
             # show the full walet descriptor tab below
             self.keystore_uis = None
@@ -919,15 +920,15 @@ class BackupSeed(BaseTab):
         widget_layout.addWidget(self.label_print_instructions)
 
         screenshots = ScreenshotsViewSeed()
-        self.button_help = generate_help_button(screenshots, title="View seed words")
+        self.button_help = generate_help_button(screenshots, title="View seed words", parent=widget)
 
-        buttonbox = QDialogButtonBox()
-        self.custom_yes_button = QPushButton()
+        buttonbox = QDialogButtonBox(widget)
+        self.custom_yes_button = QPushButton(buttonbox)
         self.custom_yes_button.setIcon(svg_tools.get_QIcon("print.svg"))
         self.custom_yes_button.clicked.connect(self._do_pdf)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
-        self.custom_cancel_button = QPushButton()
+        self.custom_cancel_button = QPushButton(buttonbox)
         self.custom_cancel_button.clicked.connect(self.refs.go_to_previous_index)
         buttonbox.addButton(self.custom_cancel_button, QDialogButtonBox.ButtonRole.RejectRole)
         buttonbox.addButton(self.button_help, QDialogButtonBox.ButtonRole.HelpRole)
@@ -1136,9 +1137,9 @@ class RegisterMultisig(BaseTab):
 
         self.label_import = QLabel()
         # handle protowallet and qt_wallet differently:
-        self.button_previous_signer = QPushButton("")
-        self.button_next_signer = QPushButton("")
-        self.custom_yes_button = QPushButton("")
+        self.button_previous_signer = QPushButton("", self.buttonbox)
+        self.button_next_signer = QPushButton("", self.buttonbox)
+        self.custom_yes_button = QPushButton("", self.buttonbox)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         self.buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
 

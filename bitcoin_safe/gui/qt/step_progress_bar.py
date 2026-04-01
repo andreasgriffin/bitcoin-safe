@@ -865,6 +865,7 @@ class StepProgressContainerWithButtons(StepProgressContainer):
             self.go_to_previous_index,
             ok_text="Next step",
             cancel_text="Previous step",
+            parent=widget,
         )
         return TutorialWidget(self, widget, buttonbox, buttonbox_always_visible=False)
 
