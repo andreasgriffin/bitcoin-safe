@@ -4910,6 +4910,11 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Spróbuj odłączyć urządzenie i podłączyć je ponownie</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Rejestrowanie portfeli multisig przez USB nie jest obsługiwane przez {device_type}. Użyj kart SD lub zeskanuj kod QR.</translation>
 		</message>

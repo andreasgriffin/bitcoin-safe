@@ -4879,6 +4879,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>โปรดลองถอดการเชื่อมต่ออุปกรณ์แล้วเชื่อมต่อใหม่อีกครั้ง</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>การลงทะเบียนกระเป๋าเงิน multisig ผ่าน USB ไม่ได้รับการสนับสนุนโดย {device_type} โปรดใช้ sd-cards หรือสแกนรหัส QR</translation>
 		</message>

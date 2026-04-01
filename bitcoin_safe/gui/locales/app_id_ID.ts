@@ -4901,6 +4901,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Silakan coba putuskan sambungan lalu sambungkan kembali perangkat</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Mendaftarkan dompet multisig melalui USB tidak didukung oleh {device_type}. Harap gunakan kartu sd atau pindai Kode QR.</translation>
 		</message>

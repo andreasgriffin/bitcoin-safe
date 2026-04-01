@@ -4881,6 +4881,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>कृपया डिवाइस को डिस्कनेक्ट करके फिर से कनेक्ट करने का प्रयास करें</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB के माध्यम से मल्टीसिग वॉलेट्स का पंजीकरण {device_type} द्वारा समर्थित नहीं है। कृपया sd-कार्ड्स का उपयोग करें या QR कोड स्कैन करें।</translation>
 		</message>

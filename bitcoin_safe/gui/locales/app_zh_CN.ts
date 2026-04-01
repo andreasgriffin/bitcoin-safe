@@ -4910,6 +4910,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>请尝试断开设备连接后重新连接</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>通过 USB 注册多签名钱包不受 {device_type} 支持。请使用 SD 卡或扫描二维码。</translation>
 		</message>

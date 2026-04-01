@@ -4900,6 +4900,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>لطفاً دستگاه را قطع کرده و دوباره متصل کنید</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>ثبت کیف پول‌های چندامضایی از طریق USB توسط {device_type} پشتیبانی نمی‌شود. لطفاً از کارت SD استفاده کنید یا کد QR را اسکن کنید.</translation>
 		</message>

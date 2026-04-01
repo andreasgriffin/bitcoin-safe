@@ -4891,6 +4891,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>기기의 연결을 끊었다가 다시 연결해 보세요</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>{device_type}에서는 USB를 통한 멀티시그 지갑 등록을 지원하지 않습니다. SD 카드를 사용하거나 QR 코드를 스캔하세요.</translation>
 		</message>

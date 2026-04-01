@@ -4902,6 +4902,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Lütfen cihazın bağlantısını kesip yeniden bağlamayı deneyin</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>USB üzerinden multisig cüzdan kaydı {device_type} tarafından desteklenmiyor. Lütfen sd-kart veya QR Kod tarayın.</translation>
 		</message>

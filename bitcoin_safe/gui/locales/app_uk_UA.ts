@@ -4902,6 +4902,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Будь ласка, спробуйте від’єднати та знову під’єднати пристрій</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Реєстрація мультисиг-гаманців через USB не підтримується {device_type}. Будь ласка, використайте SD-карти або скануйте QR-код.</translation>
 		</message>

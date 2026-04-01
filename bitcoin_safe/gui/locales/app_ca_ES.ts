@@ -4902,6 +4902,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Si us plau, proveu de desconnectar i tornar a connectar el dispositiu</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>El registre de carteres multisignatura via USB no és compatible amb {device_type}. Utilitza targetes SD o escaneja el codi QR.</translation>
 		</message>

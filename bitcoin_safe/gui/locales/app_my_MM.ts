@@ -4877,6 +4877,11 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>ကျေးဇူးပြု၍ စက်ကို ချိတ်ဆက်မှုဖြုတ်ပြီး ပြန်လည်ချိတ်ဆက်ကြည့်ပါ</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>{device_type} မှတဆင့် multisig ပိုက်ဆံအိတ်များကို USB မှတဆင့်မှတ်ပုံတင်ရန်မ</translation>
 		</message>

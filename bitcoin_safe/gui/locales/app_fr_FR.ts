@@ -4901,6 +4901,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Veuillez essayer de déconnecter puis de reconnecter l’appareil</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>L'enregistrement de portefeuilles multisig via USB n'est pas pris en charge par {device_type}. Veuillez utiliser des cartes SD ou scanner le code QR.</translation>
 		</message>

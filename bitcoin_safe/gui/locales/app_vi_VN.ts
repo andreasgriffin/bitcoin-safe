@@ -4898,6 +4898,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>USBGui</name>
 		<message>
+			<source>Please try disconnecting and reconnecting the device</source>
+			<translation>Vui lòng thử ngắt kết nối rồi kết nối lại thiết bị</translation>
+		</message>
+		<name>USBGui</name>
+		<message>
 			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
 			<translation>Đăng ký ví multisig qua USB không được {device_type} hỗ trợ. Vui lòng dùng thẻ SD hoặc quét mã QR.</translation>
 		</message>
