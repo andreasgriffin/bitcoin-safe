@@ -2312,6 +2312,7 @@ class MainWindow(UnlockableMainWindow):
         if show_tutorial:
             qt_protowallet.wizard.set_current_index(0)
             qt_protowallet.wizard.set_visibilities()
+            qt_protowallet.wizard.node.select()
         else:
             qt_protowallet.tabs.select()
 
