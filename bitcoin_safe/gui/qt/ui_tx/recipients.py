@@ -902,6 +902,7 @@ class Recipients(QWidget):
     @recipients.setter
     def recipients(self, recipient_list: list[Recipient]) -> None:
         """Recipients."""
+        self._clear_rendered_recipient_widgets()
         self._all_recipients = [recipient.clone() for recipient in recipient_list]
         self._rebuild_recipient_boxes()
 
