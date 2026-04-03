@@ -889,8 +889,9 @@ class Recipients(QWidget):
         for widget, recipient_index in list(self._recipient_box_indices.items()):
             if widget.recipient_widget == recipient_widget:
                 del self._all_recipients[recipient_index]
-                self.signal_removed_recipient.emit()
+                self._clear_rendered_recipient_widgets()
                 self._rebuild_recipient_boxes()
+                self.signal_removed_recipient.emit()
                 break
 
     @property
