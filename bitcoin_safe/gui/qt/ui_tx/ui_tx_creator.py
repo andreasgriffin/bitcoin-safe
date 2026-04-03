@@ -227,8 +227,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_recipients = ColumnRecipients(fx=fx, wallet_functions=self.wallet_functions, parent=self)
         self._cache_last_category: str | None = None
         self.recipients = self.column_recipients.recipients
-
-        self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
+        self.recipients.signal_address_text_changed.connect(self.on_signal_address_text_changed)
 
         self.column_fee = ColumnFee(
             wallet_functions=self.wallet_functions,
@@ -548,10 +547,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.signals.tab_history_backward.emit()
 
-    def on_signal_clicked_send_max_button(self, recipient_widget: RecipientWidget):
-        """On signal clicked send max button."""
-        self.on_input_changed(RefreshCounterKey.AMOUNT_CHANGE)
-
     def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
         """On signal address text changed."""
         self.update_categories()
@@ -571,8 +566,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def on_recipients_added(self, recipient_tab_widget: RecipientBox):
         """On recipients added."""
-        recipient_tab_widget.signal_clicked_send_max_button.connect(self.on_signal_clicked_send_max_button)
-        recipient_tab_widget.signal_address_text_changed.connect(self.on_signal_address_text_changed)
         self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
 
     def on_recipients_removed(self):
@@ -605,12 +598,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if not tx_ui_infos.utxo_dict:
             return
 
-        addresses = clean_list(
-            [
-                recipient_group_box.address
-                for recipient_group_box in self.recipients.get_recipient_group_boxes()
-            ]
-        )
+        addresses = clean_list([recipient.address for recipient in self.recipients.recipients])
         if not addresses:
             return
         recipient_category = self.wallet.determine_recipient_category(tx_ui_infos.utxo_dict.values())

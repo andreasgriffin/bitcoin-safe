@@ -71,7 +71,7 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
-from bitcoin_safe.wallet import get_wallet_of_address
+from bitcoin_safe.wallet import get_label_from_any_wallet, get_wallet_of_address, get_wallets
 
 from ....pythonbdk_types import Recipient, is_address
 from ....signals import SignalsMin, UpdateFilter, WalletFunctions
@@ -393,6 +393,35 @@ class NotificationBarRecipient(NotificationBar):
         self.updateUi()
 
 
+class HiddenRecipientsPlaceholder(QWidget):
+    def __init__(self, hidden_count: int, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent=parent)
+        self.hidden_count = hidden_count
+
+        layout = QVBoxLayout(self)
+        set_no_margins(layout)
+
+        self.label_dots = QLabel(".\n.\n.")
+        self.label_dots.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+        self.label_count = QLabel()
+        self.label_count.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+
+        layout.addWidget(self.label_dots)
+        layout.addWidget(self.label_count)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.updateUi()
+
+    def updateUi(self) -> None:
+        """UpdateUi."""
+        self.label_count.setText(self.tr("({count} outputs)").format(count=self.hidden_count))
+        self.setToolTip(
+            self.tr("{count} outputs without a known wallet or label are hidden here.").format(
+                count=self.hidden_count
+            )
+        )
+
+
 class RecipientBox(QWidget):
     signal_close = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
     signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
@@ -544,9 +573,12 @@ class RecipientBox(QWidget):
 
 
 class Recipients(QWidget):
+    MAX_VISIBLE_RECIPIENTS = 200
+
     signal_added_recipient = cast(SignalProtocol[[RecipientBox]], pyqtSignal(RecipientBox))
     signal_removed_recipient = cast(SignalProtocol[[]], pyqtSignal())
     signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_address_text_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
     signal_amount_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
 
     def __init__(
@@ -566,7 +598,9 @@ class Recipients(QWidget):
 
         self.header_widget = header_widget
         self.setup_header_widget()
-        self._count = 0
+        self._all_recipients: list[Recipient] = []
+        self._recipient_box_indices: dict[RecipientBox, int] = {}
+        self._hidden_recipient_placeholders: list[HiddenRecipientsPlaceholder] = []
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
@@ -707,7 +741,7 @@ class Recipients(QWidget):
         """UpdateUi."""
         self.add_recipient_button.setText(self.tr("Add Recipient"))
         if self.header_widget:
-            self.header_widget.label_title.setText(self.tr("Recipients"))
+            self.update_recipient_title()
 
         self.toolbutton_csv.setText(self.tr("Import/Export") if self.allow_edit else self.tr("Export"))
 
@@ -715,22 +749,19 @@ class Recipients(QWidget):
         self.action_import_csv.setText(self.tr("Import CSV file"))
 
         self.action_export_csv.setText(self.tr("Export as CSV file"))
+        for placeholder in self._hidden_recipient_placeholders:
+            placeholder.updateUi()
 
-    # insert before the button position
-    def _insert_before_button(self, new_widget: QWidget) -> None:
-        """Insert before button."""
+    def _insert_list_widget(self, widget: QWidget) -> None:
+        """Insert a widget into the recipients list."""
         index = self.recipient_list_content_layout.indexOf(self.add_recipient_button)
         if index >= 0:
-            self.recipient_list_content_layout.insertWidget(index, new_widget)
-            self._count += 1
-        else:
-            self.recipient_list_content_layout.addWidget(new_widget)
-            self._count += 1
+            self.recipient_list_content_layout.insertWidget(index, widget)
+            return
+        self.recipient_list_content_layout.addWidget(widget)
 
-    def add_recipient(self, recipient: Recipient | None = None) -> RecipientBox:
-        """Add recipient."""
-        if not recipient:
-            recipient = Recipient("", 0)
+    def _create_recipient_box(self, recipient: Recipient) -> RecipientBox:
+        """Create a recipient box for a single visible recipient."""
         recipient_box = RecipientBox(
             wallet_functions=self.wallet_functions,
             network=self.network,
@@ -743,14 +774,106 @@ class Recipients(QWidget):
         recipient_box.recipient_widget.set_max(recipient.checked_max_amount)
         if recipient.label is not None:
             recipient_box.label = recipient.label
+        return recipient_box
 
-        self._insert_before_button(recipient_box)
-
+    def _connect_recipient_box(self, recipient_box: RecipientBox) -> None:
+        """Connect a visible recipient box."""
         recipient_box.signal_close.connect(self.ui_remove_recipient_widget)
+        recipient_box.signal_clicked_send_max_button.connect(self.signal_clicked_send_max_button)
         recipient_box.signal_clicked_send_max_button.connect(self.signal_amount_changed)
+        recipient_box.signal_address_text_changed.connect(self.signal_address_text_changed)
         recipient_box.signal_amount_changed.connect(self.signal_amount_changed)
-        self.signal_added_recipient.emit(recipient_box)
+
+    def _clear_rendered_recipient_widgets(self) -> None:
+        """Remove all rendered recipient widgets."""
+        for recipient_box in list(self._recipient_box_indices):
+            self.recipient_list_content_layout.removeWidget(recipient_box)
+            recipient_box.hide()
+            recipient_box.setParent(None)
+            recipient_box.close()
+        self._recipient_box_indices.clear()
+        for placeholder in self._hidden_recipient_placeholders:
+            self.recipient_list_content_layout.removeWidget(placeholder)
+            placeholder.hide()
+            placeholder.setParent(None)
+            placeholder.close()
+        self._hidden_recipient_placeholders.clear()
+
+    def _sync_visible_recipient_boxes(self) -> None:
+        """Persist edits from the visible widgets back into the full recipient list."""
+        for recipient_box, recipient_index in self._recipient_box_indices.items():
+            self._all_recipients[recipient_index] = Recipient(
+                recipient_box.address,
+                recipient_box.amount,
+                recipient_box.label if recipient_box.label else None,
+                checked_max_amount=recipient_box.recipient_widget.send_max_checkbox.isChecked(),
+            )
+
+    def _get_visible_recipient_indices(self, force_visible_indices: set[int] | None = None) -> set[int]:
+        """Return the indexes that should get a RecipientBox."""
+        if len(self._all_recipients) <= self.MAX_VISIBLE_RECIPIENTS:
+            visible_indices = set(range(len(self._all_recipients)))
+        else:
+            wallets = get_wallets(self.wallet_functions)
+            visible_indices = {
+                index
+                for index, recipient in enumerate(self._all_recipients)
+                if (
+                    not recipient.address
+                    or (recipient.label and recipient.label.strip())
+                    or any(wallet.is_my_address_with_peek(recipient.address) for wallet in wallets)
+                    or get_label_from_any_wallet(
+                        label_type=LabelType.addr,
+                        ref=recipient.address,
+                        wallet_functions=self.wallet_functions,
+                        wallets=wallets,
+                        autofill_from_txs=False,
+                    )
+                )
+            }
+        if force_visible_indices:
+            visible_indices.update(force_visible_indices)
+        return visible_indices
+
+    def _rebuild_recipient_boxes(self, force_visible_indices: set[int] | None = None) -> None:
+        """Rebuild the visible recipient boxes from the full list."""
+        self._sync_visible_recipient_boxes()
+        self._clear_rendered_recipient_widgets()
+
+        visible_indices = self._get_visible_recipient_indices(force_visible_indices=force_visible_indices)
+        hidden_count = 0
+        for recipient_index, recipient in enumerate(self._all_recipients):
+            if recipient_index not in visible_indices:
+                hidden_count += 1
+                continue
+            if hidden_count:
+                placeholder = HiddenRecipientsPlaceholder(hidden_count=hidden_count, parent=self)
+                self._insert_list_widget(placeholder)
+                self._hidden_recipient_placeholders.append(placeholder)
+                hidden_count = 0
+            recipient_box = self._create_recipient_box(recipient)
+            self._insert_list_widget(recipient_box)
+            self._recipient_box_indices[recipient_box] = recipient_index
+            self._connect_recipient_box(recipient_box)
+        if hidden_count:
+            placeholder = HiddenRecipientsPlaceholder(hidden_count=hidden_count, parent=self)
+            self._insert_list_widget(placeholder)
+            self._hidden_recipient_placeholders.append(placeholder)
         self.update_recipient_title()
+
+    def add_recipient(self, recipient: Recipient | None = None) -> RecipientBox:
+        """Add recipient."""
+        recipient = recipient.clone() if recipient else Recipient("", 0)
+        recipient_index = len(self._all_recipients)
+        self._sync_visible_recipient_boxes()
+        self._all_recipients.append(recipient)
+        self._rebuild_recipient_boxes(force_visible_indices={recipient_index})
+        recipient_box = next(
+            box
+            for box, current_index in self._recipient_box_indices.items()
+            if current_index == recipient_index
+        )
+        self.signal_added_recipient.emit(recipient_box)
         return recipient_box
 
     def ui_remove_recipient_widget(self, recipient_widget: RecipientWidget) -> None:
@@ -762,56 +885,61 @@ class Recipients(QWidget):
 
     def remove_recipient_widget(self, recipient_widget: RecipientWidget) -> None:
         """Remove recipient widget."""
-        for widget in self.recipient_list.findChildren(RecipientBox):
+        self._sync_visible_recipient_boxes()
+        for widget, recipient_index in list(self._recipient_box_indices.items()):
             if widget.recipient_widget == recipient_widget:
-                self.recipient_list_content_layout.removeWidget(widget)
-
-                widget.hide()
-                widget.setParent(None)
+                del self._all_recipients[recipient_index]
+                self._clear_rendered_recipient_widgets()
+                self._rebuild_recipient_boxes()
                 self.signal_removed_recipient.emit()
-                widget.close()
-                self._count -= 1
                 break
-        self.update_recipient_title()
 
     @property
     def recipients(self) -> list[Recipient]:
         """Recipients."""
-        return [
-            Recipient(
-                recipient_box.address,
-                recipient_box.amount,
-                recipient_box.label if recipient_box.label else None,
-                checked_max_amount=recipient_box.recipient_widget.send_max_checkbox.isChecked(),
-            )
-            for recipient_box in self.get_recipient_group_boxes()
-        ]
+        self._sync_visible_recipient_boxes()
+        return [recipient.clone() for recipient in self._all_recipients]
 
     @recipients.setter
     def recipients(self, recipient_list: list[Recipient]) -> None:
-        # remove all old ones
         """Recipients."""
-        for recipient_box in self.get_recipient_group_boxes():
-            self.remove_recipient_widget(recipient_box.recipient_widget)
-
-        for recipient in recipient_list:
-            self.add_recipient(recipient)
+        self._clear_rendered_recipient_widgets()
+        self._all_recipients = [recipient.clone() for recipient in recipient_list]
+        self._rebuild_recipient_boxes()
 
     def get_recipient_group_boxes(self) -> list[RecipientBox]:
         """Get recipient group boxes."""
-        return self.recipient_list.findChildren(RecipientBox)
+        return [
+            recipient_box
+            for recipient_box, _recipient_index in sorted(
+                self._recipient_box_indices.items(),
+                key=lambda item: item[1],
+            )
+        ]
 
     def get_address_labels_dict(self) -> dict[str, str]:
         """Get non-empty labels keyed by address."""
+        self._sync_visible_recipient_boxes()
+        wallets = get_wallets(self.wallet_functions)
         return {
-            recipient_box.address: recipient_box.label
-            for recipient_box in self.get_recipient_group_boxes()
-            if recipient_box.address and recipient_box.label
+            recipient.address: label
+            for recipient in self._all_recipients
+            if recipient.address
+            and (
+                label := recipient.label
+                or get_label_from_any_wallet(
+                    label_type=LabelType.addr,
+                    ref=recipient.address,
+                    wallet_functions=self.wallet_functions,
+                    wallets=wallets,
+                    autofill_from_txs=False,
+                )
+            )
         }
 
     def count(self) -> int:
         """Count."""
-        return self._count
+        return len(self._all_recipients)
 
     def close(self) -> bool:
         for box in self.get_recipient_group_boxes():
