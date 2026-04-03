@@ -84,7 +84,6 @@ def get_mempool_url(network: bdk.Network) -> dict[str, str]:
         bdk.Network.SIGNET: {
             "default": "https://mempool.space/signet",
             "mempool.space": "https://mempool.space/signet",
-            "mutinynet": "https://mutinynet.com",
             "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/signet",
         },
     }
@@ -125,7 +124,6 @@ def get_electrum_configs(network: bdk.Network) -> dict[str, ElectrumConfig]:
         },
         bdk.Network.SIGNET: {
             "default": ElectrumConfig("mempool.space:60602", True),
-            "mutinynet": ElectrumConfig("mutinynet.com:50001", False),
             "mempool.space": ElectrumConfig("mempool.space:60602", True),
         },
     }
@@ -197,8 +195,7 @@ def get_esplora_urls(network: bdk.Network) -> dict[str, str]:
             "default": "",
         },
         bdk.Network.SIGNET: {
-            "default": "https://mutinynet.com/api",
-            "mutinynet": "https://mutinynet.com/api",
+            "default": "http://127.0.0.1:3000",
             "localhost": "http://127.0.0.1:3000",
         },
     }
@@ -339,17 +336,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
                     faucet=link(get_testnet_faucet(network=network), "faucet"),
                 )
             ),
-            bdk.Network.SIGNET: (
-                translate(
-                    "net_conf",
-                    "A (somtimes working) server is {link} and a block explorer on {explorer}. "
-                    "There is a {faucet}.",
-                ).format(
-                    link=link(get_esplora_urls(bdk.Network.SIGNET)["mutinynet"]),
-                    explorer=link("https://mutinynet.com/"),
-                    faucet=link(get_testnet_faucet(network=network), "faucet"),
-                )
-            ),
+            bdk.Network.SIGNET: "",
         }
         return d[network]
     elif server_type == BlockchainType.RPC:
@@ -362,11 +349,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             bdk.Network.REGTEST: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=regtest"'),
             bdk.Network.TESTNET: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=test"'),
             bdk.Network.TESTNET4: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=testnet4"'),
-            bdk.Network.SIGNET: translate(
-                "net_conf",
-                'Run your bitcoind with "bitcoind -chain=signet"  '
-                "This however is a different signet than mutinynet.com.",
-            ),
+            bdk.Network.SIGNET: translate("net_conf", 'Run your bitcoind with "bitcoind -chain=signet"  '),
         }
         return d[network]
     raise ValueError(f"Could not get description for {network, server_type}")
