@@ -991,7 +991,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_help = self.menubar.add_menu("")
 
         self.menu_action_about = self.menu_help.add_action("", self.open_about_tab)
-        self.menu_action_about.setShortcut(QKeySequence("CTRL+#"))
+        self.menu_action_about.setShortcut(QKeySequence("CTRL+?"))
         self.menu_action_donate = self.menu_help.add_action("", self.show_donate_dialog)
 
         self.action_knowledge_website = self.menu_help.add_action(
