@@ -242,6 +242,7 @@ class MainWindow(UnlockableMainWindow):
         )
         self.settings.addAction(self.menu_action_settings_ui)
         self.settings.addAction(self.menu_action_settings_network)
+        self.settings.addAction(self.menu_action_about)
         self.settings.langauge_ui.signal_app_lock_password_changed.connect(self.on_app_lock_password_changed)
         self.settings.network_settings_ui.signal_apply_and_shutdown.connect(self.restart)
         self.signals.show_network_settings.connect(self.open_settings_ui)
@@ -990,6 +991,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_help = self.menubar.add_menu("")
 
         self.menu_action_about = self.menu_help.add_action("", self.open_about_tab)
+        self.menu_action_about.setShortcut(QKeySequence("CTRL+?"))
         self.menu_action_donate = self.menu_help.add_action("", self.show_donate_dialog)
 
         self.action_knowledge_website = self.menu_help.add_action(

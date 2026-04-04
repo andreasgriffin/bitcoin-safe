@@ -82,6 +82,7 @@ class Settings(QTabWidget):
         )
         self.addTab(self.network_settings_ui, "")
         self.network_settings_ui.signal_cancel.connect(self.close)
+
         self.currentChanged.connect(self._apply_minimum_size_hint)
 
         # category manager(s)
