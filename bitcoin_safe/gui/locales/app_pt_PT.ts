@@ -1407,6 +1407,18 @@ pois o tamanho final da transação é desconhecido.</translation>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} saídas)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>{count} saídas sem uma carteira ou etiqueta conhecida estão ocultas aqui.</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -3784,7 +3796,6 @@ As saídas mantêm-se; apenas a taxa muda.</translation>
                      &lt;br&gt;&lt;br&gt;
                      &lt;b&gt;Porquê?&lt;/b&gt; &lt;br&gt;
                      Para saber se controla os fundos, deve testar o gasto a partir da carteira. 
-
                      &lt;br&gt;
                      Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; testar o gasto e todos os signatários.     
                      &lt;br&gt;
@@ -6199,7 +6210,7 @@ País: {country}</translation>
 		<name>bitcoin_quotes</name>
 		<message>
 			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
-			<translation>Como o dólar dos EUA se tornou a moeda de reserva mundial</translation>
+			<translation>Como o dólar dos Estados Unidos da América se tornou a moeda de reserva mundial</translation>
 		</message>
 		<name>bitcoin_quotes</name>
 		<message>
@@ -6636,11 +6647,6 @@ País: {country}</translation>
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>Um servidor (às vezes funciona) é {link} e um explorador de blocos em {explorer}. Há um {faucet}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>Uma boa opção é {electrum_testnet4} e, como explorador de blocos, {explorer_testnet4}. Existe um {faucet} para obter moedas de teste gratuitas.</translation>
 		</message>
@@ -6661,8 +6667,8 @@ País: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>Execute seu bitcoind com "bitcoind -chain=signet" No entanto, este é um signet diferente de mutinynet.com.</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>Execute o seu bitcoind com "bitcoind -chain=signet"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

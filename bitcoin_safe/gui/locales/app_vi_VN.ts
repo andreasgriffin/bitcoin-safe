@@ -1399,6 +1399,18 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} đầu ra)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>{count} đầu ra không có ví hoặc nhãn đã biết được ẩn tại đây.</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6602,11 +6614,6 @@ Quốc gia: {country}</translation>
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>Một máy chủ (đôi khi hoạt động) là {link} và một block explorer là {explorer}. Có một {faucet}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>Một lựa chọn tốt là {electrum_testnet4} và block explorer {explorer_testnet4}. Có {faucet} cho test coin miễn phí.</translation>
 		</message>
@@ -6627,8 +6634,8 @@ Quốc gia: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>Chạy bitcoind của bạn với "bitcoind -chain=signet"  Tuy nhiên đây là signet khác với mutinynet.com.</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>Chạy bitcoind của bạn với "bitcoind -chain=signet"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

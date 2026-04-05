@@ -906,7 +906,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Scan Addresses ahead</source>
-			<translation>提前扫描地址</translation>
+			<translation>预先扫描地址数量</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1404,6 +1404,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>（{count} 个输出）</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>这里隐藏了 {count} 个没有已知钱包或标签的输出。</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -1694,7 +1706,7 @@ received from these peers via the bitcoin network.</source>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>Change</source>
-			<translation>找零</translation>
+			<translation>更改</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -4459,7 +4471,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>ToolGui</name>
 		<message>
 			<source>Get xpubs</source>
-			<translation>获取 xpubs</translation>
+			<translation>获取 XPUB</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -4639,7 +4651,7 @@ Signatures:
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid: </translation>
+			<translation>交易 ID: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -5099,7 +5111,7 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>You have already the newest version.</source>
-			<translation>您已经拥有最新版本。</translation>
+			<translation>您已拥有最新版本。</translation>
 		</message>
 	</context>
 	<context>
@@ -5428,7 +5440,10 @@ Do you want to broadcast anyway?</source>
 '{tx_text}'
  was done successfully. Please proceed to do the self-send test: 
 '{next_text}'</source>
-			<translation>测试交易  '{tx_text}'  已成功完成。请继续执行 self-send 测试：  '{next_text}'</translation>
+			<translation>测试交易  
+'{tx_text}'  
+ 已成功完成。请继续进行自我发送交易测试：  
+'{next_text}'</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6613,11 +6628,6 @@ IP：{ip}
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>一个（时有时无）的服务器地址为 {link}，区块浏览器位于 {explorer}。另有一个 {faucet}。</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>一个不错的选择是 {electrum_testnet4}，区块浏览器则使用 {explorer_testnet4}。另有 {faucet} 可免费获取测试网代币。</translation>
 		</message>
@@ -6638,8 +6648,8 @@ IP：{ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>使用 “bitcoind -chain=signet” 命令来运行您的 bitcoind。但这与 mutinynet.com 的 signet 不同。</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>使用“bitcoind -chain=signet”运行你的 bitcoind</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

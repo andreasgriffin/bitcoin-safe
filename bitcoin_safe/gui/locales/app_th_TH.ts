@@ -1396,6 +1396,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} เอาต์พุต)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>เอาต์พุตจำนวน {count} รายการที่ไม่มีวอลเล็ตหรือป้ายกำกับที่รู้จักจะถูกซ่อนที่นี่</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6584,11 +6596,6 @@ IP: {ip}
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>เซิร์ฟเวอร์ (บางครั้งทำงานได้) คือ {link} และ block explorer บน {explorer} มี {faucet}</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>ตัวเลือกที่ดีคือ {electrum_testnet4} และตัวสำรวจบล็อกคือ {explorer_testnet4}. มี {faucet} สำหรับรับเหรียญทดสอบฟรี.</translation>
 		</message>
@@ -6609,8 +6616,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>เรียกใช้ bitcoind ของคุณด้วย "bitcoind -chain=signet" อย่างไรก็ตาม นี่เป็น signet ที่แตกต่างจาก mutinynet.com</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>รัน bitcoind ของคุณด้วย "bitcoind -chain=signet"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

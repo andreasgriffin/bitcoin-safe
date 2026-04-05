@@ -1395,6 +1395,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} 個の出力)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>既知のウォレットまたはラベルのない {count} 個の出力はここで非表示になっています。</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6581,11 +6593,6 @@ IP: {ip}
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>（時々動作する）サーバーは {link} と {explorer} でブロックエクスプローラーです。{faucet} があります。</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>良いオプションは {electrum_testnet4} で、ブロックエクスプローラーとしては {explorer_testnet4} を使用できます。無料のテストコインを取得できる {faucet} があります。</translation>
 		</message>
@@ -6606,8 +6613,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>"bitcoind -chain=signet"でbitcoindを実行してください。ただし、これはmutinynet.comの別のsignetです。</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>"bitcoind -chain=signet" で bitcoind を実行してください</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
