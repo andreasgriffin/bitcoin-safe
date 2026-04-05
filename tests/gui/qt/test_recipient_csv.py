@@ -175,7 +175,7 @@ def test_viewer_hides_recipients_csv_toolbutton_and_moves_export_into_file_menu(
 
         fund_wallet(faucet=faucet, qt_wallet=qt_wallet, amount=amount, qtbot=qtbot)
 
-        wait_for_sync(wallet=qt_wallet.wallet, minimum_funds=1, qtbot=qtbot)
+        wait_for_sync(wallet=qt_wallet, minimum_funds=1, qtbot=qtbot)
 
         tx_history = qt_wallet.wallet.sorted_delta_list_transactions()
         assert tx_history

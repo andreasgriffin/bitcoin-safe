@@ -143,8 +143,10 @@ TX_ICONS: list[str] = [
 ]
 
 
+# fulcrum (even on regtest with just a few hundert blocks) is suprisingly slow
+# syncing too early will miss the recently added block or tx
 ELECTRUM_SERVER_DELAY_MEMPOOL_TX = 1000
-ELECTRUM_SERVER_DELAY_BLOCK = 2000
+ELECTRUM_SERVER_DELAY_BLOCK = 3000
 
 
 def center_on_screen(widget: QWidget, min_height: int = 0, min_width: int = 0) -> None:

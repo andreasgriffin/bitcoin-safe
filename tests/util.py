@@ -40,6 +40,7 @@ from PyQt6.QtCore import QCoreApplication, QObject, pyqtBoundSignal, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.util import one_time_signal_connection
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.util import SATOSHIS_PER_BTC
@@ -98,12 +99,17 @@ def make_psbt(
 
 def wait_for_sync(
     qtbot: QtBot,
-    wallet: Wallet,
+    wallet: QTWallet | Wallet,
     minimum_funds=0,
     txid: str | None = None,
     tx_count: int = 0,
     timeout: float = 10_000,
 ):
+    qt_wallet = None
+    if isinstance(wallet, QTWallet):
+        qt_wallet = wallet
+        wallet = qt_wallet.wallet
+
     def info_message():
         logger.info(
             f"{wallet.id=}\n"
@@ -152,7 +158,12 @@ def wait_for_sync(
                 # try the sync
                 QApplication.processEvents()
                 wallet.trigger_sync()
-                await wallet.update()  # this is blocking
+                update = await wallet.update()  # this is blocking
+                # wallet.update() is usually awaited in a forever loop _add_bridge_tasks
+                # in qt wallet.  Since we call it here manually, qt_wallet will miss it
+                # and we have to emit the signal_wallet_update manually.
+                if update and qt_wallet:
+                    qt_wallet.signal_wallet_update.emit(update)
 
                 if asyncio.get_event_loop().time() > deadline:
                     raise TimeoutError("Conditions not met")

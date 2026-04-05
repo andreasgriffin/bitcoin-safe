@@ -88,7 +88,7 @@ def test_print_existing_transaction(
         if not qt_wallet.wallet.sorted_delta_list_transactions():
             fund_wallet(faucet=faucet, qt_wallet=qt_wallet, amount=SEND_TEST_WALLET_FUND_AMOUNT, qtbot=qtbot)
 
-        wait_for_sync(wallet=qt_wallet.wallet, minimum_funds=1, qtbot=qtbot)
+        wait_for_sync(wallet=qt_wallet, minimum_funds=1, qtbot=qtbot)
 
         # Open the first transaction in the history in a new viewer tab.
         tx_history = qt_wallet.wallet.sorted_delta_list_transactions()

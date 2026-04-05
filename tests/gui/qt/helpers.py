@@ -183,7 +183,7 @@ def fund_wallet(
     """Fund wallet."""
     address = address if address else str(qt_wallet.wallet.get_address().address)
     tx = faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
-    wait_for_sync(wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=60_000, qtbot=qtbot)
+    wait_for_sync(wallet=qt_wallet, txid=str(tx.compute_txid()), timeout=60_000, qtbot=qtbot)
     return address
 
 
