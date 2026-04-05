@@ -34,7 +34,7 @@ import logging
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from math import ceil
-from typing import Any
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_script
@@ -167,15 +167,21 @@ def estimate_tx_weight(
 
 class FeeRate(bdk.FeeRate):
     @classmethod
-    def from_fee_rate(cls, fee_rate: bdk.FeeRate):
+    def from_fee_rate(cls, fee_rate: bdk.FeeRate) -> FeeRate:
         """From fee rate."""
-        return cls.from_sat_per_kwu(fee_rate.to_sat_per_kwu())
+        return cast(FeeRate, cls.from_sat_per_kwu(fee_rate.to_sat_per_kwu()))
 
     @classmethod
-    def from_float_sats_vB(cls, fee_rate: float):
+    def from_float_sats_vB(cls, fee_rate: float) -> FeeRate:
         """From float sats vB."""
         sat_per_kwu = int(250 * fee_rate)
-        return cls.from_sat_per_kwu(sat_per_kwu)
+        return cast(FeeRate, cls.from_sat_per_kwu(sat_per_kwu))
+
+    @classmethod
+    def from_btc_per_kb(cls, fee_rate: float) -> FeeRate:
+        """Create a fee rate from BTC/kB."""
+        sat_per_kwu = round(fee_rate * 25_000_000)
+        return cast(FeeRate, cls.from_sat_per_kwu(sat_per_kwu))
 
     @classmethod
     def to_sats_per_vb(cls, fee_rate: bdk.FeeRate) -> float:

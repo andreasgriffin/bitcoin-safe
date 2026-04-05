@@ -61,7 +61,7 @@ from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
-from ....psbt_util import FeeInfo
+from ....psbt_util import FeeInfo, FeeRate
 from ....pythonbdk_types import OutPoint, PythonUtxo, TransactionDetails, UtxosForInputs
 from ....signals import (
     UpdateFilter,
@@ -671,13 +671,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
 
         wallets = get_wallets(self.wallet_functions)
+        minimum_fee_rate = (
+            FeeRate.to_sats_per_vb(_fee_rate)
+            if (_fee_rate := self.wallet.get_min_broadcast_fee_rate())
+            else MIN_RELAY_FEE
+        )
 
-        if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < MIN_RELAY_FEE:
+        if tx_ui_infos.fee_rate is not None and tx_ui_infos.fee_rate < minimum_fee_rate:
             if question_dialog(
                 self.tr(
                     "Please change the fee rate to be at least {minimum},\n"
                     "otherwise you may not be able to broadcast it."
-                ).format(minimum=format_fee_rate(MIN_RELAY_FEE, network=self.config.network)),
+                ).format(minimum=format_fee_rate(minimum_fee_rate, network=self.config.network)),
                 true_button=self.tr("Change fee rate"),
                 false_button=self.tr("Keep fee rate"),
                 title=self.tr("Fee rate too low"),

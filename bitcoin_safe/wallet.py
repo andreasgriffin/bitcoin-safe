@@ -1912,6 +1912,12 @@ class Wallet(BaseSaveableClass, CacheManager):
         """Return the current chain height, using cache when possible."""
         return self.get_height_no_cache()
 
+    def get_min_broadcast_fee_rate(self) -> FeeRate | None:
+        """Return the backend minimum broadcast fee rate when available."""
+        if not self.client:
+            return None
+        return self.client.get_min_broadcast_fee_rate()
+
     def opportunistic_coin_select(
         self, utxos: list[PythonUtxo], total_sent_value: int, opportunistic_merge_utxos: bool
     ) -> UtxosForInputs:
