@@ -31,10 +31,7 @@ from __future__ import annotations
 
 import inspect
 import logging
-import shutil
-import tempfile
 from datetime import datetime
-from pathlib import Path
 
 import pytest
 from PyQt6.QtCore import QModelIndex, Qt
@@ -48,7 +45,15 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
-from .helpers import Shutter, do_modal_click, fund_wallet, main_window_context, save_wallet
+from ...non_gui.test_signers import test_seeds
+from .helpers import (
+    Shutter,
+    do_modal_click,
+    fund_wallet,
+    main_window_context,
+    save_wallet,
+    setup_single_sig_wallet,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +209,7 @@ def test_address_list_filters_with_funding_and_quick_receive(
     mytest_start_time: datetime,
     test_config: TestConfig,
     faucet: Faucet,
-    wallet_file: str = "0.2.0.wallet",
+    wallet_name: str = "test_address_list_filters_with_funding_and_quick_receive",
 ) -> None:
     """Test funded address updates filters, quick receive, and UTXO selection."""
     frame = inspect.currentframe()
@@ -219,13 +224,15 @@ def test_address_list_filters_with_funding_and_quick_receive(
 
         shutter.save(main_window)
 
-        # Copy the fixture wallet into a temp directory so tests can modify it.
-        temp_dir = Path(tempfile.mkdtemp()) / wallet_file
-        wallet_path = Path("tests") / "data" / wallet_file
-        shutil.copy(str(wallet_path), str(temp_dir))
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name=wallet_name,
+            seed=test_seeds[27],
+        )
 
-        # Open the wallet and wait for quick receive widgets to render.
-        qt_wallet = main_window.open_wallet(str(temp_dir))
         assert isinstance(qt_wallet, QTWallet)
 
         qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
