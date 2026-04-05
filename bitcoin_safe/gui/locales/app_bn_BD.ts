@@ -1399,6 +1399,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} আউটপুট)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>এখানে {count}টি আউটপুট লুকানো আছে যেগুলোর কোনো পরিচিত ওয়ালেট বা লেবেল নেই।</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6586,11 +6598,6 @@ IP: {ip}
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>একটি (কখনও কখনও কাজ করে) server হলো {link} এবং {explorer}-এ একটি block explorer আছে। একটি {faucet} আছে।</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>একটি ভালো বিকল্প হলো {electrum_testnet4} এবং block explorer হিসেবে {explorer_testnet4}। বিনামূল্যে test coin-এর জন্য একটি {faucet} আছে।</translation>
 		</message>
@@ -6611,8 +6618,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>আপনার bitcoind এইভাবে চালান: "bitcoind -chain=signet"  তবে এটি mutinynet.com-এর signet-এর থেকে আলাদা।</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>"bitcoind -chain=signet" দিয়ে আপনার bitcoind চালান</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

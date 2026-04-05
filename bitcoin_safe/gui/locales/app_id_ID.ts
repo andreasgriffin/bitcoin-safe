@@ -1398,6 +1398,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} output)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>{count} output tanpa dompet atau label yang dikenal disembunyikan di sini.</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6606,11 +6618,6 @@ Negara: {country}</translation>
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>(Server yang terkadang berfungsi) adalah {link} dan block explorer di {explorer}. Ada {faucet}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>Pilihan bagus adalah {electrum_testnet4} dan block explorer {explorer_testnet4}. Ada {faucet} untuk koin uji gratis.</translation>
 		</message>
@@ -6631,8 +6638,8 @@ Negara: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>Jalankan bitcoind Anda dengan "bitcoind -chain=signet"  Namun ini adalah signet yang berbeda dari mutinynet.com.</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>Jalankan bitcoind Anda dengan "bitcoind -chain=signet"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

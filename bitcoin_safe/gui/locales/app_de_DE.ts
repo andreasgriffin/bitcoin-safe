@@ -1407,6 +1407,18 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 	</context>
 	<context>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>({count} outputs)</source>
+			<translation>({count} Outputs)</translation>
+		</message>
+		<name>HiddenRecipientsPlaceholder</name>
+		<message>
+			<source>{count} outputs without a known wallet or label are hidden here.</source>
+			<translation>{count} Outputs ohne bekanntes Wallet oder Label sind hier ausgeblendet.</translation>
+		</message>
+	</context>
+	<context>
 		<name>HistList</name>
 		<message>
 			<source>Balance</source>
@@ -6637,11 +6649,6 @@ Land: {country}</translation>
 	<context>
 		<name>net_conf</name>
 		<message>
-			<source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
-			<translation>Ein (manchmal funktionierender) Server ist {link} und ein Block-Explorer auf {explorer}. Es gibt ein {faucet}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
 			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
 			<translation>Eine gute Option ist {electrum_testnet4} und als Block-Explorer {explorer_testnet4}. Es gibt einen {faucet} für kostenlose Testmünzen.</translation>
 		</message>
@@ -6662,8 +6669,8 @@ Land: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  This however is a different signet than mutinynet.com.</source>
-			<translation>Führen Sie Ihren bitcoind mit "bitcoind -chain=signet" aus. Dies ist jedoch ein anderes Signet als mutinynet.com.</translation>
+			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
+			<translation>Starte deinen bitcoind mit "bitcoind -chain=signet"</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
