@@ -368,7 +368,7 @@ def test_wizard(
                 assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
                 # Fund and wait for sync so the receive test passes.
                 faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
-                wait_for_sync(wallet=qt_wallet.wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
+                wait_for_sync(wallet=qt_wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
 
                 # The check button should report the updated balance, then disappear.
                 called_args_message_box = get_called_args_message_box(

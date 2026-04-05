@@ -257,7 +257,7 @@ def test_wizard_multisig(
                 assert address.startswith("bcrt1")
                 # Fund the address and wait for the wallet to sync.
                 faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
-                wait_for_sync(wallet=qt_wallet.wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
+                wait_for_sync(wallet=qt_wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
 
                 # The check button should report the updated balance, then disappear.
                 called_args_message_box = get_called_args_message_box(
