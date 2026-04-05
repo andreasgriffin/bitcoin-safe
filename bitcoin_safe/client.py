@@ -45,6 +45,7 @@ from bitcoin_safe.i18n import translate
 from bitcoin_safe.network_config import ElectrumConfig, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo, clean_electrum_url
 from bitcoin_safe.p2p.peer_discovery import CBF_REQUIRED_SERVICE_FLAGS, PeerDiscovery
+from bitcoin_safe.psbt_util import FeeRate
 
 logger = logging.getLogger(__name__)
 
@@ -257,6 +258,25 @@ class Client:
                 raise
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
+
+    def get_min_broadcast_fee_rate(self) -> FeeRate | None:
+        """Return the backend's minimum broadcast fee rate when available."""
+        try:
+            fee_rate: FeeRate | None = None
+
+            if isinstance(self.client, bdk.ElectrumClient):
+                fee_rate = FeeRate.from_btc_per_kb(self.client.relay_fee())
+            elif isinstance(self.client, CbfSync):
+                if not self.client.client:
+                    return None
+                fee_rate = FeeRate.from_fee_rate(
+                    self.loop_in_thread.run_foreground(self.client.client.min_broadcast_feerate())
+                )
+
+            return fee_rate
+        except Exception as exc:
+            logger.warning(f"Could not determine backend min broadcast fee rate: {exc}")
+            return None
 
     def full_scan(self, full_request: bdk.FullScanRequest, stop_gap: int) -> None:
         """Full scan."""
