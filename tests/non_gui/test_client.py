@@ -27,6 +27,7 @@
 # SOFTWARE.
 #
 
+
 from __future__ import annotations
 
 import asyncio
@@ -35,7 +36,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
+import bitcoin_safe.client as client_module
 from bitcoin_safe.client import Client
+from bitcoin_safe.client_helpers import UpdateInfo
 from bitcoin_safe.psbt_util import FeeRate
 
 
@@ -237,3 +240,44 @@ def test_get_min_broadcast_fee_rate_returns_none_on_cbf_timeout(monkeypatch) -> 
     )
 
     assert client.get_min_broadcast_fee_rate() is None
+
+
+class FakeElectrumClient:
+    def __init__(self) -> None:
+        self.sync_calls: list[dict[str, object]] = []
+
+    def sync(self, request, batch_size: int, fetch_prev_txouts: bool):
+        self.sync_calls.append(
+            {
+                "request": request,
+                "batch_size": batch_size,
+                "fetch_prev_txouts": fetch_prev_txouts,
+            }
+        )
+        return "sync-update"
+
+
+def test_sync_preserves_custom_update_type(loop_in_thread, monkeypatch) -> None:
+    """Client.sync should preserve the caller-provided update type."""
+    fake_electrum_client = FakeElectrumClient()
+    monkeypatch.setattr(client_module.bdk, "ElectrumClient", FakeElectrumClient)
+    client = Client(
+        client=fake_electrum_client,
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
+    )
+
+    request = object()
+    client.sync(request=request, update_type=UpdateInfo.UpdateType.sync_revealed_spks)
+
+    update_info = client._update_queue.get_nowait()
+    assert update_info.update == "sync-update"
+    assert update_info.update_type == UpdateInfo.UpdateType.sync_revealed_spks
+    assert fake_electrum_client.sync_calls == [
+        {
+            "request": request,
+            "batch_size": 100,
+            "fetch_prev_txouts": True,
+        }
+    ]

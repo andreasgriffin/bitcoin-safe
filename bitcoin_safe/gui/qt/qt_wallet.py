@@ -1882,14 +1882,16 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if self.wallet.client:
             self.signal_after_sync.emit(self.wallet.client.sync_status)
 
-        # after the caches are refreshed i can check fast if
-        # the last used address is more than gap distand from the tip
+        # full_scan(..., stop_gap=self.gap) only discovers addresses until it sees gap unused slots in a row.
+        # This wallet can reveal addresses further ahead than that, so after refreshing the caches we check
+        # whether the last currently unused address still sits at least gap entries behind the revealed tip.
+        # If it does, sync all already revealed SPKs once to catch transactions that the stop-gap scan skipped.
+        # That follow-up update is tagged sync_revealed_spks, so it does not re-enter this branch forever.
+        # see https://github.com/bitcoindevkit/bdk/issues/2057
         if (
             update_info.update_type == UpdateInfo.UpdateType.full_sync
             and self.wallet._more_than_gap_revealed_addresses()
         ):
-            # update_info.update_type==UpdateInfo.UpdateType.full_sync prevents infinite loops
-            # because _sync_revealed_spks will emit a update every time (even though there are no new txs)
             self.loop_in_thread.run_task(
                 self._sync_revealed_spks(),
                 on_done=self._sync_on_done,
@@ -1911,7 +1913,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         "Syncs all revealed skps"
         if not self.wallet.client:
             return
-        self.wallet.client.sync(self.wallet.bdkwallet.start_sync_with_revealed_spks().build())
+        self.wallet.client.sync(
+            self.wallet.bdkwallet.start_sync_with_revealed_spks().build(),
+            update_type=UpdateInfo.UpdateType.sync_revealed_spks,
+        )
         self.signal_progress_info.emit(self.wallet.client.progress_info)
         self.signal_refresh_sync_status.emit()
         return None

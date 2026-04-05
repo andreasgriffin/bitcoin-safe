@@ -332,7 +332,9 @@ class Client:
         else:
             raise ValueError("Unknown blockchain client type.")
 
-    def sync(self, request: bdk.SyncRequest) -> None:
+    def sync(
+        self, request: bdk.SyncRequest, update_type: UpdateInfo.UpdateType = UpdateInfo.UpdateType.full_sync
+    ) -> None:
         """Sync."""
         if isinstance(self.client, bdk.ElectrumClient):
             self.start_time = datetime.now()
@@ -344,7 +346,7 @@ class Client:
                 batch_size=100,
                 fetch_prev_txouts=True,
             )
-            update_info = UpdateInfo(update, UpdateInfo.UpdateType.full_sync)
+            update_info = UpdateInfo(update, update_type)
             self.queue_update(update_info)
             return None
 
@@ -357,7 +359,7 @@ class Client:
                 request=request,
                 parallel_requests=2,
             )
-            update_info = UpdateInfo(update, UpdateInfo.UpdateType.full_sync)
+            update_info = UpdateInfo(update, update_type)
             self.queue_update(update_info)
             return None
         elif isinstance(self.client, CbfSync):
