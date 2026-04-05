@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
@@ -36,6 +37,13 @@ import pytest
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.psbt_util import FeeRate
+
+
+def _close_wait_for_coroutine(coroutine) -> None:
+    inner = coroutine.cr_frame.f_locals.get("fut") if coroutine.cr_frame else None
+    if inner and hasattr(inner, "close"):
+        inner.close()
+    coroutine.close()
 
 
 def test_relay_fee_btc_per_kb_to_fee_rate() -> None:
@@ -53,11 +61,16 @@ def test_get_min_broadcast_fee_rate_electrum(monkeypatch) -> None:
 
     monkeypatch.setattr("bitcoin_safe.client.bdk.ElectrumClient", FakeElectrumClient)
 
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_foreground.side_effect = lambda coroutine: (
+        _close_wait_for_coroutine(coroutine),
+        1e-5,
+    )[1]
     client = Client(
         client=FakeElectrumClient(),
         electrum_config=None,
         proxy_info=None,
-        loop_in_thread=MagicMock(),
+        loop_in_thread=loop_in_thread,
     )
 
     fee_rate = client.get_min_broadcast_fee_rate()
@@ -74,11 +87,16 @@ def test_get_min_broadcast_fee_rate_electrum_subsat(monkeypatch) -> None:
 
     monkeypatch.setattr("bitcoin_safe.client.bdk.ElectrumClient", FakeElectrumClient)
 
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_foreground.side_effect = lambda coroutine: (
+        _close_wait_for_coroutine(coroutine),
+        1e-6,
+    )[1]
     client = Client(
         client=FakeElectrumClient(),
         electrum_config=None,
         proxy_info=None,
-        loop_in_thread=MagicMock(),
+        loop_in_thread=loop_in_thread,
     )
 
     fee_rate = client.get_min_broadcast_fee_rate()
@@ -119,7 +137,12 @@ def test_get_min_broadcast_fee_rate_cbf(monkeypatch) -> None:
 
     loop_in_thread = MagicMock()
     loop_in_thread.run_background.side_effect = lambda coroutine, key=None: coroutine.close()
-    loop_in_thread.run_foreground.return_value = FakeFeeRate()
+
+    def run_foreground(coroutine):
+        coroutine.close()
+        return FakeFeeRate()
+
+    loop_in_thread.run_foreground.side_effect = run_foreground
     cbf_sync = FakeCbfSync()
 
     client = Client(
@@ -132,7 +155,7 @@ def test_get_min_broadcast_fee_rate_cbf(monkeypatch) -> None:
     fee_rate = client.get_min_broadcast_fee_rate()
     assert fee_rate is not None
     assert FeeRate.to_sats_per_vb(fee_rate) == pytest.approx(1.0)
-    loop_in_thread.run_foreground.assert_called_once_with("future")
+    loop_in_thread.run_foreground.assert_called_once()
 
 
 def test_get_min_broadcast_fee_rate_returns_none_on_error(monkeypatch) -> None:
@@ -144,11 +167,73 @@ def test_get_min_broadcast_fee_rate_returns_none_on_error(monkeypatch) -> None:
 
     monkeypatch.setattr("bitcoin_safe.client.bdk.ElectrumClient", FakeElectrumClient)
 
+    loop_in_thread = MagicMock()
+
+    def run_foreground(coroutine):
+        _close_wait_for_coroutine(coroutine)
+        raise RuntimeError("boom")
+
+    loop_in_thread.run_foreground.side_effect = run_foreground
     client = Client(
         client=FakeElectrumClient(),
         electrum_config=None,
         proxy_info=None,
-        loop_in_thread=MagicMock(),
+        loop_in_thread=loop_in_thread,
+    )
+
+    assert client.get_min_broadcast_fee_rate() is None
+
+
+def test_get_min_broadcast_fee_rate_returns_none_on_electrum_timeout(monkeypatch) -> None:
+    """Electrum timeout should not leak into the UI."""
+
+    class FakeElectrumClient:
+        def relay_fee(self) -> float:
+            return 1e-5
+
+    monkeypatch.setattr("bitcoin_safe.client.bdk.ElectrumClient", FakeElectrumClient)
+
+    loop_in_thread = MagicMock()
+
+    def run_foreground(coroutine):
+        _close_wait_for_coroutine(coroutine)
+        raise TimeoutError("timed out")
+
+    client = Client(
+        client=FakeElectrumClient(),
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
+    )
+    loop_in_thread.run_foreground.side_effect = run_foreground
+
+    assert client.get_min_broadcast_fee_rate() is None
+
+
+def test_get_min_broadcast_fee_rate_returns_none_on_cbf_timeout(monkeypatch) -> None:
+    """CBF timeout should not leak into the UI."""
+
+    class FakeCbfSync:
+        def __init__(self) -> None:
+            self.client = SimpleNamespace(min_broadcast_feerate=lambda: "future")
+
+    monkeypatch.setattr("bitcoin_safe.client.CbfSync", FakeCbfSync)
+
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_background.side_effect = lambda coroutine, key=None: coroutine.close()
+
+    def run_foreground(coroutine):
+        coroutine.close()
+        raise asyncio.TimeoutError()
+
+    loop_in_thread.run_foreground.side_effect = run_foreground
+    cbf_sync = FakeCbfSync()
+
+    client = Client(
+        client=cbf_sync,
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
     )
 
     assert client.get_min_broadcast_fee_rate() is None
