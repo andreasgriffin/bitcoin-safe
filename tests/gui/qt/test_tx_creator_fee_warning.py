@@ -168,15 +168,22 @@ def test_creator_fee_warning_skips_equal_minimum(
         monkeypatch.setattr(
             qt_wallet.wallet, "get_min_broadcast_fee_rate", lambda: FeeRate.from_float_sats_vB(2.0)
         )
+        qt_wallet.uitx_creator.signal_create_tx.disconnect(qt_wallet.create_psbt)
 
         called = False
+        emitted: list[TxUiInfos] = []
 
         def fake_question_dialog(message: str, **kwargs) -> bool:
             nonlocal called
             called = True
             return True
 
+        def fake_emit(tx_ui_infos: TxUiInfos) -> None:
+            emitted.append(tx_ui_infos)
+
+        qt_wallet.uitx_creator.signal_create_tx.connect(fake_emit)
         monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.question_dialog", fake_question_dialog)
         qt_wallet.uitx_creator.create_tx()
 
         assert not called
+        assert len(emitted) == 1
