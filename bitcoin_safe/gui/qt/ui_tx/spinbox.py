@@ -376,7 +376,7 @@ class FeerateSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         """Initialize instance."""
         super().__init__(parent)
         self.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        self.setSingleStep(1)
+        self.setSingleStep(0.1)
         self.setLocale(QLocale())
 
         # signals
