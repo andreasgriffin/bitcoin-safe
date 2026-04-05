@@ -56,7 +56,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.address_comparer import AddressComparer, FuzzyMatch
 from bitcoin_safe.client import Client
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
-from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.hist_list import ButtonInfoType, button_info
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
@@ -499,12 +499,6 @@ class UITx_Viewer(UITx_Base):
     def fill_button_group(self):
         """Fill button group."""
         self.header_button_group.clear()
-        if not IS_PRODUCTION and not DEMO_MODE:
-            button = QPushButton()
-            button.setText("refresh")
-            button.clicked.connect(partial(self.reload, UpdateFilter(refresh_all=True)))
-            self.header_button_group.addButton(button)
-
         for i in range(self.splitter.count()):
             widget = self.splitter.widget(i)
             if not isinstance(widget, BaseColumn) or not widget.is_available():
