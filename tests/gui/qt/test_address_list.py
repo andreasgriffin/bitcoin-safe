@@ -34,7 +34,11 @@ import logging
 from datetime import datetime
 
 import pytest
-from PyQt6.QtCore import QModelIndex, Qt
+from PyQt6.QtCore import (
+    QCoreApplication,
+    QModelIndex,
+    Qt,
+)
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QLineEdit
 from pytestqt.qtbot import QtBot
@@ -246,6 +250,7 @@ def test_address_list_filters_with_funding_and_quick_receive(
 
         def quick_receive_updated() -> bool:
             # The top quick receive card should now show a different address.
+            QCoreApplication.processEvents()
             return bool(quick_receive.group_boxes) and quick_receive.group_boxes[0].address != initial_receive
 
         qtbot.waitUntil(quick_receive_updated, timeout=10_000)
