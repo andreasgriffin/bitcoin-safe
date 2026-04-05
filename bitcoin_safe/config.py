@@ -72,7 +72,7 @@ class UserConfig(BaseSaveableClass):
         NetworkConfigs.__name__: NetworkConfigs,
         BitcoinSymbol.__name__: BitcoinSymbol,
     }
-    VERSION = "0.2.10"
+    VERSION = "0.2.11"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -259,7 +259,7 @@ class UserConfig(BaseSaveableClass):
                     testnet4_config.electrum_url = testnet4_config.electrum_url or electrum_default.url
                     testnet4_config.electrum_use_ssl = electrum_default.use_ssl
 
-        if fast_version(str(dct["VERSION"])) < fast_version("0.2.10"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.11"):
             # enable labeling of change
             dct["auto_label_change_addresses"] = True
 
