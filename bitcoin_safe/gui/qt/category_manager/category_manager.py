@@ -37,6 +37,7 @@ from PyQt6.QtGui import QKeySequence, QShortcut, QShowEvent
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import (
     CategoryCore,
     prompt_merge_category,
@@ -57,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryManager(QWidget):
-    def __init__(self, config: UserConfig, category_core: CategoryCore, wallet_id: str):
+    def __init__(self, config: UserConfig, fx: FX, category_core: CategoryCore, wallet_id: str):
         """Initialize instance."""
         super().__init__()
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
@@ -68,12 +69,14 @@ class CategoryManager(QWidget):
 
         self.category_list = CategoryList(
             config=config,
+            fx=fx,
             category_core=category_core,
             signals=category_core.signals,
             hidden_columns_enum=[
                 CategoryList.Columns.COLOR,
                 CategoryList.Columns.TXO_BALANCE,
                 CategoryList.Columns.UTXO_BALANCE,
+                CategoryList.Columns.FIAT_UTXO_BALANCE,
                 CategoryList.Columns.UTXO_COUNT,
                 CategoryList.Columns.TXO_COUNT,
             ],

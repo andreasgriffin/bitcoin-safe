@@ -44,6 +44,7 @@ from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QTreeView, QWidget
 
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.drag_info import AddressDragInfo
 from bitcoin_safe.gui.qt.my_treeview import (
@@ -63,7 +64,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryList(MyTreeView[CategoryInfo]):
-    VERSION = "0.0.2"
+    VERSION = "0.0.3"
     known_classes = {
         **BaseSaveableClass.known_classes,
         MyTreeView.__name__: MyTreeView,
@@ -79,6 +80,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         CATEGORY = enum.auto()
         TXO_BALANCE = enum.auto()
         UTXO_BALANCE = enum.auto()
+        FIAT_UTXO_BALANCE = enum.auto()
 
     filter_columns = [
         Columns.ADDRESS_COUNT,
@@ -92,9 +94,10 @@ class CategoryList(MyTreeView[CategoryInfo]):
         Columns.COLOR: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
         Columns.TXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         Columns.UTXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.FIAT_UTXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths: dict[MyTreeView.Columns, int] = {}
+    column_widths: dict[MyTreeView.Columns, int] = {Columns.FIAT_UTXO_BALANCE: 110}
     stretch_column = Columns.CATEGORY
     key_column = Columns.CATEGORY
 
@@ -102,14 +105,17 @@ class CategoryList(MyTreeView[CategoryInfo]):
     def cls_kwargs(
         signals: Signals,
         config: UserConfig,
+        fx: FX,
     ):
         return {
             "signals": signals,
             "config": config,
+            "fx": fx,
         }
 
     def __init__(
         self,
+        fx: FX,
         config: UserConfig,
         signals: Signals,
         category_core: CategoryCore | None = None,
@@ -148,6 +154,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
             _scroll_position=_scroll_position,
         )
         self.category_core = category_core
+        self.fx = fx
 
         self.setTextElideMode(Qt.TextElideMode.ElideRight)
         self._source_model = MyStandardItemModel(
@@ -171,6 +178,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
         # signals
         self.signals.any_wallet_updated.connect(self.update_with_filter)
+        self.fx.signal_data_updated.connect(self.on_update_fx_rates)
 
     def set_category_core(self, category_core: CategoryCore | None):
         """Set category core."""
@@ -179,6 +187,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
 
     def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
         """Get headers."""
+        currency_symbol = self.fx.get_currency_symbol()
         return {
             self.Columns.ADDRESS_COUNT: header_item(self.tr("Addresses")),
             self.Columns.UTXO_COUNT: header_item(
@@ -193,7 +202,12 @@ class CategoryList(MyTreeView[CategoryInfo]):
                 self.tr("Received"), tooltip=self.tr("Total received (possibly already spent again)")
             ),
             self.Columns.UTXO_BALANCE: header_item(self.tr("Balance"), tooltip=self.tr("Current Balance")),
+            self.Columns.FIAT_UTXO_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
         }
+
+    def on_update_fx_rates(self) -> None:
+        """Update fiat values after FX data changes."""
+        self.update_with_filter(UpdateFilter(refresh_all=True, reason=UpdateFilterReason.NewFxRates))
 
     @time_logger
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
@@ -294,6 +308,20 @@ class CategoryList(MyTreeView[CategoryInfo]):
             items[column].setData(balance, MyItemDataRole.ROLE_SORT_ORDER)
             items[column].setData(balance, MyItemDataRole.ROLE_CLIPBOARD_DATA)
 
+        fiat_value = self.fx.btc_to_fiat(key.utxo_balance)
+        fiat_balance_str = (
+            self.fx.fiat_to_str(fiat_value, use_currency_symbol=False) if fiat_value is not None else ""
+        )
+        fiat_color = (
+            self.palette().color(self.foregroundRole())
+            if key.utxo_balance
+            else QColor(255 // 2, 255 // 2, 255 // 2)
+        )
+        items[self.Columns.FIAT_UTXO_BALANCE].setText(fiat_balance_str)
+        items[self.Columns.FIAT_UTXO_BALANCE].setForeground(QBrush(fiat_color))
+        items[self.Columns.FIAT_UTXO_BALANCE].setData(fiat_value, MyItemDataRole.ROLE_SORT_ORDER)
+        items[self.Columns.FIAT_UTXO_BALANCE].setData(fiat_value, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+
         color = category_color(key.category)
         items[self.Columns.COLOR].setText(color.name())
         items[self.Columns.COLOR].setData(color.name(), MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -393,7 +421,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.3"):
             if "hidden_columns_enum" in dct:
                 del dct["hidden_columns_enum"]
 
