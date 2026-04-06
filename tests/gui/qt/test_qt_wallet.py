@@ -67,7 +67,6 @@ def _make_qt_wallet_stub(has_gap_overhang: bool) -> tuple[SimpleNamespace, LoopR
     )
     qt_wallet = SimpleNamespace(
         wallet=wallet,
-        _last_sync_chain_height=0,
         refresh_caches_and_ui_lists=lambda force_ui_refresh, chain_height_advanced: None,
         fx=SimpleNamespace(update_if_needed=lambda: None),
         save=lambda: None,
