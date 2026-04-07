@@ -64,3 +64,4 @@ class UpdateInfo:
 
     update: bdk.Update
     update_type: UpdateType
+    wallet_events: list[bdk.WalletEvent] = field(default_factory=list)

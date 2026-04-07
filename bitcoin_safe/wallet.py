@@ -1308,17 +1308,18 @@ class Wallet(BaseSaveableClass, CacheManager):
         update_info = await self.client.update()
         if not update_info:
             return None
-        self._apply_update(update=update_info.update)
+        wallet_events = self._apply_update(update=update_info.update)
+        update_info.wallet_events = wallet_events
         return update_info
 
-    def _apply_update(self, update: bdk.Update):
+    def _apply_update(self, update: bdk.Update) -> list[bdk.WalletEvent]:
         """Apply a client update to the local wallet caches."""
-        if update:
-            self.bdkwallet.apply_update(update)
+        wallet_events = self.bdkwallet.apply_update_events(update)
 
         self.persist()
 
-        logger.info("Applied update")
+        logger.info(f"Applied update with events {[type(event) for event in wallet_events]}")
+        return wallet_events
 
     def forward_search_unused_address(
         self, category: str | None = None, is_change=False

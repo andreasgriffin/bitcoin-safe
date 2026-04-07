@@ -326,7 +326,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         self._last_syncing_start = datetime.datetime.now()
         self._syncing_delay = timedelta(seconds=0)
-        self._last_sync_chain_height = 0
         self._rows_after_hist_list_update: list[str] = []
 
         ########### create tabs
@@ -1868,15 +1867,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def on_update(self, update_info: UpdateInfo):
         """On update."""
         logger.info(self.tr("start updating lists"))
-        new_chain_height = self.wallet.get_height_no_cache()
-        # self.wallet.clear_cache()
+
         self.refresh_caches_and_ui_lists(
             force_ui_refresh=False,
-            chain_height_advanced=new_chain_height != self._last_sync_chain_height,
+            chain_height_advanced=bool([e for e in update_info.wallet_events if e.is_chain_tip_changed()]),
         )
-        # self.update_tabs()
+
         logger.info(self.tr("finished updating lists"))
-        self._last_sync_chain_height = new_chain_height
 
         self.fx.update_if_needed()
         self.save()
