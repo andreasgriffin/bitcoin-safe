@@ -493,6 +493,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             CategoryList.__name__: CategoryList.cls_kwargs(
                 signals=wallet_functions.signals,
                 config=config,
+                fx=fx,
             ),
         }
         class_kwargs.update(
@@ -1590,7 +1591,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     ) -> tuple[SearchableTab, AddressList, SidebarNode, CategoryManager, AddressListWithToolbar]:
         """Create addresses tab."""
         category_manager = CategoryManager(
-            config=self.config, category_core=self.category_core, wallet_id=self.wallet.id
+            config=self.config, fx=self.fx, category_core=self.category_core, wallet_id=self.wallet.id
         )
 
         if address_list_with_toolbar:

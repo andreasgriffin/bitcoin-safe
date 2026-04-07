@@ -177,6 +177,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         else:
             self.category_list = CategoryList(
                 config=self.config,
+                fx=self.fx,
                 category_core=category_core,
                 signals=self.signals,
             )
