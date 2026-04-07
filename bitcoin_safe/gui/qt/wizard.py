@@ -291,6 +291,7 @@ class BaseTab(QObject):
             cancel_text="",
             parent=refs.container,
         )
+        self.buttonbox.setVisible(False)
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.refs.qtwalletbase.signals.language_switch), self.updateUi
         )
@@ -456,21 +457,6 @@ class BuyHardware(BaseTab):
                 size=12,
             )
         )
-
-        # self.button_buybitbox.setText(self.tr("Buy a {name}").format(name="Bitbox02\nBitcoin Only Edition"))
-        # self.button_buycoldcard.setText(self.tr("Buy a Coldcard Mk4"))
-        # self.button_buy_q.setText(self.tr("Buy a Coldcard Q"))
-        # self.button_buyjade.setText(self.tr("Buy a Blockstream Jade"))
-        # self.label_turn_on.setText(
-        #     html_f(
-        #         self.tr("Buy {n} hardware signers").format(n=self.num_keystores())
-        #         if self.num_keystores() > 1
-        #         else self.tr("Buy the hardware signer"),
-        #         add_html_and_body=True,
-        #         p=True,
-        #         size=12,
-        #     ),
-        # )
 
 
 class StickerTheHardware(BaseTab):
