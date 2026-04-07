@@ -97,7 +97,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         Columns.FIAT_UTXO_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
     }
 
-    column_widths: dict[MyTreeView.Columns, int] = {Columns.FIAT_UTXO_BALANCE: 110}
+    column_widths: dict[MyTreeView.Columns, int] = {}
     stretch_column = Columns.CATEGORY
     key_column = Columns.CATEGORY
 
