@@ -914,10 +914,10 @@ if __name__ == "__main__":
             self._layout = QVBoxLayout(self)
 
             # Buttons to navigate through steps
-            next_button = QPushButton("Next Step")
+            next_button = QPushButton("Next Step", self)
             next_button.clicked.connect(self.next_index)
 
-            prev_button = QPushButton("Previous Step")
+            prev_button = QPushButton("Previous Step", self)
             prev_button.clicked.connect(self.prev_index)
 
             self._layout.addWidget(

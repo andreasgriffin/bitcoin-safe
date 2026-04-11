@@ -130,7 +130,7 @@ class HardwareSigner:
 class HardwareSigners:
     coldcard = HardwareSigner(
         "coldcard",
-        "Coldcard-Mk4",
+        "Coldcard-Mk4/5",
         usb_preferred=False,
         qr_types=[],
         descriptor_export_types=[DescriptorExportTypes.coldcard],
