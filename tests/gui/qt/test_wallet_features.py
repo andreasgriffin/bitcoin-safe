@@ -56,6 +56,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
+from bitcoin_safe.util import filename_clean
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
@@ -367,8 +368,9 @@ def test_wallet_features_multisig(
                                 )
                             else:
                                 # Export to a file (including incomplete extensions).
-                                filename = (
-                                    Path(temp_dir) / f"file_{action.text()}.t"
+                                filename = Path(temp_dir) / filename_clean(
+                                    f"file_{action.text()}",
+                                    file_extension=".t",
                                 )  # check that it also works with incomplete extensions
                                 with patch(
                                     "bitcoin_safe.descriptor_export_tools.save_file_dialog"
