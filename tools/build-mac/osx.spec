@@ -3,7 +3,7 @@
 from pathlib import Path
 import platform
 import site
-from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs, copy_metadata
 from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 from PyInstaller.building.osx import BUNDLE
@@ -71,6 +71,10 @@ datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET4/*", f"{PYPKG}/gui/demo_wallets/TESTNET4"), 
     (f"{PROJECT_ROOT}/{PYPKG}/data/*", f"{PYPKG}/data"), 
 ]
+
+# slip10 reads its version from importlib.metadata at import time, so the
+# bundled app also needs the distribution metadata.
+datas += copy_metadata("slip10")
 
 ##### data of included modules 
 # Get the site-packages directory
