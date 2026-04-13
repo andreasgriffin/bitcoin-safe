@@ -553,9 +553,9 @@ class InitialCbfSyncWidget(QWidget):
         return points
 
     def _refresh_points_and_legend(self) -> None:
-        p2p_hosts = [peer.host for peer in self._p2p_connections]
+        p2p_hosts = [peer.host for peer in tuple(self._p2p_connections)]
         p2p_host_set = set(p2p_hosts)
-        node_hosts = [peer.host for peer in self._nodes if peer.host not in p2p_host_set]
+        node_hosts = [peer.host for peer in tuple(self._nodes) if peer.host not in p2p_host_set]
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
