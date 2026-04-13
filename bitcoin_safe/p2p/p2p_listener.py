@@ -36,6 +36,7 @@ import time
 from asyncio import Queue, QueueEmpty
 from concurrent.futures import Future
 from functools import partial
+from threading import RLock
 from typing import TypeVar, cast
 
 import bdkpython as bdk
@@ -92,7 +93,8 @@ class P2pListener(QObject):
         self.peer_discovery = PeerDiscovery(network=network, loop_in_thread=self.loop_in_thread)
         self.autodiscover_additional_peers = autodiscover_additional_peers
 
-        self.discovered_peers = discovered_peers if discovered_peers else Peers()
+        self._state_lock = RLock()
+        self._discovered_peers = Peers(discovered_peers) if discovered_peers else Peers()
 
         self.signal_tracker = SignalTracker()
         self.clients: list[P2PClient] = []
@@ -104,6 +106,19 @@ class P2pListener(QObject):
         self.signal_tracker.connect(self.signal_disconnected_to, self.on_disconnected_to)
         self.signal_tracker.connect(self.signal_break_current_connection, self._on_break_current_connection)
         self._ensure_clients()
+
+    @property
+    def discovered_peers(self) -> Peers:
+        with self._state_lock:
+            return Peers(self._discovered_peers)
+
+    def _snapshot_active_peers(self) -> set[Peer]:
+        with self._state_lock:
+            return set(self._active_peers)
+
+    def _snapshot_current_connections(self) -> list[ConnectionInfo]:
+        with self._state_lock:
+            return [info for info in self._current_peers.values() if info]
 
     def _build_client(self, slot_id: int) -> P2PClient:
         """Create and wire a P2PClient for the given slot."""
@@ -143,11 +158,12 @@ class P2pListener(QObject):
 
     def _on_current_peer_change(self, slot_id: int, connection_info: ConnectionInfo | None) -> None:
         """Track active peers per slot and emit aggregated changes."""
-        self._current_peers[slot_id] = connection_info
+        with self._state_lock:
+            self._current_peers[slot_id] = connection_info
         self.signal_current_peers_change.emit(self.active_connections)
 
     def get_current_peers(self):
-        return [connection for connection in self._current_peers.values() if connection]
+        return self._snapshot_current_connections()
 
     def on_tx(self, tx: bdk.Transaction):
         """On tx."""
@@ -189,7 +205,8 @@ class P2pListener(QObject):
         if not self.autodiscover_additional_peers:
             weight_dns = 0
 
-        discovered_candidates = [peer for peer in self.discovered_peers if peer not in exclude_peers]
+        with self._state_lock:
+            discovered_candidates = [peer for peer in self._discovered_peers if peer not in exclude_peers]
 
         # Fast paths -------------------------------------------------
         if not discovered_candidates:
@@ -248,7 +265,7 @@ class P2pListener(QObject):
         while not self._stop_requested:
             peer = await self._next_peer_candidate(
                 preferred_queue=preferred_queue,
-                exclude_peers=self._active_peers,
+                exclude_peers=self._snapshot_active_peers(),
             )
             if peer is None:
                 await asyncio.sleep(retry_delay)
@@ -257,7 +274,8 @@ class P2pListener(QObject):
             if peer == previous_peer:
                 await asyncio.sleep(retry_delay)
 
-            self._active_peers.add(peer)
+            with self._state_lock:
+                self._active_peers.add(peer)
             logger.info(f"[slot {slot_id}] Try peer: {peer!r}")
             start_time: float | None = None
 
@@ -279,7 +297,8 @@ class P2pListener(QObject):
                 self.signal_disconnected_to.emit(peer)
                 logger.debug(f"[slot {slot_id}] Connection error with {peer}: {exc}")
             finally:
-                self._active_peers.discard(peer)
+                with self._state_lock:
+                    self._active_peers.discard(peer)
                 await client.disconnect()
 
                 if peer and start_time is not None:
@@ -299,8 +318,9 @@ class P2pListener(QObject):
             task.cancel()
         for client in self.clients:
             self.loop_in_thread.run_background(client.disconnect())
-        self._active_peers.clear()
-        self._current_peers = {i: None for i in range(len(self.clients))}
+        with self._state_lock:
+            self._active_peers.clear()
+            self._current_peers = {i: None for i in range(len(self.clients))}
         self._connection_tasks.clear()
         self.signal_current_peers_change.emit([])
 
@@ -333,14 +353,15 @@ class P2pListener(QObject):
         self._connection_tasks.clear()
         for client in self.clients:
             self.loop_in_thread.run_background(client.disconnect())
-        self._active_peers.clear()
-        self._current_peers = {i: None for i in range(len(self.clients))}
+        with self._state_lock:
+            self._active_peers.clear()
+            self._current_peers = {i: None for i in range(len(self.clients))}
         self.signal_current_peers_change.emit([])
 
     @property
     def active_connections(self) -> list[ConnectionInfo]:
         """List of active connections."""
-        return [info for info in self._current_peers.values() if info]
+        return self._snapshot_current_connections()
 
     def do_fetch_txs(self, client: P2PClient, inventory: Inventory):
         """Do fetch txs."""
@@ -373,8 +394,9 @@ class P2pListener(QObject):
         "Do not keep peers in the list, which disconnected in the past"
         if not self.autodiscover_additional_peers:
             return
-        if peer in self.discovered_peers:
-            self.discovered_peers.remove(peer)
+        with self._state_lock:
+            if peer in self._discovered_peers:
+                self._discovered_peers.remove(peer)
 
     def on_received_peers(self, peers: Peers):
         """On received peers."""
@@ -387,17 +409,15 @@ class P2pListener(QObject):
         # restricting the total is necessary to restrict memory
         maximum_total_peers = 1000
 
-        new_peers: list[Peer] = []
-        for peer in peers:
-            if peer not in self.discovered_peers:
-                new_peers.append(peer)
-
-        new_peers = self._shuffle_and_restrict(new_peers, max_len=maximum_new_peers)
-        self.discovered_peers = self._shuffle_and_restrict(
-            self.discovered_peers + new_peers, max_len=maximum_total_peers
-        )
+        with self._state_lock:
+            new_peers = [peer for peer in peers if peer not in self._discovered_peers]
+            new_peers = self._shuffle_and_restrict(new_peers, max_len=maximum_new_peers)
+            self._discovered_peers = self._shuffle_and_restrict(
+                Peers(self._discovered_peers + new_peers), max_len=maximum_total_peers
+            )
+            discovered_count = len(self._discovered_peers)
         logger.debug(
-            f"Added {len(new_peers)=} peers to discovered_peers and shrunk the size to {len(self.discovered_peers)=}"
+            f"Added {len(new_peers)=} peers to discovered_peers and shrunk the size to {discovered_count=}"
         )
 
     @staticmethod

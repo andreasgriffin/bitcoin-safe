@@ -35,6 +35,7 @@ import random
 import socket
 from contextlib import suppress
 from ipaddress import ip_address
+from threading import RLock
 from typing import Any
 
 import bdkpython as bdk
@@ -200,7 +201,17 @@ class PeerDiscovery:
         self.network = network
         self._loop_in_thread = loop_in_thread or LoopInThread()
         self._owns_loop_in_thread = loop_in_thread is None
-        self.total_discovered_peers: set[Peer] = set()
+        self._state_lock = RLock()
+        self._total_discovered_peers: set[Peer] = set()
+
+    @property
+    def total_discovered_peers(self) -> set[Peer]:
+        with self._state_lock:
+            return set(self._total_discovered_peers)
+
+    def _add_discovered_peers(self, peers: set[Peer]) -> None:
+        with self._state_lock:
+            self._total_discovered_peers.update(peers)
 
     @staticmethod
     def _requires_reachability_probe(seed_host: str) -> bool:
@@ -296,7 +307,7 @@ class PeerDiscovery:
 
         def return_results(results: list[list[Peer]]):
             peers = {peer for batch in results for peer in batch}
-            self.total_discovered_peers.update(peers)
+            self._add_discovered_peers(peers)
             return peers
 
         partial_results: list[list[Peer]] = []

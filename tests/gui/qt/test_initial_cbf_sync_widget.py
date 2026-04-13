@@ -126,3 +126,25 @@ def test_initial_cbf_sync_widget_visual_smoke(
 
     screenshot_path = shutter.save_screenshot(widget, qtbot, shutter.name)
     assert screenshot_path.exists()
+
+
+def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config) -> None:
+    widget = InitialCbfSyncWidget(config=test_config)
+    qtbot.addWidget(widget)
+
+    p2p_connections = [Peer(host="8.8.8.8", port=8333)]
+    nodes = {Peer(host="1.1.1.1", port=8333)}
+    cbf_peer_hosts = ["2606:4700:4700::1111"]
+
+    widget.set_p2p_listener_peers(p2p_connections)
+    widget.set_nodes(nodes)
+    widget.set_cbf_peer_hosts(cbf_peer_hosts)
+    widget.set_cbf_peer_count(1)
+
+    p2p_connections.clear()
+    nodes.clear()
+    cbf_peer_hosts.clear()
+
+    assert "P2P listener peers: 1" in widget.peer_legend_label.textLabel.text()
+    assert "CBF peers: 1" in widget.cbf_legend_label.textLabel.text()
+    assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
