@@ -499,7 +499,7 @@ class InitialCbfSyncWidget(QWidget):
         self._refresh_points_and_legend()
 
     def set_nodes(self, nodes: set[Peer]) -> None:
-        self._nodes = nodes
+        self._nodes = set(nodes)
         self._refresh_points_and_legend()
 
     def set_cbf_peer_hosts(self, peer_hosts: list[str]) -> None:
@@ -553,13 +553,18 @@ class InitialCbfSyncWidget(QWidget):
         return points
 
     def _refresh_points_and_legend(self) -> None:
-        p2p_hosts = [peer.host for peer in tuple(self._p2p_connections)]
+        p2p_connections = tuple(self._p2p_connections)
+        nodes = tuple(self._nodes)
+        cbf_peer_hosts = tuple(self._cbf_peer_hosts)
+        cbf_peer_count = self._cbf_peer_count
+
+        p2p_hosts = [peer.host for peer in p2p_connections]
         p2p_host_set = set(p2p_hosts)
-        node_hosts = [peer.host for peer in tuple(self._nodes) if peer.host not in p2p_host_set]
+        node_hosts = [peer.host for peer in nodes if peer.host not in p2p_host_set]
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
-        cbf_points = self._build_mapped_points(self._cbf_peer_hosts, PeerSource.cbf)
+        cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
 
         self.map_widget.set_points(node_points + p2p_points + cbf_points)
 
@@ -569,7 +574,7 @@ class InitialCbfSyncWidget(QWidget):
                 "<span style='color:{color}'>●</span> P2P listener peers: {total} "
                 "<span style='color:{gray}'>(mapped: {mapped})</span> &nbsp;&nbsp; "
             ).format(
-                total=len(self._p2p_connections),
+                total=len(p2p_connections),
                 mapped=len(p2p_points),
                 color=self.map_widget._P2P_COLOR.name(),
                 gray=gray,
@@ -586,7 +591,7 @@ class InitialCbfSyncWidget(QWidget):
                 "<span style='color:{color}'>●</span> CBF peers: {total} "
                 "<span style='color:{gray}'>(mapped: {mapped})</span>"
             ).format(
-                total=max(self._cbf_peer_count, len(self._cbf_peer_hosts)),
+                total=max(cbf_peer_count, len(cbf_peer_hosts)),
                 mapped=len(cbf_points),
                 color=self.map_widget._CBF_COLOR.name(),
                 gray=gray,
@@ -604,7 +609,7 @@ class InitialCbfSyncWidget(QWidget):
                 "<span style='color:{color}'>●</span> Bitcoin nodes: {total} "
                 "<span style='color:{gray}'>(mapped: {mapped})</span>"
             ).format(
-                total=len(self._nodes),
+                total=len(nodes),
                 mapped=len(node_points),
                 color=self.map_widget._NODE_COLOR.name(),
                 gray=gray,

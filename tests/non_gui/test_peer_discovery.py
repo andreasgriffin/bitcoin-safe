@@ -81,3 +81,15 @@ def test_loopback_peer_is_included_when_reachable(monkeypatch) -> None:
             discovery.stop()
 
     asyncio.run(run())
+
+
+def test_total_discovered_peers_returns_snapshot() -> None:
+    discovery = PeerDiscovery(network=bdk.Network.BITCOIN, loop_in_thread=None)
+    peer = Peer(host="8.8.8.8", port=8333)
+    try:
+        discovery._add_discovered_peers({peer})
+        snapshot = discovery.total_discovered_peers
+        snapshot.clear()
+        assert discovery.total_discovered_peers == {peer}
+    finally:
+        discovery.stop()
