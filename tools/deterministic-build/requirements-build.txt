@@ -501,9 +501,9 @@ platformdirs==4.9.6 \
     #   poetry
     #   python-discovery
     #   virtualenv
-poetry==2.3.3 \
-    --hash=sha256:dbbbd77c3c2782aed85be6f5cb00e7803d1e36376709d58b80f96686e601290b \
-    --hash=sha256:fbffbca25cec43218779b60a1f754916d2f3d54f9642d66cf12729646c36edb7
+poetry==2.3.4 \
+    --hash=sha256:2755806ed8a9f31340ea1b5f0e507da54c96437647ebf2873b6ca349be04e231 \
+    --hash=sha256:b293572d366569360c79d7caa6980c9b404d2b89530ed451a5b4570d248de3af
     # via -r tools/deterministic-build/requirements-build.in
 poetry-core==2.3.2 \
     --hash=sha256:20cb71be27b774628da9f384effd9183dfceb53bcef84063248a8672aa47031f \
@@ -649,9 +649,9 @@ virtualenv==21.2.4 \
     --hash=sha256:29d21e941795206138d0f22f4e45ff7050e5da6c6472299fb7103318763861ac \
     --hash=sha256:b294ef68192638004d72524ce7ef303e9d0cf5a44c95ce2e54a7500a6381cada
     # via poetry
-wheel==0.46.3 \
-    --hash=sha256:4b399d56c9d9338230118d705d9737a2a468ccca63d5e813e2a4fc7815d8bc4d \
-    --hash=sha256:e3e79874b07d776c40bd6033f8ddf76a7dad46a7b8aa1b2787a83083519a1803
+wheel==0.47.0 \
+    --hash=sha256:212281cab4dff978f6cedd499cd893e1f620791ca6ff7107cf270781e587eced \
+    --hash=sha256:cc72bd1009ba0cf63922e28f94d9d83b920aa2bb28f798a31d0691b02fa3c9b3
     # via -r tools/deterministic-build/requirements-build.in
 zstandard==0.25.0 \
     --hash=sha256:011d388c76b11a0c165374ce660ce2c8efa8e5d87f34996aa80f9c0816698b64 \
