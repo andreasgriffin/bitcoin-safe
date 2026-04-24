@@ -579,6 +579,11 @@ The combined parent+child fee rate should meet the target block.</source>
 			<source>UTXOs</source>
 			<translation>UTXOs</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>มูลค่า</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6617,7 +6622,7 @@ IP: {ip}
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>รัน bitcoind ของคุณด้วย "bitcoind -chain=signet"</translation>
+			<translation>รัน bitcoind ของคุณด้วย "bitcoind -chain=signet"  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7097,6 +7102,28 @@ Click here to learn more.</source>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>เวอร์ชันพยาน bech32 ไม่ได้รับการรองรับ</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

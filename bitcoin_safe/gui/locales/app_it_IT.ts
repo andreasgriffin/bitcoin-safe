@@ -581,6 +581,11 @@ La tariffa combinata genitore+figlio dovrebbe soddisfare il blocco target.</tran
 			<source>UTXOs</source>
 			<translation>UTXO's</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Valore</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6643,7 +6648,7 @@ Paese: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Esegui il tuo bitcoind con "bitcoind -chain=signet"</translation>
+			<translation>Esegui il tuo bitcoind con "bitcoind -chain=signet"  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7127,6 +7132,28 @@ Clicca qui per saperne di più.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Versione witness bech32 non supportata.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

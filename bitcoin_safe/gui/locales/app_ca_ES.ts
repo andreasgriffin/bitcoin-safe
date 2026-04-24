@@ -581,6 +581,11 @@ La taxa de comissió combinada pare+fill ha d’assolir el bloc objectiu.</trans
 			<source>UTXOs</source>
 			<translation>UTXO's</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Valor</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6640,7 +6645,7 @@ País: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Executa el teu bitcoind amb "bitcoind -chain=signet"</translation>
+			<translation>Executa el teu bitcoind amb "bitcoind -chain=signet"  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7124,6 +7129,28 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Versió del witness bech32 no compatible.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

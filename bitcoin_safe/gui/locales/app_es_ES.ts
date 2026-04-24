@@ -581,6 +581,11 @@ La tasa de comisión combinada padre+hijo debe cumplir el bloque objetivo.</tran
 			<source>UTXOs</source>
 			<translation>UTXOs</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Valor</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6657,7 +6662,7 @@ País: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Ejecuta tu bitcoind con "bitcoind -chain=signet"</translation>
+			<translation>Ejecuta tu bitcoind con "bitcoind -chain=signet"  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7147,6 +7152,28 @@ Haz clic aquí para saber más.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Versión de witness bech32 no compatible.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

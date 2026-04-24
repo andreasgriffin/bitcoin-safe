@@ -581,6 +581,11 @@ Tarif biaya gabungan induk+anak harus memenuhi target blok.</translation>
 			<source>UTXOs</source>
 			<translation>UTXO</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Nilai</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6639,7 +6644,7 @@ Negara: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Jalankan bitcoind Anda dengan "bitcoind -chain=signet"</translation>
+			<translation>Jalankan bitcoind Anda dengan "bitcoind -chain=signet"  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7123,6 +7128,28 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Versi saksi bech32 tidak didukung.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
