@@ -584,6 +584,11 @@ The combined parent+child fee rate should meet the target block.</source>
 			<source>UTXOs</source>
 			<translation>UTXO</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>价值</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -973,7 +978,7 @@ Default 20</source>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Scan USB devices</source>
-			<translation>扫描USB设备</translation>
+			<translation>扫描 USB 设备</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1013,7 +1018,7 @@ Default 20</source>
 		<name>DeviceDialog</name>
 		<message>
 			<source>scan USB devices</source>
-			<translation>扫描USB设备</translation>
+			<translation>扫描 USB 设备</translation>
 		</message>
 	</context>
 	<context>
@@ -1554,7 +1559,7 @@ since the final size of the transaction is unknown.</source>
 		<name>HorizontalImportExportUSB</name>
 		<message>
 			<source>Sign with USB</source>
-			<translation>使用USB签名</translation>
+			<translation>通过 USB 连接签名</translation>
 		</message>
 	</context>
 	<context>
@@ -2235,7 +2240,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;USB 签名器工具</translation>
+			<translation>&amp;USB 硬件签名器工具</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -6649,7 +6654,7 @@ IP：{ip}
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>使用“bitcoind -chain=signet”运行你的 bitcoind</translation>
+			<translation>使用“bitcoind -chain=signet”运行你的 bitcoind  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7140,6 +7145,28 @@ Click here to learn more.</source>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>不支持的 bech32 见证版本。</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

@@ -581,6 +581,11 @@ Birleşik ebeveyn+çocuk ücret oranı hedef bloğu karşılamalıdır.</transla
 			<source>UTXOs</source>
 			<translation>UTXO'lar</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Değer</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -6640,7 +6645,7 @@ IP: {ip}
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>bitcoind'inizi "bitcoind -chain=signet" ile çalıştırın</translation>
+			<translation>bitcoind'inizi "bitcoind -chain=signet" ile çalıştırın  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7124,6 +7129,28 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Desteklenmeyen bech32 witness sürümü.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

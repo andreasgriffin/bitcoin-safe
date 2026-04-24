@@ -584,6 +584,11 @@ Der kombinierte Eltern-Kind-Tarif sollte dem Zielblock entsprechen.</translation
 			<source>UTXOs</source>
 			<translation>UTXO's</translation>
 		</message>
+		<name>CategoryList</name>
+		<message>
+			<source>Value</source>
+			<translation>Wert</translation>
+		</message>
 	</context>
 	<context>
 		<name>CategoryManager</name>
@@ -5637,12 +5642,12 @@ Land: {country}</translation>
 		<name>bitcoin_quotes</name>
 		<message>
 			<source>Bitcoin Whitepaper</source>
-			<translation>Bitcoin Whitepaper</translation>
+			<translation>Bitcoin-Whitepaper</translation>
 		</message>
 		<name>bitcoin_quotes</name>
 		<message>
 			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
-			<translation>Bitcoin Whitepaper (Nakamoto Institute)</translation>
+			<translation>Bitcoin-Whitepaper (Nakamoto-Institut)</translation>
 		</message>
 		<name>bitcoin_quotes</name>
 		<message>
@@ -6670,7 +6675,7 @@ Land: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Starte deinen bitcoind mit "bitcoind -chain=signet"</translation>
+			<translation>Starte dein bitcoind mit dem Befehl „bitcoind -chain=signet“  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7161,6 +7166,28 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<message>
 			<source>Unsupported bech32 witness version.</source>
 			<translation>Nicht unterstützte Version des bech32 Witness.</translation>
+		</message>
+	</context>
+	<context>
+		<name>trezor</name>
+		<message>
+			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Pair Trezor</source>
+			<translation/>
+		</message>
+		<name>trezor</name>
+		<message>
+			<source>Unlock Trezor</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
