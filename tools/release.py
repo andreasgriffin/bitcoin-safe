@@ -68,7 +68,7 @@ def get_default_description(latest_tag: str):
 ### Check out 
 
 - www.bitcoin-safe.org
-- 🌍 Community forum: [chorus](https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki)
+- 🌍 Community forum: [substr](https://substr.network/s/bitcoin-safe)
 - Follow on [nostr](https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g) or [X](https://x.com/BitcoinSafeOrg)
 
 ####  Verify signature
