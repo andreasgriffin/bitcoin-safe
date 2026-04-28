@@ -1001,11 +1001,11 @@ class MainWindow(UnlockableMainWindow):
         self.menu_show_logs = self.menu_help.add_action("", self.menu_action_show_log)
 
         self.menu_feedback = self.menu_help.add_menu("")
-        self.action_chorus = self.menu_feedback.add_action(
+        self.action_community = self.menu_feedback.add_action(
             "",
             partial(
                 webopen,
-                "https://chorus.community/group/34550%3Af8827954feef0092c8afec0be4cae544a9ed93dce9a365596e75b19aa05f0c84%3Abitcoin-safe-meiqbfki",
+                "https://substr.network/s/bitcoin-safe",
             ),
         )
         self.action_mail_feedback = self.menu_feedback.add_action("", mail_feedback)
@@ -1208,7 +1208,7 @@ class MainWindow(UnlockableMainWindow):
 
         self.menu_feedback.setTitle(self.tr("&Feedback"))
         self.menu_contact.setTitle(self.tr("&Contact"))
-        self.action_chorus.setText(self.tr("&Community forum"))
+        self.action_community.setText(self.tr("&Community forum"))
         self.action_contact_email.setText(self.tr("&Send Email"))
         self.action_contact_via_nostr.setText(self.tr("&Nostr DM"))
         self.action_contact_via_X.setText(self.tr("&X/Twitter DM"))
