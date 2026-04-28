@@ -666,6 +666,22 @@ def caught_exception_message(
     return Message(text, type=MessageType.Error, parent=parent)
 
 
+def normalize_message_box_parent(parent: QWidget | None) -> QWidget | None:
+    """Use the owning top-level window to avoid detached transient windows on macOS."""
+    candidate = parent
+    while candidate is not None and not candidate.isWindow():
+        candidate = candidate.parentWidget()
+
+    if candidate is not None and candidate.isVisible():
+        return candidate
+
+    active_window = QApplication.activeWindow()
+    if active_window is not None and active_window.isVisible():
+        return active_window
+
+    return candidate or parent
+
+
 def custom_message_box(
     *,
     icon: QIcon | QPixmap | QMessageBox.Icon,
@@ -681,10 +697,16 @@ def custom_message_box(
     if not isinstance(icon, (QIcon, QPixmap, QMessageBox.Icon)):
         raise ValueError(f"{icon} is not a valid type")
 
+    parent = normalize_message_box_parent(parent)
+    d = QMessageBox(parent)
+    d.setWindowTitle(title)
+    d.setText(str(text))
+    d.setStandardButtons(buttons)
+
     if isinstance(icon, QMessageBox.Icon):
-        d = QMessageBox(icon, title, str(text), buttons, parent)
+        d.setIcon(icon)
     else:
-        d = QMessageBox(QMessageBox.Icon.Information, title, str(text), buttons, parent)
+        d.setIcon(QMessageBox.Icon.Information)
         pixmap_icon = None
         if isinstance(icon, QPixmap):
             pixmap_icon = icon
