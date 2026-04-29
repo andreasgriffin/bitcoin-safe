@@ -122,7 +122,12 @@ from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
 from .history_range import HistoryRangeController
 from .initial_cbf_sync_widget import InitialCbfSyncWidget
-from .util import Message, MessageType, caught_exception_message
+from .util import (
+    Message,
+    MessageType,
+    caught_exception_message,
+    set_margins,
+)
 from .wallet_balance_chart import WalletBalanceChart
 from .warning_bars import TooSmallGapLimitWarningBar
 
@@ -1482,7 +1487,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         chart_container = QWidget(self)
         chart_container_layout = QVBoxLayout(chart_container)
-        chart_container_layout.setContentsMargins(0, 0, 0, 0)
+        set_margins(
+            chart_container_layout,
+            {
+                Qt.Edge.RightEdge: 5,
+                Qt.Edge.BottomEdge: 5,
+                Qt.Edge.TopEdge: 5,
+            },
+        )
 
         self.quick_receive: BitcoinQuickReceive = BitcoinQuickReceive(
             self.wallet_signals, self.wallet, parent=top_widget, signals_min=self.signals
