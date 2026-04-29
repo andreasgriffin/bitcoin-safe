@@ -466,6 +466,13 @@ class SidebarNode(QFrame, Generic[TT]):
                 self.objectName(),
             )
             return False
+        if self.stack.indexOf(self.widget) == -1:
+            logger.warning(
+                "SidebarNode %s.select(): widget for node %s is no longer in the SidebarTree stack",
+                self.title,
+                self.objectName(),
+            )
+            return False
 
         self._root()._uncheck_all_recursively()
         self.header_row.set_selected(True)
@@ -654,13 +661,28 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def _first_leaf_with_widget(self, must_be_visible=True) -> SidebarNode[TT] | None:
         """First leaf with widget."""
-        if self.widget is not None:
+        if self.widget is not None and (not must_be_visible or self._is_reachable_in_sidebar()):
             return self
         for child in self.child_nodes:
             found = child._first_leaf_with_widget(must_be_visible=must_be_visible)
-            if found and not found.isHidden():
+            if found:
                 return found
         return None
+
+    def _is_reachable_in_sidebar(self) -> bool:
+        """Whether this node's row is reachable in the sidebar structure."""
+        if self.isHidden() or self.hide_header:
+            return False
+
+        node = self.parent_node
+        while node is not None:
+            if node.isHidden():
+                return False
+            if node.child_nodes and (not node.collapsible or not node.expanded):
+                return False
+            node = node.parent_node
+
+        return True
 
     def _find(self, predicate: Callable[[SidebarNode[TT]], bool]) -> SidebarNode[TT] | None:
         """Find."""
@@ -718,7 +740,7 @@ class SidebarNode(QFrame, Generic[TT]):
     def _iter_selectable_leaves(self, must_be_visible: bool = True):
         """Yield leaves that have a widget (and are visible, unless disabled)."""
         if self.widget is not None:
-            if not must_be_visible or not self.isHidden():
+            if not must_be_visible or self._is_reachable_in_sidebar():
                 yield self
         for child in self.child_nodes:
             yield from child._iter_selectable_leaves(must_be_visible=must_be_visible)
@@ -779,13 +801,13 @@ class SidebarNode(QFrame, Generic[TT]):
         # 2) Search siblings *after* the removed node
         for i in range(start, len(siblings)):
             leaf = siblings[i]._first_leaf_with_widget()
-            if leaf and leaf.widget and not leaf.isHidden():
+            if leaf and leaf.widget and leaf._is_reachable_in_sidebar():
                 return leaf.select()
 
         # 3) …then siblings *before* the removed node (reverse order)
         for i in range(start - 1, -1, -1):
             leaf = siblings[i]._first_leaf_with_widget()
-            if leaf and leaf.widget and not leaf.isHidden():
+            if leaf and leaf.widget and leaf._is_reachable_in_sidebar():
                 return leaf.select()
 
         # 4) Nothing on this level – move up and repeat
@@ -1016,7 +1038,7 @@ class SidebarTree(QWidget, Generic[TT]):
                 idx -= 1
                 continue
 
-            if candidate.widget is None or candidate.isHidden():
+            if candidate.widget is None or not candidate._is_reachable_in_sidebar():
                 # Drop stale entries and shift the navigation index left when we remove
                 # an element at or before the current navigation position.
                 self._selection_history.pop(idx)
@@ -1051,7 +1073,7 @@ class SidebarTree(QWidget, Generic[TT]):
         target_index = self._navigation_index + step
         while 0 <= target_index < len(self._selection_history):
             target_node = self._selection_history[target_index]
-            if target_node.widget is None or target_node.isHidden():
+            if target_node.widget is None or not target_node._is_reachable_in_sidebar():
                 # Remove hidden/invalid entries and adjust the index when they sit at or
                 # before the current navigation position.
                 self._selection_history.pop(target_index)
