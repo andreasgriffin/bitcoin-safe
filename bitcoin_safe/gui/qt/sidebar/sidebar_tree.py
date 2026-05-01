@@ -552,7 +552,7 @@ class SidebarNode(QFrame, Generic[TT]):
         # Clear existing trailing buttons (except the sidebar_btn)
         """Rebuild trailing buttons."""
         for btn in list(self.header_row.square_buttons):
-            btn.setParent(None)
+            btn.hide()
         self.header_row.square_buttons.clear()
 
         if self.closable:
@@ -571,7 +571,7 @@ class SidebarNode(QFrame, Generic[TT]):
             self._ensure_toggle_button()
         else:
             if self.toggle_btn:
-                self.toggle_btn.setParent(None)
+                self.toggle_btn.hide()
                 self.toggle_btn = None
 
     def _ensure_toggle_button(self) -> None:
@@ -593,7 +593,7 @@ class SidebarNode(QFrame, Generic[TT]):
             self._ensure_toggle_button()
         else:
             if self.toggle_btn:
-                self.toggle_btn.setParent(None)
+                self.toggle_btn.hide()
                 self.toggle_btn = None
 
     def _sync_content_visibility(self) -> None:
