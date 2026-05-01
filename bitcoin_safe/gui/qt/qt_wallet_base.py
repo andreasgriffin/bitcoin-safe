@@ -88,7 +88,7 @@ class QtWalletBase(WrapperQWidget):
         )  # Left, Top, Right, Bottom margins
 
         # add the tab_widget for  history, utx, send tabs
-        self.tabs = SidebarNode[object](title="", widget=None, data=self, closable=True)
+        self.tabs = SidebarNode[object](title="", widget=None, data=self, closable=True, parent=self)
 
         # self.outer_layout.addWidget(self.tabs)
 

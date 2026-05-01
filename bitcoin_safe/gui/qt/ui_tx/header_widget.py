@@ -36,7 +36,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.ui_tx.height_synced_widget import HeightSyncedWidget
-from bitcoin_safe.gui.qt.util import HLine, set_no_margins, svg_tools
+from bitcoin_safe.gui.qt.util import HLine, SvgTools, set_no_margins, svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +69,8 @@ class HeaderWidget(HeightSyncedWidget):
         self._layout.addLayout(self.h_laylout)
         self._layout.addWidget(HLine())
 
-    def set_icon(self, icon_name: str) -> None:
+    def set_icon(self, icon_name: str, svg_tools_custom: SvgTools | None = None) -> None:
         """Set icon."""
         self.icon_name = icon_name
-        icon = svg_tools.get_QIcon(icon_name)
+        icon = (svg_tools_custom if svg_tools_custom else svg_tools).get_QIcon(icon_name)
         self.icon.setPixmap(icon.pixmap(self._ICON_SIZE, self.devicePixelRatioF()))

@@ -86,18 +86,19 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.client import Client
-from bitcoin_safe.execute_config import DEMO_MODE, DONATION_ADDRESS, IS_PRODUCTION
+from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_tab import UpdateStatus
+from bitcoin_safe.gui.qt.btcpay_web_button import DonateDialog
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, needs_frequent_flag
+from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import NotificationBarCBF
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.password_cache import PasswordCache
-from bitcoin_safe.gui.qt.payment_widget import DonateDialog
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.gui.qt.sidebar.search_sidebar_tree import SearchSidebarTree
 from bitcoin_safe.gui.qt.sidebar.search_wallets import SearchWallets
@@ -118,6 +119,7 @@ from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
+from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPluginRegistry
 from bitcoin_safe.pyqt6_restart import restart_application
 from bitcoin_safe.util import OptExcInfo
 from bitcoin_safe.wallet_util import get_default_categories
@@ -128,12 +130,11 @@ from ...mempool_manager import MempoolManager
 from ...psbt_util import FeeInfo, FeeRate, SimplePSBT
 from ...pythonbdk_types import (
     BlockchainType,
-    Recipient,
     TransactionDetails,
     get_prev_outpoints,
 )
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
+from ...tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
 from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets
@@ -185,6 +186,7 @@ class MainWindow(UnlockableMainWindow):
             logger.debug("UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
         self.config.network = bdk.Network[network.upper()] if network else self.config.network
+        self.external_registry = ExternalPluginRegistry.from_config(self.config)
         self.new_startup_network: bdk.Network | None = None
         self._before_close_was_run = False
         self._was_maximized_before_fullscreen = False
@@ -381,6 +383,55 @@ class MainWindow(UnlockableMainWindow):
         """On currentChanged."""
         self.set_title()
         self.rebuild_current_wallet_tab_menu()
+        self.refresh_plugin_notification_bars()
+
+    def _collect_plugin_notification_bars(self) -> list[NotificationBar]:
+        """Gather plugin notification bars from all loaded wallets."""
+
+        bars: list[NotificationBar] = []
+        for qt_wallet in self.qt_wallets.values():
+            plugin_manager = qt_wallet.plugin_manager
+            if plugin_manager is None:
+                continue
+            for client in plugin_manager.clients:
+                if client.enabled:
+                    bars.extend(client.notification_bars)
+        return bars
+
+    def _existing_plugin_notification_bars(self) -> list[NotificationBar]:
+        """Return plugin notification bars currently in the plugin container."""
+
+        return list(
+            self.plugin_notification_bars_container.findChildren(
+                NotificationBar, options=Qt.FindChildOption.FindDirectChildrenOnly
+            )
+        )
+
+    def refresh_plugin_notification_bars(self) -> None:
+        """Update plugin notification bars shown in the main window."""
+
+        insert_index = self.plugin_notification_bars_layout.count()
+
+        old_plugin_notification_bars = self._existing_plugin_notification_bars()
+
+        for offset, bar in enumerate(self._collect_plugin_notification_bars()):
+            # if already present, leave it in place
+            if bar in old_plugin_notification_bars:
+                old_plugin_notification_bars.remove(bar)
+                continue
+
+            # add new ones after the existing static bars
+            self.plugin_notification_bars_layout.insertWidget(insert_index + offset, bar)
+
+        # remove bars no longer provided by any plugin
+        while old_plugin_notification_bars:
+            bar = old_plugin_notification_bars.pop()
+            bar.setHidden(True)
+            bar.setParent(None)
+            try:
+                self.plugin_notification_bars_layout.removeWidget(bar)
+            except Exception:
+                pass
 
     def set_title(self) -> None:
         """Set title."""
@@ -435,9 +486,19 @@ class MainWindow(UnlockableMainWindow):
 
         # central_widget
         central_widget = QWidget(self)
-        vbox = QVBoxLayout(central_widget)
-        vbox.setSpacing(0)
-        vbox.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self._layout = QVBoxLayout(central_widget)
+        self._layout.setSpacing(0)
+        self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+
+        self.main_notification_bars_container = QWidget(central_widget)
+        self.main_notification_bars_layout = QVBoxLayout(self.main_notification_bars_container)
+        self.main_notification_bars_layout.setSpacing(0)
+        self.main_notification_bars_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.plugin_notification_bars_container = QWidget(central_widget)
+        self.plugin_notification_bars_layout = QVBoxLayout(self.plugin_notification_bars_container)
+        self.plugin_notification_bars_layout.setSpacing(0)
+        self.plugin_notification_bars_layout.setContentsMargins(0, 0, 0, 0)
         # header bar about testnet coins
         self.notification_bar_testnet = NotificationBarRegtest(
             callback_open_network_setting=self.open_network_settings,
@@ -445,7 +506,7 @@ class MainWindow(UnlockableMainWindow):
             signals_min=self.signals,
         )
         if self.config.network != bdk.Network.BITCOIN:
-            vbox.addWidget(self.notification_bar_testnet)
+            self.main_notification_bars_layout.addWidget(self.notification_bar_testnet)
 
         self.notification_bar_cbf = NotificationBarCBF(
             callback_open_network_setting=self.open_network_settings,
@@ -467,7 +528,7 @@ class MainWindow(UnlockableMainWindow):
             # only show this for migrating users.
             # or new users this is anyway
             # or users with unreliable blockstream esplora server
-            vbox.addWidget(self.notification_bar_cbf)
+            self.main_notification_bars_layout.addWidget(self.notification_bar_cbf)
 
         self.update_notification_bar = UpdateNotificationBar(
             signals_min=self.signals,
@@ -481,9 +542,11 @@ class MainWindow(UnlockableMainWindow):
         self.update_notification_bar.signal_restart_requested.connect(partial(self.restart, None))
         self.update_notification_bar.signal_close_requested.connect(self.close)
         self.update_notification_bar.check()
-        vbox.addWidget(self.update_notification_bar)
+        self.main_notification_bars_layout.addWidget(self.update_notification_bar)
 
-        vbox.addWidget(self.sidebar_search_tree)
+        self._layout.addWidget(self.main_notification_bars_container)
+        self._layout.addWidget(self.plugin_notification_bars_container)
+        self._layout.addWidget(self.sidebar_search_tree)
         self.setCentralWidget(central_widget)
 
         self.setMinimumWidth(800)
@@ -495,6 +558,8 @@ class MainWindow(UnlockableMainWindow):
         self.init_menubar()
         self.set_title()
         logger.debug("done setupUi")
+
+        self.refresh_plugin_notification_bars()
 
     def p2p_listening_on_block(self, block_hash: str):
         """P2p listening on block."""
@@ -979,6 +1044,10 @@ class MainWindow(UnlockableMainWindow):
             icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
         )
         self.menu_action_open_hwi_manager.setShortcut(QKeySequence("CTRL+M"))
+        self.menu_action_open_plugins = self.menu_tools.add_action(
+            "",
+            self.select_plugins_tab,
+        )
 
         self.menu_action_check_update = self.menu_tools.add_action(
             "",
@@ -1115,12 +1184,6 @@ class MainWindow(UnlockableMainWindow):
         d.raise_()
         center_on_screen(d)
 
-    def prefill_donate_onchain(self):
-        """Prefill donate onchain."""
-        txinfos = TxUiInfos()
-        txinfos.recipients.append(Recipient(DONATION_ADDRESS, 0, label="Donation to Bitcoin Safe"))
-        self.signals.open_tx_like.emit(txinfos)
-
     def close_current_tab(self):
         """Close current tab."""
         current_node = self.tab_wallets.currentNode()
@@ -1186,6 +1249,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_action_register_multisig.setText(self.tr("&Register Multisig with hardware signers"))
         self.menu_tools.setTitle(self.tr("&Tools"))
         self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
+        self.menu_action_open_plugins.setText(self.tr("&Plugins"))
         self.update_app_lock_action_text()
         self.menu_action_minimize_to_tray.setText(self.tr("&Minimize to tray"))
         self.update_fullscreen_action_text()
@@ -1277,9 +1341,15 @@ class MainWindow(UnlockableMainWindow):
 
         self.menu_current_wallet_tabs.clear()
         self.wallet_tab_shortcut_actions = []
+        self.menu_action_open_plugins.setVisible(bool(self.qt_wallets))
 
         if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
             return
+
+        if plugins_node := qt_wallet.get_plugins_node():
+            plugin_node_icon = plugins_node.icon
+            if plugin_node_icon:
+                self.menu_action_open_plugins.setIcon(plugin_node_icon)
 
         tab_nodes = [node for node in qt_wallet.tabs.child_nodes if node.widget and not node.isHidden()]
 
@@ -1302,6 +1372,14 @@ class MainWindow(UnlockableMainWindow):
             return
 
         qt_wallet.tabs.set_current_tab_by_text(title)
+
+    def select_plugins_tab(self) -> None:
+        """Select the plugins tab for the currently active wallet."""
+
+        if not (qt_wallet := self.get_qt_wallet(if_none_serve_last_active=True)):
+            return
+        if plugins_node := qt_wallet.get_plugins_node():
+            plugins_node.select()
 
     def select_relative_tab(self, delta: int) -> None:
         """Select the next or previous *top-level* tab."""
@@ -1619,12 +1697,17 @@ class MainWindow(UnlockableMainWindow):
             if not qt_wallet:
                 Message(self.tr(" Please open the sender wallet to edit this transaction."), parent=self)
                 return None
-            self.tab_wallets.setCurrentWidget(qt_wallet)
-            qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
 
             ToolsTxUiInfo.pop_change_recipient(txlike, wallet)
 
             qt_wallet.uitx_creator.set_ui(txlike)
+
+            if txlike.auto_create:
+                qt_wallet.uitx_creator.create_tx()
+                return None
+
+            self.tab_wallets.setCurrentWidget(qt_wallet)
+            qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             return None
 
         # try to convert a bytes like object to a string
@@ -1819,6 +1902,7 @@ class MainWindow(UnlockableMainWindow):
         """Open psbt in tab."""
         psbt: bdk.Psbt | None = None
         fee_info: FeeInfo | None = None
+        hidden_tx_infos: HiddenTxUiInfos | None = None
 
         logger.debug(f"tx is of type {type(tx)}")
 
@@ -1833,6 +1917,7 @@ class MainWindow(UnlockableMainWindow):
                         fee_amount_is_estimated=False,
                     )
 
+                hidden_tx_infos = tx.hidden_tx_infos
                 tx = tx.psbt
                 logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
 
@@ -1933,6 +2018,7 @@ class MainWindow(UnlockableMainWindow):
             client=self.get_client_of_any_wallet(),
             data=data,
             parent=self,
+            hidden_tx_infos=hidden_tx_infos,
         )
 
         self.tab_wallets.root.addChildNode(
@@ -2055,6 +2141,7 @@ class MainWindow(UnlockableMainWindow):
                     mempool_manager=self.mempool_manager,
                     fx=self.fx,
                     loop_in_thread=self.loop_in_thread,
+                    external_registry=self.external_registry,
                 )
             except Exception as e:
                 logger.error(f"Wallet load traceback for '{file_path}':\n{traceback.format_exc()}")
@@ -2220,6 +2307,7 @@ class MainWindow(UnlockableMainWindow):
             tutorial_index=tutorial_index,
             parent=self,
             loop_in_thread=self.loop_in_thread,
+            external_registry=self.external_registry,
         )
 
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
@@ -2459,6 +2547,7 @@ class MainWindow(UnlockableMainWindow):
         self.update_all_history_initial_sync_widgets()
 
         self.last_qtwallet = qt_wallet
+        self.refresh_plugin_notification_bars()
         return qt_wallet
 
     def toggle_tutorial(self, qt_wallet: QTWallet | None = None) -> None:
@@ -2571,6 +2660,7 @@ class MainWindow(UnlockableMainWindow):
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
         self.p2p_listening_update_lists(UpdateFilter())
         self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
+        self.refresh_plugin_notification_bars()
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         """Add recently open wallet."""

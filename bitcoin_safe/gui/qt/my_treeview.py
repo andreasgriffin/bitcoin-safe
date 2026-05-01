@@ -583,7 +583,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         config: UserConfig,
         signals: Signals,
         parent: QWidget | None = None,
-        stretch_column: int | None = None,
+        stretch_columns: set[Columns] | None = None,
         column_widths: dict[Columns, int] | None = None,
         editable_columns: Iterable[Columns] | None = None,
         sort_column: int | None = None,
@@ -598,7 +598,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         self._source_model = MyStandardItemModel(key_column=self.key_column, parent=self)
         self.config = config
         self.hidden_columns_enum = set(hidden_columns_enum or set())
-        self.stretch_column = stretch_column
+        self.stretch_columns = stretch_columns if stretch_columns else set()
         self.column_widths = column_widths if column_widths else {}
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
@@ -1094,7 +1094,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         for col_idx in headers:
             sm = (
                 QHeaderView.ResizeMode.Stretch
-                if col_idx == self.stretch_column or col_idx in self.column_widths.keys()
+                if col_idx in self.stretch_columns or col_idx in self.column_widths.keys()
                 else QHeaderView.ResizeMode.ResizeToContents
             )
             header.setSectionResizeMode(int(col_idx), sm)
@@ -1249,6 +1249,32 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
 
         return f"{base_text} {clipboard_text}"
 
+    def _matches_text_filter(self, row_num: int) -> bool:
+        """Return whether a row matches the free-text filter."""
+        if not self.current_filter:
+            return True
+        return any(
+            self.current_filter in self.get_filter_data_from_coordinate(row_num, column)
+            for column in self.filter_columns
+        )
+
+    def _matches_row_filters(self, row_num: int) -> bool:
+        """Return whether a row matches subclass-specific row filters."""
+        return True
+
+    def _compute_base_hidden_rows(self) -> set[int]:
+        """Return source-model rows hidden by bulk-computed filters."""
+        return set()
+
+    def recompute_base_hidden_rows(self) -> None:
+        """Recompute cached bulk hidden rows for the current model."""
+        self.base_hidden_rows = self._compute_base_hidden_rows()
+
+    def refresh_filters(self) -> list[bool]:
+        """Recompute bulk filters and refresh row visibility."""
+        self.recompute_base_hidden_rows()
+        return self.hide_rows()
+
     def any_needs_frequent_flag(self) -> bool:
         """Any needs frequent flag."""
         for row in range(0, self._source_model.rowCount()):
@@ -1269,19 +1295,12 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
             return False
 
         proxy_row = proxy_index.row()
+        if not is_now_hidden:
+            is_now_hidden = not self._matches_text_filter(row_num)
+        if not is_now_hidden:
+            is_now_hidden = not self._matches_row_filters(row_num)
 
-        if not self.current_filter:
-            self.setRowHidden(proxy_row, QModelIndex(), is_now_hidden)
-            return is_now_hidden
-
-        for column in self.filter_columns:
-            filter_data = self.get_filter_data_from_coordinate(row_num, column)
-            if self.current_filter in filter_data:
-                self.setRowHidden(proxy_row, QModelIndex(), is_now_hidden)
-                break
-        else:
-            is_now_hidden = True
-            self.setRowHidden(proxy_row, QModelIndex(), True)
+        self.setRowHidden(proxy_row, QModelIndex(), is_now_hidden)
 
         return is_now_hidden
 
@@ -1318,6 +1337,15 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         if a0 and a0.isAccepted() and self._pending_update:
             self._forced_update = True
             self.update_content()
+            self._forced_update = False
+
+    def force_full_ui_creation(self) -> None:
+        """Force the underlying model to materialize even when hidden."""
+        self._forced_update = True
+        self._pending_update = False
+        try:
+            self.update_content()
+        finally:
             self._forced_update = False
 
     def maybe_defer_update(self) -> bool:
@@ -1499,6 +1527,7 @@ class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
         self.sortByColumn(self._current_column, self._current_order)
 
         # show/hide self.Columns (must be befoe restoring header)
+        self.recompute_base_hidden_rows()
         self.filter()
 
         header = self.header()
@@ -1685,6 +1714,14 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
         self.toolbar.addWidget(self.search_edit)
         self.toolbar.addWidget(toolbar_button)
         self.fill_menu_hiddden_columns()
+
+    def insert_filter_widget(self, widget: QWidget) -> None:
+        """Insert a filter widget before the search field."""
+        self.toolbar.insertWidget(self.toolbar.count() - 2, widget)
+
+    def insert_leading_toolbar_widget(self, widget: QWidget) -> None:
+        """Insert a widget at the start of the toolbar."""
+        self.toolbar.insertWidget(0, widget)
 
     def fill_menu_hiddden_columns(self):
         """Fill menu hiddden columns."""

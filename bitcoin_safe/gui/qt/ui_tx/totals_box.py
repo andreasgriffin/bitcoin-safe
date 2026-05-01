@@ -36,6 +36,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
+from bitcoin_safe.constants import INFINITE_SYMBOL, INFINITE_SYMBOL_TYPE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.ui_tx.height_synced_widget import HeightSyncedWidget
 from bitcoin_safe.gui.qt.util import HLine, set_no_margins
@@ -85,7 +86,7 @@ class CurrencySection(QWidget):
         """Set fiat currency override."""
         self.currency_iso = FX.sanitize_key(currency_iso) if currency_iso else None
 
-    def set_amount(self, amount: int | None):
+    def set_amount(self, amount: int | None | INFINITE_SYMBOL_TYPE):
         """Set amount."""
         l1 = self.l1
         l2 = self.l2
@@ -93,9 +94,20 @@ class CurrencySection(QWidget):
         l2_currency = self.l2_currency
         currency_iso = self.currency_iso
 
+        if isinstance(amount, str):
+            l1.hide()
+            l1_currency.hide()
+            l2_currency.hide()
+
+            l2.setHidden(False)
+            l2.setText(INFINITE_SYMBOL)
+            return
+
         l1.setHidden(amount is None)
         l2.setHidden(amount is None)
-        if amount is not None:
+        l1_currency.setHidden(amount is None)
+        l2_currency.setHidden(amount is None)
+        if isinstance(amount, int):
             fiat_amount = self.fx.btc_to_fiat(amount=amount, currency=currency_iso)
             l1.setHidden(fiat_amount is None)
             l1_currency.setHidden(fiat_amount is None)
@@ -171,7 +183,7 @@ class TotalsBox(HeightSyncedWidget):
 
         self.setLayout(self._layout)
 
-    def set_amount(self, amount: int | None, alignment=Qt.Edge.RightEdge):
+    def set_amount(self, amount: int | None | INFINITE_SYMBOL_TYPE, alignment=Qt.Edge.RightEdge):
         """Set amount."""
         if alignment == Qt.Edge.LeftEdge:
             c = self.c1

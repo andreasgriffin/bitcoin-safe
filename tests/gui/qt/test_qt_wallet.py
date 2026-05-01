@@ -98,3 +98,25 @@ def test_on_update_resyncs_revealed_spks_only_after_full_sync(update_type, expec
     )
 
     assert len(loop_in_thread.calls) == expected_runs
+
+
+def test_notify_sync_error_only_emits_once_until_success() -> None:
+    notifications: list[object] = []
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(id="wallet-1"),
+        signals=SimpleNamespace(
+            notification=SimpleNamespace(emit=lambda message: notifications.append(message))
+        ),
+        _has_unacknowledged_sync_error=False,
+        tr=lambda message: message,
+    )
+
+    QTWallet._notify_sync_error(qt_wallet, RuntimeError("offline"))
+    QTWallet._notify_sync_error(qt_wallet, RuntimeError("offline"))
+
+    assert len(notifications) == 1
+
+    QTWallet._sync_on_success(qt_wallet, result=None)
+    QTWallet._notify_sync_error(qt_wallet, RuntimeError("offline again"))
+
+    assert len(notifications) == 2

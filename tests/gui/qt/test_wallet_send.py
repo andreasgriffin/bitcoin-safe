@@ -36,6 +36,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
@@ -56,15 +57,19 @@ from bitcoin_safe.tx import TxUiInfos
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
+from ...non_gui.test_signers import test_seeds
+from ...util import wait_for_sync
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
     close_wallet,
     fund_wallet,
     main_window_context,
+    setup_single_sig_wallet,
 )
 
 SEND_TEST_WALLET_FUND_AMOUNT = 10000000
+SEND_TEST_SEED_INDEX = 98
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +113,6 @@ def test_wallet_send(
     test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
-    wallet_file: str = "send_test.wallet",
 ) -> None:
     """Test wallet send."""
     frame = inspect.currentframe()
@@ -123,14 +127,16 @@ def test_wallet_send(
 
         shutter.save(main_window)
 
-        # Copy a fixture wallet so the test can mutate it safely.
-        temp_dir = Path(tempfile.mkdtemp()) / wallet_file
-        wallet_path = Path("tests") / "data" / wallet_file
-        shutil.copy(str(wallet_path), str(temp_dir))
-
-        # Open the wallet from the temp path.
-        qt_wallet = main_window.open_wallet(str(temp_dir))
-        assert qt_wallet
+        wallet_name = f"test_wallet_send_{uuid4().hex}"
+        wallet_file = f"{wallet_name}.wallet"
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name=wallet_name,
+            seed=test_seeds[SEND_TEST_SEED_INDEX],
+        )
 
         def do_all(qt_wallet: QTWallet) -> None:
             # Keep all operations in one scope to avoid lingering references to qt_wallet.
@@ -138,11 +144,10 @@ def test_wallet_send(
             qt_wallet.tabs.setCurrentWidget(qt_wallet.address_tab)
 
             shutter.save(main_window)
-            # Check wallet address matches the fixture.
-            assert qt_wallet.wallet.get_addresses()[0] == "bcrt1q3y9dezdy48czsck42q5udzmlcyjlppel5eg92k"
+            assert qt_wallet.wallet.get_balance().total == 0
 
             # Fund the wallet to enable UTXO selection and send flows.
-            fund_wallet(
+            funded_address = fund_wallet(
                 qt_wallet=qt_wallet,
                 amount=SEND_TEST_WALLET_FUND_AMOUNT,
                 faucet=faucet,
@@ -154,7 +159,7 @@ def test_wallet_send(
                 address_list = qt_wallet.address_list
                 wallet = qt_wallet.wallet
 
-                target_address = wallet.get_addresses()[0]
+                target_address = funded_address
                 grouped_addresses: dict[str, list[str]] = {wallet.id: [target_address]}
 
                 captured: list[TxUiInfos] = []
@@ -267,7 +272,6 @@ def test_wallet_send(
                 assert r.label == "2"
 
                 r = sorted_recipients[2]
-                assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
                 assert r.address == qt_wallet.wallet.get_change_addresses()[0]
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
@@ -316,7 +320,6 @@ def test_wallet_send(
                 assert r.label == "2"
 
                 r = sorted_recipients[2]
-                assert r.address == "bcrt1qdcn67p707adhet4a9lh6pt8m5h4yjjf2nayqlq"
                 assert r.address == qt_wallet.wallet.get_change_addresses()[0]
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
@@ -324,6 +327,12 @@ def test_wallet_send(
                 # Broadcast the transaction and wait for wallet update.
                 with qtbot.waitSignal(qt_wallet.wallet_signals.updated, timeout=60_000):
                     ui_tx_viewer.button_send.click()
+                wait_for_sync(
+                    wallet=qt_wallet,
+                    txid=ui_tx_viewer.txid(),
+                    timeout=60_000,
+                    qtbot=qtbot,
+                )
 
                 shutter.save(main_window)
                 qt_wallet_tab = main_window.tab_wallets.currentNode().parent_node.data
@@ -332,13 +341,15 @@ def test_wallet_send(
 
                 # Check the tx is present in the history list model.
                 model = qt_wallet_tab.history_list._source_model
-                for row in range(model.rowCount()):
-                    index = model.index(row, model.key_column)
-                    this_content = model.data(index, MyItemDataRole.ROLE_KEY)
-                    if this_content == ui_tx_viewer.txid():
-                        break
-                else:
-                    raise Exception("tx not found in hist list")
+
+                def history_contains_tx() -> bool:
+                    for row in range(model.rowCount()):
+                        index = model.index(row, model.key_column)
+                        if model.data(index, MyItemDataRole.ROLE_KEY) == ui_tx_viewer.txid():
+                            return True
+                    return False
+
+                qtbot.waitUntil(history_contains_tx, timeout=10_000)
 
             send_tx()
 

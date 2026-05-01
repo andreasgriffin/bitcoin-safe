@@ -33,13 +33,15 @@ import json
 import logging
 import os
 import shutil
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 import appdirs
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
-from bitcoin_safe_lib.storage import BaseSaveableClass, Encrypt
+from bitcoin_safe_lib.storage import BaseSaveableClass, Encrypt, SaveAllClass
 from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import QCoreApplication
 
@@ -66,13 +68,36 @@ APP_LOCK_ENCRYPT_ITERATIONS = 600_000
 APP_LOCK_VERIFIER_MESSAGE = b"bitcoin-safe-app-lock-verifier"
 
 
+@dataclass
+class BtcPayInvoiceDetails(SaveAllClass):
+    """Container for invoice details discovered on the payment page."""
+
+    amount: int | None
+    url: str | None
+    bitcoin_address: str | None
+    paid: bool = False
+    id: str = field(default_factory=lambda: str(uuid4()))
+
+    known_classes = {**SaveAllClass.known_classes}
+    VERSION = "0.0.3"
+
+    @classmethod
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        """From dump migration."""
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.3"):
+            dct["amount"] = 0
+            dct["url"] = None
+        return super().from_dump_migration(dct=dct)
+
+
 class UserConfig(BaseSaveableClass):
     known_classes = {
         **BaseSaveableClass.known_classes,
         NetworkConfigs.__name__: NetworkConfigs,
         BitcoinSymbol.__name__: BitcoinSymbol,
+        BtcPayInvoiceDetails.__name__: BtcPayInvoiceDetails,
     }
-    VERSION = "0.2.11"
+    VERSION = "0.3.3"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -104,6 +129,7 @@ class UserConfig(BaseSaveableClass):
         self.currency: str = "USD"
         self.bitcoin_symbol: BitcoinSymbol = BitcoinSymbol.ISO
         self.rates: dict[str, dict[str, Any]] = {}
+        self.historical_rates: dict[float, dict[str, float]] = {}
         self.last_tab_title: list[str] = []
         self.auto_label_change_addresses: bool = True
         self.app_lock_password_hash: str | None = None
@@ -155,6 +181,9 @@ class UserConfig(BaseSaveableClass):
     def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> UserConfig:
         """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
+        dct["historical_rates"] = {
+            float(timestamp): rates for timestamp, rates in dct.get("historical_rates", {}).items()
+        }
         dct["recently_open_wallets"] = {
             bdk.Network._member_map_[k]: UniqueDeque(v, maxlen=RECENT_WALLET_MAXLEN)
             for k, v in dct.get(
@@ -244,6 +273,9 @@ class UserConfig(BaseSaveableClass):
 
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.5"):
             dct["last_tab_title"] = []
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.6"):
+            # disable labeling of change
+            dct["auto_label_change_addresses"] = False
 
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.6"):
             # disable labeling of change
@@ -262,6 +294,7 @@ class UserConfig(BaseSaveableClass):
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.11"):
             # enable labeling of change
             dct["auto_label_change_addresses"] = True
+        dct.setdefault("historical_rates", {})
 
         return super().from_dump_migration(dct=dct)
 

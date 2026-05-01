@@ -40,7 +40,11 @@ from types import TracebackType
 from bitcoin_safe_lib.util_os import xdg_open_file
 
 from bitcoin_safe import __version__
+from bitcoin_safe.plugin_framework.plugin_diagnostics import (
+    format_external_plugin_diagnostics_as_text,
+)
 
+from .constants import CONTACT_EMAIL
 from .simple_mailer import compose_email
 
 
@@ -74,13 +78,12 @@ def get_system_info_as_text() -> str:
 
 def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     """Text error report."""
-    email = "andreasgriffin@proton.me"
     subject = f"Error report - Bitcoin Safe Version: {__version__}"
     body = ""
     if file_path:
         body += f"You can see the full logfile at: {file_path}\n\n"
 
-    body += f"Please email this to: {email}\n\n"
+    body += f"Please email this to: {CONTACT_EMAIL}\n\n"
     body += f"{subject}\n\n"
     body += f"""Error:
             {error_report}
@@ -88,38 +91,37 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
 
     # Write additional system info if needed
     body += get_system_info_as_text()
+    body += format_external_plugin_diagnostics_as_text()
     return body
 
 
 def mail_error_repot(error_report: str) -> None:
     """Mail error repot."""
-    email = "andreasgriffin@proton.me"
     subject = f"Error report - Bitcoin Safe Version: {__version__}"
     body = f"""Error:
             {error_report}
             """.replace("    ", "")
 
     body += get_system_info_as_text()
-    return compose_email(email, subject, body)
+    body += format_external_plugin_diagnostics_as_text()
+    return compose_email(CONTACT_EMAIL, subject, body)
 
 
 def mail_feedback() -> None:
     """Mail feedback."""
-    email = "andreasgriffin@proton.me"
     subject = f"Feedback - Bitcoin Safe Version: {__version__}"
     body = ""
 
     body += get_system_info_as_text()
-    return compose_email(email, subject, body)
+    return compose_email(CONTACT_EMAIL, subject, body)
 
 
 def mail_contact() -> None:
     """Mail feedback."""
-    email = "andreasgriffin@proton.me"
     subject = "Contact"
     body = ""
 
-    return compose_email(email, subject, body)
+    return compose_email(CONTACT_EMAIL, subject, body)
 
 
 class RelativePathFormatter(logging.Formatter):

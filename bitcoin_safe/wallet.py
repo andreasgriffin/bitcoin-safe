@@ -2139,6 +2139,9 @@ class Wallet(BaseSaveableClass, CacheManager):
             recipient_category=recipient_category,
             fee_rate=txinfos.fee_rate,
         )
+        if txinfos.tx_label:
+            txid_str = str(builder_infos.psbt.extract_tx().compute_txid())
+            self.labels.set_tx_label(txid_str, txinfos.tx_label, timestamp="now")
         return builder_infos
 
     def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
@@ -2229,6 +2232,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             recipient_category=recipient_category,
             fee_rate=txinfos.fee_rate,
         )
+        builder_infos.hidden_tx_infos = txinfos.hidden
 
         tx = builder_infos.psbt.extract_tx()
         self.set_addresses_category_if_unused(
@@ -2242,6 +2246,10 @@ class Wallet(BaseSaveableClass, CacheManager):
         )
         self._set_recipient_address_labels(builder_infos.recipients)
         self._set_labels_for_change_outputs(builder_infos)
+
+        if txinfos.tx_label:
+            txid_str = str(builder_infos.psbt.extract_tx().compute_txid())
+            self.labels.set_tx_label(txid_str, txinfos.tx_label, timestamp="now")
 
         # self._label_txid_by_recipient_labels(builder_infos)
         return builder_infos

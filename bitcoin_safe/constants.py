@@ -29,6 +29,11 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 # change the min relay fee rate to 0.1, once core >=v30 is adopted by most (including electrum servers)
 MIN_RELAY_FEE = 1.0
 LOCAL_TX_LAST_SEEN = 0
+INFINITE_SYMBOL_TYPE = Literal["∞"]
+INFINITE_SYMBOL: INFINITE_SYMBOL_TYPE = "∞"
+CONTACT_EMAIL = "andreasgriffin@proton.me"

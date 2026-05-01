@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from collections.abc import Sequence
 from typing import cast
@@ -192,3 +193,25 @@ def min_blockheight(address_type: AddressType, network: bdk.Network) -> int:
 
     # Fallback
     return 0
+
+
+def generate_hash_hex(
+    address_type: AddressType,
+    xpubs: list[str],
+    network: bdk.Network,
+) -> str:
+    """Generate hash hex."""
+    default_key_origin = address_type.key_origin(network)
+
+    total_string = default_key_origin + "".join(sorted(xpubs))
+    return hashlib.sha256(total_string.encode()).hexdigest()
+
+
+def hash_from_descriptor(
+    multipath_descriptor: bdk.Descriptor, network: bdk.Network, additional_string: str = ""
+):
+    descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
+    xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
+    return hashlib.sha256(
+        (generate_hash_hex(descriptor_info.address_type, xpubs, network) + additional_string).encode("utf-8")
+    ).hexdigest()

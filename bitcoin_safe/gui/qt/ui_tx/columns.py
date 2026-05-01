@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import logging
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QSignalBlocker, Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
@@ -44,13 +45,12 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
 from bitcoin_safe.gui.qt.nlocktime_group_box import NLocktimeGroupBox
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
 from bitcoin_safe.gui.qt.ui_tx.fee_group import FeeGroup
-from bitcoin_safe.gui.qt.ui_tx.header_widget import HeaderWidget
-from bitcoin_safe.gui.qt.ui_tx.totals_box import TotalsBox
 from bitcoin_safe.gui.qt.util import (
     set_margins,
     set_no_margins,
@@ -64,45 +64,10 @@ from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
 from ....mempool_manager import MempoolManager
 from ....signals import WalletFunctions
+from .base_column import BaseColumn
 from .recipients import Recipients
 
 logger = logging.getLogger(__name__)
-
-
-class BaseColumn(QWidget):
-    def __init__(
-        self,
-        fx: FX,
-        parent: QWidget | None = None,
-    ) -> None:
-        """Initialize instance."""
-        super().__init__(parent)
-
-        self._layout = QVBoxLayout(self)
-
-        self.header_widget = HeaderWidget(self)
-        self._layout.addWidget(self.header_widget)
-
-        # bottom bar
-        self.totals = TotalsBox(fx=fx, network=fx.config.network)
-        self._layout.addWidget(self.totals)
-        set_margins(self.totals._layout, {Qt.Edge.BottomEdge: 0})
-
-    def updateUi(self) -> None:
-        """UpdateUi."""
-        pass
-
-    def insert_middle_widget(self, widget: QWidget, **kwargs):
-        """Insert middle widget."""
-        self._layout.insertWidget(1, widget, **kwargs)
-
-    def is_available(self) -> bool:
-        """Is available."""
-        return True
-
-    def close(self) -> bool:
-        self.totals.close()
-        return super().close()
 
 
 class ColumnInputs(BaseColumn):
@@ -193,6 +158,8 @@ class ColumnRecipients(BaseColumn):
         self,
         wallet_functions: WalletFunctions,
         fx: FX,
+        config: UserConfig,
+        loop_in_thread: LoopInThread,
         allow_edit=True,
         parent: QWidget | None = None,
     ) -> None:

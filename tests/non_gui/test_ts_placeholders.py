@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import re
+import warnings
 import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
@@ -82,6 +83,7 @@ def test_ts_placeholder_parity() -> None:
     assert ts_files, "No translation files found"
 
     errors = []
+    warnings_to_emit: list[str] = []
     for ts_path in ts_files:
         tree = ET.parse(ts_path)
         root = tree.getroot()
@@ -91,6 +93,13 @@ def test_ts_placeholder_parity() -> None:
             translation_placeholders = _collect_placeholders(translation_text)
 
             if source_placeholders != translation_placeholders:
+                if not translation_text.strip():
+                    warnings_to_emit.append(
+                        f"{ts_path.name}::{context_name}\n"
+                        f"  source: {source_text}\n"
+                        "  translation missing; skipping placeholder parity failure"
+                    )
+                    continue
                 # Record mismatch and clear the translation to force review.
                 errors.append(
                     f"{ts_path.name}::{context_name}\n"
@@ -107,5 +116,7 @@ def test_ts_placeholder_parity() -> None:
         if file_modified:
             # Persist cleared translations to keep files consistent.
             tree.write(ts_path, encoding="utf-8", xml_declaration=True)
+    for warning_message in warnings_to_emit:
+        warnings.warn(warning_message, stacklevel=2)
     if errors:
         pytest.fail("Mismatching curly-brace placeholders:\n\n" + "\n\n".join(errors))

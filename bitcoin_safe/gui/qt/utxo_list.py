@@ -202,7 +202,7 @@ class UTXOList(MyTreeView[OutPoint]):
         """
         super().__init__(
             config=config,
-            stretch_column=self.stretch_column,
+            stretch_columns={self.stretch_column},
             column_widths=self.column_widths,
             editable_columns=[],
             signals=wallet_functions.signals,
@@ -481,7 +481,6 @@ class UTXOList(MyTreeView[OutPoint]):
         if isinstance(header := self.header(), QHeaderView):
             header.setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.ResizeMode.Interactive)
 
-        self.update_base_hidden_rows()
         self._after_update_content()
         super().update_content()
 
@@ -582,23 +581,20 @@ class UTXOList(MyTreeView[OutPoint]):
         if categories == self.current_categories_filter:
             return
         self.current_categories_filter = categories
-        self.update_base_hidden_rows()
-        self.filter()
+        self.refresh_filters()
 
-    def update_base_hidden_rows(self):
-        """Update base hidden rows."""
-        self.base_hidden_rows.clear()
-
-        hidden_rows_category = set()
+    def _compute_base_hidden_rows(self) -> set[int]:
+        """Return source rows hidden by the category filter."""
+        hidden_rows: set[int] = set()
 
         model = self._source_model
         for row in range(model.rowCount()):
             category = model.data(model.index(row, self.Columns.CATEGORY))
 
             if self.current_categories_filter is not None and category not in self.current_categories_filter:
-                hidden_rows_category.add(row)
+                hidden_rows.add(row)
 
-        self.base_hidden_rows.update(hidden_rows_category)
+        return hidden_rows
 
 
 class UtxoListWithToolbar(TreeViewWithToolbar):

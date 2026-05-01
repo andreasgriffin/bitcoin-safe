@@ -56,23 +56,6 @@ def outpoint_match(tx: bdk.Transaction, outpoint_filter: set[str]) -> bool:
     return False
 
 
-def output_addresses_values(
-    transaction: bdk.Transaction, network: bdk.Network
-) -> list[tuple[str, int | None]]:
-    # print(f'Getting output addresses for txid {transaction.txid}')
-    """Output addresses values."""
-    columns: list[tuple[str, int | None]] = []
-    for output in transaction.output():
-        try:
-            add = "" if output.value == 0 else str(bdk.Address.from_script(output.script_pubkey, network))
-            value = output.value.to_sat()
-        except Exception:
-            add = ""
-            value = None
-        columns.append((add, value))
-    return columns
-
-
 def transaction_table(tx: bdk.Transaction, network: bdk.Network, op_return_limit: int | None = None):
     """Transaction table."""
     try:

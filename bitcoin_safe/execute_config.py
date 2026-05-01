@@ -40,6 +40,11 @@ DEFAULT_LANG_CODE = "en_US"
 MEMPOOL_SCHEDULE_TIMER = 10 * 60 * 1000 if IS_PRODUCTION else 1 * 60 * 1000
 GENERAL_RBF_AVAILABLE = False
 DONATION_ADDRESS = "bc1qs8vxaclc0ncf92nrhc4rcdgppwganny6mpn9d4"
+DONATION_ADDRESS_regtest = "bcrt1qf45vu6275sm4wy96q5xeqmzg75f88tlpa66x39"
+DONATION_ADDRESS_signet = "tb1qsvzljjcsffvzmp5eat33jyz7umj2z678wul04s"
+DONATION_ADDRESS_testnet4 = "tb1qkuhpcjhq05p5xmupydgw5l7xxhh84w8h673587"
+DONATION_ADDRESS_testnet = "tb1qvz3x0zq59v5jws3uzfpq0jxfmnljf3d3ghnvl4"
+
 
 if IS_PRODUCTION:
     if not ENABLE_TIMERS:

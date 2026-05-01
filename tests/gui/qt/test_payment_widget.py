@@ -32,12 +32,12 @@ from __future__ import annotations
 from datetime import datetime
 from unittest.mock import Mock
 
-from bitcoin_safe.config import UserConfig
-from bitcoin_safe.gui.qt.payment_widget import CallbackServerState, PaymentButton
+from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
+from bitcoin_safe.gui.qt.btcpay_web_button import BTCPayWebButton, CallbackServerState
 
 
-def _payment_button(qtbot, loop_in_thread) -> PaymentButton:
-    button = PaymentButton(config=UserConfig(), loop_in_thread=loop_in_thread)
+def _payment_button(qtbot, loop_in_thread) -> BTCPayWebButton:
+    button = BTCPayWebButton(config=UserConfig(), loop_in_thread=loop_in_thread)
     qtbot.addWidget(button)
     return button
 
@@ -51,7 +51,14 @@ def test_invoice_open_failure_without_callback_server_does_not_show_invoice_url(
     monkeypatch.setattr(button, "_open_invoice_in_browser", lambda invoice_url: False)
     monkeypatch.setattr(button, "_show_browser_open_failure", lambda: failures.append(True))
 
-    button._on_invoice_created((200, "https://example.com/invoice", "", ""))
+    button._on_invoice_created(
+        (
+            200,
+            BtcPayInvoiceDetails(
+                id="invoice-id", url="https://example.com/invoice", bitcoin_address=None, amount=None
+            ),
+        )
+    )
 
     assert failures == [True]
 
@@ -64,7 +71,14 @@ def test_invoice_open_success_with_callback_server_updates_status(qtbot, loop_in
 
     monkeypatch.setattr(button, "_open_invoice_in_browser", lambda invoice_url: True)
 
-    button._on_invoice_created((200, "https://example.com/invoice", "", ""))
+    button._on_invoice_created(
+        (
+            200,
+            BtcPayInvoiceDetails(
+                id="invoice-id", url="https://example.com/invoice", bitcoin_address=None, amount=None
+            ),
+        )
+    )
 
     assert button._callback_server_state.invoice_url == "https://example.com/invoice"
     assert messages[-1].startswith("Complete the payment in your browser.")
@@ -76,7 +90,7 @@ def test_open_invoice_in_browser_uses_webopen(monkeypatch, qtbot, loop_in_thread
 
     monkeypatch.setattr(button, "_has_url_handler", lambda url: True)
     monkeypatch.setattr(
-        "bitcoin_safe.gui.qt.payment_widget.webopen",
+        "bitcoin_safe.gui.qt.btcpay_web_button.webopen",
         lambda invoice_url: opened_urls.append(invoice_url) or True,
     )
 
@@ -91,7 +105,7 @@ def test_duplicate_callback_is_ignored_after_state_is_consumed(qtbot, loop_in_th
     button.signal_payment_completed.connect(completed.append)
 
     state = CallbackServerState(
-        invoice_id="invoice-id",
+        invoice_details=BtcPayInvoiceDetails(id="invoice-id", url=None, bitcoin_address=None, amount=None),
         server=Mock(),
         serve_future=Mock(),
         port=1,
@@ -101,12 +115,13 @@ def test_duplicate_callback_is_ignored_after_state_is_consumed(qtbot, loop_in_th
     monkeypatch.setattr(
         button,
         "_request_stop_callback_server",
-        lambda captured_state=None: stop_requests.append(captured_state.invoice_id),
+        lambda captured_state=None: stop_requests.append(captured_state.invoice_details.id),
     )
 
-    button._handle_callback_request("invoice-id")
-    button._handle_callback_request("invoice-id")
+    invoice = BtcPayInvoiceDetails(id="invoice-id", url=None, bitcoin_address=None, amount=None)
+    button._handle_callback_request(invoice)
+    button._handle_callback_request(invoice)
 
-    assert completed == [True]
+    assert completed == [invoice]
     assert stop_requests == ["invoice-id"]
     assert button._callback_server_state is None

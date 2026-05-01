@@ -9,6 +9,7 @@
 - do not use someenum(str, Enum),  but instead use someenum(Enum), then (de)serailization works type safe via BaseSaveableClass
 - do not use Callable arguments if possible
 - take every change you do as an opportunity to improve architecture: think about if the change does introduce or remove coupling and what architecture improvements this could be used for 
+- for GUI changes take into account that it should look nice in light and darkmode. (black) color in Icons should be named currrentColor (see bitcoin_safe/gui/icons/theme.csv) 
 
 ## App run + GUI interaction notes
 - Launch the app with `DISPLAY=desktop:0 poetry run python -m bitcoin_safe`.

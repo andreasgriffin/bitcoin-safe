@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import Literal
 
 from appimage_to_deb_converter import Appimage2debConverter
+from bitcoin_safe.constants import CONTACT_EMAIL
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
@@ -62,6 +63,8 @@ assert ENABLE_THREADING
 assert ENABLE_TIMERS
 
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
+DEFAULT_MODULE_NAME = "bitcoin_safe"
+DEFAULT_LOCALE_DIR = "gui/locales"
 
 
 def calc_hashes_of_files(folder: Path) -> dict[Path, str]:
@@ -187,7 +190,7 @@ class Builder:
                 output_deb=filename.with_suffix(".deb"),
                 package_name=self.app_name_formatter(self.module_name).lower(),
                 version=self.version,
-                maintainer="Andreas Griffin <andreasgriffin@proton.me>",
+                maintainer=f"Andreas Griffin <{CONTACT_EMAIL}>",
                 description="A bitcoin savings wallet for the entire family.",
                 homepage="https://www.bitcoin-safe.org",
                 desktop_name=self.app_name_formatter(self.module_name, join_character=" "),
@@ -599,14 +602,28 @@ if __name__ == "__main__":
         help="Equal to --update_translations and --csv_to_ts. It ensures special characters are restored, which were lost by weblate, by ts-->csv-->ts",
     )
     parser.add_argument(
+        "--module_name",
+        type=str,
+        default=DEFAULT_MODULE_NAME,
+        help=f"Project folder that contains the Python sources. Default: {DEFAULT_MODULE_NAME}",
+    )
+    parser.add_argument(
+        "--locale_dir",
+        type=str,
+        default=DEFAULT_LOCALE_DIR,
+        help=f"Locale directory relative to --module_name. Default: {DEFAULT_LOCALE_DIR}",
+    )
+    parser.add_argument(
         "--lock",
         action="store_true",
         help="poetry lock --no-update --no-cache. This is important to ensure all hashes are included in the lockfile. ",
     )
     args = parser.parse_args()
+    module_name: str = args.module_name
+    locale_dir: str = args.locale_dir
 
     if args.lock:
-        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
+        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
         builder.lock()
 
     if args.commit == "None":
@@ -622,23 +639,23 @@ if __name__ == "__main__":
             print(f"--targets was given with the values: {args.targets}")
             targets = [t.replace(",", "") for t in targets]  # type: ignore
 
-        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
+        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
         builder.package_application(targets=targets, build_commit=args.commit)
 
     if args.update_translations:
-        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler = TranslationHandler(module_name=module_name, locale_dir=locale_dir)
         translation_handler.update_translations_from_py()
     if args.csv_to_ts:
-        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler = TranslationHandler(module_name=module_name, locale_dir=locale_dir)
         translation_handler.csv_to_ts()
     if args.insert_chatgpt_translations:
-        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler = TranslationHandler(module_name=module_name, locale_dir=locale_dir)
         translation_handler.insert_chatgpt_translations()
     if args.weblate_correct:
-        translation_handler = TranslationHandler(module_name="bitcoin_safe")
+        translation_handler = TranslationHandler(module_name=module_name, locale_dir=locale_dir)
         translation_handler.update_translations_from_py()
         translation_handler.csv_to_ts()
 
     if args.sign:
-        builder = Builder(module_name="bitcoin_safe", clean_all=args.clean)
+        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
         builder.sign()

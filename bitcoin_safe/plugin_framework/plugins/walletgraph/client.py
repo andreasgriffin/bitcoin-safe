@@ -74,28 +74,32 @@ class WalletGraphClient(PluginClient):
         PluginPermission.WALLET,
         PluginPermission.WALLET_SIGNALS,
     }
-    title = translate("WalletGraphClient", "Wallet Graph")
-    description = translate(
-        "WalletGraphClient",
-        "Visualize how your wallet transactions create and spend UTXOs across time.",
-    )
     provider = "Bitcoin Safe"
 
-    @staticmethod
-    def cls_kwargs(signals: Signals, network: bdk.Network):
-        return {
-            "signals": signals,
-            "network": network,
-        }
+    @classmethod
+    def set_base_infos(cls):
+        cls.title = translate("WalletGraphClient", "Wallet Graph")
+        cls.description = translate(
+            "WalletGraphClient",
+            "Visualize how your wallet transactions create and spend UTXOs across time.",
+        )
+
+    @classmethod
+    def cls_kwargs(cls, signals: Signals, network: bdk.Network, parent: QWidget | None):  # type: ignore
+        d = super().cls_kwargs(parent=parent)
+        d.update(
+            {
+                "signals": signals,
+                "network": network,
+            }
+        )
+        return d
 
     def __init__(
-        self,
-        signals: Signals,
-        network: bdk.Network,
-        enabled: bool = False,
+        self, signals: Signals, network: bdk.Network, enabled: bool = False, parent: QWidget | None = None
     ) -> None:
         """Initialize instance."""
-        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("wallet-graph-icon.svg"))
+        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("wallet-graph-icon.svg"), parent=parent)
         self.signals = signals
         self.network = network
         self.wallet_id: str | None = None

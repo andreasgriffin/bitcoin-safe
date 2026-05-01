@@ -134,6 +134,7 @@ celerybeat.pid
 
 # Environments
 .env
+.vscode/.env.launch
 .venv*
 env/
 venv/
@@ -239,3 +240,4 @@ profile.svg
 
 
 worktrees
+bitcoin_safe/plugin_framework/plugins/*

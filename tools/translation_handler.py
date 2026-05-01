@@ -165,10 +165,11 @@ class TranslationHandler:
         self,
         module_name,
         prefix="app",
+        locale_dir="gui/locales",
     ) -> None:
         """Initialize instance."""
         self.module_name = module_name
-        self.ts_folder = Path(module_name) / "gui" / "locales"
+        self.ts_folder = Path(module_name) / Path(locale_dir)
         self.prefix = prefix
 
         autodetected_lang_files = list(self.ts_folder.glob("*.ts"))

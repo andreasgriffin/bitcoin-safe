@@ -32,7 +32,8 @@ from __future__ import annotations
 from typing import cast
 
 import bdkpython as bdk
-from PyQt6.QtCore import pyqtSignal
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import QSignalBlocker, pyqtSignal
 from PyQt6.QtWidgets import QCheckBox, QHBoxLayout, QWidget
 
 from bitcoin_safe.fx import FX
@@ -42,10 +43,10 @@ from bitcoin_safe.gui.qt.ui_tx.spinbox import BTCSpinBox, FiatSpinBox
 from bitcoin_safe.signals import Signals
 
 
-class AmountCurrencySelector(QWidget):
-    """Widget encapsulating BTC/fiat spin boxes with a shared currency selector."""
+class BaseAmountCurrencySelector(QWidget):
+    """Widget encapsulating BTC/fiat spin boxes that can share an external currency combo."""
 
-    amountChanged = pyqtSignal(object, str)
+    amountChanged = cast(SignalProtocol[[float | int, str]], pyqtSignal(object, str))
 
     def __init__(
         self,
@@ -53,18 +54,17 @@ class AmountCurrencySelector(QWidget):
         fx: FX,
         signals: Signals,
         parent: QWidget | None = None,
-        groups: list[CurrencyGroup] | None = None,
-        formatting: CurrencyGroupFormatting = CurrencyGroupFormatting.Short,
         auto_fiat_conversions=False,
     ) -> None:
         """Initialize the selector with wallet context and global signals."""
         super().__init__(parent)
         self.fx = fx
+        self._current_currency = self.fx.get_currency_iso()
+        self._linked_currency_combo: CurrencyComboBox | None = None
 
         self._layout = QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
-        self._layout.setSpacing(8)
-        selected_currency = self.fx.get_currency_iso()
+        self._layout.setSpacing(0)
 
         self.btc_spin = BTCSpinBox(
             network=network,
@@ -75,43 +75,51 @@ class AmountCurrencySelector(QWidget):
             fx=fx,
             signal_currency_changed=signals.currency_switch,
             signal_language_switch=signals.language_switch,
-            fixed_currency=None if auto_fiat_conversions else selected_currency,
+            fixed_currency=None if auto_fiat_conversions else self._current_currency,
         )
         self._layout.addWidget(self.btc_spin, 1)
         self._layout.addWidget(self.fiat_spin, 1)
 
-        self.currency_combo = CurrencyComboBox(
-            self.fx,
-            groups=groups
-            if groups is not None
-            else [
-                CurrencyGroup.TOP_FIAT,
-                CurrencyGroup.BTC_ONLY,
-                CurrencyGroup.BITCOIN_OTHER,
-                CurrencyGroup.FIAT,
-                CurrencyGroup.Commodity,
-            ],
-            formatting=formatting,
-        )
-
-        self._layout.addWidget(self.currency_combo, 0)
+        self.btc_spin.valueChanged.connect(self._emit_amount_changed)
+        self.fiat_spin.valueChanged.connect(self._emit_amount_changed)
 
         self._converter = CurrencyConverter(
             btc_spin_box=self.btc_spin,
             fiat_spin_box=self.fiat_spin,
         )
 
-        self.currency_combo.populate(selected_currency=selected_currency)
-        self.currency_combo.currentIndexChanged.connect(self._on_currency_changed)
-
-        self.btc_spin.valueChanged.connect(self._emit_amount_changed)
-        self.fiat_spin.valueChanged.connect(self._emit_amount_changed)
-        self.currency_combo.currentIndexChanged.connect(self._emit_amount_changed)
-
         self.updateUi()
 
+    def link_currency_combo(self, currency_combo: CurrencyComboBox) -> None:
+        """Link the selector to an external currency combobox."""
+        if self._linked_currency_combo is currency_combo:
+            return
+        if self._linked_currency_combo is not None:
+            try:
+                self._linked_currency_combo.currentIndexChanged.disconnect(self._on_currency_changed)
+            except TypeError:
+                pass
+
+        self._linked_currency_combo = currency_combo
+        self._linked_currency_combo.currentIndexChanged.connect(self._on_currency_changed)
+        current_currency = self._linked_currency_combo.currentData()
+        if isinstance(current_currency, str):
+            self._current_currency = FX.sanitize_key(current_currency)
+        self.updateUi()
+
+    def current_input_has_focus(self) -> bool:
+        """Return whether the currently visible input is focused."""
+        current_input = self.btc_spin if not self.btc_spin.isHidden() else self.fiat_spin
+        line_edit = current_input.lineEdit()
+        return current_input.hasFocus() or (line_edit.hasFocus() if line_edit else False)
+
     def get_currency(self) -> str:
-        return self.currency_combo.currentData()
+        currency_combo = self._linked_currency_combo
+        if currency_combo is not None:
+            current_data = currency_combo.currentData()
+            if isinstance(current_data, str):
+                return FX.sanitize_key(current_data)
+        return self._current_currency
 
     def amount_and_current_iso(self) -> tuple[int | float, str]:
         """Return the currently selected currency code."""
@@ -123,18 +131,13 @@ class AmountCurrencySelector(QWidget):
     def set_amount(self, amount: int | float, unit: str) -> None:
         """Programmatically set the selector state."""
         unit = FX.sanitize_key(unit)
-
-        self.currency_combo.populate(selected_currency=unit.lower())
-        index = self._find_index(unit)
-        if index >= 0:
-            self.currency_combo.setCurrentIndex(index)
+        self._set_currency(unit)
 
         if FX.is_btc(unit, network=self.btc_spin.network):
             sats = int(max(amount, 0))
             self.btc_spin.setValue(sats)
-            if self.fx:
-                self.fiat_spin.setCurrencyCode(self.fx.get_currency_iso())
-                self.fiat_spin.setBtcValue(sats)
+            self.fiat_spin.setCurrencyCode(self.fx.get_currency_iso())
+            self.fiat_spin.setBtcValue(sats)
         else:
             target_value = max(float(amount), 0.0)
             self.fiat_spin.setCurrencyCode(unit)
@@ -150,37 +153,88 @@ class AmountCurrencySelector(QWidget):
 
     def updateUi(self) -> None:  # type: ignore[override]
         """Refresh translated content after a language switch."""
-
         _, unit = self.amount_and_current_iso()
         is_btc = FX.is_btc(unit, network=self.btc_spin.network)
         self.btc_spin.setHidden(not is_btc)
         self.fiat_spin.setHidden(is_btc)
-
         self.fiat_spin.setCurrencyCode(unit)
 
     def _on_currency_changed(self, _: int) -> None:
-        """Handle currency combo changes."""
-
+        """Handle linked currency changes."""
         self.updateUi()
         self.fiat_spin.setCurrencyCode(self.get_currency())
         self._emit_amount_changed()
 
-    def _find_index(self, currency: str | None) -> int:
+    def _set_currency(self, currency: str) -> None:
+        self._current_currency = FX.sanitize_key(currency)
+        currency_combo = self._linked_currency_combo
+        if currency_combo is None:
+            return
+
+        index = self._find_index(currency_combo, currency)
+        if index >= 0:
+            with QSignalBlocker(currency_combo):
+                currency_combo.setCurrentIndex(index)
+
+    @staticmethod
+    def _find_index(currency_combo: CurrencyComboBox, currency: str | None) -> int:
         """Locate the index of a currency code in the combo box."""
         if not currency:
             return -1
         lookup = currency.lower()
-        for index in range(self.currency_combo.count()):
-            data = self.currency_combo.itemData(index)
+        for index in range(currency_combo.count()):
+            data = currency_combo.itemData(index)
             if isinstance(data, str) and data.lower() == lookup:
                 return index
         return -1
 
     def _emit_amount_changed(self) -> None:
         """Emit amount change notifications."""
-
         amount, currency = self.amount_and_current_iso()
         self.amountChanged.emit(amount, currency)
+
+
+class AmountCurrencySelector(BaseAmountCurrencySelector):
+    """Widget encapsulating BTC/fiat spin boxes with a shared currency selector."""
+
+    def __init__(
+        self,
+        network: bdk.Network,
+        fx: FX,
+        signals: Signals,
+        parent: QWidget | None = None,
+        groups: list[CurrencyGroup] | None = None,
+        formatting: CurrencyGroupFormatting = CurrencyGroupFormatting.Short,
+        auto_fiat_conversions=False,
+    ) -> None:
+        """Initialize the selector with an embedded currency combo box."""
+        super().__init__(
+            network=network,
+            fx=fx,
+            signals=signals,
+            parent=parent,
+            auto_fiat_conversions=auto_fiat_conversions,
+        )
+
+        self.currency_combo = CurrencyComboBox(
+            self.fx,
+            groups=groups
+            if groups is not None
+            else [
+                CurrencyGroup.TOP_FIAT,
+                CurrencyGroup.BTC_ONLY,
+                CurrencyGroup.BITCOIN_OTHER,
+                CurrencyGroup.FIAT,
+                CurrencyGroup.Commodity,
+            ],
+            formatting=formatting,
+        )
+
+        self._layout.setSpacing(8)
+        self._layout.addWidget(self.currency_combo, 0)
+        self.currency_combo.populate(selected_currency=self._current_currency)
+        self.link_currency_combo(self.currency_combo)
+        self.updateUi()
 
 
 if __name__ == "__main__":

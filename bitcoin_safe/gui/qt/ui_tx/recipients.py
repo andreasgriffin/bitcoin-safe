@@ -371,6 +371,7 @@ class NotificationBarRecipient(NotificationBar):
         self.wallet_id: str | None = None
 
         self.closeButton.setFlat(True)
+        self.optionalButton.hide()
 
         self.updateUi()
         self.signals_min.language_switch.connect(self.updateUi)
@@ -386,6 +387,7 @@ class NotificationBarRecipient(NotificationBar):
                 self.tr("This address belongs to wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
             )
             self.set_icon(svg_tools.get_QIcon("bi--wallet2.svg"))
+        self.icon_label.setToolTip("")
 
     def set_wallet_id(self, wallet_id: str | None):
         """Set wallet id."""
@@ -440,6 +442,8 @@ class RecipientBox(QWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent)
+        self.wallet_functions = wallet_functions
+        self.fx = fx
         self.main_layout = QVBoxLayout(self)
         set_no_margins(self.main_layout)
 
@@ -560,11 +564,10 @@ class RecipientBox(QWidget):
         """Enabled."""
         self.recipient_widget.enabled = state
 
-    def autofill_wallet_id(self, *args):
+    def autofill_wallet_id(self):
         """Autofill wallet id."""
-        wallet = get_wallet_of_address(
-            self.recipient_widget.address_edit.address, self.recipient_widget.wallet_functions
-        )
+        address = self.recipient_widget.address_edit.address
+        wallet = get_wallet_of_address(address, self.recipient_widget.wallet_functions)
         self.notification_bar.set_wallet_id(wallet.id if wallet else None)
 
     def close(self) -> bool:
@@ -580,6 +583,7 @@ class Recipients(QWidget):
     signal_clicked_send_max_button = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
     signal_address_text_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
     signal_amount_changed = cast(SignalProtocol[[RecipientWidget]], pyqtSignal(RecipientWidget))
+    signal_recipients_imported = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -735,7 +739,10 @@ class Recipients(QWidget):
                 )
                 return
 
-        self.recipients = [Recipient(address=row[0], amount=int(row[1]), label=row[2]) for row in rows]
+        new_recipients = [Recipient(address=row[0], amount=int(row[1]), label=row[2]) for row in rows]
+
+        self.recipients = new_recipients
+        self.signal_recipients_imported.emit()
 
     def updateUi(self) -> None:
         """UpdateUi."""
@@ -765,9 +772,9 @@ class Recipients(QWidget):
         recipient_box = RecipientBox(
             wallet_functions=self.wallet_functions,
             network=self.network,
-            allow_edit=self.allow_edit,
-            fx=self.fx,
+            allow_edit=self.allow_edit and not recipient.read_only,
             groupbox_style=True,
+            fx=self.fx,
         )
         recipient_box.address = recipient.address
         recipient_box.amount = recipient.amount
