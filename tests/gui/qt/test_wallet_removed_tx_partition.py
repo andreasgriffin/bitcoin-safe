@@ -33,6 +33,7 @@ from dataclasses import dataclass
 
 import bitcoin_safe.gui.qt.qt_wallet as qt_wallet_module
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.wallet import Wallet
 
 
 @dataclass
@@ -53,6 +54,57 @@ class _DirectReplacementWalletHarness:
 
     def get_conflicting_python_txos(self, prev_outpoints: object) -> list[_PythonUtxo]:
         return self.replacements_by_transaction.get(prev_outpoints, [])
+
+    def get_replacing_txids_for_outpoints(
+        self, prev_outpoints: object, replaced_txid: str | None = None
+    ) -> set[str]:
+        return Wallet.get_replacing_txids_for_outpoints(
+            self,
+            prev_outpoints,
+            replaced_txid=replaced_txid,
+        )
+
+
+def test_wallet_get_replacing_txids_for_outpoints_returns_conflicting_spenders() -> None:
+    wallet = _DirectReplacementWalletHarness(
+        replacements_by_transaction={
+            "prev-outs": [
+                _PythonUtxo(is_spent_by_txid="replacement-1"),
+                _PythonUtxo(is_spent_by_txid="replacement-2"),
+            ]
+        }
+    )
+
+    replacing_txids = Wallet.get_replacing_txids_for_outpoints(wallet, "prev-outs")
+
+    assert replacing_txids == {"replacement-1", "replacement-2"}
+
+
+def test_wallet_get_replacing_txids_for_outpoints_excludes_removed_txid() -> None:
+    wallet = _DirectReplacementWalletHarness(
+        replacements_by_transaction={
+            "prev-outs": [
+                _PythonUtxo(is_spent_by_txid="removed-tx"),
+                _PythonUtxo(is_spent_by_txid="replacement-1"),
+            ]
+        }
+    )
+
+    replacing_txids = Wallet.get_replacing_txids_for_outpoints(
+        wallet,
+        "prev-outs",
+        replaced_txid="removed-tx",
+    )
+
+    assert replacing_txids == {"replacement-1"}
+
+
+def test_wallet_get_replacing_txids_for_outpoints_returns_empty_for_no_conflicts() -> None:
+    wallet = _DirectReplacementWalletHarness(replacements_by_transaction={"prev-outs": []})
+
+    replacing_txids = Wallet.get_replacing_txids_for_outpoints(wallet, "prev-outs")
+
+    assert replacing_txids == set()
 
 
 class _DirectReplacementHarness:

@@ -2350,6 +2350,19 @@ class Wallet(BaseSaveableClass, CacheManager):
                     conflicting_python_utxos.append(python_utxo)
         return conflicting_python_utxos
 
+    def get_replacing_txids_for_outpoints(
+        self, input_outpoints: Iterable[OutPoint], replaced_txid: str | None = None
+    ) -> set[str]:
+        """Return txids that currently spend the provided input outpoints."""
+        replacing_txids = {
+            python_utxo.is_spent_by_txid
+            for python_utxo in self.get_conflicting_python_txos(input_outpoints)
+            if python_utxo.is_spent_by_txid
+        }
+        if replaced_txid:
+            replacing_txids.discard(replaced_txid)
+        return replacing_txids
+
     @instance_lru_cache()
     def sorted_delta_list_transactions(self, access_marker=None) -> list[TransactionDetails]:
         """
