@@ -556,12 +556,12 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.square_buttons.clear()
 
         if self.closable:
-            close_btn = CloseButton()
+            close_btn = CloseButton(parent=self.header_row)
             close_btn.clicked.connect(partial(self.closeClicked.emit, self))
             self.header_row.add_square_button(close_btn)
 
         if self.hidable:
-            hide_btn = HideButton()
+            hide_btn = HideButton(parent=self.header_row)
             hide_btn.clicked.connect(partial(self.hideClicked.emit, self))
             hide_btn.clicked.connect(partial(self.setVisible, False))
             self.header_row.add_square_button(hide_btn)
@@ -579,7 +579,8 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.toggle_btn:
             return
         self.toggle_btn = FlatSquareButton(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_ArrowDown)
+            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_ArrowDown),
+            parent=self.header_row,
         )
         self.toggle_btn.setChecked(not self.initially_collapsed)
         self.toggle_btn.clicked.connect(self._toggle_children)
