@@ -56,7 +56,7 @@ from PyQt6.QtWidgets import QApplication, QHBoxLayout, QStackedWidget, QVBoxLayo
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.settings import Settings
-from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
+from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarRow, SidebarTree
 from bitcoin_safe.network_utils import ProxyInfo, fetch_bytes
 from bitcoin_safe.plugin_framework.builtin_plugins import (
     BUILTIN_PLUGIN_BUNDLES_BY_CLIENT_CLASS,
@@ -2757,3 +2757,23 @@ def test_sidebar_tree_close_top_level_tab_skips_hidden_wizard_widget(qapp: QAppl
 
     assert tree.currentNode() is history_leaf
     assert tree.currentWidget() is history_leaf.widget
+
+
+def test_sidebar_node_trailing_buttons_are_parented_before_insertion(
+    qapp: QApplication, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    original_add_square_button = SidebarRow.add_square_button
+    parent_widgets: list[QWidget | None] = []
+
+    def add_square_button(self: SidebarRow, btn: QWidget) -> None:
+        parent_widgets.append(btn.parentWidget())
+        original_add_square_button(self, btn)
+
+    monkeypatch.setattr(SidebarRow, "add_square_button", add_square_button)
+
+    node = SidebarNode(data="wallet", title="Wallet", closable=True, hidable=True, show_expand_button=True)
+    node.addChildNode(SidebarNode(data="history", title="History", widget=QWidget()), focus=False)
+
+    assert parent_widgets
+    assert all(parent is node.header_row for parent in parent_widgets)
