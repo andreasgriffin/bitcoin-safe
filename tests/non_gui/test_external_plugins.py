@@ -412,6 +412,15 @@ def _plugin_manager_class_kwargs(
     }
 
 
+def _mark_source_refresh_run(
+    manager: PluginManager,
+    refresh_calls: list[bool],
+    show_errors: bool,
+) -> None:
+    refresh_calls.append(show_errors)
+    manager.external_registry.last_download_time = datetime.now(timezone.utc)
+
+
 def _serialized_client_payload(client: PluginClient) -> str:
     return BaseSaveableClass.dumps_object(client.dump())
 
@@ -2166,7 +2175,7 @@ def test_plugin_manager_schedules_startup_source_refresh_when_sources_exist(
         assert manager._startup_source_refresh_timer.isSingleShot()
         assert manager._startup_source_refresh_timer.interval() == 60_000
         assert manager._startup_source_refresh_timer.isActive()
-        assert manager.external_registry.last_download_time is not None
+        assert manager.external_registry.last_download_time is None
     finally:
         manager.close()
 
@@ -2201,7 +2210,7 @@ def test_plugin_manager_uses_injected_external_registry(qapp: QApplication, tmp_
         second_manager.close()
 
 
-def test_plugin_manager_schedules_only_one_startup_source_refresh(
+def test_plugin_manager_keeps_scheduling_startup_source_refresh_until_one_runs(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
@@ -2228,9 +2237,9 @@ def test_plugin_manager_schedules_only_one_startup_source_refresh(
 
     try:
         assert first_manager._startup_source_refresh_timer is not None
-        assert first_manager.external_registry.last_download_time is not None
-        assert second_manager.external_registry.last_download_time is not None
-        assert second_manager.external_registry.should_skip_startup_source_refresh()
+        assert second_manager._startup_source_refresh_timer is not None
+        assert first_manager.external_registry.last_download_time is None
+        assert second_manager.external_registry.last_download_time is None
     finally:
         first_manager.close()
         second_manager.close()
@@ -2270,7 +2279,7 @@ def test_plugin_manager_skips_startup_source_refresh_when_last_download_is_recen
         manager.close()
 
 
-def test_plugin_manager_does_not_reschedule_startup_source_refresh_after_it_runs(
+def test_plugin_manager_reschedules_startup_source_refresh_after_restart(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
@@ -2290,7 +2299,9 @@ def test_plugin_manager_does_not_reschedule_startup_source_refresh_after_it_runs
     monkeypatch.setattr(
         PluginManager,
         "refresh_plugin_sources",
-        lambda self, source_id=None, show_errors=True: refresh_calls.append(show_errors),
+        lambda self, source_id=None, show_errors=True: _mark_source_refresh_run(
+            self, refresh_calls, show_errors
+        ),
     )
     first_manager = PluginManager(
         **_plugin_manager_init_kwargs(tmp_path, loop_in_thread=loop_in_thread),
@@ -2306,8 +2317,8 @@ def test_plugin_manager_does_not_reschedule_startup_source_refresh_after_it_runs
         try:
             assert refresh_calls == [False]
             assert first_manager.external_registry.last_download_time is not None
-            assert second_manager.external_registry.last_download_time is not None
-            assert second_manager.external_registry.should_skip_startup_source_refresh()
+            assert second_manager.external_registry.last_download_time is None
+            assert second_manager._startup_source_refresh_timer is not None
         finally:
             second_manager.close()
     finally:

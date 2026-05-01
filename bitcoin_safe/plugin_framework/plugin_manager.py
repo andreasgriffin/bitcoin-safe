@@ -32,7 +32,6 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Callable, Sequence
-from datetime import datetime, timezone
 from functools import partial
 from typing import Any, cast
 
@@ -1201,8 +1200,6 @@ class PluginManager(BaseSaveableClass):
         if self.external_registry.should_skip_startup_source_refresh():
             return
 
-        self.external_registry.last_download_time = datetime.now(timezone.utc)
-        self.external_registry.save()
         self._startup_source_refresh_timer = QTimer(self.widget)
         self._startup_source_refresh_timer.setSingleShot(True)
         self._startup_source_refresh_timer.timeout.connect(self._refresh_plugin_sources_after_startup)

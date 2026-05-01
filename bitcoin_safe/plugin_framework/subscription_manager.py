@@ -608,7 +608,13 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             )
 
         def on_error(error_info: ExcInfo | None) -> None:
-            self._handle_subscription_refresh_error(str(error_info), notify_on_error=notify_on_error)
+            error = self._error_from_exc_info(error_info)
+            error_text = (
+                str(error)
+                if error is not None
+                else translate("subscription", "Subscription status refresh failed.")
+            )
+            self._handle_subscription_refresh_error(error_text, notify_on_error=notify_on_error)
 
         self.loop_in_thread.run_task(
             do(),

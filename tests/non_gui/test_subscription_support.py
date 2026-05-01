@@ -167,3 +167,11 @@ def test_trial_purchase_timeout_error_text_asks_to_retry_and_contact_support() -
     assert "free trial activation timed out" in error_text
     assert "retry later" in error_text
     assert CONTACT_EMAIL in error_text
+
+
+def test_error_from_exc_info_returns_original_exception() -> None:
+    error = ValueError("boom")
+
+    resolved_error = SubscriptionManager._error_from_exc_info((ValueError, error, None))
+
+    assert resolved_error is error

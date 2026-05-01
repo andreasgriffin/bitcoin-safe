@@ -42,7 +42,7 @@ from functools import partial
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from types import TracebackType
 from typing import Any, cast
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
 import requests
@@ -207,7 +207,7 @@ class BTCPayWebButton(QPushButton):
         )
         status_code, invoice_url = response.status_code, response.headers.get("Location")
 
-        invoice_details.url = invoice_url
+        invoice_details.url = urljoin(DONATION_INVOICE_ENDPOINT, invoice_url) if invoice_url else None
 
         return status_code, invoice_details
 
@@ -591,9 +591,7 @@ class DonationInvoiceWidget(QWidget):
 
     def _sync_amount_to_button(self, *args) -> None:
         amount = self.fx.fiat_to_btc(self.fiat_spin_box.value(), self.fx.get_currency_iso())
-        if not amount:
-            return
-        self.payment_button.set_amount(amount)
+        self.payment_button.set_amount(amount if amount is not None else 0)
 
     def _sync_message_to_button(self, *args) -> None:
         self.payment_button.set_checkout_desc(self.message_input.text())
