@@ -1080,14 +1080,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         replacement_txids_by_removed_txid: dict[str, set[str]] = {}
 
         for tx in removed_txs:
-            conflicting_python_txos = self.wallet.get_conflicting_python_txos(
-                get_prev_outpoints(tx.transaction)
+            replacing_txids = self.wallet.get_replacing_txids_for_outpoints(
+                get_prev_outpoints(tx.transaction),
+                replaced_txid=tx.txid,
             )
-            replacing_txids = {
-                python_utxo.is_spent_by_txid
-                for python_utxo in conflicting_python_txos
-                if python_utxo.is_spent_by_txid and python_utxo.is_spent_by_txid != tx.txid
-            }
 
             if replacing_txids:
                 replacement_txids_by_removed_txid[tx.txid] = replacing_txids
