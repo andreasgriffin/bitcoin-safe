@@ -109,10 +109,25 @@ class StartupWindowProbe(QObject):
 
     @staticmethod
     def _format_widget(widget: QWidget) -> str:
-        parent = widget.parentWidget()
-        parent_name = parent.__class__.__name__ if parent else None
-        button_text = widget.text() if isinstance(widget, QPushButton) else ""
-        return (
-            f"class={widget.__class__.__name__} title={widget.windowTitle()!r} "
-            f"object={widget.objectName()!r} text={button_text!r} parent={parent_name}"
-        )
+        chain: list[str] = []
+        current: QWidget | None = widget
+        while current:
+            chain.append(StartupWindowProbe._format_widget_segment(current))
+            current = current.parentWidget()
+        return " > ".join(reversed(chain))
+
+    @staticmethod
+    def _format_widget_segment(widget: QWidget) -> str:
+        label_parts: list[str] = []
+        if widget.windowTitle():
+            label_parts.append(widget.windowTitle())
+        if widget.objectName():
+            label_parts.append(f"#{widget.objectName()}")
+        if isinstance(widget, QPushButton) and widget.text():
+            label_parts.append(widget.text())
+
+        if not label_parts:
+            return widget.__class__.__name__
+
+        label = " | ".join(repr(part) for part in label_parts)
+        return f"{widget.__class__.__name__}[{label}]"
