@@ -72,6 +72,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
         d = super().dump()
         d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
         d["tx_label"] = self.tx_label
+        d["save_local_on_send"] = self.save_local_on_send
         return d
 
     @classmethod
@@ -83,6 +84,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
             dct["replace_tx"] = bdk.Transaction(hex_to_serialized(replace_tx))
 
         dct.setdefault("tx_label", None)
+        dct.setdefault("save_local_on_send", None)
         return cls(**filtered_for_init(dct, cls))
 
 

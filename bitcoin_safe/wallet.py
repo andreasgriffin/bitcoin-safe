@@ -2139,6 +2139,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             recipient_category=recipient_category,
             fee_rate=txinfos.fee_rate,
         )
+        builder_infos.hidden_tx_infos = txinfos.hidden
         if txinfos.tx_label:
             txid_str = str(builder_infos.psbt.extract_tx().compute_txid())
             self.labels.set_tx_label(txid_str, txinfos.tx_label, timestamp="now")

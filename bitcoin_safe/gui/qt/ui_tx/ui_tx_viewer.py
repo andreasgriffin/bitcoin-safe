@@ -933,9 +933,6 @@ class UITx_Viewer(UITx_Base):
             return
         tx = self.data.data
 
-        if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
-            self.save_local_tx()
-
         if not is_nlocktime_already_valid(tx.lock_time(), self._get_robust_height()) and not question_dialog(
             self.tr(
                 "This transaction is not valid yet (nLocktime set). Broadcasting will fail.\n"
@@ -950,6 +947,8 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
         success = self._broadcast(tx)
         if success:
+            if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
+                self.save_local_tx()
             logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
