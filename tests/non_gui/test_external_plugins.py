@@ -759,6 +759,14 @@ def test_external_registry_derives_archive_url_from_manifest_url() -> None:
     assert archive_url == "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins/archive/main.zip"
 
 
+def test_external_registry_derives_archive_url_from_raw_github_manifest_url() -> None:
+    manifest_url = "https://raw.githubusercontent.com/andreasgriffin/bitcoin-safe-plugins/main/source.toml"
+
+    archive_url = ExternalPluginRegistry._archive_url_from_manifest_url(manifest_url, "main")
+
+    assert archive_url == "https://github.com/andreasgriffin/bitcoin-safe-plugins/archive/main.zip"
+
+
 def test_external_registry_normalizes_repo_url_to_manifest_url() -> None:
     manifest_url = ExternalPluginRegistry._normalize_manifest_url(
         "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins"

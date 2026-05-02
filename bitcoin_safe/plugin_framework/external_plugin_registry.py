@@ -316,6 +316,11 @@ class ExternalPluginRegistry(BaseSaveableClass):
             for plugin in manifest.plugins:
                 if not self._is_plugin_compatible(plugin.app_version_specifier):
                     continue
+                # Example:
+                # - source A publishes bundle_id = "notes"
+                # - source B also publishes bundle_id = "notes"
+                # We treat "notes" as one global plugin id, so install/update state is
+                # also looked up by bundle id alone.
                 installed = installed_metadata.get(plugin.bundle_id)
                 installed_version = installed.version if installed else None
                 installed_folder_hash = installed.folder_hash if installed else None
@@ -836,6 +841,21 @@ class ExternalPluginRegistry(BaseSaveableClass):
             )
 
         path_parts = [part for part in parsed.path.split("/") if part]
+        if parsed.netloc == "raw.githubusercontent.com":
+            if len(path_parts) != 4 or path_parts[-1] != SOURCE_MANIFEST_FILENAME:
+                raise ExternalPluginError(
+                    f"Could not derive archive URL from plugin source URL {manifest_url}."
+                )
+            owner, repo = path_parts[0], path_parts[1]
+            archive_path = f"/{owner}/{repo}/archive/{release_ref}.zip"
+            return parsed._replace(
+                netloc="github.com",
+                path=archive_path,
+                params="",
+                query="",
+                fragment="",
+            ).geturl()
+
         if len(path_parts) < 5:
             raise ExternalPluginError(f"Could not derive archive URL from plugin source URL {manifest_url}.")
         try:
@@ -891,6 +911,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
         if parsed.scheme in ("http", "https"):
             normalized_path = parsed.path.rstrip("/")
             if normalized_path.endswith(SOURCE_MANIFEST_FILENAME):
+                # Example:
+                # - keep https://raw.githubusercontent.com/org/repo/main/source.toml
+                # - do not rewrite it to a repo-root URL here
+                # The install step knows how to derive the archive URL from this form.
                 return parsed._replace(path=normalized_path).geturl()
             if normalized_path.endswith(".git"):
                 normalized_path = normalized_path[:-4]
@@ -1079,6 +1103,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
         module = importlib.util.module_from_spec(spec)
         try:
+            # Example:
+            # - works: `plugin_bundle.py` imports `client`
+            # - not expected: `other_module.py` imports `.client`
+            # We load `plugin_bundle.py` as the root module for the plugin.
             sys.modules[module_name] = module
             spec.loader.exec_module(module)
             return module

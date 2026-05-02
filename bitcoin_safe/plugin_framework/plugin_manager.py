@@ -727,6 +727,10 @@ class PluginManager(BaseSaveableClass):
 
         for bundle in bundles:
             if bundle.bundle_id in valid_bundles:
+                # Example:
+                # - source A ships bundle_id = "notes"
+                # - source B ships bundle_id = "notes"
+                # The first one wins, and the later one is skipped.
                 logger.warning("Skipping duplicate external bundle id %s.", bundle.bundle_id)
                 continue
 
