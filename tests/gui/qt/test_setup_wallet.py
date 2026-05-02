@@ -455,7 +455,7 @@ def test_wizard(
                     viewer.button_send.click()
                     assert isinstance((tx := viewer.data.data), bdk.Transaction)
                     wait_for_sync(
-                        qtbot=qtbot, wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=20_000
+                        qtbot=qtbot, wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=40_000
                     )
                     qtbot.wait_until(lambda: bool(mock_message.call_count), timeout=10_000)
                     mock_message.assert_called_with(

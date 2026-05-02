@@ -35,7 +35,6 @@ from enum import Enum
 from functools import partial
 from typing import Any, cast
 
-import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
@@ -68,7 +67,7 @@ from ....signals import (
     UpdateFilterReason,
     WalletFunctions,
 )
-from ....tx import TxUiInfos, calc_minimum_rbf_fee_info
+from ....tx import HiddenTxUiInfos, TxUiInfos, calc_minimum_rbf_fee_info
 from ....wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -86,7 +85,7 @@ from .recipients import RecipientBox, RecipientWidget
 logger = logging.getLogger(__name__)
 
 
-class RefreshCounterKey(str, Enum):
+class RefreshCounterKey(Enum):
     FEE_SPIN = "fee_spin"
     UTXO_SELECTION = "utxo_selection"
     CATEGORY_SELECTION = "category_selection"
@@ -201,7 +200,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.additional_outpoints: list[OutPoint] = []
         self.utxo_list.outpoints = self.get_outpoints()
-        self.replace_tx: bdk.Transaction | None = None
+        self.hidden_tx_infos = HiddenTxUiInfos()
 
         self.searchable_list = self.utxo_list
 
@@ -225,7 +224,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         self.splitter.addWidget(self.column_inputs)
 
-        self.column_recipients = ColumnRecipients(fx=fx, wallet_functions=self.wallet_functions, parent=self)
+        self.column_recipients = ColumnRecipients(
+            fx=fx,
+            wallet_functions=self.wallet_functions,
+            parent=self,
+            config=self.config,
+            loop_in_thread=self.loop_in_thread,
+        )
         self._cache_last_category: str | None = None
         self.recipients = self.column_recipients.recipients
         self.recipients.signal_address_text_changed.connect(self.on_signal_address_text_changed)
@@ -294,6 +299,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
         self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
+        self.recipients.signal_recipients_imported.connect(self.on_recipients_imported)
         self.category_list.signal_selection_changed.connect(self.on_category_selection_changed)
         self.column_fee.fee_group.signal_fee_rate_change.connect(self.on_fee_rate_change)
         self.signals.language_switch.connect(self.updateUi)
@@ -573,6 +579,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """On recipients removed."""
         self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
 
+    def on_recipients_imported(self) -> None:
+        """Refresh transaction state after CSV imports."""
+        self.on_input_changed_and_categories(RefreshCounterKey.AMOUNT_CHANGE)
+
     def on_signal_amount_changed(self, recipient_widget: Any):
         """On signal amount changed."""
         self.on_input_changed(RefreshCounterKey.AMOUNT_CHANGE)
@@ -640,6 +650,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.wallet.labels.get_default_category(), scroll_to_last=True
         )
         self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
+        self.hidden_tx_infos = HiddenTxUiInfos()
 
     def create_tx(self) -> None:
         """Create tx."""
@@ -831,7 +842,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if not self.wallet:
             return infos
 
-        infos.replace_tx = self.replace_tx
+        infos.hidden = self.hidden_tx_infos
 
         use_categories = (
             use_categories
@@ -854,9 +865,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         wallets = [self.wallet] if use_categories else get_wallets(self.wallet_functions)
 
+        infos.categories = [info.category for info in self.category_list.get_selected_category_infos()]
+
         if use_categories:
             ToolsTxUiInfo.fill_utxo_dict_from_categories(
-                infos, [c.category for c in self.category_list.get_selected_category_infos()], wallets
+                infos,
+                infos.categories,
+                wallets,
             )
 
         if not use_categories:
@@ -1113,6 +1128,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Set ui."""
         # prevent showEvent from interfering
         self._ui_well_defined = True
+        self.hidden_tx_infos = tx_ui_infos.hidden
 
         self.handle_conflicting_utxo(txinfos=tx_ui_infos)
         self.handle_cpfp(tx_ui_infos)
@@ -1132,12 +1148,19 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.reset_splitter_sizes()
         self.utxo_list.update_content()
 
+        self.category_list.force_full_ui_creation()
+
         categories: set[str] = set()
         if tx_ui_infos.utxo_dict:
             # first select the correct categories
             if self.wallet:
                 for outpoint in tx_ui_infos.utxo_dict.keys():
                     categories = categories.union(self.wallet.get_categories_for_txid(outpoint.txid_str))
+        elif tx_ui_infos.categories:
+            categories = set(tx_ui_infos.categories)
+            hide_UTXO_selection = True
+
+        self.column_inputs.checkBox_manual_coin_select.setChecked(not hide_UTXO_selection)
 
         if categories:
             self.category_list.select_rows(
@@ -1168,7 +1191,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.utxo_list.set_allow_edit(not tx_ui_infos.utxos_read_only)
         self.column_inputs.setEnabled(not tx_ui_infos.utxos_read_only)
-        self.replace_tx = tx_ui_infos.replace_tx
 
     def close(self):
         """Close."""

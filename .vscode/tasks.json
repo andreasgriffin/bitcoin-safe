@@ -2,40 +2,32 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Install Poetry",
-            "type": "process",
-            "command": "${workspaceFolder}/.venv/bin/python",
-            "windows": {
-                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+            "label": "Poetry Install",
+            "type": "shell",
+            "command": "poetry install",
+            "osx": {
+                "command": "export PATH=\"$HOME/.local/bin:$HOME/.poetry/bin:$HOME/Library/Application Support/pypoetry/venv/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH\"; poetry install || python3 -m poetry install || python -m poetry install"
             },
-            "args": [
-                "-m",
-                "pip",
-                "install",
-                "poetry"
-            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": []
         },
         {
-            "label": "Poetry Install",
+            "label": "Prepare VSCode Launch",
             "type": "process",
             "command": "${workspaceFolder}/.venv/bin/python",
             "windows": {
                 "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
             },
             "args": [
-                "-m",
-                "poetry",
-                "install"
+                "tools/write_vscode_env.py"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
-            "dependsOn": "Install Poetry"
+            "dependsOn": "Poetry Install"
         }
     ]
 }

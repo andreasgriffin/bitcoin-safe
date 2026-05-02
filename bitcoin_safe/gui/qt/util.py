@@ -100,6 +100,7 @@ from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.util import resource_path
 
 logger = logging.getLogger(__name__)
@@ -471,6 +472,46 @@ class MessageType(enum.Enum):
         return list(MessageType)[int(analyzer_state) - 1]
 
 
+class NotificationEventType(enum.Enum):
+    Generic = enum.auto()
+    IncomingTx = enum.auto()
+    OutgoingTx = enum.auto()
+    TxActivity = enum.auto()
+    Warning = enum.auto()
+
+
+@dataclass(frozen=True)
+class WalletTxMessageContent:
+    wallet_id: str | None
+    transactions: tuple[TransactionDetails, ...]
+
+    def txids(self) -> tuple[str, ...]:
+        return tuple(tx.txid for tx in self.transactions)
+
+    def net_amounts(self) -> tuple[int, ...]:
+        return tuple(tx.received - tx.sent for tx in self.transactions)
+
+    def has_multiple_transactions(self) -> bool:
+        return len(self.transactions) > 1
+
+
+@dataclass(frozen=True)
+class ScheduledPaymentsMessageContent:
+    wallet_id: str | None
+    due_count: int
+
+
+@dataclass(frozen=True)
+class ChatSyncMessageContent:
+    wallet_id: str | None = None
+    author: str | None = None
+    description: str | None = None
+    opened_data_type: str | None = None
+
+
+MessageContent = WalletTxMessageContent | ScheduledPaymentsMessageContent | ChatSyncMessageContent | None
+
+
 class Message:
     def __init__(
         self,
@@ -481,6 +522,8 @@ class Message:
         msecs=None,
         type: MessageType = MessageType.Info,
         created_at: datetime | None = None,
+        notification_event_type: NotificationEventType = NotificationEventType.Generic,
+        content: MessageContent = None,
         no_show=False,
         **kwargs,
     ) -> None:
@@ -492,6 +535,8 @@ class Message:
         self.msecs = msecs
         self.type = type
         self.created_at = created_at or datetime.now()
+        self.notification_event_type = notification_event_type
+        self.content = content
         self.kwargs = kwargs
 
         if not no_show:
@@ -506,12 +551,24 @@ class Message:
             msecs=self.msecs,
             type=self.type,
             created_at=self.created_at,
+            notification_event_type=self.notification_event_type,
+            content=self.content,
             no_show=True,
             **self.kwargs,
         )
 
     def strip_parent(self) -> None:
         self.parent = None
+
+    @property
+    def wallet_id(self) -> str | None:
+        if isinstance(self.content, WalletTxMessageContent):
+            return self.content.wallet_id
+        if isinstance(self.content, ScheduledPaymentsMessageContent):
+            return self.content.wallet_id
+        if isinstance(self.content, ChatSyncMessageContent):
+            return self.content.wallet_id
+        return None
 
     @staticmethod
     def system_tray_icon(
@@ -830,7 +887,7 @@ def create_button_box(
 
 
 class ColorSchemeItem:
-    def __init__(self, fg_color, bg_color):
+    def __init__(self, fg_color: str, bg_color: str):
         """Initialize instance."""
         self.colors = (fg_color, bg_color)
 
@@ -858,6 +915,9 @@ class ColorScheme:
     YELLOW = ColorSchemeItem("#897b2a", "#ffff00")
     RED = ColorSchemeItem("#7c1111", "#f18c8c")
     BLUE = ColorSchemeItem("#123b7c", "#8cb3f2")
+    DUE_OVERDUE = ColorSchemeItem("#7c1111", "#f6b3b3")
+    DUE_TODAY = ColorSchemeItem("#8a4b00", "#ffd49a")
+    DUE_THIS_WEEK = ColorSchemeItem("#6e6a00", "#fff2a6")
     DEFAULT = ColorSchemeItem("black", "white")
     GRAY = ColorSchemeItem("gray", "gray")
 
@@ -1110,7 +1170,7 @@ def category_color(text: str) -> QColor:
     return adjust_bg_color_for_darkmode(hash_color(text))
 
 
-def create_color_circle(color: QColor, size=24, margin=1):
+def create_color_circle(color: QColor, size=24, margin=1) -> QIcon:
     """Create color circle."""
     pixmap = QPixmap(size, size)
     pixmap.fill(Qt.GlobalColor.transparent)  # use a transparent background

@@ -11,9 +11,16 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -qq > /dev/null && apt install -qq --yes --no-install-recommends \
     ca-certificates
 
-# pin the distro packages
-COPY apt.sources.list /etc/apt/sources.list
+# Prefer the pinned snapshot for reproducibility, but keep a mirror-based fallback
+# so temporary snapshot outages do not break the whole build.
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu-mirror-fallback.list && \
+    sed -i \
+        -e 's|http://archive.ubuntu.com/ubuntu/|mirror://mirrors.ubuntu.com/mirrors.txt|g' \
+        -e 's|http://security.ubuntu.com/ubuntu/|mirror://mirrors.ubuntu.com/mirrors.txt|g' \
+        /etc/apt/sources.list.d/ubuntu-mirror-fallback.list
+COPY apt.sources.list /etc/apt/sources.list.d/ubuntu-snapshot.list
 COPY apt.preferences /etc/apt/preferences.d/snapshot
+COPY apt.conf /etc/apt/apt.conf.d/99-bitcoin-safe-network-resilience
 
 RUN apt-get update -q  && \
     apt-get install -qy   \
@@ -112,7 +119,8 @@ RUN apt-get update -q  && \
 # create new user to avoid using root; but with sudo access and no password for convenience.
 ARG UID=1000
 ENV USER="user"
-ENV HOME_DIR="/home/${USER}"
+ENV HOME_BASE="/home"
+ENV HOME_DIR="${HOME_BASE}/${USER}"
 ENV WORK_DIR="${HOME_DIR}/wspace" \
     PATH="${HOME_DIR}/.local/bin:${PATH}"
 RUN useradd --uid $UID --create-home --shell /bin/bash ${USER}

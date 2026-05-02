@@ -46,6 +46,7 @@ bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-c
 bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "main" }
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }
 bitcoin-safe-lib  = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
+btcpay-tools = { git = "https://github.com/andreasgriffin/btcpay-tools.git", branch = "main" }
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"
 pycryptodome = "^3.23.0"  # for hash160, since it is not in default openssl
@@ -86,10 +87,12 @@ hatchling="1.26.3"          # dependency of pyinstaller
 
 
 [tool.pytest.ini_options]
+addopts = "-m 'not integration'"
 markers = [
     "marker_qt_1: marks tests as marker_qt_1 (deselect by default)",
     "marker_qt_2: marks tests as marker_qt_2 (deselect by default)",
-    "marker_qt_3: marks tests as marker_qt_3 (deselect by default)"
+    "marker_qt_3: marks tests as marker_qt_3 (deselect by default)",
+    "integration: marks tests that hit live external services",
 ]
 
 

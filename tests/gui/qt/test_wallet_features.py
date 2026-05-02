@@ -56,6 +56,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
+from bitcoin_safe.signature_manager import Asset
 from bitcoin_safe.util import filename_clean
 
 from ...faucet import Faucet
@@ -82,6 +83,7 @@ def test_wallet_features_multisig(
     test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig2",
     amount: int = int(1e6),
 ) -> None:
@@ -89,6 +91,27 @@ def test_wallet_features_multisig(
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+
+    asset_extension_by_system = {
+        "Darwin": "dmg",
+        "Linux": "AppImage",
+        "Windows": "exe",
+    }
+    asset_architecture = (
+        "arm64" if platform.system() == "Darwin" and "arm" in platform.machine().lower() else "x86_64"
+    )
+    asset_extension = asset_extension_by_system.get(platform.system(), "AppImage")
+
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.update_notification_bar.GitHubAssetDownloader.get_assets_latest",
+        lambda self: [
+            Asset(
+                tag="999.0.0",
+                url=f"https://example.com/bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
+                name=f"bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
+            )
+        ],
+    )
 
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
@@ -500,12 +523,7 @@ def test_wallet_features_multisig(
                 main_window.menu_action_check_update.trigger()
                 shutter.save(main_window)
                 assert main_window.update_notification_bar.isVisible()
-
-                with qtbot.waitSignal(
-                    main_window.update_notification_bar.signal_on_success, timeout=10_000
-                ):  # Timeout after 10 seconds
-                    main_window.update_notification_bar.check()
-
+                qtbot.waitUntil(lambda: bool(main_window.update_notification_bar.assets), timeout=10_000)
                 assert main_window.update_notification_bar.assets
 
             menu_action_check_update()

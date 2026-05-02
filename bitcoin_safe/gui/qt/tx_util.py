@@ -36,10 +36,23 @@ from bitcoin_safe_lib.tx_util import serialized_to_hex
 
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
-from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
+from ...signals import T, UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
 from ...wallet import Wallet, get_wallet_of_address
 
 logger = logging.getLogger(__name__)
+
+
+def get_clients(wallet_functions: WalletFunctions, cls: type[T]) -> dict[str, T]:
+    """Get syncclients."""
+    d: dict[str, T] = {}
+    for wallet_id, qt_wallet in wallet_functions.get_qt_wallets().items():
+        if not qt_wallet.plugin_manager:
+            continue
+        client = qt_wallet.plugin_manager.get_instance(cls)
+        if not client:
+            continue
+        d[wallet_id] = client
+    return d
 
 
 def advance_tip_to_address_info(

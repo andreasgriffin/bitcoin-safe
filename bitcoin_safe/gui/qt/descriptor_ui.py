@@ -77,9 +77,10 @@ class DescriptorUI(QWidget):
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
         wallet: Wallet | None = None,
+        parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
-        super().__init__()
+        super().__init__(parent)
         self.signal_tracker = SignalTracker()
         self._layout = QVBoxLayout(self)
         # if we are in the wallet setp process, then wallet = None

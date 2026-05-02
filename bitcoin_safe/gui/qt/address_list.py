@@ -374,7 +374,7 @@ class AddressList(MyTreeView[str]):
         super().__init__(
             config=config,
             signals=wallet_functions.signals,
-            stretch_column=self.stretch_column,
+            stretch_columns={self.stretch_column},
             column_widths=self.column_widths,
             editable_columns=[AddressList.Columns.LABEL],
             sort_column=AddressList.Columns.COIN_BALANCE,
@@ -550,16 +550,14 @@ class AddressList(MyTreeView[str]):
             return
 
         self.current_change_filter = AddressTypeFilter(state)
-        self.update_base_hidden_rows()
-        self.filter()
+        self.refresh_filters()
 
     def set_filter_used(self, state: int) -> None:
         """Set filter used."""
         if state == self.current_used_filter:
             return
         self.current_used_filter = AddressUsageStateFilter(state)
-        self.update_base_hidden_rows()
-        self.filter()
+        self.refresh_filters()
 
     def set_filter_category(self, category_info: CategoryInfo | None) -> None:
         """Set filter category."""
@@ -568,16 +566,11 @@ class AddressList(MyTreeView[str]):
         ):
             return
         self.current_category_filter = category_info.category if category_info else None
-        self.update_base_hidden_rows()
-        self.filter()
+        self.refresh_filters()
 
-    def update_base_hidden_rows(self):
-        """Update base hidden rows."""
-        self.base_hidden_rows.clear()
-
-        hidden_rows_type = set()
-        hidden_rows_used = set()
-        hidden_rows_category = set()
+    def _compute_base_hidden_rows(self) -> set[int]:
+        """Return source rows hidden by address toolbar filters."""
+        hidden_rows: set[int] = set()
 
         for row in range(self._source_model.rowCount()):
             address = self._source_model.data(self._source_model.index(row, self.Columns.ADDRESS))
@@ -585,33 +578,31 @@ class AddressList(MyTreeView[str]):
                 continue
 
             if self.current_change_filter == AddressTypeFilter.RECEIVING and not wallet.is_receive(address):
-                hidden_rows_type.add(row)
+                hidden_rows.add(row)
             elif self.current_change_filter == AddressTypeFilter.CHANGE and not wallet.is_change(address):
-                hidden_rows_type.add(row)
+                hidden_rows.add(row)
 
             balance = wallet.get_addr_balance(address).total
             is_used = wallet.address_is_used(address)
             is_used_and_empty = is_used and balance == 0
             if self.current_used_filter == AddressUsageStateFilter.UNUSED and is_used:
-                hidden_rows_used.add(row)
+                hidden_rows.add(row)
             if self.current_used_filter == AddressUsageStateFilter.FUNDED and (balance == 0):
-                hidden_rows_used.add(row)
+                hidden_rows.add(row)
             if self.current_used_filter == AddressUsageStateFilter.USED_AND_EMPTY and not is_used_and_empty:
-                hidden_rows_used.add(row)
+                hidden_rows.add(row)
             if self.current_used_filter == AddressUsageStateFilter.FUNDED_OR_UNUSED and (
                 (balance == 0) and is_used
             ):
-                hidden_rows_used.add(row)
+                hidden_rows.add(row)
 
             if (
                 self.current_category_filter
                 and wallet.labels.get_category(address) != self.current_category_filter
             ):
-                hidden_rows_category.add(row)
+                hidden_rows.add(row)
 
-        self.base_hidden_rows.update(hidden_rows_type)
-        self.base_hidden_rows.update(hidden_rows_used)
-        self.base_hidden_rows.update(hidden_rows_category)
+        return hidden_rows
 
     def on_update_fx_rates(self):
         """On update fx rates."""
@@ -704,7 +695,6 @@ class AddressList(MyTreeView[str]):
             for address in wallet.get_addresses():
                 self.append_address(wallet, address)
 
-        self.update_base_hidden_rows()
         self._after_update_content()
         super().update_content()
 

@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import logging
 from typing import Any
 
@@ -42,12 +41,12 @@ from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.storage import filtered_for_init
-from bitcoin_usb.address_types import AddressType, DescriptorInfo
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QAction, QColor
 from PyQt6.QtWidgets import QPushButton, QWidget
 
 from bitcoin_safe.descriptor_export_tools import shorten_filename
+from bitcoin_safe.descriptors import hash_from_descriptor
 from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import (
@@ -264,6 +263,7 @@ class SyncTab(ControlledGroupbox):
                     ),
                     no_show=True,
                     parent=self,
+                    wallet_id=self.backup_nsec_notificationbar.wallet_id or None,
                 ).emit_with(self.signals.notification)
                 self.signals.open_tx_like.emit(dm.data.data)
             elif not dm.data:
@@ -273,24 +273,12 @@ class SyncTab(ControlledGroupbox):
                     ),
                     no_show=True,
                     parent=self,
+                    wallet_id=self.backup_nsec_notificationbar.wallet_id or None,
                 ).emit_with(self.signals.notification)
 
     def enabled(self) -> bool:
         """Enabled."""
         return self.checkbox.isChecked()
-
-    @classmethod
-    def generate_hash_hex(
-        cls,
-        address_type: AddressType,
-        xpubs: list[str],
-        network: bdk.Network,
-    ) -> str:
-        """Generate hash hex."""
-        default_key_origin = address_type.key_origin(network)
-
-        total_string = default_key_origin + "".join(sorted(xpubs))
-        return hashlib.sha256(total_string.encode()).hexdigest()
 
     @classmethod
     def from_descriptor_new_device_keys(
@@ -302,15 +290,8 @@ class SyncTab(ControlledGroupbox):
         parent: QObject | None = None,
     ) -> SyncTab:
         """From descriptor new device keys."""
-        descriptor_info = DescriptorInfo.from_str(str(multipath_descriptor))
-        xpubs = [spk_provider.xpub for spk_provider in descriptor_info.spk_providers]
-
         protocol_keys = nostr_sdk.Keys(
-            secret_key=nostr_sdk.SecretKey.parse(
-                hashlib.sha256(
-                    cls.generate_hash_hex(descriptor_info.address_type, xpubs, network).encode("utf-8")
-                ).hexdigest()
-            )
+            secret_key=nostr_sdk.SecretKey.parse(hash_from_descriptor(multipath_descriptor, network))
         )
 
         device_keys = nostr_sdk.Keys.generate()

@@ -36,7 +36,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import bdkpython as bdk
 from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
@@ -68,7 +68,6 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import DataExportPDF
-from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.util import filename_clean
 
@@ -88,6 +87,9 @@ from .util import (
     save_file_dialog,
     svg_tools_hardware_signer,
 )
+
+if TYPE_CHECKING:
+    from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 
 logger = logging.getLogger(__name__)
 

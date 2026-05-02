@@ -38,10 +38,11 @@ import webbrowser
 from concurrent.futures import Future
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from functools import partial
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from types import TracebackType
 from typing import Any, cast
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
 import requests
@@ -59,17 +60,19 @@ from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.config import UserConfig
+from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
+from bitcoin_safe.constants import CONTACT_EMAIL
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.util import OptExcInfo
+from bitcoin_safe.util import SATOSHIS_PER_BTC, OptExcInfo
 from bitcoin_safe.util_os import webopen
 
 from ...fx import FX
@@ -84,7 +87,7 @@ INVOICE_TIMEOUT = timedelta(minutes=15)
 
 @dataclass
 class CallbackServerState:
-    invoice_id: str
+    invoice_details: BtcPayInvoiceDetails
     server: HTTPServer
     serve_future: Future[Any]
     port: int
@@ -92,8 +95,8 @@ class CallbackServerState:
     invoice_url: str | None = None
 
 
-class PaymentButton(QPushButton):
-    signal_payment_completed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+class BTCPayWebButton(QPushButton):
+    signal_payment_completed = cast(SignalProtocol[[BtcPayInvoiceDetails]], pyqtSignal(BtcPayInvoiceDetails))
     signal_update_status = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
@@ -104,34 +107,42 @@ class PaymentButton(QPushButton):
     ) -> None:
         super().__init__(parent)
         self.config = config
-        self.amount: float | None = None
-        self.currency_iso: str | None = None
+        self.amount: int | None = None
         self.loop_in_thread = loop_in_thread
         self._callback_server_state: CallbackServerState | None = None
         self._callback_timeout_timer: QTimer | None = None
         self.future_invoice: Future[Any] | None = None
-
-        self.clicked.connect(self.create_invoice)
+        self.invoice_id: str = str(uuid4())
+        self._checkout_desc: str | None = None
 
         self.signal_update_status.emit(self.tr("Choose an amount and create a donation invoice."))
         self.updateUi()
 
     # ---------- public action ----------
 
-    def set_amount(self, amount: float, currency_iso: str) -> None:
+    def set_amount(self, amount: int) -> None:
         self.amount = amount
-        self.currency_iso = currency_iso
+
+    def set_invoice_id(self, order_id: str) -> None:
+        self.invoice_id = order_id.strip() if order_id else str(uuid4())
+
+    def set_checkout_desc(self, checkout_desc: str | None) -> None:
+        self._checkout_desc = checkout_desc.strip() if checkout_desc else None
 
     def create_invoice(self) -> None:
         # cancel old creation
         self.cancel_invoice_task()
         self._stop_callback_server()
 
-        if not self.amount or not self.currency_iso:
-            self.signal_update_status.emit(self.tr("Please choose a donation amount and a currency."))
+        if not self.amount:
+            self.signal_update_status.emit(self.tr("Please choose an amount."))
             return
 
-        redirect_url_override = self._start_callback_server()
+        invoice_details = BtcPayInvoiceDetails(
+            id=self.invoice_id, amount=self.amount, url=None, bitcoin_address=None
+        )
+
+        redirect_url_override = self._start_callback_server(invoice_details=invoice_details)
         if redirect_url_override:
             self.signal_update_status.emit(
                 self.tr(
@@ -149,47 +160,66 @@ class PaymentButton(QPushButton):
         self.setEnabled(False)
 
         self.future_invoice = self.loop_in_thread.run_task(
-            self._create_invoice_request(self.amount, self.currency_iso, redirect_url_override),
+            self._create_invoice_request(
+                redirect_url_override=redirect_url_override,
+                invoice_details=invoice_details,
+                checkout_desc=self._checkout_desc,
+            ),
             on_success=self._on_invoice_created,
-            on_error=self._on_invoice_error,
+            on_error=partial(self._on_invoice_error, invoice_details),
             key="donation_invoice",
         )
 
     # ---------- async / network ----------
 
     async def _create_invoice_request(
-        self, amount: float, currency: str, redirect_url_override: str | None = None
-    ) -> tuple[int, str | None, str | None, str]:
+        self,
+        invoice_details: BtcPayInvoiceDetails,
+        redirect_url_override: str | None = None,
+        checkout_desc: str | None = None,
+    ) -> tuple[int, BtcPayInvoiceDetails]:
         proxies = (
             ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
             if self.config.network_config.proxy_url
             else None
         )
+        if not invoice_details.amount:
+            raise ValueError("Invoice must have an amount")
 
         redirect_url = redirect_url_override or f"https://bitcoin-safe.org/redirecturl{uuid4()}"
+        request_data: dict[str, str] = {
+            "storeId": DONATION_STORE_ID,
+            "currency": "BTC",
+            "price": f"{invoice_details.amount / SATOSHIS_PER_BTC:.8f}",
+            "browserRedirect": redirect_url,
+        }
+        if invoice_details.id:
+            request_data["orderId"] = invoice_details.id
+        if checkout_desc:
+            request_data["checkoutDesc"] = checkout_desc
+
         response = requests.post(
             DONATION_INVOICE_ENDPOINT,
-            data={
-                "storeId": DONATION_STORE_ID,
-                "currency": currency,
-                "price": f"{amount:.2f}",
-                "browserRedirect": redirect_url,
-            },
+            data=request_data,
             allow_redirects=False,
             timeout=20 if proxies else 10,
             proxies=proxies,
         )
-        return response.status_code, response.headers.get("Location"), response.text, redirect_url
+        status_code, invoice_url = response.status_code, response.headers.get("Location")
+
+        invoice_details.url = urljoin(DONATION_INVOICE_ENDPOINT, invoice_url) if invoice_url else None
+
+        return status_code, invoice_details
 
     # ---------- callbacks ----------
 
-    def _on_invoice_created(self, result: tuple[int, str | None, str | None, str]) -> None:
-        status_code, invoice_url, _, _ = result
+    def _on_invoice_created(self, result: tuple[int, BtcPayInvoiceDetails]) -> None:
+        status_code, invoice_details = result
         self.setEnabled(True)
 
-        if not invoice_url:
+        if not invoice_details.url:
             self.signal_update_status.emit(self.tr("Could not create invoice. Please try again."))
-            self.signal_payment_completed.emit(False)
+            self.signal_payment_completed.emit(invoice_details)
             self._stop_callback_server()
             return
 
@@ -201,10 +231,10 @@ class PaymentButton(QPushButton):
             return
 
         if self._callback_server_state:
-            self._callback_server_state.invoice_url = invoice_url
+            self._callback_server_state.invoice_url = invoice_details.url
 
         callback_available = self._callback_server_state is not None
-        if not self._open_invoice_in_browser(invoice_url):
+        if not self._open_invoice_in_browser(invoice_details.url):
             self._show_browser_open_failure()
             return
 
@@ -212,8 +242,8 @@ class PaymentButton(QPushButton):
             self.signal_update_status.emit(
                 self.tr(
                     "Complete the payment in your browser.\n"
-                    "If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me"
-                )
+                    "If there is an issue, please dont hesitate to contact us at: {email}"
+                ).format(email=CONTACT_EMAIL)
             )
         else:
             self.signal_update_status.emit(
@@ -222,7 +252,7 @@ class PaymentButton(QPushButton):
                 )
             )
 
-    def _on_invoice_error(self, exc_info: OptExcInfo) -> None:
+    def _on_invoice_error(self, invoice_details: BtcPayInvoiceDetails, exc_info: OptExcInfo) -> None:
         exc_info_for_logger: tuple[type[BaseException], BaseException, TracebackType | None] | None = None
         if exc_info and exc_info[0] and exc_info[1]:
             exc_info_for_logger = cast(
@@ -234,7 +264,8 @@ class PaymentButton(QPushButton):
         self.signal_update_status.emit(
             self.tr("Unable to reach the donation server. Please try again later.")
         )
-        self.signal_payment_completed.emit(False)
+        invoice_details.paid = False
+        self.signal_payment_completed.emit(invoice_details)
         self._stop_callback_server()
 
     def cancel_invoice_task(self):
@@ -281,7 +312,7 @@ class PaymentButton(QPushButton):
 
     # ---------- external browser callback helpers ----------
 
-    def _build_callback_handler(self, invoice_id: str):
+    def _build_callback_handler(self, invoice_details: BtcPayInvoiceDetails):
         parent = self
 
         class DonationCallbackHandler(BaseHTTPRequestHandler):
@@ -293,11 +324,11 @@ class PaymentButton(QPushButton):
 
                 query = parse_qs(parsed.query)
                 invoice_query = query.get("invoice", [""])[0]
-                if invoice_query != invoice_id:
+                if invoice_query != invoice_details.id:
                     self.send_error(400, "Unknown invoice")
                     return
 
-                parent._handle_callback_request(invoice_id)
+                parent._handle_callback_request(invoice_details)
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html")
                 self.end_headers()
@@ -311,7 +342,7 @@ class PaymentButton(QPushButton):
 
         return DonationCallbackHandler
 
-    def _start_callback_server(self) -> str | None:
+    def _start_callback_server(self, invoice_details: BtcPayInvoiceDetails) -> str | None:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.bind(("127.0.0.1", 0))
@@ -320,8 +351,7 @@ class PaymentButton(QPushButton):
             logger.exception("Failed to bind a local port for the callback listener")
             return None
 
-        invoice_id = str(uuid4())
-        handler = self._build_callback_handler(invoice_id)
+        handler = self._build_callback_handler(invoice_details)
         try:
             server = HTTPServer(("127.0.0.1", port), handler)
         except OSError:
@@ -331,15 +361,15 @@ class PaymentButton(QPushButton):
         serve_future = self.loop_in_thread.run_background(asyncio.to_thread(server.serve_forever))
 
         self._callback_server_state = CallbackServerState(
-            invoice_id=invoice_id,
+            invoice_details=invoice_details,
             server=server,
             serve_future=serve_future,
             port=port,
             started_at=datetime.now(),
         )
-        logger.info(f"started  callback_server  {invoice_id=}, {port=}")
+        logger.info(f"started  callback_server  {invoice_details.id=}, {port=}")
         self._start_callback_timeout_timer()
-        return f"http://127.0.0.1:{port}/donation/callback?invoice={invoice_id}"
+        return f"http://127.0.0.1:{port}/donation/callback?invoice={invoice_details.id}"
 
     def _request_stop_callback_server(self, state: CallbackServerState | None = None) -> None:
         self._stop_callback_server(state)
@@ -383,9 +413,9 @@ class PaymentButton(QPushButton):
             except Exception:
                 logger.exception("Failed while waiting for callback server thread to stop")
 
-    def _handle_callback_request(self, invoice_id: str) -> None:
+    def _handle_callback_request(self, invoice_details: BtcPayInvoiceDetails) -> None:
         state = self._callback_server_state
-        if not state or state.invoice_id != invoice_id:
+        if not state or state.invoice_details.id != invoice_details.id:
             return
         if datetime.now() - state.started_at > INVOICE_TIMEOUT:
             self.signal_update_status.emit(
@@ -395,7 +425,9 @@ class PaymentButton(QPushButton):
         self._callback_server_state = None
         self._request_stop_callback_server(state)
         self.signal_update_status.emit(self.tr("Payment confirmed via browser callback. Thank you!"))
-        self.signal_payment_completed.emit(True)
+
+        invoice_details.paid = True
+        self.signal_payment_completed.emit(invoice_details)
 
     def _show_browser_open_failure(self) -> None:
         self._stop_callback_server()
@@ -478,7 +510,7 @@ class PaymentButton(QPushButton):
 
 
 class DonationInvoiceWidget(QWidget):
-    payment_completed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
+    payment_completed = cast(SignalProtocol[[BtcPayInvoiceDetails]], pyqtSignal(BtcPayInvoiceDetails))
 
     def __init__(
         self,
@@ -503,6 +535,9 @@ class DonationInvoiceWidget(QWidget):
             signal_currency_changed=signal_currency_changed,
             signal_language_switch=signal_language_switch,
         )
+        self.message_label = QLabel(self)
+        self.message_input = QLineEdit(self)
+        self.message_input.textChanged.connect(self._sync_message_to_button)
 
         self.status_label = QLabel(self)
         self.status_label.setTextInteractionFlags(
@@ -511,11 +546,12 @@ class DonationInvoiceWidget(QWidget):
         self.status_label.setWordWrap(True)
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.payment_button = PaymentButton(
+        self.payment_button = BTCPayWebButton(
             config=fx.config,
             loop_in_thread=loop_in_thread,
             parent=self,
         )
+        self.payment_button.clicked.connect(self.payment_button.create_invoice)
         self.payment_button.signal_payment_completed.connect(self.payment_completed.emit)
         self.payment_button.signal_update_status.connect(self._update_status)
 
@@ -526,13 +562,21 @@ class DonationInvoiceWidget(QWidget):
         self.donate_row.addWidget(self.payment_button)
         self.donate_row.addStretch()
 
+        self.message_row = QHBoxLayout()
+        self.message_row.addStretch()
+        self.message_row.addWidget(self.message_label)
+        self.message_row.addWidget(self.message_input)
+        self.message_row.addStretch()
+
         self.fiat_spin_box.setValue(amount)
         self.fiat_spin_box.setCurrencyCode(currency_iso)
         self._sync_amount_to_button()
+        self._sync_message_to_button()
 
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
         layout.addLayout(self.donate_row)
+        layout.addLayout(self.message_row)
         layout.addWidget(self.status_label)
 
         self._update_status("")
@@ -546,7 +590,11 @@ class DonationInvoiceWidget(QWidget):
         self.status_label.setText(str(message))
 
     def _sync_amount_to_button(self, *args) -> None:
-        self.payment_button.set_amount(self.fiat_spin_box.value(), self.fx.get_currency_iso())
+        amount = self.fx.fiat_to_btc(self.fiat_spin_box.value(), self.fx.get_currency_iso())
+        self.payment_button.set_amount(amount if amount is not None else 0)
+
+    def _sync_message_to_button(self, *args) -> None:
+        self.payment_button.set_checkout_desc(self.message_input.text())
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         self.payment_button.close()
@@ -556,6 +604,8 @@ class DonationInvoiceWidget(QWidget):
         currency_symbol = self.fx.get_currency_symbol()
         self.fiat_unit.setText(currency_symbol)
         self.fiat_label.setText(self.tr("Value"))
+        self.message_label.setText(self.tr("Message (optional)"))
+        self.message_input.setPlaceholderText(self.tr("Thanks for Bitcoin Safe!"))
         self.payment_button.updateUi()
 
 
@@ -578,6 +628,7 @@ class DonateDialog(QWidget):
         self.setWindowTitle(self.tr("Support Bitcoin Safe"))
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.setMinimumWidth(420)
+        self.setMinimumHeight(620)
 
         layout = QVBoxLayout(self)
 
@@ -632,8 +683,8 @@ class DonateDialog(QWidget):
         self.contact_button.clicked.connect(mail_contact)
         layout.addWidget(self.contact_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
-    def _on_payment_complete(self, success: bool) -> None:
-        if not success:
+    def _on_payment_complete(self, invoice_details: BtcPayInvoiceDetails) -> None:
+        if not invoice_details.paid:
             return
         message = self.tr("Donation successful. Thank you so much for supporting Bitcoin Safe!")
         QMessageBox.information(self, self.tr("Donation"), message)

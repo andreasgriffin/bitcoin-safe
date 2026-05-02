@@ -53,7 +53,13 @@ from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.descriptor_export_tools import shorten_filename
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import Message, adjust_bg_color_for_darkmode, save_file_dialog, svg_tools
+from bitcoin_safe.gui.qt.util import (
+    ChatSyncMessageContent,
+    Message,
+    adjust_bg_color_for_darkmode,
+    save_file_dialog,
+    svg_tools,
+)
 from bitcoin_safe.html_utils import link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
@@ -137,41 +143,50 @@ class SyncClient(PluginClient):
         PluginPermission.ADDRESS,
         PluginPermission.DESCRIPTOR,
     }
-    title = translate("SyncClient", "Sync & Chat")
-    description = translate(
-        "SyncClient",
-        "- Backup your labels and coin categories in the cloud.<br>"
-        "- Synchronize your labels and coin categories between multiple computers. {synclink}<br>"
-        "- Sign a transaction with others collaboratively, "
-        "no matter where you are in the world. {videolink}<br>"
-        "- Everything is always encrypted (learn more about the {protocol_link})",
-    ).format(
-        videolink=link(
-            url="https://bitcoin-safe.org/en/features/collaboration/",
-            text=translate("SyncClient", "Collaboration Video"),
-        ),
-        synclink=link(
-            url="https://bitcoin-safe.org/en/features/label-sync/",
-            text=translate("SyncClient", "Synchronization Video"),
-        ),
-        protocol_link=link(
-            url="https://github.com/andreasgriffin/bitcoin-nostr-chat/?tab=readme-ov-file#protocol",
-            text=translate("SyncClient", "protocol"),
-        ),
-    )
-    provider = "Bitcoin Safe (via Nostr)"
 
-    @staticmethod
-    def cls_kwargs(
+    @classmethod
+    def set_base_infos(cls):
+        cls.title = translate("SyncClient", "Sync & Chat")
+        cls.description = translate(
+            "SyncClient",
+            "- Backup your labels and coin categories in the cloud.<br>"
+            "- Synchronize your labels and coin categories between multiple computers. {synclink}<br>"
+            "- Sign a transaction with others collaboratively, "
+            "no matter where you are in the world. {videolink}<br>"
+            "- Everything is always encrypted (learn more about the {protocol_link})",
+        ).format(
+            videolink=link(
+                url="https://bitcoin-safe.org/en/features/collaboration/",
+                text=translate("SyncClient", "Collaboration Video"),
+            ),
+            synclink=link(
+                url="https://bitcoin-safe.org/en/features/label-sync/",
+                text=translate("SyncClient", "Synchronization Video"),
+            ),
+            protocol_link=link(
+                url="https://github.com/andreasgriffin/bitcoin-nostr-chat/?tab=readme-ov-file#protocol",
+                text=translate("SyncClient", "protocol"),
+            ),
+        )
+        cls.provider = "Bitcoin Safe (via Nostr)"
+
+    @classmethod
+    def cls_kwargs(  # type: ignore
+        cls,
         signals: Signals,
         network: bdk.Network,
         loop_in_thread: LoopInThread | None,
+        parent: QWidget | None,
     ):
-        return {
-            "signals": signals,
-            "network": network,
-            "loop_in_thread": loop_in_thread,
-        }
+        d = super().cls_kwargs(parent=parent)
+        d.update(
+            {
+                "signals": signals,
+                "network": network,
+                "loop_in_thread": loop_in_thread,
+            }
+        )
+        return d
 
     def __init__(
         self,
@@ -286,10 +301,6 @@ class SyncClient(PluginClient):
             )
         if self.label_syncer:
             self.label_syncer.set_enabled(value=value)
-
-    def get_widget(self) -> QWidget:
-        """Get widget."""
-        return self
 
     def set_server_view(
         self,
@@ -423,6 +434,12 @@ class SyncClient(PluginClient):
                     ),
                     no_show=True,
                     parent=self,
+                    content=ChatSyncMessageContent(
+                        wallet_id=self.server.wallet_id if self.server else None,
+                        author=self.nostr_sync.chat.get_alias(dm.author),
+                        description=dm.description,
+                        opened_data_type=dm.data.data_type.name,
+                    ),
                 ).emit_with(self.signals.notification)
                 self.signals.open_tx_like.emit(dm.data.data)
             elif not dm.data:
@@ -432,6 +449,11 @@ class SyncClient(PluginClient):
                     ),
                     no_show=True,
                     parent=self,
+                    content=ChatSyncMessageContent(
+                        wallet_id=self.server.wallet_id if self.server else None,
+                        author=self.nostr_sync.chat.get_alias(dm.author),
+                        description=dm.description,
+                    ),
                 ).emit_with(self.signals.notification)
 
     @classmethod

@@ -63,11 +63,10 @@ from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.my_treeview import needs_frequent_flag
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
-from bitcoin_safe.gui.qt.qt_wallet import get_syncclients
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
-from bitcoin_safe.gui.qt.tx_util import advance_tip_for_addresses
+from bitcoin_safe.gui.qt.tx_util import advance_tip_for_addresses, get_clients
 from bitcoin_safe.gui.qt.ui_tx.toggle_button_group import ToggleButtonGroup
 from bitcoin_safe.gui.qt.ui_tx.txid_label import TxidLabel
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
@@ -77,7 +76,8 @@ from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
-from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
+from bitcoin_safe.tx import HiddenTxUiInfos, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -190,6 +190,7 @@ class UITx_Viewer(UITx_Base):
         chain_position: bdk.ChainPosition | None = None,
         parent=None,
         focus_ui_element: UiElements = UiElements.none,
+        hidden_tx_infos: HiddenTxUiInfos | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
@@ -208,7 +209,7 @@ class UITx_Viewer(UITx_Base):
         self.chain_position = chain_position
         self._forced_update = False
         self._pending_update = True
-
+        self.hidden_tx_infos = hidden_tx_infos
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
 
@@ -270,7 +271,11 @@ class UITx_Viewer(UITx_Base):
 
         # outputs
         self.column_recipients = ColumnRecipients(
-            fx=fx, wallet_functions=self.wallet_functions, allow_edit=False
+            fx=fx,
+            wallet_functions=self.wallet_functions,
+            allow_edit=False,
+            config=self.config,
+            loop_in_thread=self.loop_in_thread,
         )
         set_margins(
             self.column_recipients._layout,
@@ -337,7 +342,7 @@ class UITx_Viewer(UITx_Base):
             signals_min=self.signals,
             loop_in_thread=self.loop_in_thread,
             parent=self,
-            sync_client=get_syncclients(wallet_functions=self.wallet_functions),
+            sync_client=get_clients(wallet_functions=self.wallet_functions, cls=SyncClient),
         )
         self.export_data_simple.button_export_file.signal_on_menu_updated.connect(
             self._on_export_file_menu_updated
@@ -942,6 +947,8 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
         success = self._broadcast(tx)
         if success:
+            if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
+                self.save_local_tx()
             logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
@@ -1404,7 +1411,7 @@ class UITx_Viewer(UITx_Base):
         self.set_tab_properties(chain_position=chain_position)
         self.update_all_totals()
         self.export_data_simple.set_data(
-            data=self.data, sync_client=get_syncclients(wallet_functions=self.wallet_functions)
+            data=self.data, sync_client=get_clients(wallet_functions=self.wallet_functions, cls=SyncClient)
         )
         self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
         self._update_txid_controls()

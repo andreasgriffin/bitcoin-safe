@@ -137,10 +137,17 @@ class Recipient:
     amount: int
     label: str | None = None
     checked_max_amount: bool = False
+    read_only: bool = False
 
     def clone(self) -> Recipient:
         """Clone."""
-        return Recipient(self.address, self.amount, self.label, self.checked_max_amount)
+        return Recipient(
+            address=self.address,
+            amount=self.amount,
+            label=self.label,
+            checked_max_amount=self.checked_max_amount,
+            read_only=self.read_only,
+        )
 
 
 class OutPoint(bdk.OutPoint):

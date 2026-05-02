@@ -49,11 +49,21 @@ from bitcoin_safe.util import SATOSHIS_PER_BTC
 from bitcoin_safe.wallet import LOCAL_TX_LAST_SEEN
 
 from .helpers import TestConfig
-from .setup_bitcoin_core import bitcoin_cli
-from .util import make_psbt
+from .setup_bitcoin_core import bitcoin_cli, mine_blocks
+from .util import make_psbt, wait_for_sync
 from .wallet_factory import create_test_wallet
 
 logger = logging.getLogger(__name__)
+
+
+def _wait_for_cbf_balance(wallet, minimum_spendable: int, timeout: float = 120.0) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        balance = wallet.get_balance()
+        if balance.spendable >= minimum_spendable:
+            return
+        time.sleep(0.2)
+    raise TimeoutError(f"Timed out waiting for faucet spendable balance >= {minimum_spendable}")
 
 
 class Faucet:
@@ -74,17 +84,10 @@ class Faucet:
         self.address_type = AddressTypes.p2wpkh
         self.backend = backend
         self.config = test_config
+        self._live_sync_disabled = False
 
         self.wallet_handle = self._build_wallet_handle()
-        self.wallet = self.wallet_handle.wallet
-        self.wallet.client.BROADCAST_TIMEOUT = 10
-        self.descriptor, self.change_descriptor = self.wallet.multipath_descriptor.to_single_descriptors()
-        self.software_signer = SoftwareSigner(
-            mnemonic=str(self.mnemonic),
-            network=self.network,
-            receive_descriptor=str(self.descriptor),
-            change_descriptor=str(self.change_descriptor),
-        )
+        self._configure_wallet_handle(self.wallet_handle)
 
         # Reveal and persist the first receive address so recovery scans have a known tip
         self.wallet.persist()
@@ -118,6 +121,28 @@ class Faucet:
             bitcoin_core=self.bitcoin_core,
             loop_in_thread=self.loop_in_thread,
         )
+
+    def _configure_wallet_handle(self, wallet_handle) -> None:
+        """Refresh faucet state after creating or recreating the wallet handle."""
+        self.wallet_handle = wallet_handle
+        self.wallet = wallet_handle.wallet
+        self.wallet.client.BROADCAST_TIMEOUT = 10
+        self.descriptor, self.change_descriptor = self.wallet.multipath_descriptor.to_single_descriptors()
+        self.software_signer = SoftwareSigner(
+            mnemonic=str(self.mnemonic),
+            network=self.network,
+            receive_descriptor=str(self.descriptor),
+            change_descriptor=str(self.change_descriptor),
+        )
+
+    def _disable_live_sync(self) -> None:
+        """Stop faucet background sync once the wallet has enough confirmed funds."""
+        for task in self.wallet_handle.cbf_tasks:
+            task.cancel()
+        self.wallet_handle.cbf_tasks.clear()
+        if self.wallet.client:
+            self.wallet.client.close()
+        self._live_sync_disabled = True
 
     def _broadcast(self, tx: bdk.Transaction):
         """Broadcast a transaction using the active backend."""
@@ -173,15 +198,32 @@ class Faucet:
         return tx
 
     def mine(self, qtbot: QtBot, blocks=1, address=None):
+        if self._live_sync_disabled:
+            destination_address = address
+            if destination_address is None:
+                destination_address = str(
+                    self.wallet.bdkwallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL).address
+                )
+                self.wallet.persist()
+            mine_blocks(self.bitcoin_core, blocks, address=destination_address)
+            return
         return self.wallet_handle.mine(blocks=blocks, address=address, qtbot=qtbot)
 
     def sync(self, qtbot: QtBot):
         self.wallet_handle.sync(qtbot=qtbot)
 
-    def _initial_mine(self, qtbot: QtBot):
+    def _initial_mine(self, qtbot: QtBot | None = None):
         """Initial mine."""
-        # Keep initial funding lightweight to avoid long CBF syncs.
-        self.wallet_handle.mine(blocks=200, qtbot=qtbot, timeout=120_000)
+        receive_address = str(
+            self.wallet.bdkwallet.peek_address(keychain=bdk.KeychainKind.EXTERNAL, index=0).address
+        )
+        mine_blocks(self.bitcoin_core, 200, address=receive_address)
+        if qtbot:
+            wait_for_sync(qtbot=qtbot, wallet=self.wallet, timeout=120_000, minimum_spendable=1)
+        else:
+            _wait_for_cbf_balance(wallet=self.wallet, minimum_spendable=1)
+        if self.backend == "cbf":
+            self._disable_live_sync()
 
     def close(self):
         """Clean up backend resources."""
@@ -203,6 +245,8 @@ def faucet_session(
         test_config=test_config_session,
         backend=backend,
     )
+    if backend == "cbf" and faucet_instance.wallet.get_balance().total == 0:
+        faucet_instance._initial_mine()
     yield faucet_instance
     faucet_instance.close()
 

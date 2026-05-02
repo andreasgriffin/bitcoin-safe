@@ -56,6 +56,38 @@ from .pythonbdk_types import (
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class HiddenTxUiInfos(BaseSaveableClass):
+    """Container for state not exposed through the UI."""
+
+    VERSION = "0.0.0"
+    known_classes = {**BaseSaveableClass.known_classes}
+
+    replace_tx: bdk.Transaction | None = None
+    tx_label: str | None = None
+    save_local_on_send: bool | None = None
+
+    def dump(self) -> dict[str, Any]:  # type: ignore[override]
+        """Dump hidden fields."""
+        d = super().dump()
+        d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
+        d["tx_label"] = self.tx_label
+        d["save_local_on_send"] = self.save_local_on_send
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None):
+        """Rehydrate hidden fields."""
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        if replace_tx := dct.get("replace_tx"):
+            dct["replace_tx"] = bdk.Transaction(hex_to_serialized(replace_tx))
+
+        dct.setdefault("tx_label", None)
+        dct.setdefault("save_local_on_send", None)
+        return cls(**filtered_for_init(dct, cls))
+
+
 def short_tx_id(txid: str | bdk.Txid) -> str:
     """Short tx id."""
     if isinstance(txid, bdk.Txid):
@@ -116,6 +148,7 @@ class TxUiInfos(BaseSaveableClass):
         PythonUtxo.__name__: PythonUtxo,
         Recipient.__name__: Recipient,
         OutPoint.__name__: OutPoint,
+        HiddenTxUiInfos.__name__: HiddenTxUiInfos,
     }
 
     # {outpoint_string:utxo} It is Ok if outpoint_string:None
@@ -130,8 +163,26 @@ class TxUiInfos(BaseSaveableClass):
     hide_UTXO_selection: bool = True
     recipient_read_only: bool = False
     utxos_read_only: bool = False
-    replace_tx: bdk.Transaction | None = None
     nlocktime: int | None = None
+    categories: list[str] | None = None
+    auto_create: bool | None = None
+    hidden: HiddenTxUiInfos = field(default_factory=HiddenTxUiInfos)
+
+    @property
+    def replace_tx(self) -> bdk.Transaction | None:
+        return self.hidden.replace_tx
+
+    @replace_tx.setter
+    def replace_tx(self, value: bdk.Transaction | None) -> None:
+        self.hidden.replace_tx = value
+
+    @property
+    def tx_label(self) -> str | None:
+        return self.hidden.tx_label
+
+    @tx_label.setter
+    def tx_label(self, value: str | None) -> None:
+        self.hidden.tx_label = value
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
@@ -142,9 +193,11 @@ class TxUiInfos(BaseSaveableClass):
         d["hide_UTXO_selection"] = self.hide_UTXO_selection
         d["recipient_read_only"] = self.recipient_read_only
         d["utxos_read_only"] = self.utxos_read_only
-        d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
         d["utxo_dict"] = {str(k): v for k, v in self.utxo_dict.items()}
         d["nlocktime"] = self.nlocktime
+        d["categories"] = list(self.categories) if self.categories else None
+        d["auto_create"] = self.auto_create
+        d["hidden"] = self.hidden.dump()
         return d
 
     @classmethod
@@ -152,8 +205,6 @@ class TxUiInfos(BaseSaveableClass):
         """From dump."""
         super()._from_dump(dct, class_kwargs=class_kwargs)
 
-        if replace_tx := dct.get("replace_tx"):
-            dct["replace_tx"] = bdk.Transaction(hex_to_serialized(replace_tx))
         dct["recipients"] = [Recipient(**filtered_for_init(r, Recipient)) for r in dct.get("recipients", [])]
 
         if isinstance(utxo_dict := dct.get("utxo_dict"), dict):
@@ -194,6 +245,7 @@ class TxBuilderInfos:
         psbt: bdk.Psbt,
         recipient_category: str | None = None,
         fee_rate: float | None = None,
+        hidden_tx_infos: HiddenTxUiInfos | None = None,
     ):
         """Initialize instance."""
         self.fee_rate = fee_rate
@@ -202,6 +254,7 @@ class TxBuilderInfos:
         self.utxos_for_input = utxos_for_input
         self.psbt = psbt
         self.recipient_category = recipient_category
+        self.hidden_tx_infos = hidden_tx_infos
 
     def add_recipient(self, recipient: Recipient):
         """Add recipient."""

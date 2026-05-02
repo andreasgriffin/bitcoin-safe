@@ -136,7 +136,7 @@ class CategoryList(MyTreeView[CategoryInfo]):
         """
         super().__init__(
             config=config,
-            stretch_column=self.stretch_column,
+            stretch_columns={self.stretch_column},
             column_widths=self.column_widths,
             editable_columns=[],
             signals=signals,

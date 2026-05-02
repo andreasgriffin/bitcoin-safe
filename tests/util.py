@@ -101,6 +101,7 @@ def wait_for_sync(
     qtbot: QtBot,
     wallet: QTWallet | Wallet,
     minimum_funds=0,
+    minimum_spendable=0,
     txid: str | None = None,
     tx_count: int = 0,
     timeout: float = 10_000,
@@ -111,16 +112,20 @@ def wait_for_sync(
         wallet = qt_wallet.wallet
 
     def info_message():
+        balance = wallet.get_balance()
         logger.info(
             f"{wallet.id=}\n"
-            f"{wallet.get_balance().total=} and {minimum_funds=}\n"
-            f"{(not txid or wallet.get_tx(txid))=} and {txid=}"
+            f"{balance.total=} and {minimum_funds=}\n"
+            f"{balance.spendable=} and {minimum_spendable=}\n"
+            f"{(not txid or wallet.get_tx(txid))=} and {txid=}\n"
             f"{len(wallet.bdkwallet.transactions())=} and {tx_count=}"
         )
 
     def condition() -> bool:
+        balance = wallet.get_balance()
         res = bool(
-            wallet.get_balance().total >= minimum_funds
+            balance.total >= minimum_funds
+            and balance.spendable >= minimum_spendable
             and (not txid or wallet.get_tx(txid))
             and len(wallet.bdkwallet.transactions()) >= tx_count
         )

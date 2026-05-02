@@ -489,6 +489,57 @@ class SignatureVerifyer:
             logger.error(f"Verification failed: {e}")
             return False
 
+    def verify_detached_signature(self, binary_file: Path, signature_file: Path) -> bool:
+        """Verify a detached signature against the currently imported public keys."""
+        if not binary_file.exists():
+            logger.error("Binary file %s does not exist.", binary_file)
+            return False
+        if not signature_file.exists():
+            logger.error("Signature file %s does not exist.", signature_file)
+            return False
+
+        return self._verify_file(
+            public_keys=self.public_keys.values(),
+            binary_file=binary_file,
+            signature_file=signature_file,
+        )
+
+    def verify_detached_signature_with_fingerprint(
+        self, binary_file: Path, signature_file: Path
+    ) -> tuple[bool, str | None]:
+        """Verify a detached signature and return the verified signer fingerprint."""
+        if not binary_file.exists():
+            logger.error("Binary file %s does not exist.", binary_file)
+            return False, None
+        if not signature_file.exists():
+            logger.error("Signature file %s does not exist.", signature_file)
+            return False, None
+
+        try:
+            with open(str(signature_file), "rb") as sig_file:
+                signature = pgpy.PGPSignature.from_blob(sig_file.read())
+                if not isinstance(signature, pgpy.PGPSignature):
+                    return False, None
+
+            with open(str(binary_file), "rb") as bin_file:
+                message_data = bin_file.read()
+
+            pgpmessage = pgpy.PGPMessage.new(message_data, file=True)
+            signer_keys, _error = self._verify_pgp_message(
+                pgpmessage,
+                self.public_keys.values(),
+                additional_signatures=[signature],
+            )
+            if not signer_keys:
+                return False, None
+
+            signer_fingerprint = str(signer_keys[0].fingerprint).replace(" ", "").upper()
+            return True, signer_fingerprint
+        except Exception as exc:
+            logger.debug("%s detached signature fingerprint lookup failed: %s", self.__class__.__name__, exc)
+            logger.error("Verification failed: %s", exc)
+            return False, None
+
     def verify_signed_message_block(
         self, signed_message: str, public_key_block: str | None = None
     ) -> tuple[list[pgpy.PGPKey], str | None]:

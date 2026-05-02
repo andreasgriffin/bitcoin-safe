@@ -27,3 +27,4 @@
 # SOFTWARE.
 #
 
+from .plugin_card_frame import PluginCardFrame as PluginCardFrame

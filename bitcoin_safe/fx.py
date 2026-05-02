@@ -30,10 +30,12 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any, cast
 
 import bdkpython as bdk
+import requests
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
@@ -42,9 +44,12 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx_types import FXProvider
 from bitcoin_safe.mempool_manager import fetch_from_url
 from bitcoin_safe.network_utils import ProxyInfo
-from bitcoin_safe.util import SATOSHIS_PER_BTC
+from bitcoin_safe.util import SATOSHIS_PER_BTC, default_timeout
 
 logger = logging.getLogger(__name__)
+
+COINGECKO_HISTORICAL_RATE_URL = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range"
+COINGECKO_HISTORICAL_RATE_TIMEOUT_SECONDS = 8.0
 
 
 class FX(QObject):
@@ -57,6 +62,7 @@ class FX(QObject):
         self._owns_loop_in_thread = loop_in_thread is None
         self.config = config
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()
+        self.historical_rates: dict[float, dict[str, float]] = config.historical_rates
         self.sanitize_rates()
         if update_rates:
             self.update()
@@ -76,6 +82,26 @@ class FX(QObject):
             return FX.sanitize_key(currency_iso) == "BTC"
         else:
             return FX.sanitize_key(currency_iso) in ["BTC", "TBTC"]
+
+    @staticmethod
+    def is_fixed_exchange_to_btc(currency_code: str) -> bool:
+        """Return whether the currency is a fixed BTC denomination."""
+        code = FX.sanitize_key(currency_code)
+        if code in {
+            "BTC",
+            "TBTC",
+            "XBT",
+            "SAT",
+            "SATS",
+            "TSAT",
+            "TSATS",
+            "BIT",
+            "BITS",
+            "MBTC",
+            "UBTC",
+        }:
+            return True
+        return code.endswith("BTC") and code[:-3] in {"", "T", "M", "U"}
 
     @staticmethod
     @lru_cache(maxsize=200_000)
@@ -343,6 +369,95 @@ class FX(QObject):
                 continue
             self.rates[upper] = self.rates[key]
             del self.rates[key]
+
+    @staticmethod
+    def historical_rate_datetime_utc(at_datetime: datetime) -> datetime:
+        if at_datetime.tzinfo is None:
+            at_datetime = at_datetime.replace(tzinfo=timezone.utc)
+        normalized = at_datetime.astimezone(timezone.utc)
+        return datetime.combine(normalized.date(), datetime.min.time(), tzinfo=timezone.utc)
+
+    @classmethod
+    def historical_rate_timestamp_key(cls, at_datetime: datetime) -> float:
+        return cls.historical_rate_datetime_utc(at_datetime).timestamp()
+
+    def _requests_proxy_dict(self) -> dict[str, str] | None:
+        proxy_url = self.config.network_config.proxy_url
+        if not proxy_url:
+            return None
+        return ProxyInfo.parse(proxy_url).get_requests_proxy_dict()
+
+    def _fetch_historical_rate_value(self, currency: str, at_datetime: datetime) -> float | None:
+        start_utc = self.historical_rate_datetime_utc(at_datetime)
+        end_utc = start_utc + timedelta(days=1)
+        proxies = self._requests_proxy_dict()
+        params = {
+            "vs_currency": currency.lower(),
+            "from": str(int(start_utc.timestamp())),
+            "to": str(int(end_utc.timestamp())),
+        }
+
+        try:
+            response = requests.get(
+                COINGECKO_HISTORICAL_RATE_URL,
+                params=params,
+                timeout=default_timeout(proxies, COINGECKO_HISTORICAL_RATE_TIMEOUT_SECONDS),
+                proxies=proxies,
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            logger.warning(
+                "Unable to fetch CoinGecko historical rate for %s on %s: %s",
+                currency,
+                start_utc.date().isoformat(),
+                exc,
+            )
+            return None
+
+        try:
+            payload = response.json()
+        except ValueError:
+            logger.warning("CoinGecko historical rate response was not valid JSON")
+            return None
+
+        prices = payload.get("prices")
+        if not isinstance(prices, list):
+            return None
+
+        for price_point in prices:
+            if (
+                isinstance(price_point, list)
+                and len(price_point) >= 2
+                and isinstance(price_point[1], (int, float))
+                and float(price_point[1]) > 0
+            ):
+                return float(price_point[1])
+
+        return None
+
+    def get_historical_rate_value(
+        self,
+        currency: str | None,
+        at_datetime: datetime,
+        fetch_if_missing: bool = True,
+    ) -> float | None:
+        if not currency:
+            return None
+
+        currency_key = self.sanitize_key(currency)
+        date_key = self.historical_rate_timestamp_key(at_datetime)
+        cached = self.historical_rates.get(date_key, {}).get(currency_key)
+        if cached is not None and cached > 0:
+            return cached
+        if not fetch_if_missing:
+            return None
+
+        rate = self._fetch_historical_rate_value(currency_key, at_datetime)
+        if rate is None:
+            return None
+
+        self.historical_rates.setdefault(date_key, {})[currency_key] = rate
+        return rate
 
     def list_rates(self) -> dict[str, dict[str, Any]]:
         """Return a merged view of fetched rates with custom overrides applied (custom takes precedence)."""

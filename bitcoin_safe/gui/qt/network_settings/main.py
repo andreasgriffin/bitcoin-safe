@@ -523,7 +523,7 @@ class NetworkSettingsUI(QWidget):
         self.edit_mempool_url.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
 
         self.proxy_warning_label.icon_label.setText(
-            self.tr("The proxy does not apply to the Sync&Chat feature!")
+            self.tr("The proxy does not apply to Sync&Chat\nplugin and during subscription purchase!")
         )
         self.proxy_url_edit_label.setText(self.tr("Proxy:"))
         self.proxy_url_edit_label.set_icon_as_help(

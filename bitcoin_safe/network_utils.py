@@ -34,10 +34,12 @@ import logging
 import socket
 import ssl
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Literal
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import bdkpython as bdk
+import requests
 import socks
 
 from bitcoin_safe.pythonbdk_types import (
@@ -46,6 +48,10 @@ from bitcoin_safe.pythonbdk_types import (
 from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
+
+
+class RequestsGetException(Exception):
+    pass
 
 
 @dataclass
@@ -109,6 +115,34 @@ def get_host_and_port(url) -> tuple[str | None, int | None]:
 
     # Extract the hostname and port
     return parsed_url.hostname, parsed_url.port
+
+
+def fetch_bytes(
+    url: str,
+    headers: dict[str, str],
+    proxy_info: ProxyInfo | None,
+) -> bytes:
+    parsed = urlparse(url)
+    if parsed.scheme in ("http", "https"):
+        try:
+            response = requests.get(
+                url,
+                headers=headers,
+                timeout=default_timeout(proxy_info),
+                proxies=proxy_info.get_requests_proxy_dict() if proxy_info else None,
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            raise RequestsGetException(f"Could not download plugin source URL {url}: {exc}") from exc
+        return response.content
+    if parsed.scheme == "file":
+        return Path(unquote(parsed.path)).read_bytes()
+
+    path = Path(url)
+    if path.exists():
+        return path.read_bytes()
+
+    raise ValueError(f"Could not read plugin source URL {url}.")
 
 
 def send_request_to_electrum_server(

@@ -46,6 +46,7 @@ from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
+from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 
 from ...helpers import TestConfig
 from .helpers import (
@@ -63,6 +64,15 @@ logger = logging.getLogger(__name__)
 def update_counter() -> None:
     """This method runs every 100ms."""
     gc.collect()
+
+
+def get_visible_top_level_sidebar_nodes() -> list[SidebarNode[object]]:
+    """Return detached sidebar nodes that accidentally became top-level windows."""
+    sidebar_nodes: list[SidebarNode[object]] = []
+    for widget in QApplication.topLevelWidgets():
+        if isinstance(widget, SidebarNode) and widget.isVisible():
+            sidebar_nodes.append(widget)
+    return sidebar_nodes
 
 
 @pytest.mark.marker_qt_1
@@ -315,6 +325,12 @@ def test_custom_wallet_setup_custom_single_sig(
                 assert "Backup saved to" in called_args[0]
 
             QApplication.processEvents()
+
+            detached_sidebar_nodes = get_visible_top_level_sidebar_nodes()
+            assert not detached_sidebar_nodes, (
+                "Sidebar nodes must not detach into standalone windows after replacing the descriptor: "
+                f"{[node.title for node in detached_sidebar_nodes]}"
+            )
 
             new_wallet: QTWallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
             # After descriptor replace, a different first address should appear.

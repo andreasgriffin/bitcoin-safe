@@ -184,6 +184,26 @@ def bitcoin_cli(
     return runcmd(cmd)
 
 
+def _remove_tree_with_retries(path: Path, attempts: int = 20, delay: float = 0.25) -> None:
+    """Remove a directory tree while tolerating transient Windows file-handle races."""
+    if not path.exists():
+        return
+
+    last_error: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            shutil.rmtree(path)
+            return
+        except FileNotFoundError:
+            return
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+            time.sleep(delay * (attempt + 1))
+
+    if last_error:
+        raise last_error
+
+
 def get_default_bitcoin_data_dir():
     """Get the default Bitcoin data directory based on the operating system."""
     system = platform.system()
@@ -212,7 +232,7 @@ def remove_bitcoin_regtest_folder(custom_datadir=None):
         regtest_dir = bitcoin_data_dir / "regtest"
 
         if regtest_dir.exists() and regtest_dir.is_dir():
-            shutil.rmtree(regtest_dir)
+            _remove_tree_with_retries(regtest_dir)
             print(f"Removed {regtest_dir}")
         else:
             print(f"{regtest_dir} does not exist or is not a directory")
@@ -294,17 +314,20 @@ def stop_bitcoind(
     """
     system = platform.system()
 
-    # Ask bitcoind to shut down cleanly
-    bitcoin_cli("stop", bitcoin_bin_dir)
+    bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
+    was_running = is_bitcoind_running(bitcoin_bin_dir)
+
+    # Ask bitcoind to shut down cleanly when it is already up enough to answer.
+    if was_running:
+        bitcoin_cli("stop", bitcoin_bin_dir)
 
     start_time = time.monotonic()
 
     while is_bitcoind_running(bitcoin_bin_dir):
         if time.monotonic() - start_time >= timeout:
-            bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
             if system == "Windows":
                 subprocess.run(
-                    ["taskkill", "/IM", bitcoind_path.name, "/F"],
+                    ["taskkill", "/IM", bitcoind_path.name, "/T", "/F"],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
                     check=False,
@@ -316,9 +339,13 @@ def stop_bitcoind(
                     stderr=subprocess.DEVNULL,
                     check=False,
                 )
-            break
+            start_time = time.monotonic()
 
         time.sleep(poll_interval)
+
+    # Windows can report the process as gone slightly before file handles are released.
+    if was_running and system == "Windows":
+        time.sleep(0.5)
 
 
 @pytest.fixture(scope="session")

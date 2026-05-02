@@ -222,7 +222,7 @@ class HistList(MyTreeView[str]):
         """Initialize instance."""
         super().__init__(
             config=config,
-            stretch_column=HistList.Columns.LABEL,
+            stretch_columns={HistList.Columns.LABEL},
             editable_columns=[HistList.Columns.LABEL],
             column_widths=self.column_widths,
             signals=wallet_functions.signals,
@@ -391,17 +391,16 @@ class HistList(MyTreeView[str]):
         if self._date_range == date_range:
             return
         self._date_range = date_range
-        self.update_base_hidden_rows()
-        self.filter()
+        self.refresh_filters()
 
-    def update_base_hidden_rows(self) -> None:
-        """Update base hidden rows."""
-        self.base_hidden_rows.clear()
+    def _compute_base_hidden_rows(self) -> set[int]:
+        """Return source rows hidden by the active date range."""
         if not self._date_range:
-            return
+            return set()
         start, end = self._date_range
         start_ts = start.timestamp()
         end_ts = end.timestamp()
+        hidden_rows: set[int] = set()
         model = self._source_model
         for row in range(model.rowCount()):
             timestamp = model.data(
@@ -411,7 +410,8 @@ class HistList(MyTreeView[str]):
             if timestamp is None:
                 continue
             if timestamp < start_ts or timestamp > end_ts:
-                self.base_hidden_rows.add(row)
+                hidden_rows.add(row)
+        return hidden_rows
 
     @staticmethod
     def _normalize_date_range(start: datetime, end: datetime) -> tuple[datetime, datetime]:
@@ -463,8 +463,6 @@ class HistList(MyTreeView[str]):
                 self.refresh_row(txid, row)
 
         logger.debug(f"Updated  {log_info}")
-        self.update_base_hidden_rows()
-
         self._after_update_content()
 
     def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
@@ -599,7 +597,6 @@ class HistList(MyTreeView[str]):
                 self._source_model.insertRow(count, items)
                 self.refresh_row(tx.txid, count)
 
-        self.update_base_hidden_rows()
         super().update_content()
         self._after_update_content()
 

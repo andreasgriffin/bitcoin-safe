@@ -35,6 +35,8 @@ from unittest.mock import patch
 
 from _pytest.logging import LogCaptureFixture
 
+from bitcoin_safe.logging_handlers import mail_error_repot, text_error_report
+
 logger = logging.getLogger(__name__)
 
 
@@ -71,3 +73,28 @@ def test_exception_logging(caplog: LogCaptureFixture) -> None:
                 mock_compose_email.assert_called_once()
                 # Assert that the mocked function was called
                 mock_OpenLogHandler_emit.assert_called_once()
+
+
+def test_text_error_report_includes_plugin_diagnostics() -> None:
+    with patch(
+        "bitcoin_safe.logging_handlers.format_external_plugin_diagnostics_as_text"
+    ) as mock_plugin_diagnostics:
+        mock_plugin_diagnostics.return_value = "External Plugins:\n- sentinel"
+
+        report = text_error_report("boom")
+
+    assert "External Plugins:\n- sentinel" in report
+
+
+def test_mail_error_repot_includes_plugin_diagnostics() -> None:
+    with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
+        with patch(
+            "bitcoin_safe.logging_handlers.format_external_plugin_diagnostics_as_text"
+        ) as mock_plugin_diagnostics:
+            mock_compose_email.return_value = "Mocked Function"
+            mock_plugin_diagnostics.return_value = "External Plugins:\n- sentinel"
+
+            mail_error_repot("boom")
+
+    assert mock_compose_email.call_count == 1
+    assert "External Plugins:\n- sentinel" in mock_compose_email.call_args.args[2]
