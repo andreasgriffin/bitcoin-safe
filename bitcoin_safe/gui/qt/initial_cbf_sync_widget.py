@@ -34,9 +34,11 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import age
-from PyQt6.QtCore import QLocale, QPointF, QRectF, Qt
+from PyQt6.QtCore import QLocale, QPointF, QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
     QFont,
@@ -48,7 +50,15 @@ from PyQt6.QtGui import (
     QPen,
     QRadialGradient,
 )
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QToolTip, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QToolTip,
+    QVBoxLayout,
+    QWidget,
+)
 
 from bitcoin_safe.client import ProgressInfo
 from bitcoin_safe.config import UserConfig
@@ -402,6 +412,7 @@ class InitialCbfSyncWidget(QWidget):
     """Shown while CBF sync is running and history list is still empty."""
 
     _PRIVACY_INFO_URL = "https://bitcoin-safe.org/knowledge/compact-block-filters/"
+    signal_request_open_network_settings = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, config: UserConfig, parent: QWidget | None = None) -> None:
         super().__init__(parent=parent)
@@ -439,6 +450,22 @@ class InitialCbfSyncWidget(QWidget):
         )
         self.privacy_help_label.textLabel.setWordWrap(False)
 
+        self.network_settings_hint_label = QLabel(self)
+        self.network_settings_hint_label.setWordWrap(True)
+        self.network_settings_hint_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+        self.network_settings_button = QPushButton(self)
+        self.network_settings_button.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.network_settings_button.clicked.connect(self._open_network_settings)
+
+        self.network_settings_row = QVBoxLayout()
+        self.network_settings_row.setContentsMargins(0, 0, 0, 0)
+        self.network_settings_row.setSpacing(6)
+        self.network_settings_row.addWidget(self.network_settings_hint_label)
+        self.network_settings_row.addWidget(
+            self.network_settings_button, alignment=Qt.AlignmentFlag.AlignHCenter
+        )
+
         self.map_widget = WorldPeerMapWidget(parent=self)
 
         self.progress_label = QLabel(self)
@@ -467,6 +494,7 @@ class InitialCbfSyncWidget(QWidget):
         layout.addWidget(self.title_label)
         layout.addWidget(self.subtitle_label)
         layout.addWidget(self.privacy_help_label, alignment=Qt.AlignmentFlag.AlignHCenter)
+        layout.addLayout(self.network_settings_row)
         layout.addWidget(self.map_widget)
         layout.addWidget(self.progress_label)
         layout.addWidget(self.progress_bar)
@@ -515,8 +543,7 @@ class InitialCbfSyncWidget(QWidget):
         self.title_label.setText(self.tr("Scanning Bitcoin blockchain"))
         self.subtitle_label.setText(
             self.tr(
-                "During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. "
-                "This is a private way to download block data."
+                "Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast."
             )
         )
         self.privacy_help_label.set_icon_as_help(
@@ -527,6 +554,13 @@ class InitialCbfSyncWidget(QWidget):
             click_url=self._PRIVACY_INFO_URL,
         )
         self.privacy_help_label.setText(self.tr("Why this protects privacy (learn more)"))
+        self.network_settings_hint_label.setText(
+            self.tr(
+                "If you have your own Electrum server or do not want to wait, connect to a public "
+                "Electrum server in network settings."
+            )
+        )
+        self.network_settings_button.setText(self.tr("Network settings"))
         if self._last_progress_info:
             self.set_progress_info(self._last_progress_info)
         else:
@@ -616,3 +650,6 @@ class InitialCbfSyncWidget(QWidget):
             )
         )
         self.node_legend_label.set_icon_as_help(tooltip=self.tr("Discovered bitcoin nodes."))
+
+    def _open_network_settings(self) -> None:
+        self.signal_request_open_network_settings.emit()
