@@ -35,7 +35,7 @@ from collections.abc import Callable
 from functools import partial
 from typing import Generic, TypeVar, cast
 
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import is_dark_mode
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
@@ -296,6 +296,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self.indent = indent
         self.parent_node = parent_node
         self.child_nodes: list[SidebarNode[TT]] = []
+        self._parent_signal_tracker = SignalTracker()
         self.stack: QStackedWidget | None = None  # wired by SidebarTree
 
         self.setObjectName(str(id(self)))
@@ -386,11 +387,7 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.stack is not None:
             node._attach_to_stack(self.stack)
 
-        # Wire signals
-        node.closeClicked.connect(self.closeClicked)
-        node.nodeSelected.connect(self._bubble_selected)
-        node.nodeUnSelected.connect(self._bubble_unselected)
-        node.nodeToggled.connect(self._bubble_toggled)
+        node._connect_to_parent_signals(self)
 
         # Insert into layout/list
         self.child_nodes.insert(index, node)
@@ -412,24 +409,17 @@ class SidebarNode(QFrame, Generic[TT]):
             self.stack.removeWidget(self.widget)
         self.stack = None
 
-    def _disconnect_child_signals(self, node: SidebarNode[TT]) -> None:
-        """Disconnect the signal forwarding installed by insertChildNode."""
-        try:
-            node.closeClicked.disconnect(self.closeClicked)
-        except TypeError:
-            pass
-        try:
-            node.nodeSelected.disconnect(self._bubble_selected)
-        except TypeError:
-            pass
-        try:
-            node.nodeUnSelected.disconnect(self._bubble_unselected)
-        except TypeError:
-            pass
-        try:
-            node.nodeToggled.disconnect(self._bubble_toggled)
-        except TypeError:
-            pass
+    def _connect_to_parent_signals(self, parent_node: SidebarNode[TT]) -> None:
+        """Track the signal forwarding this node installs into its parent."""
+        self._parent_signal_tracker.disconnect_all()
+        self._parent_signal_tracker.connect(self.closeClicked, parent_node.closeClicked)
+        self._parent_signal_tracker.connect(self.nodeSelected, parent_node._bubble_selected)
+        self._parent_signal_tracker.connect(self.nodeUnSelected, parent_node._bubble_unselected)
+        self._parent_signal_tracker.connect(self.nodeToggled, parent_node._bubble_toggled)
+
+    def _disconnect_from_parent_signals(self) -> None:
+        """Disconnect any signal forwarding this node previously installed."""
+        self._parent_signal_tracker.disconnect_all()
 
     def removeChildNode(self, node: SidebarNode[TT]) -> None:
         """RemoveChildNode."""
@@ -438,7 +428,7 @@ class SidebarNode(QFrame, Generic[TT]):
         except ValueError:
             return
 
-        self._disconnect_child_signals(node)
+        node._disconnect_from_parent_signals()
         node._detach_from_stack()
 
         # Detaching a node must not overwrite its own visibility state because
