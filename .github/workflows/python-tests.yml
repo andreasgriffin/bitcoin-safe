@@ -51,10 +51,15 @@ on:
 jobs:
   test:
     runs-on: ${{ inputs.os }}
-    timeout-minutes: 15
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       matrix:
-        python-version: ['3.12']
+        include:
+          - python-version: '3.12'
+            timeout: 15
+          - python-version: '3.12'
+            timeout: 25
+            os: windows-latest
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
