@@ -76,22 +76,38 @@ class TestWalletHandle:
         logger.info("start sync")
         wait_for_sync(qtbot=qtbot, wallet=self.wallet, timeout=timeout)
 
-    def mine(self, qtbot: QtBot, blocks=1, address=None, timeout: float = 60_000):
+    def mine(self, qtbot: QtBot, blocks=1, address=None, timeout: float = 60_000, require_spendable=False):
         """Mine to the wallet and wait until detected."""
 
         bdk_wallet = self.wallet.bdkwallet
-        txs = bdk_wallet.transactions()
-        address = (
-            address
-            if address
-            else str(bdk_wallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL).address)
-        )
-        block_hashes = mine_blocks(
+        starting_balance = self.wallet.get_balance()
+        starting_tx_count = len(bdk_wallet.transactions())
+        if address:
+            destination_address = address
+            minimum_funds = 0
+            minimum_spendable = 0
+            tx_count = 0
+        else:
+            next_address = bdk_wallet.next_unused_address(keychain=bdk.KeychainKind.EXTERNAL)
+            destination_address = str(next_address.address)
+            self.wallet.persist()
+            minimum_funds = starting_balance.total
+            minimum_spendable = starting_balance.spendable + 1 if require_spendable else 0
+            tx_count = starting_tx_count + blocks
+
+        mine_blocks(
             self.bitcoin_core,
             blocks,
-            address=address,
+            address=destination_address,
         )
-        wait_for_sync(qtbot=qtbot, wallet=self.wallet, timeout=timeout, tx_count=len(block_hashes) + len(txs))
+        wait_for_sync(
+            qtbot=qtbot,
+            wallet=self.wallet,
+            timeout=timeout,
+            minimum_funds=minimum_funds,
+            minimum_spendable=minimum_spendable,
+            tx_count=tx_count,
+        )
         logger.debug(f"Test Wallet balance is: {bdk_wallet.balance().total.to_sat()}")
 
 

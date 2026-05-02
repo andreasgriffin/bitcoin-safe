@@ -2789,12 +2789,11 @@ class MainWindow(UnlockableMainWindow):
         self.write_current_open_txs_to_config()
         self.config.save()
 
-        self.mempool_manager.close()
-        self.fx.close()
-        self.loop_in_thread.stop()
-        self.remove_all_qt_wallet()
         if self.p2p_listener:
             self.p2p_listener.stop()
+        self.remove_all_qt_wallet()
+        self.mempool_manager.close()
+        self.fx.close()
 
         if self.new_startup_network:
             self.config.network = self.new_startup_network
@@ -2808,6 +2807,7 @@ class MainWindow(UnlockableMainWindow):
         self.qsettings.setValue("window/state", self.saveState())
         self.qsettings.sync()
 
+        self.loop_in_thread.stop()
         logger.info(f"Finished close handling of {self.__class__.__name__}")
         self._before_close_was_run = True
 
