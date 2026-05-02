@@ -92,6 +92,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
     VERSION = "0.0.1"
     REPOSITORY_FILENAME = "plugin-repository.json"
     STARTUP_SOURCE_REFRESH_COOLDOWN = timedelta(hours=1)
+    _loaded_plugin_dirs: set[Path] = set()
     known_classes = {
         **BaseSaveableClass.known_classes,
         PluginSourceAuthConfig.__name__: PluginSourceAuthConfig,
@@ -975,22 +976,121 @@ class ExternalPluginRegistry(BaseSaveableClass):
             sys.modules.pop(module_name, None)
         importlib.invalidate_caches()
 
+    @staticmethod
+    def _plugin_top_level_module_names(plugin_dir: Path) -> set[str]:
+        """Return top-level import names owned by this plugin directory."""
+        names: set[str] = set()
+        for child in plugin_dir.iterdir():
+            if child.is_file() and child.suffix == ".py" and child.name != "__init__.py":
+                names.add(child.stem)
+                continue
+            if child.is_dir() and (child / "__init__.py").exists():
+                names.add(child.name)
+        return names
+
+    @staticmethod
+    def _module_name_matches_prefix(module_name: str, prefixes: set[str]) -> bool:
+        return any(module_name == prefix or module_name.startswith(f"{prefix}.") for prefix in prefixes)
+
+    @classmethod
+    def _module_originates_from_any_plugin_dir(
+        cls,
+        module: ModuleType,
+        plugin_dirs: set[Path],
+    ) -> bool:
+        return any(cls._module_originates_from_plugin_dir(module, plugin_dir) for plugin_dir in plugin_dirs)
+
+    @classmethod
+    def _matching_loaded_module_names(cls, module_prefixes: set[str]) -> list[str]:
+        return [
+            loaded_module_name
+            for loaded_module_name in list(sys.modules)
+            if cls._module_name_matches_prefix(loaded_module_name, module_prefixes)
+        ]
+
+    @classmethod
+    def _take_conflicting_top_level_modules(
+        cls,
+        module_prefixes: set[str],
+    ) -> dict[str, ModuleType]:
+        """
+        Remove currently loaded modules that would shadow this plugin's top-level imports.
+
+        Example:
+        - plugin A contains ``helper.py`` with ``VALUE = "ONE"``
+        - plugin B contains ``helper.py`` with ``VALUE = "TWO"``
+        If ``helper`` stays in ``sys.modules``, importing plugin B would silently reuse
+        plugin A's helper module. We therefore clear the colliding alias before loading
+        plugin B, then restore any non-plugin module afterwards.
+        """
+        replaced_modules: dict[str, ModuleType] = {}
+        tracked_plugin_dirs = set(cls._loaded_plugin_dirs)
+        conflicting_module_names = cls._matching_loaded_module_names(module_prefixes)
+        for conflicting_module_name in conflicting_module_names:
+            conflicting_module = sys.modules.get(conflicting_module_name)
+            if not isinstance(conflicting_module, ModuleType):
+                sys.modules.pop(conflicting_module_name, None)
+                continue
+            if not cls._module_originates_from_any_plugin_dir(conflicting_module, tracked_plugin_dirs):
+                replaced_modules[conflicting_module_name] = conflicting_module
+            sys.modules.pop(conflicting_module_name, None)
+        if conflicting_module_names:
+            importlib.invalidate_caches()
+        return replaced_modules
+
+    @classmethod
+    def _drop_plugin_top_level_aliases(
+        cls,
+        module_prefixes: set[str],
+        plugin_dir: Path,
+    ) -> None:
+        loaded_aliases = [
+            loaded_module_name
+            for loaded_module_name, loaded_module in list(sys.modules.items())
+            if isinstance(loaded_module, ModuleType)
+            and cls._module_name_matches_prefix(loaded_module_name, module_prefixes)
+            and cls._module_originates_from_plugin_dir(loaded_module, plugin_dir)
+        ]
+        for loaded_alias in loaded_aliases:
+            sys.modules.pop(loaded_alias, None)
+
+    @staticmethod
+    def _prepend_plugin_dir_to_sys_path(plugin_dir: Path) -> list[str]:
+        original_sys_path = sys.path[:]
+        plugin_dir_str = str(plugin_dir)
+        sys.path[:] = [
+            plugin_dir_str,
+            *[path_entry for path_entry in original_sys_path if path_entry != plugin_dir_str],
+        ]
+        return original_sys_path
+
     @classmethod
     def _load_module(cls, module_name: str, entrypoint: Path, plugin_dir: Path) -> ModuleType:
-        cls._unload_plugin_modules(plugin_dir)
+        resolved_plugin_dir = plugin_dir.resolve(strict=False)
+        cls._unload_plugin_modules(resolved_plugin_dir)
 
-        plugin_dir_str = str(plugin_dir)
-        if plugin_dir_str not in sys.path:
-            sys.path.insert(0, plugin_dir_str)
+        top_level_module_names = cls._plugin_top_level_module_names(resolved_plugin_dir)
+        replaced_modules = cls._take_conflicting_top_level_modules(top_level_module_names)
+        original_sys_path = cls._prepend_plugin_dir_to_sys_path(resolved_plugin_dir)
 
         spec = importlib.util.spec_from_file_location(module_name, entrypoint)
         if spec is None or spec.loader is None:
             raise ExternalPluginError(f"Could not load plugin bundle from {entrypoint}.")
 
         module = importlib.util.module_from_spec(spec)
-        sys.modules[module_name] = module
-        spec.loader.exec_module(module)
-        return module
+        try:
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            return module
+        except Exception:
+            sys.modules.pop(module_name, None)
+            raise
+        finally:
+            cls._drop_plugin_top_level_aliases(top_level_module_names, resolved_plugin_dir)
+            sys.modules.update(replaced_modules)
+            sys.path[:] = original_sys_path
+            cls._loaded_plugin_dirs.add(resolved_plugin_dir)
+            importlib.invalidate_caches()
 
     @classmethod
     def _compute_trusted_auto_allow_fingerprints(cls) -> set[str]:

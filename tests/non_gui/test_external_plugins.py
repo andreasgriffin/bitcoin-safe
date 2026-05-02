@@ -1181,6 +1181,65 @@ def test_external_registry_load_module_reloads_changed_plugin_package_modules(tm
     assert second_module.VALUE_FROM_CLIENT == "new value from update"
 
 
+def test_external_registry_load_module_isolates_top_level_import_aliases(tmp_path: Path) -> None:
+    first_plugin_dir = tmp_path / "bundle-one"
+    first_package_dir = first_plugin_dir / "first_plugin"
+    first_package_dir.mkdir(parents=True)
+    (first_package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (first_plugin_dir / "helper.py").write_text('VALUE = "ONE"\n', encoding="utf-8")
+    (first_package_dir / "plugin_bundle.py").write_text(
+        "\n".join(
+            [
+                "import helper",
+                "",
+                "VALUE_FROM_HELPER = helper.VALUE",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    second_plugin_dir = tmp_path / "bundle-two"
+    second_package_dir = second_plugin_dir / "second_plugin"
+    second_package_dir.mkdir(parents=True)
+    (second_package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (second_plugin_dir / "helper.py").write_text('VALUE = "TWO"\n', encoding="utf-8")
+    (second_package_dir / "plugin_bundle.py").write_text(
+        "\n".join(
+            [
+                "import helper",
+                "",
+                "VALUE_FROM_HELPER = helper.VALUE",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    original_sys_path = sys.path[:]
+    try:
+        first_module = ExternalPluginRegistry._load_module(
+            "bitcoin_safe_external_plugin_first_plugin_hash",
+            first_package_dir / "plugin_bundle.py",
+            first_plugin_dir,
+        )
+        second_module = ExternalPluginRegistry._load_module(
+            "bitcoin_safe_external_plugin_second_plugin_hash",
+            second_package_dir / "plugin_bundle.py",
+            second_plugin_dir,
+        )
+
+        assert first_module.VALUE_FROM_HELPER == "ONE"
+        assert second_module.VALUE_FROM_HELPER == "TWO"
+        assert "helper" not in sys.modules
+        assert str(first_plugin_dir.resolve()) not in sys.path
+        assert str(second_plugin_dir.resolve()) not in sys.path
+    finally:
+        sys.path[:] = original_sys_path
+        sys.modules.pop("bitcoin_safe_external_plugin_first_plugin_hash", None)
+        sys.modules.pop("bitcoin_safe_external_plugin_second_plugin_hash", None)
+
+
 def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_path: Path) -> None:
     config = _make_config(tmp_path)
     source = PluginSource(
