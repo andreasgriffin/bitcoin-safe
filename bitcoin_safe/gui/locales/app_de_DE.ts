@@ -7172,22 +7172,22 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Geben Sie den 6-stelligen Kopplungscode ein, der auf dem Trezor angezeigt wird:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Geben Sie die PIN gemäß der Trezor-Tastaturbelegung ein (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Paare Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor entsperren</translation>
 		</message>
 	</context>
 	<context>
