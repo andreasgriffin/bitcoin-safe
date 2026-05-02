@@ -316,6 +316,12 @@ class SidebarNode(QFrame, Generic[TT]):
         if not visible and self.header_row.is_selected():
             self.nodeUnSelected.emit(self)
 
+    def hide(self):
+        self.setVisible(False)
+
+    def show(self):
+        self.setVisible(True)
+
     # -------------------- Public API: mutation-friendly --------------------
 
     def setTitle(self, text: str) -> None:
@@ -398,23 +404,49 @@ class SidebarNode(QFrame, Generic[TT]):
         if focus and (node.stack is not None or node._ensure_stack_link()):
             node.select()
 
+    def _detach_from_stack(self) -> None:
+        """Detach this subtree from the current stack without destroying its children."""
+        for child in self.child_nodes:
+            child._detach_from_stack()
+        if self.widget and self.stack and self.stack.indexOf(self.widget) != -1:
+            self.stack.removeWidget(self.widget)
+        self.stack = None
+
+    def _disconnect_child_signals(self, node: SidebarNode[TT]) -> None:
+        """Disconnect the signal forwarding installed by insertChildNode."""
+        try:
+            node.closeClicked.disconnect(self.closeClicked)
+        except TypeError:
+            pass
+        try:
+            node.nodeSelected.disconnect(self._bubble_selected)
+        except TypeError:
+            pass
+        try:
+            node.nodeUnSelected.disconnect(self._bubble_unselected)
+        except TypeError:
+            pass
+        try:
+            node.nodeToggled.disconnect(self._bubble_toggled)
+        except TypeError:
+            pass
+
     def removeChildNode(self, node: SidebarNode[TT]) -> None:
         """RemoveChildNode."""
-        node.clearChildren()
-
         try:
             idx = self.child_nodes.index(node)
         except ValueError:
             return
 
-        # 1) Remove from our model/layout
+        self._disconnect_child_signals(node)
+        node._detach_from_stack()
+
+        # Detaching a node must not overwrite its own visibility state because
+        # callers may reinsert the same subtree later.
         node.setParent(None)
+        node.parent_node = None
         self.child_nodes.pop(idx)
         self.content_layout.removeWidget(node)
-
-        # 2) Also purge its widget page if present
-        if node.widget and self.stack and self.stack.indexOf(node.widget) != -1:
-            self.stack.removeWidget(node.widget)
 
         self._sync_content_visibility()
         self._sync_toggle_button_visibility()
@@ -829,7 +861,7 @@ class SidebarNode(QFrame, Generic[TT]):
         else:
             return self.parent_node.get_nested_titles() + [self.title]
 
-    def select_by_titles(self, titles: list[str]):
+    def select_by_titles(self, titles: list[str], force_visible=True):
         if not titles:
             return
         node = self.findNodeByTitle(titles[0])
@@ -841,6 +873,9 @@ class SidebarNode(QFrame, Generic[TT]):
             node.select()
         else:
             node.select_by_titles(new_titles)
+
+        if force_visible:
+            node.setVisible(True)
 
     def set_current_tab_by_text(self, title: str):
         """Set current tab by text."""
@@ -981,8 +1016,8 @@ class SidebarTree(QWidget, Generic[TT]):
         self._shortcut_next = QShortcut(QKeySequence("Ctrl+PgDown"), self)
         self._shortcut_prev.setContext(Qt.ShortcutContext.ApplicationShortcut)
         self._shortcut_next.setContext(Qt.ShortcutContext.ApplicationShortcut)
-        self._shortcut_prev.activated.connect(lambda: self._select_relative(-1))
-        self._shortcut_next.activated.connect(lambda: self._select_relative(+1))
+        self._shortcut_prev.activated.connect(partial(self._select_relative, -1))
+        self._shortcut_next.activated.connect(partial(self._select_relative, +1))
 
     @property
     def roots(self) -> list[SidebarNode[TT]]:
