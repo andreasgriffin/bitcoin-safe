@@ -7182,7 +7182,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation>Paar Trezor</translation>
+			<translation>Paare Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
