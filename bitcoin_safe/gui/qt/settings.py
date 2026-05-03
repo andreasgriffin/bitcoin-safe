@@ -83,7 +83,6 @@ class Settings(QTabWidget):
         self.addTab(self.network_settings_ui, "")
         self.network_settings_ui.signal_cancel.connect(self.close)
 
-        self.currentChanged.connect(self._apply_minimum_size_hint)
         self.signals.language_switch.connect(self.updateUi)
 
         # category manager(s)
@@ -136,7 +135,8 @@ class Settings(QTabWidget):
         self.setTabText(self.indexOf(self.langauge_ui), self.tr("General"))
         self.setTabText(self.indexOf(self.about_tab), self.tr("About"))
         # self.setTabText(self.indexOf(self.category_tab), self.tr("Category Manager"))
-        self._apply_minimum_size_hint()
+        self.setMinimumSize(self.minimumSizeHint())
+        self.adjustSize()
 
     def keyPressEvent(self, a0: QKeyEvent | None):
         # Check if the pressed key is 'Esc'
@@ -149,8 +149,9 @@ class Settings(QTabWidget):
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
+        self.setMinimumSize(self.minimumSizeHint())
+        self.adjustSize()
         center_on_screen(self)
-        self._apply_minimum_size_hint()
 
     def open_about_tab(self) -> None:
         """Open the About tab and focus the settings window."""
@@ -161,7 +162,3 @@ class Settings(QTabWidget):
     def set_update_status(self, status: UpdateStatus) -> None:
         """Set update status on the About tab."""
         self.about_tab.set_update_status(status)
-
-    def _apply_minimum_size_hint(self) -> None:
-        """Use Qt's calculated minimum size to prevent over-shrinking."""
-        self.setMinimumSize(self.minimumSizeHint())
