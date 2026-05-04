@@ -1845,6 +1845,39 @@ def test_settings_tabs_refresh_on_language_switch(qapp: QApplication, tmp_path: 
         settings.close()
 
 
+def test_settings_use_maximum_tab_height(qapp: QApplication, tmp_path: Path) -> None:
+    config = _make_config(tmp_path)
+    signals = Signals()
+    language_chooser = LanguageChooser(
+        config=config,
+        signals_language_switch=[signals.language_switch],
+        signals_currency_switch=signals.currency_switch,
+        parent=None,
+    )
+    settings = Settings(
+        config=config,
+        signals=signals,
+        language_chooser=language_chooser,
+        fx=_DummyFX(),
+        parent=None,
+    )
+
+    try:
+        settings.show()
+        qapp.processEvents()
+        settings.setCurrentWidget(settings.about_tab)
+        qapp.processEvents()
+        initial_height = settings.height()
+
+        settings.setCurrentWidget(settings.network_settings_ui)
+        qapp.processEvents()
+
+        assert settings.height() == initial_height
+        assert settings.height() >= settings.network_settings_ui.minimumSizeHint().height()
+    finally:
+        settings.close()
+
+
 def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
