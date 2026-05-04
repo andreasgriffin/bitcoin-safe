@@ -54,13 +54,18 @@ logger = logging.getLogger(__name__)
 
 
 class SearchSidebarTree(QWidget):
-    """Layout inside the SidebarTree's left column: [ SearchTreeView (search field +
-    results) ] [ Sidebar scroll area (hidden when searching) ]
+    """Layout inside the SidebarTree's left column: [ Sidebar / search results ] [
+    search line edit ]
 
     The right content stack of SidebarTree remains untouched.
     """
 
-    def __init__(self, sidebar_tree: SidebarTree, search_view: SearchTreeView, parent: QWidget | None = None):
+    def __init__(
+        self,
+        sidebar_tree: SidebarTree,
+        search_view: SearchTreeView,
+        parent: QWidget | None = None,
+    ):
         """Initialize instance."""
         super().__init__(parent)
         self.sidebar_tree = sidebar_tree
@@ -72,8 +77,13 @@ class SearchSidebarTree(QWidget):
         root.setSpacing(0)
         root.addWidget(self.sidebar_tree)
 
-        # Insert the search view above the sidebar list inside the left column
-        self.sidebar_tree.left_vbox.insertWidget(1, self.search_view)
+        # Keep the search line edit at the bottom, but let the results sit on the
+        # same layout level as the regular sidebar list to avoid extra margins.
+        self.bottom_controls_container = QWidget(self.sidebar_tree.left_panel)
+        self.bottom_controls_layout = QVBoxLayout(self.bottom_controls_container)
+        self.bottom_controls_layout.addWidget(self.search_view.lineEdit())
+        self.sidebar_tree.left_vbox.addWidget(self.search_view.resultsView(), 1)
+        self.sidebar_tree.left_vbox.addWidget(self.bottom_controls_container)
 
         # Toggle only the left list visibility (the search field stays)
         def _toggle_left_list(active: bool) -> None:

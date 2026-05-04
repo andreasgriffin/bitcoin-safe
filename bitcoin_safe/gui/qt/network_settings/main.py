@@ -64,6 +64,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.execute_config import IS_PRODUCTION
 from bitcoin_safe.gui.qt.buttonedit import SquareButton
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
+from bitcoin_safe.gui.qt.network_combobox import NetworkComboBox
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
@@ -197,11 +198,7 @@ class NetworkSettingsUI(QWidget):
         self._layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
 
         self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
-        self.network_combobox = QComboBox(self)
-        for _network in bdk.Network:
-            self.network_combobox.addItem(
-                svg_tools.get_QIcon(f"bitcoin-{_network.name.lower()}.svg"), _network.name, userData=_network
-            )
+        self.network_combobox = NetworkComboBox(network=network, parent=self)
         self._layout.addWidget(self.network_combobox)
 
         self.groupbox_connection = QGroupBox(parent=self)
@@ -779,12 +776,12 @@ class NetworkSettingsUI(QWidget):
     @property
     def network(self) -> bdk.Network:
         """Network."""
-        return self.network_combobox.currentData()
+        return self.network_combobox.network
 
     @network.setter
     def network(self, value: bdk.Network):
         """Network."""
-        self.network_combobox.setCurrentText(value.name)
+        self.network_combobox.network = value
 
     @property
     def server_type(self) -> BlockchainType:

@@ -407,8 +407,8 @@ class SearchTreeView(QWidget):
         self._is_active = False  # whether there is any non-empty search text
 
         self._layout = QVBoxLayout(self)
-        # self._layout.setContentsMargins(0, 0, 0, 0)
-        # self._layout.setSpacing(0)
+        self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.setSpacing(0)
 
         # Search field
         self.search_field = QLineEdit(self)
@@ -439,9 +439,13 @@ class SearchTreeView(QWidget):
         self.shortcut_prev.setContext(Qt.ShortcutContext.ApplicationShortcut)
         self.shortcut_prev.activated.connect(self.on_search_previous)
 
-        self.shortcut_clear = QShortcut("ESC", self)
-        self.shortcut_clear.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-        self.shortcut_clear.activated.connect(self.clear_search)
+        self.shortcut_clear_search_field = QShortcut("ESC", self.search_field)
+        self.shortcut_clear_search_field.setContext(Qt.ShortcutContext.WidgetShortcut)
+        self.shortcut_clear_search_field.activated.connect(self.clear_search)
+
+        self.shortcut_clear_tree_view = QShortcut("ESC", self.tree_view)
+        self.shortcut_clear_tree_view.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+        self.shortcut_clear_tree_view.activated.connect(self.clear_search)
 
         self.updateUi()
 
@@ -453,6 +457,10 @@ class SearchTreeView(QWidget):
     def lineEdit(self) -> QLineEdit:
         """LineEdit."""
         return self.search_field
+
+    def resultsView(self) -> CustomTreeView:
+        """ResultsView."""
+        return self.tree_view
 
     # ---- Internal behaviors ----
     def _on_double_click(self, result_item: ResultItem) -> None:
