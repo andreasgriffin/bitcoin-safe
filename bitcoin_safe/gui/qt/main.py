@@ -94,6 +94,7 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, needs_frequent_flag
+from bitcoin_safe.gui.qt.network_combobox import NetworkComboBox
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import NotificationBarCBF
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
@@ -218,6 +219,7 @@ class MainWindow(UnlockableMainWindow):
         self.hwi_tool_gui = ToolGui(self.config.network, loop_in_thread=self.loop_in_thread)
         self.hwi_tool_gui.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self.setupUi(config_present=bool(config_present))
+        self.sidebar_network_combobox.signal_network_changed.connect(self.restart)
 
         self.mempool_manager = MempoolManager(
             network_config=self.config.network_config,
@@ -475,6 +477,11 @@ class MainWindow(UnlockableMainWindow):
         self.sidebar_search_tree = SearchSidebarTree(
             sidebar_tree=self.tab_wallets, search_view=self.search_box, parent=self
         )
+        self.sidebar_network_combobox = NetworkComboBox(
+            network=self.config.network, parent=self.sidebar_search_tree.bottom_controls_container
+        )
+        self.sidebar_search_tree.bottom_controls_layout.addWidget(self.sidebar_network_combobox)
+        self.sidebar_network_combobox.setVisible(self.config.network != bdk.Network.BITCOIN)
 
         self.tab_wallets.setObjectName(f"member of {self.__class__.__name__}")
         self.tab_wallets.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
