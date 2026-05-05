@@ -481,7 +481,9 @@ class MainWindow(UnlockableMainWindow):
             network=self.config.network, parent=self.sidebar_search_tree.bottom_controls_container
         )
         self.sidebar_search_tree.bottom_controls_layout.addWidget(self.sidebar_network_combobox)
-        self.sidebar_network_combobox.setVisible(self.config.network != bdk.Network.BITCOIN)
+        self.sidebar_network_combobox.setVisible(
+            (self.config.network != bdk.Network.BITCOIN) and not DEMO_MODE
+        )
 
         self.tab_wallets.setObjectName(f"member of {self.__class__.__name__}")
         self.tab_wallets.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
