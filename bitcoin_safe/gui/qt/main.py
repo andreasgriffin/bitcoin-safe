@@ -2413,7 +2413,7 @@ class MainWindow(UnlockableMainWindow):
             qt_protowallet.wizard.set_visibilities()
             qt_protowallet.wizard.node.select()
         else:
-            qt_protowallet.tabs.select()
+            qt_protowallet.settings_node.select()
 
         return qt_protowallet
 

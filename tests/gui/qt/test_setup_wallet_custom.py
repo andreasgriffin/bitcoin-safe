@@ -49,6 +49,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 
 from ...helpers import TestConfig
+from ...non_gui.test_signers import test_seeds
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -56,6 +57,7 @@ from .helpers import (
     do_modal_click,
     main_window_context,
     save_wallet,
+    setup_single_sig_wallet,
 )
 
 logger = logging.getLogger(__name__)
@@ -73,6 +75,52 @@ def get_visible_top_level_sidebar_nodes() -> list[SidebarNode[object]]:
         if isinstance(widget, SidebarNode) and widget.isVisible():
             sidebar_nodes.append(widget)
     return sidebar_nodes
+
+
+@pytest.mark.marker_qt_1
+def test_custom_wallet_setup_focuses_new_proto_wallet_with_existing_wallet_open(
+    qapp: QApplication,
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: TestConfig,
+) -> None:
+    frame = inspect.currentframe()
+    assert frame
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
+
+        setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="existing_wallet",
+            seed=test_seeds[0],
+        )
+
+        main_window.new_wallet()
+
+        def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
+            dialog.name_input.setText("new_proto_wallet")
+            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
+
+        do_modal_click(
+            main_window.welcome_screen.pushButton_custom_wallet,
+            on_wallet_id_dialog,
+            qtbot,
+            cls=WalletIdDialog,
+        )
+
+        qt_protowallet = main_window.tab_wallets.root.findNodeByTitle("new_proto_wallet").data
+        assert isinstance(qt_protowallet, QTProtoWallet)
+        current_node = main_window.tab_wallets.currentNode()
+        assert current_node is qt_protowallet.settings_node, (
+            current_node.title if current_node else "None",
+            current_node.parent_node.title if current_node and current_node.parent_node else "None",
+        )
 
 
 @pytest.mark.marker_qt_1
