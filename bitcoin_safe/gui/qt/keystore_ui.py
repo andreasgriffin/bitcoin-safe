@@ -233,7 +233,6 @@ class KeyStoreUI(QWidget):
         label: str = "",
         hardware_signer_label="",
         parent: QWidget | None = None,
-        slow_hwi_listing=True,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -243,7 +242,6 @@ class KeyStoreUI(QWidget):
         self.hardware_signer_label = hardware_signer_label
         self.network = network
         self.get_address_type = get_address_type
-        self.slow_hwi_listing = slow_hwi_listing
 
         self.tab_layout = QHBoxLayout(self)
 
@@ -602,9 +600,7 @@ class KeyStoreUI(QWidget):
     def _on_hwi_click(self, key_origin: str) -> None:
         """On hwi click."""
         try:
-            result = self.usb_gui.get_fingerprint_and_xpub(
-                key_origin=key_origin, slow_hwi_listing=self.slow_hwi_listing
-            )
+            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             Message(

@@ -145,7 +145,7 @@ class USBValidateAddressWidget(QWidget):
             descriptor=self.descriptor, kind=self.kind, address_index=self.address_index
         )
         try:
-            address = self.usb_gui.display_address(address_descriptor, slow_hwi_listing=True)
+            address = self.usb_gui.display_address(address_descriptor)
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             Message(str(e), type=MessageType.Error, parent=self)
