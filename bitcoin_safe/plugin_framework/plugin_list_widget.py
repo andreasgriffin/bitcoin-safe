@@ -838,7 +838,6 @@ class PluginListWidget(QWidget):
 
         self.plugins_section_layout = QVBoxLayout(self)
         self.plugins_section_layout.setContentsMargins(0, 0, 0, 0)
-        self.plugins_section_layout.setSpacing(10)
 
         self.plugins_header = SectionHeader(
             self.tr("Plugins"),
@@ -850,7 +849,6 @@ class PluginListWidget(QWidget):
         self.plugins_container = QWidget(self)
         self.plugins_container_layout = QVBoxLayout(self.plugins_container)
         self.plugins_container_layout.setContentsMargins(0, 0, 0, 0)
-        self.plugins_container_layout.setSpacing(4)
         self.plugins_section_layout.addWidget(self.plugins_container)
 
         self.setVisible(False)
