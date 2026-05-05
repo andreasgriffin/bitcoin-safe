@@ -89,6 +89,7 @@ def test_open_wallet_and_address_is_consistent_and_destruction_ok(
         # Open the wallet and check UI wiring.
         qt_wallet = main_window.open_wallet(str(temp_dir))
         assert isinstance(qt_wallet, QTWallet)
+        assert main_window.tab_wallets.currentNode() == qt_wallet.hist_node
 
         waiting_icon = svg_tools.get_QIcon("status_waiting.svg")
         connected_icon = svg_tools.get_QIcon("status_connected.svg")

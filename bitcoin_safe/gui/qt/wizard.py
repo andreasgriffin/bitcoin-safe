@@ -631,7 +631,7 @@ class GenerateSeed(BaseTab):
         address_type = AddressTypes.p2wpkh  # any address type is OK, since we wont use it
         key_origin = address_type.key_origin(self.refs.qtwalletbase.config.network)
         try:
-            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin, slow_hwi_listing=True)
+            result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
             Message(
@@ -746,7 +746,6 @@ class ImportXpubs(BaseTab):
                 get_editable_protowallet=self.refs.qtwalletbase.get_editable_protowallet,
                 get_address_type=self.get_address_type,
                 signals_min=self.refs.qtwalletbase.signals,
-                slow_hwi_listing=True,
                 loop_in_thread=self.loop_in_thread,
             )
             self.set_current_signer(0)

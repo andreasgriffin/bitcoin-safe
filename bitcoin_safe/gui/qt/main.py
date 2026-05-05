@@ -2342,7 +2342,7 @@ class MainWindow(UnlockableMainWindow):
                 )
                 self.close_tab(root_node)
                 if qt_wallet.history_tab.isVisible():
-                    qt_wallet.tabs.setCurrentWidget(qt_wallet.history_tab)
+                    qt_wallet.hist_node.select()
 
             else:
                 return
@@ -2413,7 +2413,7 @@ class MainWindow(UnlockableMainWindow):
             qt_protowallet.wizard.set_visibilities()
             qt_protowallet.wizard.node.select()
         else:
-            qt_protowallet.tabs.select()
+            qt_protowallet.settings_node.select()
 
         return qt_protowallet
 
@@ -2547,6 +2547,8 @@ class MainWindow(UnlockableMainWindow):
         if qt_wallet.wizard.should_be_visible:
             qt_wallet.wizard.set_visibilities()
             qt_wallet.wizard.node.select()
+        elif focus:
+            qt_wallet.hist_node.select()
 
         self.language_chooser.add_signal_language_switch(self.signals.language_switch)
         self.wallet_functions.wallet_signals[qt_wallet.wallet.id].show_address.connect(self.show_address)

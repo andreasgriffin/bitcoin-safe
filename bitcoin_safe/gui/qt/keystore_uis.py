@@ -92,7 +92,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
-        slow_hwi_listing=True,
     ) -> None:
         """Initialize instance."""
         super().__init__()
@@ -101,7 +100,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         self.setMovable(True)
         self.signal_tracker = SignalTracker()
         self.signals_min = signals_min
-        self.slow_hwi_listing = slow_hwi_listing
         self.loop_in_thread = loop_in_thread
 
         self.get_editable_protowallet = get_editable_protowallet
@@ -114,7 +112,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 label=self.protowallet.signer_name(i),
                 signals_min=signals_min,
                 hardware_signer_label=self.protowallet.sticker_name(i),
-                slow_hwi_listing=self.slow_hwi_listing,
                 loop_in_thread=loop_in_thread,
             )
             keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
@@ -319,7 +316,6 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     label=self.protowallet.signer_name(i),
                     signals_min=self.signals_min,
                     hardware_signer_label=self.protowallet.sticker_name(i),
-                    slow_hwi_listing=self.slow_hwi_listing,
                     loop_in_thread=self.loop_in_thread,
                 )
                 keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)

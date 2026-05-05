@@ -181,7 +181,7 @@ class SignMessageBase(QWidget):
             self.usb_gui.signal_end_hwi_blocker.emit()
             return
 
-        signed_message = self.usb_gui.sign_message(message=msg, bip32_path=bip32_path, slow_hwi_listing=True)
+        signed_message = self.usb_gui.sign_message(message=msg, bip32_path=bip32_path)
 
         if signed_message:
             self.signal_signed_message.emit(signed_message)
