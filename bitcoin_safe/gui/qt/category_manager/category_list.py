@@ -418,6 +418,26 @@ class CategoryList(MyTreeView[CategoryInfo]):
         items = self.selected_in_column(self.Columns.UTXO_BALANCE)
         return [x.data(MyItemDataRole.ROLE_CLIPBOARD_DATA) for x in items]
 
+    def get_first_funded_category(self) -> str | None:
+        """Get the first category in UI order that has spendable funds."""
+        for row in range(self.proxy.rowCount()):
+            balance_index = self.proxy.index(row, self.Columns.UTXO_BALANCE)
+            balance = self.proxy.data(balance_index, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+            if isinstance(balance, int) and balance > 0:
+                category_index = self.proxy.index(row, self.key_column)
+                category = self.proxy.data(category_index, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+                if isinstance(category, str):
+                    return category
+        return None
+
+    def select_first_funded_category(self, scroll_to_last=False) -> bool:
+        """Select the first category in UI order that has spendable funds."""
+        category = self.get_first_funded_category()
+        if not category:
+            return False
+        self.select_row_by_clipboard(category, scroll_to_last=scroll_to_last)
+        return True
+
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""

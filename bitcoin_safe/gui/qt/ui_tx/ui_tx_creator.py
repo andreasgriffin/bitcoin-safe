@@ -472,7 +472,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     self.clear_ui()
             else:
                 self.clear_ui()
-
         super().showEvent(a0)
 
     def on_fee_rate_change(self, fee_rate: float) -> None:
@@ -637,18 +636,47 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Reset fee rate."""
         self.column_fee.fee_group.set_spin_fee_value(self.mempool_manager.get_prio_fee_rates()[TxPrio.low])
 
+    def _ensure_default_funded_category_selection(self) -> None:
+        """Select a funded category when the send tab has no saved input selection.
+
+        Example:
+        - Fresh send tab: `TxUiInfos()` -> auto-pick the first funded category.
+        - Restored manual coin selection: do nothing here because `set_ui()` restores the UTXOs.
+        """
+        if not self.wallet:
+            return
+
+        self.category_list.force_full_ui_creation()
+        selected_categories = self.category_list.get_selected_category_infos()
+        if selected_categories:
+            return
+
+        if self.category_list.select_first_funded_category(scroll_to_last=True):
+            return
+
+        self.category_list.select_row_by_clipboard(
+            self.wallet.labels.get_default_category(), scroll_to_last=True
+        )
+
     def clear_ui(self) -> None:
         """Clear ui."""
         if not self.wallet:
             return
+        with BlockChangesSignals([self.category_list]):
+            # Example: "Reset" after selecting an empty default category should behave like a
+            # fresh send tab, so clear the old category selection before `set_ui(TxUiInfos())`.
+            self.category_list.select_rows(
+                [], self.category_list.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
+
         with BlockChangesSignals([self.utxo_list]):
             self.additional_outpoints.clear()
             self.utxo_list.set_outpoints(self.get_outpoints())
             self.set_ui(TxUiInfos())
             self.utxo_list.update_content()
-        self.category_list.select_row_by_clipboard(
-            self.wallet.labels.get_default_category(), scroll_to_last=True
-        )
+        # Example: after reset, typing a new recipient address in the same category as the
+        # previous draft should still re-apply that category.
+        self._cache_last_category = None
         self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
         self.hidden_tx_infos = HiddenTxUiInfos()
 
@@ -879,6 +907,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 infos, self.utxo_list.get_selected_outpoints(), wallets
             )
             infos.spend_all_utxos = True
+            # Example: after reopening the app, `set_ui(...)` should show the advanced
+            # UTXO picker again for a manual selection instead of switching back to categories.
+            infos.hide_UTXO_selection = False
 
         infos.recipient_read_only = not self.recipients.allow_edit
         infos.utxos_read_only = not self.utxo_list.allow_edit or not self.column_inputs.isEnabled()
@@ -1150,14 +1181,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.category_list.force_full_ui_creation()
 
-        categories: set[str] = set()
-        if tx_ui_infos.utxo_dict:
-            # first select the correct categories
-            if self.wallet:
-                for outpoint in tx_ui_infos.utxo_dict.keys():
-                    categories = categories.union(self.wallet.get_categories_for_txid(outpoint.txid_str))
-        elif tx_ui_infos.categories:
-            categories = set(tx_ui_infos.categories)
+        # Restore order:
+        # - Category draft: reselect the saved categories.
+        # - Manual coin selection: reselect the exact UTXOs and keep the matching categories selected
+        #   so the filtered UTXO list still shows those rows after restore.
+        # - Fresh send tab: no saved inputs -> fall back to the first funded category.
+        categories = set(tx_ui_infos.categories or [])
+        if not categories and tx_ui_infos.utxo_dict and self.wallet:
+            for utxo in tx_ui_infos.utxo_dict.values():
+                categories.add(self.wallet.labels.get_category(utxo.address))
+                categories.update(self.wallet.get_categories_for_txid(utxo.outpoint.txid_str))
+        categories = clean_list(list(categories))
+        if tx_ui_infos.categories and not tx_ui_infos.utxo_dict:
             hide_UTXO_selection = True
 
         self.column_inputs.checkBox_manual_coin_select.setChecked(not hide_UTXO_selection)
@@ -1169,9 +1204,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 role=MyItemDataRole.ROLE_CLIPBOARD_DATA,
                 scroll_to_last=True,
             )
+        else:
+            self._ensure_default_funded_category_selection()
 
-            # this if statement prevents empty selection on startup, when restoreing the
-            # old tx_ui_infos  (which doesnt contain utxo_dict)
+        if tx_ui_infos.utxo_dict:
+            # Example: restoring a manual selection after reopening the app.
+            # Even if category lookup changes, the exact saved outpoints must win.
             self.utxo_list.select_rows(
                 tx_ui_infos.utxo_dict.keys(),
                 self.utxo_list.key_column,
