@@ -524,19 +524,11 @@ class MainWindow(UnlockableMainWindow):
             signals_min=self.signals,
         )
         if (
-            not config_present
-            or (
-                (_dump_version := self.config._version_from_dump)
-                and fast_version(_dump_version) < fast_version("0.2.4")
-            )
-            or (
-                self.config.network_config.server_type == BlockchainType.Esplora
-                and "blockstream" in self.config.network_config.esplora_url
-            )
+            (_dump_version := self.config._version_from_dump)
+            and fast_version(_dump_version) < fast_version("0.3.8")
+            and (self.config.network_config.server_type != BlockchainType.CompactBlockFilter)
         ):
             # only show this for migrating users.
-            # or new users this is anyway
-            # or users with unreliable blockstream esplora server
             self.main_notification_bars_layout.addWidget(self.notification_bar_cbf)
 
         self.update_notification_bar = UpdateNotificationBar(
