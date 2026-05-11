@@ -97,7 +97,7 @@ class UserConfig(BaseSaveableClass):
         BitcoinSymbol.__name__: BitcoinSymbol,
         BtcPayInvoiceDetails.__name__: BtcPayInvoiceDetails,
     }
-    VERSION = "0.3.3"
+    VERSION = "0.3.8"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"

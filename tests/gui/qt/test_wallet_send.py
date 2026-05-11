@@ -446,6 +446,34 @@ def test_send_tab_complex_interactions(
         qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
         uitx_creator = qt_wallet.uitx_creator
         uitx_creator.enable_refresh_counters()
+        qtbot.waitUntil(
+            lambda: bool(uitx_creator.category_list.get_selected_category_infos()), timeout=10_000
+        )
+        first_funded_category = uitx_creator.category_list.get_first_funded_category()
+        assert first_funded_category is not None
+        selected_category_infos = uitx_creator.category_list.get_selected_category_infos()
+        assert len(selected_category_infos) == 1
+        assert selected_category_infos[0].category == first_funded_category
+        assert selected_category_infos[0].utxo_balance > 0
+        shutter.save(main_window)
+
+        # Reset should ignore a stale empty category selection and go back to the first funded one.
+        default_category = wallet.labels.get_default_category()
+        assert default_category != first_funded_category
+        uitx_creator.category_list.select_row_by_clipboard(default_category)
+        qtbot.waitUntil(
+            lambda: (
+                [info.category for info in uitx_creator.category_list.get_selected_category_infos()]
+                == [default_category]
+            )
+        )
+        uitx_creator.clear_ui()
+        qtbot.waitUntil(
+            lambda: (
+                [info.category for info in uitx_creator.category_list.get_selected_category_infos()]
+                == [first_funded_category]
+            )
+        )
         shutter.save(main_window)
 
         fee_spin = uitx_creator.column_fee.fee_group.spin_fee_rate
@@ -501,6 +529,18 @@ def test_send_tab_complex_interactions(
         )
 
         qtbot.waitUntil(lambda: set(uitx_creator.utxo_list.get_selected_outpoints()) == {selected_outpoint})
+        shutter.save(main_window)
+
+        # App restore stores `get_tx_ui_infos()` and later calls `set_ui(...)` with it again.
+        # This checks the same path without needing a full process restart.
+        saved_tx_ui_infos = uitx_creator.get_tx_ui_infos()
+        uitx_creator.clear_ui()
+        uitx_creator.set_ui(saved_tx_ui_infos)
+        qtbot.waitUntil(lambda: set(uitx_creator.utxo_list.get_selected_outpoints()) == {selected_outpoint})
+        assert uitx_creator.column_inputs.checkBox_manual_coin_select.isChecked()
+        recipients = uitx_creator.recipients
+        recipient_boxes = recipients.get_recipient_group_boxes()
+        fee_spin = uitx_creator.column_fee.fee_group.spin_fee_rate
         shutter.save(main_window)
 
         # Set fee rate explicitly to verify PSBT fee rate propagation.
@@ -607,7 +647,12 @@ def test_send_tab_complex_interactions(
         # Use the category list to tag a recipient address and verify label updates.
         edited_creator.column_inputs.checkBox_manual_coin_select.setChecked(False)
         edited_creator.category_list.select_row_by_clipboard("Private")
-        qtbot.wait(100)
+        qtbot.waitUntil(
+            lambda: (
+                [info.category for info in edited_creator.category_list.get_selected_category_infos()]
+                == ["Private"]
+            )
+        )
         shutter.save(main_window)
 
         recipient_boxes = edited_creator.recipients.get_recipient_group_boxes()
@@ -646,6 +691,14 @@ def test_send_tab_complex_interactions(
         }
         # Category-filtered send should pull inputs from the selected category only.
         assert input_categories == {"KYC"}
+
+        ui_tx_viewer.button_edit_tx.click()
+        qtbot.waitUntil(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.uitx_creator, timeout=10_000)
+        restored_creator = qt_wallet.uitx_creator
+        restored_categories = {
+            info.category for info in restored_creator.category_list.get_selected_category_infos()
+        }
+        assert restored_categories == {"KYC"}
 
         refresh_counts = uitx_creator.refresh_counter_snapshot()
         logger.info("send_tab_refresh_counts=%s", refresh_counts)
