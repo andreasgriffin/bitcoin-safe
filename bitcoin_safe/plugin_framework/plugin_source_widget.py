@@ -367,7 +367,7 @@ class SourceCatalogItem(QObject):
         if self.entry.update_available:
             return self.tr("Update to {available}").format(available=self._available_update_target_text())
         if self.entry.installed_version:
-            return self.tr("Reinstall {version}").format(version=self.entry.version)
+            return ""
         return self.tr("Install {version}").format(version=self.entry.version)
 
     def _available_update_target_text(self) -> str:

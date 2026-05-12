@@ -31,7 +31,6 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
-import json
 import logging
 import shutil
 import sys
@@ -46,7 +45,7 @@ from urllib.parse import unquote, urljoin, urlparse
 
 import pgpy
 import tomllib  # pyright: ignore[reportMissingImports]
-from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
 
@@ -118,55 +117,20 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self._trusted_auto_allow_fingerprints = self._compute_trusted_auto_allow_fingerprints()
 
     @classmethod
-    def from_config(cls, config: UserConfig) -> ExternalPluginRegistry:
-        repository_path = cls._repository_path_for_config(config)
-        if not repository_path.exists():
-            return cls(config=config)
-        try:
-            data = json.loads(repository_path.read_text(encoding="utf-8"))
-            return cls.from_dump(data, class_kwargs={cls.__name__: {"config": config}})
-        except Exception as exc:
-            logger.warning("Could not load external plugin repository %s: %s", repository_path, exc)
-            return cls(config=config)
+    def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+
+        return cls(**filtered_for_init(dct, cls))
 
     @classmethod
-    def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
-        super()._from_dump(dct, class_kwargs=None)
-        config: UserConfig | None = None
-        if class_kwargs:
-            class_config = class_kwargs.get(cls.__name__, {}).get("config")
-            if isinstance(class_config, UserConfig):
-                config = class_config
-        if config is None:
-            raise ExternalPluginError("External plugin registry requires a runtime config.")
-
-        sources: dict[str, PluginSource] = {}
-        for source_id, raw_source in dct.get("sources", {}).items():
-            if isinstance(raw_source, PluginSource):
-                sources[str(source_id)] = raw_source
-            elif isinstance(raw_source, dict):
-                sources[str(source_id)] = PluginSource.from_dump(raw_source)
-
-        source_catalogs: dict[str, VerifiedPluginSourceManifest] = {}
-        for source_id, raw_catalog in dct.get("source_catalogs", {}).items():
-            if isinstance(raw_catalog, VerifiedPluginSourceManifest):
-                source_catalogs[str(source_id)] = raw_catalog
-            elif isinstance(raw_catalog, dict):
-                source_catalogs[str(source_id)] = VerifiedPluginSourceManifest.from_dump(raw_catalog)
-
-        installed_plugins: dict[str, InstalledSourcePluginMetadata] = {}
-        for bundle_id, raw_metadata in dct.get("installed_plugins", {}).items():
-            if isinstance(raw_metadata, InstalledSourcePluginMetadata):
-                installed_plugins[str(bundle_id)] = raw_metadata
-            elif isinstance(raw_metadata, dict):
-                installed_plugins[str(bundle_id)] = InstalledSourcePluginMetadata.from_dump(raw_metadata)
-
-        return cls(
-            config=config,
-            sources=sources,
-            source_catalogs=source_catalogs,
-            installed_plugins=installed_plugins,
-        )
+    def from_config(cls, config: UserConfig) -> ExternalPluginRegistry:
+        try:
+            return ExternalPluginRegistry._from_file(
+                filename=str(cls.get_repository_path(config)),
+                class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
+            )
+        except Exception:
+            return ExternalPluginRegistry(config=config)
 
     def dump(self) -> dict[str, Any]:
         d = super().dump()
@@ -178,13 +142,17 @@ class ExternalPluginRegistry(BaseSaveableClass):
     def save(self) -> None:  # type: ignore[override]
         super().save(self.repository_path)
 
-    @property
-    def root_dir(self) -> Path:
-        return Path(self.config.config_dir) / "plugins"
+    @classmethod
+    def root_dir(cls, config: UserConfig) -> Path:
+        return Path(config.config_dir) / "plugins"
 
     @property
     def repository_path(self) -> Path:
-        return self.root_dir / self.REPOSITORY_FILENAME
+        return self.get_repository_path(self.config)
+
+    @classmethod
+    def get_repository_path(cls, config: UserConfig) -> Path:
+        return cls.root_dir(config) / cls.REPOSITORY_FILENAME
 
     @classmethod
     def _repository_path_for_config(cls, config: UserConfig) -> Path:
@@ -192,11 +160,11 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     @property
     def installed_dir(self) -> Path:
-        return self.root_dir / "installed"
+        return self.root_dir(self.config) / "installed"
 
     @property
     def cache_dir(self) -> Path:
-        return self.root_dir / "cache"
+        return self.root_dir(self.config) / "cache"
 
     def add_source(
         self,
@@ -306,7 +274,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     def list_available_plugins(self) -> list[ExternalPluginCatalogEntry]:
         installed_metadata = self.load_installed_metadata()
-        entries: list[ExternalPluginCatalogEntry] = []
+        entries_by_bundle_id: dict[str, ExternalPluginCatalogEntry] = {}
         for source in self.load_sources():
             if not source.enabled:
                 continue
@@ -327,15 +295,23 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 update_available = installed_version is not None and (
                     installed_version != plugin.version or installed_folder_hash != plugin.folder_hash
                 )
-                entries.append(
-                    replace(
-                        plugin,
-                        installed_version=installed_version,
-                        installed_folder_hash=installed_folder_hash,
-                        update_available=update_available,
-                    )
+                entries_by_bundle_id[plugin.bundle_id] = replace(
+                    plugin,
+                    installed_version=installed_version,
+                    installed_folder_hash=installed_folder_hash,
+                    update_available=update_available,
                 )
-        return sorted(entries, key=lambda entry: (entry.display_name.lower(), entry.bundle_id))
+        for metadata in installed_metadata.values():
+            if metadata.bundle_id in entries_by_bundle_id:
+                continue
+            fallback_entry = self._fallback_entry(metadata)
+            if fallback_entry is None:
+                continue
+            entries_by_bundle_id[metadata.bundle_id] = fallback_entry
+        return sorted(
+            entries_by_bundle_id.values(),
+            key=lambda entry: (entry.display_name.lower(), entry.bundle_id),
+        )
 
     async def install_plugin(self, source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
         source = self.load_source(source_id)
@@ -378,6 +354,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 trusted_auto_allow_signer=manifest.signer_fingerprint
                 in self._trusted_auto_allow_fingerprints,
                 verified_signer_fingerprint=manifest.signer_fingerprint,
+                catalog_entry=plugin,
                 last_verification_ok=True,
                 last_verification_error=None,
             )
@@ -417,6 +394,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
                     installed_at=metadata.installed_at,
                     trusted_auto_allow_signer=metadata.trusted_auto_allow_signer,
                     verified_signer_fingerprint=metadata.verified_signer_fingerprint,
+                    catalog_entry=metadata.catalog_entry,
                     last_verification_ok=True,
                     last_verification_error=None,
                 )
@@ -429,6 +407,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
                     installed_at=metadata.installed_at,
                     trusted_auto_allow_signer=metadata.trusted_auto_allow_signer,
                     verified_signer_fingerprint=metadata.verified_signer_fingerprint,
+                    catalog_entry=metadata.catalog_entry,
                     last_verification_ok=False,
                     last_verification_error=str(exc),
                 )
@@ -519,7 +498,9 @@ class ExternalPluginRegistry(BaseSaveableClass):
         manifest = self.load_cached_source_catalog(metadata.source_id)
         if manifest is None:
             raise ExternalPluginError(f"Source {metadata.source_id} has not been refreshed successfully yet.")
-        catalog_entry = manifest.plugin_by_bundle_id(metadata.bundle_id)
+        catalog_entry = metadata.catalog_entry
+        if catalog_entry is None:
+            catalog_entry = manifest.plugin_by_bundle_id(metadata.bundle_id)
         if catalog_entry is None:
             raise ExternalPluginError(
                 f"Source {metadata.source_id} does not provide plugin {metadata.bundle_id}."
@@ -528,6 +509,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         plugin_spec = self._load_plugin_metadata(metadata_file)
         if plugin_spec.bundle_id != metadata.bundle_id:
             raise ExternalPluginError(f"{bundle_dir.name} bundle id metadata mismatch.")
+        self._validate_plugin_metadata(catalog_entry, plugin_spec)
         entrypoint = bundle_dir / plugin_spec.entrypoint
         if not entrypoint.exists():
             raise ExternalPluginError(f"{bundle_dir.name} is missing {plugin_spec.entrypoint}.")
@@ -892,9 +874,76 @@ class ExternalPluginRegistry(BaseSaveableClass):
             )
 
     @staticmethod
-    def _is_plugin_compatible(app_version_specifier: str) -> bool:
+    def _bump_release_component(release: tuple[int, ...], index: int) -> tuple[int, ...]:
+        release_parts = list(release)
+        release_parts[index] += 1
+        for release_index in range(index + 1, len(release_parts)):
+            release_parts[release_index] = 0
+        return tuple(release_parts)
+
+    @staticmethod
+    def _format_release(release: tuple[int, ...]) -> str:
+        return ".".join(str(part) for part in release)
+
+    @classmethod
+    def _expand_caret_specifier(
+        cls,
+        raw_version: str,
+        app_version_specifier: str,
+    ) -> tuple[str, str]:
         try:
-            specifier_set = SpecifierSet(app_version_specifier)
+            version = Version(raw_version.strip())
+        except InvalidVersion as exc:
+            raise ExternalPluginError(
+                f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}."
+            ) from exc
+
+        release = version.release
+        upper_index = next((index for index, part in enumerate(release) if part != 0), len(release) - 1)
+        upper_release = cls._bump_release_component(release, upper_index)
+        return (f">={version}", f"<{cls._format_release(upper_release)}")
+
+    @classmethod
+    def _expand_tilde_specifier(
+        cls,
+        raw_version: str,
+        app_version_specifier: str,
+    ) -> tuple[str, str]:
+        try:
+            version = Version(raw_version.strip())
+        except InvalidVersion as exc:
+            raise ExternalPluginError(
+                f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}."
+            ) from exc
+
+        release = version.release
+        upper_index = 0 if len(release) == 1 else 1
+        upper_release = cls._bump_release_component(release, upper_index)
+        return (f">={version}", f"<{cls._format_release(upper_release)}")
+
+    @classmethod
+    def _normalize_app_version_specifier(cls, app_version_specifier: str) -> str:
+        clauses: list[str] = []
+        for raw_clause in app_version_specifier.split(","):
+            clause = raw_clause.strip()
+            if not clause:
+                continue
+            if clause.startswith("^"):
+                clauses.extend(cls._expand_caret_specifier(clause[1:], app_version_specifier))
+                continue
+            if clause.startswith("~") and not clause.startswith("~="):
+                clauses.extend(cls._expand_tilde_specifier(clause[1:], app_version_specifier))
+                continue
+            clauses.append(clause)
+
+        if not clauses:
+            raise ExternalPluginError(f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}.")
+        return ",".join(clauses)
+
+    @classmethod
+    def _is_plugin_compatible(cls, app_version_specifier: str) -> bool:
+        try:
+            specifier_set = SpecifierSet(cls._normalize_app_version_specifier(app_version_specifier))
             app_version = Version(__version__)
         except (InvalidSpecifier, InvalidVersion) as exc:
             raise ExternalPluginError(
@@ -904,6 +953,18 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     def _write_source(self, source: PluginSource) -> None:
         self.sources[source.source_id] = source
+
+    def _fallback_entry(self, metadata: InstalledSourcePluginMetadata) -> ExternalPluginCatalogEntry | None:
+        if metadata.catalog_entry is None:
+            return None
+        if not self._is_plugin_compatible(metadata.catalog_entry.app_version_specifier):
+            return None
+        return replace(
+            metadata.catalog_entry,
+            installed_version=metadata.version,
+            installed_folder_hash=metadata.folder_hash,
+            update_available=False,
+        )
 
     @staticmethod
     def _normalize_manifest_url(manifest_url: str) -> str:

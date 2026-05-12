@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import asyncio
+import shutil
 import sys
 import threading
 from collections.abc import Callable, Coroutine
@@ -50,9 +51,11 @@ from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionManagementStatusCode,
 )
 from btcpay_tools.config import BTCPayConfig, PlanDuration
+from packaging.version import Version
 from PyQt6.QtGui import QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import QApplication, QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
 
+from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.language_chooser import LanguageChooser
 from bitcoin_safe.gui.qt.settings import Settings
@@ -95,6 +98,7 @@ from bitcoin_safe.plugin_framework.plugin_manager import (
     SourceCatalogItem,
 )
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
+from bitcoin_safe.plugin_framework.plugin_source_hash import compute_plugin_folder_hash
 from bitcoin_safe.plugin_framework.plugin_source_models import (
     PluginSourceModelError,
     parse_plugin_pyproject,
@@ -369,6 +373,7 @@ def _installed_source_plugin_metadata(
     bundle_id: str,
     version: str = "1.0.0",
     folder_hash: str = "hash",
+    catalog_entry: ExternalPluginCatalogEntry | None = None,
 ) -> InstalledSourcePluginMetadata:
     return InstalledSourcePluginMetadata(
         bundle_id=bundle_id,
@@ -378,6 +383,7 @@ def _installed_source_plugin_metadata(
         installed_at="2026-04-21T00:00:00+00:00",
         trusted_auto_allow_signer=False,
         verified_signer_fingerprint="fingerprint",
+        catalog_entry=catalog_entry,
     )
 
 
@@ -394,7 +400,7 @@ def _plugin_manager_init_kwargs(
     config = _make_config(tmp_path)
     signals = Signals()
     wallet_functions = WalletFunctions(signals)
-    external_registry = ExternalPluginRegistry.from_config(config)
+    external_registry = ExternalPluginRegistry.from_config(config=config)
     return PluginManager.cls_kwargs(
         wallet_functions=wallet_functions,
         config=config,
@@ -467,7 +473,7 @@ def _write_plugin_svg(path: Path) -> None:
     )
 
 
-def _plugin_pyproject_text(version: str = "1.0.0") -> str:
+def _plugin_pyproject_text(version: str = "1.0.0", bitcoin_safe_version: str = ">=0.0.0") -> str:
     return "\n".join(
         [
             "[tool.poetry]",
@@ -482,9 +488,131 @@ def _plugin_pyproject_text(version: str = "1.0.0") -> str:
             'schema_version = "1"',
             'plugin_api_version = "1"',
             'entrypoint = "test_plugin/plugin_bundle.py"',
-            'bitcoin_safe_version = ">=0.0.0"',
+            f'bitcoin_safe_version = "{bitcoin_safe_version}"',
             "",
         ]
+    )
+
+
+def _bump_release_component(release: tuple[int, ...], index: int) -> tuple[int, ...]:
+    release_parts = list(release)
+    release_parts[index] += 1
+    for release_index in range(index + 1, len(release_parts)):
+        release_parts[release_index] = 0
+    return tuple(release_parts)
+
+
+def _format_release(release: tuple[int, ...]) -> str:
+    return ".".join(str(part) for part in release)
+
+
+def _caret_upper_release(release: tuple[int, ...]) -> tuple[int, ...]:
+    # Caret requirements keep compatibility within the left-most non-zero release segment.
+    #
+    # Examples:
+    #   ^1.2.3  -> upper bound <2.0.0   (bump index 0)
+    #   ^0.2.3  -> upper bound <0.3.0   (bump index 1)
+    #   ^0.0.3  -> upper bound <0.0.4   (bump index 2)
+    #   ^0.0.0  -> upper bound <0.0.1   (all parts are zero, so bump the last index)
+    upper_index = next(
+        (index for index, part in enumerate(release) if part != 0),
+        len(release) - 1,
+    )
+    return _bump_release_component(release, upper_index)
+
+
+def _tilde_upper_release(release: tuple[int, ...]) -> tuple[int, ...]:
+    # Tilde requirements keep compatibility within the specified minor version when
+    # a minor component exists; otherwise they allow the next major version.
+    #
+    # Examples:
+    #   ~1      -> upper bound <2      (single component, bump index 0)
+    #   ~1.2    -> upper bound <1.3    (minor component exists, bump index 1)
+    #   ~1.2.3  -> upper bound <1.3.0  (minor component exists, bump index 1)
+    upper_index = 0 if len(release) == 1 else 1
+    return _bump_release_component(release, upper_index)
+
+
+def _write_external_plugin_bundle(
+    source_root: Path,
+    bundle_id: str,
+    app_version_specifier: str,
+    version: str = "1.0.0",
+) -> tuple[str, str]:
+    package_name = bundle_id.replace("-", "_")
+    class_name = "".join(part.title() for part in bundle_id.split("-")) + "Client"
+    plugin_dir = source_root / "plugins" / bundle_id
+    package_dir = plugin_dir / package_name
+    package_dir.mkdir(parents=True, exist_ok=True)
+    (package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (package_dir / "plugin_bundle.py").write_text(
+        "\n".join(
+            [
+                "from bitcoin_safe.plugin_framework.plugin_client import PluginClient",
+                "",
+                "",
+                f"class {class_name}(PluginClient):",
+                '    VERSION = "1.0.0"',
+                f'    title = "{bundle_id} title"',
+                f'    description = "{bundle_id} description"',
+                "",
+                "    def load(self) -> None:",
+                "        return None",
+                "",
+                "    def unload(self) -> None:",
+                "        return None",
+                "",
+                "",
+                "def class_kwargs(_context) -> dict[str, dict[str, object]]:",
+                f'    return {{"{class_name}": {{}}}}',
+                "",
+                f"PLUGIN_CLIENTS = ({class_name},)",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (plugin_dir / "pyproject.toml").write_text(
+        "\n".join(
+            [
+                "[tool.poetry]",
+                f'name = "{bundle_id}"',
+                f'version = "{version}"',
+                f'description = "{bundle_id} description"',
+                "",
+                "[tool.bitcoin_safe.plugin]",
+                'schema_version = "1"',
+                f'display_name = "{bundle_id} title"',
+                'plugin_api_version = "1"',
+                f'entrypoint = "{package_name}/plugin_bundle.py"',
+                f'bitcoin_safe_version = "{app_version_specifier}"',
+                'provider = "Tests"',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return compute_plugin_folder_hash(plugin_dir), class_name
+
+
+def _unresolved_catalog_entry(
+    source: PluginSource,
+    bundle_id: str,
+    folder_hash: str,
+) -> ExternalPluginCatalogEntry:
+    return ExternalPluginCatalogEntry(
+        source_id=source.source_id,
+        source_display_name=source.display_name,
+        bundle_id=bundle_id,
+        version="",
+        display_name="",
+        description="",
+        provider="",
+        entrypoint="",
+        plugin_api_version="",
+        app_version_specifier="",
+        folder_hash=folder_hash,
+        release_ref="main",
     )
 
 
@@ -550,6 +678,284 @@ def _write_minimal_plugin_manifest(package_root: Path) -> None:
         ),
         encoding="utf-8",
     )
+
+
+def test_external_registry_is_plugin_compatible_supports_standard_and_semver_specifiers() -> None:
+    app_version = Version(__version__)
+    next_caret_release = _format_release(_caret_upper_release(app_version.release))
+    next_tilde_release = _format_release(_tilde_upper_release(app_version.release))
+    cases = [
+        (f">={app_version}", True),
+        (f"<={app_version}", True),
+        (f"=={app_version}", True),
+        (f"!={app_version}", False),
+        (f">{app_version}", False),
+        (f"<{app_version}", False),
+        (f"^{app_version}", True),
+        (f"^{next_caret_release}", False),
+        (f"~{app_version}", True),
+        (f"~{next_tilde_release}", False),
+    ]
+
+    for app_version_specifier, expected in cases:
+        assert ExternalPluginRegistry._is_plugin_compatible(app_version_specifier) is expected
+
+
+def test_plugin_manager_filters_incompatible_source_plugins_from_catalog(
+    qapp: QApplication, tmp_path: Path
+) -> None:
+    del qapp
+    app_version = Version(__version__)
+    source_root = tmp_path / "source"
+    source_root.mkdir(parents=True)
+    manifest_path = source_root / "source.toml"
+    manifest_path.write_text("", encoding="utf-8")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    source = PluginSource(
+        source_id="test-source",
+        display_name="Test Source",
+        manifest_url=str(manifest_path),
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+        enabled=True,
+    )
+    compatible_hash, _compatible_class_name = _write_external_plugin_bundle(
+        source_root=source_root,
+        bundle_id="compatible-plugin",
+        app_version_specifier=f"^{app_version}",
+    )
+    incompatible_hash, _incompatible_class_name = _write_external_plugin_bundle(
+        source_root=source_root,
+        bundle_id="incompatible-plugin",
+        app_version_specifier=f"~{_format_release(_tilde_upper_release(app_version.release))}",
+    )
+    registry._write_source(source)
+    registry.source_catalogs[source.source_id] = registry._resolve_source_catalog(
+        VerifiedPluginSourceManifest(
+            source_id=source.source_id,
+            display_name=source.display_name,
+            source_serial=1,
+            signer_fingerprint="fingerprint",
+            manifest_url=source.manifest_url,
+            plugins=(
+                _unresolved_catalog_entry(source, "compatible-plugin", compatible_hash),
+                _unresolved_catalog_entry(source, "incompatible-plugin", incompatible_hash),
+            ),
+        ),
+        source.auth_config,
+    )
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=_make_config(tmp_path),
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+
+    try:
+        assert list(manager.available_source_plugins_by_bundle_id) == ["compatible-plugin"]
+        assert [item.entry.bundle_id for item in manager.source_catalog_items] == ["compatible-plugin"]
+    finally:
+        manager.close()
+
+
+def test_plugin_manager_refresh_external_state_skips_incompatible_installed_bundles(tmp_path: Path) -> None:
+    app_version = Version(__version__)
+    source_root = tmp_path / "source"
+    source_root.mkdir(parents=True)
+    manifest_path = source_root / "source.toml"
+    manifest_path.write_text("", encoding="utf-8")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    source = PluginSource(
+        source_id="test-source",
+        display_name="Test Source",
+        manifest_url=str(manifest_path),
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+        enabled=True,
+    )
+    compatible_hash, compatible_class_name = _write_external_plugin_bundle(
+        source_root=source_root,
+        bundle_id="compatible-plugin",
+        app_version_specifier=f"~{app_version}",
+    )
+    incompatible_hash, incompatible_class_name = _write_external_plugin_bundle(
+        source_root=source_root,
+        bundle_id="incompatible-plugin",
+        app_version_specifier=f"^{_format_release(_caret_upper_release(app_version.release))}",
+    )
+    registry._write_source(source)
+    registry.source_catalogs[source.source_id] = registry._resolve_source_catalog(
+        VerifiedPluginSourceManifest(
+            source_id=source.source_id,
+            display_name=source.display_name,
+            source_serial=1,
+            signer_fingerprint="fingerprint",
+            manifest_url=source.manifest_url,
+            plugins=(
+                _unresolved_catalog_entry(source, "compatible-plugin", compatible_hash),
+                _unresolved_catalog_entry(source, "incompatible-plugin", incompatible_hash),
+            ),
+        ),
+        source.auth_config,
+    )
+    registry.installed_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(
+        source_root / "plugins" / "compatible-plugin",
+        registry.installed_dir / "compatible-plugin",
+    )
+    shutil.copytree(
+        source_root / "plugins" / "incompatible-plugin",
+        registry.installed_dir / "incompatible-plugin",
+    )
+    registry.installed_plugins = {
+        "compatible-plugin": _installed_source_plugin_metadata(
+            source_id=source.source_id,
+            bundle_id="compatible-plugin",
+            folder_hash=compatible_hash,
+        ),
+        "incompatible-plugin": _installed_source_plugin_metadata(
+            source_id=source.source_id,
+            bundle_id="incompatible-plugin",
+            folder_hash=incompatible_hash,
+        ),
+    }
+    previous_known_classes = PluginManager.known_classes.copy()
+
+    try:
+        bundles = PluginManager._refresh_external_state(_make_runtime_context(tmp_path), registry)
+
+        assert list(bundles) == ["compatible-plugin"]
+        assert compatible_class_name in PluginManager.known_classes
+        assert incompatible_class_name not in PluginManager.known_classes
+    finally:
+        PluginManager.known_classes = previous_known_classes
+
+
+def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer_catalog_version_is_incompatible(
+    tmp_path: Path, monkeypatch
+) -> None:
+    app_version = Version(__version__)
+    source_root = tmp_path / "source"
+    source_root.mkdir(parents=True)
+    manifest_path = source_root / "source.toml"
+    manifest_path.write_text("", encoding="utf-8")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    source = PluginSource(
+        source_id="test-source",
+        display_name="Test Source",
+        manifest_url=str(manifest_path),
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+        enabled=True,
+        last_seen_source_serial=1,
+    )
+    installed_hash, installed_class_name = _write_external_plugin_bundle(
+        source_root=source_root,
+        bundle_id="test-plugin",
+        app_version_specifier=f"~{app_version}",
+        version="1.0.0",
+    )
+    installed_plugin = ExternalPluginCatalogEntry(
+        source_id=source.source_id,
+        source_display_name=source.display_name,
+        bundle_id="test-plugin",
+        version="1.0.0",
+        display_name="Test Plugin",
+        description="Test description",
+        provider="Tests",
+        entrypoint="test_plugin/plugin_bundle.py",
+        plugin_api_version="1",
+        app_version_specifier=f"~{app_version}",
+        folder_hash=installed_hash,
+        release_ref="v1",
+    )
+    registry._write_source(source)
+    registry.source_catalogs[source.source_id] = VerifiedPluginSourceManifest(
+        source_id=source.source_id,
+        display_name=source.display_name,
+        source_serial=1,
+        signer_fingerprint="fingerprint",
+        manifest_url=source.manifest_url,
+        plugins=(installed_plugin,),
+    )
+    registry.installed_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(
+        source_root / "plugins" / "test-plugin",
+        registry.installed_dir / "test-plugin",
+    )
+    registry.installed_plugins = {
+        "test-plugin": _installed_source_plugin_metadata(
+            source_id=source.source_id,
+            bundle_id="test-plugin",
+            folder_hash=installed_hash,
+            catalog_entry=installed_plugin,
+        )
+    }
+
+    source_toml = "\n".join(
+        [
+            'schema_version = "1"',
+            'source_id = "test-source"',
+            'display_name = "Test Source"',
+            "source_serial = 2",
+            "",
+            "[[plugins]]",
+            'bundle_id = "test-plugin"',
+            'folder_hash = "hash-v2"',
+            'release_ref = "v2"',
+            "",
+        ]
+    )
+
+    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
+        del headers, proxy_info
+        if url.endswith(".asc"):
+            return b"signature"
+        if url.endswith("pyproject.toml"):
+            return _plugin_pyproject_text(
+                version="2.0.0",
+                bitcoin_safe_version=f"^{_format_release(_caret_upper_release(app_version.release))}",
+            ).encode("utf-8")
+        return source_toml.encode("utf-8")
+
+    class _FakeVerifier:
+        def __init__(self, list_of_known_keys, proxies) -> None:
+            del list_of_known_keys, proxies
+
+        def import_public_key_block(self, public_key_block: str) -> SimpleNamespace:
+            del public_key_block
+            return SimpleNamespace(fingerprint="A" * 40)
+
+        def verify_detached_signature_with_fingerprint(
+            self, binary_file: Path, signature_file: Path
+        ) -> tuple[bool, str]:
+            del binary_file, signature_file
+            return True, "A" * 40
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
+        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
+    )
+
+    previous_known_classes = PluginManager.known_classes.copy()
+    try:
+        refreshed = asyncio.run(registry.refresh_sources(recheck_installed=False))
+        bundles = PluginManager._refresh_external_state(_make_runtime_context(tmp_path), registry)
+
+        assert len(refreshed) == 1
+        assert list(bundles) == ["test-plugin"]
+        assert bundles["test-plugin"].version == "1.0.0"
+        assert installed_class_name in PluginManager.known_classes
+    finally:
+        PluginManager.known_classes = previous_known_classes
 
 
 def test_register_static_plugin_bundle_defaults_auto_allow_to_plugin_clients() -> None:
@@ -1290,6 +1696,7 @@ def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_pa
     registry.installed_plugins[catalog_entry.bundle_id] = _installed_source_plugin_metadata(
         source.source_id,
         catalog_entry.bundle_id,
+        catalog_entry=catalog_entry,
     )
 
     registry.save()
@@ -1304,6 +1711,10 @@ def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_pa
     assert loaded_entry.btcpay_config.npub_bitcoin_safe_pos == _btcpay_config().npub_bitcoin_safe_pos
     assert loaded_entry.installed_version is None
     assert loaded.load_installed_metadata()[catalog_entry.bundle_id].source_id == source.source_id
+    assert (
+        loaded.load_installed_metadata()[catalog_entry.bundle_id].catalog_entry.dumps()
+        == catalog_entry.dumps()
+    )
 
 
 def test_resolve_external_plugin_package_root_source_mode(tmp_path: Path) -> None:
@@ -1606,7 +2017,7 @@ def test_plugin_manager_refreshes_client_translators_on_language_switch(
         config=config,
         fx=_DummyFX(),
         loop_in_thread=None,
-        external_registry=ExternalPluginRegistry(config),
+        external_registry=ExternalPluginRegistry.from_config(config),
         clients=[client, _DisplayMetadataPluginClient()],
         parent=None,
     )
@@ -1795,6 +2206,7 @@ def test_external_registry_marks_hash_only_plugin_change_as_update(tmp_path: Pat
         installed_at="2026-04-21T00:00:00+00:00",
         trusted_auto_allow_signer=False,
         verified_signer_fingerprint="fingerprint",
+        catalog_entry=replace(plugin, folder_hash="old-hash"),
     )
 
     monkeypatch.setattr(registry, "load_sources", lambda: [source])
@@ -1811,6 +2223,142 @@ def test_external_registry_marks_hash_only_plugin_change_as_update(tmp_path: Pat
     assert entries[0].update_available is True
     assert entries[0].installed_version == "1.0.0"
     assert entries[0].installed_folder_hash == "old-hash"
+
+
+def test_external_registry_keeps_installed_plugin_when_newer_catalog_version_is_incompatible(
+    tmp_path: Path, monkeypatch
+) -> None:
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry(
+        PluginRuntimeContext(
+            wallet_functions=WalletFunctions(Signals()),
+            config=config,
+            fx=_DummyFX(),
+            loop_in_thread=None,
+            subscription_price_lookup=None,
+            parent=None,
+        )
+    )
+    source = PluginSource(
+        source_id="test-source",
+        display_name="Test Source",
+        manifest_url="https://dummy.example/source.toml",
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+        enabled=True,
+        last_seen_source_serial=1,
+    )
+    installed_plugin = ExternalPluginCatalogEntry(
+        source_id="test-source",
+        source_display_name="Test Source",
+        bundle_id="test-plugin",
+        version="1.0.0",
+        display_name="Test Plugin",
+        description="Test description",
+        provider="Tests",
+        entrypoint="test_plugin/plugin_bundle.py",
+        plugin_api_version="1",
+        app_version_specifier=">=0.0.0",
+        folder_hash="hash-v1",
+        release_ref="v1",
+    )
+    manifest_v1 = VerifiedPluginSourceManifest(
+        source_id=source.source_id,
+        display_name=source.display_name,
+        source_serial=1,
+        signer_fingerprint="fingerprint",
+        manifest_url=source.manifest_url,
+        plugins=(installed_plugin,),
+    )
+    installed_metadata = InstalledSourcePluginMetadata(
+        bundle_id="test-plugin",
+        source_id="test-source",
+        version="1.0.0",
+        folder_hash="hash-v1",
+        installed_at="2026-04-21T00:00:00+00:00",
+        trusted_auto_allow_signer=False,
+        verified_signer_fingerprint="fingerprint",
+        catalog_entry=installed_plugin,
+    )
+    registry._write_source(source)
+    registry.source_catalogs[source.source_id] = manifest_v1
+    registry.installed_plugins[installed_plugin.bundle_id] = installed_metadata
+
+    source_toml = "\n".join(
+        [
+            'schema_version = "1"',
+            'source_id = "test-source"',
+            'display_name = "Test Source"',
+            "source_serial = 2",
+            "",
+            "[[plugins]]",
+            'bundle_id = "test-plugin"',
+            'folder_hash = "hash-v2"',
+            'release_ref = "v2"',
+            "",
+        ]
+    )
+
+    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
+        del headers, proxy_info
+        if url.endswith(".asc"):
+            return b"signature"
+        if url.endswith("pyproject.toml"):
+            return _plugin_pyproject_text(
+                version="2.0.0",
+                bitcoin_safe_version=">9999.0.0",
+            ).encode("utf-8")
+        return source_toml.encode("utf-8")
+
+    class _FakeVerifier:
+        def __init__(self, list_of_known_keys, proxies) -> None:
+            del list_of_known_keys, proxies
+
+        def import_public_key_block(self, public_key_block: str) -> SimpleNamespace:
+            del public_key_block
+            return SimpleNamespace(fingerprint="A" * 40)
+
+        def verify_detached_signature_with_fingerprint(
+            self, binary_file: Path, signature_file: Path
+        ) -> tuple[bool, str]:
+            del binary_file, signature_file
+            return True, "A" * 40
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
+        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
+    )
+
+    refreshed = asyncio.run(registry.refresh_sources(recheck_installed=False))
+
+    assert len(refreshed) == 1
+    assert registry.load_installed_metadata()[installed_plugin.bundle_id] == installed_metadata
+
+    entries = registry.list_available_plugins()
+
+    assert len(entries) == 1
+    assert entries[0].bundle_id == installed_plugin.bundle_id
+    assert entries[0].version == "1.0.0"
+    assert entries[0].installed_version == "1.0.0"
+    assert entries[0].folder_hash == "hash-v1"
+    assert entries[0].installed_folder_hash == "hash-v1"
+    assert entries[0].update_available is False
+
+    item = SourceCatalogItem(entry=entries[0], parent=None)
+    widget = item.create_plugin_widget()
+
+    try:
+        assert widget.status_label.text() == "Installed version: 1.0.0"
+        assert widget.version_label.text() == "Version 1.0.0"
+        assert widget.install_button.isHidden()
+    finally:
+        widget.close()
 
 
 def test_settings_tabs_refresh_on_language_switch(qapp: QApplication, tmp_path: Path) -> None:
@@ -1908,7 +2456,7 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
         config=config,
         fx=_DummyFX(),
         loop_in_thread=loop_in_thread,
-        external_registry=ExternalPluginRegistry(config),
+        external_registry=ExternalPluginRegistry.from_config(config),
         clients=[current_client],
         parent=None,
     )
@@ -2034,7 +2582,7 @@ def test_plugin_manager_update_restores_paid_plugin_subscription_state(
         config=config,
         fx=fx,
         loop_in_thread=loop_in_thread,
-        external_registry=ExternalPluginRegistry(config),
+        external_registry=ExternalPluginRegistry.from_config(config),
         clients=[current_client],
         parent=None,
     )
@@ -2283,7 +2831,7 @@ def test_plugin_manager_schedules_startup_source_refresh_when_sources_exist(
 def test_plugin_manager_uses_injected_external_registry(qapp: QApplication, tmp_path: Path) -> None:
     del qapp
     config = _make_config(tmp_path)
-    external_registry = ExternalPluginRegistry(config)
+    external_registry = ExternalPluginRegistry.from_config(config)
     first_manager = PluginManager(
         wallet_functions=WalletFunctions(Signals()),
         config=config,
@@ -2359,7 +2907,7 @@ def test_plugin_manager_skips_startup_source_refresh_when_last_download_is_recen
         last_seen_source_serial=1,
     )
     config = _make_config(tmp_path)
-    external_registry = ExternalPluginRegistry(config)
+    external_registry = ExternalPluginRegistry.from_config(config)
     external_registry.last_download_time = datetime.now(timezone.utc)
     external_registry.save()
 
@@ -2448,7 +2996,7 @@ def test_plugin_manager_from_dump_reuses_external_state_from_class_kwargs(
         fx=_DummyFX(),
         loop_in_thread=None,
         parent=None,
-        external_registry=ExternalPluginRegistry(config),
+        external_registry=ExternalPluginRegistry.from_config(config),
     )
 
     manager = PluginManager.from_dump(
