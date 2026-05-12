@@ -370,6 +370,9 @@ class SourceCatalogItem(QObject):
             return self.tr("Reinstall {version}").format(version=self.entry.version)
         return self.tr("Install {version}").format(version=self.entry.version)
 
+    def show_install_button(self) -> bool:
+        return self.entry.installed_version is None or self.entry.update_available
+
     def _available_update_target_text(self) -> str:
         return format_version_with_hash(
             self,
