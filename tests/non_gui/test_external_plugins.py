@@ -2126,6 +2126,7 @@ def test_source_catalog_item_widget_shows_versions_in_status_and_button(qapp: QA
     try:
         assert widget.version_label.text() == "Version 1.0.0 -> 2.0.0 (hash: hash)"
         assert widget.install_button.text() == "Update to 2.0.0 (hash: hash)"
+        assert not widget.install_button.isHidden()
     finally:
         widget.close()
 

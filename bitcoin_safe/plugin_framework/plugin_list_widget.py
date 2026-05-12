@@ -787,7 +787,7 @@ class SourceCatalogItemWidget(BasePluginWidget):
             button=self.install_button,
             text=self.item.install_button_text(),
             callback=self.item.trigger_install,
-            visible=True,
+            visible=self.item.show_install_button(),
             enable=True,
         )
         self._sync_section_visibility()
