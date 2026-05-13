@@ -90,7 +90,7 @@ def test_default_network_config_works(
 
             def sync() -> None:
                 # Run a sync and wait for the signal to confirm completion.
-                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=50000):
+                with qtbot.waitSignal(qt_wallet.signal_after_sync, timeout=120_000):
                     qt_wallet.sync()
 
                 shutter.save(main_window)

@@ -121,7 +121,7 @@ def wait_for_sync(
             f"{len(wallet.bdkwallet.transactions())=} and {tx_count=}"
         )
 
-    def condition() -> bool:
+    def data_condition() -> bool:
         balance = wallet.get_balance()
         res = bool(
             balance.total >= minimum_funds
@@ -135,7 +135,10 @@ def wait_for_sync(
             qtbot.wait(200)
         return res
 
-    if condition():
+    def sync_task_finished() -> bool:
+        return not qt_wallet or not qt_wallet.has_running_sync_task()
+
+    if data_condition() and sync_task_finished():
         logger.info("No need to wait. Condition already satisfied")
         return
 
@@ -144,7 +147,7 @@ def wait_for_sync(
         # cbf node syncronization happens without any triggering in the background
         # we just have to wait
         try:
-            qtbot.waitUntil(condition, timeout=int(timeout))
+            qtbot.waitUntil(lambda: data_condition() and sync_task_finished(), timeout=int(timeout))
         except Exception:
             raise
         finally:
@@ -156,7 +159,17 @@ def wait_for_sync(
             """Wait for funds."""
             deadline = asyncio.get_event_loop().time() + timeout
             original_funds = wallet.get_balance().total
-            while not condition():
+            while True:
+                if data_condition() and sync_task_finished():
+                    break
+
+                if data_condition():
+                    QApplication.processEvents()
+                    await asyncio.sleep(0.1)
+                    if asyncio.get_event_loop().time() > deadline:
+                        raise TimeoutError("Conditions not met")
+                    continue
+
                 await asyncio.sleep(0.5)
                 # first try to wait for incoming p2p transactions
 

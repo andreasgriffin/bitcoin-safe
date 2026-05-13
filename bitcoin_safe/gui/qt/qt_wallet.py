@@ -332,6 +332,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.plugins_menu = QMenu()
         self._file_path = file_path
         self._client_bridge_tasks: list[Future[Any]] = []
+        self._sync_task: Future[Any] | None = None
         self.progress_update_timer = QTimer()
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
@@ -1761,6 +1762,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_done(self, result: object) -> None:
         """Sync on done."""
+        self._sync_task = None
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
         interval_timer_sync_regularly = min(
             60 * 60 * 24, max(int(self._syncing_delay.total_seconds() * 200), MINIMUM_INTERVAL_SYNC_REGULARLY)
@@ -1793,6 +1795,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self, packed_error_info: tuple[type[BaseException], BaseException, TracebackType | None] | None
     ) -> None:
         """Sync on error."""
+        self._sync_task = None
         if self.wallet.client:
             self.wallet.client.set_sync_status(SyncStatus.error)
         self.signal_refresh_sync_status.emit()
@@ -1804,6 +1807,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_success(self, result) -> None:
         """Sync on success."""
+        self._sync_task = None
         self._has_unacknowledged_sync_error = False
         logger.info(f"success syncing wallet '{self.wallet.id}'")
 
@@ -1838,7 +1842,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             # must be started from the main thread for cbf node!!!
             self.init_blockchain()
 
-        self.wallet.loop_in_thread.run_task(
+        self._sync_task = self.wallet.loop_in_thread.run_task(
             self._trigger_sync(),
             on_done=self._sync_on_done,
             on_success=self._sync_on_success,
@@ -1885,6 +1889,16 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             if task and not task.done():
                 task.cancel()
         self._client_bridge_tasks.clear()
+
+    def _cancel_sync_task(self) -> None:
+        """Cancel the current sync task if it is still running."""
+        if self._sync_task and not self._sync_task.done():
+            self._sync_task.cancel()
+        self._sync_task = None
+
+    def has_running_sync_task(self) -> bool:
+        """Return whether a wallet UI initiated sync task is still running."""
+        return bool(self._sync_task and not self._sync_task.done())
 
     def _start_bridges(self) -> None:
         """Start bridges."""
@@ -1972,7 +1986,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             update_info.update_type == UpdateInfo.UpdateType.full_sync
             and self.wallet._more_than_gap_revealed_addresses()
         ):
-            self.loop_in_thread.run_task(
+            self._sync_task = self.loop_in_thread.run_task(
                 self._sync_revealed_spks(),
                 on_done=self._sync_on_done,
                 on_success=self._sync_on_success,
@@ -2195,6 +2209,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # crucial is to explicitly close everything that has a wallet attached
         """Close."""
         self.stop_sync_timer()
+        self._cancel_sync_task()
         self._cancel_client_tasks()
         self.quick_receive.close()
         self.address_tab.close()
