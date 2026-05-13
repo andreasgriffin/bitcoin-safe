@@ -134,6 +134,34 @@ def test_card_list_current_expanded_card_absorbs_extra_height(qtbot: QtBot) -> N
     assert cards[1].height() > cards[0].height()
 
 
+def test_card_list_prefers_one_expanded_card_height(qtbot: QtBot) -> None:
+    card_list = CardList()
+    cards = [
+        _make_card("Small", body_height=40),
+        _make_card("Large", body_height=180),
+        _make_card("Medium", body_height=90),
+    ]
+    for card in cards:
+        card_list.add_card(card)
+    card_list.collapse_all()
+
+    qtbot.addWidget(card_list)
+    card_list.show()
+    qtbot.waitExposed(card_list)
+
+    collapsed_total = sum(card.preferred_size_hint(expanded=False).height() for card in cards)
+    one_expanded_total = cards[0].preferred_size_hint(expanded=True).height() + sum(
+        card.preferred_size_hint(expanded=False).height() for card in cards[1:]
+    )
+
+    assert card_list.sizeHint().height() > collapsed_total
+    assert card_list.sizeHint().height() >= one_expanded_total
+
+    card_list.expand_only(1)
+    assert card_list.sizeHint().height() >= cards[1].preferred_size_hint(expanded=True).height()
+    assert card_list.sizeHint().height() > one_expanded_total
+
+
 def test_send_test_card_fixed_collapsed_has_no_body_height(qtbot: QtBot) -> None:
     card = TutorialTxCard()
     card.set_header("Self-Send Test 1", "Pending", "bi--send.svg")

@@ -217,6 +217,18 @@ class CardBase(BaseCardFrame):
             return
         self._content_layout.setStretch(index, stretch)
 
+    def preferred_size_hint(self, expanded: bool) -> QSize:
+        margins = self.root_layout.contentsMargins()
+        spacing = self.root_layout.spacing()
+        header_size = self.header_widget.sizeHint()
+        content_size = self.content_widget.sizeHint() if expanded and self._body_content_visible else QSize()
+
+        width = margins.left() + margins.right() + max(header_size.width(), content_size.width())
+        height = margins.top() + margins.bottom() + header_size.height()
+        if not content_size.isEmpty():
+            height += spacing + content_size.height()
+        return QSize(width, height)
+
     def clear_content_widget(self, widget: QWidget) -> None:
         if self._content_layout.indexOf(widget) == -1:
             return
@@ -407,6 +419,9 @@ class CardList(QWidget):
     def only_one_expanded_at_a_time(self) -> bool:
         return self._only_one_expanded_at_a_time
 
+    def sizeHint(self) -> QSize:
+        return self._preferred_list_size()
+
     def _on_expand_requested(self, card: CardBase) -> None:
         index = self.index_of(card)
         if self._only_one_expanded_at_a_time:
@@ -429,3 +444,35 @@ class CardList(QWidget):
             stretch = 1 if index == self._current_index and card.is_expanded else 0
             self.content_layout.setStretch(index, stretch)
         self.content_layout.setStretch(self.content_layout.count() - 1, 0)
+        self.updateGeometry()
+
+    def _preferred_list_size(self) -> QSize:
+        if not self._cards:
+            return super().sizeHint()
+
+        expanded_index = self._preferred_expanded_index()
+        content_margins = self.content_layout.contentsMargins()
+        layout_margins = self.layout_main.contentsMargins()
+        spacing = self.content_layout.spacing() * max(0, len(self._cards) - 1)
+
+        width = 0
+        height = content_margins.top() + content_margins.bottom() + spacing
+        for index, card in enumerate(self._cards):
+            card_size = card.preferred_size_hint(expanded=index == expanded_index)
+            width = max(width, card_size.width())
+            height += card_size.height()
+
+        width += content_margins.left() + content_margins.right()
+        width += layout_margins.left() + layout_margins.right()
+        height += layout_margins.top() + layout_margins.bottom()
+        height += self.scroll_area.frameWidth() * 2
+        width += self.scroll_area.frameWidth() * 2
+        return QSize(width, height)
+
+    def _preferred_expanded_index(self) -> int:
+        for index, card in enumerate(self._cards):
+            if card.is_expanded:
+                return index
+        if 0 <= self._current_index < len(self._cards):
+            return self._current_index
+        return 0

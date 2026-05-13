@@ -44,15 +44,18 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
+from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
-from bitcoin_safe.gui.qt.signer_ui import SignerUI
+from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceCard, TxSigningDeviceList
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.util import svg_tools_hardware_signer
+from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.mempool_manager import TxPrio
 from bitcoin_safe.psbt_util import SimplePSBT
 from bitcoin_safe.pythonbdk_types import OutPoint, TxOut, robust_address_str_from_txout
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
+from bitcoin_safe.signer import SignatureImporterWallet
 from bitcoin_safe.tx import TxUiInfos
 
 from ...faucet import Faucet
@@ -92,6 +95,28 @@ def _outputs_by_address(psbt: Any, network: Any) -> dict[str, int]:
         address = robust_address_str_from_txout(TxOut.from_bdk(output), network=network)
         output_map[address] = output.value.to_sat()
     return output_map
+
+
+def _assert_card_matches_hardware_signer(card: TxSigningDeviceCard, hardware_signer: HardwareSigner) -> None:
+    assert card.device.hardware_signer == hardware_signer, (
+        f"expected signer {hardware_signer.id}, got {card.device.hardware_signer.id}"
+    )
+    assert card.header_title.text() == hardware_signer.display_name, (
+        f"expected title {hardware_signer.display_name!r}, got {card.header_title.text()!r}"
+    )
+    actual_pixmap = card.header_icon.pixmap()
+    assert actual_pixmap is not None
+    expected_icon = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name)
+    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), card.devicePixelRatioF())
+    assert actual_pixmap.toImage() == expected_pixmap.toImage(), (
+        f"expected icon {hardware_signer.icon_name}, got {card.device.hardware_signer.icon_name}"
+    )
+
+
+def _visible_tx_viewer(main_window: MainWindow) -> UITx_Viewer:
+    viewers = main_window.findChildren(UITx_Viewer)
+    assert viewers
+    return viewers[-1]
 
 
 def _set_category(
@@ -137,6 +162,7 @@ def test_wallet_send(
             wallet_name=wallet_name,
             seed=test_seeds[SEND_TEST_SEED_INDEX],
         )
+        qt_wallet.wallet.keystores[0].hardware_signer_id = HardwareSigners.krux.id
 
         def do_all(qt_wallet: QTWallet) -> None:
             # Keep all operations in one scope to avoid lingering references to qt_wallet.
@@ -252,8 +278,7 @@ def test_wallet_send(
                     qt_wallet.uitx_creator.button_ok.click()
                 shutter.save(main_window)
 
-                ui_tx_viewer = main_window.tab_wallets.currentNode().data
-                assert isinstance(ui_tx_viewer, UITx_Viewer)
+                ui_tx_viewer = _visible_tx_viewer(main_window)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
                 # Confirm the recipients (including change) match expectations.
@@ -277,17 +302,21 @@ def test_wallet_send(
                 assert r.label == "Change of: 1, 2"
 
                 widget = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(0)
-                assert isinstance(widget, HorizontalImportExportAll)
-                signer_ui = widget.wallet_importers.signer_ui
-                assert isinstance(signer_ui, SignerUI)
-                for button in signer_ui.findChildren(QPushButton):
-                    assert button.text() == f"{qt_wallet.wallet.id}"
-                    assert button.isVisible()
-                    button.click()
-
-                    # Ensure a signature is added before proceeding.
-                    with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
-                        button.click()
+                assert isinstance(widget, TxSigningDeviceList)
+                assert len(widget.cards) == 1
+                _assert_card_matches_hardware_signer(widget.cards[0], HardwareSigners.krux)
+                importers = list(ui_tx_viewer.tx_singning_steps.signature_importer_dict.values())[0]
+                seed_importer = next(
+                    importer for importer in importers if isinstance(importer, SignatureImporterWallet)
+                )
+                seed_card = next(card for card in widget.cards if card.device.has_seed)
+                seed_card.expand()
+                seed_button = next(
+                    button for button in seed_card.findChildren(QPushButton) if button.text() == "Seed"
+                )
+                assert seed_button.isEnabled()
+                with qtbot.waitSignal(seed_importer.signal_signature_added, timeout=10_000):
+                    seed_button.click()
 
                 shutter.save(main_window)
 
@@ -297,8 +326,7 @@ def test_wallet_send(
                 """Send tx."""
                 shutter.save(main_window)
 
-                ui_tx_viewer = main_window.tab_wallets.currentNode().data
-                assert isinstance(ui_tx_viewer, UITx_Viewer)
+                ui_tx_viewer = _visible_tx_viewer(main_window)
                 assert len(ui_tx_viewer.recipients.recipients) == 3
 
                 # Re-assert recipients before broadcast to avoid regressions.

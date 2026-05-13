@@ -43,6 +43,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
+from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -204,6 +205,7 @@ class SignatureImporterWallet(AbstractSignatureImporter):
             loop_in_thread=loop_in_thread,
             close_all_video_widgets=close_all_video_widgets,
         )
+        self.wallet = wallet
         self.wallet_id = wallet.id
 
         receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
@@ -425,8 +427,13 @@ class SignatureImporterUSB(SignatureImporterQR):
         )
         self.usb_gui = USBGui(self.network, loop_in_thread=loop_in_thread)
 
-    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
-        """Sign."""
+    def sign(
+        self,
+        psbt: bdk.Psbt,
+        sign_options: bdk.SignOptions | None = None,
+        autoscan_mode: AutoScanMode = AutoScanMode.USB,
+    ):
+        self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             signed_psbt = self.usb_gui.sign(psbt)
             if signed_psbt:
