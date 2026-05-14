@@ -244,6 +244,16 @@ def test_descriptor_ui_existing_wallet_mode_locks_descriptor_changes(
         protowallet=protowallet,
     )
     try:
+        emitted_wallet_names: list[str] = []
+        descriptor_ui.signal_wallet_name_changed.connect(emitted_wallet_names.append)
+
+        assert descriptor_ui.label_wallet_name.parent() == descriptor_ui.box_wallet_type
+        assert descriptor_ui.edit_wallet_name.parent() == descriptor_ui.box_wallet_type
+        assert descriptor_ui.edit_wallet_name.text() == wallet.id
+        assert descriptor_ui.edit_wallet_name.isEnabled()
+        assert descriptor_ui.edit_wallet_name.isHidden() is False
+        descriptor_ui.edit_wallet_name.setText(f"{wallet.id}-edited")
+        assert emitted_wallet_names == []
         assert descriptor_ui.edit_descriptor.edit.input_field.isReadOnly()
         assert descriptor_ui.edit_descriptor.import_button.isHidden()
         assert descriptor_ui.edit_descriptor.export_button.isVisible()

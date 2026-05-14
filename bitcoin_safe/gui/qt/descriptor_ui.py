@@ -161,8 +161,7 @@ class DescriptorUI(QWidget):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.label_signers.setText(self.tr("Required Signers"))
-        if self.wallet is None:
-            self.label_wallet_name.setText(self.tr("Wallet name"))
+        self.label_wallet_name.setText(self.tr("Wallet name"))
         self.label_gap.textLabel.setText(self.tr("Scan Addresses ahead"))
         self.label_gap.set_icon_as_help(
             tooltip=self.tr(
@@ -265,16 +264,14 @@ class DescriptorUI(QWidget):
             combo_index = self.comboBox_address_type.findData(desired_address_type)
 
         blockers = [
+            QSignalBlocker(self.edit_wallet_name),
             QSignalBlocker(self.comboBox_address_type),
             QSignalBlocker(self.spin_req),
             QSignalBlocker(self.spin_signers),
             QSignalBlocker(self.spin_gap),
         ]
-        if self.wallet is None:
-            blockers.append(QSignalBlocker(self.edit_wallet_name))
         try:
-            if self.wallet is None:
-                self._set_text_if_different(self.edit_wallet_name, desired_wallet_name)
+            self._set_text_if_different(self.edit_wallet_name, desired_wallet_name)
             if combo_index >= 0:
                 self._set_combo_index_if_different(self.comboBox_address_type, combo_index)
             self._set_spin_box_state(
@@ -325,8 +322,7 @@ class DescriptorUI(QWidget):
         logger.debug("set_protowallet_from_keystore_ui")
 
         # these wallet settings must come first
-        if self.wallet is None:
-            self.protowallet.id = self.get_wallet_id_from_ui()
+        self.protowallet.id = self.get_wallet_id_from_ui()
         m, n = self.get_m_of_n_from_ui()
         self.protowallet.set_number_of_keystores(n)
         self.protowallet.set_threshold(m)
@@ -389,6 +385,7 @@ class DescriptorUI(QWidget):
         is_existing_wallet = self.wallet is not None
 
         self.label_address_type.setHidden(False)
+        self.label_wallet_name.setHidden(False)
         self.spin_signers.setHidden(False)
         self.spin_req.setHidden(False)
         self.label_signers.setHidden(False)
@@ -409,6 +406,7 @@ class DescriptorUI(QWidget):
             del blockers
 
         self.comboBox_address_type.setEnabled(not is_existing_wallet)
+        self.edit_wallet_name.setEnabled(True)
         self.spin_req.setEnabled(not is_existing_wallet)
         self.spin_signers.setEnabled(not is_existing_wallet)
         self.spin_gap.setEnabled(True)
@@ -460,13 +458,13 @@ class DescriptorUI(QWidget):
 
         # box_signers_with_slider
         row = 0
+        self.label_wallet_name = QLabel(self.box_wallet_type)
+        self.edit_wallet_name = QLineEdit(self.box_wallet_type)
         if self.wallet is None:
-            self.label_wallet_name = QLabel()
-            self.edit_wallet_name = QLineEdit()
             self.edit_wallet_name.textChanged.connect(self.signal_wallet_name_changed.emit)
-            form_wallet_type.addWidget(self.label_wallet_name, row, 0)
-            form_wallet_type.addWidget(self.edit_wallet_name, row, 1, 1, 3)
-            row += 1
+        form_wallet_type.addWidget(self.label_wallet_name, row, 0)
+        form_wallet_type.addWidget(self.edit_wallet_name, row, 1, 1, 3)
+        row += 1
 
         self.label_signers = QLabel()
 

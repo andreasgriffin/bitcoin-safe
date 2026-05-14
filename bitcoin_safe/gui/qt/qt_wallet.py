@@ -905,22 +905,42 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """On qtwallet apply setting changes."""
         self.save()
 
+        requested_wallet_id = self.wallet_descriptor_ui.get_wallet_id_from_ui()
+        if not requested_wallet_id:
+            Message(self.tr("Please choose a wallet name"), type=MessageType.Warning, parent=self)
+            return
+
         current_protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_protowallet_from_ui()
         updated_protowallet = self.wallet_descriptor_ui.protowallet
 
-        differences = current_protowallet.get_differences(updated_protowallet)
+        rename_requested = requested_wallet_id != self.wallet.id
+        updated_protowallet.id = current_protowallet.id
+        try:
+            differences = current_protowallet.get_differences(updated_protowallet)
+        finally:
+            updated_protowallet.id = requested_wallet_id
+
         worst = differences.worst()
-        if not worst:
+        if not worst and not rename_requested:
             Message(self.tr("No changes to apply."), parent=self)
+            return
+        if not worst:
+            if not self.change_wallet_id(requested_wallet_id):
+                return
+            self.save()
+            Message(self.tr("Changes applied."), parent=self)
             return
 
         if worst.type == WalletDifferenceType.NoRescan:
+            if rename_requested and not self.change_wallet_id(requested_wallet_id):
+                return
             self._apply_no_impact_setting_changes(updated_protowallet)
             self.save()
             Message(self.tr("Changes applied."), parent=self)
             return
-        elif worst.type == WalletDifferenceType.NeedsRescan:
+
+        if worst.type == WalletDifferenceType.NeedsRescan:
             pass
         elif worst.type == WalletDifferenceType.ImpactOnAddresses:
             if not question_dialog(
@@ -937,6 +957,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             loop_in_thread=self.loop_in_thread,
             initialization_tips=self.wallet.tips,
         )
+        if rename_requested and not self.change_wallet_id(requested_wallet_id):
+            return
         self._recreate_qt_wallet(new_wallet=new_wallet)
 
     def _apply_no_impact_setting_changes(self, updated_protowallet: ProtoWallet) -> None:
@@ -989,6 +1011,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def change_wallet_id(self, new_id: str) -> Path | None:
         """Change wallet id."""
+        new_id = new_id.strip()
+        if not new_id:
+            Message(self.tr("Please choose a wallet name"), type=MessageType.Warning, parent=self)
+            return None
+
+        if new_id == self.wallet.id:
+            return Path(self.file_path)
+
         old_file_path = self.file_path
 
         if not os.path.exists(self.config.wallet_dir):
