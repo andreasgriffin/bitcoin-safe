@@ -644,13 +644,9 @@ class KeyStoreUI(CardBase):
 
     def _show_seed_input(self) -> bool:
         """Whether the seed row should be visible for the current state and network."""
-        if DEMO_MODE:
+        if DEMO_MODE or (not self._seed_supported):
             return False
-        if not self._seed_supported:
-            return False
-        if self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly):
-            return True
-        return self.state == KeyStoreUiState.Empty and self.network != bdk.Network.BITCOIN
+        return True
 
     def _apply_state(self) -> None:
         self._state = self._determine_state()
