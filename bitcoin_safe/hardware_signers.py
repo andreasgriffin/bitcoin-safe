@@ -261,6 +261,18 @@ class HardwareSigners:
         icon_filename="passport-icon.svg",
         screenshot_name="passport",
     )
+    passport_prime = HardwareSigner(
+        id="passport_prime",
+        brand_name="Foundation",
+        display_name="Passport Prime",
+        usb_preferred=False,
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
+        descriptor_export_types=[DescriptorExportTypes.default],
+        usb=FeatureLevel.not_capable,
+        info_url=_signer_info_url("passport-prime"),
+        icon_filename="passport-prime-icon.svg",
+        screenshot_name="passport-prime",
+    )
     keystone = HardwareSigner(
         id="keystone",
         brand_name="Keystone",
