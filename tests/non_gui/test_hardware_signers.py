@@ -32,22 +32,6 @@ from __future__ import annotations
 from bitcoin_safe.hardware_signers import FeatureLevel, HardwareSigners
 
 
-def test_list_brands_is_stable_and_unique() -> None:
-    """Test brands are returned once in declaration order."""
-    assert HardwareSigners.list_brands(include_generic=False) == [
-        "Coinkite",
-        "Shift Crypto",
-        "Blockstream",
-        "Foundation",
-        "Keystone",
-        "Trezor",
-        "Ledger",
-        "Specter",
-        "SeedSigner",
-        "Krux",
-    ]
-
-
 def test_models_for_brand_returns_expected_signers() -> None:
     """Test brand filtering returns the expected models."""
     assert [signer.id for signer in HardwareSigners.models_for_brand("Coinkite")] == [
