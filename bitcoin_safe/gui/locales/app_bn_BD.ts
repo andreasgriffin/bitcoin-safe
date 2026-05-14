@@ -1144,8 +1144,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. ব্যাকআপ শিট প্রিন্ট করুন</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>ব্যাকআপ রিকভারি শিট (প্রয়োজনীয়)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1164,6 +1164,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>অভিনন্দন, আপনার ওয়ালেট প্রস্তুত। এখন এটি সুরক্ষিত করুন!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>২টি পৃথক স্থানে বিতরণ করুন</translation>
 		</message>
@@ -1174,23 +1179,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>একাধিক অবস্থান একই জায়গায় সংরক্ষণ করবেন না।</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>একই জায়গায় একাধিক স্থান সংরক্ষণ করবেন না।</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>সাইনিং ডিভাইস এবং seed শব্দসহ ব্যাকআপ শিট একই জায়গায় সংরক্ষণ করবেন না।</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>প্রতিটি স্থান অফলাইন এবং শারীরিকভাবে নিরাপদ হতে হবে।</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>সবচেয়ে খারাপ পরিস্থিতিতে আপনার তহবিল পুনরুদ্ধার করতে একটি নিরাপদ ব্যাকআপ তৈরি করেছেন তা নিশ্চিত করতে নিচের ধাপগুলো অনুসরণ করুন।</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1209,6 +1199,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>প্রিন্ট করার পর, আপনার ডিভাইস থেকে seed phrase হাতে লিখে শিটে লিখুন, অথবা নিশ্চিত করুন যে এটি এর সঙ্গে সংরক্ষিত আলাদা কাগজে ইতিমধ্যেই লেখা আছে।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>স্থান 2</translation>
 		</message>
@@ -1219,23 +1214,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>এই সাইনারে seed শব্দ দেখার নির্দেশনা খুলুন।</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>প্রিন্ট করার জন্য অনুগ্রহ করে অন্তত একটি ব্যাকআপ শিট নির্বাচন করুন।</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>ব্যাকআপ শিট প্রিন্ট করুন (প্রয়োজনীয়)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>আপনি যে ডিভাইসগুলোর মালিক এবং নিয়ন্ত্রণ করেন, সেগুলোর সঙ্গে যুক্ত রিকভারি শিটগুলো প্রিন্ট করুন।</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDF প্রিন্ট করুন এবং প্রতিটি ব্যাকআপ শিটে seed শব্দ সংযুক্ত করুন।</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>ব্যাকআপ শিট প্রিন্ট করুন এবং সবকিছু আলাদা, নিরাপদ স্থানে সংরক্ষণ করুন।</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>রিকভারি Signer {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1244,13 +1234,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>শিট {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>স্বাক্ষরকারী ডিভাইস</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>স্বাক্ষরকারী ডিভাইস</translation>
+			<source>Signer {i}</source>
+			<translation>Signer {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1264,11 +1254,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>সাইনিং ডিভাইস এবং seed শব্দসহ ব্যাকআপ শিট আলাদা নিরাপদ স্থানে সংরক্ষণ করুন।</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>ভল্ট {letter}</translation>
 		</message>
@@ -1279,13 +1264,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>seed শব্দ দেখুন</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>হ্যাঁ, আমি নিশ্চিত করছি যে seed শব্দগুলো প্রিন্টআউটের সঙ্গে সংযুক্ত আছে</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>আপনার ওয়ালেট থেকে ব্যয় করতে আপনাকে {n}টি অবস্থানের মধ্যে {m}টিতে যেতে হবে।</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>আপনার ওয়ালেট তার রিকভারি শিট দ্বারা সুরক্ষিত, যা আপনার হার্ডওয়্যার সাইনার যেখানে আছে সেখান থেকে আলাদা কোনো স্থানে সংরক্ষণ করা উচিত। এটি প্রিন্ট করুন, seed সংযুক্ত করুন এবং নিরাপদ, অ্যাক্সেস-নিয়ন্ত্রিত স্থানে সংরক্ষণ করুন। seed শব্দগুলোর মাধ্যমে আপনার ওয়ালেটের ওপর আপনার পূর্ণ নিয়ন্ত্রণ থাকে।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>আপনার ওয়ালেট {n}টি ব্যাকআপ শিট দ্বারা সুরক্ষিত, যেগুলোর সঙ্গে seeds সংযুক্ত এবং ভিন্ন ভিন্ন স্থানে সংরক্ষিত। সেগুলো প্রিন্ট করুন এবং নিরাপদ, অ্যাক্সেস-নিয়ন্ত্রিত স্থানে রাখুন। সেগুলোর মধ্যে {m}টি দিয়ে আপনার ওয়ালেটের ওপর আপনার পূর্ণ নিয়ন্ত্রণ থাকে।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{total} এর মধ্যে {number}</translation>
 		</message>
 	</context>
 	<context>
@@ -1808,8 +1803,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe-এ ওয়ালেট তথ্য ইম্পোর্ট করুন</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>হার্ডওয়্যার সাইনারের তথ্য Bitcoin Safe-এ আমদানি করুন</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2128,6 +2123,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>৮ সংখ্যার ফিঙ্গারপ্রিন্ট seed শনাক্ত করে। ভিন্ন seeds এবং সাইনিং ডিভাইস ট্র্যাক রাখতে আপনি এটি হার্ডওয়্যার সাইনারের ওপর লিখতে পারেন।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>লেনদেন (PSBTs) সঠিকভাবে নির্মাণের জন্য key origin প্রয়োজন এবং এটি xPub-এর সঙ্গে সংযুক্ত।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed হলো সেই গোপন বিষয় যা লেনদেন স্বাক্ষর করতে সক্ষম করে। একক স্বাক্ষরের ওয়ালেটের জন্য এটি তহবিলের ওপর পূর্ণ নিয়ন্ত্রণ দেয়।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPub origin {key_origin} এবং xPub একসাথে সম্পর্কিত। অনুগ্রহ করে সঠিক xPub origin জোড়া নির্বাচন করুন।</translation>
 		</message>
@@ -2140,6 +2154,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>ওয়ালেটের ঠিকানাগুলো xPub থেকে উদ্ভূত হয়।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3066,8 +3085,13 @@ so it is typically about {minutes} minutes behind the tip.</source>
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>তৈরি করুন</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin সম্পর্কে ইতিমধ্যেই পরিচিত? আত্মবিশ্বাসের সঙ্গে এমন একটি ওয়ালেট সেট আপ করুন যা বাস্তব মূল্য ধরে রাখে এবং স্থানান্তর করে।</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>দীর্ঘমেয়াদি সংরক্ষণের জন্য সেরা</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3076,28 +3100,88 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>বাস্তব bitcoin-এ যাওয়ার আগে নিরাপদ পরিবেশে অনুশীলন করুন।&lt;br&gt;• একটি ডেমো ওয়ালেট দিয়ে অ্যাপটি ঘুরে দেখুন&lt;br&gt;• এমন টেস্ট কয়েন ব্যবহার করুন যার কোনো আর্থিক মূল্য নেই&lt;br&gt;• শেখা, পরীক্ষা করা এবং নিরাপদে ভুল করার জন্য আদর্শ&lt;br&gt;&lt;i&gt;Signet নেটওয়ার্ক&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Playground অন্বেষণ করুন</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>নিরাপদ প্লেগ্রাউন্ড</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>ডেমো ওয়ালেট দিয়ে অন্বেষণ করুন</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>নিরাপদ ওয়ালেট</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>আপনার seed phrase নিরাপদে রাখুন</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>আপনি যে Bitcoin নেটওয়ার্ক ব্যবহার করতে চান সেটি নির্বাচন করুন</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>নিরাপদে শিখুন, ঝুঁকিমুক্ত</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>বাস্তব তহবিলের জন্য প্রস্তুত হলে বাস্তব Bitcoin নেটওয়ার্ক ব্যবহার করুন।&lt;br&gt;• বাস্তব bitcoin পাঠান এবং গ্রহণ করুন&lt;br&gt;• আপনার দীর্ঘমেয়াদি ওয়ালেট সেটআপের জন্য সেরা&lt;br&gt;• লেনদেনের বাস্তব মূল্য এবং বাস্তব পরিণতি রয়েছে&lt;br&gt;&lt;i&gt;Mainnet নেটওয়ার্ক&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>বাস্তব তহবিল পরিচালনা করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>ঝুঁকিমুক্ত পরিবেশে অনুশীলন করুন এবং সবকিছু ঠিক কীভাবে কাজ করে তা দেখুন। টেস্ট কয়েন ব্যবহার করে পাঠানো, গ্রহণ করা এবং ফি পরিবর্তন করার চেষ্টা করুন, যা হারালেও আপনার আফসোস হবে না।</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>বাস্তব sound money (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>বাস্তব bitcoin পাঠান এবং গ্রহণ করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>একটি ওয়ালেট সেট আপ করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>অন্বেষণ শুরু করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>sound money দিয়ে লেনদেন শুরু করুন অথবা নিরাপদ playground-এ শিখুন। যেভাবেই হোক, আপনি পরে সবসময় আরেকটি ওয়ালেট তৈরি করতে পারবেন।</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>টেস্ট কয়েন (tBTC)-এর কোনো মূল্য নেই</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>টেস্ট কয়েন, কোনো আর্থিক মূল্য নেই</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>লেনদেন স্থায়ী</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet টেস্ট নেটওয়ার্ক ব্যবহার করে</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>onchain Mainnet নেটওয়ার্ক ব্যবহার করে</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>আপনি কোথা থেকে শুরু করতে চান?</translation>
 		</message>
 	</context>
 	<context>
@@ -3854,8 +3938,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Descriptor</translation>
+			<source>Dashboard</source>
+			<translation>ড্যাশবোর্ড</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>বিস্তারিত</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3876,11 +3965,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>লেবেল এক্সপোর্ট করুন</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>ইতিহাস</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3933,6 +4017,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>পাসওয়ার্ড ভুল</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>অনুগ্রহ করে একটি wallet-এর নাম নির্বাচন করুন</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4142,11 +4231,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>সম্পন্ন - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>এখনও কোনো ওয়ালেট সেটআপ হয়নি</translation>
 		</message>
@@ -4163,11 +4247,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>এই ওয়ালেটের ১টি ঠিকানায় একটি &lt;b&gt;ছোট&lt;/b&gt; পরিমাণ ({test_amount}-এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে ব্যয় করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে ব্যয় করা এবং সব স্বাক্ষরকারী পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;। &lt;br&gt; &lt;br&gt; &lt;b&gt;এখনও ওয়ালেটে বড় অঙ্কের তহবিল পাঠাবেন না। অনুগ্রহ করে আগে সব self-send পরীক্ষা সম্পূর্ণ করুন!&lt;/b&gt;</translation>
+			<translation>এই ওয়ালেটের ১টি ঠিকানায় &lt;b&gt;ছোট&lt;/b&gt; পরিমাণ ({test_amount}-এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে খরচ করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে খরচ করা এবং সব সাইনার পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;।</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4178,6 +4259,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>স্বীকৃত লেনদেন</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>ওয়ালেটে তহবিল পৌঁছানোর অপেক্ষায়...</translation>
 		</message>
 	</context>
 	<context>
@@ -4461,18 +4547,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>সম্পন্ন - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>এই কার্ডে লেনদেনটি তৈরি করুন।</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>মুলতুবি - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4736,6 +4812,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} পুনরায় ইনস্টল করুন</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>{available} এ আপডেট করুন</translation>
 		</message>
@@ -4780,6 +4861,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>ইনস্টল করা প্লাগইন আবার পরীক্ষা করুন</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>সম্পন্ন</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>বর্তমান</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>ভবিষ্যতের অসম্পূর্ণ ধাপ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>ধাপ {current} এর {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5074,13 +5177,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n}টি স্বাক্ষর তৈরি ও সংগ্রহ করুন</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>ইনপুট {i}: {sighash_type} ফ্ল্যাগ দিয়ে স্বাক্ষরিত, স্বাক্ষর: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>ইনপুট {i}: {sighash_type} ফ্ল্যাগ দিয়ে স্বাক্ষরিত, স্বাক্ষর: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>স্বাক্ষর {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -5996,11 +6099,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>নিরাপদ স্থানে রাখুন</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Receive Test</translation>
 		</message>
@@ -6013,6 +6111,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>লেনদেনটি পর্যালোচনা করুন এবং প্রস্তুত হলে তৈরি করুন।</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>আপনার কীসমূহ সুরক্ষিত করুন</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6192,8 +6295,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>সমাপ্ত করুন</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>শেষ করুন এবং ড্যাশবোর্ডে যান</translation>
 		</message>
 		<name>basetab</name>
 		<message>

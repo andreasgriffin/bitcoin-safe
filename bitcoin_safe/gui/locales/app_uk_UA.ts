@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. Надрукувати резервні аркуші</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Аркуш резервного відновлення (обов’язково)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Вітаємо, ваш гаманець готовий. Тепер захистіть його!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>Розподілити по 2 окремих місцях</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>Не зберігайте кілька місць в одному місці.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>Не зберігайте кілька місць в одному й тому самому місці.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>Не зберігайте пристрій підпису та резервний аркуш із seed-словами в одному місці.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>Кожне місце має бути офлайн і фізично захищеним.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Виконайте наведені нижче кроки, щоб переконатися, що ви створили безпечну резервну копію для відновлення своїх коштів у найгіршому випадку.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Після друку вручну перепишіть seed-фразу зі свого пристрою на аркуш або підтвердьте, що вона вже записана на окремому аркуші паперу, який зберігається разом із ним.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>Місце 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>Відкрити інструкції для перегляду seed-слів на цьому підписувачі.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Будь ласка, виберіть принаймні один резервний аркуш для друку.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>Надрукувати резервні аркуші (обов’язково)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Роздрукуйте аркуші відновлення, пов’язані з пристроями, якими ви володієте та керуєте.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>Надрукуйте PDF і прикріпіть seed-слова до кожного резервного аркуша.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>Надрукуйте резервні аркуші та зберігайте все в окремих безпечних місцях.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>Пристрій відновлення {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>Аркуш {number} з {total}</translation>
+			<source>Signer device</source>
+			<translation>Пристрій підписувача</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>Пристрій підписувача</translation>
+			<source>Signer {i}</source>
+			<translation>Підписувач {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>Зберігайте пристрій підпису та резервний аркуш із seed-словами в окремих безпечних місцях.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Сховище {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>Переглянути seed-слова</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Так, я підтверджую, що seed-слова додані до роздруківки</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>Щоб витрачати з вашого гаманця, потрібно піти до {m} з {n} місць.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Ваш гаманець захищений його аркушем відновлення, який слід зберігати в іншому місці, ніж ваш апаратний підписувач. Роздрукуйте його, додайте seed і зберігайте в безпечному місці з контрольованим доступом. Із seed-словами ви маєте повний контроль над своїм гаманцем.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Ваш гаманець захищений {n} резервними аркушами з доданими seeds, що зберігаються в різних місцях. Роздрукуйте їх і розмістіть у безпечних місцях з контрольованим доступом. Маючи {m} з них, ви маєте повний контроль над своїм гаманцем.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} з {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1808,8 +1803,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Імпортуйте інформацію гаманця в Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Імпортувати інформацію апаратного підписувача в Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2128,6 +2123,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8-значний відбиток ідентифікує seed. Ви можете записати його на апаратному підписувачі, щоб відстежувати різні seeds і пристрої підпису.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>Походження ключа потрібне для правильного створення транзакцій (PSBTs) і пов’язане з xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>Seed — це секрет, який дає змогу підписувати транзакції. Для гаманця з одним підписом він надає повний контроль над коштами.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>Походження xPub {key_origin} і сам xPub належать одне одному. Виберіть правильну пару походження xPub.</translation>
 		</message>
@@ -2140,6 +2154,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Адреси гаманця походять від xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3071,8 +3090,13 @@ median-time-past — це медіанна мітка часу останніх 
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>Створити</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Уже знайомі з Bitcoin? Налаштуйте гаманець, який упевнено зберігає та переміщує реальну цінність.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Найкраще для довгострокового зберігання</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3081,28 +3105,88 @@ median-time-past — це медіанна мітка часу останніх 
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>Практикуйтеся в безпечному середовищі, перш ніж переходити до справжнього bitcoin.&lt;br&gt;• Ознайомтеся з застосунком за допомогою демо-гаманця&lt;br&gt;• Використовуйте тестові монети, які не мають грошової вартості&lt;br&gt;• Ідеально для навчання, експериментів і безпечних помилок&lt;br&gt;&lt;i&gt;Мережа Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Дослідити Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>Безпечний майданчик</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>Дослідити з демо-гаманцем</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>Безпечний гаманець</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>Зберігайте свою seed-фразу в безпеці</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>Виберіть мережу Bitcoin, яку хочете використовувати</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>Навчайтеся безпечно, без ризику</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>Використовуйте справжню мережу Bitcoin, коли будете готові до реальних коштів.&lt;br&gt;• Надсилайте й отримуйте справжній bitcoin&lt;br&gt;• Найкраще для довгострокового налаштування вашого гаманця&lt;br&gt;• Транзакції мають реальну цінність і реальні наслідки&lt;br&gt;&lt;i&gt;Мережа Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>Керувати Реальними Коштами</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Практикуйтеся в середовищі без ризику й точно побачте, як усе працює. Спробуйте надсилати, отримувати та змінювати комісії за допомогою тестових монет, які можна втратити без жалю.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Справжні тверді гроші (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Надсилайте й отримуйте справжній bitcoin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Налаштувати гаманець</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Почати дослідження</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Почніть здійснювати транзакції з твердими грошима або навчайтеся в безпечному playground. У будь-якому разі ви завжди зможете створити інший гаманець пізніше.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Тестові монети (tBTC) не мають цінності</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Тестові монети, без грошової цінності</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Транзакції є постійними</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Використовує тестову мережу Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Використовує onchain-мережу Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>З чого ви хотіли б почати?</translation>
 		</message>
 	</context>
 	<context>
@@ -3863,8 +3947,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Дескриптор</translation>
+			<source>Dashboard</source>
+			<translation>Панель керування</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Подробиці</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3885,11 +3974,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>Експорт міток</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Історія</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3942,6 +4026,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>Неправильний пароль</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Будь ласка, оберіть назву гаманця</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4153,11 +4242,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Завершено - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>Налаштування гаманця ще немає</translation>
 		</message>
@@ -4174,11 +4258,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця. &lt;br&gt;&lt;br&gt; &lt;b&gt;Навіщо?&lt;/b&gt; &lt;br&gt; Щоб дізнатися, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця. &lt;br&gt; Тому перед надсиланням значної суми Bitcoin у гаманець &lt;b&gt;вкрай важливо&lt;/b&gt; здійснити витрачання з гаманця та протестувати всіх підписувачів. &lt;br&gt; &lt;br&gt; &lt;b&gt;ЩЕ НЕ надсилайте великі кошти в гаманець. Спочатку завершіть усі тести самонадсилання!&lt;/b&gt;</translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця. &lt;br&gt;&lt;br&gt; &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця. &lt;br&gt; Тому перед тим, як надіслати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця та протестувати всіх підписувачів.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4189,6 +4270,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>Розпізнана транзакція</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Очікування надходження коштів у гаманець...</translation>
 		</message>
 	</context>
 	<context>
@@ -4473,18 +4559,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Завершено - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>Створіть транзакцію в цій картці.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>В очікуванні - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4748,6 +4824,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>Перевстановити {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>Оновити до {available}</translation>
 		</message>
@@ -4792,6 +4873,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>Повторно перевірити встановлені плагіни</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Завершено</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Поточний</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Майбутні незавершені кроки</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Крок {current} з {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5087,13 +5190,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Створити та зібрати {n}-й підпис</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Вхід {i}: Підписано з прапором {sighash_type} , Підпис: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Вхід {i}: Підписано з прапором {sighash_type} , Підпис: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Підпис {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6014,11 +6117,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Розмістити у безпечних місцях</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Тест отримання</translation>
 		</message>
@@ -6031,6 +6129,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>Перегляньте транзакцію та створіть її, коли будете готові.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Захистіть свої ключі</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6210,8 +6313,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>Завершити</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>Завершити й перейти до Панелі керування</translation>
 		</message>
 		<name>basetab</name>
 		<message>

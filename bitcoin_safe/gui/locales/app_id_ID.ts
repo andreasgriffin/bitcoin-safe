@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. Cetak lembar cadangan</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Lembar Pemulihan Cadangan (wajib)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Selamat, dompet Anda sudah siap. Sekarang lindungi dompet Anda!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>Sebarkan ke 2 lokasi terpisah</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>Jangan simpan beberapa lokasi di tempat yang sama.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>Jangan simpan beberapa lokasi di tempat yang sama.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>Jangan simpan perangkat penanda tangan dan lembar cadangan dengan kata seed di tempat yang sama.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>Setiap lokasi harus offline dan aman secara fisik.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Ikuti langkah-langkah di bawah ini untuk memastikan Anda membuat cadangan yang aman guna memulihkan dana Anda dalam skenario terburuk.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Setelah dicetak, tulis tangan frasa seed dari perangkat Anda pada lembar tersebut, atau konfirmasikan bahwa frasa tersebut sudah ditranskripsikan pada selembar kertas terpisah yang disimpan bersamanya.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>Lokasi 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>Buka instruksi untuk melihat kata seed pada penanda tangan ini.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Silakan pilih setidaknya satu lembar cadangan untuk dicetak.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>Cetak lembar cadangan (wajib)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Cetak lembar pemulihan yang terkait dengan perangkat yang Anda miliki dan kendalikan.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>Cetak PDF dan lampirkan kata seed ke setiap lembar cadangan.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>Cetak lembar cadangan dan simpan semuanya di tempat yang terpisah dan aman.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>Penanda tangan Pemulihan {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>Lembar {number} dari {total}</translation>
+			<source>Signer device</source>
+			<translation>Perangkat penanda tangan</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>Perangkat penanda tangan</translation>
+			<source>Signer {i}</source>
+			<translation>Penanda tangan {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>Simpan perangkat penanda tangan dan lembar cadangan dengan kata seed di lokasi aman yang terpisah.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Brankas {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>Lihat kata seed</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Ya, saya mengonfirmasi bahwa kata-kata seed dilampirkan pada hasil cetak</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>Anda perlu pergi ke {m} dari {n} lokasi untuk membelanjakan dari dompet Anda.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Dompet Anda dilindungi oleh lembar pemulihannya, yang harus disimpan di tempat yang berbeda dari tempat penanda tangan perangkat keras Anda berada. Cetak, lampirkan seed, dan simpan di lokasi yang aman serta terkendali aksesnya. Dengan kata-kata seed, Anda memiliki kendali penuh atas dompet Anda.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Dompet Anda dilindungi oleh {n} lembar cadangan dengan seed terlampir yang disimpan di lokasi berbeda. Cetak semuanya dan tempatkan di lokasi yang aman serta terkendali aksesnya. Dengan {m} di antaranya, Anda memiliki kendali penuh atas dompet Anda.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} dari {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1807,8 +1802,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Impor informasi dompet ke Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Impor informasi penanda tangan perangkat keras ke Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2127,6 +2122,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>Sidik jari 8 digit mengidentifikasi seed. Anda dapat menuliskannya pada penanda tangan perangkat keras untuk melacak seed dan perangkat penandatangan yang berbeda.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>Asal kunci diperlukan untuk menyusun transaksi (PSBT) dengan benar dan terhubung ke xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>Seed adalah rahasia yang memungkinkan penandatanganan transaksi. Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>Asal xPub {key_origin} dan xPub saling terkait. Harap pilih pasangan asal xPub yang benar.</translation>
 		</message>
@@ -2139,6 +2153,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Alamat dompet diturunkan dari xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3070,8 +3089,13 @@ sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>Buat</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Sudah akrab dengan Bitcoin? Siapkan dompet yang menyimpan dan memindahkan nilai nyata dengan percaya diri.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Terbaik untuk penyimpanan jangka panjang</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3080,28 +3104,88 @@ sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>Berlatihlah di lingkungan yang aman sebelum beralih ke bitcoin sungguhan.&lt;br&gt;• Jelajahi aplikasi dengan dompet demo&lt;br&gt;• Gunakan koin uji yang tidak memiliki nilai moneter&lt;br&gt;• Ideal untuk belajar, bereksperimen, dan membuat kesalahan dengan aman&lt;br&gt;&lt;i&gt;Jaringan Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Jelajahi Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>Safe Playground</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>Jelajahi dengan dompet demo</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>Dompet Aman</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>Jaga frasa seed Anda tetap aman</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>Pilih jaringan Bitcoin yang ingin Anda gunakan</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>Belajar dengan aman, tanpa risiko</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>Gunakan jaringan Bitcoin sungguhan saat Anda siap untuk dana sungguhan.&lt;br&gt;• Kirim dan terima bitcoin sungguhan&lt;br&gt;• Terbaik untuk pengaturan dompet jangka panjang Anda&lt;br&gt;• Transaksi memiliki nilai nyata dan konsekuensi nyata&lt;br&gt;&lt;i&gt;Jaringan Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>Kelola Dana Nyata</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Berlatihlah di lingkungan tanpa risiko dan lihat persis bagaimana semuanya bekerja. Cobalah mengirim, menerima, dan mengubah biaya menggunakan koin uji yang dapat Anda hilangkan tanpa penyesalan.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Uang sehat yang nyata (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Kirim dan terima bitcoin nyata</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Siapkan Dompet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Mulai Menjelajah</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Mulailah bertransaksi dengan uang sehat atau belajar di playground yang aman. Apa pun pilihannya, Anda selalu dapat membuat dompet lain nanti.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Koin uji (tBTC) tidak memiliki nilai</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Koin uji, tidak bernilai moneter</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Transaksi bersifat permanen</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Menggunakan jaringan uji Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Menggunakan jaringan onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Di mana Anda ingin memulai?</translation>
 		</message>
 	</context>
 	<context>
@@ -3862,8 +3946,13 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Deskriptor</translation>
+			<source>Dashboard</source>
+			<translation>Dasbor</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Detail</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3884,11 +3973,6 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		<message>
 			<source>Export labels</source>
 			<translation>Ekspor label</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Riwayat</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3941,6 +4025,11 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		<message>
 			<source>Password incorrect</source>
 			<translation>Kata sandi salah</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Harap pilih nama dompet</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4152,11 +4241,6 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Selesai - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>Belum ada pengaturan dompet</translation>
 		</message>
@@ -4173,11 +4257,8 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini. &lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. &lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pengeluaran dari dompet dan menguji semua penanda tangan. &lt;br&gt; &lt;br&gt; &lt;b&gt;JANGAN kirim dana besar ke dompet dulu. Harap selesaikan semua pengujian kirim-ke-diri sendiri terlebih dahulu!&lt;/b&gt;</translation>
+			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini. &lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. &lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang substansial ke dompet, &lt;b&gt;sangat penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4188,6 +4269,11 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>Transaksi Dikenali</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Menunggu dana masuk ke dompet...</translation>
 		</message>
 	</context>
 	<context>
@@ -4472,18 +4558,8 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Selesai - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>Buat transaksi di kartu ini.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>Tertunda - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4747,6 +4823,11 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>Instal ulang {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>Perbarui ke {available}</translation>
 		</message>
@@ -4791,6 +4872,28 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>Periksa Ulang Plugin Terpasang</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Selesai</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Saat ini</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Langkah mendatang yang belum selesai</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Langkah {current} dari {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5086,13 +5189,13 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Buat dan kumpulkan tanda tangan {n}.</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Input {i}: Ditandatangani dengan flag {sighash_type}, Tanda tangan: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Input {i}: Ditandatangani dengan flag {sighash_type}, Tanda tangan: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Tanda tangan {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6013,11 +6116,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Tempatkan di lokasi aman</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Tes Penerimaan</translation>
 		</message>
@@ -6030,6 +6128,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>Tinjau transaksi dan buat saat Anda siap.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Amankan Kunci Anda</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6209,8 +6312,8 @@ Negara: {country}</translation>
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>Selesai</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>Selesai dan pergi ke Dasbor</translation>
 		</message>
 		<name>basetab</name>
 		<message>

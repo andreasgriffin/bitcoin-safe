@@ -1141,8 +1141,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. အရန်စာရွက်များ ပရင့်ထုတ်ပါ</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>အရန်သိမ်းဆည်းမှု ပြန်လည်ရယူရေးစာရွက် (လိုအပ်သည်)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1161,6 +1161,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>ဂုဏ်ယူပါတယ်၊ သင့် wallet အဆင်သင့်ဖြစ်ပါပြီ။ အခုတော့ ၎င်းကို ကာကွယ်ပါ!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>နေရာ ၂ ခုသို့ ခွဲဝေထားပါ</translation>
 		</message>
@@ -1171,23 +1176,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>နေရာအများအပြားကို တစ်နေရာတည်းတွင် မသိမ်းဆည်းပါနှင့်။</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>တည်နေရာများစွာကို တစ်နေရာတည်းတွင် မသိမ်းဆည်းပါနှင့်။</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>လက်မှတ်ရေးထိုးသည့်ကိရိယာနှင့် seed စကားလုံးများပါသော အရန်စာရွက်ကို တစ်နေရာတည်းတွင် မသိမ်းဆည်းပါနှင့်။</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>တည်နေရာတစ်ခုစီသည် အော့ဖ်လိုင်းဖြစ်ပြီး ရုပ်ပိုင်းဆိုင်ရာလုံခြုံမှုရှိရမည်။</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>အဆိုးဆုံးအခြေအနေတွင် သင့်ရန်ပုံငွေများကို ပြန်လည်ရယူနိုင်ရန် လုံခြုံသော အရန်သိမ်းဆည်းမှုတစ်ခု ဖန်တီးထားကြောင်း သေချာစေရန် အောက်ပါအဆင့်များကို လိုက်နာပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1206,6 +1196,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>ပုံနှိပ်ပြီးပါက သင့်စက်မှ seed phrase ကို စာရွက်ပေါ်တွင် လက်ရေးဖြင့် ရေးပါ၊ သို့မဟုတ် ၎င်းနှင့်အတူ သိမ်းဆည်းထားသော သီးခြားစာရွက်တစ်ရွက်ပေါ်တွင် ရေးသားထားပြီးဖြစ်ကြောင်း အတည်ပြုပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>တည်နေရာ 2</translation>
 		</message>
@@ -1216,23 +1211,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>ဤလက်မှတ်ရေးထိုးသူတွင် seed စကားလုံးများကို ကြည့်ရှုရန် လမ်းညွှန်ချက်များကို ဖွင့်ပါ။</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>ပုံနှိပ်ရန် အရန်စာရွက် အနည်းဆုံးတစ်ရွက်ကို ရွေးချယ်ပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>အရန်စာရွက်များ ပရင့်ထုတ်ပါ (လိုအပ်သည်)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>သင်ပိုင်ဆိုင်ပြီး ထိန်းချုပ်သော စက်များနှင့် ဆက်စပ်သည့် ပြန်လည်ရယူရေးစာရွက်များကို ပုံနှိပ်ပါ။</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDF ကို ပရင့်ထုတ်ပြီး seed စကားလုံးများကို အရန်စာရွက်တစ်ခုစီတွင် တွဲပါ။</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>အရန်စာရွက်များကို ပရင့်ထုတ်ပြီး အရာအားလုံးကို ခွဲခြားထားသော လုံခြုံသည့်နေရာများတွင် သိမ်းဆည်းပါ။</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>ပြန်လည်အရန်လက်မှတ်သား {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1241,13 +1231,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>စာရွက် {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>လက်မှတ်ထိုးသူ စက်ပစ္စည်း</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>လက်မှတ်ထိုးသူ စက်ပစ္စည်း</translation>
+			<source>Signer {i}</source>
+			<translation>လက်မှတ်သား {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1261,11 +1251,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>လက်မှတ်ရေးထိုးသည့်ကိရိယာနှင့် seed စကားလုံးများပါသော အရန်စာရွက်ကို ခွဲခြားထားသော လုံခြုံသည့်တည်နေရာများတွင် သိမ်းဆည်းပါ။</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Vault {letter}</translation>
 		</message>
@@ -1276,13 +1261,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>seed စကားလုံးများ ကြည့်ရန်</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>ဟုတ်ကဲ့၊ seed စကားလုံးများကို ပုံနှိပ်စာရွက်နှင့် တွဲထားကြောင်း ကျွန်ုပ်အတည်ပြုပါသည်</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>သင့် wallet မှ သုံးစွဲရန် {n} နေရာထဲမှ {m} နေရာသို့ သွားရန်လိုအပ်သည်။</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>သင့် wallet ကို ပြန်လည်ရယူရေးစာရွက်ဖြင့် ကာကွယ်ထားပြီး၊ ၎င်းကို သင့် hardware signer ရှိသည့်နေရာနှင့် မတူသောနေရာတွင် သိမ်းဆည်းသင့်သည်။ ၎င်းကို ပုံနှိပ်ပါ၊ seed ကို တွဲပါ၊ လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသည့် နေရာတွင် သိမ်းဆည်းပါ။ seed စကားလုံးများဖြင့် သင့် wallet ကို အပြည့်အဝ ထိန်းချုပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>သင့် wallet ကို seed များတွဲထားပြီး နေရာအမျိုးမျိုးတွင် သိမ်းဆည်းထားသည့် {n} ရွက်သော အရန်စာရွက်များဖြင့် ကာကွယ်ထားသည်။ ၎င်းတို့ကို ပုံနှိပ်ပြီး လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသည့် နေရာများတွင် ထားပါ။ ၎င်းတို့ထဲမှ {m} ရွက်ဖြင့် သင့် wallet ကို အပြည့်အဝ ထိန်းချုပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1805,8 +1800,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>hardware signer အချက်အလက်ကို Bitcoin Safe ထဲသို့ တင်သွင်းပါ</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2125,6 +2120,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>ဂဏန်း ၈ လုံး fingerprint သည် seed ကို သတ်မှတ်ဖော်ထုတ်ပေးသည်။ seed များနှင့် signing device များကို ခြေရာခံရန် ၎င်းကို hardware signer ပေါ်တွင် ရေးနိုင်သည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>transaction များ (PSBTs) ကို မှန်ကန်စွာ တည်ဆောက်ရန် key origin လိုအပ်ပြီး xPub နှင့် ချိတ်ဆက်ထားသည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed သည် transaction signing ကို လုပ်ဆောင်နိုင်စေသော လျှို့ဝှက်ချက်ဖြစ်သည်။ single signature wallet အတွက် ၎င်းသည် ရန်ပုံငွေများအပေါ် အပြည့်အဝ ထိန်းချုပ်ခွင့် ပေးသည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPub မူလ {key_origin} နှင့် xPub သည် အတူတူဖြစ်သည်။ မှန်ကန်သော xPub မူလစုံတွဲကိုရွေးပါ။</translation>
 		</message>
@@ -2137,6 +2151,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>wallet address များသည် xPub မှ ဆင်းသက်လာသည်။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3062,8 +3081,13 @@ so it is typically about {minutes} minutes behind the tip.</source>
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>ဖန်တီးပါ</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin ကို သိပြီးသားလား? အမှန်တကယ်တန်ဖိုးကို ထိန်းသိမ်းပြီး ရွှေ့ပြောင်းနိုင်သည့် wallet တစ်ခုကို ယုံကြည်စိတ်ချစွာ စီစဉ်ပါ။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>ရေရှည်သိမ်းဆည်းရန် အကောင်းဆုံး</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3072,28 +3096,88 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>bitcoin အစစ်သို့ မပြောင်းမီ လုံခြုံသော ပတ်ဝန်းကျင်တွင် လေ့ကျင့်ပါ။&lt;br&gt;• demo wallet ဖြင့် အက်ပ်ကို လေ့လာပါ&lt;br&gt;• ငွေကြေးတန်ဖိုးမရှိသော test coin များကို အသုံးပြုပါ&lt;br&gt;• သင်ယူရန်၊ စမ်းသပ်ရန်နှင့် အမှားများကို လုံခြုံစွာ ပြုလုပ်ရန် အကောင်းဆုံးဖြစ်သည်&lt;br&gt;&lt;i&gt;Signet ကွန်ရက်&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Playground ကို လေ့လာပါ</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>လုံခြုံသော စမ်းသပ်နေရာ</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>demo wallet ဖြင့် လေ့လာပါ</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>လုံခြုံသော ဝေါလက်</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>သင့် seed phrase ကို လုံခြုံအောင်ထားပါ</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>သင်အသုံးပြုလိုသော Bitcoin ကွန်ရက်ကို ရွေးပါ</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>လုံခြုံစွာ၊ အန္တရာယ်ကင်းစွာ သင်ယူပါ</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>အမှန်တကယ် ငွေများအတွက် အဆင်သင့်ဖြစ်သောအခါ Bitcoin ကွန်ရက်အစစ်ကို အသုံးပြုပါ။&lt;br&gt;• bitcoin အစစ်ကို ပို့ပြီး လက်ခံပါ&lt;br&gt;• သင့်ရေရှည် ဝေါလက်စနစ် တပ်ဆင်မှုအတွက် အကောင်းဆုံးဖြစ်သည်&lt;br&gt;• ငွေလွှဲမှုများတွင် တန်ဖိုးအစစ်နှင့် အကျိုးဆက်အစစ်များ ရှိသည်&lt;br&gt;&lt;i&gt;Mainnet ကွန်ရက်&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>အမှန်တကယ် ရန်ပုံငွေများကို စီမံပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>အန္တရာယ်ကင်းသော ပတ်ဝန်းကျင်တွင် လေ့ကျင့်ပြီး အရာအားလုံး ဘယ်လိုအလုပ်လုပ်သည်ကို အတိအကျ ကြည့်ပါ။ နောင်တမရှိဘဲ ဆုံးရှုံးနိုင်သော test coin များဖြင့် ပို့ခြင်း၊ လက်ခံခြင်း၊ fee ပြောင်းခြင်းတို့ကို စမ်းကြည့်ပါ။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>အမှန်တကယ် ခိုင်မာသောငွေ (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>အမှန်တကယ် bitcoin ကို ပို့ပြီး လက်ခံပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Wallet တစ်ခု စီစဉ်ပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>စတင် လေ့လာပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>ခိုင်မာသောငွေဖြင့် transaction စတင်ပါ သို့မဟုတ် လုံခြုံသော playground တွင် သင်ယူပါ။ မည်သို့ပင်ဖြစ်စေ နောက်ပိုင်းတွင် wallet နောက်တစ်ခုကို အမြဲ ဖန်တီးနိုင်ပါသည်။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>test coin (tBTC) များတွင် တန်ဖိုးမရှိပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>test coin များ၊ ငွေကြေးတန်ဖိုးမရှိ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>transaction များသည် အမြဲတမ်းဖြစ်သည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet test network ကို အသုံးပြုသည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>onchain Mainnet network ကို အသုံးပြုသည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>ဘယ်နေရာကနေ စတင်ချင်ပါသလဲ?</translation>
 		</message>
 	</context>
 	<context>
@@ -3850,8 +3934,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>ဖော်ပြချက်</translation>
+			<source>Dashboard</source>
+			<translation>Dashboard</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>အသေးစိတ်များ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3872,11 +3961,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>တံဆိပ်များထုတ်ပို့ပါ</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>သမိုင်း</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3929,6 +4013,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>စကားဝှက်မှားနေပါသည်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4138,11 +4227,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>ပြီးစီးပြီ - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>ပိုက်ဆံအိတ်စီမံခန့်ခွဲမှုမရှိသေးပါ</translation>
 		</message>
@@ -4159,11 +4243,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>ဤ wallet ၏ လိပ်စာ ၁ ခုသို့ &lt;b&gt;သေးငယ်သော&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင်သည် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်မနိုင် သိရှိရန် wallet မှ သုံးစွဲမှုကို စမ်းသပ်ရမည်ဖြစ်သည်။ &lt;br&gt; ထို့ကြောင့် wallet ထဲသို့ Bitcoin ပမာဏများစွာ ပို့မီ wallet မှ သုံးစွဲပြီး လက်မှတ်ထိုးသူအားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt;သည်။ &lt;br&gt; &lt;br&gt; &lt;b&gt;ယခုထိ wallet ထဲသို့ ရန်ပုံငွေကြီးများ မပို့ပါနှင့်။ ကျေးဇူးပြု၍ self-send စမ်းသပ်မှုအားလုံးကို အရင်ပြီးဆုံးအောင်လုပ်ပါ!&lt;/b&gt;</translation>
+			<translation>ဤ wallet ၏ address ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်ကြောင်း သိရန် wallet မှ အသုံးပြုခြင်းကို စမ်းသပ်ရမည်။ &lt;br&gt; ထို့ကြောင့် Bitcoin ပမာဏများစွာကို wallet ထဲသို့ မပို့မီ wallet မှ အသုံးပြုပြီး signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4174,6 +4255,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>အသိအမှတ်ပြုထားသော ငွေလွှဲမှု</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>wallet ထဲသို့ ရန်ပုံငွေများ ရောက်ရှိလာရန် စောင့်ဆိုင်းနေသည်...</translation>
 		</message>
 	</context>
 	<context>
@@ -4457,18 +4543,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>ပြီးစီးပြီ - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>ဤကတ်တွင် ငွေလွှဲမှုကို ဖန်တီးပါ။</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>ဆိုင်းငံ့နေသည် - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4732,6 +4808,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} ကို ပြန်လည်တပ်ဆင်ပါ</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>{available} သို့ အပ်ဒိတ်လုပ်ပါ</translation>
 		</message>
@@ -4776,6 +4857,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>ထည့်သွင်းထားသော ပလပ်အင်များကို ပြန်စစ်ဆေးပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>ပြီးစီးခဲ့သည်</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>လက်ရှိ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>အနာဂတ်တွင် မပြီးစီးသေးသော အဆင့်များ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>အဆင့် {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5070,13 +5173,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n} လက်မှတ်လုပ်ပြီးစုဆောင်းပါ</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>လက်မှတ် {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -5991,11 +6094,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>လုံခြံုရာနေရာတွင်ထားပါ</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>လက်ခံစမ်းသပ်မှု</translation>
 		</message>
@@ -6008,6 +6106,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>ငွေလွှဲမှုကို ပြန်လည်စစ်ဆေးပြီး အသင့်ဖြစ်သောအခါ ဖန်တီးပါ။</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>သင့် Keys များကို လုံခြုံအောင်ထားပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6187,8 +6290,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>ပြီးဆုံးပါ</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>ပြီးဆုံးပြီး Dashboard သို့ သွားပါ</translation>
 		</message>
 		<name>basetab</name>
 		<message>

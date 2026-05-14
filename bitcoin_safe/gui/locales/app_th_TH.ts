@@ -1141,8 +1141,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. พิมพ์แผ่นสำรอง</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>แผ่นกู้คืนข้อมูลสำรอง (จำเป็น)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1161,6 +1161,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>ขอแสดงความยินดี กระเป๋าเงินของคุณพร้อมแล้ว ตอนนี้ให้ปกป้องมัน!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>กระจายไปยัง 2 สถานที่แยกกัน</translation>
 		</message>
@@ -1171,23 +1176,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>อย่าเก็บหลายสถานที่ไว้ในที่เดียวกัน</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>อย่าเก็บหลายสถานที่ไว้ในที่เดียวกัน</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>อย่าเก็บอุปกรณ์ลงนามและแผ่นสำรองที่มีคำ seed ไว้ในที่เดียวกัน</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>แต่ละสถานที่ต้องออฟไลน์และปลอดภัยทางกายภาพ</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>ทำตามขั้นตอนด้านล่างเพื่อให้แน่ใจว่าคุณสร้างข้อมูลสำรองที่ปลอดภัยสำหรับกู้คืนเงินของคุณในกรณีที่เลวร้ายที่สุด</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1206,6 +1196,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>เมื่อพิมพ์แล้ว ให้เขียน seed phrase จากอุปกรณ์ของคุณลงบนแผ่นด้วยลายมือ หรือยืนยันว่าได้ถอดความไว้บนกระดาษอีกแผ่นที่เก็บไว้ด้วยกันแล้ว</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>สถานที่ 2</translation>
 		</message>
@@ -1216,23 +1211,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>เปิดคำแนะนำสำหรับการดูคำ seed บนผู้ลงนามนี้</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>โปรดเลือกแผ่นสำรองอย่างน้อยหนึ่งแผ่นเพื่อพิมพ์</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>พิมพ์แผ่นสำรอง (จำเป็น)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>พิมพ์แผ่นกู้คืนที่เกี่ยวข้องกับอุปกรณ์ที่คุณเป็นเจ้าของและควบคุม</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>พิมพ์ PDF และแนบคำ seed เข้ากับแผ่นสำรองแต่ละแผ่น</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>พิมพ์แผ่นสำรองและเก็บทุกอย่างไว้ในสถานที่ที่แยกจากกันและปลอดภัย</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>ผู้ลงนามการกู้คืน {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1241,13 +1231,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>แผ่น {number} จาก {total}</translation>
+			<source>Signer device</source>
+			<translation>อุปกรณ์ผู้ลงนาม</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>อุปกรณ์ผู้ลงนาม</translation>
+			<source>Signer {i}</source>
+			<translation>ผู้ลงนาม {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1261,11 +1251,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>เก็บอุปกรณ์ลงนามและแผ่นสำรองที่มีคำ seed ไว้ในสถานที่ปลอดภัยที่แยกจากกัน</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>ตู้นิรภัย {letter}</translation>
 		</message>
@@ -1276,13 +1261,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>ดูคำ seed</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>ใช่ ฉันยืนยันว่าคำ seed แนบมากับเอกสารที่พิมพ์แล้ว</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>คุณต้องไปยัง {m} จาก {n} สถานที่เพื่อใช้จ่ายจากกระเป๋าเงินของคุณ</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>กระเป๋าเงินของคุณได้รับการปกป้องด้วยแผ่นกู้คืน ซึ่งควรเก็บไว้ในที่ที่แตกต่างจากที่เก็บเครื่องลงนามฮาร์ดแวร์ของคุณ พิมพ์แผ่นนั้น แนบ seed และเก็บไว้ในสถานที่ที่ปลอดภัยและควบคุมการเข้าถึงได้ ด้วยคำ seed คุณจะมีสิทธิ์ควบคุมกระเป๋าเงินของคุณอย่างเต็มที่</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>กระเป๋าเงินของคุณได้รับการปกป้องด้วยแผ่นสำรอง {n} แผ่นที่มี seed แนบไว้และเก็บไว้ในสถานที่ต่างกัน พิมพ์แผ่นเหล่านั้นและวางไว้ในสถานที่ที่ปลอดภัยและควบคุมการเข้าถึงได้ ด้วย {m} แผ่นในนั้น คุณจะมีสิทธิ์ควบคุมกระเป๋าเงินของคุณอย่างเต็มที่</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} จาก {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1805,8 +1800,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. นำข้อมูลกระเป๋าเงินเข้าสู่ Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>นำเข้าข้อมูลเครื่องลงนามฮาร์ดแวร์เข้าสู่ Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2125,6 +2120,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>ลายนิ้วมือ 8 หลักใช้ระบุ seed คุณสามารถเขียนลงบนเครื่องลงนามฮาร์ดแวร์เพื่อช่วยติดตาม seed และอุปกรณ์ลงนามที่แตกต่างกัน</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>ที่มาของคีย์จำเป็นสำหรับการสร้างธุรกรรม (PSBTs) ให้ถูกต้อง และเชื่อมโยงกับ xPub</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed คือความลับที่ทำให้การลงนามธุรกรรมเป็นไปได้ สำหรับกระเป๋าเงินแบบลายเซ็นเดียว seed จะให้สิทธิ์ควบคุมเงินอย่างเต็มที่</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>ต้นกำเนิด xPub {key_origin} และ xPub เป็นคู่กัน กรุณาเลือกคู่ต้นกำเนิด xPub ที่ถูกต้อง</translation>
 		</message>
@@ -2137,6 +2151,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>ที่อยู่กระเป๋าเงินได้มาจาก xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3063,8 +3082,13 @@ so it is typically about {minutes} minutes behind the tip.</source>
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>สร้าง</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>คุ้นเคยกับ Bitcoin แล้วใช่ไหม? ตั้งค่ากระเป๋าเงินที่ถือและเคลื่อนย้ายมูลค่าจริงได้อย่างมั่นใจ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>ดีที่สุดสำหรับการเก็บรักษาระยะยาว</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3073,28 +3097,88 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>ฝึกใช้งานในสภาพแวดล้อมที่ปลอดภัยก่อนย้ายไปใช้ bitcoin จริง&lt;br&gt;• สำรวจแอปด้วยวอลเล็ตสาธิต&lt;br&gt;• ใช้เหรียญทดสอบที่ไม่มีมูลค่าทางการเงิน&lt;br&gt;• เหมาะสำหรับการเรียนรู้ ทดลอง และทำผิดพลาดได้อย่างปลอดภัย&lt;br&gt;&lt;i&gt;เครือข่าย Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>สำรวจ Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>พื้นที่ทดลองที่ปลอดภัย</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>สำรวจด้วยกระเป๋าเงินสาธิต</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>วอลเล็ตที่ปลอดภัย</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>รักษา seed phrase ของคุณให้ปลอดภัย</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>เลือกเครือข่าย Bitcoin ที่คุณต้องการใช้</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>เรียนรู้อย่างปลอดภัย ไร้ความเสี่ยง</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>ใช้เครือข่าย Bitcoin จริงเมื่อคุณพร้อมสำหรับเงินจริง&lt;br&gt;• ส่งและรับ bitcoin จริง&lt;br&gt;• เหมาะที่สุดสำหรับการตั้งค่าวอลเล็ตระยะยาวของคุณ&lt;br&gt;• ธุรกรรมมีมูลค่าจริงและผลลัพธ์จริง&lt;br&gt;&lt;i&gt;เครือข่าย Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>จัดการเงินจริง</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>ฝึกในสภาพแวดล้อมที่ไม่มีความเสี่ยงและดูอย่างชัดเจนว่าทุกอย่างทำงานอย่างไร ลองส่ง รับ และเปลี่ยนค่าธรรมเนียมโดยใช้เหรียญทดสอบที่คุณสามารถสูญเสียได้โดยไม่เสียดาย</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>เงินแข็งแกร่งจริง (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>ส่งและรับ bitcoin จริง</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>ตั้งค่ากระเป๋าเงิน</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>เริ่มสำรวจ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>เริ่มทำธุรกรรมด้วยเงินแข็งแกร่งหรือเรียนรู้ใน playground ที่ปลอดภัย ไม่ว่าจะเลือกทางใด คุณก็สามารถสร้างกระเป๋าเงินอีกใบได้เสมอในภายหลัง</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>เหรียญทดสอบ (tBTC) ไม่มีมูลค่า</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>เหรียญทดสอบ ไม่มีมูลค่าทางการเงิน</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>ธุรกรรมเป็นแบบถาวร</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>ใช้เครือข่ายทดสอบ Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>ใช้เครือข่าย onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>คุณต้องการเริ่มต้นที่ไหน?</translation>
 		</message>
 	</context>
 	<context>
@@ -3851,8 +3935,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>ตัวบ่งชี้</translation>
+			<source>Dashboard</source>
+			<translation>แดชบอร์ด</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>รายละเอียด</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3873,11 +3962,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>ส่งออกป้ายกำกับ</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>ประวัติ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3930,6 +4014,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>รหัสผ่านไม่ถูกต้อง</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>โปรดเลือกชื่อกระเป๋าเงิน</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4139,11 +4228,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>เสร็จสมบูรณ์ - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>ยังไม่ได้ตั้งค่ากระเป๋าเงิน</translation>
 		</message>
@@ -4160,11 +4244,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าไปในกระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; &lt;br&gt; &lt;br&gt; &lt;b&gt;อย่าเพิ่งส่งเงินจำนวนมากเข้าไปในกระเป๋าเงิน โปรดทำการทดสอบส่งให้ตนเองทั้งหมดให้เสร็จก่อน!&lt;/b&gt;</translation>
+			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน จึงเป็นเรื่อง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่ต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4175,6 +4256,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>ธุรกรรมที่รู้จัก</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>กำลังรอเงินเข้ามาในกระเป๋าเงิน...</translation>
 		</message>
 	</context>
 	<context>
@@ -4458,18 +4544,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>เสร็จสมบูรณ์ - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>สร้างธุรกรรมในการ์ดนี้</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>รอดำเนินการ - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4733,6 +4809,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>ติดตั้ง {version} ใหม่</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>อัปเดตเป็น {available}</translation>
 		</message>
@@ -4777,6 +4858,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>ตรวจสอบปลั๊กอินที่ติดตั้งอีกครั้ง</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>เสร็จสมบูรณ์</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>ปัจจุบัน</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>ขั้นตอนในอนาคตที่ยังไม่เสร็จสมบูรณ์</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>ขั้นตอน {current} จาก {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5071,13 +5174,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>สร้างและรวบรวมลายเซ็นที่ {n}</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>อินพุต {i}: ลงนามด้วยแฟล็ก {sighash_type} , ลายเซ็น: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>อินพุต {i}: ลงนามด้วยแฟล็ก {sighash_type} , ลายเซ็น: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>ลายเซ็น {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -5992,11 +6095,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>ใส่ในสถานที่ปลอดภัย</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>ทดสอบการรับ</translation>
 		</message>
@@ -6009,6 +6107,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>ตรวจสอบธุรกรรมและสร้างเมื่อคุณพร้อม</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>รักษาคีย์ของคุณให้ปลอดภัย</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6188,8 +6291,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>เสร็จสิ้น</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>เสร็จสิ้นและไปที่แดชบอร์ด</translation>
 		</message>
 		<name>basetab</name>
 		<message>
