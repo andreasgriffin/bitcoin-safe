@@ -334,7 +334,7 @@ class NetworkChoiceWelcomeScreen(QWidget):
         self.cards_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.card_secure_wallet = NetworkChoiceCard("bitcoin-bitcoin.svg", self.cards_container)
-        self.card_safe_playground = NetworkChoiceCard("bitcoin-signet.svg", self.cards_container)
+        self.card_safe_playground = NetworkChoiceCard("bitcoin-gray.svg", self.cards_container)
 
         self.cards_layout.addWidget(self.card_secure_wallet, stretch=1)
         self.cards_layout.addWidget(self.card_safe_playground, stretch=1)
