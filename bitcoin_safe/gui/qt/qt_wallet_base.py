@@ -40,11 +40,11 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.client import SyncStatus
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
-from bitcoin_safe.gui.qt.wizard_base import WizardBase
+from bitcoin_safe.gui.qt.wizard.wizard_base import WizardBase
+from bitcoin_safe.wallet import ProtoWallet
 
 from ...config import UserConfig
 from ...signals import WalletFunctions
-from ...wallet import ProtoWallet
 from .sidebar.sidebar_tree import SidebarNode
 
 logger = logging.getLogger(__name__)

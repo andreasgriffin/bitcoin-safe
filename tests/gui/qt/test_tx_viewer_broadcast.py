@@ -35,7 +35,7 @@ import pytest
 from bitcoin_qr_tools.data import DataType
 
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.tx import HiddenTxUiInfos
+from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum
 
 
 @pytest.mark.parametrize(
@@ -84,11 +84,15 @@ def test_broadcast_only_saves_local_tx_after_success(
     viewer = SimpleNamespace(
         data=SimpleNamespace(data_type=DataType.Tx, data=FakeTransaction()),
         hidden_tx_infos=HiddenTxUiInfos(save_local_on_send=True),
+        post_broadcast_action=PostBroadcastEnum.open_hist_list,
+        _post_broadcast_consumed_txid=None,
         client=object(),
         save_local_tx=save_local_tx,
         _get_robust_height=lambda: 0,
         _set_blockchain=lambda: None,
         _broadcast=broadcast,
+        signals=SimpleNamespace(signal_open_history_for_tx=SimpleNamespace(emit=lambda _tx: None)),
+        txid=lambda: "txid",
         tr=lambda message: message,
     )
 

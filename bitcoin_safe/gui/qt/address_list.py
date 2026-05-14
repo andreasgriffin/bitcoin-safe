@@ -87,6 +87,8 @@ from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
+from bitcoin_safe.tx import TxUiInfos
+from bitcoin_safe.wallet import TxStatus, Wallet
 
 from ...config import UserConfig
 from ...i18n import translate
@@ -99,8 +101,6 @@ from ...signals import (
     WalletFunctions,
     WalletSignals,
 )
-from ...tx import TxUiInfos
-from ...wallet import TxStatus, Wallet
 from .my_treeview import (
     DropRule,
     MyItemDataRole,

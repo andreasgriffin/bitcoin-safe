@@ -45,9 +45,9 @@ from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.signer_ui import SignerUI
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.mempool_manager import TxPrio
 from bitcoin_safe.psbt_util import SimplePSBT
@@ -275,9 +275,6 @@ def test_wallet_send(
                 assert r.address == qt_wallet.wallet.get_change_addresses()[0]
                 assert r.amount == 9996804
                 assert r.label == "Change of: 1, 2"
-
-                # Move to signing step and sign with the wallet seed.
-                ui_tx_viewer.button_next.click()
 
                 widget = ui_tx_viewer.tx_singning_steps.stacked_widget.widget(0)
                 assert isinstance(widget, HorizontalImportExportAll)

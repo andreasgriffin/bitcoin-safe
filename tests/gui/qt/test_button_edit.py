@@ -50,6 +50,7 @@ from bitcoin_safe.gui.qt.buttonedit import (
     get_icon_path,
 )
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerMessage, BaseAnalyzer
+from bitcoin_safe.gui.qt.util import ColorScheme
 
 logger = logging.getLogger(__name__)
 
@@ -176,13 +177,19 @@ def test_button_edit_set_input_field(button_edit: ButtonEdit) -> None:
     assert button_edit.main_layout.itemAt(0).widget() == new_input_field
 
 
-def test_button_edit_format_as_error(button_edit: ButtonEdit) -> None:
-    """Test button edit format as error."""
+def test_button_edit_format_edit(button_edit: ButtonEdit) -> None:
+    """Test button edit formatting."""
     # Error formatting should toggle background style.
-    button_edit.format_as_error(True)
+    button_edit.format_edit(AnalyzerState.Warning)
     assert "background-color" in button_edit.input_field.styleSheet()
-    button_edit.format_as_error(False)
+    button_edit.format_edit(None)
     assert "background-color" not in button_edit.input_field.styleSheet()
+
+
+def test_button_edit_format_edit_invalid_uses_error_color(button_edit: ButtonEdit) -> None:
+    """Test button edit invalid formatting uses the error color."""
+    button_edit.format_edit(AnalyzerState.Invalid)
+    assert ColorScheme.ERROR.as_color(background=True).name() in button_edit.input_field.styleSheet()
 
 
 def test_button_edit_format_and_apply_validator_valid(button_edit: ButtonEdit) -> None:

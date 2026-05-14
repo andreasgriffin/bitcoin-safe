@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Tambahkan Sumber Plugin</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Token Bearer</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Nama tampilan</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL manifes</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>Tempelkan kunci publik berformat ASCII-armored di sini</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Kunci publik yang disematkan</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Callback browser diterima setelah faktur kedaluwarsa. Silakan coba lagi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Pilih jumlah dan buat faktur donasi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Selesaikan pembayaran di browser Anda.
+Jika ada masalah, jangan ragu untuk menghubungi kami di: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Tidak dapat membuat faktur. Silakan coba lagi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Tidak dapat membuka browser Anda secara otomatis. Silakan coba lagi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Tidak dapat memulai server callback lokal. Membuka faktur di browser Anda tanpa konfirmasi otomatis.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Buat faktur</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Faktur siap. Selesaikan pembayaran di browser Anda. Konfirmasi otomatis mungkin tidak tersedia.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Layanan faktur mengembalikan kesalahan ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Tidak ada callback browser yang diterima sebelum faktur habis waktu. Silakan ulangi donasi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Tidak ada callback browser yang diterima sebelum faktur habis waktu. Silakan coba lagi.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Pembayaran dikonfirmasi melalui callback browser. Terima kasih!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Silakan pilih jumlah.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Meminta faktur...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Meminta faktur... Browser akan terbuka dan Bitcoin Safe akan mendengarkan callback secara lokal.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Tidak dapat menjangkau server donasi. Silakan coba lagi nanti.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Kunci sinkronisasi dompet {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Tempelkan seed kata {number} ke pdf cetak yang sesuai.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Tempelkan seed kata {number} ke pdf cetak.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Harap selesaikan langkah sebelumnya.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>Cetak lembar pemulihan</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Cetak pdf (juga berisi deskriptor dompet)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Aktifkan</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Buka plugin</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Disediakan oleh: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Paket Bisnis</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Akses paket bisnis aktif.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Buka semua plugin berbayar dengan satu langganan dan hapus biaya layanan pembayaran terjadwal.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,27 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Buka di block explorer</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>Buka folder yang berisi</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>Beli {number} penandatangan perangkat keras                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe mendukung semua penandatangan perangkat keras utama: &lt;a href="{url}"&gt;Lihat daftar lengkap&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -901,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Harap pilih dompet Multisignature terlebih dahulu</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Penanda tangan yang dibutuhkan</translation>
 		</message>
@@ -918,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Properti Dompet</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Mulai uji coba gratis terlebih dahulu, lalu kelola atau segarkan langganan di sini.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1138,153 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Pilih tempat aman dengan hati-hati, mengingat Anda harus pergi ke {m} dari {n}, untuk membelanjakan dari dompet multisig Anda.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Nama dompet</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Tempatkan setiap cadangan seed dan penanda tangan perangkat keras di lokasi yang aman, seperti:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. Cetak lembar cadangan</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>Cadangan seed {j} dan penanda tangan perangkat keras {j} harus berada di lokasi {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. Ya, saya melampirkan kata seed ke hasil cetak</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Simpan penanda tangan perangkat keras di lokasi aman.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Lembar cadangan</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Simpan cadangan seed di lokasi &lt;b&gt;sangat&lt;/b&gt; aman (seperti brankas).</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Lembar cadangan {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>Cadangan seed (24 kata) memberikan kendali penuh atas dana.</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>Sebarkan ke 2 lokasi terpisah</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>Sebarkan ke {n} lokasi terpisah</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>Jangan simpan beberapa lokasi di tempat yang sama.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>Jangan simpan beberapa lokasi di tempat yang sama.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>Jangan simpan perangkat penanda tangan dan lembar cadangan dengan kata seed di tempat yang sama.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>Setiap lokasi harus offline dan aman secara fisik.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Penting</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Lokasi</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Lokasi 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Lokasi 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Harap selesaikan langkah sebelumnya.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>Buka instruksi untuk melihat kata seed pada penanda tangan ini.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>Cetak lembar cadangan (wajib)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>Cetak PDF dan lampirkan kata seed ke setiap lembar cadangan.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>Cetak lembar cadangan dan simpan semuanya di tempat yang terpisah dan aman.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Letakkan cadangan dan penanda tangan Anda di lokasi yang aman</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>Lembar {number} dari {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>Perangkat penanda tangan</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>Perangkat penanda tangan</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Simpan setiap penanda tangan bersama lembar cadangan dan kata seed-nya di lokasi yang sama.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>Simpan perangkat penanda tangan dan lembar cadangan dengan kata seed di lokasi aman yang terpisah.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Brankas {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Lihat kata-kata seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>Lihat kata seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>Anda perlu pergi ke {m} dari {n} lokasi untuk membelanjakan dari dompet Anda.</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1325,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Pesan (opsional)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Pesan (opsional)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1421,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Penuh (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Terima kasih untuk Bitcoin Safe!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Hapus Plugin</translation>
 		</message>
 	</context>
 	<context>
@@ -1341,43 +1592,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Langkah Sebelumnya</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Coba lagi</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Ya, saya melihat transaksi dalam riwayat</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Pastikan tidak ada program lain yang mengakses penanda tangan perangkat keras</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Harap masukkan nama (label stiker) penanda tangan perangkat keras</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Label Stiker</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Berhasil! Harap lengkapi langkah ini dengan semua penanda tangan perangkat keras lalu klik Berikutnya.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>Pengaturan tidak selesai. Harap ulangi.</translation>
 		</message>
 	</context>
 	<context>
@@ -1598,11 +1812,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>Penanda tangan berikutnya</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>Langkah berikutnya</translation>
 		</message>
@@ -1610,11 +1819,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Langkah Sebelumnya</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Penanda tangan sebelumnya</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1640,6 +1844,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Hapus Plugin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) memungkinkan wallet menemukan transaksi yang relevan sambil menjaga alamat Anda tetap privat.</translation>
 		</message>
@@ -1650,13 +1859,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Selama sinkronisasi pertama, Bitcoin Safe mengambil ringkasan blok compact dari beberapa node Bitcoin. Ini adalah cara privat untuk mengunduh data blok.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Waktu berlalu {elapsed} | Perkiraan tersisa {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Waktu berlalu {elapsed} | Perkiraan tersisa {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe mengunduh ringkasan blok dari beberapa node untuk privasi. Setelah sinkronisasi awal ini, pembaruan akan cepat. Jika Anda memiliki server Electrum sendiri atau tidak ingin menunggu, hubungkan ke server Electrum publik di pengaturan jaringan.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Pengaturan jaringan</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1768,13 +1982,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Lanjutan</translation>
+			<source>Add New Signer</source>
+			<translation>Tambahkan Penanda Tangan Baru</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Deskripsi</translation>
+			<source>Change device type</source>
+			<translation>Ubah jenis perangkat</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Hubungkan</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Jalur derivasi</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instruksi perangkat</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1793,10 +2022,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>Nama perangkat penandatangan: ......
-Lokasi perangkat penandatangan: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>Impor data penanda tangan dengan QR, USB, atau impor teks/file.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>Pelajari lebih lanjut tentang &lt;a href="{url}"&gt;penanda tangan perangkat keras yang didukung&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>Pelajari lebih lanjut tentang &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1810,13 +2047,18 @@ Lokasi perangkat penandatangan: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Pastikan tidak ada program lain yang mengakses penanda tangan perangkat keras</translation>
+			<source>Open the signer guide</source>
+			<translation>Buka panduan penanda tangan</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Harap masukkan asal kunci yang valid.</translation>
+			<source>Personal notes:</source>
+			<translation>Catatan pribadi:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Pastikan tidak ada program lain yang mengakses penanda tangan perangkat keras</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1840,8 +2082,43 @@ Lokasi perangkat penandatangan: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>Kode QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Daftarkan</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Daftarkan ulang multisig</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Seed</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>Pilih Merek</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Pilih Model</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>Pilih merek penanda tangan</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>Pilih model penanda tangan</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1860,18 +2137,28 @@ Lokasi perangkat penandatangan: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Tulis di sini catatan terkait penanda tangan ini, memo, dll...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>Asal xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} tidak dapat digunakan di sini.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} tidak dapat digunakan di sini.</translation>
+			<source>{device} instructions</source>
+			<translation>Instruksi {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1916,48 +2203,6 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>Asal kunci yang Anda impor {key_origins} berbeda! Harap periksa kembali jika memang Anda bermaksud begitu.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Cadangan rahasia kunci sinkronisasi:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Pilih komputer terpercaya di tab Sinkronisasi &amp; Obrolan di setiap komputer.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>Video kolaborasi</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Aktifkan</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Cadangan cloud terenkripsi dari label alamat dan kategori</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Selesai</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Sinkronisasi dan obrolan multi-komputer</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Video sinkronisasi</translation>
 		</message>
 	</context>
 	<context>
@@ -2183,6 +2428,11 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Plugin</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Dompet/Tab Sebelumnya</translation>
 		</message>
@@ -2260,6 +2510,11 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>Dompet bernama {wallet_id} sudah ada. Silakan pilih nama lain.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2368,6 +2623,13 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Hot wallet dinonaktifkan di Bitcoin Mainnet.
+Anda dapat beralih ke Testnet untuk menguji Bitcoin Safe tanpa menggunakan Bitcoin sungguhan.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Biarkan terbuka</translation>
 		</message>
@@ -2395,6 +2657,11 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Tab Baru {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>Tidak ada dompet demo yang tersedia untuk jaringan ini.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2450,6 +2717,11 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Tempelkan Transaksi Bitcoin atau PSBT Anda di sini atau jatuhkan file</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Harap pilih nama dompet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2630,6 +2902,11 @@ Apakah Anda ingin tetap membuka dompet?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Dompet {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Dompet masih menyinkronkan dan sinkronisasi harus dimulai dari awal jika Anda menutup aplikasi.
@@ -2659,11 +2936,6 @@ Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Ya, pemindaian penuh untuk transaksi</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>baru</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2793,6 +3065,43 @@ sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (waktu lokal)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>Buat</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Buat dompet baru</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>Berlatihlah di lingkungan yang aman sebelum beralih ke bitcoin sungguhan.&lt;br&gt;• Jelajahi aplikasi dengan dompet demo&lt;br&gt;• Gunakan koin uji yang tidak memiliki nilai moneter&lt;br&gt;• Ideal untuk belajar, bereksperimen, dan membuat kesalahan dengan aman&lt;br&gt;&lt;i&gt;Jaringan Signet&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>Safe Playground</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>Dompet Aman</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>Pilih jaringan Bitcoin yang ingin Anda gunakan</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>Gunakan jaringan Bitcoin sungguhan saat Anda siap untuk dana sungguhan.&lt;br&gt;• Kirim dan terima bitcoin sungguhan&lt;br&gt;• Terbaik untuk pengaturan dompet jangka panjang Anda&lt;br&gt;• Transaksi memiliki nilai nyata dan konsekuensi nyata&lt;br&gt;&lt;i&gt;Jaringan Mainnet&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2964,8 +3273,9 @@ Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy tidak berlaku untuk fitur Sinkronisasi &amp; Obrolan!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Proxy tidak berlaku untuk plugin Sync&amp;Chat dan selama pembelian langganan!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2992,58 +3302,8 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>1 lokasi aman untuk menyimpan cadangan seed (di kertas atau baja) diperlukan</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 seed (24 kata rahasia) adalah semua yang Anda butuhkan untuk mengakses dana Anda</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 perangkat penandatangan</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 dari 3 Dompet Multi-Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3 lokasi aman (masing-masing dengan 1 cadangan seed   + deskriptor dompet   diperlukan)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 perangkat penandatangan</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Terbaik untuk dana besar</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Terbaik untuk dana menengah</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Pilih Multi-Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Pilih Single Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Kontra:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Hubungkan Perangkat</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3052,49 +3312,63 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Buat atau impor dompet khusus</translation>
+			<source>Custom / Recovery</source>
+			<translation>Kustom / Pemulihan</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Dompet kustom atau impor yang sudah ada</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Penyiapan terpandu untuk dompet swakelola Anda.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Sesuaikan dompet sesuai kebutuhan Anda</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Dompet Hot Tanda Tangan Tunggal</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Jika 1 seed hilang atau dicuri, semua dana dapat dipindahkan ke dompet baru dengan 2 seed yang tersisa + deskriptor dompet (Kode QR)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Buka daftar dompet perangkat keras dan penanda tangan yang didukung.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Jika Anda tertipu untuk memberikan seed kepada peretas, Bitcoin Anda akan dicuri seketika</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Coba dompet yang sudah ada dan memiliki beberapa koin uji untuk menjelajah dengan aman.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Lebih sedikit materi dukungan online jika terjadi pemulihan</translation>
+			<source>Public Demo wallet</source>
+			<translation>Dompet Demo Publik</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Pro:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Buat dompet dengan cepat untuk penggunaan langsung, tanpa memerlukan kunci yang sudah ada.&lt;br&gt;&lt;small&gt;Dinonaktifkan di Mainnet karena komputer yang terhubung ke internet tidak dirancang untuk menyimpan rahasia yang mewakili uang dengan aman.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Dompet Single Signature</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Buat dompet dengan cepat untuk penggunaan langsung, tanpa memerlukan kunci yang sudah ada.&lt;br&gt;&lt;small&gt;Membuat dan menyimpan kunci di komputer yang terhubung ke internet tidak aman. Komputer serbaguna tidak dirancang untuk menyimpan rahasia yang mewakili uang.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Deskriptor dompet (Kode QR) diperlukan untuk memulihkan dompet</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Pulihkan dompet dari dompet perangkat keras atau deskriptor.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Penanda tangan yang didukung</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nama dompet</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3182,6 +3456,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Bulanan</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Mulai uji coba gratis</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Langganan</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Tahunan</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Kelola</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Segarkan status</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Langganan:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3246,94 +3564,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Callback browser diterima setelah faktur kedaluwarsa. Silakan coba lagi.</translation>
+			<source>Update</source>
+			<translation>Perbarui</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Pilih jumlah dan buat faktur donasi.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Pembaruan tersedia: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Selesaikan pembayaran di browser Anda.
-Jika ada masalah, jangan ragu untuk menghubungi kami di: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>Perbarui ke {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>Tidak dapat membuat faktur. Silakan coba lagi.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Tidak dapat membuka browser Anda secara otomatis. Silakan coba lagi.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>Tidak dapat memulai server callback lokal. Membuka faktur di browser Anda tanpa konfirmasi otomatis.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Buat faktur</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Faktur siap. Selesaikan pembayaran di browser Anda. Konfirmasi otomatis mungkin tidak tersedia.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>Layanan faktur mengembalikan kesalahan ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>Tidak ada callback browser yang diterima sebelum faktur habis waktu. Silakan ulangi donasi.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>Tidak ada callback browser yang diterima sebelum faktur habis waktu. Silakan coba lagi.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Pembayaran dikonfirmasi melalui callback browser. Terima kasih!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Silakan pilih jumlah donasi dan mata uang.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Meminta faktur...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Meminta faktur... Browser akan terbuka dan Bitcoin Safe akan mendengarkan callback secara lokal.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>Tidak dapat menjangkau server donasi. Silakan coba lagi nanti.</translation>
+			<source>Version {version}</source>
+			<translation>Versi {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Aktifkan/Nonaktifkan</translation>
+			<source>Explore plugins</source>
+			<translation>Jelajahi plugin</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Plugin tidak tersedia untuk dompet ini, jadi tidak ada yang perlu dikonfigurasi di sini.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Tinjau plugin yang tersedia untuk dompet ini. Anda dapat mengaktifkan yang Anda inginkan sekarang dan kembali ke tab Plugin kapan saja nanti.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>Aktifkan dan kelola integrasi dompet opsional.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Batal</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Hapus</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Hapus Plugin Terpasang</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Hapus plugin terpasang {plugin}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Nonaktifkan plugin sebelum menghapusnya.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>URL manifes dan kunci publik yang disematkan diperlukan.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>Operasi plugin gagal.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>Sumber plugin {source_id} tidak ada.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>Plugin terpasang diperiksa ulang.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>Plugin terpasang diperiksa ulang. {count} plugin tidak valid.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Hapus Sumber Plugin</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Hapus sumber plugin {source}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Plugin ini tidak dapat dihapus.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>Berlaku untuk semua plugin berbayar dan biaya layanan yang dibatasi langganan.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Paket bisnis</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Sumber</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>Tidak dapat menghapus saat {count} plugin terpasang.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Hapus</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Kesalahan terakhir: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Segarkan</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Hapus plugin yang terpasang dari sumber ini sebelum menghapus sumber.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ID Sumber: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3748,18 +4147,13 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Saldo = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Periksa apakah sudah diterima</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>Langkah berikutnya</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>Selesai - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3768,31 +4162,49 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
+			<source>Receive Test</source>
+			<translation>Tes Penerimaan</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Terima sejumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt;                     Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. 
-                    &lt;br&gt;                     Jadi sebelum Anda mengirim sejumlah besar Bitcoin ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penandatangan.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;JANGAN kirim dana besar ke dompet ini dulu. Silakan selesaikan semua tes self-send terlebih dahulu!&lt;/b&gt;                    </translation>
+			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini. &lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. &lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pengeluaran dari dompet dan menguji semua penanda tangan. &lt;br&gt; &lt;br&gt; &lt;b&gt;JANGAN kirim dana besar ke dompet dulu. Harap selesaikan semua pengujian kirim-ke-diri sendiri terlebih dahulu!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Instruksi penerimaan</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Transaksi Dikenali</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Dompet yang Baru Dibuka</translation>
+			<source>ALL WALLETS</source>
+			<translation>SEMUA DOMPET</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>DOMPET TERBARU</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Tampilkan di file explorer</translation>
 		</message>
 	</context>
 	<context>
@@ -3937,38 +4349,8 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Impor informasi dompet ke Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Penanda tangan berikutnya</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Langkah berikutnya</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Penanda tangan sebelumnya</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Lewati langkah</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Ya, saya mendaftarkan multisig di {n} penanda tangan perangkat keras</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Daftarkan dompet multisig pada setiap perangkat penandatangan.</translation>
 		</message>
 	</context>
 	<context>
@@ -4012,6 +4394,18 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>Tidak ada file yang dipilih</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Plugin Langganan Demo</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Plugin contoh berbasis PaidPluginClient. Gunakan ini untuk memverifikasi aktivasi berbasis langganan dan tindakan pengelola plugin.</translation>
 		</message>
 	</context>
 	<context>
@@ -4078,14 +4472,38 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>Selesai - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>Buat transaksi di kartu ini.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>Tertunda - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Tes Kirim ke Diri Sendiri {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Tandatangani dan siarkan transaksi di bawah ini.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Lewati tes pengeluaran?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Kami mengirim dari dompet Anda ke alamat lain di dompet Anda (self-send).&lt;br&gt; Ini melatih alur penandatanganan dan memastikan semua penandatangan perangkat keras telah dikonfigurasi dengan benar.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>Menunggu transaksi disiapkan.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4302,20 +4720,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" di {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>Versi tersedia: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>Cetak label</translation>
+			<source>Install {version}</source>
+			<translation>Pasang {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Tempelkan stiker berikut pada perangkat keras Anda:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Versi terpasang: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Terpasang {installed}; pembaruan tersedia: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>Terbaru {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>Perbarui ke {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Versi {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Versi {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Tambah Sumber Plugin...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Tutup</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Sumber plugin yang dikonfigurasi</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Belum ada sumber plugin yang ditambahkan.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Sumber Plugin</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Periksa Ulang Plugin Terpasang</translation>
 		</message>
 	</context>
 	<context>
@@ -4815,11 +5290,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Langkah berikutnya</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>Tidak semua detail transaksi yang diperlukan tersedia untuk RBF</translation>
 		</message>
@@ -4839,11 +5309,6 @@ Atau Anda bisa menyiarkan melalui {url}</translation>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Harap hapus transaksi lokal yang ada dari dompet terlebih dahulu.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Langkah sebelumnya</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5119,18 +5584,6 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Ya, saya yakin semua {number} kata benar</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5356,6 +5809,183 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 Penandatangan</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>Multi Signature 2-dari-3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>Multi Signature 3-dari-5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>Dapat menoleransi kehilangan 1 perangkat penandatangan dan seed cadangannya</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>Dapat menoleransi kehilangan 2 perangkat penandatangan dan seed cadangannya</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Pilih templat dompet</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Kontra</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Lanjutkan</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Kompleksitas tinggi</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>Jika perangkat penandatangan dan cadangan seed hilang, maka dana akan hilang</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Penyimpanan dingin jangka panjang</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Penyimpanan dingin jangka panjang (Multi Signature 2-dari-3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Kompleksitas rendah</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Kompleksitas sedang</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Harap pilih nama dompet</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Langkah Sebelumnya</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Pro</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Pemulihan</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Wajib</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Memerlukan 1 tempat aman dengan akses terkontrol untuk menyimpan cadangan seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Memerlukan 3 tempat aman dengan akses terkontrol untuk menyimpan cadangan seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Memerlukan 5 tempat aman dengan akses terkontrol untuk menyimpan cadangan seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Dompet yang tangguh untuk penyimpanan mandiri jangka panjang.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Pilih templat dari daftar.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>Kustodi mandiri dengan 1 penanda tangan dan 1 cadangan seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Penyimpanan dingin sederhana</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Penyimpanan dingin sederhana (1 Penanda Tangan)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Simpan cadangan seed secara terpisah dari perangkat untuk menghindari kegagalan satu titik.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Penyimpanan super tangguh</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Penyimpanan super tangguh (Multi Tanda Tangan 3-dari-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>Lembar pemulihan dengan deskriptor dompet harus disimpan bersama setiap cadangan seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Total</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nama dompet</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>penanda tangan</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>para penanda tangan</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5363,23 +5993,8 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Tes Self-Send</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Cadangan Seed</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Beli penanda tangan perangkat keras</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Hasilkan Seed</translation>
+			<source>Choose template</source>
+			<translation>Pilih templat</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5388,8 +6003,13 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Labeli penanda tangan perangkat keras</translation>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Langkah Sebelumnya</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5405,6 +6025,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>Daftarkan multisig di penanda tangan</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>Tinjau transaksi dan buat saat Anda siap.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5428,17 +6053,8 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sinkronisasi &amp; Obrolan</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>Transaksi tes  '{tx_text}'  berhasil dilakukan. Silakan lanjutkan melakukan tes self-send: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>Penanda tangan {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5447,8 +6063,18 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Validasi Cadangan</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>Transaksi dibuat. Tanda tangani dan siarkan di bawah, lalu tunggu hingga dompet mengenalinya.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>Transaksi dikenali oleh dompet.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>Menunggu dompet mengenali transaksi yang disiarkan.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5581,6 +6207,11 @@ Negara: {country}</translation>
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>Selesai</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6997,6 +7628,11 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Akses baca dan tulis penuh ke dompet ini dan kategori.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Akses baca dan tulis penuh ke dompet ini, termasuk saldo, transaksi, dan UTXO.</translation>
 		</message>
@@ -7012,8 +7648,18 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Berlangganan peristiwa aktivitas dompet seperti transaksi baru atau sinkronisasi blockchain.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>Berlangganan peristiwa aktivitas dompet seperti transaksi baru atau sinkronisasi blockchain. Juga memungkinkan membuka transaksi dan PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Deskripsi tidak dikenal</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7131,25 +7777,162 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Akses paket Bisnis aktif.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Batal</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Lanjutkan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>Tidak dapat menentukan status langganan saat ini.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>Status saat ini: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Alamat email untuk pengingat langganan dan pemberitahuan perpanjangan:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>Pembelian uji coba gratis tidak mengembalikan payload pengelolaan.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>Pembelian uji coba gratis tidak mengembalikan sesi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>Pembelian uji coba gratis memerlukan deskriptor dompet.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Terakhir diperiksa: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Kesalahan penyegaran terakhir: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Kelola Langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL pengelolaan disimpan.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Belum ada langganan yang diaktifkan.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Buka langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Harap masukkan alamat email yang valid.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Segarkan status Langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Pengingat langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Langganan diperlukan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>Penyegaran status langganan gagal.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>Penyegaran status langganan tidak mengembalikan hasil.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>Aktivasi uji coba gratis gagal.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>Aktivasi uji coba gratis kehabisan waktu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Plugin ini saat ini tidak aktif. Perpanjang langganan sebelum mengaktifkannya lagi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>Menunggu uji coba gratis diaktifkan...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Harap coba lagi nanti. Jika masih tidak berfungsi, hubungi {email}.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Masukkan kode pemasangan 6 digit yang ditampilkan di Trezor:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Masukkan PIN menggunakan tata letak keypad Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Pasangkan Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Buka kunci Trezor</translation>
 		</message>
 	</context>
 	<context>

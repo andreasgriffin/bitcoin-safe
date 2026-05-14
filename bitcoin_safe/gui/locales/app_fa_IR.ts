@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>افزودن منبع افزونه</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>توکن Bearer</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>نام نمایشی</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL مانیفست</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>کلید عمومی ASCII-armored را اینجا جای‌گذاری کنید</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>کلید عمومی سنجاق‌شده</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>پس از انقضای فاکتور، یک بازگشت تماس مرورگر دریافت شد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>یک مبلغ انتخاب کرده و فاکتور اهداء ایجاد کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>پرداخت را در مرورگر خود کامل کنید.
+اگر مشکلی وجود داشت، لطفاً در تماس با ما از طریق این نشانی تردید نکنید: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ایجاد فاکتور امکان‌پذیر نیست. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>مرورگر شما به‌صورت خودکار باز نشد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>امکان راه‌اندازی سرور بازگشت تماس محلی وجود ندارد. فاکتور بدون تأیید خودکار در مرورگر باز می‌شود.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>ایجاد فاکتور</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>فاکتور آماده است. پرداخت را در مرورگر خود تکمیل کنید. ممکن است تأیید خودکار در دسترس نباشد.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>سرویس فاکتور خطایی را برگرداند ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً اهداء را دوباره تلاش کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً دوباره تلاش کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>پرداخت از طریق بازگشت تماس مرورگر تأیید شد. سپاسگزاریم!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>لطفاً یک مبلغ انتخاب کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>در حال درخواست فاکتور...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>در حال درخواست فاکتور... یک مرورگر باز خواهد شد و Bitcoin Safe به‌صورت محلی منتظر بازگشت تماس خواهد بود.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>امکان دسترسی به سرور کمک‌های مالی وجود ندارد. لطفاً بعداً دوباره تلاش کنید.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>کلید همگام‌سازی کیف‌پول {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>عبارت بازیابی {number} کلمه‌ای را روی PDF چاپ‌شدهٔ مربوطه بچسبانید.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>عبارت بازیابی {number} کلمه‌ای را روی PDF چاپ‌شده بچسبانید.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>لطفاً مراحل قبلی را کامل کنید.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>مرحله قبل</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>چاپ برگه بازیابی</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>PDF را چاپ کنید (شامل توصیف‌گر کیف پول نیز هست)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>فعال‌سازی</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>باز کردن افزونه</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>ارائه‌شده توسط: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>طرح تجاری</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>دسترسی به طرح تجاری فعال است.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>همه افزونه‌های پولی را با یک اشتراک باز کنید و کارمزد سرویس پرداخت‌های زمان‌بندی‌شده را حذف کنید.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,27 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>باز کردن در مرورگر بلاک</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>پوشه محتوی را باز کنید</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>خرید {number} امضاکننده سخت‌افزاری                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe از تمام امضاکنندگان سخت‌افزاری اصلی پشتیبانی می‌کند: &lt;a href="{url}"&gt;مشاهده فهرست کامل&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -901,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>لطفاً ابتدا یک کیف پول چندامضایی انتخاب کنید</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>امضاکنندگان موردنیاز</translation>
 		</message>
@@ -918,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>ویژگی‌های کیف پول</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ابتدا دوره آزمایشی رایگان را شروع کنید، سپس اشتراک را از اینجا مدیریت یا تازه‌سازی کنید.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1138,153 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>مکان‌های امن را با دقت انتخاب کنید؛ زیرا برای خرج‌کردن از کیف پول چندامضایی باید به {m} از {n} مکان مراجعه کنید.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>نام کیف پول</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>هر نسخه از پشتیبان سید (کلمات) و امضاکننده (کیف‌پول) سخت‌افزاری را در مکانی امن قرار دهید، مانند:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. چاپ برگه‌های پشتیبان</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>نسخه پشتیبان سید {j} و امضاکننده سخت‌افزاری {j} باید در مکان {j} باشند</translation>
+			<source>Backup sheet</source>
+			<translation>2. بله، من واژه‌های seed را به نسخه چاپی پیوست کردم</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>امضاکننده (کیف‌پول) سخت‌افزاری را در مکانی امن نگهداری کنید.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>برگه پشتیبان</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>نسخه پشتیبان سید را در مکانی &lt;b&gt;بسیار&lt;/b&gt; امن (مانند گاوصندوق) نگهداری کنید.</translation>
+			<source>Backup sheet {number}</source>
+			<translation>برگه پشتیبان {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>نسخه پشتیبان سید (۲۴ کلمه) کنترل کامل بر وجوه را می‌دهد.</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>در ۲ مکان جداگانه توزیع کنید</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>در {n} مکان جداگانه توزیع کنید</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>چندین مکان را در یک جا نگه‌داری نکنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>چند مکان را در یک جای واحد نگهداری نکنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>دستگاه امضا و برگه پشتیبان دارای واژه‌های seed را در یک مکان نگهداری نکنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>هر مکان باید آفلاین و از نظر فیزیکی امن باشد.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>مهم</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>مکان</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>مکان 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>مکان 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>لطفاً مراحل قبلی را کامل کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>دستورالعمل‌های مشاهده واژه‌های seed روی این امضاکننده را باز کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>چاپ برگه‌های پشتیبان (الزامی)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>PDF را چاپ کنید و واژه‌های seed را به هر برگه پشتیبان پیوست کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>برگه‌های پشتیبان را چاپ کنید و همه چیز را در مکان‌های جداگانه و امن نگهداری کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>پشتیبان‌ها و امضاکنندگان خود را در مکان‌های امن قرار دهید</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>برگه {number} از {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>دستگاه امضاکننده</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>دستگاه امضاکننده</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>هر امضاکننده را همراه با برگه پشتیبان و واژه‌های seed آن در همان مکان نگهداری کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>دستگاه امضا و برگه پشتیبان دارای واژه‌های seed را در مکان‌های امن جداگانه نگهداری کنید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>گاوصندوق {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>مشاهده واژه‌های seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>مشاهده واژه‌های seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>برای خرج کردن از کیف پول خود باید به {m} مورد از {n} مکان بروید.</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1325,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>پیام (اختیاری)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>پیام (اختیاری)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1421,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>کامل (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>از Bitcoin Safe متشکریم!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>حذف افزونه</translation>
 		</message>
 	</context>
 	<context>
@@ -1341,43 +1592,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>مرحله قبل</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>تلاش مجدد</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>بله، تراکنش را در تاریخچه می‌بینم</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>لطفاً اطمینان حاصل کنید برنامه دیگری به امضاکننده (کیف‌پول) سخت‌افزاری دسترسی ندارد</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>لطفاً نام (برچسب استیکر) امضاکننده سخت‌افزاری را وارد کنید</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>نام استیکر</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>با موفقیت انجام شد! لطفاً این مرحله را با تمام امضاکننده‌های سخت‌افزاری کامل کرده و سپس روی «بعدی» کلیک کنید.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>راه‌اندازی ناموفق. لطفاً تکرار کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -1598,11 +1812,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>امضاکننده بعدی</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>مرحله بعد</translation>
 		</message>
@@ -1610,11 +1819,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>مرحله قبل</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>امضاکننده قبلی</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1640,6 +1844,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>حذف افزونه</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) به کیف‌پول‌ها اجازه می‌دهد تراکنش‌های مرتبط را پیدا کنند در حالی که آدرس‌های شما خصوصی باقی می‌مانند.</translation>
 		</message>
@@ -1650,13 +1859,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>در اولین همگام‌سازی، Bitcoin Safe خلاصه‌های فشرده بلاک را از چندین نود بیت‌کوین دریافت می‌کند. این یک روش خصوصی برای دانلود داده‌های بلاک است.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>زمان سپری‌شده {elapsed} | زمان باقی‌مانده تخمینی {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>زمان سپری‌شده {elapsed} | زمان باقی‌مانده تخمینی {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe برای حفظ حریم خصوصی خلاصه‌های بلاک را از چندین نود دانلود می‌کند. پس از این همگام‌سازی اولیه، به‌روزرسانی‌ها سریع خواهند بود. اگر سرور Electrum خود را دارید یا نمی‌خواهید منتظر بمانید، در تنظیمات شبکه به یک سرور عمومی Electrum متصل شوید.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>تنظیمات شبکه</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1768,13 +1982,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>پیشرفته</translation>
+			<source>Add New Signer</source>
+			<translation>افزودن امضاکننده جدید</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>توضیحات</translation>
+			<source>Change device type</source>
+			<translation>تغییر نوع دستگاه</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>اتصال</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>مسیر مشتق‌سازی</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>دستورالعمل‌های دستگاه</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1793,10 +2022,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>نام دستگاه امضاکننده: ......
-موقعیت دستگاه امضاکننده: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>داده‌های امضاکننده را با QR، USB یا وارد کردن متن/فایل وارد کنید.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>درباره &lt;a href="{url}"&gt;امضاکننده‌های سخت‌افزاری پشتیبانی‌شده&lt;/a&gt; بیشتر بدانید.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>درباره &lt;a href="{url}"&gt;{device}&lt;/a&gt; بیشتر بدانید.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1810,13 +2047,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>لطفاً اطمینان حاصل کنید برنامه دیگری به امضاکننده سخت‌افزاری دسترسی ندارد</translation>
+			<source>Open the signer guide</source>
+			<translation>باز کردن راهنمای امضاکننده</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>لطفاً منبع کلید معتبر وارد کنید.</translation>
+			<source>Personal notes:</source>
+			<translation>یادداشت‌های شخصی:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>لطفاً اطمینان حاصل کنید برنامه دیگری به امضاکننده سخت‌افزاری دسترسی ندارد</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1840,8 +2082,43 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>کد QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>ثبت</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>ثبت دوباره multisig</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>سید</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>انتخاب برند</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>انتخاب مدل</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>انتخاب برند امضاکننده</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>انتخاب مدل امضاکننده</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1860,18 +2137,28 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>یادداشت‌ها، یادداشت‌های کوتاه و غیره مربوط به این امضاکننده را اینجا بنویسید...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>منبع xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} را نمی‌توان اینجا استفاده کرد.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} را نمی‌توان اینجا استفاده کرد.</translation>
+			<source>{device} instructions</source>
+			<translation>دستورالعمل‌های {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1916,48 +2203,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>منابع کلیدی واردشده شما {key_origins} متفاوت‌اند! لطفاً مطمئن شوید که قصد این کار را دارید.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>کلید همگام‌سازی مخفی نسخه پشتیبان:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>در تب «Sync &amp; Chat» در هر رایانه، رایانه‌های مورد اعتماد را انتخاب کنید.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>ویدیوی همکاری</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>فعال‌سازی</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>پشتیبان ابری رمزنگاری‌شده برچسب‌ها و دسته‌های آدرس</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>پایان</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>همگام‌سازی و چت میان چندین کامپیوتر</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>ویدیوی همگام‌سازی</translation>
 		</message>
 	</context>
 	<context>
@@ -2183,6 +2428,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;افزونه‌ها</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;کیف‌پول/زبانه قبلی</translation>
 		</message>
@@ -2260,6 +2510,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>یک کیف پول با نام {wallet_id} از قبل وجود دارد. لطفاً نام دیگری انتخاب کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2368,6 +2623,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
+می‌توانید برای آزمایش Bitcoin Safe بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>باز نگه‌دار</translation>
 		</message>
@@ -2395,6 +2657,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>تب جدید {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>هیچ کیف‌پول نمایشی برای این شبکه در دسترس نیست.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2450,6 +2717,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>تراکنش بیتکوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>لطفاً یک نام برای کیف پول انتخاب کنید</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2630,6 +2902,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>کیف‌پول {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>کیف‌پول‌ها هنوز در حال همگام‌سازی‌اند و در صورت بستن برنامه باید از ابتدا شروع شوند.
@@ -2659,11 +2936,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>بله، اسکن کامل تراکنش‌ها</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>جدید</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2792,6 +3064,43 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (زمان محلی)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>ساخت</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>ایجاد کیف پول جدید</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>پیش از رفتن به bitcoin واقعی، در یک محیط امن تمرین کنید.&lt;br&gt;• برنامه را با یک کیف‌پول نمایشی بررسی کنید&lt;br&gt;• از کوین‌های آزمایشی که ارزش پولی ندارند استفاده کنید&lt;br&gt;• برای یادگیری، آزمایش و اشتباه کردن به‌صورت امن ایده‌آل است&lt;br&gt;&lt;i&gt;شبکه Signet&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>محیط تمرین امن</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>کیف‌پول امن</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>شبکه Bitcoin موردنظر خود را برای استفاده انتخاب کنید</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>وقتی برای وجوه واقعی آماده هستید، از شبکه Bitcoin واقعی استفاده کنید.&lt;br&gt;• bitcoin واقعی ارسال و دریافت کنید&lt;br&gt;• بهترین گزینه برای راه‌اندازی بلندمدت کیف‌پول شما&lt;br&gt;• تراکنش‌ها ارزش واقعی و پیامدهای واقعی دارند&lt;br&gt;&lt;i&gt;شبکه Mainnet&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2963,8 +3272,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>پروکسی شامل قابلیت Sync&amp;Chat نمی‌شود!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>پروکسی برای افزونه Sync&amp;Chat و هنگام خرید اشتراک اعمال نمی‌شود!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2991,58 +3301,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>۱ مکان امن برای نگهداری نسخه پشتیبان سید (روی کاغذ یا فولاد) لازم است</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>۱ سید (۲۴ کلمهٔ محرمانه) تنها چیزی است که برای دسترسی به وجوه‌تان نیاز دارید</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>۱ دستگاه امضاکننده</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>۲ از ۳ چندامضایی</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>۳ مکان امن (هر یک با ۱ نسخه پشتیبان سید   + توصیف‌گر کیف پول   نیاز است)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>۳ دستگاه امضاکننده</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>بهترین برای مبالغ بزرگ</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>بهترین برای مبالغ متوسط</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>انتخاب چندامضایی</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>انتخاب امضای تکی</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>معایب:</translation>
+			<source>Connect Device(s)</source>
+			<translation>اتصال دستگاه(ها)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3051,49 +3311,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>ایجاد یا وارد کردن کیف پول سفارشی</translation>
+			<source>Custom / Recovery</source>
+			<translation>سفارشی / بازیابی</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>سفارشی‌سازی یا وارد کردن کیف پول موجود</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>راه‌اندازی راهنمایی‌شده برای کیف پول خودامانتی شما.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>کیف پول را مطابق نیاز سفارش‌سازی کنید</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>کیف پول داغ تک‌امضایی</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>اگر یک سید (کلمات بازیابی) گم یا دزدیده شود، با دو سید باقی‌مانده + توصیف‌گر کیف پول (کد QR) می‌توان همهٔ موجودی را به کیف پولی جدید منتقل کرد</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>فهرست کیف پول‌های سخت‌افزاری و امضاکنندگان پشتیبانی‌شده را باز کنید.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>اگر مورد فریب واقع شوید و سید (کلمات) خود را به هکرها بدهید، بیتکوین شما فوراً دزدیده می‌شود</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>برای کاوش ایمن، با یک کیف پول موجود که چند کوین آزمایشی دارد کار کنید.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>منابع پشتیبانی آنلاین کمتر در صورت نیاز به بازیابی</translation>
+			<source>Public Demo wallet</source>
+			<translation>کیف پول نمایشی عمومی</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>مزایا:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>به‌سرعت یک کیف پول برای استفاده فوری بسازید، بدون نیاز به کلیدهای موجود.&lt;br&gt;&lt;small&gt;در Mainnet غیرفعال است، زیرا رایانه متصل به اینترنت برای نگهداری ایمن رازهایی که نماینده پول هستند طراحی نشده است.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>کیف پول تک‌امضایی</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>به‌سرعت یک کیف پول برای استفاده فوری بسازید، بدون نیاز به کلیدهای موجود.&lt;br&gt;&lt;small&gt;ایجاد و ذخیره کلیدها روی رایانه متصل به اینترنت ناامن است. یک رایانه همه‌منظوره برای نگهداری رازهایی که نماینده پول هستند طراحی نشده است.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>توصیف‌گر کیف پول (کد QR) برای بازیابی کیف پول ضروری است</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>یک کیف پول را از کیف پول(های) سخت‌افزاری یا یک توصیفگر بازیابی کنید.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>امضاکنندگان پشتیبانی‌شده</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>نام کیف پول</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3181,6 +3455,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>ماهانه</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>شروع دوره آزمایشی رایگان</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>اشتراک</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>سالانه</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>مدیریت</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>تازه‌سازی وضعیت</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>اشتراک:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3245,95 +3563,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>پس از انقضای فاکتور، یک بازگشت تماس مرورگر دریافت شد. لطفاً دوباره تلاش کنید.</translation>
+			<source>Update</source>
+			<translation>به‌روزرسانی</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>یک مبلغ انتخاب کرده و فاکتور اهداء ایجاد کنید.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>به‌روزرسانی موجود است: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>پرداخت را در مرورگر خود تکمیل کنید.
-در صورت بروز مشکل، لطفاً بدون تردید با ما در این آدرس تماس بگیرید:
-[andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>به‌روزرسانی به {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>ایجاد فاکتور امکان‌پذیر نیست. لطفاً دوباره تلاش کنید.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>مرورگر شما به‌صورت خودکار باز نشد. لطفاً دوباره تلاش کنید.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>امکان راه‌اندازی سرور بازگشت تماس محلی وجود ندارد. فاکتور بدون تأیید خودکار در مرورگر باز می‌شود.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>ایجاد فاکتور</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>فاکتور آماده است. پرداخت را در مرورگر خود تکمیل کنید. ممکن است تأیید خودکار در دسترس نباشد.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>سرویس فاکتور خطایی را برگرداند ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً اهداء را دوباره تلاش کنید.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>پیش از اتمام زمان فاکتور، هیچ بازگشت تماس مرورگری دریافت نشد. لطفاً دوباره تلاش کنید.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>پرداخت از طریق بازگشت تماس مرورگر تأیید شد. سپاسگزاریم!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>لطفاً مبلغ اهداء و واحد پول را انتخاب کنید.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>در حال درخواست فاکتور...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>در حال درخواست فاکتور... یک مرورگر باز خواهد شد و Bitcoin Safe به‌صورت محلی منتظر بازگشت تماس خواهد بود.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>امکان دسترسی به سرور کمک‌های مالی وجود ندارد. لطفاً بعداً دوباره تلاش کنید.</translation>
+			<source>Version {version}</source>
+			<translation>نسخه {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>فعال/غیرفعال</translation>
+			<source>Explore plugins</source>
+			<translation>کاوش افزونه‌ها</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>افزونه‌ها برای این کیف پول در دسترس نیستند، بنابراین چیزی برای پیکربندی در اینجا وجود ندارد.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>افزونه‌های موجود برای این کیف پول را بررسی کنید. می‌توانید افزونه‌های مورد نظر خود را اکنون فعال کنید و بعداً هر زمان به زبانه افزونه‌ها بازگردید.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>یکپارچه‌سازی‌های اختیاری کیف پول را فعال و مدیریت کنید.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>افزونه‌ها</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>لغو</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>حذف</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>حذف افزونه نصب‌شده</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>افزونه نصب‌شده {plugin} حذف شود؟</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>پیش از حذف، افزونه را غیرفعال کنید.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>نشانی URL مانیفست و کلید عمومی پین‌شده الزامی هستند.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>عملیات افزونه ناموفق بود.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>منبع افزونه {source_id} وجود ندارد.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>افزونه‌های نصب‌شده دوباره بررسی شدند.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>افزونه‌های نصب‌شده دوباره بررسی شدند. {count} افزونه نامعتبر است.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>حذف منبع افزونه</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>منبع افزونه {source} حذف شود؟</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>این افزونه قابل حذف نیست.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>برای همه افزونه‌های پولی و هزینه‌های خدمات محدود به اشتراک اعمال می‌شود.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>طرح Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>افزونه‌ها</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>منابع</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>در حالی که {count} افزونه نصب است، امکان حذف وجود ندارد.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>حذف</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>آخرین خطا: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>تازه‌سازی</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>افزونه‌های نصب‌شده از این منبع را پیش از حذف منبع حذف کنید.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>شناسه منبع: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3748,18 +4146,13 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>موجودی = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>بررسی دریافت</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>مرحله بعد</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>تکمیل شد - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3768,31 +4161,49 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>مرحله قبل</translation>
+			<source>Receive Test</source>
+			<translation>آزمایش دریافت</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>یک مقدار &lt;b&gt;کم&lt;/b&gt; (کمتر از {test_amount}) را به 1 آدرس این کیف‌پول دریافت کنید.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt;                     برای اطمینان از اینکه کنترل وجوه را دارید، باید خرج کردن از کیف‌پول را آزمایش کنید. 
-                    &lt;br&gt;                     بنابراین قبل از ارسال مقدار قابل توجهی Bitcoin به کیف‌پول، آزمایش خرج کردن و همه امضاکنندگان &lt;b&gt;بسیار مهم&lt;/b&gt; است.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;هنوز مقادیر بزرگ به کیف‌پول ارسال نکنید. لطفاً ابتدا تمام تست‌های self-send را کامل کنید!&lt;/b&gt;                    </translation>
+			<translation>یک مقدار &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید. &lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید کنترل وجوه را در اختیار دارید، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از ارسال مقدار قابل توجهی Bitcoin به کیف پول، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;حیاتی&lt;/b&gt; است. &lt;br&gt; &lt;br&gt; &lt;b&gt;هنوز وجوه بزرگ به کیف پول ارسال نکنید. لطفاً ابتدا همه آزمایش‌های ارسال به خود را کامل کنید!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>دستورالعمل‌های دریافت</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>تراکنش شناسایی‌شده</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>کیف پول‌های اخیراً بازشده</translation>
+			<source>ALL WALLETS</source>
+			<translation>همه کیف‌پول‌ها</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>کیف‌پول‌های اخیر</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>نمایش در مرورگر فایل</translation>
 		</message>
 	</context>
 	<context>
@@ -3937,38 +4348,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>۲. وارد کردن اطلاعات کیف پول به Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>امضاکننده بعدی</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>مرحله بعد</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>مرحله قبل</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>امضاکننده قبلی</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>رد کردن مرحله</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>بله، چندامضایی را روی {n} امضاکننده سخت‌افزاری ثبت کردم</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>کیف‌پول multisig را روی هر دستگاه امضاکننده ثبت کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -4012,6 +4393,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>فایلی انتخاب نشد</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>افزونه اشتراک نمایشی</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>افزونه نمونه مبتنی بر PaidPluginClient. از این برای تأیید فعال‌سازی محدودشده به اشتراک و اقدامات مدیر افزونه استفاده کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -4078,14 +4471,38 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>تکمیل شد - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>تراکنش را در این کارت ایجاد کنید.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>در انتظار - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>آزمایش ارسال به خود {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>تراکنش زیر را امضا و پخش کنید.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>رد کردن آزمایش خرج؟</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>ما در حال ارسال از کیف‌پول شما به آدرس دیگری در کیف‌پول شما هستیم (self-send).&lt;br&gt; این کار روند امضا را تمرین می‌کند و اطمینان می‌دهد که همه امضاکنندگان سخت‌افزاری به‌درستی تنظیم شده‌اند.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>در انتظار آماده شدن تراکنش.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4302,20 +4719,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>«{sticker}» روی {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>نسخه موجود: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>چاپ برچسب‌ها</translation>
+			<source>Install {version}</source>
+			<translation>نصب {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>برچسب‌های زیر را روی سخت‌افزار خود بچسبانید:</translation>
+			<source>Installed version: {version}</source>
+			<translation>نسخه نصب‌شده: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>نصب‌شده {installed}؛ به‌روزرسانی موجود است: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>آخرین {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>به‌روزرسانی به {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>نسخه {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>نسخه {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>افزودن منبع افزونه...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>بستن</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>منابع افزونه پیکربندی‌شده</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>هنوز هیچ منبع افزونه‌ای اضافه نشده است.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>منابع افزونه</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>بررسی دوباره افزونه‌های نصب‌شده</translation>
 		</message>
 	</context>
 	<context>
@@ -4814,11 +5288,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>مرحلهٔ بعد</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>تمام جزئیات مورد نیاز تراکنش برای RBF در دسترس نیست</translation>
 		</message>
@@ -4838,11 +5307,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>لطفاً ابتدا تراکنش محلی موجود کیف‌پول را حذف کنید.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>مرحلهٔ قبل</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5118,18 +5582,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>مرحلهٔ قبل</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>بله، مطمئنم همهٔ {number} کلمه درست هستند</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5355,6 +5807,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 امضاکننده</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>چندامضایی 2 از 3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>چندامضایی 3 از 5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>می‌تواند از دست رفتن 1 دستگاه امضاکننده و seed پشتیبان آن را تحمل کند</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>می‌تواند از دست رفتن 2 دستگاه امضاکننده و seedهای پشتیبان آن‌ها را تحمل کند</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>یک قالب کیف‌پول انتخاب کنید</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>معایب</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>ادامه</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>پیچیدگی بالا</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>اگر دستگاه امضاکننده و پشتیبان seed از دست بروند، وجوه از دست می‌روند</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>ذخیره‌سازی سرد بلندمدت</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>ذخیره‌سازی سرد بلندمدت (چندامضایی 2 از 3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>پیچیدگی پایین</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>پیچیدگی متوسط</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>لطفاً یک نام برای کیف پول انتخاب کنید</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>مرحلهٔ قبل</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>مزایا</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>بازیابی</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>الزامی</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>برای نگهداری پشتیبان seed به 1 مکان امن با دسترسی کنترل‌شده نیاز دارد</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>برای نگهداری پشتیبان‌های seed به 3 مکان امن با دسترسی کنترل‌شده نیاز دارد</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>برای نگهداری پشتیبان‌های seed به 5 مکان امن با دسترسی کنترل‌شده نیاز دارد</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>کیف‌پول مقاوم برای خودامانی بلندمدت.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>یک الگو از فهرست انتخاب کنید.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>نگه‌داری شخصی با ۱ امضاکننده و ۱ نسخه پشتیبان seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>ذخیره‌سازی سرد ساده</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>ذخیره‌سازی سرد ساده (۱ امضاکننده)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>برای جلوگیری از نقطه خرابی واحد، نسخه پشتیبان seed را جدا از دستگاه نگه‌داری کنید.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>ذخیره‌سازی فوق‌العاده مقاوم</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>ذخیره‌سازی فوق‌العاده مقاوم (چندامضایی 3-of-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>برگه بازیابی دارای توصیف‌گر کیف پول باید همراه با هر نسخه پشتیبان seed نگه‌داری شود.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>مجموع</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>نام کیف پول</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>امضاکننده</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>امضاکنندگان</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5362,23 +5991,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>تست self-send</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>پشتیبان‌گیری سید</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>خرید امضاکنندهٔ سخت‌افزاری</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>ساخت سید</translation>
+			<source>Choose template</source>
+			<translation>انتخاب الگو</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5387,8 +6001,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>برچسب‌گذاری امضاکننده‌های سخت‌افزاری</translation>
+			<source>Plugins</source>
+			<translation>افزونه‌ها</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>مرحلهٔ قبل</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5404,6 +6023,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>ثبت چندامضایی روی امضاکننده‌ها</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>تراکنش را بررسی کنید و وقتی آماده بودید آن را ایجاد کنید.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5427,17 +6051,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>همگام‌سازی و چت</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>تراکنش آزمایشی  '{tx_text}'  با موفقیت انجام شد. لطفاً تست self-send را ادامه دهید: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>امضاکننده {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5446,8 +6061,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>اعتبارسنجی پشتیبان</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>تراکنش ایجاد شد. آن را در پایین امضا و پخش کنید، سپس منتظر شناسایی کیف پول بمانید.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>تراکنش توسط کیف پول شناسایی شد.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>در انتظار شناسایی تراکنش پخش‌شده توسط کیف پول.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5580,6 +6205,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>پایان</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6996,6 +7626,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>دسترسی کامل خواندن و نوشتن به این کیف پول و دسته‌ها.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>دسترسی کامل خواندن و نوشتن به این کیف پول، شامل موجودی‌ها، تراکنش‌ها و UTXOها.</translation>
 		</message>
@@ -7011,8 +7646,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>برای رویدادهای فعالیت کیف پول مانند تراکنش‌های جدید یا همگام‌سازی بلاکچین مشترک شوید.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>اشتراک در رویدادهای فعالیت کیف پول مانند تراکنش‌های جدید یا همگام‌سازی بلاکچین. همچنین امکان باز کردن تراکنش‌ها و PSBTها را فراهم می‌کند.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>توضیح ناشناخته</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7130,25 +7775,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>دسترسی به طرح Business فعال است.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>لغو</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>ادامه</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>امکان تعیین وضعیت فعلی اشتراک وجود نداشت.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>وضعیت فعلی: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>نشانی ایمیل برای یادآوری‌های اشتراک و اعلان‌های تمدید:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>خرید آزمایش رایگان payload مدیریتی برنگرداند.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>خرید آزمایش رایگان جلسه‌ای برنگرداند.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>خرید آزمایش رایگان به توصیف‌گر کیف پول نیاز دارد.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>آخرین بررسی: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>آخرین خطای تازه‌سازی: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>مدیریت اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL مدیریت ذخیره شد.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>هنوز هیچ اشتراکی فعال نشده است.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>باز کردن اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>لطفاً یک نشانی ایمیل معتبر وارد کنید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>تازه‌سازی وضعیت اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>یادآوری‌های اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>اشتراک لازم است</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>تازه‌سازی وضعیت اشتراک ناموفق بود.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>تازه‌سازی وضعیت اشتراک نتیجه‌ای برنگرداند.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>فعال‌سازی آزمایش رایگان ناموفق بود.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>فعال‌سازی آزمایش رایگان به پایان زمان مجاز رسید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>این افزونه در حال حاضر غیرفعال است. پیش از فعال‌سازی دوباره، اشتراک را تمدید کنید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>در انتظار فعال شدن آزمایش رایگان...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} لطفاً بعداً دوباره تلاش کنید. اگر همچنان کار نکرد، با {email} تماس بگیرید.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>کد جفت‌سازی ۶ رقمی نمایش‌داده‌شده روی Trezor را وارد کنید:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>PIN را با استفاده از چیدمان صفحه‌کلید Trezor وارد کنید (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>جفت‌سازی Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>باز کردن قفل Trezor</translation>
 		</message>
 	</context>
 	<context>

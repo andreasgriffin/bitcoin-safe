@@ -41,7 +41,7 @@ from PyQt6.QtCore import (
     QDateTime,
 )
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QSizePolicy, QVBoxLayout
 
 from bitcoin_safe.cpfp_tools import CpfpTools
 from bitcoin_safe.fx import FX
@@ -206,6 +206,7 @@ class UITx_Base(SearchableTab):
         self.mempool_manager = mempool_manager
         self.config = config
 
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._layout = QVBoxLayout(self)
 
         self.high_fee_rate_warning_label = FeeRateWarningBar(network=self.config.network, parent=self)
@@ -231,6 +232,62 @@ class UITx_Base(SearchableTab):
 
         self.cpfp_bar = CPFPBar(network=self.config.network, text="", parent=self)
         self._layout.addWidget(self.cpfp_bar)
+        self._rbf_notification_bar_enabled = True
+        self._cpfp_notification_bar_enabled = True
+        self._rbf_notification_bar_state: tuple[set[str], FeeInfo | None, float] | None = None
+        self._cpfp_notification_bar_state: (
+            tuple[FeeInfo, FeeInfo | None, dict[str, TransactionDetails]] | None
+        ) = None
+
+    def set_fee_notification_bars_enabled(self, enabled: bool) -> None:
+        """Enable or suppress the top RBF/CPFP notification bars."""
+        self._rbf_notification_bar_enabled = enabled
+        self._cpfp_notification_bar_enabled = enabled
+        self._sync_rbf_notification_bar()
+        self._sync_cpfp_notification_bar()
+
+    def _sync_rbf_notification_bar(self) -> None:
+        if not self._rbf_notification_bar_enabled or not self._rbf_notification_bar_state:
+            self.rbf_bar.setVisible(False)
+            return
+
+        conflicing_txids, current_fee, min_fee_rate = self._rbf_notification_bar_state
+        self.rbf_bar.set_infos(
+            current_fee=current_fee, min_fee_rate=min_fee_rate, conflicing_txids=conflicing_txids
+        )
+
+    def _sync_cpfp_notification_bar(self) -> None:
+        if not self._cpfp_notification_bar_enabled or not self._cpfp_notification_bar_state:
+            self.cpfp_bar.setVisible(False)
+            return
+
+        this_fee_info, unconfirmed_parents_fee_info, unconfirmed_ancestors = self._cpfp_notification_bar_state
+        self.cpfp_bar.set_infos(
+            this_fee_info=this_fee_info,
+            unconfirmed_ancestors=unconfirmed_ancestors,
+            unconfirmed_parents_fee_info=unconfirmed_parents_fee_info,
+        )
+
+    def _set_rbf_notification_bar(
+        self, conflicing_txids: set[str], current_fee: FeeInfo | None, min_fee_rate: float | None
+    ) -> None:
+        self._rbf_notification_bar_state = (
+            None if min_fee_rate is None else (conflicing_txids, current_fee, min_fee_rate)
+        )
+        self._sync_rbf_notification_bar()
+
+    def _set_cpfp_notification_bar(
+        self,
+        this_fee_info: FeeInfo,
+        unconfirmed_parents_fee_info: FeeInfo | None,
+        unconfirmed_ancestors: dict[str, TransactionDetails],
+    ) -> None:
+        self._cpfp_notification_bar_state = (
+            (this_fee_info, unconfirmed_parents_fee_info, unconfirmed_ancestors)
+            if unconfirmed_ancestors and unconfirmed_parents_fee_info
+            else None
+        )
+        self._sync_cpfp_notification_bar()
 
     def update_nlocktime_warning(self, nlocktime: int | None, current_height: int) -> None:
         """Update nlocktime warning."""
@@ -289,7 +346,11 @@ class UITx_Base(SearchableTab):
             fee_group.set_cpfp_label(
                 this_fee_info=this_fee_info, unconfirmed_parents_fee_info=None, unconfirmed_ancestors={}
             )
-            self.cpfp_bar.setVisible(False)
+            self._set_cpfp_notification_bar(
+                this_fee_info=this_fee_info,
+                unconfirmed_ancestors={},
+                unconfirmed_parents_fee_info=None,
+            )
             return
 
         unconfirmed_ancestors = self.get_unconfirmed_ancestors(txids=parent_txids)
@@ -302,7 +363,11 @@ class UITx_Base(SearchableTab):
             fee_group.set_cpfp_label(
                 this_fee_info=this_fee_info, unconfirmed_parents_fee_info=None, unconfirmed_ancestors={}
             )
-            self.cpfp_bar.setVisible(False)
+            self._set_cpfp_notification_bar(
+                this_fee_info=this_fee_info,
+                unconfirmed_ancestors={},
+                unconfirmed_parents_fee_info=None,
+            )
             return
 
         fee_group.set_cpfp_label(
@@ -310,7 +375,7 @@ class UITx_Base(SearchableTab):
             unconfirmed_ancestors=unconfirmed_ancestors,
             unconfirmed_parents_fee_info=unconfirmed_parents_fee_info,
         )
-        self.cpfp_bar.set_infos(
+        self._set_cpfp_notification_bar(
             this_fee_info=this_fee_info,
             unconfirmed_ancestors=unconfirmed_ancestors,
             unconfirmed_parents_fee_info=unconfirmed_parents_fee_info,

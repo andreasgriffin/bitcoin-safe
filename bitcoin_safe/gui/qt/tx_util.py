@@ -35,9 +35,9 @@ import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
+from bitcoin_safe.wallet import Wallet, get_wallet_of_address
 
 from ...signals import T, UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
-from ...wallet import Wallet, get_wallet_of_address
 
 logger = logging.getLogger(__name__)
 

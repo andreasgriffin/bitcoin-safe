@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import enum
 import logging
 from functools import partial
 from time import time
@@ -77,7 +78,7 @@ from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-from bitcoin_safe.tx import HiddenTxUiInfos, short_tx_id
+from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
@@ -128,6 +129,11 @@ from ..utxo_list import UtxoListWithToolbar
 from .columns import BaseColumn, ColumnFee, ColumnInputs, ColumnRecipients, ColumnSankey
 
 logger = logging.getLogger(__name__)
+
+
+class ViewerPresentation(enum.Enum):
+    standalone_tab = enum.auto()
+    embedded_card = enum.auto()
 
 
 class PSBTAlreadyBroadcastedBar(NotificationBar):
@@ -210,6 +216,9 @@ class UITx_Viewer(UITx_Base):
         self._forced_update = False
         self._pending_update = True
         self.hidden_tx_infos = hidden_tx_infos
+        self.post_broadcast_action = PostBroadcastEnum.open_hist_list
+        self._post_broadcast_consumed_txid: str | None = None
+        self.presentation = ViewerPresentation.standalone_tab
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
 
@@ -385,20 +394,6 @@ class UITx_Viewer(UITx_Base):
             on_clicked=self.navigate_tab_history_backward,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        self.button_previous = add_to_buttonbox(
-            self.buttonBox,
-            "",
-            None,
-            on_clicked=self.go_to_previous_index,
-            role=QDialogButtonBox.ButtonRole.RejectRole,
-        )
-        self.button_next = add_to_buttonbox(
-            self.buttonBox,
-            "",
-            None,
-            on_clicked=self.go_to_next_index,
-            role=QDialogButtonBox.ButtonRole.AcceptRole,
-        )
         self.button_save_local_tx = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -568,6 +563,15 @@ class UITx_Viewer(UITx_Base):
         header_widget.h_laylout.insertWidget(2, self.txid_label)
         header_widget.h_laylout.addWidget(self.header_button_group)
 
+    def set_presentation(self, presentation: ViewerPresentation) -> None:
+        """Adjust the viewer chrome for its host presentation."""
+        self.presentation = presentation
+        embedded = self.presentation == ViewerPresentation.embedded_card
+        self.set_fee_notification_bars_enabled(not embedded)
+        self.container_label.setVisible(not embedded)
+        self.header_button_group.setVisible(not embedded)
+        self.button_back.setVisible(False if embedded else self.button_back.isVisible())
+
     def _update_txid_controls(self) -> None:
         """Refresh txid text and txid-related actions."""
         self.txid_label.set_txid(self.txid())
@@ -585,8 +589,6 @@ class UITx_Viewer(UITx_Base):
             edit.setToolTip(button_info(info_type).tooltip)
 
         self.button_back.setText(self.tr("Back"))
-        self.button_previous.setText(self.tr("Previous step"))
-        self.button_next.setText(self.tr("Next step"))
         self.button_send.setText(self.tr("Send"))
         self.button_send.setToolTip("Broadcasts the transaction to the bitcoin network.")
         self.label_label.setText(self.tr("Label: "))
@@ -621,53 +623,10 @@ class UITx_Viewer(UITx_Base):
             return self.data.data.extract_tx()
         raise Exception(f"invalid data type {self.data.data}")
 
-    def _step_allows_forward(self, index: int) -> bool:
-        """Step allows forward."""
-        if not self.tx_singning_steps:
-            return False
-        if index == self.tx_singning_steps.count() - 1:
-            return False
-        return index in self.tx_singning_steps.sub_indices
-
-    def _step_allows_backward(self, index: int) -> bool:
-        """Step allows backward."""
-        if not self.tx_singning_steps:
-            return False
-        if index == 0:
-            return False
-        return index - 1 in self.tx_singning_steps.sub_indices
-
-    def set_next_prev_button_enabledness(self):
-        """Set next prev button enabledness."""
-        if not self.tx_singning_steps:
-            return
-        next_enabled = self._step_allows_forward(self.tx_singning_steps.current_index())
-        prev_enabled = self._step_allows_backward(self.tx_singning_steps.current_index())
-        self.button_next.setEnabled(next_enabled)
-        self.button_previous.setEnabled(prev_enabled)
-        self.button_next.setHidden(not next_enabled and not prev_enabled)
-        self.button_previous.setHidden(not next_enabled and not prev_enabled)
-
     def navigate_tab_history_backward(self) -> None:
         """Return to the previously active tab."""
 
         self.signals.tab_history_backward.emit()
-
-    def go_to_next_index(self) -> None:
-        """Go to next index."""
-        if not self.tx_singning_steps:
-            return
-        self.tx_singning_steps.go_to_next_index()
-
-        self.set_next_prev_button_enabledness()
-
-    def go_to_previous_index(self) -> None:
-        """Go to previous index."""
-        if not self.tx_singning_steps:
-            return
-        self.tx_singning_steps.go_to_previous_index()
-
-        self.set_next_prev_button_enabledness()
 
     def cpfp(
         self, fee_rate: float | None = None, target_total_unconfirmed_fee_rate: float | None = None
@@ -949,6 +908,12 @@ class UITx_Viewer(UITx_Base):
         if success:
             if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
                 self.save_local_tx()
+            if (
+                self.post_broadcast_action == PostBroadcastEnum.open_hist_list
+                and self._post_broadcast_consumed_txid != self.txid()
+            ):
+                self.signals.signal_open_history_for_tx.emit(tx)
+                self._post_broadcast_consumed_txid = self.txid()
             logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
@@ -991,7 +956,7 @@ class UITx_Viewer(UITx_Base):
                 keystore = get_keystore(pubkey.fingerprint, wallet.keystores)
                 if not keystore:
                     continue
-                pubkey.label = keystore.label
+                pubkey.label = keystore.technical_hardware_signer_label()
 
         return simple_psbt
 
@@ -1503,6 +1468,7 @@ class UITx_Viewer(UITx_Base):
         """Set visibility."""
         is_psbt = self.data.data_type == DataType.PSBT
         self.export_data_simple.setVisible(not is_psbt)
+        embedded = self.presentation == ViewerPresentation.embedded_card
         self.tx_singning_steps_container.setVisible(is_psbt)
 
         tx_status = self.get_tx_status(chain_position=chain_position)
@@ -1514,13 +1480,11 @@ class UITx_Viewer(UITx_Base):
         )
         self.button_save_local_tx.setVisible(show_send and not tx_status.is_in_mempool())
         self.button_send.setEnabled(show_send)
-        self.button_next.setVisible(self.data.data_type == DataType.PSBT)
-        self.button_previous.setVisible(self.data.data_type == DataType.PSBT)
 
         edit_button_visible = TxTools.can_edit_safely(tx_status=tx_status)
         self.button_edit_tx.setVisible(edit_button_visible)
         # having a back button next to the edit button is confusing
-        self.button_back.setVisible(not edit_button_visible)
+        self.button_back.setVisible(not embedded and not edit_button_visible)
 
         self.button_rbf.setVisible(
             bool(tx_details and TxTools.can_rbf_safely(tx=tx_details.transaction, tx_status=tx_status))
@@ -1528,7 +1492,8 @@ class UITx_Viewer(UITx_Base):
         self.button_cpfp_tx.setVisible(
             TxTools.can_cpfp(tx_status=tx_status, wallet_functions=self.wallet_functions)
         )
-        self.set_next_prev_button_enabledness()
+        self.header_button_group.setVisible(not embedded)
+        self.container_label.setVisible(not embedded)
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
         """Fetch cached feeinfo."""

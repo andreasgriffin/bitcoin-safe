@@ -162,7 +162,6 @@ def test_funded_wallet_session(
         xpub=descriptor_info.spk_providers[0].xpub,
         fingerprint=descriptor_info.spk_providers[0].fingerprint,
         key_origin=descriptor_info.spk_providers[0].key_origin,
-        label="test",
         network=test_config_session.network,
     )
     # Create a test wallet from a fixed descriptor.

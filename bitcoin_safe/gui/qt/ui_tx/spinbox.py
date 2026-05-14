@@ -216,11 +216,11 @@ class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):
                 # do not set the btc value new, as it should be unchanged
                 super().setValue(new_fiat_value)
 
-    def set_max(self, value: bool) -> None:
+    def set_max(self, value: bool, read_only: bool) -> None:
         """Set max."""
+        self.setReadOnly(read_only)
         if value == self._is_max:
             return
-        self.setDisabled(value)
         self._is_max = value
         self.setValue(super().value())
 
@@ -323,10 +323,10 @@ class BTCSpinBox(AnalyzerSpinBox):
         super().setValue(val)
         self.format_and_apply_validator()
 
-    def set_max(self, value: bool) -> None:
+    def set_max(self, value: bool, read_only: bool) -> None:
         """Set max."""
-        self.setDisabled(value)
         self._is_max = value
+        self.setReadOnly(read_only)
         self.setValue(super().value())
 
     def value(self) -> int:

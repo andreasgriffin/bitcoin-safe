@@ -85,47 +85,11 @@ class Settings(QTabWidget):
 
         self.signals.language_switch.connect(self.updateUi)
 
-        # category manager(s)
-        # self.category_tab=QWidget()
-        # self.addTab(self.category_tab, "")
-        # self.category_tab_layout = QVBoxLayout(self.category_tab)
-        # self.category_wallet_combobox = QComboBox()
-        # self.category_tab_layout.addWidget(self.category_wallet_combobox)
-        # self.current_category_manager:QWidget|None= None
-
-        # self.fill_category_box()
         self.updateUi()
-
-        # signals
-        # self.category_wallet_combobox .currentIndexChanged.connect(self.on_category_wallet_combobox)
 
     def _handle_update_clicked(self) -> None:
         self.signal_update_action_requested.emit()
         self.close()
-
-    # def showEvent(self, a0: Optional[QShowEvent]) -> None:
-    #     self.fill_category_box()
-
-    # def on_category_wallet_combobox(self ):
-    #     if self.count()<=0:
-    #         return
-    #     if self.current_category_manager:
-    #         self.current_category_manager.setHidden(True)
-    #         self.current_category_manager.setParent(None)
-
-    #     qt_wallet = self.category_wallet_combobox.currentData()
-    #     if isinstance(qt_wallet, QTWallet):
-    #         self.current_category_manager=qt_wallet.category_manager
-    #         self.category_tab_layout.addWidget(self.current_category_manager)
-
-    # def fill_category_box(self):
-    #     self.category_wallet_combobox.clear()
-    #     if not self.signals:
-    #         return
-    #     qt_wallets: List[QTWallet] = list(self.signals.get_qt_wallets.emit().values())
-    #     for qt_wallet in qt_wallets:
-    #         self.category_wallet_combobox.addItem(qt_wallet.wallet.id, qt_wallet)
-    #         self.category_tab_layout.addWidget(self.current_category_manager)
 
     def updateUi(self) -> None:
         """UpdateUi."""

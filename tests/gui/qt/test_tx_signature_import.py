@@ -91,9 +91,7 @@ def test_signature_import_of_psbt_without_utxos(
 
         assert not uitx_viewer.button_rbf.isVisible()
         assert not uitx_viewer.button_cpfp_tx.isVisible()
-        assert not uitx_viewer.button_next.isVisible()
         assert not uitx_viewer.button_save_local_tx.isVisible()
-        assert not uitx_viewer.button_previous.isVisible()
 
         assert uitx_viewer.tx_singning_steps.isVisible()
         assert len(uitx_viewer.tx_singning_steps.signature_importer_dict) == 1
@@ -138,8 +136,6 @@ def test_signature_import_of_psbt_without_utxos(
 
         assert not uitx_viewer.button_rbf.isVisible()
         assert not uitx_viewer.button_cpfp_tx.isVisible()
-        assert not uitx_viewer.button_next.isVisible()
-        assert not uitx_viewer.button_previous.isVisible()
 
         # end
         shutter.save(main_window)

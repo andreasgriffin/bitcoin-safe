@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import enum
 import logging
 from dataclasses import asdict, dataclass, field
 from typing import Any, cast
@@ -56,6 +57,16 @@ from .pythonbdk_types import (
 logger = logging.getLogger(__name__)
 
 
+class PostCreateEnum(enum.Enum):
+    open_tab = enum.auto()
+    no_action = enum.auto()
+
+
+class PostBroadcastEnum(enum.Enum):
+    open_hist_list = enum.auto()
+    no_action = enum.auto()
+
+
 @dataclass
 class HiddenTxUiInfos(BaseSaveableClass):
     """Container for state not exposed through the UI."""
@@ -66,6 +77,9 @@ class HiddenTxUiInfos(BaseSaveableClass):
     replace_tx: bdk.Transaction | None = None
     tx_label: str | None = None
     save_local_on_send: bool | None = None
+    post_create_action: PostCreateEnum = PostCreateEnum.open_tab
+    wizard_request_id: str | None = None
+    wizard_send_test_index: int | None = None
 
     def dump(self) -> dict[str, Any]:  # type: ignore[override]
         """Dump hidden fields."""
@@ -73,6 +87,9 @@ class HiddenTxUiInfos(BaseSaveableClass):
         d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
         d["tx_label"] = self.tx_label
         d["save_local_on_send"] = self.save_local_on_send
+        d["post_create_action"] = self.post_create_action.name
+        d["wizard_request_id"] = self.wizard_request_id
+        d["wizard_send_test_index"] = self.wizard_send_test_index
         return d
 
     @classmethod
@@ -85,6 +102,13 @@ class HiddenTxUiInfos(BaseSaveableClass):
 
         dct.setdefault("tx_label", None)
         dct.setdefault("save_local_on_send", None)
+        post_create_action = dct.get("post_create_action")
+        if isinstance(post_create_action, str):
+            dct["post_create_action"] = PostCreateEnum[post_create_action]
+        else:
+            dct["post_create_action"] = PostCreateEnum.open_tab
+        dct.setdefault("wizard_request_id", None)
+        dct.setdefault("wizard_send_test_index", None)
         return cls(**filtered_for_init(dct, cls))
 
 

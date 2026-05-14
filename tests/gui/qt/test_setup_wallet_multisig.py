@@ -29,37 +29,28 @@
 
 from __future__ import annotations
 
-import inspect
 import logging
 from datetime import datetime
-from pathlib import Path
-from unittest.mock import patch
 
-import bdkpython as bdk
-import platformdirs
 import pytest
-from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
-from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtCore import QCoreApplication, Qt
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QDialogButtonBox, QWidget
+from PyQt6.QtWidgets import QWidget
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
-from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
+from bitcoin_safe.gui.qt.card_base import CardExpansionMode
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.gui.qt.wizard import (
-    BackupSeed,
-    BuyHardware,
+from bitcoin_safe.gui.qt.wizard.wizard import (
     DistributeSeeds,
-    GenerateSeed,
     ImportXpubs,
-    LabelBackup,
+    PluginListStep,
     ReceiveTest,
     SendTest,
-    StickerTheHardware,
     TutorialStep,
+    WalletSetupOptions,
     Wizard,
 )
 from tests.faucet import Faucet
@@ -71,10 +62,9 @@ from .helpers import (
     CheckedDeletionContext,
     Shutter,
     close_wallet,
-    do_modal_click,
-    get_called_args_message_box,
     main_window_context,
     save_wallet,
+    select_manual_entry_signer,
     sign_tx,
 )
 
@@ -82,106 +72,85 @@ logger = logging.getLogger(__name__)
 
 
 def enter_text(text: str, widget: QWidget) -> None:
-    """Simulates key-by-key text entry into a specified PyQt widget.
-
-    :param text: The string of text to be entered into the widget.
-    :param widget: The PyQt widget where the text will be entered.
-    """
+    """Simulate key-by-key text entry into a widget."""
     for char in text:
         QTest.keyClick(widget, char)
 
 
-@pytest.mark.marker_qt_1  # repeated gui tests let the RAM usage increase (unclear why the memory isnt freed), and to stay under the github VM limit, we split the tests
-def test_wizard_multisig(
+def _run_multisig_wizard_test(
     qtbot: QtBot,
     mytest_start_time: datetime,
     test_config: TestConfig,
     faucet: Faucet,
     caplog: pytest.LogCaptureFixture,
     backend: str,
-    wallet_name: str = "test_wizard_multisig",
-    amount: int = int(1e6),
-) -> None:  # bitcoin_core: Path,
-    """Test wizard."""
-    logger.debug("start test_wizard")
-    frame = inspect.currentframe()
-    assert frame
-    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+    wallet_name: str,
+    test_name: str,
+    template: WalletSetupOptions.WalletTemplate,
+    threshold: int,
+    signers: int,
+    amount: int,
+) -> None:
+    """Exercise the full multisig wizard, including the send-test card flow."""
+    logger.debug(f"start {test_name}")
+    del backend
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{test_name}")
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
         logger.debug(f"(app, main_window) = {main_window}")
-        # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
         assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
 
         shutter.save(main_window)
 
-        w = main_window.welcome_screen.pushButton_multisig
+        main_window.welcome_screen.set_wallet_name(wallet_name)
+        shutter.save(main_window)
+        qtbot.mouseClick(main_window.welcome_screen.card_connect_devices, Qt.MouseButton.LeftButton)
+        shutter.save(main_window)
 
-        def on_wallet_id_dialog(dialog: WalletIdDialog) -> None:
-            """On wallet id dialog."""
-            # Provide a deterministic wallet name in the modal.
-            shutter.save(dialog)
-            dialog.name_input.setText(wallet_name)
-            shutter.save(dialog)
-
-            dialog.buttonbox.button(QDialogButtonBox.StandardButton.Ok).click()
-            shutter.save(main_window)
-
-        do_modal_click(w, on_wallet_id_dialog, qtbot, cls=WalletIdDialog)
-
-        # Resolve the proto wallet and wizard flow.
         qt_protowallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_protowallet, QTProtoWallet)
         wizard = qt_protowallet.wizard
         assert isinstance(wizard, Wizard)
 
-        def page1(wizard: Wizard) -> None:
-            """Page1."""
+        def page_wallet_setup(wizard: Wizard) -> None:
             shutter.save(main_window)
-            step = wizard.tab_generators[TutorialStep.buy]
-            assert isinstance(step, BuyHardware)
-            # Advance from the "buy hardware" page.
+            step = wizard.tab_generators[TutorialStep.wallet_setup]
+            assert isinstance(step, WalletSetupOptions)
+            assert step.edit_wallet_name.text() == wallet_name
+            assert step.template_options
+            if template != step.WalletTemplate.two_of_three:
+                qtbot.mouseClick(step.template_options[template], Qt.MouseButton.LeftButton)
+                shutter.save(main_window)
+            assert step.card_required_signers.label_value.text() == str(threshold)
+            assert step.card_required_signers.label_subtitle.text() == (
+                "signer" if threshold == 1 else "signers"
+            )
+            assert step.card_recovery_signers.label_value.text() == str(signers - threshold)
+            assert step.card_recovery_signers.label_subtitle.text() == (
+                "signer" if signers - threshold == 1 else "signers"
+            )
+            assert step.card_total_signers.label_value.text() == str(signers)
+            assert step.card_total_signers.label_subtitle.text() == "signers"
             assert step.buttonbox_buttons[0].isVisible()
             step.buttonbox_buttons[0].click()
 
-        page1(wizard)
-
-        def page_sticker(wizard: Wizard) -> None:
-            """Page sticker."""
-            shutter.save(main_window)
-            step: StickerTheHardware = wizard.tab_generators[TutorialStep.sticker]
-            # Advance from the sticker page.
-            assert step.buttonbox_buttons[0].isVisible()
-            step.buttonbox_buttons[0].click()
-
-        page_sticker(wizard)
-
-        def page_generate(wizard: Wizard) -> None:
-            """Page generate."""
-            shutter.save(main_window)
-            step: GenerateSeed = wizard.tab_generators[TutorialStep.generate]
-            # Advance from the seed generation page.
-            assert step.buttonbox_buttons[0].isVisible()
-            step.buttonbox_buttons[0].click()
-
-        page_generate(wizard)
+        page_wallet_setup(wizard)
 
         def page_import(wizard: Wizard) -> None:
-            """Page import."""
             shutter.save(main_window)
-            step: ImportXpubs = wizard.tab_generators[TutorialStep.import_xpub]
-
+            step = wizard.tab_generators[TutorialStep.import_xpub]
+            assert isinstance(step, ImportXpubs)
             assert step.keystore_uis
-            seeds_iter = iter(test_seeds if isinstance(test_seeds, list) else test_seeds.splitlines())
-            # fill all keystores with seeds; rely on auto-derivation for fingerprints/xpubs
-            for keystore in step.keystore_uis.getAllTabData().values():
-                keystore.tabs_import_type.setCurrentWidget(keystore.tab_manual)
-                keystore.edit_seed.setText(next(seeds_iter))
+
+            for seed, keystore in zip(
+                test_seeds[32 : 32 + signers], step.keystore_uis.getAllTabData().values(), strict=False
+            ):
+                select_manual_entry_signer(keystore)
+                keystore.edit_seed.setText(seed)
                 shutter.save(main_window)
 
-            # Save the wallet once all seeds have been entered.
             save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
@@ -190,45 +159,19 @@ def test_wizard_multisig(
 
         page_import(wizard)
 
-        ######################################################
-        # Now that the wallet is created, reload from the wallet tree.
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
         wizard = qt_wallet.wizard
         assert isinstance(wizard, Wizard)
 
-        def do_all(qt_wallet: QTWallet) -> None:
-            # Keep all operations in one scope to avoid lingering references to qt_wallet.
-
-            wizard = qt_wallet.wizard
-            assert isinstance(wizard, Wizard)
-
-            def page_backup() -> None:
-                """Page backup."""
+        def do_all(wizard: Wizard, qt_wallet: QTWallet) -> None:
+            def page_backup_not_in_wallet_wizard(wizard: Wizard) -> None:
                 shutter.save(main_window)
-                step = wizard.tab_generators[TutorialStep.backup_seed]
-                assert isinstance(step, BackupSeed)
-                # Ensure back navigation is disabled and open the PDF backup.
-                assert not step.button_previous.isEnabled()
-                assert not step.custom_cancel_button.isEnabled()
-                with patch("bitcoin_safe.pdfrecovery.xdg_open_file") as mock_open:
-                    assert step.custom_yes_button.isVisible()
-                    step.custom_yes_button.click()
-                    mock_open.assert_called_once()
+                assert "backup_seed" not in TutorialStep.__members__
 
-                    # Clean up generated PDF backups from the cache.
-                    cache_dir = Path(platformdirs.user_cache_dir("bitcoin_safe"))
-                    prefix = f"Seed backup of {wallet_name}".replace(" ", "_")
-                    temp_files = list(cache_dir.glob(f"{prefix}-*.pdf"))
-                    assert temp_files
-                    for temp_file in temp_files:
-                        temp_file.unlink()
-
-            page_backup()
+            page_backup_not_in_wallet_wizard(wizard)
 
             def switch_language() -> None:
-                """Switch language."""
-                # Briefly switch language to ensure translation updates.
                 main_window.language_chooser.switchLanguage("zh_CN")
                 shutter.save(main_window)
                 main_window.language_chooser.switchLanguage("en_US")
@@ -236,51 +179,62 @@ def test_wizard_multisig(
 
             switch_language()
 
-            def page_register() -> None:
-                """Page register multisig."""
+            def page_register(wizard: Wizard) -> None:
                 shutter.save(main_window)
                 if TutorialStep.register in wizard.tab_generators:
-                    # Some flows include a registration step; advance if present.
                     step = wizard.tab_generators[TutorialStep.register]
                     step.buttonbox_buttons[0].click()
                     shutter.save(main_window)
 
-            page_register()
+            page_register(wizard)
 
-            def page_receive() -> None:
-                """Page receive."""
+            def page_plugins_before_receive(wizard: Wizard) -> None:
+                shutter.save(main_window)
+                step = wizard.tab_generators[TutorialStep.plugins]
+                assert isinstance(step, PluginListStep)
+                assert wizard.current_step() == TutorialStep.plugins
+                assert step.buttonbox_buttons[0].isVisible()
+                step.buttonbox_buttons[0].click()
+                qtbot.waitUntil(lambda: wizard.current_step() == TutorialStep.receive, timeout=5_000)
+                shutter.save(main_window)
+
+            page_plugins_before_receive(wizard)
+
+            def page_receive(wizard: Wizard, qt_wallet: QTWallet) -> None:
                 shutter.save(main_window)
                 step = wizard.tab_generators[TutorialStep.receive]
                 assert isinstance(step, ReceiveTest)
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
+                assert step.button_previous.isVisible()
                 address = step.quick_receive.group_boxes[0].address
                 assert address.startswith("bcrt1")
-                # Fund the address and wait for the wallet to sync.
                 faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
                 wait_for_sync(wallet=qt_wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
 
-                # The check button should report the updated balance, then disappear.
-                called_args_message_box = get_called_args_message_box(
-                    "bitcoin_safe.gui.qt.wizard.Message",
-                    step.check_button,
-                    repeat_clicking_until_message_box_called=True,
-                )
-                assert str(called_args_message_box) == str(
-                    (f"Balance = {Satoshis(amount, network=test_config.network).str_with_unit()}",)
-                )
+                if not step.check_button.isHidden():
+                    step.check_button.click()
                 assert not step.check_button.isVisible()
                 assert step.next_button.isVisible()
+                qtbot.waitUntil(lambda: step.get_received_txid() is not None, timeout=5_000)
                 shutter.save(main_window)
                 step.next_button.click()
                 shutter.save(main_window)
 
-            page_receive()
+            page_receive(wizard, qt_wallet)
 
-            def page_send_and_sign() -> None:
-                """Handle all send tests and signing."""
+            def page_send_and_sign(wizard: Wizard, qt_wallet: QTWallet) -> None:
                 send_steps = wizard.get_send_tests_steps()
-
                 assert len(send_steps) == 2
+                if template == WalletSetupOptions.WalletTemplate.three_of_five:
+                    send_test_labels = wizard.get_send_test_labels()
+                    assert len(send_test_labels) == 2
+                    assert "Signer 1" in send_test_labels[0]
+                    assert "Signer 2" in send_test_labels[0]
+                    assert "Signer 3" in send_test_labels[0]
+                    assert "Signer 3" in send_test_labels[1]
+                    assert "Recovery Signer 4" in send_test_labels[1]
+                    assert "Recovery Signer 5" in send_test_labels[1]
+
                 for send_step in send_steps:
                     wizard.set_current_index(wizard.index_of_step(send_step))
                     wizard.set_visibilities()
@@ -288,81 +242,79 @@ def test_wizard_multisig(
 
                     step = wizard.tab_generators[send_step]
                     assert isinstance(step, SendTest)
-                    assert step.refs.floating_button_box.isVisible()
-                    assert step.refs.floating_button_box.button_create_tx.isVisible()
-                    assert not step.refs.floating_button_box.tutorial_button_prefill.isVisible()
-
-                    # Ensure the send UI is visible and anchored to this wizard step.
                     uitx = qt_wallet.uitx_creator
+                    assert uitx.button_box.isVisible()
+                    assert uitx.button_ok.isVisible()
+                    assert not uitx.button_back.isVisible()
+                    assert uitx.button_clear is not None and not uitx.button_clear.isVisible()
+                    assert wizard.send_test_previous_button.isVisible()
                     assert uitx.isVisible()
                     parent = uitx.parent()
                     assert parent is not None and parent.isVisible()
-                    assert parent == wizard.widgets[send_step].widget
+                    assert step.active_card.content_layout.indexOf(uitx) != -1
 
                     box = uitx.recipients.get_recipient_group_boxes()[0]
                     shutter.save(main_window)
                     assert box.address.startswith("bcrt1")
-                    # The max amount should match balance minus fee.
                     fee_info = uitx.estimate_fee_info(uitx.column_fee.fee_group.spin_fee_rate.value())
                     assert (
                         uitx.recipients.recipients[0].amount
                         == qt_wallet.wallet.get_balance().total - fee_info.fee_amount
                     )
                     assert uitx.recipients.recipients[0].checked_max_amount
+                    assert main_window.tab_wallets.currentNode() != qt_wallet.hist_node
 
-                    # Create a PSBT, then sign and send it.
-                    step.refs.floating_button_box.button_create_tx.click()
+                    uitx.button_ok.click()
+                    qtbot.waitUntil(lambda step=step: step.embedded_viewer is not None, timeout=10_000)
                     shutter.save(main_window)
 
-                    viewer = main_window.tab_wallets.currentNode().data
+                    viewer = step.embedded_viewer
                     assert isinstance(viewer, UITx_Viewer)
                     assert viewer.recipients.recipients
                     assert viewer.fee_info
                     assert not viewer.column_fee.fee_group.allow_edit
+                    txid = str(viewer.extract_tx().compute_txid())
+                    assert main_window.get_tx_viewer(txid) is None
 
                     sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
+                    viewer.button_send.click()
+                    assert main_window.tab_wallets.currentNode() != qt_wallet.hist_node
 
-                    # Broadcast and wait for the wallet to observe the tx.
-                    with patch("bitcoin_safe.gui.qt.wizard.Message") as mock_message:
-                        viewer.button_send.click()
-                        assert isinstance((tx := viewer.data.data), bdk.Transaction)
-                        wait_for_sync(
-                            qtbot=qtbot, wallet=qt_wallet.wallet, txid=str(tx.compute_txid()), timeout=20_000
-                        )
-                        qtbot.wait_until(lambda: bool(mock_message.call_count), timeout=10_000)
-                        # only final send should show "all tests done", so don't assert message content strictly
+                    wait_for_sync(qtbot=qtbot, wallet=qt_wallet.wallet, txid=txid, timeout=40_000)
+                    qtbot.waitUntil(lambda txid=txid: txid in wizard.recognized_txids, timeout=40_000)
+                    qtbot.waitUntil(lambda step=step: step.buttonbox.isVisible(), timeout=5_000)
+                    qtbot.waitUntil(lambda step=step: step.embedded_viewer is None, timeout=5_000)
+                    assert txid in wizard.recognized_txids
+                    assert step.active_card.expansion_mode() == CardExpansionMode.FIXED_COLLAPSED
+                    assert txid[:4] in step.active_card.header_subtitle.text()
+                    assert main_window.tab_wallets.currentNode() != qt_wallet.hist_node
+                    step.button_next.click()
 
-            page_send_and_sign()
+            page_send_and_sign(wizard, qt_wallet)
 
-            def page_distribute_and_sync() -> None:
-                """Finish tutorial."""
+            def page_distribute_and_plugins(wizard: Wizard) -> None:
                 shutter.save(main_window)
 
                 step = wizard.tab_generators[TutorialStep.distribute]
                 assert isinstance(step, DistributeSeeds)
-                # Advance through distribute seeds.
+                step.backup_sheets_printed = True
+                step.seed_words_attached_confirmed = True
+                step._refresh_action_buttons()
                 assert step.buttonbox_buttons[0].isVisible()
+                qtbot.waitUntil(lambda: step.buttonbox_buttons[0].isEnabled(), timeout=5_000)
                 step.buttonbox_buttons[0].click()
+                qtbot.waitUntil(lambda: not wizard.should_be_visible, timeout=5_000)
                 shutter.save(main_window)
 
-                step = wizard.tab_generators[TutorialStep.sync]
-                assert isinstance(step, LabelBackup)
-                # Advance through sync/label step.
-                assert step.buttonbox_buttons[0].isVisible()
-                step.buttonbox_buttons[0].click()
-                shutter.save(main_window)
+            page_distribute_and_plugins(wizard)
 
-            page_distribute_and_sync()
+        do_all(wizard, qt_wallet)
 
-        do_all(qt_wallet)
-
-        def check_address_balances(qt_wallet: QTWallet):
-            """Check address balances."""
+        def check_address_balances(qt_wallet: QTWallet) -> None:
             wallet = qt_wallet.wallet
-
-            # check that spent utxos do not count into the address balance
             addresses = wallet.get_addresses()
             assert addresses
+
             total = 0
             for address in addresses:
                 total += wallet.get_addr_balance(address).total
@@ -373,16 +325,13 @@ def test_wizard_multisig(
         check_address_balances(qt_wallet)
 
         def check_utxo_list(qt_wallet: QTWallet) -> None:
-            """Check utxo list."""
             qt_wallet.tabs.setCurrentWidget(qt_wallet.uitx_creator)
             qt_wallet.uitx_creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
             QCoreApplication.processEvents()
 
             utxo_list = qt_wallet.uitx_creator.utxo_list
-
             total = 0
             model = utxo_list._source_model
-            # Select rows with an ID in id_list
             for row in range(model.rowCount()):
                 amount = model.data(
                     model.index(row, utxo_list.Columns.AMOUNT), role=MyItemDataRole.ROLE_CLIPBOARD_DATA
@@ -398,7 +347,6 @@ def test_wizard_multisig(
         with CheckedDeletionContext(
             qt_wallet=qt_wallet, qtbot=qtbot, caplog=caplog, graph_directory=shutter.used_directory()
         ):
-            # Delete and close the wallet to ensure cleanup paths are exercised.
             wallet_id = qt_wallet.wallet.id
             del qt_wallet
 
@@ -410,22 +358,72 @@ def test_wizard_multisig(
                 main_window=main_window,
             )
             main_window.on_close_all_tx_tabs()
-
             shutter.save(main_window)
 
         def check_that_it_is_in_recent_wallets() -> None:
-            """Check that it is in recent wallets."""
-            # The wallet should appear in recent wallets after closing.
             assert any(
                 [
                     (wallet_name in name)
                     for name in main_window.config.recently_open_wallets[main_window.config.network]
                 ]
             )
-
             shutter.save(main_window)
 
         check_that_it_is_in_recent_wallets()
-
-        # Final screenshot after assertions.
         shutter.save(main_window)
+
+
+@pytest.mark.marker_qt_1
+def test_wizard_multisig(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: TestConfig,
+    faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
+    backend: str,
+    wallet_name: str = "test_wizard_multisig",
+    amount: int = int(1e6),
+) -> None:
+    """Exercise the default 2-of-3 multisig wizard flow."""
+    _run_multisig_wizard_test(
+        qtbot=qtbot,
+        mytest_start_time=mytest_start_time,
+        test_config=test_config,
+        faucet=faucet,
+        caplog=caplog,
+        backend=backend,
+        wallet_name=wallet_name,
+        test_name="test_wizard_multisig",
+        template=WalletSetupOptions.WalletTemplate.two_of_three,
+        threshold=2,
+        signers=3,
+        amount=amount,
+    )
+
+
+@pytest.mark.marker_qt_1
+def test_wizard_multisig_3_of_5(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: TestConfig,
+    faucet: Faucet,
+    caplog: pytest.LogCaptureFixture,
+    backend: str,
+    wallet_name: str = "test_wizard_multisig_3_of_5",
+    amount: int = int(1e6),
+) -> None:
+    """Exercise the extended 3-of-5 multisig wizard flow."""
+    _run_multisig_wizard_test(
+        qtbot=qtbot,
+        mytest_start_time=mytest_start_time,
+        test_config=test_config,
+        faucet=faucet,
+        caplog=caplog,
+        backend=backend,
+        wallet_name=wallet_name,
+        test_name="test_wizard_multisig_3_of_5",
+        template=WalletSetupOptions.WalletTemplate.three_of_five,
+        threshold=3,
+        signers=5,
+        amount=amount,
+    )

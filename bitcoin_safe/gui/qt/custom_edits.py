@@ -34,11 +34,11 @@ import logging
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import cast
+from typing import Generic, Protocol, TypeVar, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QRect, QStringListModel, Qt, pyqtSignal
+from PyQt6.QtCore import QRect, QSize, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent, QPainter, QPaintEvent, QPalette
 from PyQt6.QtWidgets import QApplication, QCompleter, QLineEdit, QTextEdit, QWidget
 
@@ -107,120 +107,217 @@ class BaseIntAnalyzer:
         return message_list[states.index(worst_state)]
 
 
+class AnalyzerEditable(Protocol):
+    """Minimal text-edit interface required by analyzer support."""
+
+    display_name: str
+
+    def text(self) -> str: ...
+    def setText(self, a0: str | None) -> None: ...
+
+    def cursorPosition(self) -> int: ...
+    def setCursorPosition(self, a0: int) -> None: ...
+
+    def setObjectName(self, name: str) -> None: ...
+    def objectName(self) -> str: ...
+    def setStyleSheet(self, styleSheet: str) -> None: ...
+
+
+TEdit = TypeVar("TEdit", bound=AnalyzerEditable)
+
+
+class AnalyzerSupport(Generic[TEdit]):
+    """Analyzer behavior shared by different edit widgets."""
+
+    def __init__(self, edit: TEdit) -> None:
+        self.edit = edit
+        self._analyzer: BaseAnalyzer | None = None
+
+    def set_analyzer(self, analyzer: BaseAnalyzer) -> None:
+        self._analyzer = analyzer
+
+    def analyzer(self) -> BaseAnalyzer | None:
+        return self._analyzer
+
+    def analyze_text(self, text: str, pos: int = 0) -> AnalyzerMessage:
+        analyzer = self.analyzer()
+        return analyzer.analyze(text, pos) if analyzer else AnalyzerMessage.valid()
+
+    def analyze_current_text(self) -> AnalyzerMessage:
+        self.normalize()
+        return self.analyze_text(self.edit.text(), self.edit.cursorPosition())
+
+    def normalize(self) -> None:
+        analyzer = self.analyzer()
+        if analyzer is None:
+            return
+
+        old_text = self.edit.text()
+        old_pos = self.edit.cursorPosition()
+
+        new_text, new_pos = analyzer.normalize(old_text, old_pos)
+
+        if new_text != old_text:
+            self.edit.setText(new_text)
+
+        new_pos = min(new_pos, len(new_text))
+        if new_pos != old_pos:
+            self.edit.setCursorPosition(new_pos)
+
+    def format_edit(self, analyzer_state: AnalyzerState | None) -> None:
+        from .util import ColorScheme
+
+        edit = self.edit
+        edit.setObjectName(str(id(edit)))
+
+        if analyzer_state == AnalyzerState.Warning:
+            color = ColorScheme.WARNING.as_color(background=True).name()
+            edit.setStyleSheet(f"#{edit.objectName()} {{ background-color: {color}; }}")
+        elif analyzer_state == AnalyzerState.Invalid:
+            color = ColorScheme.ERROR.as_color(background=True).name()
+            edit.setStyleSheet(f"#{edit.objectName()} {{ background-color: {color}; }}")
+        else:
+            edit.setStyleSheet(f"#{edit.objectName()} {{ }}")
+
+    @staticmethod
+    def state_for_text(
+        text: str,
+        analysis: AnalyzerMessage,
+        override_state: AnalyzerState | None = None,
+    ) -> AnalyzerState | None:
+        if override_state is not None:
+            return override_state
+        if text and analysis.state != AnalyzerState.Valid:
+            return analysis.state
+        return None
+
+
 class AnalyzerLineEdit(QLineEdit):
     def __init__(self, parent=None) -> None:
-        """Initialize instance."""
         super().__init__(parent=parent)
-        self._smart_state: BaseAnalyzer | None = None
         self.display_name = ""
+        self._analyzer_support = AnalyzerSupport(self)
 
-    def setReadOnly(self, a0: bool):
-        """SetReadOnly."""
+    def setAnalyzer(self, analyzer: BaseAnalyzer) -> None:
+        self._analyzer_support.set_analyzer(analyzer)
+
+    def analyzer(self) -> BaseAnalyzer | None:
+        return self._analyzer_support.analyzer()
+
+    def analyze_text(self, text: str, pos: int = 0) -> AnalyzerMessage:
+        return self._analyzer_support.analyze_text(text, pos)
+
+    def analyze_current_text(self) -> AnalyzerMessage:
+        return self._analyzer_support.analyze_current_text()
+
+    def normalize(self) -> None:
+        self._analyzer_support.normalize()
+
+    def format_edit(self, analyzer_state: AnalyzerState | None) -> None:
+        self._analyzer_support.format_edit(analyzer_state)
+
+    @staticmethod
+    def state_for_text(
+        text: str,
+        analysis: AnalyzerMessage,
+        override_state: AnalyzerState | None = None,
+    ) -> AnalyzerState | None:
+        return AnalyzerSupport.state_for_text(text, analysis, override_state)
+
+    def setReadOnly(self, a0: bool) -> None:
         super().setReadOnly(a0)
         super().setFrame(not a0)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus if a0 else Qt.FocusPolicy.StrongFocus)
         self.update()
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
-        """PaintEvent."""
         if not self.isReadOnly():
             return super().paintEvent(a0)
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
 
-        # current base color
         curr_bg = self.palette().color(QPalette.ColorRole.Base)
-        # the “true default” base color from the application
         default_bg = QApplication.palette().color(QPalette.ColorRole.Base)
 
-        # only fill if someone has customized it
         if curr_bg != default_bg:
             painter.fillRect(self.rect(), curr_bg)
 
-        # draw text in the usual way
         painter.setPen(self.palette().color(QPalette.ColorRole.Text))
-        m = self.textMargins()
+
+        margins = self.textMargins()
         text_rect = QRect(
-            m.left(),
-            m.top(),
-            self.width() - (m.left() + m.right()),
-            self.height() - (m.top() + m.bottom()),
+            margins.left(),
+            margins.top(),
+            self.width() - margins.left() - margins.right(),
+            self.height() - margins.top() - margins.bottom(),
         )
+
         painter.drawText(
-            text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, self.displayText()
+            text_rect,
+            Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft,
+            self.displayText(),
         )
 
-    def setAnalyzer(self, smart_state: BaseAnalyzer):
-        """Set a custom validator."""
-        self._smart_state = smart_state
 
-    def analyzer(self) -> BaseAnalyzer | None:
-        """Analyzer."""
-        return self._smart_state
-
-    def normalize(self):
-        """Normalize."""
-        analyzer = self.analyzer()
-        if not analyzer:
-            return
-        old_input = self.text()
-        old_pos = self.cursorPosition()
-        new_input, new_pos = analyzer.normalize(old_input, old_pos)
-
-        if new_input != old_input:
-            self.setText(new_input)
-
-        new_pos = min(new_pos, len(new_input))
-        if new_pos != old_pos:
-            self.setCursorPosition(new_pos)
+class FlexibleHeightTextedit(QTextEdit):
+    def sizeHint(self) -> QSize:
+        """SizeHint."""
+        size = super().sizeHint()
+        size.setHeight(30)
+        return size
 
 
-class AnalyzerTextEdit(QTextEdit):
-    def __init__(self, text: str | None = None, parent: QWidget | None = None) -> None:
-        """Initialize instance."""
+class AnalyzerTextEdit(FlexibleHeightTextedit):
+    def __init__(
+        self,
+        text: str | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(text, parent)
-        self._smart_state: BaseAnalyzer | None = None
-        self.setAcceptRichText(False)
         self.display_name = ""
+        self._analyzer = AnalyzerSupport(self)
+        self.setAcceptRichText(False)
 
-    def setAnalyzer(self, smart_state: BaseAnalyzer):
-        """Set a custom validator."""
-        self._smart_state = smart_state
+    def setAnalyzer(self, analyzer: BaseAnalyzer) -> None:
+        self._analyzer.set_analyzer(analyzer)
 
     def analyzer(self) -> BaseAnalyzer | None:
-        """Analyzer."""
-        return self._smart_state
+        return self._analyzer.analyzer()
+
+    def analyze_text(self, text: str, pos: int = 0) -> AnalyzerMessage:
+        return self._analyzer.analyze_text(text, pos)
+
+    def analyze_current_text(self) -> AnalyzerMessage:
+        return self._analyzer.analyze_current_text()
+
+    def normalize(self) -> None:
+        self._analyzer.normalize()
+
+    def format_edit(self, analyzer_state: AnalyzerState | None) -> None:
+        self._analyzer.format_edit(analyzer_state)
+
+    @staticmethod
+    def state_for_text(
+        text: str,
+        analysis: AnalyzerMessage,
+        override_state: AnalyzerState | None = None,
+    ) -> AnalyzerState | None:
+        return AnalyzerSupport.state_for_text(text, analysis, override_state)
 
     def text(self) -> str:
-        """Text."""
         return self.toPlainText()
 
     def cursorPosition(self) -> int:
-        """Get the current cursor position within the text."""
         return self.textCursor().position()
 
-    def setCursorPosition(self, position: int):
-        """Set the cursor position to the specified index."""
+    def setCursorPosition(self, a0: int) -> None:
         cursor = self.textCursor()
-        cursor.setPosition(position)
+        cursor.setPosition(a0)
         self.setTextCursor(cursor)
 
-    def normalize(self):
-        """Normalize."""
-        analyzer = self.analyzer()
-        if not analyzer:
-            return
-        old_input = self.text()
-        old_pos = self.cursorPosition()
-        new_input, new_pos = analyzer.normalize(old_input, old_pos)
-
-        if new_input != old_input:
-            self.setText(new_input)
-
-        new_pos = min(new_pos, len(new_input))
-        if new_pos != old_pos:
-            self.setCursorPosition(new_pos)
+    def setText(self, a0: str | None) -> None:  # type: ignore
+        self.setPlainText(a0 or "")
 
 
 class QCompleterLineEdit(AnalyzerLineEdit):
