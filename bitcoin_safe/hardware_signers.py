@@ -382,7 +382,7 @@ class HardwareSigners:
         info_url=_signer_info_url("seedsigner"),
         icon_filename="seedsigner-icon.svg",
         screenshot_name="seedsigner",
-    ) 
+    )
     krux_diy = HardwareSigner(
         id="krux",
         brand_name="Krux",
@@ -402,14 +402,13 @@ class HardwareSigners:
         info_url=_signer_info_url("krux"),
         icon_filename="krux-icon.svg",
         screenshot_name="krux",
-    )        
+    )
     keepkey = HardwareSigner(
         id="keepkey",
         brand_name="KeepKey",
         display_name="KeepKey Wallet",
-        usb_preferred=False,
-        qr_types=[ 
-        ],
+        usb_preferred=True,
+        qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
         info_url=_signer_info_url("keepkey"),
