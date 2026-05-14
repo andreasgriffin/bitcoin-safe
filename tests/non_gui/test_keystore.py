@@ -181,7 +181,7 @@ def test_get_differences_hardware_signer_id() -> None:
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
     keystore2 = keystore.clone()
-    keystore2.hardware_signer_id = HardwareSigners.krux.id
+    keystore2.hardware_signer_id = HardwareSigners.krux_diy.id
     diffs = keystore.get_differences(keystore2)
     assert len(diffs) == 1
     assert diffs[0].key == "hardware_signer_id"
@@ -288,7 +288,7 @@ def test_from_dump_migration_uses_display_name_from_description() -> None:
     del dump["hardware_signer_id"]
 
     restored = KeyStore.from_dump(dump)
-    assert restored.hardware_signer_id == HardwareSigners.krux.id
+    assert restored.hardware_signer_id == HardwareSigners.krux_diy.id
 
 
 def test_from_dump_migration_falls_back_to_generic_for_unknown_description() -> None:

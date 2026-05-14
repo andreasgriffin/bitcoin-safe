@@ -88,7 +88,7 @@ def test_keystore_ui_add_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> No
 
 def test_keystore_ui_empty_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.state == KeyStoreUiState.Empty
     assert widget.left_widget.isVisible()
@@ -106,15 +106,15 @@ def test_selecting_device_type_updates_header_label_before_xpub(
 ) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
 
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
-    assert widget.hardware_signer_label == HardwareSigners.krux.display_name
-    assert widget.header_title.text() == HardwareSigners.krux.display_name
+    assert widget.hardware_signer_label == HardwareSigners.krux_diy.display_name
+    assert widget.header_title.text() == HardwareSigners.krux_diy.display_name
 
 
 def test_keystore_ui_empty_state_hides_seed_on_mainnet(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread, network=bdk.Network.BITCOIN)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.state == KeyStoreUiState.Empty
     assert not widget.edit_seed.isVisible()
@@ -125,7 +125,7 @@ def test_keystore_ui_empty_state_hides_seed_in_demo_mode(
 ) -> None:
     monkeypatch.setattr("bitcoin_safe.gui.qt.keystore_ui.DEMO_MODE", True)
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.state == KeyStoreUiState.Empty
     assert not widget.edit_seed.isVisible()
@@ -145,7 +145,7 @@ def test_device_selection_expands_collapsed_card(qtbot: QtBot, loop_in_thread: L
     widget = _make_widget(qtbot, loop_in_thread)
     widget.collapse()
 
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.is_expanded
     assert widget.left_widget.isVisible()
@@ -154,7 +154,7 @@ def test_device_selection_expands_collapsed_card(qtbot: QtBot, loop_in_thread: L
 
 def test_keystore_ui_filled_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
@@ -173,7 +173,7 @@ def test_change_device_type_keeps_existing_details_visible(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
@@ -193,7 +193,7 @@ def test_change_device_type_keeps_existing_details_visible(
 
 def test_device_instructions_open_in_top_level_window(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     widget.show_device_instructions()
 
@@ -279,7 +279,7 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
     keystore = create_test_seed_keystores(
         signers=1,
         key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
@@ -297,7 +297,7 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
 
 def test_collapsed_keystore_ui_expands_on_header_click(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     widget.collapse()
 
@@ -310,7 +310,7 @@ def test_collapsed_keystore_ui_expands_on_header_click(qtbot: QtBot, loop_in_thr
 
 def test_expanded_keystore_ui_collapses_on_header_click(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
-    _select_signer(widget, HardwareSigners.krux.id)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.is_expanded
     assert widget.left_widget.isVisible()
