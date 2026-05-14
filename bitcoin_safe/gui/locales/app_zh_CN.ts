@@ -1144,8 +1144,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. 打印备份表</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>备份恢复表（必需）</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1164,6 +1164,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>恭喜，您的钱包已准备就绪。现在请保护它！</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>分发到 2 个独立位置</translation>
 		</message>
@@ -1174,23 +1179,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>不要将多个位置存放在同一个地方。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>不要将多个位置存放在同一个地方。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>不要将签名设备和带有 seed 词的备份表存放在同一个地方。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>每个位置都必须离线且物理安全。</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>请按照以下步骤操作，确保您创建安全备份，以便在最坏情况下恢复您的资金。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1209,6 +1199,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>打印后，请将设备上的 seed 短语手写到表格上，或确认它已抄写在与其一起存放的另一张纸上。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>位置 2</translation>
 		</message>
@@ -1219,23 +1214,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>打开在此签名器上查看 seed 词的说明。</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>请选择至少一张要打印的备份表。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>打印备份表（必需）</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>打印与您拥有并控制的设备相关联的恢复表。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>打印 PDF，并将 seed 词附到每张备份表上。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>打印备份表，并将所有内容存放在不同的安全位置。</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>恢复硬件签名器 {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1244,13 +1234,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>表 {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>签名者设备</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>签名者设备</translation>
+			<source>Signer {i}</source>
+			<translation>硬件签名器 {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1264,11 +1254,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>将签名设备和带有 seed 词的备份表存放在不同的安全位置。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>保险库 {letter}</translation>
 		</message>
@@ -1279,13 +1264,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>查看 seed 词</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>是的，我确认 seed 词已附在打印件上</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>您需要前往 {n} 个位置中的 {m} 个位置，才能从您的钱包中支出。</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>您的钱包受其恢复表保护，该恢复表应存放在与您的硬件签名器不同的地方。请打印它，附上 seed，并将其存放在安全且受访问控制的位置。凭借 seed 词，您可以完全控制您的钱包。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>您的钱包受 {n} 张附有 seeds 的备份表保护，这些备份表存放在不同位置。请打印它们，并放置在安全且受访问控制的位置。凭借其中 {m} 张，您可以完全控制您的钱包。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1809,8 +1804,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. 将钱包信息导入到 Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>将硬件签名器信息导入 Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2129,6 +2124,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8 位指纹用于识别 seed。您可以将其写在硬件签名器上，以便跟踪不同的 seeds 和签名设备。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>密钥来源是正确构建交易（PSBTs）所必需的，并且与 xPub 相关联。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed 是能够签署交易的秘密。对于单签名钱包，它赋予对资金的完全控制权。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPub 源 {key_origin} 与 xPub 属于同一对。请选择正确的 xPub 源对。</translation>
 		</message>
@@ -2141,6 +2155,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>钱包地址由 xPub 派生。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3068,8 +3087,13 @@ so it is typically about {minutes} minutes behind the tip.</source>
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>创建</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>已经熟悉 Bitcoin 了吗？自信地设置一个持有和转移真实价值的钱包。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>最适合长期存储</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3078,28 +3102,88 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>在转向真实 bitcoin 之前，先在安全环境中练习。&lt;br&gt;• 使用演示钱包探索应用&lt;br&gt;• 使用没有货币价值的测试币&lt;br&gt;• 非常适合安全地学习、实验和犯错&lt;br&gt;&lt;i&gt;Signet 网络&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>探索 Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>安全练习场</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>使用演示钱包探索</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>安全钱包</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>妥善保管您的 seed 短语</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>选择您要使用的 Bitcoin 网络</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>安全学习，零风险</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>当您准备好使用真实资金时，请使用真实的 Bitcoin 网络。&lt;br&gt;• 发送和接收真实 bitcoin&lt;br&gt;• 最适合您的长期钱包设置&lt;br&gt;• 交易具有真实价值和真实后果&lt;br&gt;&lt;i&gt;Mainnet 网络&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>管理真实资金</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>在无风险环境中练习，并准确了解一切如何运作。尝试使用即使丢失也不会遗憾的测试币来发送、接收和更改手续费。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>真正的健全货币（BTC）</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>发送和接收真实 bitcoin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>设置钱包</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>开始探索</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>开始使用健全货币进行交易，或在安全的 playground 中学习。无论哪种方式，您以后都可以随时创建另一个钱包。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>测试币（tBTC）没有价值</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>测试币，无货币价值</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>交易是永久性的</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>使用 Signet 测试网络</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>使用链上 Mainnet 网络</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>您想从哪里开始？</translation>
 		</message>
 	</context>
 	<context>
@@ -3861,8 +3945,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>描述符</translation>
+			<source>Dashboard</source>
+			<translation>仪表盘</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>详情</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3883,11 +3972,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>导出标签</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>历史记录</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3940,6 +4024,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>密码错误</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>请选择一个钱包名称</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4152,11 +4241,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>已完成 - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>尚未设置钱包</translation>
 		</message>
@@ -4173,11 +4257,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>向此钱包的 1 个地址接收一笔&lt;b&gt;小额&lt;/b&gt;金额（少于 {test_amount}）。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制这些资金，您必须测试从钱包中支出。 &lt;br&gt; 因此，在向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要&lt;/b&gt;的。 &lt;br&gt; &lt;br&gt; &lt;b&gt;请暂时不要向钱包发送大额资金。请先完成所有自发送测试！&lt;/b&gt;</translation>
+			<translation>向此钱包的 1 个地址接收一笔&lt;b&gt;小额&lt;/b&gt;金额（少于 {test_amount}）。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制资金，您必须测试从钱包中花费。 &lt;br&gt; 因此，在您向钱包发送大量 Bitcoin 之前，从钱包中花费并测试所有签名器是&lt;b&gt;至关重要的&lt;/b&gt;。</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4188,6 +4269,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>已识别的交易</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>正在等待资金到达钱包...</translation>
 		</message>
 	</context>
 	<context>
@@ -4472,18 +4558,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>已完成 - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>在此卡片中创建交易。</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>待处理 - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4747,6 +4823,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>重新安装 {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>更新到 {available}</translation>
 		</message>
@@ -4791,6 +4872,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>重新检查已安装插件</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>已完成</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>当前</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>未来未完成的步骤</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>第 {current} 步，共 {total} 步</translation>
 		</message>
 	</context>
 	<context>
@@ -5086,13 +5189,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>创建并收集 {n} 个签名</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>输入 {i}：使用标记 {sighash_type} 签名，签名：{signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>输入 {i}：使用标记 {sighash_type} 签名，签名：{signature}</translation>
+			<source>Signature {n}</source>
+			<translation>签名 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6017,11 +6120,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>存放在安全地点</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>接收测试</translation>
 		</message>
@@ -6034,6 +6132,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>检查交易，并在准备好后创建。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>保护您的密钥</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6213,8 +6316,8 @@ IP：{ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>完成</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>完成并前往仪表盘</translation>
 		</message>
 		<name>basetab</name>
 		<message>

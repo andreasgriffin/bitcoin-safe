@@ -1141,8 +1141,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. 백업 시트 인쇄</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>백업 복구 시트 (필수)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1161,6 +1161,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>축하합니다. 지갑이 준비되었습니다. 이제 지갑을 보호하세요!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>2개의 별도 위치에 분산</translation>
 		</message>
@@ -1171,23 +1176,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>여러 위치를 같은 장소에 보관하지 마세요.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>여러 위치를 같은 장소에 보관하지 마세요.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>서명 장치와 seed 단어가 있는 백업 시트를 같은 장소에 보관하지 마세요.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>각 위치는 오프라인이어야 하며 물리적으로 안전해야 합니다.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>최악의 상황에서 자금을 복구할 수 있도록 안전한 백업을 만들기 위해 아래 단계를 따르세요.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1206,6 +1196,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>인쇄한 후, 기기에서 seed 문구를 시트에 손으로 적거나, 함께 보관된 별도의 종이에 이미 기록되어 있음을 확인하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>위치 2</translation>
 		</message>
@@ -1216,23 +1211,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>이 서명자에서 seed 단어를 보는 방법을 여세요.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>인쇄할 백업 시트를 하나 이상 선택하세요.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>백업 시트 인쇄(필수)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>소유하고 제어하는 기기와 연결된 복구 시트를 인쇄하세요.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDF를 인쇄하고 각 백업 시트에 seed 단어를 첨부하세요.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>백업 시트를 인쇄하고 모든 것을 별도의 안전한 장소에 보관하세요.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>복구 서명 기계 {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1241,13 +1231,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>시트 {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>서명자 장치</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>서명자 장치</translation>
+			<source>Signer {i}</source>
+			<translation>서명 기계 {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1261,11 +1251,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>서명 장치와 seed 단어가 있는 백업 시트를 별도의 안전한 위치에 보관하세요.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>금고 {letter}</translation>
 		</message>
@@ -1276,13 +1261,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>seed 단어 보기</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>예, seed 단어가 인쇄물에 첨부되어 있음을 확인합니다</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>지갑에서 지출하려면 {n}개 위치 중 {m}곳으로 가야 합니다.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>지갑은 복구 시트로 보호되며, 이 시트는 하드웨어 서명기가 있는 곳과 다른 장소에 보관해야 합니다. 이를 인쇄하고 seed를 첨부한 뒤, 안전하고 접근이 통제되는 위치에 보관하세요. seed 단어가 있으면 지갑을 완전히 제어할 수 있습니다.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>지갑은 서로 다른 위치에 보관된, seed가 첨부된 {n}개의 백업 시트로 보호됩니다. 이를 인쇄하여 안전하고 접근이 통제되는 위치에 두세요. 그중 {m}개가 있으면 지갑을 완전히 제어할 수 있습니다.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{total}개 중 {number}개</translation>
 		</message>
 	</context>
 	<context>
@@ -1805,8 +1800,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe로 지갑 가져오기</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>하드웨어 서명기 정보를 Bitcoin Safe로 가져오기</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2125,6 +2120,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8자리 지문은 seed를 식별합니다. 서로 다른 seed와 서명 기기를 추적하기 위해 하드웨어 서명기에 이를 적어둘 수 있습니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>키 출처는 거래(PSBT)를 올바르게 구성하는 데 필요하며 xPub와 연결됩니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed는 거래 서명을 가능하게 하는 비밀입니다. 단일 서명 지갑의 경우 자금에 대한 완전한 제어권을 제공합니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPub 출처 {key_origin}와 xPub이 함께 속합니다. 올바른 xPub 출처 쌍을 선택하세요.</translation>
 		</message>
@@ -2137,6 +2151,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>지갑 주소는 xPub에서 파생됩니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3067,8 +3086,13 @@ Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 �
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>생성</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>이미 Bitcoin에 익숙하신가요? 실제 가치를 보관하고 이동하는 지갑을 자신 있게 설정하세요.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>장기 보관에 가장 적합</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3077,28 +3101,88 @@ Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 �
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>실제 bitcoin으로 이동하기 전에 안전한 환경에서 연습하세요.&lt;br&gt;• 데모 지갑으로 앱을 살펴보세요&lt;br&gt;• 금전적 가치가 없는 테스트 코인을 사용하세요&lt;br&gt;• 안전하게 배우고, 실험하고, 실수하기에 이상적입니다&lt;br&gt;&lt;i&gt;Signet 네트워크&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>플레이그라운드 탐색</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>안전한 플레이그라운드</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>데모 지갑으로 탐색</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>보안 지갑</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>seed 문구를 안전하게 보관하세요</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>사용할 Bitcoin 네트워크를 선택하세요</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>안전하게, 위험 없이 배우기</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>실제 자금을 사용할 준비가 되었을 때 실제 Bitcoin 네트워크를 사용하세요.&lt;br&gt;• 실제 bitcoin을 보내고 받기&lt;br&gt;• 장기 지갑 설정에 가장 적합&lt;br&gt;• 거래에는 실제 가치와 실제 결과가 따릅니다&lt;br&gt;&lt;i&gt;Mainnet 네트워크&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>실제 자금 관리</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>위험 없는 환경에서 연습하고 모든 것이 정확히 어떻게 작동하는지 확인하세요. 잃어도 후회 없는 테스트 코인으로 보내기, 받기, 수수료 변경을 시도해 보세요.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>진짜 건전한 화폐 (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>실제 bitcoin 보내기 및 받기</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>지갑 설정</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>탐색 시작</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>건전한 화폐로 거래를 시작하거나 안전한 플레이그라운드에서 배우세요. 어느 쪽이든 나중에 언제든지 다른 지갑을 만들 수 있습니다.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>테스트 코인(tBTC)은 가치가 없습니다</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>테스트 코인, 금전적 가치 없음</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>거래는 영구적입니다</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet 테스트 네트워크 사용</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>온체인 Mainnet 네트워크 사용</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>어디에서 시작하시겠습니까?</translation>
 		</message>
 	</context>
 	<context>
@@ -3859,8 +3943,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>디스크립터</translation>
+			<source>Dashboard</source>
+			<translation>대시보드</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>세부 정보</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3881,11 +3970,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>명칭 내보내기</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>내역</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3938,6 +4022,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>비밀번호가 틀렸습니다</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>지갑 이름을 선택해 주세요.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4148,11 +4237,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>완료됨 - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>아직 지갑 설정이 없습니다</translation>
 		</message>
@@ -4169,11 +4253,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜 필요한가요?&lt;/b&gt; &lt;br&gt; 자금을 통제하고 있는지 확인하려면 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에, 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요&lt;/b&gt;합니다. &lt;br&gt; &lt;br&gt; &lt;b&gt;아직 지갑에 큰 금액을 보내지 마세요. 먼저 모든 셀프 전송 테스트를 완료하세요!&lt;/b&gt;</translation>
+			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜인가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4184,6 +4265,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>인식된 거래</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>자금이 지갑에 도착하기를 기다리는 중...</translation>
 		</message>
 	</context>
 	<context>
@@ -4468,18 +4554,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>완료됨 - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>이 카드에서 거래를 생성하세요.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>대기 중 - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4743,6 +4819,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} 재설치</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>{available}(으)로 업데이트</translation>
 		</message>
@@ -4787,6 +4868,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>설치된 플러그인 다시 확인</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>완료됨</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>현재</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>향후 미완료 단계</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>{total}단계 중 {current}단계</translation>
 		</message>
 	</context>
 	<context>
@@ -5082,13 +5185,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n}번째 서명 생성 및 수집</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>서명 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6004,11 +6107,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>안전한 위치에 넣기</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>수신 테스트</translation>
 		</message>
@@ -6021,6 +6119,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>트랜잭션을 검토하고 준비가 되면 생성하세요.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>키 보안 설정</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6200,8 +6303,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>완료</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>완료하고 대시보드로 이동</translation>
 		</message>
 		<name>basetab</name>
 		<message>

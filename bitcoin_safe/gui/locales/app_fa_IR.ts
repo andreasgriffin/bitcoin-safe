@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. چاپ برگه‌های پشتیبان</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>برگه بازیابی پشتیبان (الزامی)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>تبریک، کیف پول شما آماده است. حالا از آن محافظت کنید!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>در ۲ مکان جداگانه توزیع کنید</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>چندین مکان را در یک جا نگه‌داری نکنید.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>چند مکان را در یک جای واحد نگهداری نکنید.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>دستگاه امضا و برگه پشتیبان دارای واژه‌های seed را در یک مکان نگهداری نکنید.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>هر مکان باید آفلاین و از نظر فیزیکی امن باشد.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>برای اطمینان از ایجاد یک نسخه پشتیبان امن جهت بازیابی وجوه خود در بدترین سناریو، مراحل زیر را دنبال کنید.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>پس از چاپ، عبارت seed را از دستگاه خود به‌صورت دست‌نویس روی برگه بنویسید، یا تأیید کنید که قبلاً روی یک برگه کاغذ جداگانه که همراه آن نگهداری می‌شود رونویسی شده است.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>مکان 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>دستورالعمل‌های مشاهده واژه‌های seed روی این امضاکننده را باز کنید.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>لطفاً حداقل یک برگه پشتیبان برای چاپ انتخاب کنید.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>چاپ برگه‌های پشتیبان (الزامی)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>برگه‌های بازیابی مرتبط با دستگاه‌هایی را که در اختیار دارید و کنترل می‌کنید چاپ کنید.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDF را چاپ کنید و واژه‌های seed را به هر برگه پشتیبان پیوست کنید.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>برگه‌های پشتیبان را چاپ کنید و همه چیز را در مکان‌های جداگانه و امن نگهداری کنید.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>امضاکنندهٔ بازیابی {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>برگه {number} از {total}</translation>
+			<source>Signer device</source>
+			<translation>دستگاه امضاکننده</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>دستگاه امضاکننده</translation>
+			<source>Signer {i}</source>
+			<translation>امضاکننده {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>دستگاه امضا و برگه پشتیبان دارای واژه‌های seed را در مکان‌های امن جداگانه نگهداری کنید.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>گاوصندوق {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>مشاهده واژه‌های seed</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>بله، تأیید می‌کنم که کلمات seed به چاپ پیوست شده‌اند</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>برای خرج کردن از کیف پول خود باید به {m} مورد از {n} مکان بروید.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>کیف پول شما با برگه بازیابی آن محافظت می‌شود، که باید در جایی متفاوت از محل نگهداری امضاکننده سخت‌افزاری شما ذخیره شود. آن را چاپ کنید، seed را پیوست کنید و در مکانی امن با دسترسی کنترل‌شده نگهداری کنید. با کلمات seed کنترل کامل کیف پول خود را دارید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>کیف پول شما با {n} برگه پشتیبان دارای seeds پیوست‌شده که در مکان‌های مختلف ذخیره شده‌اند محافظت می‌شود. آن‌ها را چاپ کنید و در مکان‌های امن با دسترسی کنترل‌شده قرار دهید. با {m} عدد از آن‌ها کنترل کامل کیف پول خود را دارید.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} از {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1807,8 +1802,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>۲. وارد کردن اطلاعات کیف پول به Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>وارد کردن اطلاعات امضاکننده سخت‌افزاری به Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2127,6 +2122,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>اثر انگشت ۸ رقمی، seed را شناسایی می‌کند. می‌توانید آن را روی امضاکننده سخت‌افزاری بنویسید تا seeds و دستگاه‌های امضای مختلف را پیگیری کنید.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>خاستگاه کلید برای ساخت صحیح تراکنش‌ها (PSBTs) لازم است و به xPub متصل است.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed همان راز است که امضای تراکنش را ممکن می‌کند. برای یک کیف پول تک‌امضایی، کنترل کامل وجوه را فراهم می‌کند.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>منبع xPub {key_origin} و خود xPub مربوط به هم هستند. لطفاً جفت منبع xPub صحیح را انتخاب کنید.</translation>
 		</message>
@@ -2139,6 +2153,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>آدرس‌های کیف پول از xPub مشتق می‌شوند.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3069,8 +3088,13 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>ساخت</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>از قبل با Bitcoin آشنا هستید؟ با اطمینان کیف پولی راه‌اندازی کنید که ارزش واقعی را نگه می‌دارد و منتقل می‌کند.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>بهترین برای نگهداری بلندمدت</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3079,28 +3103,88 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>پیش از رفتن به bitcoin واقعی، در یک محیط امن تمرین کنید.&lt;br&gt;• برنامه را با یک کیف‌پول نمایشی بررسی کنید&lt;br&gt;• از کوین‌های آزمایشی که ارزش پولی ندارند استفاده کنید&lt;br&gt;• برای یادگیری، آزمایش و اشتباه کردن به‌صورت امن ایده‌آل است&lt;br&gt;&lt;i&gt;شبکه Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>کاوش در Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>محیط تمرین امن</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>کاوش با کیف پول نمایشی</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>کیف‌پول امن</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>عبارت seed خود را ایمن نگه دارید</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>شبکه Bitcoin موردنظر خود را برای استفاده انتخاب کنید</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>با خیال راحت و بدون ریسک یاد بگیرید</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>وقتی برای وجوه واقعی آماده هستید، از شبکه Bitcoin واقعی استفاده کنید.&lt;br&gt;• bitcoin واقعی ارسال و دریافت کنید&lt;br&gt;• بهترین گزینه برای راه‌اندازی بلندمدت کیف‌پول شما&lt;br&gt;• تراکنش‌ها ارزش واقعی و پیامدهای واقعی دارند&lt;br&gt;&lt;i&gt;شبکه Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>مدیریت وجوه واقعی</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>در یک محیط بدون ریسک تمرین کنید و دقیقاً ببینید همه چیز چگونه کار می‌کند. ارسال، دریافت و تغییر کارمزدها را با کوین‌های آزمایشی امتحان کنید که می‌توانید بدون پشیمانی از دست بدهید.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>پول سالم واقعی (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>ارسال و دریافت bitcoin واقعی</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>راه‌اندازی کیف پول</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>شروع کاوش</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>با پول سالم شروع به تراکنش کنید یا در یک playground امن یاد بگیرید. در هر صورت، همیشه می‌توانید بعداً کیف پول دیگری ایجاد کنید.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>کوین‌های آزمایشی (tBTC) هیچ ارزشی ندارند</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>کوین‌های آزمایشی، بدون ارزش پولی</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>تراکنش‌ها دائمی هستند</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>از شبکه آزمایشی Signet استفاده می‌کند</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>از شبکه onchain Mainnet استفاده می‌کند</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>از کجا می‌خواهید شروع کنید؟</translation>
 		</message>
 	</context>
 	<context>
@@ -3861,8 +3945,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>توصیف‌گر</translation>
+			<source>Dashboard</source>
+			<translation>داشبورد</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>جزئیات</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3883,11 +3972,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>صدور برچسب‌ها</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>تاریخچه</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3940,6 +4024,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>گذرواژه نادرست</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>لطفاً یک نام برای کیف پول انتخاب کنید</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4151,11 +4240,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>تکمیل شد - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>هنوز هیچ کیف پولی راه‌اندازی نشده است</translation>
 		</message>
@@ -4172,11 +4256,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>یک مقدار &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید. &lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید کنترل وجوه را در اختیار دارید، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از ارسال مقدار قابل توجهی Bitcoin به کیف پول، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;حیاتی&lt;/b&gt; است. &lt;br&gt; &lt;br&gt; &lt;b&gt;هنوز وجوه بزرگ به کیف پول ارسال نکنید. لطفاً ابتدا همه آزمایش‌های ارسال به خود را کامل کنید!&lt;/b&gt;</translation>
+			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید. &lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید آیا وجوه را کنترل می‌کنید یا نه، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4187,6 +4268,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>تراکنش شناسایی‌شده</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>در انتظار رسیدن وجوه به کیف پول...</translation>
 		</message>
 	</context>
 	<context>
@@ -4471,18 +4557,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>تکمیل شد - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>تراکنش را در این کارت ایجاد کنید.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>در انتظار - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4746,6 +4822,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>نصب مجدد {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>به‌روزرسانی به {available}</translation>
 		</message>
@@ -4790,6 +4871,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>بررسی دوباره افزونه‌های نصب‌شده</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>تکمیل شد</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>فعلی</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>مراحل ناقص آینده</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>مرحله {current} از {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5085,13 +5188,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>ایجاد و جمع‌آوری امضای {n}.</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>ورودی {i}: با پرچم {sighash_type} امضا شد ، امضا: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>ورودی {i}: با پرچم {sighash_type} امضا شد ، امضا: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>امضا {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6011,11 +6114,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>در مکان‌های امن قرار دهید</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>آزمایش دریافت</translation>
 		</message>
@@ -6028,6 +6126,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>تراکنش را بررسی کنید و وقتی آماده بودید آن را ایجاد کنید.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>کلیدهای خود را ایمن کنید</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6207,8 +6310,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>پایان</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>پایان و رفتن به داشبورد</translation>
 		</message>
 		<name>basetab</name>
 		<message>

@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. Yedekleme sayfalarını yazdır</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Yedek Kurtarma Sayfası (gerekli)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Tebrikler, cüzdanınız hazır. Şimdi onu koruyun!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>2 ayrı konuma dağıt</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>Birden fazla konumu aynı yerde saklamayın.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>Birden fazla konumu aynı yerde saklamayın.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>İmzalama cihazını ve seed kelimeleri içeren yedekleme sayfasını aynı yerde saklamayın.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>Her konum çevrimdışı ve fiziksel olarak güvenli olmalıdır.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>En kötü senaryoda fonlarınızı geri yüklemek için güvenli bir yedek oluşturduğunuzdan emin olmak üzere aşağıdaki adımları izleyin.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Yazdırdıktan sonra, cihazınızdaki seed ifadesini sayfaya elle yazın veya onunla birlikte saklanan ayrı bir kâğıda zaten yazılmış olduğunu onaylayın.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>Konum 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>Bu imzalayıcıda seed kelimelerini görüntüleme talimatlarını açın.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Lütfen yazdırmak için en az bir yedek sayfası seçin.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>Yedekleme sayfalarını yazdır (gerekli)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Sahip olduğunuz ve kontrol ettiğiniz cihazlarla ilişkili kurtarma sayfalarını yazdırın.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDF’yi yazdırın ve seed kelimelerini her yedekleme sayfasına ekleyin.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>Yedekleme sayfalarını yazdırın ve her şeyi ayrı, güvenli yerlerde saklayın.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>Kurtarma İmzalayıcı {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>Kağıt {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>İmzalayıcı cihazı</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>İmzalayıcı cihazı</translation>
+			<source>Signer {i}</source>
+			<translation>İmzalayıcı {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>İmzalama cihazını ve seed kelimeleri içeren yedekleme sayfasını ayrı güvenli konumlarda saklayın.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Kasa {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>Seed kelimelerini görüntüle</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Evet, seed kelimelerinin çıktıya eklendiğini onaylıyorum</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>Cüzdanınızdan harcama yapmak için {n} konumdan {m} tanesine gitmeniz gerekir.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Cüzdanınız, donanım imzalayıcınızın bulunduğu yerden farklı bir yerde saklanması gereken kurtarma sayfasıyla korunur. Yazdırın, seed’i ekleyin ve güvenli, erişim kontrollü bir yerde saklayın. Seed kelimeleriyle cüzdanınız üzerinde tam kontrole sahip olursunuz.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Cüzdanınız, farklı konumlarda saklanan ekli seed’lere sahip {n} yedek sayfasıyla korunur. Bunları yazdırın ve güvenli, erişim kontrollü konumlara yerleştirin. Bunlardan {m} tanesiyle cüzdanınız üzerinde tam kontrole sahip olursunuz.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1808,8 +1803,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Cüzdan bilgilerini Bitcoin Safe’e aktar</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Donanım imzalayıcı bilgilerini Bitcoin Safe’e aktar</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2128,6 +2123,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8 haneli parmak izi seed’i tanımlar. Farklı seed’leri ve imzalama cihazlarını takip etmek için bunu donanım imzalayıcının üzerine yazabilirsiniz.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>İşlemleri (PSBT’leri) doğru şekilde oluşturmak için anahtar kökeni gereklidir ve xPub ile bağlantılıdır.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>Seed, işlem imzalamayı mümkün kılan sırdır. Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPub kökeni {key_origin} ve xPub birlikte çalışır. Lütfen doğru xPub köken çiftini seçin.</translation>
 		</message>
@@ -2140,6 +2154,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Cüzdan adresleri xPub’dan türetilir.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3071,8 +3090,13 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>Oluştur</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin’e zaten aşina mısınız? Gerçek değer tutan ve taşıyan bir cüzdanı güvenle kurun.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Uzun vadeli saklama için en iyisi</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3081,28 +3105,88 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>Gerçek bitcoin’e geçmeden önce güvenli bir ortamda pratik yapın.&lt;br&gt;• Uygulamayı bir demo cüzdanla keşfedin&lt;br&gt;• Parasal değeri olmayan test coin’leri kullanın&lt;br&gt;• Güvenli şekilde öğrenmek, denemek ve hata yapmak için idealdir&lt;br&gt;&lt;i&gt;Signet Ağı&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Oyun Alanını Keşfet</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>Güvenli Oyun Alanı</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>Demo cüzdanla keşfet</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>Güvenli Cüzdan</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>Seed ifadenizi güvende tutun</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>Kullanmak istediğiniz Bitcoin ağını seçin</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>Güvenle öğrenin, risksiz</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>Gerçek fonlar için hazır olduğunuzda gerçek Bitcoin ağını kullanın.&lt;br&gt;• Gerçek bitcoin gönderin ve alın&lt;br&gt;• Uzun vadeli cüzdan kurulumunuz için en iyisi&lt;br&gt;• İşlemlerin gerçek değeri ve gerçek sonuçları vardır&lt;br&gt;&lt;i&gt;Mainnet Ağı&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>Gerçek Fonları Yönetin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Risksiz bir ortamda pratik yapın ve her şeyin tam olarak nasıl çalıştığını görün. Pişmanlık duymadan kaybedebileceğiniz test coinleriyle gönderme, alma ve ücret değiştirmeyi deneyin.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Gerçek sağlam para (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Gerçek bitcoin gönderin ve alın</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Bir Cüzdan Kur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Keşfetmeye Başla</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Sağlam parayla işlem yapmaya başlayın veya güvenli bir oyun alanında öğrenin. Her iki durumda da daha sonra her zaman başka bir cüzdan oluşturabilirsiniz.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Test coinlerinin (tBTC) değeri yoktur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Test coinleri, parasal değeri yok</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>İşlemler kalıcıdır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet test ağını kullanır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Onchain Mainnet ağını kullanır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Nereden başlamak istersiniz?</translation>
 		</message>
 	</context>
 	<context>
@@ -3863,8 +3947,13 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Tanımlayıcı</translation>
+			<source>Dashboard</source>
+			<translation>Pano</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Detaylar</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3885,11 +3974,6 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		<message>
 			<source>Export labels</source>
 			<translation>Etiketleri dışa aktar</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Geçmiş</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3942,6 +4026,11 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		<message>
 			<source>Password incorrect</source>
 			<translation>Şifre yanlış</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Lütfen bir cüzdan adı seçin</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4153,11 +4242,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Tamamlandı - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>Henüz cüzdan kurulmadı</translation>
 		</message>
@@ -4174,11 +4258,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın. &lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritik önemdedir&lt;/b&gt;. &lt;br&gt; &lt;br&gt; &lt;b&gt;Henüz cüzdana büyük fonlar göndermeyin. Lütfen önce tüm kendine gönderim testlerini tamamlayın!&lt;/b&gt;</translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın. &lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4189,6 +4270,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>Tanınan İşlem</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Fonların cüzdana ulaşması bekleniyor...</translation>
 		</message>
 	</context>
 	<context>
@@ -4473,18 +4559,8 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Tamamlandı - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>İşlemi bu kartta oluşturun.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>Beklemede - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4748,6 +4824,11 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} sürümünü yeniden yükle</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>{available} sürümüne güncelle</translation>
 		</message>
@@ -4792,6 +4873,28 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>Yüklü Eklentileri Yeniden Kontrol Et</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Tamamlandı</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Mevcut</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Gelecekteki tamamlanmamış adımlar</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Adım {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5087,13 +5190,13 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n}. imzayı oluştur ve topla</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Girdi {i}: {sighash_type} bayrağı ile imzalandı , İmza: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Girdi {i}: {sighash_type} bayrağı ile imzalandı , İmza: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>İmza {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -5102,12 +5205,10 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 Signatures:
 {signatures}
 
-
 </source>
 			<translation>İşlem {label}
 ait özel anahtar ile imzalandı İmzalar:
 {signatures}
-
 
 </translation>
 		</message>
@@ -6014,11 +6115,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Güvenli yerlere koyun</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Alım Testi</translation>
 		</message>
@@ -6031,6 +6127,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>İşlemi gözden geçirin ve hazır olduğunuzda oluşturun.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Anahtarlarınızı Güvenceye Alın</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6210,8 +6311,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>Bitir</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>Bitir ve Panoya Git</translation>
 		</message>
 		<name>basetab</name>
 		<message>

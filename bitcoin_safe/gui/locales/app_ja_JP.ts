@@ -1141,8 +1141,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. バックアップシートを印刷</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>バックアップ復元シート（必須）</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1161,6 +1161,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>おめでとうございます。ウォレットの準備ができました。次に保護しましょう！</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>2つの別々の場所に分散</translation>
 		</message>
@@ -1171,23 +1176,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>複数の場所を同じ場所に保管しないでください。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>複数の場所を同じ場所に保管しないでください。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>署名デバイスと seed ワード付きバックアップシートを同じ場所に保管しないでください。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>各場所はオフラインで、物理的に安全である必要があります。</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>最悪のシナリオで資金を復元できる安全なバックアップを作成するために、以下の手順に従ってください。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1206,6 +1196,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>印刷したら、デバイス上の seed フレーズをシートに手書きするか、それと一緒に保管されている別の紙にすでに書き写されていることを確認してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>場所 2</translation>
 		</message>
@@ -1216,23 +1211,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>この署名者で seed ワードを表示する手順を開きます。</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>印刷するバックアップシートを少なくとも1枚選択してください。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>バックアップシートを印刷（必須）</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>所有し管理しているデバイスに関連付けられた復元シートを印刷してください。</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>PDFを印刷し、各バックアップシートに seed ワードを添付してください。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>バックアップシートを印刷し、すべてを別々の安全な場所に保管してください。</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>復旧署名者{i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1241,13 +1231,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>シート {number} / {total}</translation>
+			<source>Signer device</source>
+			<translation>署名者デバイス</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>署名者デバイス</translation>
+			<source>Signer {i}</source>
+			<translation>署名者{i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1261,11 +1251,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>署名デバイスと seed ワード付きバックアップシートを別々の安全な場所に保管してください。</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>保管庫 {letter}</translation>
 		</message>
@@ -1276,13 +1261,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>seed ワードを表示</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>はい、seed 単語が印刷物に添付されていることを確認します</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>ウォレットから支出するには、{n}か所のうち{m}か所に行く必要があります。</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>あなたのウォレットは復元シートによって保護されています。このシートは、ハードウェア署名デバイスがある場所とは別の場所に保管する必要があります。印刷し、seed を添付して、安全でアクセス管理された場所に保管してください。seed 単語があれば、ウォレットを完全に制御できます。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>あなたのウォレットは、異なる場所に保管された seed 添付済みの {n} 枚のバックアップシートによって保護されています。それらを印刷し、安全でアクセス管理された場所に配置してください。そのうち {m} 枚があれば、ウォレットを完全に制御できます。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1804,8 +1799,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>２。ビットコインセーフにウォレット情報をインポート</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>ハードウェア署名デバイス情報を Bitcoin Safe にインポート</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2124,6 +2119,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8桁のフィンガープリントは seed を識別します。異なる seed や署名デバイスを追跡するために、ハードウェア署名デバイスに書いておくことができます。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>キーの由来は、トランザクション（PSBT）を正しく構築するために必要で、xPub に接続されています。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed はトランザクション署名を可能にする秘密です。単一署名ウォレットでは、資金を完全に制御できます。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>xPubの起源 {key_origin} とxPubは対応しています。正しいxPubの起源のペアを選択してください。</translation>
 		</message>
@@ -2136,6 +2150,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>ウォレットアドレスは xPub から派生します。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3061,8 +3080,13 @@ so it is typically about {minutes} minutes behind the tip.</source>
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>作成</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin にすでに慣れていますか？本物の価値を保持し移動できるウォレットを自信を持って設定しましょう。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>長期保管に最適</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3071,28 +3095,88 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>実際の bitcoin に移行する前に、安全な環境で練習しましょう。&lt;br&gt;• デモウォレットでアプリを探索する&lt;br&gt;• 金銭的価値のないテストコインを使用する&lt;br&gt;• 学習、実験、安全な失敗に最適です&lt;br&gt;&lt;i&gt;Signet ネットワーク&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Playground を探索</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>セーフプレイグラウンド</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>デモウォレットで探索</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>セキュアウォレット</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>seed フレーズを安全に保管してください</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>使用する Bitcoin ネットワークを選択してください</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>安全に、リスクなしで学ぶ</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>実際の資金を扱う準備ができたら、本物の Bitcoin ネットワークを使用してください。&lt;br&gt;• 実際の bitcoin を送受信する&lt;br&gt;• 長期的なウォレット設定に最適です&lt;br&gt;• 取引には実際の価値と実際の結果が伴います&lt;br&gt;&lt;i&gt;Mainnet ネットワーク&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>実資金を管理</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>リスクのない環境で練習し、すべてがどのように機能するかを正確に確認しましょう。失っても後悔しないテストコインを使って、送信、受信、手数料変更を試してください。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>本物の健全な通貨（BTC）</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>本物の bitcoin を送受信</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>ウォレットを設定</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>探索を開始</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>健全な通貨で取引を開始するか、安全な playground で学びましょう。いずれの場合でも、後でいつでも別のウォレットを作成できます。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>テストコイン（tBTC）には価値がありません</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>テストコイン、金銭的価値なし</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>トランザクションは永続的です</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet テストネットワークを使用</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>オンチェーン Mainnet ネットワークを使用</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>どこから始めますか？</translation>
 		</message>
 	</context>
 	<context>
@@ -3850,8 +3934,13 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>履歴</translation>
+			<source>Dashboard</source>
+			<translation>ダッシュボード</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>詳細</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3872,11 +3961,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Export labels</source>
 			<translation>新規</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>取引履歴</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3929,6 +4013,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Password incorrect</source>
 			<translation>新しいパスワード：</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ウォレット名を選択してください</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4139,11 +4228,6 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>完了 - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>次のステップ</translation>
 		</message>
@@ -4160,11 +4244,8 @@ Outputs stay the same; only the fee changes.</source>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ってください。 &lt;br&gt;&lt;br&gt; &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt; 資金を管理できているか確認するには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、ウォレットに多額のBitcoinを送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;極めて重要&lt;/b&gt;です。 &lt;br&gt; &lt;br&gt; &lt;b&gt;まだウォレットに大きな資金を送らないでください。まずすべてのセルフ送信テストを完了してください！&lt;/b&gt;</translation>
+			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。 &lt;br&gt;&lt;br&gt; &lt;b&gt;なぜですか？&lt;/b&gt; &lt;br&gt; 資金を制御できているか確認するには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、かなりの量の Bitcoin をウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4175,6 +4256,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>認識されたトランザクション</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>資金がウォレットに到着するのを待っています...</translation>
 		</message>
 	</context>
 	<context>
@@ -4458,18 +4544,8 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>完了 - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>このカードでトランザクションを作成してください。</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>保留中 - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4733,6 +4809,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} を再インストール</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>{available} に更新</translation>
 		</message>
@@ -4777,6 +4858,28 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>インストール済みプラグインを再確認</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>完了</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>現在</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>今後の未完了ステップ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>ステップ {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5071,13 +5174,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n} 番目の署名を作成し収集する</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>入力 {i}: フラグ {sighash_type} で署名 , 署名: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>入力 {i}: フラグ {sighash_type} で署名 , 署名: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>署名 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -5991,11 +6094,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>安全な場所に置く</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>受信テスト</translation>
 		</message>
@@ -6008,6 +6106,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>トランザクションを確認し、準備ができたら作成してください。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>キーを保護</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6187,8 +6290,8 @@ IP: {ip}
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>終了</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>完了してダッシュボードへ移動</translation>
 		</message>
 		<name>basetab</name>
 		<message>

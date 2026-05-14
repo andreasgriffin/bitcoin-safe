@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. Imprimeix els fulls de còpia de seguretat</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Full de recuperació de còpia de seguretat (obligatori)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Enhorabona, la teva cartera està preparada. Ara protegeix-la!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>Distribueix-ho en 2 ubicacions separades</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>No deseu diverses ubicacions al mateix lloc.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>No desis múltiples ubicacions al mateix lloc.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>No desis el dispositiu de signatura i el full de còpia de seguretat amb paraules seed al mateix lloc.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>Cada ubicació ha d’estar fora de línia i físicament segura.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Segueix els passos següents per assegurar-te que crees una còpia de seguretat segura per restaurar els teus fons en el pitjor dels casos.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Un cop imprès, escriu a mà la frase seed del teu dispositiu al full, o confirma que ja està transcrita en un paper separat guardat amb ell.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>Ubicació 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>Obre les instruccions per veure les paraules seed en aquest signador.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Selecciona almenys un full de còpia de seguretat per imprimir.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>Imprimeix els fulls de còpia de seguretat (obligatori)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Imprimeix els fulls de recuperació associats als dispositius que posseeixes i controles.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>Imprimeix el PDF i adjunta les paraules seed a cada full de còpia de seguretat.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>Imprimeix els fulls de còpia de seguretat i desa-ho tot en llocs separats i segurs.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>Signador de recuperació {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>Full {number} de {total}</translation>
+			<source>Signer device</source>
+			<translation>Dispositiu del signant</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>Dispositiu del signant</translation>
+			<source>Signer {i}</source>
+			<translation>Signador {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>Desa el dispositiu de signatura i el full de còpia de seguretat amb paraules seed en ubicacions segures separades.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Caixa forta {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>Mostra les paraules seed</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Sí, confirmo que les paraules seed estan adjuntes a la impressió</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>Heu d’anar a {m} de les {n} ubicacions per gastar des de la cartera.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>La teva cartera està protegida pel seu full de recuperació, que s’hauria de guardar en un lloc diferent d’on es troba el teu signador de maquinari. Imprimeix-lo, adjunta-hi la seed i guarda’l en una ubicació segura i amb accés controlat. Amb les paraules seed tens el control total de la teva cartera.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>La teva cartera està protegida per {n} fulls de còpia de seguretat amb seeds adjuntes guardats en ubicacions diferents. Imprimeix-los i col·loca’ls en ubicacions segures i amb accés controlat. Amb {m} d’ells tens el control total de la teva cartera.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} de {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1808,8 +1803,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importa la informació de la cartera a Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Importar la informació del signador de maquinari a Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2128,6 +2123,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>L’empremta de 8 dígits identifica la seed. La pots escriure al signador de maquinari per fer el seguiment de diferents seeds i dispositius de signatura.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>L’origen de la clau és necessari per construir transaccions (PSBT) correctament i està connectat amb la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>La seed és el secret que permet signar transaccions. Per a una cartera de signatura única, dona control total sobre els fons.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>L'origen xPub {key_origin} i l'xPub van junts. Tria el parell d'origen xPub correcte.</translation>
 		</message>
@@ -2140,6 +2154,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Les adreces de la cartera es deriven de la xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3071,8 +3090,13 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>Crea</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Ja coneixes Bitcoin? Configura amb confiança una cartera que manté i mou valor real.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Millor per a emmagatzematge a llarg termini</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3081,28 +3105,88 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>Practica en un entorn segur abans de passar a bitcoin real.&lt;br&gt;• Explora l’aplicació amb un moneder de demostració&lt;br&gt;• Utilitza monedes de prova que no tenen valor monetari&lt;br&gt;• Ideal per aprendre, experimentar i equivocar-se amb seguretat&lt;br&gt;&lt;i&gt;Xarxa Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Explora el Playground</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>Entorn segur de proves</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>Explora amb una cartera de demostració</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>Moneder segur</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>Mantén segura la teva frase seed</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>Selecciona la xarxa Bitcoin que vols utilitzar</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>Aprèn amb seguretat, sense risc</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>Utilitza la xarxa Bitcoin real quan estiguis a punt per a fons reals.&lt;br&gt;• Envia i rep bitcoin real&lt;br&gt;• Ideal per a la configuració del teu moneder a llarg termini&lt;br&gt;• Les transaccions tenen valor real i conseqüències reals&lt;br&gt;&lt;i&gt;Xarxa Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>Gestiona Fons Reals</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Practica en un entorn sense risc i veu exactament com funciona tot. Prova d’enviar, rebre i canviar comissions utilitzant monedes de prova que pots perdre sense penedir-te’n.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Diners sòlids reals (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Envia i rep bitcoin real</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Configura una cartera</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Comença a explorar</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Comença a fer transaccions amb diners sòlids o aprèn en un playground segur. En qualsevol cas, sempre podràs crear una altra cartera més endavant.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Les monedes de prova (tBTC) no tenen valor</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Monedes de prova, sense valor monetari</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Les transaccions són permanents</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Utilitza la xarxa de prova Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Utilitza la xarxa onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Per on vols començar?</translation>
 		</message>
 	</context>
 	<context>
@@ -3863,8 +3947,13 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Descriptor</translation>
+			<source>Dashboard</source>
+			<translation>Tauler de control</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Detalls</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3885,11 +3974,6 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Export labels</source>
 			<translation>Exporta etiquetes</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Historial</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3942,6 +4026,11 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Password incorrect</source>
 			<translation>Contrasenya incorrecta</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Tria un nom de cartera</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4153,11 +4242,6 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Completat - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>Encara no s'ha configurat cap cartera</translation>
 		</message>
@@ -4174,11 +4258,8 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera. &lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des de la cartera. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signants. &lt;br&gt; &lt;br&gt; &lt;b&gt;NO envieu encara grans quantitats de fons a la cartera. Completeu primer totes les proves d’autoenviament!&lt;/b&gt;</translation>
+			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera. &lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4189,6 +4270,11 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>Transacció reconeguda</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Esperant que arribin fons a la cartera...</translation>
 		</message>
 	</context>
 	<context>
@@ -4473,18 +4559,8 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Completat - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>Creeu la transacció en aquesta targeta.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>Pendent - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4748,6 +4824,11 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>Reinstal·la {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>Actualitza a {available}</translation>
 		</message>
@@ -4792,6 +4873,28 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>Torna a comprovar els connectors instal·lats</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Completat</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Actual</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Passos futurs incomplets</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Pas {current} de {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5087,13 +5190,13 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Crea i recull {n}. signatura</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Entrada {i}: Signada amb el flag {sighash_type} , Signatura: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrada {i}: Signada amb el flag {sighash_type} , Signatura: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Signatura {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6014,11 +6117,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Col·loca en llocs segurs</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Prova de recepció</translation>
 		</message>
@@ -6031,6 +6129,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>Reviseu la transacció i creeu-la quan estigueu a punt.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Protegeix les teves claus</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6210,8 +6313,8 @@ País: {country}</translation>
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>Finalitza</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>Finalitza i ves al Tauler de control</translation>
 		</message>
 		<name>basetab</name>
 		<message>

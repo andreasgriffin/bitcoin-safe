@@ -1143,8 +1143,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>2. Yes, I attached the seed words to the printout</source>
-			<translation>1. Imprimer les feuilles de sauvegarde</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Feuille de récupération de sauvegarde (obligatoire)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1163,6 +1163,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Félicitations, votre portefeuille est prêt. Protégez-le maintenant !</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Distribute to 2 separate locations</source>
 			<translation>Répartir dans 2 emplacements séparés</translation>
 		</message>
@@ -1173,23 +1178,8 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Do not store multiple locations in the same place.</source>
-			<translation>Ne stockez pas plusieurs emplacements au même endroit.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
-			<translation>Ne stockez pas plusieurs emplacements au même endroit.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Each location must be offline and physically secure.</source>
-			<translation>Ne stockez pas l’appareil de signature et la feuille de sauvegarde avec les mots de seed au même endroit.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Important</source>
-			<translation>Chaque emplacement doit être hors ligne et physiquement sécurisé.</translation>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Suivez les étapes ci-dessous pour vous assurer de créer une sauvegarde sécurisée afin de restaurer vos fonds dans le pire des cas.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1208,6 +1198,11 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Une fois imprimée, recopiez à la main la phrase de récupération depuis votre appareil sur la feuille, ou confirmez qu’elle est déjà transcrite sur une feuille de papier séparée stockée avec celle-ci.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
 			<translation>Emplacement 2</translation>
 		</message>
@@ -1218,23 +1213,18 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print backup sheets (required)</source>
-			<translation>Ouvrir les instructions pour afficher les mots de seed sur ce signataire.</translation>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Veuillez sélectionner au moins une feuille de sauvegarde à imprimer.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the PDF and attach the seed words to each backup sheet.</source>
-			<translation>Imprimer les feuilles de sauvegarde (obligatoire)</translation>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Imprimez les feuilles de récupération associées aux appareils que vous possédez et contrôlez.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Print the backup sheets and store everything in separate, safe places.</source>
-			<translation>Imprimez le PDF et joignez les mots de seed à chaque feuille de sauvegarde.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Put your backups and signers in secure locations</source>
-			<translation>Imprimez les feuilles de sauvegarde et stockez le tout dans des lieux séparés et sûrs.</translation>
+			<source>Recovery Signer {i}</source>
+			<translation>Signataire de récupération {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1243,13 +1233,13 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Sheet {number} of {total}</source>
-			<translation>Feuille {number} sur {total}</translation>
+			<source>Signer device</source>
+			<translation>Appareil du signataire</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Signer device</source>
-			<translation>Appareil du signataire</translation>
+			<source>Signer {i}</source>
+			<translation>Signataire {i}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1263,11 +1253,6 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The backup sheet with seed words gives full control over the wallet.</source>
-			<translation>Stockez l’appareil de signature et la feuille de sauvegarde avec les mots de seed dans des emplacements sécurisés séparés.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
 			<source>Vault {letter}</source>
 			<translation>Coffre {letter}</translation>
 		</message>
@@ -1278,13 +1263,23 @@ Default 20</source>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You must print the backup sheets and attach the seed words before you continue.</source>
-			<translation>Afficher les mots de seed</translation>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Oui, je confirme que les mots de récupération sont joints à l’impression</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
-			<translation>Vous devez vous rendre à {m} des {n} emplacements pour dépenser depuis votre portefeuille.</translation>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Votre portefeuille est protégé par sa feuille de récupération, qui doit être conservée dans un endroit différent de celui de votre signataire matériel. Imprimez-la, joignez la seed et conservez-la dans un emplacement sécurisé à accès contrôlé. Avec les mots de récupération, vous avez le contrôle total de votre portefeuille.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Votre portefeuille est protégé par {n} feuilles de sauvegarde avec des seeds jointes, stockées dans différents emplacements. Imprimez-les et placez-les dans des emplacements sécurisés à accès contrôlé. Avec {m} d’entre elles, vous avez le contrôle total de votre portefeuille.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} sur {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1808,8 +1803,8 @@ car la taille finale de la transaction est inconnue.</translation>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Importer les informations du signataire matériel dans Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2128,6 +2123,25 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>L’empreinte à 8 chiffres identifie la seed. Vous pouvez l’écrire sur le signataire matériel pour suivre les différentes seeds et les différents appareils de signature.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>L’origine de la clé est nécessaire pour construire correctement les transactions (PSBT) et elle est liée à la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>La seed est le secret qui permet la signature des transactions. Pour un portefeuille à signature unique, elle donne le contrôle total des fonds.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
 			<translation>L'origine xPub {key_origin} et l'xPub appartiennent ensemble. Veuillez choisir la paire d'origine xPub correcte.</translation>
 		</message>
@@ -2140,6 +2154,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>USB</source>
 			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Les adresses du portefeuille sont dérivées de la xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3071,8 +3090,13 @@ il est donc généralement d’environ {minutes} minutes en retard sur la pointe
 	<context>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Create</source>
-			<translation>Créer</translation>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Vous connaissez déjà Bitcoin ? Configurez en toute confiance un portefeuille qui détient et déplace une valeur réelle.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Idéal pour le stockage à long terme</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3081,28 +3105,88 @@ il est donc généralement d’environ {minutes} minutes en retard sur la pointe
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
-			<translation>Entraînez-vous dans un environnement sûr avant de passer à de vrais bitcoins.&lt;br&gt;• Explorez l’application avec un portefeuille de démonstration&lt;br&gt;• Utilisez des pièces de test sans valeur monétaire&lt;br&gt;• Idéal pour apprendre, expérimenter et faire des erreurs en toute sécurité&lt;br&gt;&lt;i&gt;Réseau Signet&lt;/i&gt;</translation>
+			<source>Explore Playground</source>
+			<translation>Explorer le terrain de jeu</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Safe Playground</source>
-			<translation>Terrain d’essai sécurisé</translation>
+			<source>Explore with a demo wallet</source>
+			<translation>Explorer avec un portefeuille de démonstration</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Secure Wallet</source>
-			<translation>Portefeuille sécurisé</translation>
+			<source>Keep your seed phrase safe</source>
+			<translation>Gardez votre phrase de récupération en sécurité</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Select the Bitcoin network you want to use</source>
-			<translation>Sélectionnez le réseau Bitcoin que vous souhaitez utiliser</translation>
+			<source>Learn safely, risk-free</source>
+			<translation>Apprenez en toute sécurité, sans risque</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
-			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
-			<translation>Utilisez le vrai réseau Bitcoin lorsque vous êtes prêt pour des fonds réels.&lt;br&gt;• Envoyez et recevez de vrais bitcoins&lt;br&gt;• Idéal pour la configuration de votre portefeuille à long terme&lt;br&gt;• Les transactions ont une valeur réelle et des conséquences réelles&lt;br&gt;&lt;i&gt;Réseau Mainnet&lt;/i&gt;</translation>
+			<source>Manage Real Funds</source>
+			<translation>Gérer des fonds réels</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Entraînez-vous dans un environnement sans risque et voyez exactement comment tout fonctionne. Essayez d’envoyer, de recevoir et de modifier les frais avec des pièces de test que vous pouvez perdre sans regret.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Monnaie saine réelle (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Envoyer et recevoir de vrais bitcoins</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Configurer un portefeuille</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Commencer l’exploration</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Commencez à effectuer des transactions avec une monnaie saine ou apprenez dans un terrain de jeu sécurisé. Dans tous les cas, vous pourrez toujours créer un autre portefeuille plus tard.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Les pièces de test (tBTC) n’ont aucune valeur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Pièces de test, aucune valeur monétaire</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Les transactions sont permanentes</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Utilise le réseau de test Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Utilise le réseau onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Par où souhaitez-vous commencer ?</translation>
 		</message>
 	</context>
 	<context>
@@ -3863,8 +3947,13 @@ Utiliser plus de pairs améliore la couverture mais consomme plus de bande passa
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Descripteur</translation>
+			<source>Dashboard</source>
+			<translation>Tableau de bord</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Détails</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3885,11 +3974,6 @@ Utiliser plus de pairs améliore la couverture mais consomme plus de bande passa
 		<message>
 			<source>Export labels</source>
 			<translation>Exporter les étiquettes</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Historique</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3942,6 +4026,11 @@ Utiliser plus de pairs améliore la couverture mais consomme plus de bande passa
 		<message>
 			<source>Password incorrect</source>
 			<translation>Mot de passe incorrect</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Veuillez choisir un nom de portefeuille</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4153,11 +4242,6 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Terminé - txid {txid}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>No wallet setup yet</source>
 			<translation>Aucune configuration de portefeuille encore</translation>
 		</message>
@@ -4174,11 +4258,8 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
                     To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille. &lt;br&gt;&lt;br&gt; &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt; Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. &lt;br&gt; Ainsi, avant d’envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires. &lt;br&gt; &lt;br&gt; &lt;b&gt;N’envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d’abord terminer tous les tests d’auto-envoi !&lt;/b&gt;</translation>
+			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille. &lt;br&gt;&lt;br&gt; &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt; Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. &lt;br&gt; Avant d’envoyer un montant important de Bitcoin dans le portefeuille, il est donc &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4189,6 +4270,11 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 		<message>
 			<source>Recognized Transaction</source>
 			<translation>Transaction reconnue</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>En attente de l’arrivée des fonds dans le portefeuille...</translation>
 		</message>
 	</context>
 	<context>
@@ -4473,18 +4559,8 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
-			<source>Completed - txid {txid}</source>
-			<translation>Terminé - txid {txid}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
 			<source>Create the transaction in this card.</source>
 			<translation>Créez la transaction dans cette carte.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Pending - txid {txid}</source>
-			<translation>En attente - txid {txid}</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4748,6 +4824,11 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 		</message>
 		<name>SourceCatalogItem</name>
 		<message>
+			<source>Reinstall {version}</source>
+			<translation>Réinstaller {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
 			<source>Update to {available}</source>
 			<translation>Mettre à jour vers {available}</translation>
 		</message>
@@ -4792,6 +4873,28 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 		<message>
 			<source>Recheck Installed Plugins</source>
 			<translation>Revérifier les plugins installés</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Terminé</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Actuel</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Étapes futures incomplètes</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Étape {current} sur {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -5087,13 +5190,13 @@ Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser mainte
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Créer et collecter la {n}. signature</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Entrée {i} : Signée avec le flag {sighash_type} , Signature : {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrée {i} : Signée avec le flag {sighash_type} , Signature : {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Signature {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -6014,11 +6117,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Mettre dans des emplacements sécurisés</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
 			<source>Receive Test</source>
 			<translation>Test de Réception</translation>
 		</message>
@@ -6031,6 +6129,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Review the transaction and create it when you are ready.</source>
 			<translation>Vérifiez la transaction et créez-la lorsque vous êtes prêt.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Sécurisez vos clés</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6210,8 +6313,8 @@ Pays : {country}</translation>
 	<context>
 		<name>basetab</name>
 		<message>
-			<source>Finish</source>
-			<translation>Terminer</translation>
+			<source>Finish and go to Dashboard</source>
+			<translation>Terminer et accéder au tableau de bord</translation>
 		</message>
 		<name>basetab</name>
 		<message>
