@@ -33,6 +33,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressTypes
+from bitcoin_usb.dialogs import AutoScanMode
 from PyQt6.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
@@ -262,17 +263,50 @@ def test_keystore_ui_connect_buttons_follow_capabilities(qtbot: QtBot, loop_in_t
     _select_signer(widget, HardwareSigners.passport.id)
     assert widget.button_connect_qr.isVisible()
     assert not widget.button_connect_usb.isVisible()
+    assert not widget.button_connect_bluetooth.isVisible()
     assert widget.button_connect_import.isVisible()
 
     _select_signer(widget, HardwareSigners.q.id)
     assert widget.button_connect_qr.isVisible()
     assert widget.button_connect_usb.isVisible()
+    assert not widget.button_connect_bluetooth.isVisible()
+    assert widget.button_connect_import.isVisible()
+
+    _select_signer(widget, HardwareSigners.jade.id)
+    assert widget.button_connect_qr.isVisible()
+    assert widget.button_connect_usb.isVisible()
+    assert widget.button_connect_bluetooth.isVisible()
     assert widget.button_connect_import.isVisible()
 
     _select_signer(widget, HardwareSigners.generic.id)
     assert widget.button_connect_qr.isVisible()
     assert widget.button_connect_usb.isVisible()
+    assert widget.button_connect_bluetooth.isVisible()
     assert widget.button_connect_import.isVisible()
+
+
+def test_keystore_ui_transport_buttons_set_matching_autoscan_mode(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    autoscan_modes: list[AutoScanMode] = []
+    key_origins: list[str] = []
+
+    monkeypatch.setattr(widget.usb_gui, "set_autoscan_mode", lambda mode: autoscan_modes.append(mode))
+    monkeypatch.setattr(
+        widget.usb_gui,
+        "get_fingerprint_and_xpub",
+        lambda key_origin: key_origins.append(key_origin) or None,
+    )
+
+    widget.on_hwi_click_usb()
+    widget.on_hwi_click_bluetooth()
+
+    assert autoscan_modes == [AutoScanMode.USB, AutoScanMode.BLUETOOTH]
+    assert key_origins == [
+        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
+        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
+    ]
 
 
 def test_keystore_ui_unexpected_key_origin_uses_warning_styling(

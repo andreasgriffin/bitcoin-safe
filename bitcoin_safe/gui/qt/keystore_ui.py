@@ -41,6 +41,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
+from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -268,6 +269,15 @@ class KeyStoreUI(CardBase):
         )
         self.connect_layout.addWidget(self.button_connect_usb)
 
+        self.button_connect_bluetooth = SpinningButton(
+            text="",
+            signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
+            enabled_icon=svg_tools.get_QIcon("bi--bluetooth.svg"),
+            timeout=60,
+            parent=self.left_widget,
+        )
+        self.connect_layout.addWidget(self.button_connect_bluetooth)
+
         self.button_connect_import = QPushButton(self.left_widget)
         self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
         self.connect_layout.addWidget(self.button_connect_import)
@@ -376,7 +386,8 @@ class KeyStoreUI(CardBase):
         self.combo_model.currentIndexChanged.connect(self._update_device_type_help)
         self.button_confirm_signer.clicked.connect(self.confirm_device_type_selection)
         self.button_connect_qr.clicked.connect(self.scan_signer_data_from_qr)
-        self.button_connect_usb.clicked.connect(self.on_hwi_click)
+        self.button_connect_usb.clicked.connect(self.on_hwi_click_usb)
+        self.button_connect_bluetooth.clicked.connect(self.on_hwi_click_bluetooth)
         self.button_connect_import.clicked.connect(self._import_dialog)
         self.connect_help_label.icon_label.clicked.connect(self.show_device_instructions)
         self.button_device_instructions.clicked.connect(self.show_device_instructions)
@@ -566,6 +577,9 @@ class KeyStoreUI(CardBase):
         self.button_connect_qr.setVisible(connect_visible and hardware_signer.supports_qr)
         self.button_connect_usb.setVisible(
             connect_visible and hardware_signer.usb != FeatureLevel.not_capable
+        )
+        self.button_connect_bluetooth.setVisible(
+            connect_visible and hardware_signer.bluetooth != FeatureLevel.not_capable
         )
         self.button_connect_import.setVisible(connect_visible)
 
@@ -939,7 +953,7 @@ class KeyStoreUI(CardBase):
         self.label_description.setText(self.tr("Personal notes:"))
         self.connect_help_label.setText(self.tr("Connect"))
         self.connect_help_label.set_icon_as_help(
-            tooltip=self.tr("Import signer data with QR, USB, or text/file import.")
+            tooltip=self.tr("Import signer data with QR, USB, Bluetooth, or text/file import.")
         )
         self.connect_help_label.icon_label.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -993,14 +1007,17 @@ class KeyStoreUI(CardBase):
         self.action_change_device_type.setText(self.tr("Change device type"))
         self.button_connect_qr.setText(self.tr("QR Code"))
         self.button_connect_usb.setText(self.tr("USB"))
+        self.button_connect_bluetooth.setText(self.tr("Bluetooth"))
         self.button_connect_import.setText(self.tr("Import"))
         self._update_device_type_help()
 
         self._update_header_subtitle()
         self._apply_state()
 
-    def _on_hwi_click(self, key_origin: str) -> None:
+    def _on_hwi_click(self, autoscan_mode: AutoScanMode) -> None:
         """On hwi click."""
+        key_origin = self.get_address_type().key_origin(self.network)
+        self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as exc:
@@ -1021,11 +1038,13 @@ class KeyStoreUI(CardBase):
         if not self.textEdit_description.toPlainText().strip():
             self.textEdit_description.setText(f"{device.get('type', '')} - {device.get('model', '')}")
 
-    def on_hwi_click(self) -> None:
-        """On hwi click."""
-        address_type = self.get_address_type()
-        key_origin = address_type.key_origin(self.network)
-        self._on_hwi_click(key_origin=key_origin)
+    def on_hwi_click_usb(self) -> None:
+        """Import signer data by scanning USB devices first."""
+        self._on_hwi_click(autoscan_mode=AutoScanMode.USB)
+
+    def on_hwi_click_bluetooth(self) -> None:
+        """Import signer data by scanning Bluetooth devices first."""
+        self._on_hwi_click(autoscan_mode=AutoScanMode.BLUETOOTH)
 
     def get_ui_values_as_keystore(self) -> KeyStore:
         """Get ui values as keystore."""
