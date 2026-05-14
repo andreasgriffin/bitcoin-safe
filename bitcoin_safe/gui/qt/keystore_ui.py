@@ -37,7 +37,7 @@ from typing import cast
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
@@ -144,6 +144,7 @@ class KeyStoreUI(CardBase):
         self._device_type_editing = False
         self._selected_hardware_signer: HardwareSigner | None = None
         self._device_help_widget: QWidget | None = None
+        self.signal_tracker = SignalTracker()
         self._state = KeyStoreUiState.Add
         self._status_pixmaps = {
             AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
@@ -279,7 +280,7 @@ class KeyStoreUI(CardBase):
             parent=self.left_widget,
         )
         self.edit_fingerprint.add_copy_button()
-        self.edit_fingerprint.signal_data.connect(self._on_handle_input)
+        self.signal_tracker.connect(self.edit_fingerprint.signal_data, self._on_handle_input)
         self.edit_fingerprint.input_field.setAnalyzer(FingerprintAnalyzer(parent=self))
 
         self.label_key_origin = IconLabel(parent=self.left_widget)
@@ -291,7 +292,7 @@ class KeyStoreUI(CardBase):
             parent=self.left_widget,
         )
         self.edit_key_origin.add_copy_button()
-        self.edit_key_origin.signal_data.connect(self._on_handle_input)
+        self.signal_tracker.connect(self.edit_key_origin.signal_data, self._on_handle_input)
         self.edit_key_origin_input.setAnalyzer(
             KeyOriginAnalyzer(
                 get_expected_key_origin=self.get_expected_key_origin, network=self.network, parent=self
@@ -307,7 +308,7 @@ class KeyStoreUI(CardBase):
         )
         self.edit_xpub.setFixedHeight(50)
         self.edit_xpub.add_copy_button()
-        self.edit_xpub.signal_data.connect(self._on_handle_input)
+        self.signal_tracker.connect(self.edit_xpub.signal_data, self._on_handle_input)
         self.edit_xpub.input_field.setAnalyzer(XpubAnalyzer(self.network, parent=self))
 
         self.label_seed = IconLabel(parent=self.left_widget)
@@ -317,7 +318,9 @@ class KeyStoreUI(CardBase):
         self.edit_seed.add_copy_button()
         self.edit_seed.add_random_mnemonic_button(callback_seed=self.on_edit_seed_changed)
         self.edit_seed.input_field.setAnalyzer(SeedAnalyzer(parent=self))
-        self.edit_seed.input_field.textChanged.connect(self.on_edit_seed_changed)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[str]], self.edit_seed.input_field.textChanged), self.on_edit_seed_changed
+        )
 
         self.details_widget = QWidget(self.left_widget)
         self.details_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
@@ -355,32 +358,60 @@ class KeyStoreUI(CardBase):
 
     def _connect_signals(self) -> None:
         for signal in (
-            self.edit_fingerprint.input_field.textChanged,
-            self.edit_key_origin.input_field.textChanged,
-            self.edit_xpub.input_field.textChanged,
-            self.edit_seed.input_field.textChanged,
-            self.textEdit_description.textChanged,
+            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged),
+            cast(SignalProtocol[[]], self.edit_key_origin.input_field.textChanged),
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged),
+            cast(SignalProtocol[[]], self.edit_seed.input_field.textChanged),
+            cast(SignalProtocol[[]], self.textEdit_description.textChanged),
         ):
-            signal.connect(self.signal_ui_changed.emit)
+            self.signal_tracker.connect(signal, self.signal_ui_changed.emit)
 
-        self.edit_key_origin_input.textChanged.connect(self.format_all_fields)
-        self.edit_xpub.input_field.textChanged.connect(self._apply_state)
-        self.edit_fingerprint.input_field.textChanged.connect(self._apply_state)
-        self.edit_key_origin_input.textChanged.connect(self._apply_state)
-        self.textEdit_description.textChanged.connect(self._update_header_subtitle)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.format_all_fields
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self._apply_state
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged), self._apply_state
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self._apply_state
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.textEdit_description.textChanged), self._update_header_subtitle
+        )
 
-        self.signals_min.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.signals_min.language_switch, self.updateUi)
 
-        self.combo_brand.currentIndexChanged.connect(self._on_brand_changed)
-        self.combo_model.currentIndexChanged.connect(self._update_confirm_button)
-        self.combo_model.currentIndexChanged.connect(self._update_device_type_help)
-        self.button_confirm_signer.clicked.connect(self.confirm_device_type_selection)
-        self.button_connect_qr.clicked.connect(self.scan_signer_data_from_qr)
-        self.button_connect_usb.clicked.connect(self.on_hwi_click)
-        self.button_connect_import.clicked.connect(self._import_dialog)
-        self.connect_help_label.icon_label.clicked.connect(self.show_device_instructions)
-        self.button_device_instructions.clicked.connect(self.show_device_instructions)
-        self.button_register.clicked.connect(self._request_show_register_multisig)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.combo_brand.currentIndexChanged), self._on_brand_changed
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.combo_model.currentIndexChanged), self._update_confirm_button
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.combo_model.currentIndexChanged), self._update_device_type_help
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_confirm_signer.clicked), self.confirm_device_type_selection
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_connect_qr.clicked), self.scan_signer_data_from_qr
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_connect_usb.clicked), self.on_hwi_click
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_connect_import.clicked), self._import_dialog
+        )
+        self.signal_tracker.connect(self.connect_help_label.icon_label.clicked, self.show_device_instructions)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_device_instructions.clicked), self.show_device_instructions
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_register.clicked), self._request_show_register_multisig
+        )
 
     @property
     def selected_hardware_signer(self) -> HardwareSigner | None:
@@ -726,7 +757,10 @@ class KeyStoreUI(CardBase):
             self._device_help_widget.close()
         self._device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
         self._device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
-        self._device_help_widget.destroyed.connect(self._clear_device_help_widget)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[QObject | None]], self._device_help_widget.destroyed),
+            self._clear_device_help_widget,
+        )
         self._device_help_widget.setWindowTitle(
             self.tr("{device} instructions").format(device=hardware_signer.display_name)
         )
@@ -1088,9 +1122,12 @@ class KeyStoreUI(CardBase):
 
     def close(self) -> bool:
         """Close."""
+        device_help_widget = self._device_help_widget
+        self._device_help_widget = None
+        self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
-        if self._device_help_widget:
-            self._device_help_widget.close()
+        if device_help_widget:
+            device_help_widget.close()
         self.edit_seed.close()
         self.edit_key_origin.close()
         self.edit_fingerprint.close()
