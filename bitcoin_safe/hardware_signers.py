@@ -246,7 +246,7 @@ class HardwareSigners:
         usb=FeatureLevel.supported,
         bluetooth=FeatureLevel.supported,
         info_url=_signer_info_url("jade-plus"),
-        icon_filename="jade-icon.svg",
+        icon_filename="jade-plus-icon.svg",
         screenshot_name="jade",
     )
     passport = HardwareSigner(
@@ -383,10 +383,10 @@ class HardwareSigners:
         icon_filename="seedsigner-icon.svg",
         screenshot_name="seedsigner",
     )
-    krux = HardwareSigner(
+    krux_diy = HardwareSigner(
         id="krux",
         brand_name="Krux",
-        display_name="Krux App",
+        display_name="Krux DIY",
         usb_preferred=False,
         qr_types=[
             QrExportTypes.ur,
@@ -402,6 +402,18 @@ class HardwareSigners:
         info_url=_signer_info_url("krux"),
         icon_filename="krux-icon.svg",
         screenshot_name="krux",
+    )
+    keepkey = HardwareSigner(
+        id="keepkey",
+        brand_name="KeepKey",
+        display_name="KeepKey Wallet",
+        usb_preferred=True,
+        qr_types=[],
+        descriptor_export_types=[],
+        usb=FeatureLevel.supported,
+        info_url=_signer_info_url("keepkey"),
+        icon_filename="keepkey-icon.svg",
+        screenshot_name="keepkey",
     )
 
     @classmethod
