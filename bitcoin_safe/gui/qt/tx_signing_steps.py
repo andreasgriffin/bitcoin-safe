@@ -37,7 +37,7 @@ from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import DataGroupBox, HorizontalImportExportGroups
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
-from bitcoin_safe.gui.qt.keystore_ui import SignedUI, SignerUI
+from bitcoin_safe.gui.qt.signer_ui import SignedUI, SignerUI
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.tx_util import get_clients
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
@@ -109,7 +109,7 @@ class TxSigningSteps(StepProgressContainer):
         self.sub_indices: list[int] = []
         for i in range(len(signature_importer_dict)):
             # export
-            step_labels.append(self.tr("Create and collect {n}. signature").format(n=i + 1))
+            step_labels.append(self.tr("Signature {n}").format(n=i + 1))
 
         super().__init__(
             step_labels=step_labels,

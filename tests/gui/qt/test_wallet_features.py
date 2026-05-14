@@ -41,8 +41,10 @@ import bdkpython as bdk
 import platformdirs
 import pytest
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.tool_gui import ToolGui
+from PyQt6.QtCore import Qt
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
@@ -53,15 +55,21 @@ from bitcoin_safe.gui.qt.dialog_import import ImportDialog
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
 from bitcoin_safe.gui.qt.export_data import FileToolButton
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
+from bitcoin_safe.gui.qt.register_multisig import (
+    RegisterMultisigInteractionWidget,
+    preferred_register_multisig_qr_type,
+)
 from bitcoin_safe.gui.qt.settings import Settings
-from bitcoin_safe.hardware_signers import DescriptorQrExportTypes
+from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, HardwareSigners
+from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.signature_manager import Asset
 from bitcoin_safe.util import filename_clean
+from bitcoin_safe.wallet import Wallet
 
 from ...faucet import Faucet
 from ...helpers import TestConfig
 from ...non_gui.test_signers import test_seeds
+from ...non_gui.utils import create_multisig_protowallet
 from .helpers import (
     CheckedDeletionContext,
     Shutter,
@@ -70,9 +78,74 @@ from .helpers import (
     main_window_context,
     running_on_github,
     save_wallet,
+    select_manual_entry_signer,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _create_register_multisig_wallet(test_config: TestConfig, loop_in_thread: LoopInThread) -> Wallet:
+    protowallet = create_multisig_protowallet(
+        threshold=2,
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/0h/2h"],
+        wallet_id="register-multisig-test",
+        network=test_config.network,
+    )
+    return Wallet.from_protowallet(
+        protowallet=protowallet,
+        config=test_config,
+        loop_in_thread=loop_in_thread,
+    )
+
+
+@pytest.mark.marker_qt_1
+def test_register_multisig_closes_on_escape(qtbot: QtBot) -> None:
+    loop_in_thread = LoopInThread()
+    dialog = RegisterMultisigInteractionWidget(
+        wallet_functions=None,
+        wallet=None,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(dialog)
+    dialog.show()
+    dialog.activateWindow()
+    dialog.setFocus()
+
+    QTest.keyClick(dialog, Qt.Key.Key_Escape)
+    qtbot.waitUntil(lambda: not dialog.isVisible())
+
+    loop_in_thread.stop()
+
+
+def test_preferred_register_multisig_qr_type_prefers_coldcard_legacy() -> None:
+    assert preferred_register_multisig_qr_type(HardwareSigners.q) == DescriptorQrExportTypes.coldcard_legacy
+
+
+def test_preferred_register_multisig_qr_type_returns_default_descriptor_qr() -> None:
+    assert preferred_register_multisig_qr_type(HardwareSigners.passport) == DescriptorQrExportTypes.default
+
+
+def test_preferred_register_multisig_qr_type_returns_none_without_descriptor_qr() -> None:
+    assert preferred_register_multisig_qr_type(HardwareSigners.seedsigner) is None
+
+
+@pytest.mark.marker_qt_1
+def test_register_multisig_dialog_uses_hardware_signer_default_qr(
+    qtbot: QtBot, loop_in_thread: LoopInThread, test_config: TestConfig
+) -> None:
+    wallet = _create_register_multisig_wallet(test_config=test_config, loop_in_thread=loop_in_thread)
+    dialog = RegisterMultisigInteractionWidget(
+        wallet_functions=WalletFunctions(Signals()),
+        wallet=wallet,
+        loop_in_thread=loop_in_thread,
+        hardware_signer=HardwareSigners.q,
+    )
+    qtbot.addWidget(dialog)
+
+    assert dialog.export_qr_button.export_qr_widget.combo_qr_type.getCurrentExportType() == (
+        DescriptorQrExportTypes.coldcard_legacy
+    )
 
 
 @pytest.mark.marker_qt_2
@@ -166,7 +239,7 @@ def test_wallet_features_multisig(
             for i in range(signers):
                 assert qt_protowallet.wallet_descriptor_ui.keystore_uis.tabText(
                     i
-                ) == qt_protowallet.protowallet.signer_name(i)
+                ) == qt_protowallet.protowallet.hardware_signer_label(i)
 
             if qt_protowallet.protowallet.is_multisig():
                 # Multisig should expose p2wsh in address types.
@@ -222,7 +295,7 @@ def test_wallet_features_multisig(
             """Set mnemonic."""
             # Fill the seed fields for a signer tab and validate derived fields.
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[index]
-            key.tabs_import_type.setCurrentWidget(key.tab_manual)
+            select_manual_entry_signer(key)
 
             shutter.save(main_window)
 

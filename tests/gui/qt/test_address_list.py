@@ -55,6 +55,7 @@ from .helpers import (
     fund_wallet,
     main_window_context,
     save_wallet,
+    select_manual_entry_signer,
     setup_single_sig_wallet,
 )
 
@@ -122,7 +123,7 @@ def test_address_list_label_filter_and_utxo_selection(
         qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
         qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
         key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-        key.tabs_import_type.setCurrentWidget(key.tab_manual)
+        select_manual_entry_signer(key)
         if key.edit_seed.mnemonic_button:
             key.edit_seed.mnemonic_button.click()
 

@@ -34,7 +34,7 @@ from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util_os import webopen
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
@@ -84,6 +84,9 @@ class IconLabel(QWidget):
         self.textLabel.setOpenExternalLinks(True)  # Enable opening links
         self._layout.addWidget(self.textLabel)
 
+        for widget in (self, self.icon_label, self.textLabel):
+            widget.installEventFilter(self)
+
     def setText(self, a0: str | None) -> None:
         """SetText."""
         if a0 is None:
@@ -112,11 +115,35 @@ class IconLabel(QWidget):
 
     def set_icon_as_help(self, tooltip: str | None, click_url: str | None = None):
         """Set icon as help."""
-        self.icon_label.setToolTip(tooltip or click_url)
+        effective_tooltip = tooltip or click_url or ""
+        self.setToolTip(effective_tooltip)
+        self.icon_label.setToolTip(effective_tooltip)
+        self.textLabel.setToolTip(effective_tooltip)
         self.click_url = click_url
         if self.click_url:
             self.set_icon(svg_tools.get_QIcon("bi--question-circle-link.svg"))
             self.icon_label.setCursor(Qt.CursorShape.PointingHandCursor)
+            self.textLabel.setCursor(Qt.CursorShape.PointingHandCursor)
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
         else:
             self.set_icon(svg_tools.get_QIcon("bi--question-circle.svg"))
+            self.icon_label.unsetCursor()
+            self.textLabel.unsetCursor()
             self.unsetCursor()
+
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
+        """Handle clicks locally for clickable help labels."""
+        if (
+            self.click_url
+            and a0 in (self, self.icon_label, self.textLabel)
+            and isinstance(a1, QMouseEvent)
+            and a1.button() == Qt.MouseButton.LeftButton
+        ):
+            if a1.type() == QEvent.Type.MouseButtonPress:
+                a1.accept()
+                return True
+            if a1.type() == QEvent.Type.MouseButtonRelease:
+                self.on_icon_click()
+                a1.accept()
+                return True
+        return super().eventFilter(a0, a1)

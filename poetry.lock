@@ -460,7 +460,7 @@ resolved_reference = "d8235707e0826a7774d376e4c24cc12a72bf33a3"
 
 [[package]]
 name = "bitcoin-qr-tools"
-version = "3.0.1"
+version = "3.1.0"
 description = "Python bitcoin qr reader and generator"
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -486,7 +486,7 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "fe2e61ef380e8e7aa5c2918d731ef2d1b81c9cda"
+resolved_reference = "0aecda03c09a62fa9c4c0323b1dd2f0bb302b43b"
 
 [[package]]
 name = "bitcoin-safe-lib"

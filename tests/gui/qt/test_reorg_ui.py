@@ -197,8 +197,6 @@ def _create_sign_and_broadcast_self_send(
 
     viewer = main_window.tab_wallets.currentNode().data
     assert isinstance(viewer, UITx_Viewer)
-    if viewer.button_next.isVisible():
-        viewer.button_next.click()
 
     sign_tx(qtbot=qtbot, shutter=shutter, viewer=viewer, qt_wallet=qt_wallet)
     txid = str(viewer.extract_tx().compute_txid())

@@ -48,7 +48,13 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.wallet_balance_chart import ChartPoint
 
 from ...helpers import TestConfig
-from .helpers import Shutter, do_modal_click, main_window_context, save_wallet
+from .helpers import (
+    Shutter,
+    do_modal_click,
+    main_window_context,
+    save_wallet,
+    select_manual_entry_signer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +95,7 @@ def test_history_range_coupling(
         qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
         qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
         key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-        key.tabs_import_type.setCurrentWidget(key.tab_manual)
+        select_manual_entry_signer(key)
         if key.edit_seed.mnemonic_button:
             key.edit_seed.mnemonic_button.click()
 

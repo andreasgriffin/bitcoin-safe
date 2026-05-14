@@ -33,17 +33,30 @@ import logging
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_qr_tools.unified_encoder import QrExportType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
-from bitcoin_safe.gui.qt.keystore_ui import HardwareSignerInteractionWidget
+from bitcoin_safe.gui.qt.hardware_signer_interaction_widget import HardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
+from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, HardwareSigner
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import Wallet
 
 logger = logging.getLogger(__name__)
+
+
+def preferred_register_multisig_qr_type(hardware_signer: HardwareSigner) -> QrExportType | None:
+    descriptor_qr_type_names = {item.name for item in DescriptorQrExportTypes.as_list()}
+    descriptor_qr_types = [
+        qr_type for qr_type in hardware_signer.qr_types if qr_type.name in descriptor_qr_type_names
+    ]
+    for qr_type in descriptor_qr_types:
+        if qr_type.name == DescriptorQrExportTypes.coldcard_legacy.name:
+            return qr_type
+    return descriptor_qr_types[0] if descriptor_qr_types else None
 
 
 class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
@@ -52,6 +65,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         wallet_functions: WalletFunctions | None,
         wallet: Wallet | None,
         loop_in_thread: LoopInThread,
+        hardware_signer: HardwareSigner | None = None,
         parent: QWidget | None = None,
         wallet_name: str = "MultiSig",
     ) -> None:
@@ -59,6 +73,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         super().__init__(parent=parent)
         self.wallet = wallet
         self.wallet_functions = wallet_functions
+        self.hardware_signer = hardware_signer
         self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
 
         ## help
@@ -81,6 +96,10 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 parent=self,
                 wallet_name=wallet_name,
             )
+            if self.hardware_signer:
+                qr_type = preferred_register_multisig_qr_type(self.hardware_signer)
+                if qr_type:
+                    self.export_qr_button.export_qr_widget.combo_qr_type.setCurrentQrType(qr_type)
             self.add_button(self.export_qr_button)
 
             ## hwi

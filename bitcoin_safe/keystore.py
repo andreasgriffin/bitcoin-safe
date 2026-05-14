@@ -43,6 +43,7 @@ from bitcoin_usb.address_types import (
     SimplePubKeyProvider,
 )
 
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.wallet_util import (
     WalletDifference,
     WalletDifferences,
@@ -129,20 +130,24 @@ class KeyStoreImporterTypes:
 
 
 class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
-    VERSION = "0.0.2"
+    VERSION = "0.0.5"
     known_classes = {
         **BaseSaveableClass.known_classes,
     }
+    xpub: str
+    fingerprint: str
+    key_origin: str
+    derivation_path: str
 
     def __init__(
         self,
         xpub: str,
         fingerprint: str,
         key_origin: str,
-        label: str,
         network: bdk.Network,
         mnemonic: str | None = None,
         description: str = "",
+        hardware_signer_id: str = HardwareSigners.generic.id,
         derivation_path: str = ConstDerivationPaths.multipath,
     ) -> None:
         """Initialize instance."""
@@ -157,9 +162,24 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         if not self.is_xpub_valid(xpub=xpub, network=self.network):
             raise ValueError(f"{xpub} is not a valid xpub")
 
-        self.label = label
         self.mnemonic = mnemonic
         self.description = description
+        self.hardware_signer_id = hardware_signer_id
+
+    def hardware_signer_label(self, fallback_name: str | None = None) -> str:
+        """Return the signer label derived from the configured hardware signer."""
+        hardware_signer = HardwareSigners.from_id(self.hardware_signer_id)
+        if hardware_signer and hardware_signer != HardwareSigners.generic:
+            return hardware_signer.display_name
+        if fallback_name:
+            return fallback_name
+        return HardwareSigners.generic.display_name
+
+    def technical_hardware_signer_label(self, fallback_name: str | None = None) -> str:
+        """Return a detailed signer label including the fingerprint when available."""
+        label = self.hardware_signer_label(fallback_name=fallback_name)
+        fingerprint = self.fingerprint.strip()
+        return f"{label} - {fingerprint}" if fingerprint else label
 
     def get_differences(self, other_keystore: KeyStore, prefix="") -> WalletDifferences:
         "Compares the relevant entries like keystores"
@@ -187,8 +207,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
                 )
 
         keys = [
-            "label",
             "description",
+            "hardware_signer_id",
         ]
         for k in keys:
             if this[k] != other[k]:
@@ -283,12 +303,21 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             if "derivation_path" in dct:
                 dct["network"] = bdk.Network.REGTEST
 
+        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.2"):
+            dct["hardware_signer_id"] = HardwareSigners.infer_from_text(str(dct.get("description", ""))).id
+
         return super().from_dump_migration(dct=dct)
 
     def from_other_keystore(self, other_keystore: KeyStore) -> None:
         """From other keystore."""
-        for k, v in other_keystore.__dict__.items():
-            setattr(self, k, v)
+        self.xpub = other_keystore.xpub
+        self.fingerprint = other_keystore.fingerprint
+        self.key_origin = other_keystore.key_origin
+        self.derivation_path = other_keystore.derivation_path
+        self.network = other_keystore.network
+        self.mnemonic = other_keystore.mnemonic
+        self.description = other_keystore.description
+        self.hardware_signer_id = other_keystore.hardware_signer_id
 
     def is_identical_to(self, spk_provider: SimplePubKeyProvider) -> bool:
         # fill in missing info in keystores
@@ -302,15 +331,18 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     @classmethod
     def from_signer_info(
-        cls, signer_info: SignerInfo, network: bdk.Network, default_label: str, default_derivation_path: str
+        cls, signer_info: SignerInfo, network: bdk.Network, default_derivation_path: str
     ) -> KeyStore:
         """From signer info."""
+        hardware_signer_id = HardwareSigners.generic.id
+        if signer_info.name:
+            hardware_signer_id = HardwareSigners.infer_from_text(signer_info.name).id
         return KeyStore(
             xpub=signer_info.xpub,
             fingerprint=signer_info.fingerprint,
             key_origin=signer_info.key_origin,
-            label=signer_info.name if signer_info.name else default_label,
             network=network,
+            hardware_signer_id=hardware_signer_id,
             derivation_path=(
                 signer_info.derivation_path if signer_info.derivation_path else default_derivation_path
             ),

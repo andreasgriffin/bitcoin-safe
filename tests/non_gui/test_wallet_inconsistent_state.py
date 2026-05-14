@@ -78,7 +78,6 @@ def _make_single_sig_wallet(
         xpub=str(descriptor).split("]")[1].split("/0/*")[0],
         fingerprint=str(descriptor).split("[")[1].split("/")[0].upper(),
         key_origin="m/84h/1h/0h",
-        label="test-seed-0",
         network=config.network,
         mnemonic=seed_str,
     )

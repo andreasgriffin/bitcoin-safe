@@ -62,8 +62,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
 from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
+from bitcoin_safe.gui.qt.signer_ui import SignerUI
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate

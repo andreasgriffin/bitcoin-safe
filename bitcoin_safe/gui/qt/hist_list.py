@@ -87,10 +87,10 @@ from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import Recipient, TransactionDetails
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 
 from ...i18n import translate
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallets
 from .cbf_progress_bar import CBFProgressBar
 from .drag_info import AddressDragInfo
 from .history_range import DateRangePicker

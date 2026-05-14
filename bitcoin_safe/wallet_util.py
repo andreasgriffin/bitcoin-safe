@@ -54,22 +54,10 @@
 from __future__ import annotations
 
 import enum
-import logging
 from dataclasses import dataclass
 from typing import Any
 
-from .i18n import translate
-
-logger = logging.getLogger(__name__)
-
-
-def signer_name(threshold: int, i: int) -> str:
-    """Signer name."""
-    i += 1
-    if i <= threshold:
-        return translate("d", "Signer {i}").format(i=i)
-    else:
-        return translate("d", "Recovery Signer {i}").format(i=i)
+from bitcoin_safe.i18n import translate
 
 
 class WalletDifferenceType(enum.Enum):

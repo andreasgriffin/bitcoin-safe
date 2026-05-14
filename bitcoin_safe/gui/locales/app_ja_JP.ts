@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>プラグインソースを追加</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer トークン</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>表示名</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>マニフェスト URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII-armored 公開鍵をここに貼り付けてください</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>ピン留めされた公開鍵</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>請求書の有効期限後にブラウザのコールバックが届きました。もう一度お試しください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>金額を選択して寄付用の請求書を作成してください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>ブラウザで支払いを完了してください。問題がある場合は、遠慮なくこちらまでお問い合わせください: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>請求書を作成できませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>ブラウザを自動的に開くことができませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ローカルコールバックサーバーを起動できませんでした。自動確認なしでブラウザに請求書を開きます。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>請求書を作成</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>請求書の準備ができました。ブラウザで支払いを完了してください。自動確認は利用できない場合があります。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>請求書サービスがエラーを返しました（{code}）。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。寄付を再試行してください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。もう一度お試しください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ブラウザのコールバックにより支払いが確認されました。ありがとうございます！</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>金額を選択してください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>請求書を要求しています...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>請求書を要求しています... ブラウザが開き、Bitcoin Safe がローカルでコールバックを待ち受けます。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>寄付サーバーに接続できませんでした。後でもう一度お試しください。</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>ウォレット {wallet_id} の同期キー:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>対応する印刷済みPDFに{number}単語のシードを貼り付けてください。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>印刷されたPDFに{number}語のシードを貼り付けてください。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>前の手順を完了してください。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>回復用シートを印刷</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>PDFを印刷する（ウォレットディスクリプターも含む）</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>有効にする</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>プラグインを開く</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>提供元: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>ビジネスプラン</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>ビジネスプランのアクセスが有効です。</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>1つのサブスクリプションですべての有料プラグインを解除し、予約支払いのサービス手数料を削除します。</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>ブロックエクスプローラーで開く</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>含まれるフォルダを開く</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number} 個のハードウェア署名者を購入                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe は主要なハードウェア署名者すべてをサポートしています: &lt;a href="{url}"&gt;全リストを見る&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -899,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>まずマルチシグネチャウォレットを選択してください</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>必要な署名者</translation>
 		</message>
@@ -916,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>ウォレットのプロパティ</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>まず無料トライアルを開始し、その後ここでサブスクリプションを管理または更新してください。</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1029,33 +1136,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>マルチシグウォレットから支出するためには、{m}の{n}に行く必要があることを考慮して、安全な場所を慎重に選んでください。</translation>
+			<source>1. Print backup sheets</source>
+			<translation>ウォレット名</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>各シードバックアップとハードウェアサイナーを安全な場所（例：以下）に保管してください：</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>バックアップ復元シート（必須）</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>シードバックアップ {j} とハードウェアサイナー {j} は場所 {j} にあるべきです</translation>
+			<source>Backup sheet</source>
+			<translation>2. はい、seed ワードを印刷物に添付しました</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>ハードウェアサイナーを安全な場所に保管してください。</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>バックアップシート</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>シードバックアップを非常に安全な場所（例：金庫）に保管します。</translation>
+			<source>Backup sheet {number}</source>
+			<translation>バックアップシート {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>シードバックアップ（24語）は資金に対する完全なコントロールを与えます。</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>おめでとうございます。ウォレットの準備ができました。次に保護しましょう！</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>2つの別々の場所に分散</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>{n}個の別々の場所に分散</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>最悪のシナリオで資金を復元できる安全なバックアップを作成するために、以下の手順に従ってください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>重要</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>場所</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>場所 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>印刷したら、デバイス上の seed フレーズをシートに手書きするか、それと一緒に保管されている別の紙にすでに書き写されていることを確認してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>場所 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>前の手順を完了してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>印刷するバックアップシートを少なくとも1枚選択してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>所有し管理しているデバイスに関連付けられた復元シートを印刷してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>復旧署名者{i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>バックアップと署名者を安全な場所に置いてください</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>署名者デバイス</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>署名者{i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>署名者デバイス</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>各署名者を、そのバックアップシートと seed ワードと一緒に同じ場所に保管してください。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>保管庫 {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seedワードを表示</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>はい、seed 単語が印刷物に添付されていることを確認します</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>あなたのウォレットは復元シートによって保護されています。このシートは、ハードウェア署名デバイスがある場所とは別の場所に保管する必要があります。印刷し、seed を添付して、安全でアクセス管理された場所に保管してください。seed 単語があれば、ウォレットを完全に制御できます。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>あなたのウォレットは、異なる場所に保管された seed 添付済みの {n} 枚のバックアップシートによって保護されています。それらを印刷し、安全でアクセス管理された場所に配置してください。そのうち {m} 枚があれば、ウォレットを完全に制御できます。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1096,6 +1318,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>メッセージ（任意）</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>メッセージ（任意）</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1182,6 +1414,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>完全（Bitcoin Safe）</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safeをご利用いただきありがとうございます！</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>プラグインを削除</translation>
 		</message>
 	</context>
 	<context>
@@ -1338,43 +1584,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>前のステップ</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>再試行</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>はい、履歴にトランザクションが見えます</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ハードウェア署名者へのアクセスが他のプログラムによって行われていないことを確認してください</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>ハードウェア署名者の名前（ステッカーラベル）を入力してください</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>ラベル用ステッカー</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>成功！すべてのハードウェア署名者とこのステップを完了してから、次へをクリックしてください。</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>設定が完了しませんでした。もう一度お試しください。</translation>
 		</message>
 	</context>
 	<context>
@@ -1590,13 +1799,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>２。ビットコインセーフにウォレット情報をインポート</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>次の署名者</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>ハードウェア署名デバイス情報を Bitcoin Safe にインポート</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1607,11 +1811,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>前のステップ</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>前の署名者</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1637,6 +1836,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>プラグインを削除</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) により、ウォレットはアドレスのプライバシーを保ちながら関連する取引を発見できます。</translation>
 		</message>
@@ -1647,13 +1851,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>最初の同期中、Bitcoin Safe は複数のビットコインノードからコンパクトブロックの概要を取得します。これはブロックデータをダウンロードするプライベートな方法です。</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>経過時間 {elapsed} | 推定残り時間 {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>経過時間 {elapsed} | 推定残り時間 {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safeはプライバシー保護のため、複数のノードからブロック概要をダウンロードします。この初期同期の後、更新は高速になります。独自のElectrumサーバーをお持ちの場合、または待ちたくない場合は、ネットワーク設定で公開Electrumサーバーに接続してください。</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>ネットワーク設定</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1765,13 +1974,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>高度な設定</translation>
+			<source>Add New Signer</source>
+			<translation>新しい署名者を追加</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>ラベル</translation>
+			<source>Change device type</source>
+			<translation>デバイスタイプを変更</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>接続</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>導出パス</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>デバイスの手順</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1790,9 +2014,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>ファイルまたはテキストをインポート</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>QR、USB、またはテキスト/ファイルインポートで署名者データをインポートします。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;対応しているハードウェア署名者&lt;/a&gt;について詳しく見る。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt;について詳しく見る。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1806,13 +2039,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ハードウェア署名者へのアクセスが他のプログラムによって行われていないことを確認してください</translation>
+			<source>Open the signer guide</source>
+			<translation>署名者ガイドを開く</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>有効なキーオリジンを入力してください。</translation>
+			<source>Personal notes:</source>
+			<translation>個人メモ:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>ハードウェア署名者へのアクセスが他のプログラムによって行われていないことを確認してください</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1836,13 +2074,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QRコード</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>登録</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>マルチシグを再登録</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>シード</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>ブランドを選択</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>モデルを選択</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>署名者のブランドを選択</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>署名者のモデルを選択</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>選択されたアドレスタイプ{type}の標準は{expected_key_origin}です。確信がない場合は修正してください。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8桁のフィンガープリントは seed を識別します。異なる seed や署名デバイスを追跡するために、ハードウェア署名デバイスに書いておくことができます。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>キーの由来は、トランザクション（PSBT）を正しく構築するために必要で、xPub に接続されています。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed はトランザクション署名を可能にする秘密です。単一署名ウォレットでは、資金を完全に制御できます。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1856,18 +2148,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>ウォレットアドレスは xPub から派生します。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>この署名者に関するメモ、覚え書きなどをここに書いてください...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>シード</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPubの起源</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} はここでは使用できません。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} はここでは使用できません。</translation>
+			<source>{device} instructions</source>
+			<translation>{device} の手順</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1912,48 +2219,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>インポートされたキーの起源{key_origins}が異なります！ これが意図したものであるかどうか再確認してください。</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>バックアップ秘密同期キー：</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>各コンピューターの同期＆チャットタブで信頼できるコンピューターを選択してください。</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>コラボレーションビデオ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>有効にする</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>アドレスラベルとカテゴリーの暗号化クラウドバックアップ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>終了</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>マルチコンピュータ同期とチャット</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>同期ビデオ</translation>
 		</message>
 	</context>
 	<context>
@@ -2179,6 +2444,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;プラグイン</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;前のウォレット/タブ</translation>
 		</message>
@@ -2256,6 +2526,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id} という名前のウォレットはすでに存在します。別の名前を選択してください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2364,6 +2639,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに Bitcoin Safe をテストするには、Testnet に切り替えることができます。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>開いたままにする</translation>
 		</message>
@@ -2391,6 +2672,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>新しいタブ {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>このネットワークで利用できるデモウォレットはありません。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2446,6 +2732,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>ここにビットコイントランザクションまたは PSBT を貼り付けるか、ファイルをドロップしてください</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ウォレット名を選択してください</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2625,6 +2916,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>ウォレット {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>ウォレットはまだ同期中であり、アプリを閉じると最初から同期をやり直す必要があります。代わりにトレイに隠しますか？</translation>
@@ -2653,11 +2949,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>はい、取引のフルスキャン</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>KYC-Exchange</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2784,6 +3075,108 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value}（現地時間）</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin にすでに慣れていますか？本物の価値を保持し移動できるウォレットを自信を持って設定しましょう。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>長期保管に最適</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>中規模資金に最適</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Playground を探索</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>デモウォレットで探索</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>seed フレーズを安全に保管してください</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>安全に、リスクなしで学ぶ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>実資金を管理</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>リスクのない環境で練習し、すべてがどのように機能するかを正確に確認しましょう。失っても後悔しないテストコインを使って、送信、受信、手数料変更を試してください。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>本物の健全な通貨（BTC）</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>本物の bitcoin を送受信</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>ウォレットを設定</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>探索を開始</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>健全な通貨で取引を開始するか、安全な playground で学びましょう。いずれの場合でも、後でいつでも別のウォレットを作成できます。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>テストコイン（tBTC）には価値がありません</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>テストコイン、金銭的価値なし</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>トランザクションは永続的です</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet テストネットワークを使用</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>オンチェーン Mainnet ネットワークを使用</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>どこから始めますか？</translation>
 		</message>
 	</context>
 	<context>
@@ -2955,8 +3348,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>プロキシは同期＆チャット機能には適用されません！</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>プロキシは Sync&amp;Chat プラグインおよびサブスクリプション購入中には適用されません！</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2980,58 +3374,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>ハッカーにシードをだまして渡してしまった場合、ビットコインはすぐに盗まれます</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>欠点：</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>2/3マルチシグネチャウォレット</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>もし1つのシードが失われたり盗まれたりした場合、残りの2つのシード+ウォレットディスクリプター（QRコード）で新しいウォレットにすべての資金を移すことができます</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3つの署名デバイス</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>カスタムまたは既存のウォレットを復元</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>3つの安全な場所（各1つのシードバックアップ+ウォレットディスクリプターが必要です）</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>資金にアクセスするために必要なのは1つのシード（24の秘密の言葉）</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>ウォレットをあなたのニーズに合わせてカスタマイズ</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>大規模資金に最適</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>1つの署名デバイス</translation>
+			<source>Connect Device(s)</source>
+			<translation>デバイスを接続</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3040,49 +3384,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>カスタムウォレットを作成またはインポート</translation>
+			<source>Custom / Recovery</source>
+			<translation>カスタム / 復元</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>カスタムまたは既存のウォレットをインポートする</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>セルフカストディウォレットのガイド付きセットアップ。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>カスタムウォレットを作成</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>ホット単一署名ウォレット</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>ウォレットを回復するためにはウォレットディスクリプター（QRコード）が必要です</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>対応しているハードウェアウォレットと署名者の一覧を開きます。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>シングルシグネチャを選択</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>安全に試せるよう、いくつかのテストコインが入った既存のウォレットで操作してみましょう。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>復旧時に利用できるオンラインのサポート資料が少ない</translation>
+			<source>Public Demo wallet</source>
+			<translation>公開デモウォレット</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>シードバックアップを保存するために必要なのは1つの安全な場所（紙またはスチール）</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>既存の鍵を必要とせず、すぐに使えるウォレットをすばやく生成します。&lt;br&gt;&lt;small&gt;インターネットに接続されたコンピューターは、お金を表す秘密を安全に保持するようには設計されていないため、Mainnet では無効化されています。&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>利点：</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>既存の鍵を必要とせず、すぐに使えるウォレットをすばやく生成します。&lt;br&gt;&lt;small&gt;インターネットに接続されたコンピューターで鍵を生成して保存することは安全ではありません。汎用コンピューターは、お金を表す秘密を保持するようには設計されていません。&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>マルチシグネチャを選択</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>ハードウェアウォレットまたはディスクリプターからウォレットを復元します。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>対応署名者</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ウォレット名</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3170,6 +3528,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>月額</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>無料トライアルを開始</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>サブスクリプション</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>年額</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>管理</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>ステータスを更新</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>サブスクリプション:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3234,93 +3636,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>請求書の有効期限後にブラウザのコールバックが届きました。もう一度お試しください。</translation>
+			<source>Update</source>
+			<translation>更新</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>金額を選択して寄付用の請求書を作成してください。</translation>
+			<source>Update available: {update_target}</source>
+			<translation>更新があります: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>ブラウザで支払いを完了してください。問題がある場合は、次の宛先までお気軽にご連絡ください: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target} に更新</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>請求書を作成できませんでした。もう一度お試しください。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ブラウザを自動的に開くことができませんでした。もう一度お試しください。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>ローカルコールバックサーバーを起動できませんでした。自動確認なしでブラウザに請求書を開きます。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>請求書を作成</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>請求書の準備ができました。ブラウザで支払いを完了してください。自動確認は利用できない場合があります。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>請求書サービスがエラーを返しました（{code}）。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。寄付を再試行してください。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>請求書がタイムアウトする前にブラウザのコールバックを受信できませんでした。もう一度お試しください。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>ブラウザのコールバックにより支払いが確認されました。ありがとうございます！</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>寄付金額と通貨を選択してください。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>請求書を要求しています...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>請求書を要求しています... ブラウザが開き、Bitcoin Safe がローカルでコールバックを待ち受けます。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>寄付サーバーに接続できませんでした。後でもう一度お試しください。</translation>
+			<source>Version {version}</source>
+			<translation>バージョン {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>有効化／無効化</translation>
+			<source>Explore plugins</source>
+			<translation>プラグインを探す</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>このウォレットではプラグインを利用できないため、ここで設定する項目はありません。</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>このウォレットで利用可能なプラグインを確認してください。必要なものを今すぐ有効にし、後でいつでもプラグインタブに戻れます。</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>任意のウォレット連携を有効化して管理します。</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>プラグイン</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>キャンセル</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>削除</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>インストール済みプラグインを削除</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>インストール済みプラグイン {plugin} を削除しますか？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>削除する前にプラグインを無効化してください。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>マニフェスト URL とピン留めされた公開鍵が必要です。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>プラグイン操作に失敗しました。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>プラグインソース {source_id} は存在しません。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>インストール済みプラグインを再確認しました。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>インストール済みプラグインを再確認しました。{count} 個のプラグインが無効です。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>プラグインソースを削除</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>プラグインソース {source} を削除しますか？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>このプラグインは削除できません。</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>すべての有料プラグインとサブスクリプション制限付きサービス料金に適用されます。</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Business プラン</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>プラグイン</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>ソース</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>{count} 個のプラグインがインストールされている間は削除できません。</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>削除</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>最後のエラー: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>更新</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>ソースを削除する前に、このソースからインストールされたプラグインを削除してください。</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ソース ID: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3450,8 +3934,13 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>履歴</translation>
+			<source>Dashboard</source>
+			<translation>ダッシュボード</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>詳細</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3472,11 +3961,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Export labels</source>
 			<translation>新規</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>取引履歴</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3529,6 +4013,11 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Password incorrect</source>
 			<translation>新しいパスワード：</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ウォレット名を選択してください</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3734,18 +4223,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>残高 = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>アドレス</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>前のステップ</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3754,29 +4233,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>ラベル</translation>
+			<source>Receive Test</source>
+			<translation>受信テスト</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>このウォレットの 1 つのアドレスに &lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金を管理していることを確認するには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、ウォレットに多額の Bitcoin を送信する前に、支出とすべての署名者のテストを行うことが&lt;b&gt;非常に重要です&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだウォレットに多額の資金を送信しないでください。まずすべての Self-Send テストを完了してください！&lt;/b&gt;                    </translation>
+			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。 &lt;br&gt;&lt;br&gt; &lt;b&gt;なぜですか？&lt;/b&gt; &lt;br&gt; 資金を制御できているか確認するには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、かなりの量の Bitcoin をウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>受け取り手順</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>認識されたトランザクション</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>資金がウォレットに到着するのを待っています...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>最近開いたウォレット</translation>
+			<source>ALL WALLETS</source>
+			<translation>すべてのウォレット</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>最近のウォレット</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>ファイルエクスプローラーで表示</translation>
 		</message>
 	</context>
 	<context>
@@ -3921,38 +4422,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>２。ビットコインセーフにウォレット情報をインポート</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>次の署名者</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>次のステップ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>前の署名者</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>ステップをスキップ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>はい、私は{n}のハードウェアサイナーにマルチシグを登録しました</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>各署名デバイスに multisig ウォレットを登録してください。</translation>
 		</message>
 	</context>
 	<context>
@@ -3996,6 +4467,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ファイルが選択されていません</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>デモサブスクリプションプラグイン</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient に基づくサンプルプラグインです。サブスクリプション制限付きの有効化とプラグインマネージャー操作を検証するために使用します。</translation>
 		</message>
 	</context>
 	<context>
@@ -4061,14 +4544,28 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>このカードでトランザクションを作成してください。</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>自己送信テスト {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>以下のトランザクションに署名してブロードキャストしてください。</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>支出テストをスキップ？</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>あなたのウォレットからあなたのウォレット内の別のアドレスへ送信しています（self-send）。&lt;br&gt; これは署名フローの練習となり、すべてのハードウェア署名者が正しく設定されていることを確認します。</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>トランザクションの準備を待っています。</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4285,20 +4782,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>「{sticker}」を{device_name}に</translation>
+			<source>Available version: {version}</source>
+			<translation>利用可能なバージョン: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>ラベルを印刷</translation>
+			<source>Install {version}</source>
+			<translation>{version} をインストール</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>次のステッカーをハードウェアに貼ってください：</translation>
+			<source>Installed version: {version}</source>
+			<translation>インストール済みバージョン: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>インストール済み {installed}; 利用可能な更新: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>最新 {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} を再インストール</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available} に更新</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>バージョン {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>バージョン {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>プラグインソースを追加...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>閉じる</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>設定済みのプラグインソース</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>まだプラグインソースが追加されていません。</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>プラグインソース</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>インストール済みプラグインを再確認</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>完了</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>現在</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>今後の未完了ステップ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>ステップ {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4593,13 +5174,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n} 番目の署名を作成し収集する</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>入力 {i}: フラグ {sighash_type} で署名 , 署名: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>入力 {i}: フラグ {sighash_type} で署名 , 署名: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>署名 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4792,11 +5373,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>次のステップ</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBFに必要なすべての取引詳細は利用できません</translation>
 		</message>
@@ -4815,11 +5391,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>まずウォレットにある既存のローカルトランザクションを削除してください。</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>前のステップ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5094,18 +5665,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>はい、すべての {number} の言葉が正しいことを確認しました</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5331,6 +5890,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>署名者 1 人</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2-of-3 Multi Signature</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3-of-5 Multi Signature</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>1 台の署名デバイスとそのバックアップ seed の喪失に耐えられます</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>2 台の署名デバイスとそのバックアップ seed の喪失に耐えられます</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>ウォレットテンプレートを選択</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>短所</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>続行</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>高い複雑性</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>署名デバイスと seed バックアップを失うと、資金は失われます</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>長期コールドストレージ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>長期コールドストレージ (2-of-3 Multi Signature)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>低い複雑性</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>中程度の複雑性</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ウォレット名を選択してください</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>前のステップ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>長所</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>回復</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>必須</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>seed バックアップを保管するために、アクセス制御された安全な場所が 1 か所必要です</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>seed バックアップを保管するために、アクセス制御された安全な場所が 3 か所必要です</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>seed バックアップを保管するために、アクセス制御された安全な場所が 5 か所必要です</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>長期セルフカストディ向けの堅牢なウォレット。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>リストからテンプレートを選択してください。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>1人の署名者と1つのseedバックアップによるセルフカストディ。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>シンプルなコールドストレージ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>シンプルなコールドストレージ（1人の署名者）</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>単一障害点を避けるため、seedバックアップはデバイスとは別に保管してください。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>超堅牢なストレージ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>超堅牢なストレージ（3-of-5マルチシグネチャ）</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>ウォレットディスクリプタを含むリカバリーシートは、各seedバックアップと一緒に保管する必要があります。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>合計</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ウォレット名</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>署名者</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>署名者</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5338,23 +6074,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Self-Send テスト</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>シードのバックアップ</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>ハードウェア署名者を購入する</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>シードを生成</translation>
+			<source>Choose template</source>
+			<translation>テンプレートを選択</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5363,13 +6084,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>ハードウェア署名者にラベルを付ける</translation>
+			<source>Plugins</source>
+			<translation>プラグイン</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>安全な場所に置く</translation>
+			<source>Previous Step</source>
+			<translation>前のステップ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5380,6 +6101,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>マルチシグをサイナーに登録</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>トランザクションを確認し、準備ができたら作成してください。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>キーを保護</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5403,17 +6134,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>同期とチャット</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>テストトランザクション  '{tx_text}'  は正常に完了しました。Self-Send テストを続行してください: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>署名者 {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5422,8 +6144,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>バックアップの検証</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>トランザクションが作成されました。以下で署名してブロードキャストし、その後ウォレットが認識するまでお待ちください。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>トランザクションがウォレットに認識されました。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>ウォレットがブロードキャストされたトランザクションを認識するのを待っています。</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5556,6 +6288,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>完了してダッシュボードへ移動</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6967,6 +7704,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>このウォレットとカテゴリへの完全な読み取りおよび書き込みアクセス。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>残高、取引、UTXO を含む、このウォレットへの完全な読み取りおよび書き込みアクセス。</translation>
 		</message>
@@ -6982,8 +7724,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>新しいトランザクションやブロックチェーン同期などのウォレットアクティビティイベントを購読します。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>新しい取引やブロックチェーン同期などのウォレット活動イベントを購読します。取引や PSBT を開くことも可能になります。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>不明な説明</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7101,25 +7853,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Businessプランのアクセスが有効です。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>キャンセル</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>続行</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>現在のサブスクリプション状態を確認できませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>現在の状態: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>サブスクリプションのリマインダーと更新通知用のメールアドレス:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>無料トライアルの購入で管理ペイロードが返されませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>無料トライアルの購入でセッションが返されませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>無料トライアルの購入にはウォレットディスクリプタが必要です。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>最終確認: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>前回の更新エラー: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>サブスクリプションを管理</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>管理URLが保存されました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>まだ有効化されたサブスクリプションはありません。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>サブスクリプションを開く</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>有効なメールアドレスを入力してください。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>サブスクリプション状態を更新</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>サブスクリプションのリマインダー</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>サブスクリプションが必要です</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>サブスクリプション状態の更新に失敗しました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>サブスクリプション状態の更新で結果が返されませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>無料トライアルの有効化に失敗しました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>無料トライアルの有効化がタイムアウトしました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>このプラグインは現在無効です。再度有効にする前にサブスクリプションを延長してください。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>無料トライアルの有効化を待っています...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} 後でもう一度お試しください。それでも動作しない場合は、{email} にお問い合わせください。</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezorに表示されている6桁のペアリングコードを入力してください:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Trezorのキーパッド配列を使用してPINを入力してください（7 8 9 / 4 5 6 / 1 2 3）:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezorをペアリング</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezorのロックを解除</translation>
 		</message>
 	</context>
 	<context>

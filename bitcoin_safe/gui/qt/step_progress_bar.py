@@ -30,58 +30,37 @@
 from __future__ import annotations
 
 import logging
-import sys
 from collections.abc import Callable
 from dataclasses import dataclass
-from functools import partial
+from html import escape
 from math import ceil
 from typing import cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QFontMetrics,
-    QMouseEvent,
-    QPainter,
-    QPaintEvent,
-    QPen,
-    QPolygon,
-    QResizeEvent,
-    QTextOption,
-)
+from PyQt6.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygon
 from PyQt6.QtWidgets import (
     QApplication,
     QDialogButtonBox,
-    QPushButton,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
     QSizePolicy,
     QStackedWidget,
-    QTextEdit,
     QToolTip,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.util import create_button_box
 from bitcoin_safe.signals import SignalsMin
 
-from .util import set_margins, svg_tools
+from .util import get_neutral_surface_colors, set_margins
 
 logger = logging.getLogger(__name__)
 
 
-def height_of_str(text, widget: QWidget, max_width: float) -> float:
-    """Height of str."""
-    font_metrics = QFontMetrics(widget.font())
-    rect = font_metrics.boundingRect(QRect(0, 0, int(max_width * 0.95), 1000), Qt.TextFlag.TextWordWrap, text)
-    return rect.height() * 1.2
-
-
 class StepProgressBar(QWidget):
-    # Define a new signal that emits the number of the index clicked
     signal_index_clicked = cast(SignalProtocol[[int]], pyqtSignal(int))
 
     def __init__(
@@ -100,32 +79,29 @@ class StepProgressBar(QWidget):
         self.clickable = clickable
         self.enumeration_alphabet: list[str] | None = None
         self.cursor_set = False
-        self.labels = [f"Step {i + 1}" for i in range(number_of_steps)]  # Default labels
-        self.set_circle_sizes(circle_sizes)
-        self.tube_width = 4
-        self.padding = 0
-        self.label_distance = 5
-        self.max_label_height = 0  # Initialize max label height
+        self.labels = [f"Step {i + 1}" for i in range(number_of_steps)]
+        self.segment_gap = 16
+        self.padding = 6
         self.use_checkmark_icon = use_checkmark_icon
-
-        self.checkmark_pixmap = svg_tools.get_pixmap(
-            icon_basename="checkmark.svg",
-            auto_theme=False,
-            size=(26, 26),
-            replace_tuples=(("greenColor", "#ffffff"),),
-        )
         self.mark_current_index_as_completed = mark_current_index_as_completed
-        self.tooltips = [""] * number_of_steps  # Initialize tooltips as empty strings
+        self.circle_sizes: list[int] = []
+        self.segment_heights: list[int] = []
+        self.tooltips = self.labels.copy()
+        self.set_circle_sizes(circle_sizes)
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
     def set_circle_sizes(self, circle_sizes: list[int] | None = None) -> None:
-        """Set circle sizes."""
-        self.radius = max(circle_sizes) if circle_sizes else 20
+        """Set segment heights based on the previous circle size input."""
+        default_size = 20
         self.circle_sizes = (
-            circle_sizes if circle_sizes else [self.radius for i in range(self.number_of_steps)]
+            circle_sizes.copy() if circle_sizes else [default_size for _i in range(self.number_of_steps)]
         )
-        if len(self.circle_sizes) < self.number_of_steps:
-            self.circle_sizes = self.circle_sizes * ceil(self.number_of_steps / len(self.circle_sizes))
+        if len(self.circle_sizes) < self.number_of_steps and self.circle_sizes:
+            multiplier = ceil(self.number_of_steps / len(self.circle_sizes))
+            self.circle_sizes = (self.circle_sizes * multiplier)[: self.number_of_steps]
+        self.segment_heights = [max(4, int(round(size / 4))) for size in self.circle_sizes]
+        self.updateGeometry()
+        self.update()
 
     def set_enumeration_alphabet(self, enumeration_alphabet: list[str] | None) -> None:
         """Set enumeration alphabet."""
@@ -134,20 +110,7 @@ class StepProgressBar(QWidget):
     def set_current_index(self, index: int) -> None:
         """Set current index."""
         self.current_index = index
-        self.update()  # Redraw the widget
-
-    def recalculate_max_height(self) -> None:
-        """Recalculate max height."""
-        max_width = self.width() / (self.number_of_steps + 1)
-        self.max_label_height = 0
-        for label in self.labels:
-            self.max_label_height = int(max(self.max_label_height, height_of_str(label, self, max_width)))
-        self.updateGeometry()  # Notify the layout system that the widget's size hint has changed
-
-    def resizeEvent(self, a0: QResizeEvent | None) -> None:
-        """ResizeEvent."""
-        self.recalculate_max_height()
-        super().resizeEvent(a0)
+        self.update()
 
     @property
     def number_of_steps(self) -> int:
@@ -157,114 +120,52 @@ class StepProgressBar(QWidget):
     def set_labels(self, labels: list[str]) -> None:
         """Set labels."""
         self.labels = labels
-        self.set_circle_sizes()
-        self.tooltips = [""] * self.number_of_steps
-
-        self.recalculate_max_height()
-        self.update()
+        self.tooltips = labels.copy()
+        self.set_circle_sizes(self.circle_sizes if self.circle_sizes else None)
 
     def sizeHint(self) -> QSize:
-        """SizeHint."""
-        total_height = int(
-            self.radius * 2 + max(self.max_label_height, 20) + self.label_distance + self.padding * 2
-        )
-        return QSize(self.width(), total_height)
+        """Size hint for the segmented progress bar."""
+        return QSize(self.width(), max(self.segment_heights, default=6) + self.padding * 2)
 
     def mousePressEvent(self, a0: QMouseEvent | None) -> None:
-        """MousePressEvent."""
+        """Emit the clicked step when a segment is pressed."""
         if not a0:
             super().mousePressEvent(a0)
             return
 
         for i in range(self.number_of_steps):
-            # Define the rectangle area for each step
-            if self._ellipse_rect(i).contains(a0.position()):
-                self.signal_index_clicked.emit(i)  # Emit the clicked step number
+            if self._segment_rect(i).contains(a0.position()):
+                self.signal_index_clicked.emit(i)
                 break
 
         super().mousePressEvent(a0)
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
-        """PaintEvent."""
+        """Draw the segmented progress state."""
+        del a0
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Define pens, brushes, and colors
-        completed_color = QColor("#7FBA00")
-        current_color = QColor("#0078D4")
-        inactive_color = QColor("#BFBFBF")
-        bubble_color = QColor("#FFFFFF")
-
-        QPen(current_color, self.tube_width)
-        completed_pen = QPen(completed_color, self.tube_width)
-        inactive_pen = QPen(inactive_color, self.tube_width)
-        QBrush(current_color)
-        completed_brush = QBrush(completed_color)
-        inactive_brush = QBrush(inactive_color)
-
-        step_width = self._step_width()
-
-        # Create a QTextOption for word wrapping
-        text_option = QTextOption()
-        text_option.setWrapMode(QTextOption.WrapMode.WordWrap)
-        text_option.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+        completed_color = QColor("#10B814")
+        current_color = QColor("#2C7DD1")
+        inactive_color = get_neutral_surface_colors().panel_background
 
         for i in range(self.number_of_steps):
-            ellipse_rect = self._ellipse_rect(i)
-            center_point = ellipse_rect.center()
-
             is_past_step = i < self.current_index or (
                 i == self.current_index and self.mark_current_index_as_completed
             )
-
-            # Draw connecting line
-            if i < self.number_of_steps - 1:
-                next_color = completed_color if i < self.current_index else inactive_color
-                painter.setPen(QPen(next_color, self.tube_width))
-                painter.drawLine(
-                    int(center_point.x()),
-                    int(center_point.y()),
-                    int(center_point.x() + step_width),
-                    int(center_point.y()),
-                )
-
-            # Set pen and brush for circle
             if is_past_step:
-                painter.setPen(completed_pen)
-                painter.setBrush(completed_brush)
+                color = completed_color
             elif i == self.current_index:
                 color = completed_color if self.mark_current_index_as_completed else current_color
-                painter.setPen(QPen(color, self.tube_width))
-                painter.setBrush(QBrush(color))
             else:
-                painter.setPen(inactive_pen)
-                painter.setBrush(inactive_brush)
+                color = inactive_color
 
-            # Draw circle
-            painter.drawEllipse(ellipse_rect)
-
-            # Draw checkmark icon or step number
-            if self.use_checkmark_icon and (
-                is_past_step or (i == self.current_index and self.mark_current_index_as_completed)
-            ):
-                icon_size = self.checkmark_pixmap.size()
-                painter.drawPixmap(
-                    int(center_point.x() - icon_size.width() / 2),
-                    int(center_point.y() - icon_size.height() / 2),
-                    self.checkmark_pixmap,
-                )
-            else:
-                painter.setPen(QPen(bubble_color))
-                painter.drawText(
-                    ellipse_rect,
-                    Qt.AlignmentFlag.AlignCenter,
-                    self.format_step(i),
-                )
-
-            # Draw step text below circles
-            painter.setPen(QPen(self.palette().color(self.foregroundRole())))
-            painter.setFont(QFont("Arial", 10))
-            painter.drawText(self._label_rect(i), self.labels[i], text_option)
+            segment_rect = self._segment_rect(i)
+            radius = segment_rect.height() / 2
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(QBrush(color))
+            painter.drawRoundedRect(segment_rect, radius, radius)
 
         painter.end()
 
@@ -276,31 +177,18 @@ class StepProgressBar(QWidget):
             else self.enumeration_alphabet[i % len(self.enumeration_alphabet)]
         )
 
-    def _step_width(self) -> float:
-        """Step width."""
-        return self.width() / (self.number_of_steps + 1)
+    def _segment_rect(self, i: int) -> QRectF:
+        """Return the geometry for a single step segment."""
+        if not self.number_of_steps:
+            return QRectF()
 
-    def _label_rect(self, i: int) -> QRectF:
-        """Label rect."""
-        circle_y = self.radius + self.tube_width  # Position circles near the top
-        step_width = self._step_width()
-        return QRectF(
-            step_width * (i + 1) - step_width / 2,
-            circle_y + self.radius + self.padding + self.label_distance,
-            step_width,
-            self.max_label_height,
-        )
-
-    def _ellipse_rect(self, i: int) -> QRectF:
-        """Ellipse rect."""
-        circle_y = self.radius + self.tube_width  # Position circles near the top
-        step_width = self._step_width()
-        return QRectF(
-            step_width * (i + 1) - self.circle_sizes[i],
-            circle_y - self.circle_sizes[i],
-            2 * self.circle_sizes[i],
-            2 * self.circle_sizes[i],
-        )
+        total_gap = self.segment_gap * max(0, self.number_of_steps - 1)
+        available_width = max(1.0, self.width() - total_gap)
+        segment_width = max(1.0, available_width / self.number_of_steps)
+        segment_height = self.segment_heights[min(i, len(self.segment_heights) - 1)]
+        top = (self.height() - segment_height) / 2
+        left = i * (segment_width + self.segment_gap)
+        return QRectF(left, top, segment_width, segment_height)
 
     def set_mark_current_step_as_completed(self, value: bool) -> None:
         """Set mark current step as completed."""
@@ -309,36 +197,38 @@ class StepProgressBar(QWidget):
 
     def set_step_tooltips(self, tooltips: list[str]) -> None:
         """Set step tooltips."""
-        self.tooltips = tooltips + ["" for i in range(len(tooltips), self.number_of_steps)]
+        self.tooltips = tooltips + ["" for _i in range(len(tooltips), self.number_of_steps)]
 
     def enterEvent(self, event: QEvent | None) -> None:
-        """EnterEvent."""
-        self.setMouseTracking(True)  # Enable mouse tracking to receive mouse move events
+        """Enable mouse tracking on hover."""
+        del event
+        self.setMouseTracking(True)
 
     def leaveEvent(self, a0: QEvent | None) -> None:
-        """LeaveEvent."""
-        self.setMouseTracking(False)  # Disable mouse tracking when the mouse leaves the widget
-        QToolTip.hideText()  # Hide tooltip when the cursor is not above a step
+        """Disable hover state when the cursor leaves the widget."""
+        del a0
+        self.setMouseTracking(False)
+        QToolTip.hideText()
         self.restore_cursor()
 
     def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
-        """MouseMoveEvent."""
+        """Show the step tooltip for the hovered segment."""
         if not a0:
             super().mouseMoveEvent(a0)
             return
 
-        in_circle = None
+        hovered_index: int | None = None
         for i in range(self.number_of_steps):
-            if self._ellipse_rect(i).contains(a0.position()):
-                in_circle = i
+            if self._segment_rect(i).contains(a0.position()):
+                hovered_index = i
                 break
 
-        if in_circle is None:
-            QToolTip.hideText()  # Hide tooltip if the cursor is not above any step
+        if hovered_index is None:
+            QToolTip.hideText()
             self.restore_cursor()
         else:
             self.set_cursor()
-            QToolTip.showText(a0.globalPosition().toPoint(), self.tooltips[in_circle], self)
+            QToolTip.showText(a0.globalPosition().toPoint(), self.tooltips[hovered_index], self)
 
         super().mouseMoveEvent(a0)
 
@@ -346,7 +236,7 @@ class StepProgressBar(QWidget):
         """Restore cursor."""
         if self.clickable and self.cursor_set:
             self.cursor_set = False
-            QApplication.restoreOverrideCursor()  # Restore to default cursor
+            QApplication.restoreOverrideCursor()
 
     def set_cursor(self) -> None:
         """Set cursor."""
@@ -392,11 +282,12 @@ class HorizontalIndicator(QWidget):
         # self.setPalette(palette)
         # self.setAutoFillBackground(True)
 
-        color = QColor("#BFBFBF")
+        gray = get_neutral_surface_colors().panel_background
+
         line_y = self.height() - self.pen_width / 2  # Adjust this as needed
 
         # Draw the gray horizontal line
-        pen = QPen(color, self.pen_width)
+        pen = QPen(gray, self.pen_width)
         painter.setPen(pen)
         painter.drawLine(0, int(line_y), int(self.width()), int(line_y))
 
@@ -410,10 +301,10 @@ class HorizontalIndicator(QWidget):
                 triangle_center - QPoint(0, int(self.triangle_height)),  # Pointing up
             ]
         )
-        brush = QBrush(color)
+        brush = QBrush(gray)
         painter.setBrush(brush)
 
-        pen = QPen(color, 1)
+        pen = QPen(gray, 1)
         painter.setPen(pen)
         painter.drawPolygon(triangle)
 
@@ -495,6 +386,7 @@ class StepProgressContainer(QWidget):
         step_labels: list[str],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
+        step_subtitles: list[str | None] | None = None,
         current_index: int = 0,
         collapsible_current_active=False,
         clickable=True,
@@ -503,6 +395,8 @@ class StepProgressContainer(QWidget):
         sub_indices: list[int] | None = None,
         use_resizing_stacked_widget=True,
         hide_steps_if_only_1=True,
+        show_step_state_legend=False,
+        show_header_separator=True,
     ) -> None:
         """Initialize instance."""
         super().__init__(
@@ -510,6 +404,10 @@ class StepProgressContainer(QWidget):
         )
         self.loop_in_thread = loop_in_thread
         self.signals_min = signals_min
+        self.hide_steps_if_only_1 = hide_steps_if_only_1
+        self.show_step_state_legend = show_step_state_legend
+        self.show_header_separator = show_header_separator
+        self.step_subtitles: list[str] = []
         self.step_bar = StepProgressBar(
             len(step_labels),
             current_index=current_index,
@@ -521,45 +419,87 @@ class StepProgressContainer(QWidget):
                 else [12 if i in sub_indices else 20 for i in range(len(step_labels))]
             ),
         )
-        self.horizontal_indicator = HorizontalIndicator(len(step_labels), current_index)
         self.stacked_widget: AutoResizingStackedWidget | QStackedWidget = (
             AutoResizingStackedWidget() if use_resizing_stacked_widget else QStackedWidget()
         )
         self.collapsible_current_active = collapsible_current_active
         self.clickable = clickable
 
-        self.set_labels(step_labels)
+        self.legend_widget = QWidget(self)
+        self.legend_layout = QHBoxLayout(self.legend_widget)
+        self.legend_layout.setContentsMargins(0, 0, 0, 0)
+        self.legend_layout.setSpacing(36)
+        self.legend_layout.addWidget(self._create_legend_label(self.tr("Completed"), "#10B814"))
+        self.legend_layout.addWidget(self._create_legend_label(self.tr("Current"), "#2C7DD1"))
+        self.legend_layout.addWidget(self._create_legend_label(self.tr("Future incomplete steps"), "#9A9A9A"))
+        self.legend_layout.addStretch(1)
 
-        if len(step_labels) <= 1 and hide_steps_if_only_1:
-            self.step_bar.setVisible(False)
-            self.horizontal_indicator.setVisible(False)
+        self.active_step_label = QLabel(self)
+        self.active_step_label.setWordWrap(True)
+
+        self.active_step_subtitle = QLabel(self)
+        self.active_step_subtitle.setWordWrap(True)
+        subtitle_palette = self.active_step_subtitle.palette()
+        subtitle_color = subtitle_palette.color(self.active_step_subtitle.foregroundRole())
+        subtitle_color.setAlpha(170)
+        subtitle_palette.setColor(self.active_step_subtitle.foregroundRole(), subtitle_color)
+        self.active_step_subtitle.setPalette(subtitle_palette)
+
+        self.header_separator = QFrame(self)
+        self.header_separator.setFrameShape(QFrame.Shape.HLine)
+        self.header_separator.setFrameShadow(QFrame.Shadow.Plain)
+        self.header_separator.setStyleSheet("color: #C9C9C9;")
 
         self._layout = QVBoxLayout(self)
+        self._layout.addWidget(self.legend_widget)
         self._layout.addWidget(self.step_bar)
-        self._layout.addWidget(self.horizontal_indicator)
-        self._layout.setSpacing(0)  # This sets the spacing between items in the layout to zero
-        self._layout.addSpacing(5)
+        self._layout.addWidget(self.active_step_label)
+        self._layout.addWidget(self.active_step_subtitle)
+        self._layout.addWidget(self.header_separator)
+        self._layout.setSpacing(6)
         self._layout.setContentsMargins(0, 0, 0, 0)
-
         self._layout.addWidget(self.stacked_widget)
 
+        self.set_labels(step_labels)
+        self.set_step_subtitles(step_subtitles)
+        self.set_step_state_legend_visible(show_step_state_legend)
         self.set_current_index(current_index)
 
         self.step_bar.signal_index_clicked.connect(self.on_click)
 
     def set_labels(self, labels: list[str]) -> None:
         """Set labels."""
+        if labels == self.step_bar.labels and self.stacked_widget.count() == len(labels):
+            return
+
         self.step_bar.set_labels(labels=labels)
-        self.horizontal_indicator.set_number_of_steps(len(labels))
 
         # reset widgets
         while self.stacked_widget.count() > len(labels):
-            widget = self.stacked_widget.widget(0)
+            widget = self.stacked_widget.widget(self.stacked_widget.count() - 1)
             if widget:
                 self.stacked_widget.removeWidget(widget)
         for _i in range(len(labels) - self.stacked_widget.count()):
             custom_widget = QWidget()
             self.stacked_widget.addWidget(custom_widget)
+        self._sync_step_subtitle_count()
+        self._update_step_texts()
+
+    def set_step_subtitles(self, subtitles: list[str | None] | None) -> None:
+        """Set optional subtitles for each step."""
+        self.step_subtitles = [subtitle or "" for subtitle in subtitles] if subtitles else []
+        self._sync_step_subtitle_count()
+        self._update_step_texts()
+
+    def set_step_state_legend_visible(self, visible: bool) -> None:
+        """Show or hide the color legend above the progress bar."""
+        self.show_step_state_legend = visible
+        self._update_header_visibility()
+
+    def set_header_separator_visible(self, visible: bool) -> None:
+        """Show or hide the separator between the header and the content."""
+        self.show_header_separator = visible
+        self._update_header_visibility()
 
     def set_sub_indices(self, sub_indices: list[int] | None = None) -> None:
         """Set sub indices."""
@@ -606,10 +546,11 @@ class StepProgressContainer(QWidget):
         old_index = self.stacked_widget.currentIndex()
 
         if old_index == index:
+            self._update_step_texts()
             return
 
         self.stacked_widget.setCurrentIndex(index)
-        self.horizontal_indicator.set_current_index(index)
+        self._update_step_texts()
 
         if widget_unfocus := self.stacked_widget.widget(old_index):
             self.signal_widget_unfocus.emit(widget_unfocus)
@@ -618,19 +559,19 @@ class StepProgressContainer(QWidget):
 
     def set_stacked_widget_visible(self, is_visible: bool) -> None:
         """Set stacked widget visible."""
-        self.horizontal_indicator.setVisible(is_visible)
         self.stacked_widget.setVisible(is_visible)
 
     def set_current_index(self, index: int) -> None:
         """Set current index."""
         old_index = self.current_index()
 
-        if old_index == index:
+        if old_index == index and self.stacked_widget.currentIndex() == index:
+            self._update_step_texts()
             return
 
         self.step_bar.set_current_index(index)
-        self.horizontal_indicator.set_current_index(index)
         self.stacked_widget.setCurrentIndex(index)
+        self._update_step_texts()
 
         # this order is important:
         if old_widget := self.stacked_widget.widget(old_index):
@@ -674,11 +615,73 @@ class StepProgressContainer(QWidget):
         if index == current_idx:
             self.signal_set_current_widget.emit(widget)
             self.signal_widget_focus.emit(widget)
+        self._update_step_texts()
 
     def close(self) -> bool:
         """Close."""
         self.clear_widgets()
         return super().close()
+
+    def _create_legend_label(self, text: str, color: str) -> QLabel:
+        """Create a colored legend label."""
+        label = QLabel(text, self)
+        label.setStyleSheet(f"color: {color}; font-weight: 700;")
+        return label
+
+    def _sync_step_subtitle_count(self) -> None:
+        """Pad the subtitle list to match the number of labels."""
+        if len(self.step_subtitles) < self.count():
+            self.step_subtitles.extend([""] * (self.count() - len(self.step_subtitles)))
+        elif len(self.step_subtitles) > self.count():
+            self.step_subtitles = self.step_subtitles[: self.count()]
+
+    def _header_is_visible(self) -> bool:
+        """Return whether the progress header should be shown."""
+        return not (self.count() <= 1 and self.hide_steps_if_only_1)
+
+    def _update_header_visibility(self) -> None:
+        """Apply header visibility state to each header element."""
+        header_is_visible = self._header_is_visible()
+        self.legend_widget.setVisible(header_is_visible and self.show_step_state_legend)
+        self.step_bar.setVisible(header_is_visible)
+        self.active_step_label.setVisible(header_is_visible)
+        self.active_step_subtitle.setVisible(header_is_visible and bool(self.active_step_subtitle.text()))
+        self.header_separator.setVisible(header_is_visible and self.show_header_separator)
+
+    def _step_text_index(self) -> int:
+        """Return the index that drives the visible step text."""
+        highlighted_index = self.stacked_widget.currentIndex()
+        if 0 <= highlighted_index < self.count():
+            return highlighted_index
+        return self.current_index()
+
+    def _update_step_texts(self) -> None:
+        """Refresh the title and subtitle below the segmented bar."""
+        if not self.count():
+            self.active_step_label.clear()
+            self.active_step_subtitle.clear()
+            self._update_header_visibility()
+            return
+
+        index = self._step_text_index()
+        if not 0 <= index < self.count():
+            self.active_step_label.clear()
+            self.active_step_subtitle.clear()
+            self._update_header_visibility()
+            return
+
+        step_prefix = self.tr("Step {current} of {total}").format(current=index + 1, total=self.count())
+        step_title = self.step_bar.labels[index]
+        if step_title:
+            self.active_step_label.setText(
+                f"<span style='font-weight:700;'>{escape(step_prefix)}</span> - {escape(step_title)}"
+            )
+        else:
+            self.active_step_label.setText(f"<span style='font-weight:700;'>{escape(step_prefix)}</span>")
+
+        subtitle = self.step_subtitles[index] if index < len(self.step_subtitles) else ""
+        self.active_step_subtitle.setText(subtitle)
+        self._update_header_visibility()
 
 
 @dataclass
@@ -710,9 +713,9 @@ class TutorialWidget(QWidget):
         set_margins(
             self._layout,
             {
-                Qt.Edge.RightEdge: 5,
-                Qt.Edge.BottomEdge: 5,
-                Qt.Edge.LeftEdge: 5,
+                Qt.Edge.RightEdge: 0,
+                Qt.Edge.LeftEdge: 0,
+                Qt.Edge.BottomEdge: 0,
             },
         )
 
@@ -794,166 +797,3 @@ class TutorialWidget(QWidget):
     def set_callback(self, callback: Callable) -> None:
         """Set callback."""
         self.callback_on_set_current_widget = callback
-
-
-class StepProgressContainerWithButtons(StepProgressContainer):
-    def __init__(
-        self,
-        step_labels: list[str],
-        signals_min: SignalsMin,
-        loop_in_thread: LoopInThread,
-        current_index: int = 0,
-        collapsible_current_active=False,
-        clickable=True,
-        use_checkmark_icon=True,
-        parent=None,
-        sub_indices: list[int] | None = None,
-        use_resizing_stacked_widget=True,
-    ) -> None:
-        """Initialize instance."""
-        super().__init__(
-            signals_min=signals_min,
-            step_labels=step_labels,
-            current_index=current_index,
-            collapsible_current_active=collapsible_current_active,
-            clickable=clickable,
-            use_checkmark_icon=use_checkmark_icon,
-            parent=parent,
-            sub_indices=sub_indices,
-            use_resizing_stacked_widget=use_resizing_stacked_widget,
-            loop_in_thread=loop_in_thread,
-        )
-
-        for i in range(len(step_labels)):
-            super().set_custom_widget(i, self.create_tutorial_widget())
-
-    def set_custom_widget(self, index: int, widget: QWidget) -> None:
-        """Set custom widget."""
-        tutorial_widget = self.stacked_widget.widget(index)
-        if not isinstance(tutorial_widget, TutorialWidget):
-            logger.error(f"{tutorial_widget} doesnt have the type TutorialWidget")
-            return
-        tutorial_widget.set_widget(widget)
-
-        # if the current active widget is changed, emit the signals,
-        # as if it was switched to
-        if index == self.current_index():
-            self.signal_set_current_widget.emit(tutorial_widget)
-            self.signal_widget_focus.emit(tutorial_widget)
-
-    def go_to_next_index(self) -> None:
-        """Go to next index."""
-        if self.current_index() + 1 < self.count():
-            self.set_current_index(self.current_index() + 1)
-        else:
-            self.step_bar.set_mark_current_step_as_completed(True)
-
-    def go_to_previous_index(self) -> None:
-        """Go to previous index."""
-        self.step_bar.set_mark_current_step_as_completed(False)
-
-        if self.current_index() - 1 >= 0:
-            self.set_current_index(self.current_index() - 1)
-
-    def create_tutorial_widget(self) -> TutorialWidget:
-        """Create tutorial widget."""
-        widget = QWidget()
-        QVBoxLayout(widget)
-
-        buttonbox, buttons = create_button_box(
-            self.go_to_next_index,
-            self.go_to_previous_index,
-            ok_text="Next step",
-            cancel_text="Previous step",
-            parent=widget,
-        )
-        return TutorialWidget(self, widget, buttonbox, buttonbox_always_visible=False)
-
-
-if __name__ == "__main__":
-
-    class DemoApp(QWidget):
-        def __init__(self) -> None:
-            """Initialize instance."""
-            super().__init__()
-            loop_in_thread = LoopInThread()
-
-            # Create the StepProgressContainer with the desired steps
-            self.step_progress_container = StepProgressContainerWithButtons(
-                step_labels=["Create Account\n from hardware signers", "Login", "Payment", "Confirm"],
-                current_index=1,
-                sub_indices=[0, 2],
-                signals_min=SignalsMin(),
-                loop_in_thread=loop_in_thread,
-            )
-            self.step_progress_container.step_bar.set_enumeration_alphabet(["1.1", "1", "2.1", "2"])
-
-            self.step_progress_container.step_bar.set_step_tooltips(
-                [
-                    "<font color='red'>This is an important step.</font>"
-                    "<br><br><u>Payment information is required.</u><br>"
-                    "<br><b>Confirm your submission.</b>",
-                    "<i>Remember to check your details.</i>",
-                    "<u>Payment information is required.</u>",
-                    "<b>Confirm your submission.</b>",
-                ]
-            )
-
-            for i in range(self.step_progress_container.count()):
-                widget = self.step_progress_container.stacked_widget.widget(i)
-                if not isinstance(widget, TutorialWidget):
-                    continue
-                callback = partial(print, f"callback action for {i}")
-                widget.set_callback(callback)
-                self.step_progress_container.set_custom_widget(i, QTextEdit(f"{i}"))
-
-            self.init_ui()
-
-        def init_ui(self) -> None:
-            """Init ui."""
-            self._layout = QVBoxLayout(self)
-
-            # Buttons to navigate through steps
-            next_button = QPushButton("Next Step", self)
-            next_button.clicked.connect(self.next_index)
-
-            prev_button = QPushButton("Previous Step", self)
-            prev_button.clicked.connect(self.prev_index)
-
-            self._layout.addWidget(
-                self.step_progress_container
-            )  # Add the step progress container instead of step_bar
-            self._layout.addWidget(prev_button)
-            self._layout.addWidget(next_button)
-            self._layout.setContentsMargins(0, 0, 0, 0)
-
-            self.toggle_completion_button = QPushButton("Toggle Step Completion")
-            self.toggle_completion_button.clicked.connect(self.toggle_step_completion)
-            self._layout.addWidget(self.toggle_completion_button)
-
-        def toggle_step_completion(self) -> None:
-            """Toggle step completion."""
-            current_value = self.step_progress_container.step_bar.mark_current_index_as_completed
-            self.step_progress_container.step_bar.set_mark_current_step_as_completed(not current_value)
-
-        def next_index(self) -> None:
-            """Next index."""
-            if (
-                self.step_progress_container.step_bar.current_index
-                < self.step_progress_container.step_bar.number_of_steps
-            ):
-                self.step_progress_container.set_current_index(
-                    self.step_progress_container.step_bar.current_index + 1
-                )
-
-        def prev_index(self) -> None:
-            """Prev index."""
-            if self.step_progress_container.step_bar.current_index > 0:
-                self.step_progress_container.set_current_index(
-                    self.step_progress_container.step_bar.current_index - 1
-                )
-
-    app = QApplication(sys.argv)
-    window = DemoApp()
-    window.show()
-    sys.exit(app.exec())

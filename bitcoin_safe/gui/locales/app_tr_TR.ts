@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Eklenti Kaynağı Ekle</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer token</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Görünen ad</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>Manifest URL’si</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII zırhlı genel anahtarı buraya yapıştırın</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Sabitlenmiş genel anahtar</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Fatura süresi dolduktan sonra bir tarayıcı geri çağrısı alındı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Bir tutar seçin ve bir bağış faturası oluşturun.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Ödemeyi tarayıcınızda tamamlayın.
+Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Fatura oluşturulamadı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Yerel geri çağrı sunucusu başlatılamadı. Otomatik onay olmadan faturayı tarayıcınızda açıyoruz.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Fatura oluştur</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Fatura hazır. Ödemeyi tarayıcınızda tamamlayın. Otomatik onay mevcut olmayabilir.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Fatura hizmeti bir hata döndürdü ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen bağışı tekrar deneyin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen tekrar deneyin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Tarayıcı geri çağrısı ile ödeme onaylandı. Teşekkürler!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Lütfen bir tutar seçin.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Fatura isteniyor...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Fatura isteniyor... Bir tarayıcı açılacak ve Bitcoin Safe yerel olarak geri çağrıyı dinleyecek.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Bağış sunucusuna ulaşılamıyor. Lütfen daha sonra tekrar deneyin.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Cüzdan {wallet_id} senkronizasyon anahtarı:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>{number} kelimelik seed’i eşleşen basılı pdf’ye yapıştırın.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>{number} kelimelik seed’i basılı pdf’ye yapıştırın.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Lütfen önceki adımları tamamlayın.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>Kurtarma sayfasını yazdır</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Pdf’yi yazdırın (cüzdan tanımlayıcısını da içerir)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Etkinleştir</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Eklentiyi aç</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Sağlayan: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>İş Planı</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>İş planı erişimi aktif.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Tek bir abonelikle tüm ücretli eklentilerin kilidini açın ve planlanmış ödemeler hizmet ücretini kaldırın.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,27 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Blok gezgininde aç</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>İçeren klasörü aç</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number} donanım imzalayıcı satın al                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe tüm büyük donanım imzalayıcılarını destekler: &lt;a href="{url}"&gt;Tam listeyi gör&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -901,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Lütfen önce bir Çoklu-imzalı cüzdan seçin</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Gerekli İmzalayıcılar</translation>
 		</message>
@@ -918,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Cüzdan Özellikleri</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Önce ücretsiz denemeyi başlatın, ardından aboneliği buradan yönetin veya yenileyin.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1138,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Multisig cüzdanınızdan harcama yapmak için {n}’den {m}’e gitmeniz gerektiğini göz önünde bulundurarak güvenli yerleri dikkatle seçin.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Cüzdan adı</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Her seed yedeğini ve donanım imzalayıcıyı güvenli bir yere yerleştirin, örneğin:</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Yedek Kurtarma Sayfası (gerekli)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>Seed yedeği {j} ve donanım imzalayıcı {j} konum {j}’de olmalıdır</translation>
+			<source>Backup sheet</source>
+			<translation>2. Evet, seed kelimelerini çıktıya ekledim</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Donanım imzalayıcıyı güvenli bir yerde saklayın.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Yedekleme sayfası</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Seed yedeğini &lt;b&gt;çok&lt;/b&gt; güvenli bir yerde (örneğin bir kasada) saklayın.</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Yedekleme kağıdı {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>Seed yedeği (24 kelime) fonlar üzerinde tam kontrol sağlar.</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Tebrikler, cüzdanınız hazır. Şimdi onu koruyun!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>2 ayrı konuma dağıt</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>{n} ayrı konuma dağıt</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>En kötü senaryoda fonlarınızı geri yüklemek için güvenli bir yedek oluşturduğunuzdan emin olmak üzere aşağıdaki adımları izleyin.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Önemli</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Konum</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Konum 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Yazdırdıktan sonra, cihazınızdaki seed ifadesini sayfaya elle yazın veya onunla birlikte saklanan ayrı bir kâğıda zaten yazılmış olduğunu onaylayın.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Konum 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Lütfen önceki adımları tamamlayın.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Lütfen yazdırmak için en az bir yedek sayfası seçin.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Sahip olduğunuz ve kontrol ettiğiniz cihazlarla ilişkili kurtarma sayfalarını yazdırın.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>Kurtarma İmzalayıcı {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Yedeklerinizi ve imzalayıcılarınızı güvenli konumlara koyun</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>İmzalayıcı cihazı</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>İmzalayıcı {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>İmzalayıcı cihaz</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Her imzalayıcıyı, yedekleme sayfası ve seed kelimeleriyle birlikte aynı konumda saklayın.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Kasa {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seed kelimelerini görüntüle</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Evet, seed kelimelerinin çıktıya eklendiğini onaylıyorum</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Cüzdanınız, donanım imzalayıcınızın bulunduğu yerden farklı bir yerde saklanması gereken kurtarma sayfasıyla korunur. Yazdırın, seed’i ekleyin ve güvenli, erişim kontrollü bir yerde saklayın. Seed kelimeleriyle cüzdanınız üzerinde tam kontrole sahip olursunuz.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Cüzdanınız, farklı konumlarda saklanan ekli seed’lere sahip {n} yedek sayfasıyla korunur. Bunları yazdırın ve güvenli, erişim kontrollü konumlara yerleştirin. Bunlardan {m} tanesiyle cüzdanınız üzerinde tam kontrole sahip olursunuz.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1320,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Mesaj (isteğe bağlı)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Mesaj (isteğe bağlı)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1416,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Tam (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safe için teşekkürler!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Eklentiyi Sil</translation>
 		</message>
 	</context>
 	<context>
@@ -1342,43 +1588,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Önceki Adım</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Yeniden dene</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Evet, işlemi geçmişte görüyorum</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Lütfen başka programların Donanım imzalayıcıya erişmediğinden emin olun</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Lütfen donanım imzalayıcının adını (etiketini) girin</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Etiket</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Başarılı! Lütfen bu adımı tüm donanım imzalayıcılarla tamamlayın ve ardından İleri’ye tıklayın.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>Kurulum tamamlanmadı. Lütfen tekrar edin.</translation>
 		</message>
 	</context>
 	<context>
@@ -1594,13 +1803,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Cüzdan bilgilerini Bitcoin Safe’e aktar</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Sonraki imzalayıcı</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Donanım imzalayıcı bilgilerini Bitcoin Safe’e aktar</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1611,11 +1815,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Önceki Adım</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Önceki imzalayıcı</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1641,6 +1840,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Eklentiyi Sil</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158), cüzdanların adreslerinizi gizli tutarken ilgili işlemleri keşfetmesini sağlar.</translation>
 		</message>
@@ -1651,13 +1855,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>İlk senkronizasyon sırasında Bitcoin Safe, birden fazla Bitcoin düğümünden compact blok özetlerini getirir. Bu, blok verilerini indirmenin gizli bir yoludur.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Geçen süre {elapsed} | Tahmini kalan {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Geçen süre {elapsed} | Tahmini kalan {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe, gizlilik için blok özetlerini birden fazla düğümden indirir. Bu ilk senkronizasyondan sonra güncellemeler hızlı olacaktır. Kendi Electrum sunucunuz varsa veya beklemek istemiyorsanız ağ ayarlarından herkese açık bir Electrum sunucusuna bağlanın.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Ağ ayarları</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1769,13 +1978,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Gelişmiş</translation>
+			<source>Add New Signer</source>
+			<translation>Yeni İmzalayıcı Ekle</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Açıklama</translation>
+			<source>Change device type</source>
+			<translation>Cihaz türünü değiştir</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Bağlan</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Türetme yolu</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Cihaz talimatları</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1794,10 +2018,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>İmzalayıcı cihaz adı: ......
-İmzalayıcı cihaz konumu: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>İmzacı verilerini QR, USB veya metin/dosya içe aktarma ile içe aktarın.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;Desteklenen donanım imzacıları&lt;/a&gt; hakkında daha fazla bilgi edinin.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt; hakkında daha fazla bilgi edinin.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1811,13 +2043,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Lütfen başka programların Donanım imzalayıcıya erişmediğinden emin olun</translation>
+			<source>Open the signer guide</source>
+			<translation>İmzacı rehberini aç</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Lütfen geçerli bir anahtar kökeni girin.</translation>
+			<source>Personal notes:</source>
+			<translation>Kişisel notlar:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Lütfen başka programların Donanım imzalayıcıya erişmediğinden emin olun</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1841,13 +2078,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QR Kodu</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Kaydet</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Çoklu imzayı yeniden kaydet</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Seed</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>Marka seç</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Model seç</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>İmzacı markasını seç</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>İmzacı modelini seç</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>Seçilen adres türü {type} için standart {expected_key_origin}’dir. Emin değilseniz lütfen düzeltin.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8 haneli parmak izi seed’i tanımlar. Farklı seed’leri ve imzalama cihazlarını takip etmek için bunu donanım imzalayıcının üzerine yazabilirsiniz.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>İşlemleri (PSBT’leri) doğru şekilde oluşturmak için anahtar kökeni gereklidir ve xPub ile bağlantılıdır.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>Seed, işlem imzalamayı mümkün kılan sırdır. Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1861,18 +2152,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Cüzdan adresleri xPub’dan türetilir.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Bu imzacıyla ilgili notları, hatırlatmaları vb. buraya yazın...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub Kökeni</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} burada kullanılamaz.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} burada kullanılamaz.</translation>
+			<source>{device} instructions</source>
+			<translation>{device} talimatları</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1917,48 +2223,6 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>İçe aktarılan anahtar kökenleriniz {key_origins} farklı! Bunu kasten yaptığınıza emin olun.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Yedek gizli senkronizasyon anahtarı:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Her bilgisayarda Senkronizasyon &amp; Sohbet sekmesinde güvenilir bilgisayarları seçin.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>İşbirliği videosu</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Etkinleştir</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Adres etiketlerinin ve kategorilerin şifreli bulut yedeği</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Bitir</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Çoklu-bilgisayar senkronizasyonu ve sohbet</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Senkronizasyon videosu</translation>
 		</message>
 	</context>
 	<context>
@@ -2184,6 +2448,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Pluginler</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Önceki Cüzdan/Sekme</translation>
 		</message>
@@ -2261,6 +2530,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id} adlı bir cüzdan zaten var. Lütfen farklı bir ad seçin.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2369,6 +2643,13 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet üzerinde sıcak cüzdanlar devre dışıdır.
+Gerçek Bitcoin kullanmadan Bitcoin Safe’i test etmek için Testnet’e geçebilirsiniz.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Açık tut</translation>
 		</message>
@@ -2396,6 +2677,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Yeni Sekme {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>Bu ağ için demo cüzdan mevcut değil.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2451,6 +2737,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Bitcoin İşleminizi veya PSBT’nizi buraya yapıştırın veya bir dosya bırakın</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Lütfen bir cüzdan adı seçin</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2631,6 +2922,11 @@ Cüzdanı açık tutmak istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Cüzdan {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Cüzdanlar hâlâ senkronize ediliyor ve uygulamayı kapatırsanız senkronizasyon baştan başlamalı.
@@ -2660,11 +2956,6 @@ Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Evet, işlemler için tam tarama</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>yeni</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +3085,108 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (yerel saat)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin’e zaten aşina mısınız? Gerçek değer tutan ve taşıyan bir cüzdanı güvenle kurun.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Uzun vadeli saklama için en iyisi</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Yeni cüzdan oluştur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Oyun Alanını Keşfet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>Demo cüzdanla keşfet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>Seed ifadenizi güvende tutun</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>Güvenle öğrenin, risksiz</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>Gerçek Fonları Yönetin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Risksiz bir ortamda pratik yapın ve her şeyin tam olarak nasıl çalıştığını görün. Pişmanlık duymadan kaybedebileceğiniz test coinleriyle gönderme, alma ve ücret değiştirmeyi deneyin.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Gerçek sağlam para (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Gerçek bitcoin gönderin ve alın</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Bir Cüzdan Kur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Keşfetmeye Başla</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Sağlam parayla işlem yapmaya başlayın veya güvenli bir oyun alanında öğrenin. Her iki durumda da daha sonra her zaman başka bir cüzdan oluşturabilirsiniz.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Test coinlerinin (tBTC) değeri yoktur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Test coinleri, parasal değeri yok</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>İşlemler kalıcıdır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet test ağını kullanır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Onchain Mainnet ağını kullanır</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Nereden başlamak istersiniz?</translation>
 		</message>
 	</context>
 	<context>
@@ -2965,8 +3358,9 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy, Sync&amp;Chat özelliğine uygulanmaz!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Proxy, Sync&amp;Chat eklentisine ve abonelik satın alma sırasında uygulanmaz!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2993,58 +3387,8 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>Seed yedeğini saklamak için 1 güvenli konum (kağıt veya çelik üzerinde) gereklidir</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>Fonlarınıza erişmek için yalnızca 1 seed (24 gizli kelime) yeterlidir</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 imzalayıcı cihaz</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>3’te 2 Çoklu-İmzalı Cüzdan</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3 güvenli konum (her biri 1 seed yedeği + cüzdan tanımlayıcı içermeli) gereklidir</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 imzalayıcı cihaz</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Büyük fonlar için en iyisi</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Orta büyüklükte fonlar için en iyisi</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Çoklu-İmza seç</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Tek İmza seç</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Eksileri:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Cihaz(lar)ı bağla</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3053,49 +3397,63 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Özel cüzdan oluştur veya içe aktar</translation>
+			<source>Custom / Recovery</source>
+			<translation>Özel / Kurtarma</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Özel veya mevcut Cüzdanı içe aktar</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Kendi saklama cüzdanınız için rehberli kurulum.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Cüzdanı ihtiyaçlarınıza göre özelleştirin</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Sıcak Tek İmzalı Cüzdan</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>1 seed kaybolursa veya çalınırsa, tüm fonlar kalan 2 seed + cüzdan tanımlayıcı (QR-kodu) ile yeni cüzdana aktarılabilir</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Desteklenen donanım cüzdanları ve imzalayıcıların listesini açın.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Hackerlara seed’inizi verirseniz, Bitcoin’iniz anında çalınır</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Güvenli şekilde keşfetmek için içinde bazı test coinleri olan mevcut bir cüzdanla deney yapın.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Kurtarma durumunda çevrimiçi destek materyali daha az</translation>
+			<source>Public Demo wallet</source>
+			<translation>Herkese Açık Demo cüzdanı</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Artıları:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Mevcut anahtar gerektirmeden, hemen kullanım için hızlıca bir cüzdan oluşturun.&lt;br&gt;&lt;small&gt;Para temsil eden sırları güvenle tutmak için internete bağlı bir bilgisayar tasarlanmadığından Mainnet’te devre dışıdır.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Tek İmzalı Cüzdan</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Mevcut anahtar gerektirmeden, hemen kullanım için hızlıca bir cüzdan oluşturun.&lt;br&gt;&lt;small&gt;İnternete bağlı bir bilgisayarda anahtar oluşturmak ve saklamak güvensizdir. Genel amaçlı bir bilgisayar, para temsil eden sırları tutmak için tasarlanmamıştır.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Cüzdanı kurtarmak için cüzdan tanımlayıcısı (QR-kodu) gereklidir</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Donanım cüzdan(lar)ından veya bir tanımlayıcıdan cüzdan geri yükleyin.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Desteklenen imzalayıcılar</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Cüzdan adı</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3183,6 +3541,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Aylık</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Ücretsiz denemeyi başlat</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Abonelik</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Yıllık</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Yönet</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Durumu yenile</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Abonelik:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3247,94 +3649,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Fatura süresi dolduktan sonra bir tarayıcı geri çağrısı alındı. Lütfen tekrar deneyin.</translation>
+			<source>Update</source>
+			<translation>Güncelle</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Bir tutar seçin ve bir bağış faturası oluşturun.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Güncelleme mevcut: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Ödemeyi tarayıcınızda tamamlayın.
-Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target} sürümüne güncelle</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>Fatura oluşturulamadı. Lütfen tekrar deneyin.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen tekrar deneyin.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>Yerel geri çağrı sunucusu başlatılamadı. Otomatik onay olmadan faturayı tarayıcınızda açıyoruz.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Fatura oluştur</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Fatura hazır. Ödemeyi tarayıcınızda tamamlayın. Otomatik onay mevcut olmayabilir.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>Fatura hizmeti bir hata döndürdü ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen bağışı tekrar deneyin.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>Fatura zaman aşımına uğramadan önce tarayıcı geri çağrısı alınmadı. Lütfen tekrar deneyin.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Tarayıcı geri çağrısı ile ödeme onaylandı. Teşekkürler!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Lütfen bir bağış tutarı ve para birimi seçin.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Fatura isteniyor...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Fatura isteniyor... Bir tarayıcı açılacak ve Bitcoin Safe yerel olarak geri çağrıyı dinleyecek.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>Bağış sunucusuna ulaşılamıyor. Lütfen daha sonra tekrar deneyin.</translation>
+			<source>Version {version}</source>
+			<translation>Sürüm {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Etkinleştir/Devre dışı bırak</translation>
+			<source>Explore plugins</source>
+			<translation>Eklentileri keşfet</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Bu cüzdan için eklentiler mevcut değil, bu yüzden burada yapılandırılacak bir şey yok.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Bu cüzdan için mevcut eklentileri inceleyin. İstediklerinizi şimdi etkinleştirebilir ve daha sonra istediğiniz zaman Eklentiler sekmesine geri dönebilirsiniz.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>İsteğe bağlı cüzdan entegrasyonlarını etkinleştirin ve yönetin.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Eklentiler</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>İptal</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Sil</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Yüklü Eklentiyi Sil</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Yüklü eklenti {plugin} silinsin mi?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Silmeden önce eklentiyi devre dışı bırakın.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Manifest URL’si ve sabitlenmiş genel anahtar gereklidir.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>Eklenti işlemi başarısız oldu.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>Eklenti kaynağı {source_id} mevcut değil.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>Yüklü eklentiler yeniden kontrol edildi.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>Yüklü eklentiler yeniden kontrol edildi. {count} eklenti geçersiz.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Eklenti Kaynağını Kaldır</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Eklenti kaynağı {source} kaldırılsın mı?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Bu eklenti silinemez.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>Tüm ücretli eklentiler ve abonelikle erişilen hizmet ücretleri için geçerlidir.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>İş planı</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Eklentiler</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Kaynaklar</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>{count} eklenti yüklüyken kaldırılamaz.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Sil</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Son hata: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Yenile</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Bu kaynaktan yüklü eklentileri, kaynağı silmeden önce kaldırın.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>Kaynak Kimliği: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3464,8 +3947,13 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Tanımlayıcı</translation>
+			<source>Dashboard</source>
+			<translation>Pano</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Detaylar</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3486,11 +3974,6 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<message>
 			<source>Export labels</source>
 			<translation>Etiketleri dışa aktar</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Geçmiş</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3543,6 +4026,11 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<message>
 			<source>Password incorrect</source>
 			<translation>Şifre yanlış</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Lütfen bir cüzdan adı seçin</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3749,18 +4237,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Bakiye = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Alındığını kontrol et</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>Sonraki adım</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3769,31 +4247,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
+			<source>Receive Test</source>
+			<translation>Alım Testi</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ( {test_amount} değerinden az ) alın.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt;                     Fonları kontrol ettiğinizi bilmek için cüzdandan harcamayı test etmeniz gerekir. 
-                    &lt;br&gt;                     Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce, cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Henüz cüzdana büyük miktarda fon GÖNDERMEYİN. Lütfen önce tüm self-send testlerini tamamlayın!&lt;/b&gt;                    </translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın. &lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Alma talimatları</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Tanınan İşlem</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Fonların cüzdana ulaşması bekleniyor...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Son Açılan Cüzdanlar</translation>
+			<source>ALL WALLETS</source>
+			<translation>TÜM CÜZDANLAR</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>SON CÜZDANLAR</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Dosya gezgininde göster</translation>
 		</message>
 	</context>
 	<context>
@@ -3938,38 +4436,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Cüzdan bilgilerini Bitcoin Safe’e aktar</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Sonraki imzalayıcı</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Sonraki adım</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Önceki imzalayıcı</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Adımı atla</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Evet, multisig’i {n} donanım imzalayıcıda kaydettim</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Çoklu imza cüzdanını her imzalama cihazına kaydedin.</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4481,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Dosya seçilmedi</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Demo Abonelik Eklentisi</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient tabanlı örnek eklenti. Bunu abonelikle kısıtlanan etkinleştirmeyi ve eklenti yöneticisi işlemlerini doğrulamak için kullanın.</translation>
 		</message>
 	</context>
 	<context>
@@ -4079,14 +4559,28 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>İşlemi bu kartta oluşturun.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Kendine Gönderme Testi {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Aşağıdaki işlemi imzalayın ve yayınlayın.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Gönderim testi atla?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Cüzdanınızdan cüzdanınızdaki başka bir adrese gönderiyoruz (self-send).&lt;br&gt; Bu, imzalama akışını uygular ve tüm donanım imzalayıcılarının doğru şekilde kurulduğunu garanti eder.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>İşlemin hazırlanması bekleniyor.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4303,20 +4797,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" {device_name} üzerinde</translation>
+			<source>Available version: {version}</source>
+			<translation>Mevcut sürüm: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>Etiketleri yazdır</translation>
+			<source>Install {version}</source>
+			<translation>Yükle {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Lütfen aşağıdaki etiketleri donanım imzalayıcınıza yapıştırın:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Yüklü sürüm: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Yüklü {installed}; güncelleme mevcut: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>En son {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} sürümünü yeniden yükle</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available} sürümüne güncelle</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Sürüm {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Sürüm {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Eklenti Kaynağı Ekle...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Kapat</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Yapılandırılmış eklenti kaynakları</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Henüz eklenti kaynağı eklenmedi.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Eklenti Kaynakları</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Yüklü Eklentileri Yeniden Kontrol Et</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Tamamlandı</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Mevcut</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Gelecekteki tamamlanmamış adımlar</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Adım {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4612,13 +5190,13 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n}. imzayı oluştur ve topla</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Girdi {i}: {sighash_type} bayrağı ile imzalandı , İmza: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Girdi {i}: {sighash_type} bayrağı ile imzalandı , İmza: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>İmza {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4627,12 +5205,10 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 Signatures:
 {signatures}
 
-
 </source>
 			<translation>İşlem {label}
 ait özel anahtar ile imzalandı İmzalar:
 {signatures}
-
 
 </translation>
 		</message>
@@ -4816,11 +5392,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Sonraki adım</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBF için gerekli tüm işlem detayları mevcut değil</translation>
 		</message>
@@ -4840,11 +5411,6 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Lütfen önce cüzdanın mevcut yerel işlemini kaldırın.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Önceki adım</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5120,18 +5686,6 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Evet, tüm {number} kelimenin doğru olduğundan eminim</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5357,6 +5911,183 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 İmzacı</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2/3 Çoklu İmza</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3/5 Çoklu İmza</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>1 imzalama cihazının ve yedek seed’inin kaybına dayanabilir</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>2 imzalama cihazının ve yedek seed’lerinin kaybına dayanabilir</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Bir cüzdan şablonu seçin</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Eksiler</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Devam et</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Yüksek karmaşıklık</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>İmzalama cihazı ve seed yedeği kaybolursa, fonlar kaybolur</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Uzun vadeli soğuk depolama</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Uzun vadeli soğuk depolama (2/3 Çoklu İmza)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Düşük karmaşıklık</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Orta karmaşıklık</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Lütfen bir cüzdan adı seçin</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Önceki Adım</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Artılar</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Kurtarma</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Gerekli</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Seed yedeğini saklamak için erişim kontrollü 1 güvenli yer gerektirir</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Seed yedeklerini saklamak için erişim kontrollü 3 güvenli yer gerektirir</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Seed yedeklerini saklamak için erişim kontrollü 5 güvenli yer gerektirir</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Uzun vadeli öz saklama için sağlam cüzdan.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Listeden bir şablon seçin.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>1 imzalayıcı ve 1 seed yedeği ile kendi saklama.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Basit soğuk depolama</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Basit soğuk depolama (1 İmzalayıcı)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Tek nokta arızasını önlemek için seed yedeğini cihazdan ayrı olarak saklayın.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Süper sağlam depolama</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Süper sağlam depolama (3-of-5 Çoklu İmza)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>Cüzdan tanımlayıcısını içeren kurtarma kağıdı her seed yedeğiyle birlikte saklanmalıdır.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Toplam</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Cüzdan adı</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>imzalayıcı</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>imzalayıcılar</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5364,23 +6095,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Self-Send Testi</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Seed Yedekle</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Donanım imzalayıcı satın al</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Seed Oluştur</translation>
+			<source>Choose template</source>
+			<translation>Şablon seç</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5389,13 +6105,13 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Donanım imzalayıcıları etiketle</translation>
+			<source>Plugins</source>
+			<translation>Eklentiler</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Güvenli yerlere koyun</translation>
+			<source>Previous Step</source>
+			<translation>Önceki Adım</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5406,6 +6122,16 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>İmzalayıcılarda multisig kaydı yap</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>İşlemi gözden geçirin ve hazır olduğunuzda oluşturun.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Anahtarlarınızı Güvenceye Alın</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5429,17 +6155,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Senkronizasyon &amp; Sohbet</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>Test işlemi  '{tx_text}'  başarıyla tamamlandı. Lütfen self-send testine devam edin: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>İmzalayıcı {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5448,8 +6165,18 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Yedeklemeyi Doğrula</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>İşlem oluşturuldu. Aşağıda imzalayın ve yayınlayın, ardından cüzdanın tanımasını bekleyin.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>İşlem cüzdan tarafından tanındı.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>Cüzdanın yayınlanan işlemi tanıması bekleniyor.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5582,6 +6309,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>Bitir ve Panoya Git</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6998,6 +7730,11 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Bu cüzdana ve kategorilere tam okuma ve yazma erişimi.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Bakiyeler, işlemler ve UTXO’lar dahil bu cüzdana tam okuma ve yazma erişimi.</translation>
 		</message>
@@ -7013,8 +7750,18 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Yeni işlemler veya blok zinciri senkronizasyonu gibi cüzdan etkinliği olaylarına abone olun.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>Yeni işlemler veya blok zinciri senkronizasyonu gibi cüzdan etkinliklerine abone olun. Ayrıca işlemleri ve PSBT’leri açmayı etkinleştirir.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Bilinmeyen açıklama</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7132,25 +7879,162 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>İş planı erişimi etkin.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>İptal</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Devam et</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>Geçerli abonelik durumu belirlenemedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>Mevcut durum: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Abonelik hatırlatmaları ve yenileme bildirimleri için e-posta adresi:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>Ücretsiz deneme satın alımı bir yönetim yükü döndürmedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>Ücretsiz deneme satın alımı bir oturum döndürmedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>Ücretsiz deneme satın alımı bir cüzdan tanımlayıcısı gerektirir.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Son kontrol: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Son yenileme hatası: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Aboneliği Yönet</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>Yönetim URL’si kaydedildi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Henüz hiçbir abonelik etkinleştirilmedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Aboneliği aç</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Lütfen geçerli bir e-posta adresi girin.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Abonelik durumunu yenile</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Abonelik hatırlatmaları</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Abonelik gerekli</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>Abonelik durumu yenileme başarısız oldu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>Abonelik durumu yenileme sonuç döndürmedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>Ücretsiz deneme etkinleştirilemedi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>Ücretsiz deneme etkinleştirmesi zaman aşımına uğradı.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Bu eklenti şu anda etkin değil. Tekrar etkinleştirmeden önce aboneliği uzatın.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>Ücretsiz denemenin etkinleştirilmesi bekleniyor...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Lütfen daha sonra tekrar deneyin. Hâlâ çalışmazsa {email} ile iletişime geçin.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezor’da gösterilen 6 haneli eşleştirme kodunu girin:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>PIN’i Trezor tuş takımı düzenini kullanarak girin (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezor’u eşleştir</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor’un kilidini aç</translation>
 		</message>
 	</context>
 	<context>

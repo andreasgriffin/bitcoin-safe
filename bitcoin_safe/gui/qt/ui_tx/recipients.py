@@ -39,7 +39,10 @@ from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import (
+    Qt,
+    pyqtSignal,
+)
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -212,7 +215,7 @@ class RecipientWidget(QWidget):
             currency_symbol = self.fx.get_currency_symbol()
             self.fiat_unit.setText(currency_symbol)
 
-    def set_max(self, value: bool):
+    def set_max(self, value: bool) -> None:
         """Set max."""
         self.send_max_checkbox.setChecked(value)
         # update the amount_spin_box text
@@ -275,8 +278,9 @@ class RecipientWidget(QWidget):
         self.label_line_edit.set_placeholder(self.tr("Enter label here"))
         self.send_max_checkbox.setText(self.tr("Send max"))
 
-        self.amount_spin_box.set_max(self.send_max_checkbox.isChecked())
-        self.fiat_spin_box.set_max(self.send_max_checkbox.isChecked())
+        is_max = self.send_max_checkbox.isChecked()
+        self.amount_spin_box.set_max(is_max, is_max or (not self.allow_edit))
+        self.fiat_spin_box.set_max(is_max, is_max or (not self.allow_edit))
 
         self.address_edit.updateUi()
         self.label_line_edit.updateUi()

@@ -59,7 +59,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
+from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.i18n import translate
 
 from .gui.qt.util import qicon_to_pil
@@ -539,6 +540,56 @@ class BitcoinWalletRecoveryPDF(BasePDF):
             )
         self.elements.append(self.create_table([[qr_image], [desc_str]], [250, 300]))
 
+    def _signer_footer(
+        self,
+        keystore_label: str,
+        keystore_fingerprint: str,
+        keystore_key_origin: str,
+        keystore_xpub: str,
+        hardware_signer: HardwareSigner | None = None,
+    ) -> Paragraph | Table:
+        """Create the signer metadata footer, optionally with a small device icon."""
+        keystore_info_text = Paragraph(
+            translate(
+                "pdf",
+                "{keystore_label}: Fingerprint: {keystore_fingerprint}, "
+                "Key origin: {keystore_key_origin}, {keystore_xpub}",
+                no_translate=self.no_translate,
+            ).format(
+                keystore_label=keystore_label,
+                keystore_fingerprint=keystore_fingerprint,
+                keystore_key_origin=keystore_key_origin,
+                keystore_xpub=keystore_xpub,
+            ),
+            self.style_paragraph_left,
+        )
+
+        if not hardware_signer:
+            return keystore_info_text
+
+        icon = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name)
+        reportlab_icon = pilimage_to_reportlab(qicon_to_pil(icon), width=16, height=16)
+        footer = Table(
+            [[reportlab_icon, keystore_info_text]],
+            colWidths=[22, 500],
+        )
+        footer.setStyle(
+            TableStyle(
+                [
+                    ("BOX", (0, 0), (-1, -1), 0, colors.white),
+                    ("INNERGRID", (0, 0), (-1, -1), 0, colors.white),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("ALIGN", (0, 0), (0, 0), "CENTER"),
+                    ("ALIGN", (1, 0), (1, 0), "LEFT"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ]
+            )
+        )
+        return footer
+
     def create_pdf(
         self,
         title: str,
@@ -551,6 +602,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         threshold: int,
         seed: str | None = None,
         num_signers: int = 1,
+        hardware_signer: HardwareSigner | None = None,
     ) -> None:
         """Create pdf."""
         self.elements.append(Paragraph(title, style=self.style_heading))
@@ -591,30 +643,33 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         self.elements.append(text_paragraph)
 
         self._descriptor_part(wallet_descriptor_string, threshold)
-
-        keystore_info_text = Paragraph(
-            translate(
-                "pdf",
-                "{keystore_label}: Fingerprint: {keystore_fingerprint}, "
-                "Key origin: {keystore_key_origin}, {keystore_xpub}",
-                no_translate=self.no_translate,
-            ).format(
+        self.elements.append(
+            self._signer_footer(
                 keystore_label=keystore_label,
                 keystore_fingerprint=keystore_fingerprint,
                 keystore_key_origin=keystore_key_origin,
                 keystore_xpub=keystore_xpub,
-            ),
-            self.style_paragraph_left,
+                hardware_signer=hardware_signer,
+            )
         )
-        self.elements.append(keystore_info_text)
 
 
-def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
+def make_and_open_pdf(
+    wallet: Wallet, lang_code: str, selected_keystore_indexes: list[int] | None = None
+) -> None:
     """Make and open pdf."""
     info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
     pdf_recovery = BitcoinWalletRecoveryPDF(lang_code=lang_code)
+    selected_indexes = (
+        [index for index in selected_keystore_indexes if 0 <= index < len(wallet.keystores)]
+        if selected_keystore_indexes is not None
+        else list(range(len(wallet.keystores)))
+    )
+    if not selected_indexes:
+        return
 
-    for i, keystore in enumerate(wallet.keystores):
+    for position, i in enumerate(selected_indexes):
+        keystore = wallet.keystores[i]
         title = (
             translate(
                 "pdf",
@@ -624,6 +679,14 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
             if len(wallet.keystores) > 1
             else f"{wallet.id}"
         )
+        hardware_signer = HardwareSigners.from_id(keystore.hardware_signer_id)
+        if hardware_signer == HardwareSigners.generic:
+            hardware_signer = None
+        elif (
+            hardware_signer
+            and not Path(svg_tools_hardware_signer.get_icon_path(hardware_signer.icon_name)).exists()
+        ):
+            hardware_signer = None
         pdf_recovery.create_pdf(
             title=title,
             wallet_descriptor_string=str(wallet.multipath_descriptor),
@@ -634,8 +697,10 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
             keystore_description=keystore.description,
             keystore_fingerprint=keystore.fingerprint,
             keystore_key_origin=keystore.key_origin,
-            keystore_label=keystore.label,
+            keystore_label=wallet.hardware_signer_label(i),
+            hardware_signer=hardware_signer,
         )
-        pdf_recovery.add_page_break()
+        if position < len(selected_indexes) - 1:
+            pdf_recovery.add_page_break()
     filename = translate("pdf", "Seed backup of {id}").format(id=wallet.id)
     write_and_open_temp_pdf(pdf_recovery, filename)

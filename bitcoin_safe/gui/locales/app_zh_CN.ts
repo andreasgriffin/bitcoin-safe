@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>添加插件源</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer 令牌</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>显示名称</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>清单 URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>在此粘贴 ASCII-armored 公钥</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>固定的公钥</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>浏览器回调在发票过期后才到达。请重试。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>请选择金额并创建捐赠发票。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>请在浏览器中完成付款。如果有任何问题，请随时通过以下地址联系我们：{email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>无法创建发票。请再试一次。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>无法自动打开浏览器。请重试。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>无法启动本地回调服务器。将在无自动确认的情况下在浏览器中打开发票。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>创建发票</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>发票已准备好。请在浏览器中完成付款。自动确认可能不可用。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>发票服务返回错误（{code}）。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>在发票超时之前未收到浏览器回调。请重试打赏。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>在发票超时之前未收到浏览器回调。请再试一次。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>通过浏览器回调确认付款。谢谢！</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>请选择一个金额。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>正在请求发票……</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>正在请求发票…… 浏览器将打开，Bitcoin Safe 将在本地监听回调。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>无法连接到捐赠服务器。请稍后再试。</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>钱包 {wallet_id} 的同步密钥：  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>将 {number} 个单词的助记词粘贴到对应的 PDF 打印件上。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>将 {number} 个单词的助记词粘贴到已打印好的 PDF 文件上。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>请完成之前的步骤。</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>打印钱包恢复表</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>打印该 PDF 文件（其中还包含钱包描述符）</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>启用</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>打开插件</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>提供者：{provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>商务计划</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>商务计划访问权限已激活。</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>通过一个订阅解锁所有付费插件，并免除定期付款服务费。</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,30 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>在区块浏览器中打开</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>打开包含该文件的文件夹</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>购买 {number} 台硬件签名器                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe 支持所有主流硬件签名器：&lt;a href="{url}"&gt;查看完整列表&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -905,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>请先选择一个多重签名钱包</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>所需的硬件签名器</translation>
 		</message>
@@ -922,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>钱包属性</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>请先开始免费试用，然后在此管理或刷新订阅。</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1036,33 +1139,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>请谨慎选择安全地点，考虑到您需要前往 {n} 个地点中的 {m} 个，才能从您的多签名钱包中进行花费。</translation>
+			<source>1. Print backup sheets</source>
+			<translation>钱包名称</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>将每个助记词备份和硬件签名器存放在安全的地方，例如：</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>备份恢复表（必需）</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>助记词备份 {j} 和硬件签名器 {j} 应存放在地点 {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. 是，我已将 seed 词附在打印件上</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>将   硬件签名器   存放在安全的地方。</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>备份表</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>将  助记词备份   存放在&lt;b&gt;极其&lt;/b&gt;安全的地方（例如：银行保险箱）。</translation>
+			<source>Backup sheet {number}</source>
+			<translation>备份表 {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>助记词备份（24 个单词）可完全掌控资金。</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>恭喜，您的钱包已准备就绪。现在请保护它！</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>分发到 2 个独立位置</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>分发到 {n} 个独立位置</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>请按照以下步骤操作，确保您创建安全备份，以便在最坏情况下恢复您的资金。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>重要</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>位置</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>位置 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>打印后，请将设备上的 seed 短语手写到表格上，或确认它已抄写在与其一起存放的另一张纸上。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>位置 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>请完成之前的步骤。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>请选择至少一张要打印的备份表。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>打印与您拥有并控制的设备相关联的恢复表。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>恢复硬件签名器 {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>将您的备份和签名器放在安全位置</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>签名者设备</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>硬件签名器 {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>签名器设备</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>将每个签名器与其备份表和 seed 词一起存放在同一位置。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>保险库 {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>查看 seed 词</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>是的，我确认 seed 词已附在打印件上</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>您的钱包受其恢复表保护，该恢复表应存放在与您的硬件签名器不同的地方。请打印它，附上 seed，并将其存放在安全且受访问控制的位置。凭借 seed 词，您可以完全控制您的钱包。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>您的钱包受 {n} 张附有 seeds 的备份表保护，这些备份表存放在不同位置。请打印它们，并放置在安全且受访问控制的位置。凭借其中 {m} 张，您可以完全控制您的钱包。</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1103,6 +1321,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>消息（可选）</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>消息（可选）</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1189,6 +1417,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>完整（Bitcoin Safe）</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>感谢使用 Bitcoin Safe！</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>删除插件</translation>
 		</message>
 	</context>
 	<context>
@@ -1347,43 +1589,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>上一步</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>重试</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>是的，我在历史记录中看到了这笔交易</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>请确保没有其他程序正在访问硬件签名器</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>请输入硬件签名器的名称（贴纸标签）</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>贴纸标签</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>成功！请与所有硬件签名器完成此步骤，然后点击下一步。</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>设置未完成。请重试。</translation>
 		</message>
 	</context>
 	<context>
@@ -1599,13 +1804,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. 将钱包信息导入到 Bitcoin Safe</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>下一台硬件签名器</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>将硬件签名器信息导入 Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1616,11 +1816,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>上一步</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>上一台硬件签名器</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1646,6 +1841,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>删除插件</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) 允许钱包在保持地址隐私的同时发现相关交易。</translation>
 		</message>
@@ -1656,13 +1856,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>在首次同步期间，Bitcoin Safe 会从多个比特币节点获取 compact 区块摘要。这是一种私密下载区块数据的方式。</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>已用时间 {elapsed} | 预计剩余 {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>已用时间 {elapsed} | 预计剩余 {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe 会从多个节点下载区块摘要以保护隐私。初始同步完成后，更新会很快。如果您有自己的 Electrum 服务器，或者不想等待，请在网络设置中连接到公共 Electrum 服务器。</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>网络设置</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1774,13 +1979,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>高级设置</translation>
+			<source>Add New Signer</source>
+			<translation>添加新签名器</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>说明</translation>
+			<source>Change device type</source>
+			<translation>更改设备类型</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>连接</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>派生路径</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>设备说明</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1799,10 +2019,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>签名设备名称：......
-签名设备位置：.....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>通过 QR、USB 或文本/文件导入来导入签名器数据。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>了解更多关于&lt;a href="{url}"&gt;受支持的硬件签名器&lt;/a&gt;的信息。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>了解更多关于 &lt;a href="{url}"&gt;{device}&lt;/a&gt; 的信息。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1816,13 +2044,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>请确保没有其他程序正在访问硬件签名器</translation>
+			<source>Open the signer guide</source>
+			<translation>打开签名器指南</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>请输入有效的派生路径。</translation>
+			<source>Personal notes:</source>
+			<translation>个人备注：</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>请确保没有其他程序正在访问硬件签名器</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1846,13 +2079,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>二维码</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>注册</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>重新注册多签</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>助记词</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>选择品牌</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>选择型号</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>选择签名器品牌</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>选择签名器型号</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>所选地址类型 {type} 的标准为 {expected_key_origin}。若不确定，请予以修正。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8 位指纹用于识别 seed。您可以将其写在硬件签名器上，以便跟踪不同的 seeds 和签名设备。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>密钥来源是正确构建交易（PSBTs）所必需的，并且与 xPub 相关联。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed 是能够签署交易的秘密。对于单签名钱包，它赋予对资金的完全控制权。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1866,18 +2153,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>钱包地址由 xPub 派生。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>在此写下与此签名器相关的备注、备忘等...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub 源</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} 在此处不可用。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} 在此处不可用。</translation>
+			<source>{device} instructions</source>
+			<translation>{device} 说明</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1922,48 +2224,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>您导入的派生路径 {key_origins} 不一致！请仔细确认您是否有意这样操作。</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>备份秘密同步密钥：</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>在每台计算机上的“同步和聊天”选项卡中选择受信任的计算机。</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>协作视频</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>启用</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>加密云端备份地址标签和类别</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>完成</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>多台计算机同步与聊天</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>同步视频</translation>
 		</message>
 	</context>
 	<context>
@@ -2189,6 +2449,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;插件</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;上一个钱包/选项卡</translation>
 		</message>
@@ -2266,6 +2531,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;𝕏/推特私信</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>名为 {wallet_id} 的钱包已存在。请选择其他名称。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2374,6 +2644,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>热钱包在 Bitcoin Mainnet 上已禁用。您可以切换到 Testnet，以便在不使用真实 Bitcoin 的情况下测试 Bitcoin Safe。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>保持打开状态</translation>
 		</message>
@@ -2401,6 +2677,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>新选项卡 {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>此网络没有可用的演示钱包。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2456,6 +2737,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>在此处粘贴您的比特币交易，PSBT，或拖放文件。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>请选择一个钱包名称</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2636,6 +2922,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>钱包 {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>钱包仍在同步中，现在关闭应用程序将导致同步过程从头开始。
@@ -2665,11 +2956,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>是的，对交易进行完整扫描</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>新的</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2796,6 +3082,108 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value}（本地时间）</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>已经熟悉 Bitcoin 了吗？自信地设置一个持有和转移真实价值的钱包。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>最适合长期存储</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>创建一个新钱包</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>探索 Playground</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>使用演示钱包探索</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>妥善保管您的 seed 短语</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>安全学习，零风险</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>管理真实资金</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>在无风险环境中练习，并准确了解一切如何运作。尝试使用即使丢失也不会遗憾的测试币来发送、接收和更改手续费。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>真正的健全货币（BTC）</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>发送和接收真实 bitcoin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>设置钱包</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>开始探索</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>开始使用健全货币进行交易，或在安全的 playground 中学习。无论哪种方式，您以后都可以随时创建另一个钱包。</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>测试币（tBTC）没有价值</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>测试币，无货币价值</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>交易是永久性的</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>使用 Signet 测试网络</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>使用链上 Mainnet 网络</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>您想从哪里开始？</translation>
 		</message>
 	</context>
 	<context>
@@ -2968,8 +3356,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>代理不适用于同步与聊天功能！</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>代理不适用于 Sync&amp;Chat 插件，也不适用于订阅购买期间！</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2996,58 +3385,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>需要一个安全的地点来存放助记词备份（纸质或不锈钢）。</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>一组助记词（24 个单词）即可访问您的资金</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 台硬件签名器</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2/3 多重签名钱包</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>需要 3 个安全地点（每个地点有 1 个助记词备份和对应的钱包描述符）</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 台硬件签名器</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>最适合大额资金</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>最适合中等规模的资金</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>选择多重签名</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>选择单一签名</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>缺点：</translation>
+			<source>Connect Device(s)</source>
+			<translation>连接设备</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3056,50 +3395,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>创建或
-导入自定义钱包</translation>
+			<source>Custom / Recovery</source>
+			<translation>自定义 / 恢复</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>自定义或导入现有钱包</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>自托管钱包的引导式设置。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>根据您的需求定制钱包</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>热单签名钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>如果丢失或被盗 1 个助记词备份，您可以使用剩余的 2 个助记词和对应的钱包描述符（二维码）备份将所有资金转移至新的钱包</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>打开受支持的硬件钱包和签名器列表。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>如果您被诱骗并向黑客透露您的助记词，您的比特币将立即被盗</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>使用一个已有且包含一些测试币的钱包，安全地进行探索。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>在线支持材料较少，以备恢复之用</translation>
+			<source>Public Demo wallet</source>
+			<translation>公共演示钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>优点：</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>快速生成一个可立即使用的钱包，无需现有密钥。&lt;br&gt;&lt;small&gt;在 Mainnet 上已禁用，因为连接互联网的计算机并非为安全保存代表金钱的秘密而设计。&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>单一签名钱包</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>快速生成一个可立即使用的钱包，无需现有密钥。&lt;br&gt;&lt;small&gt;在连接互联网的计算机上生成和存储密钥是不安全的。通用计算机并非为保存代表金钱的秘密而设计。&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>钱包描述符（二维码）是恢复钱包所需的关键信息</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>从硬件钱包或描述符恢复钱包。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>受支持的签名器</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>钱包名称</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3187,6 +3539,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>每月</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>开始免费试用</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>订阅</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>每年</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>管理</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>刷新状态</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>订阅：</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3251,94 +3647,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>浏览器回调在发票过期后才到达。请重试。</translation>
+			<source>Update</source>
+			<translation>更新</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>请选择金额并创建捐赠发票。</translation>
+			<source>Update available: {update_target}</source>
+			<translation>有可用更新：{update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>请在浏览器中完成支付。
-如有任何问题，请随时通过电子邮件方式联系我们：andreasgriffin@proton.me</translation>
+			<source>Update to {update_target}</source>
+			<translation>更新到 {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>无法创建发票。请再试一次。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>无法自动打开浏览器。请重试。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>无法启动本地回调服务器。将在无自动确认的情况下在浏览器中打开发票。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>创建发票</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>发票已准备好。请在浏览器中完成付款。自动确认可能不可用。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>发票服务返回错误（{code}）。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>在发票超时之前未收到浏览器回调。请重试打赏。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>在发票超时之前未收到浏览器回调。请再试一次。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>通过浏览器回调确认付款。谢谢！</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>请选择打赏金额和币种。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>正在请求发票……</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>正在请求发票…… 浏览器将打开，Bitcoin Safe 将在本地监听回调。</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>无法连接到捐赠服务器。请稍后再试。</translation>
+			<source>Version {version}</source>
+			<translation>版本 {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>启用/禁用</translation>
+			<source>Explore plugins</source>
+			<translation>探索插件</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>此钱包没有可用插件，因此这里没有可配置的内容。</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>查看此钱包可用的插件。您可以现在启用想要的插件，并随时稍后返回“插件”标签页。</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>启用和管理可选的钱包集成。</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>插件</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>取消</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>删除</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>删除已安装插件</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>删除已安装插件 {plugin}？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>删除前请先停用该插件。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>需要 Manifest URL 和固定的公钥。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>插件操作失败。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>插件来源 {source_id} 不存在。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>已重新检查已安装插件。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>已重新检查已安装插件。{count} 个插件无效。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>移除插件来源</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>移除插件来源 {source}？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>此插件无法删除。</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>适用于所有付费插件和受订阅限制的服务费用。</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Business 计划</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>插件</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>来源</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>安装了 {count} 个插件时无法移除。</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>删除</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>最后错误：{error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>刷新</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>删除来源前，请先移除此来源中已安装的插件。</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>来源 ID：{source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3468,8 +3945,13 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>描述符</translation>
+			<source>Dashboard</source>
+			<translation>仪表盘</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>详情</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3490,11 +3972,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Export labels</source>
 			<translation>导出标签</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>历史记录</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3547,6 +4024,11 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Password incorrect</source>
 			<translation>密码错误</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>请选择一个钱包名称</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3754,18 +4236,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>余额 = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>检查是否已接收到</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>下一步</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3774,29 +4246,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
+			<source>Receive Test</source>
+			<translation>接收测试</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>接收一笔&lt;b&gt;小额&lt;/b&gt;资金（小于 {test_amount}）到此钱包的 1 个地址。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;                     为了确认您控制这些资金，您必须测试从钱包中支出。                      &lt;br&gt;                     因此，在向钱包发送大量 Bitcoin 之前，从钱包支出并测试所有签名设备是&lt;b&gt;至关重要的&lt;/b&gt;。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;请暂时不要向钱包发送大量资金。请先完成所有 self-send 测试！&lt;/b&gt;                    </translation>
+			<translation>向此钱包的 1 个地址接收一笔&lt;b&gt;小额&lt;/b&gt;金额（少于 {test_amount}）。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制资金，您必须测试从钱包中花费。 &lt;br&gt; 因此，在您向钱包发送大量 Bitcoin 之前，从钱包中花费并测试所有签名器是&lt;b&gt;至关重要的&lt;/b&gt;。</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>接收说明</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>已识别的交易</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>正在等待资金到达钱包...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>最近打开过的钱包</translation>
+			<source>ALL WALLETS</source>
+			<translation>所有钱包</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>最近的钱包</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>在文件资源管理器中显示</translation>
 		</message>
 	</context>
 	<context>
@@ -3941,38 +4435,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. 将钱包信息导入到 Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>下一台硬件签名器</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>下一步</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>上一台硬件签名器</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>跳过此步骤</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>是的，我已在 {n} 台硬件签名器上注册了多重签名</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>在每个签名设备上注册多签钱包。</translation>
 		</message>
 	</context>
 	<context>
@@ -4016,6 +4480,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>未选择文件</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>演示订阅插件</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>基于 PaidPluginClient 的示例插件。使用它来验证订阅门控激活和插件管理器操作。</translation>
 		</message>
 	</context>
 	<context>
@@ -4082,14 +4558,28 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>在此卡片中创建交易。</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>自发送测试 {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>签名并广播下方交易。</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>跳过花费测试？</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>我们正在从您的钱包发送到您钱包中的另一个地址（self-send）。&lt;br&gt; 这用于练习签名流程，并确保所有硬件签名设备已正确设置。</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>正在等待交易准备完成。</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4306,20 +4796,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>“{sticker}” 在 {device_name} 设备上</translation>
+			<source>Available version: {version}</source>
+			<translation>可用版本：{version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>打印标签</translation>
+			<source>Install {version}</source>
+			<translation>安装 {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>将以下的贴纸贴在您的硬件签名器上：</translation>
+			<source>Installed version: {version}</source>
+			<translation>已安装版本：{version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>已安装 {installed}；可用更新：{available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>最新 {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>重新安装 {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>更新到 {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>版本 {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>版本 {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>添加插件来源...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>关闭</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>已配置的插件来源</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>尚未添加插件来源。</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>插件来源</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>重新检查已安装插件</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>已完成</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>当前</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>未来未完成的步骤</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>第 {current} 步，共 {total} 步</translation>
 		</message>
 	</context>
 	<context>
@@ -4615,13 +5189,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>创建并收集 {n} 个签名</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>输入 {i}：使用标记 {sighash_type} 签名，签名：{signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>输入 {i}：使用标记 {sighash_type} 签名，签名：{signature}</translation>
+			<source>Signature {n}</source>
+			<translation>签名 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4825,11 +5399,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>下一步</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>并非所有必要的交易详情都可用于 RBF</translation>
 		</message>
@@ -4849,11 +5418,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>请先移除钱包中现有的本地交易。</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>上一步</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5127,18 +5691,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>是的，我确定所有 {number} 个词都是正确的</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5364,6 +5916,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 个签名者</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2-of-3 多重签名</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3-of-5 多重签名</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>可承受丢失 1 个签名设备及其备份 seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>可承受丢失 2 个签名设备及其备份 seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>选择钱包模板</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>缺点</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>继续</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>高复杂度</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>如果签名设备和 seed 备份丢失，资金也会丢失</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>长期冷存储</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>长期冷存储（2-of-3 多重签名）</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>低复杂度</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>中等复杂度</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>请选择一个钱包名称</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>上一步</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>优点</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>恢复</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>必需</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>需要 1 个访问受控的安全地点来存储 seed 备份</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>需要 3 个访问受控的安全地点来存储 seed 备份</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>需要 5 个访问受控的安全地点来存储 seed 备份</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>适合长期自托管的稳健钱包。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>从列表中选择一个模板。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>使用 1 个签名者和 1 份 seed 备份进行自托管。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>简单冷存储</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>简单冷存储（1 个签名者）</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>将 seed 备份与设备分开存放，以避免单点故障。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>超强稳健存储</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>超强稳健存储（3-of-5 多重签名）</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>包含钱包描述符的恢复表应与每份 seed 备份一起存放。</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>总计</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>钱包名称</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>签名者</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>签名者</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5371,23 +6100,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>所有 self-send 测试已成功完成。</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>备份助记词</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>购买硬件签名器</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>生成助记词</translation>
+			<source>Choose template</source>
+			<translation>选择模板</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5396,13 +6110,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>标记硬件签名器</translation>
+			<source>Plugins</source>
+			<translation>插件</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>存放在安全地点</translation>
+			<source>Previous Step</source>
+			<translation>上一步</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5413,6 +6127,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>在硬件签名器上注册多重签名</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>检查交易，并在准备好后创建。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>保护您的密钥</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5436,19 +6160,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>同步与聊天</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>测试交易  
-'{tx_text}'  
- 已成功完成。请继续进行自我发送交易测试：  
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>签名者 {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5457,8 +6170,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>验证备份</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>交易已创建。请在下方签名并广播，然后等待钱包识别。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>交易已被钱包识别。</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>正在等待钱包识别已广播的交易。</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5591,6 +6314,11 @@ IP：{ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>完成并前往仪表盘</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -7014,6 +7742,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>对该钱包和类别拥有完整读写权限。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>对该钱包具有完全的读写访问权限，包括余额、交易和 UTXO。</translation>
 		</message>
@@ -7029,8 +7762,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>订阅钱包活动事件，例如新交易或区块链同步。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>订阅钱包活动事件，例如新交易或区块链同步。也可启用打开交易和 PSBT。</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>未知描述</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7148,25 +7891,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Business 计划访问权限已激活。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>取消</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>继续</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>无法确定当前订阅状态。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>当前状态：{status}。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>用于订阅提醒和续订通知的电子邮件地址：</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>免费试用购买未返回管理载荷。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>免费试用购买未返回会话。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>免费试用购买需要钱包描述符。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>上次检查：{checked_at}。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>上次刷新错误：{error}。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>管理订阅</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>管理 URL 已保存。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>尚未激活任何订阅。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>打开订阅</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>请输入有效的电子邮件地址。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>刷新订阅状态</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>订阅提醒</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>需要订阅</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>订阅状态刷新失败。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>订阅状态刷新未返回结果。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>免费试用激活失败。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>免费试用激活超时。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>此插件当前处于非活动状态。请先延长订阅，然后再重新启用。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>正在等待免费试用激活...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} 请稍后重试。如果仍然无法使用，请联系 {email}。</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>请输入 Trezor 上显示的 6 位配对码：</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>使用 Trezor 键盘布局输入 PIN（7 8 9 / 4 5 6 / 1 2 3）：</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>配对 Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>解锁 Trezor</translation>
 		</message>
 	</context>
 	<context>

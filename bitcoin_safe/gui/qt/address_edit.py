@@ -44,6 +44,7 @@ from PyQt6.QtWidgets import QMessageBox, QSizePolicy
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
 from bitcoin_safe.gui.qt.tx_util import advance_tip_to_address_info
+from bitcoin_safe.wallet import Wallet, get_wallet_of_address
 
 from ...i18n import translate
 from ...signals import (
@@ -52,7 +53,6 @@ from ...signals import (
     WalletFunctions,
     WalletSignals,
 )
-from ...wallet import Wallet, get_wallet_of_address
 from .util import ColorScheme, block_explorer_URL, get_icon_path
 
 logger = logging.getLogger(__name__)

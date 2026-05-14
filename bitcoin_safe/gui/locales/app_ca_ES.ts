@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Afegeix font del connector</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Token Bearer</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Nom de visualització</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL del manifest</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>Enganxa aquí la clau pública ASCII-armored</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Clau pública fixada</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>S’ha rebut una crida de retorn del navegador després que la factura hagués expirat. Torneu-ho a provar.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Trieu un import i creeu una factura de donació.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Completa el pagament al navegador.
+Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>No s’ha pogut crear la factura. Torneu-ho a provar.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>No s’ha pogut obrir el navegador automàticament. Torneu-ho a provar.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>No s’ha pogut iniciar el servidor local de crida de retorn. Obrint la factura al navegador sense confirmació automàtica.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Crear factura</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Factura llesta. Completeu el pagament al vostre navegador. La confirmació automàtica pot no estar disponible.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>El servei de factures ha retornat un error ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu a intentar la donació.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu-ho a provar.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Pagament confirmat mitjançant la crida de retorn del navegador. Gràcies!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Si us plau, tria un import.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Sol·licitant factura...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Sol·licitant factura... S’obrirà un navegador i Bitcoin Safe escoltarà la crida de retorn localment.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>No s’ha pogut connectar amb el servidor de donacions. Torneu-ho a provar més tard.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Clau de sincronització de la cartera {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Enganxa la seed de {number} paraules al PDF imprès corresponent.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Enganxa la seed de {number} paraules al PDF imprès.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Completa els passos anteriors.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>Imprimeix el full de recuperació</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Imprimeix el PDF (també conté el descriptor de la cartera)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Habilita</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Obre el connector</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Proporcionat per: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Pla Business</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>L’accés al pla Business està actiu.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Desbloqueja tots els connectors de pagament amb una sola subscripció i elimina la tarifa de servei dels pagaments programats.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,27 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Obre a l’explorador de blocs</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>Obre la carpeta que el conté</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>Compra {number} signants de maquinari                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe admet tots els principals signants de maquinari: &lt;a href="{url}"&gt;Veure la llista completa&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -901,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Selecciona primer una cartera multisignatura</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Signadors requerits</translation>
 		</message>
@@ -918,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Propietats de la cartera</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Comença primer la prova gratuïta i després gestiona o actualitza la subscripció aquí.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1138,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Tria els llocs segurs amb cura, tenint en compte que hauràs d'anar a {m} dels {n} per gastar des de la teva cartera multisignatura.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Nom de la cartera</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Col·loca cada còpia de seguretat de la seed i signador de maquinari en un lloc segur, com:</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Full de recuperació de còpia de seguretat (obligatori)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>La còpia de seguretat de la seed {j} i el signador de maquinari {j} haurien d'estar a la ubicació {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. Sí, he adjuntat les paraules seed a la impressió</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Desa el signador de maquinari en un lloc segur.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Full de còpia de seguretat</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Desa la còpia de seguretat de la seed en un lloc &lt;b&gt;molt&lt;/b&gt; segur (com una caixa forta).</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Full de còpia de seguretat {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>La còpia de seguretat de la seed (24 paraules) dóna control total sobre els fons.</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Enhorabona, la teva cartera està preparada. Ara protegeix-la!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>Distribueix-ho en 2 ubicacions separades</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>Distribueix-ho en {n} ubicacions separades</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Segueix els passos següents per assegurar-te que crees una còpia de seguretat segura per restaurar els teus fons en el pitjor dels casos.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Important</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Ubicació</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Ubicació 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Un cop imprès, escriu a mà la frase seed del teu dispositiu al full, o confirma que ja està transcrita en un paper separat guardat amb ell.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Ubicació 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Completa els passos anteriors.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Selecciona almenys un full de còpia de seguretat per imprimir.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Imprimeix els fulls de recuperació associats als dispositius que posseeixes i controles.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>Signador de recuperació {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Posa les còpies de seguretat i els signadors en ubicacions segures</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>Dispositiu del signant</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>Signador {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>Dispositiu signador</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Desa cada signador juntament amb el seu full de còpia de seguretat i les paraules seed a la mateixa ubicació.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Caixa forta {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Mostra les paraules de la seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Sí, confirmo que les paraules seed estan adjuntes a la impressió</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>La teva cartera està protegida pel seu full de recuperació, que s’hauria de guardar en un lloc diferent d’on es troba el teu signador de maquinari. Imprimeix-lo, adjunta-hi la seed i guarda’l en una ubicació segura i amb accés controlat. Amb les paraules seed tens el control total de la teva cartera.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>La teva cartera està protegida per {n} fulls de còpia de seguretat amb seeds adjuntes guardats en ubicacions diferents. Imprimeix-los i col·loca’ls en ubicacions segures i amb accés controlat. Amb {m} d’ells tens el control total de la teva cartera.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} de {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1320,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Missatge (opcional)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Missatge (opcional)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1416,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Sencer (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Gràcies per Bitcoin Safe!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Suprimeix el connector</translation>
 		</message>
 	</context>
 	<context>
@@ -1342,43 +1588,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Pas anterior</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Torna-ho a provar</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Sí, veig la transacció a l'historial</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Assegura't que no hi hagi altres programes accedint al signador de maquinari</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Introdueix el nom (etiqueta adhesiva) del signador de maquinari</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Etiqueta adhesiva</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Èxit! Completa aquest pas amb tots els signadors de maquinari i després fes clic a Següent.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>La configuració no s'ha completat. Torna-ho a repetir.</translation>
 		</message>
 	</context>
 	<context>
@@ -1594,13 +1803,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importa la informació de la cartera a Bitcoin Safe</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Signador següent</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Importar la informació del signador de maquinari a Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1611,11 +1815,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Pas anterior</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signador anterior</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1641,6 +1840,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Suprimeix el connector</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) permeten que les carteres descobreixin transaccions rellevants mantenint les vostres adreces privades.</translation>
 		</message>
@@ -1651,13 +1855,18 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Durant la primera sincronització, Bitcoin Safe obté resums compactes de blocs de diversos nodes Bitcoin. Aquesta és una manera privada de descarregar dades de blocs.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Temps transcorregut {elapsed} | Restant estimat {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Temps transcorregut {elapsed} | Restant estimat {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe descarrega resums de blocs de múltiples nodes per privadesa. Després d’aquesta sincronització inicial, les actualitzacions seran ràpides. Si tens el teu propi servidor Electrum o no vols esperar, connecta’t a un servidor Electrum públic a la configuració de xarxa.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Configuració de xarxa</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1769,13 +1978,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Avançat</translation>
+			<source>Add New Signer</source>
+			<translation>Afegeix nou signador</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Descripció</translation>
+			<source>Change device type</source>
+			<translation>Canvia el tipus de dispositiu</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Connecta</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Camí de derivació</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instruccions del dispositiu</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1794,10 +2018,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>Nom del dispositiu de signatura: ......
-Ubicació del dispositiu de signatura: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>Importa les dades del signant amb QR, USB o importació de text/fitxer.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>Més informació sobre els &lt;a href="{url}"&gt;signants de maquinari compatibles&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>Més informació sobre &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1811,13 +2043,18 @@ Ubicació del dispositiu de signatura: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Assegura't que no hi hagi altres programes accedint al signador de maquinari</translation>
+			<source>Open the signer guide</source>
+			<translation>Obre la guia del signant</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Introdueix un origen de clau vàlid.</translation>
+			<source>Personal notes:</source>
+			<translation>Notes personals:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Assegura't que no hi hagi altres programes accedint al signador de maquinari</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1841,13 +2078,67 @@ Ubicació del dispositiu de signatura: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>Codi QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Registra</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Torna a registrar el multisig</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Seed</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>Selecciona la marca</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Selecciona el model</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>Selecciona la marca del signant</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>Selecciona el model del signant</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>L'estàndard per al tipus d'adreça seleccionat {type} és {expected_key_origin}.  Corregeix-ho si no estàs segur.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>L’empremta de 8 dígits identifica la seed. La pots escriure al signador de maquinari per fer el seguiment de diferents seeds i dispositius de signatura.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>L’origen de la clau és necessari per construir transaccions (PSBT) correctament i està connectat amb la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>La seed és el secret que permet signar transaccions. Per a una cartera de signatura única, dona control total sobre els fons.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1861,18 +2152,33 @@ Ubicació del dispositiu de signatura: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Les adreces de la cartera es deriven de la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Escriu aquí notes relatives a aquest signant, recordatoris, etc...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>Origen xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} no es pot utilitzar aquí.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} no es pot utilitzar aquí.</translation>
+			<source>{device} instructions</source>
+			<translation>Instruccions de {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1917,48 +2223,6 @@ Vols continuar igualment?</translation>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>Els orígens de clau importats {key_origins} difereixen! Verifica-ho dues vegades si era la teva intenció.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Clau secreta de sincronització de còpia de seguretat:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Tria ordinadors de confiança a la pestanya Sync &amp; Chat de cada ordinador.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>Vídeo de col·laboració</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Habilita</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Còpia de seguretat xifrada al núvol de les etiquetes i categories d'adreces</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Finalitza</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Sincronització i xat multiordinador</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Vídeo de sincronització</translation>
 		</message>
 	</context>
 	<context>
@@ -2184,6 +2448,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Connectors</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Cartera/Pestanya Anterior</translation>
 		</message>
@@ -2261,6 +2530,11 @@ Vols continuar igualment?</translation>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>Ja existeix una cartera anomenada {wallet_id}. Tria un altre nom.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2369,6 +2643,13 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
+Pots canviar a Testnet per provar Bitcoin Safe sense utilitzar Bitcoin real.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Mantenir obert</translation>
 		</message>
@@ -2396,6 +2677,11 @@ Vols continuar igualment?</translation>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Nova pestanya {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>No hi ha cap moneder de demostració disponible per a aquesta xarxa.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2451,6 +2737,11 @@ Vols continuar igualment?</translation>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Enganxa la teva transacció Bitcoin o PSBT aquí o arrossega un fitxer</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Tria un nom de cartera</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2631,6 +2922,11 @@ Vols mantenir la cartera oberta?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Moneder {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Les carteres encara s’estan sincronitzant i caldrà començar des de zero si tanques l’aplicació.
@@ -2660,11 +2956,6 @@ Vols amagar-la a la safata?</translation>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Sí, escaneig complet de transaccions</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>nova</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +3085,108 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (hora local)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Ja coneixes Bitcoin? Configura amb confiança una cartera que manté i mou valor real.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Millor per a emmagatzematge a llarg termini</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Crea nova cartera</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Explora el Playground</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>Explora amb una cartera de demostració</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>Mantén segura la teva frase seed</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>Aprèn amb seguretat, sense risc</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>Gestiona Fons Reals</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Practica en un entorn sense risc i veu exactament com funciona tot. Prova d’enviar, rebre i canviar comissions utilitzant monedes de prova que pots perdre sense penedir-te’n.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Diners sòlids reals (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Envia i rep bitcoin real</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Configura una cartera</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Comença a explorar</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Comença a fer transaccions amb diners sòlids o aprèn en un playground segur. En qualsevol cas, sempre podràs crear una altra cartera més endavant.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Les monedes de prova (tBTC) no tenen valor</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Monedes de prova, sense valor monetari</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Les transaccions són permanents</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Utilitza la xarxa de prova Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Utilitza la xarxa onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Per on vols començar?</translation>
 		</message>
 	</context>
 	<context>
@@ -2965,8 +3358,9 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>El servidor intermediari no s'aplica a la funció Sync&amp;Chat!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>El servidor intermediari no s’aplica al connector Sync&amp;Chat ni durant la compra de la subscripció!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2993,58 +3387,8 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>Es necessita 1 ubicació segura per desar la còpia de seguretat de la seed (en paper o acer)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 seed (24 paraules secretes) és tot el que necessites per accedir als teus fons</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 dispositiu de signatura</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 de 3 cartera multisignatura</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>Es necessiten 3 ubicacions segures (cadascuna amb 1 còpia de seguretat de la seed   + descriptor de la cartera)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 dispositius de signatura</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Millor per a fons grans</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Millor per a fons de mida mitjana</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Tria multisignatura</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Tria signatura única</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Inconvenients:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Connecta dispositiu(s)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3053,49 +3397,63 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Crear o importar una cartera personalitzada</translation>
+			<source>Custom / Recovery</source>
+			<translation>Personalitzat / Recuperació</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Personalitza o importa cartera existent</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Configuració guiada per al teu moneder d’autocustòdia.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Personalitza la cartera segons les teves necessitats</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Moneder calent de signatura única</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Si es perd o es roba 1 seed, tots els fons es poden transferir a una cartera nova amb les 2 seeds restants + descriptor de la cartera (codi QR)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Obre la llista de moneders de maquinari i signadors admesos.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Si et fan enganyar i dones la teva seed als pirates, els teus Bitcoin es robaran immediatament</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Juga amb un moneder existent que té algunes monedes de prova per explorar amb seguretat.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Menys material d'ajuda en línia en cas de recuperació</translation>
+			<source>Public Demo wallet</source>
+			<translation>Moneder de demostració públic</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Avantatges:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Genera ràpidament un moneder per a ús immediat, sense requerir claus existents.&lt;br&gt;&lt;small&gt;Desactivat a Mainnet perquè un ordinador connectat a Internet no està dissenyat per guardar de manera segura secrets que representen diners.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Cartera de signatura única</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Genera ràpidament un moneder per a ús immediat, sense requerir claus existents.&lt;br&gt;&lt;small&gt;Generar i emmagatzemar claus en un ordinador connectat a Internet és insegur. Un ordinador d’ús general no està dissenyat per guardar secrets que representen diners.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>El descriptor de la cartera (codi QR) és necessari per recuperar la cartera</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Restaura un moneder des de moneder(s) de maquinari o un descriptor.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Signadors admesos</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nom del moneder</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3183,6 +3541,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Mensual</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Comença la prova gratuïta</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Subscripció</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Anual</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Gestiona</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Actualitza l’estat</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Subscripció:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3247,94 +3649,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>S’ha rebut una crida de retorn del navegador després que la factura hagués expirat. Torneu-ho a provar.</translation>
+			<source>Update</source>
+			<translation>Actualitza</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Trieu un import i creeu una factura de donació.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Actualització disponible: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Completeu el pagament al vostre navegador.
-Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>Actualitza a {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>No s’ha pogut crear la factura. Torneu-ho a provar.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>No s’ha pogut obrir el navegador automàticament. Torneu-ho a provar.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>No s’ha pogut iniciar el servidor local de crida de retorn. Obrint la factura al navegador sense confirmació automàtica.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Crear factura</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Factura llesta. Completeu el pagament al vostre navegador. La confirmació automàtica pot no estar disponible.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>El servei de factures ha retornat un error ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu a intentar la donació.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>No s’ha rebut cap crida de retorn del navegador abans que la factura expirés. Torneu-ho a provar.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Pagament confirmat mitjançant la crida de retorn del navegador. Gràcies!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Trieu un import de donació i una moneda.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Sol·licitant factura...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Sol·licitant factura... S’obrirà un navegador i Bitcoin Safe escoltarà la crida de retorn localment.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>No s’ha pogut connectar amb el servidor de donacions. Torneu-ho a provar més tard.</translation>
+			<source>Version {version}</source>
+			<translation>Versió {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Activar/Desactivar</translation>
+			<source>Explore plugins</source>
+			<translation>Explora els connectors</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Els connectors no estan disponibles per a aquest moneder, així que aquí no hi ha res per configurar.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Revisa els connectors disponibles per a aquest moneder. Pots activar els que vulguis ara i tornar a la pestanya Connectors més endavant en qualsevol moment.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>Activa i gestiona integracions opcionals del moneder.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Cancel·la</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Suprimeix</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Suprimeix el connector instal·lat</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Vols suprimir el connector instal·lat {plugin}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Desactiva el connector abans de suprimir-lo.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Calen l’URL del manifest i la clau pública fixada.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>L’operació del connector ha fallat.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>La font del connector {source_id} no existeix.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>S’han tornat a comprovar els connectors instal·lats.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>S’han tornat a comprovar els connectors instal·lats. {count} connector(s) no són vàlids.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Elimina la font del connector</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Vols eliminar la font del connector {source}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Aquest connector no es pot suprimir.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>S’aplica a tots els connectors de pagament i a les tarifes de servei restringides per subscripció.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Pla Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Fonts</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>No es pot eliminar mentre hi ha {count} connector(s) instal·lats.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Suprimeix</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Últim error: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Actualitza</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Elimineu els connectors instal·lats des d’aquesta font abans de suprimir la font.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ID de la font: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3464,8 +3947,13 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Descriptor</translation>
+			<source>Dashboard</source>
+			<translation>Tauler de control</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Detalls</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3486,11 +3974,6 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		<message>
 			<source>Export labels</source>
 			<translation>Exporta etiquetes</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Historial</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3543,6 +4026,11 @@ Si hi ha algun problema, no dubteu a contactar-nos a: [andreasgriffin@proton.me]
 		<message>
 			<source>Password incorrect</source>
 			<translation>Contrasenya incorrecta</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Tria un nom de cartera</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3749,18 +4237,8 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Saldo = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Comprova si s'ha rebut</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>Pas següent</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3769,31 +4247,51 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
+			<source>Receive Test</source>
+			<translation>Prova de recepció</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d'aquesta cartera.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt;                     Per saber si controleu els fons, heu de provar d'enviar des de la cartera. 
-                    &lt;br&gt;                     Per tant, abans d'enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; provar l'enviament i tots els signants.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Encara NO envieu grans quantitats a la cartera. Completeu primer totes les proves d'autoenviament!&lt;/b&gt;                    </translation>
+			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera. &lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Instruccions de recepció</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Transacció reconeguda</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Esperant que arribin fons a la cartera...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Carteres obertes recentment</translation>
+			<source>ALL WALLETS</source>
+			<translation>TOTS ELS MONEDERS</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>MONEDERS RECENTS</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Mostrar a l’explorador de fitxers</translation>
 		</message>
 	</context>
 	<context>
@@ -3938,38 +4436,8 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importa la informació de la cartera a Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Signador següent</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Pas següent</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signador anterior</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Omet pas</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Sí, he registrat la multisig al signador de maquinari {n}</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Registreu el moneder multisig a cada dispositiu de signatura.</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4481,18 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>Cap fitxer seleccionat</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Connector de subscripció de demostració</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Connector d’exemple basat en PaidPluginClient. Utilitzeu-lo per verificar l’activació restringida per subscripció i les accions del gestor de connectors.</translation>
 		</message>
 	</context>
 	<context>
@@ -4079,14 +4559,28 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>Creeu la transacció en aquesta targeta.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Prova d’autoenviament {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Signeu i difoneu la transacció següent.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Ometre la prova de despesa?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Estem enviant des de la vostra cartera a una altra adreça de la vostra cartera (autoenviament).&lt;br&gt; Això permet practicar el flux de signatura i assegura que tots els signants de maquinari estiguin configurats correctament.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>S’està esperant que es prepari la transacció.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4303,20 +4797,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" a {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>Versió disponible: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>Imprimeix etiquetes</translation>
+			<source>Install {version}</source>
+			<translation>Instal·la {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Posa les següents etiquetes al teu dispositiu:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Versió instal·lada: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Instal·lat {installed}; actualització disponible: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>Última {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>Reinstal·la {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>Actualitza a {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Versió {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Versió {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Afegeix una font de connectors...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Tanca</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Fonts de connectors configurades</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Encara no s’ha afegit cap font de connectors.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Fonts de connectors</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Torna a comprovar els connectors instal·lats</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Completat</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Actual</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Passos futurs incomplets</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Pas {current} de {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4612,13 +5190,13 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Crea i recull {n}. signatura</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Entrada {i}: Signada amb el flag {sighash_type} , Signatura: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrada {i}: Signada amb el flag {sighash_type} , Signatura: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Signatura {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4816,11 +5394,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Pas següent</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>No tots els detalls necessaris de la transacció estan disponibles per a RBF</translation>
 		</message>
@@ -4840,11 +5413,6 @@ O bé la pots emetre via {url}</translation>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Si us plau, elimineu primer la transacció local existent del moneder.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Pas anterior</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5120,18 +5688,6 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Sí, estic segur que totes les {number} paraules són correctes</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5357,6 +5913,183 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 signant</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>Multisignatura 2 de 3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>Multisignatura 3 de 5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>Pot tolerar la pèrdua d’1 dispositiu de signatura i la seva seed de còpia de seguretat</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>Pot tolerar la pèrdua de 2 dispositius de signatura i les seves seeds de còpia de seguretat</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Trieu una plantilla de moneder</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Contres</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Continua</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Alta complexitat</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>Si es perden el dispositiu de signatura i la còpia de seguretat de la seed, es perden els fons</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Emmagatzematge en fred a llarg termini</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Emmagatzematge en fred a llarg termini (Multisignatura 2 de 3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Baixa complexitat</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Complexitat mitjana</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Tria un nom de cartera</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Pas anterior</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Pros</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Recuperació</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Obligatori</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Requereix 1 lloc segur amb accés controlat per emmagatzemar la còpia de seguretat de la seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Requereix 3 llocs segurs amb accés controlat per emmagatzemar les còpies de seguretat de les seeds</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Requereix 5 llocs segurs amb accés controlat per emmagatzemar les còpies de seguretat de les seeds</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Moneder robust per a l’autocustòdia a llarg termini.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Seleccioneu una plantilla de la llista.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>Autocustòdia amb 1 signant i 1 còpia de seguretat de la seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Emmagatzematge en fred simple</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Emmagatzematge en fred simple (1 Signant)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Deseu la còpia de seguretat de la seed separada del dispositiu per evitar un punt únic de fallada.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Emmagatzematge super robust</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Emmagatzematge super robust (Multisignatura 3-de-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>El full de recuperació amb el descriptor de la cartera s’ha de desar amb cada còpia de seguretat de la seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Total</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nom de la cartera</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>signant</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>signants</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5364,23 +6097,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Prova d'autoenviament</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Còpia de seguretat de la seed</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Compra signadors de maquinari</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Genera seed</translation>
+			<source>Choose template</source>
+			<translation>Tria una plantilla</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5389,13 +6107,13 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Etiqueta els signadors de maquinari</translation>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Col·loca en llocs segurs</translation>
+			<source>Previous Step</source>
+			<translation>Pas anterior</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5406,6 +6124,16 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>Registra multisig als signadors</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>Reviseu la transacció i creeu-la quan estigueu a punt.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Protegeix les teves claus</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5429,17 +6157,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Xat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>La transacció de prova  '{tx_text}'  s'ha completat correctament. Si us plau, continueu amb la prova d'autoenviament: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>Signant {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5448,8 +6167,18 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Valida còpia de seguretat</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>Transacció creada. Signeu-la i difoneu-la a continuació, i després espereu que la cartera la reconegui.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>Transacció reconeguda per la cartera.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>S’està esperant que la cartera reconegui la transacció difosa.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5582,6 +6311,11 @@ País: {country}</translation>
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>Finalitza i ves al Tauler de control</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6998,6 +7732,11 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Accés complet de lectura i escriptura a aquesta cartera i categories.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Accés complet de lectura i escriptura a aquesta cartera, incloent saldos, transaccions i UTXO.</translation>
 		</message>
@@ -7013,8 +7752,18 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Subscriviu-vos als esdeveniments d’activitat de la cartera, com ara noves transaccions o sincronització de la blockchain.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>Subscriviu-vos als esdeveniments d’activitat de la cartera, com ara noves transaccions o sincronització de la cadena de blocs. També permet obrir transaccions i PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Descripció desconeguda</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7132,25 +7881,162 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>L’accés al pla Business està actiu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Cancel·la</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Continua</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>No s’ha pogut determinar l’estat actual de la subscripció.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>Estat actual: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Adreça de correu electrònic per a recordatoris de subscripció i avisos de renovació:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>La compra de la prova gratuïta no ha retornat cap càrrega útil de gestió.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>La compra de la prova gratuïta no ha retornat cap sessió.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>La compra de la prova gratuïta requereix un descriptor de cartera.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Última comprovació: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Últim error d’actualització: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Gestiona la subscripció</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL de gestió desada.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Encara no s’ha activat cap subscripció.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Obre la subscripció</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Introduïu una adreça de correu electrònic vàlida.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Actualitza l’estat de la subscripció</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Recordatoris de subscripció</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Subscripció necessària</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>No s’ha pogut actualitzar l’estat de la subscripció.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>L’actualització de l’estat de la subscripció no ha retornat cap resultat.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>Ha fallat l’activació de la prova gratuïta.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>L’activació de la prova gratuïta ha superat el temps d’espera.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Aquest connector està actualment inactiu. Amplieu la subscripció abans de tornar-lo a activar.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>S’està esperant que s’activi la prova gratuïta...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Torneu-ho a provar més tard. Si encara no funciona, contacteu amb {email}.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Introduïu el codi d’aparellament de 6 dígits que es mostra al Trezor:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Introduïu el PIN utilitzant la disposició del teclat del Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Aparella el Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Desbloqueja el Trezor</translation>
 		</message>
 	</context>
 	<context>
