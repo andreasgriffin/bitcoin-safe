@@ -1,5 +1,7 @@
 code_name,light_mode_color,dark_mode_color
 currentColor,WindowText,WindowText
+warningColor,#b66a00,#ffbe5c
+ErrorColor,#c83a31,#ff8a80
 textStickerColor,#000000,#FFFFFF
 greenColor,#00B800,#00B800
 linkColor,#3084bb,#3084bb

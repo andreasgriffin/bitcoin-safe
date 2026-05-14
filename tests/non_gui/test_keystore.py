@@ -35,6 +35,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.keystore import KeyStore, sorted_keystores
 from bitcoin_safe.wallet_util import WalletDifferenceType
 
@@ -106,16 +107,6 @@ def test_is_equal() -> None:
     keystore2.key_origin = keystore2.format_key_origin(keystore2.key_origin)
     assert keystore.is_equal(keystore2)
 
-    # label
-    # Labels are metadata and should affect equality.
-    keystore2 = create_test_seed_keystores(
-        signers=1,
-        key_origins=[f"m/{i}h/1h/0h/2h" for i in range(5)],
-        network=network,
-    )[0]
-    keystore2.label = "a"
-    assert not keystore.is_equal(keystore2)
-
     # network
     # Network differences should break equality.
     keystore2 = create_test_seed_keystores(
@@ -170,18 +161,60 @@ def test_get_differences_address_fields() -> None:
     assert diffs[0].type == WalletDifferenceType.ImpactOnAddresses
 
 
-def test_get_differences_metadata_fields() -> None:
-    """Test get differences metadata fields."""
+def test_get_differences_description_field() -> None:
+    """Test description changes are metadata-only."""
     keystore = create_test_seed_keystores(
         signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
     )[0]
     keystore2 = keystore.clone()
-    keystore2.label = "new"
-    # Label changes should not require rescan.
+    keystore2.description = "new"
+    # Description changes should not require rescan.
     diffs = keystore.get_differences(keystore2)
     assert len(diffs) == 1
-    assert diffs[0].key == "label"
+    assert diffs[0].key == "description"
     assert diffs[0].type == WalletDifferenceType.NoRescan
+
+
+def test_get_differences_hardware_signer_id() -> None:
+    """Test hardware signer id differences are metadata-only."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    keystore2 = keystore.clone()
+    keystore2.hardware_signer_id = HardwareSigners.krux.id
+    diffs = keystore.get_differences(keystore2)
+    assert len(diffs) == 1
+    assert diffs[0].key == "hardware_signer_id"
+    assert diffs[0].type == WalletDifferenceType.NoRescan
+
+
+def test_hardware_signer_label_uses_device_name_when_known() -> None:
+    """Test concrete hardware signers use their display name."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    keystore.hardware_signer_id = HardwareSigners.passport.id
+    assert keystore.hardware_signer_label(fallback_name="Signer 1") == HardwareSigners.passport.display_name
+
+
+def test_hardware_signer_label_uses_fallback_for_generic_signer() -> None:
+    """Test generic signers use the provided fallback label."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    assert keystore.hardware_signer_label(fallback_name="Signer 1") == "Signer 1"
+
+
+def test_technical_hardware_signer_label_appends_fingerprint() -> None:
+    """Test the technical label includes the fingerprint when available."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    keystore.hardware_signer_id = HardwareSigners.passport.id
+    assert (
+        keystore.technical_hardware_signer_label()
+        == f"{HardwareSigners.passport.display_name} - {keystore.fingerprint}"
+    )
 
 
 def test_is_seed_valid() -> None:
@@ -230,6 +263,62 @@ def test_from_other_keystore_copies_attributes() -> None:
     assert ks1.is_equal(ks2)
 
 
+def test_from_dump_migration_uses_signer_name_from_description() -> None:
+    """Test legacy migration infers by signer name first."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    dump = keystore.dump()
+    dump["VERSION"] = "0.0.2"
+    dump["description"] = "passport kept in the safe"
+    del dump["hardware_signer_id"]
+
+    restored = KeyStore.from_dump(dump)
+    assert restored.hardware_signer_id == HardwareSigners.passport.id
+
+
+def test_from_dump_migration_uses_display_name_from_description() -> None:
+    """Test legacy migration infers by display name."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    dump = keystore.dump()
+    dump["VERSION"] = "0.0.2"
+    dump["description"] = "Krux App at home"
+    del dump["hardware_signer_id"]
+
+    restored = KeyStore.from_dump(dump)
+    assert restored.hardware_signer_id == HardwareSigners.krux.id
+
+
+def test_from_dump_migration_falls_back_to_generic_for_unknown_description() -> None:
+    """Test legacy migration falls back to the generic signer."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    dump = keystore.dump()
+    dump["VERSION"] = "0.0.2"
+    dump["description"] = "device in drawer"
+    del dump["hardware_signer_id"]
+
+    restored = KeyStore.from_dump(dump)
+    assert restored.hardware_signer_id == HardwareSigners.generic.id
+
+
+def test_from_dump_migration_falls_back_to_generic_for_ambiguous_brand() -> None:
+    """Test legacy migration does not guess across multiple models in a brand."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+    dump = keystore.dump()
+    dump["VERSION"] = "0.0.2"
+    dump["description"] = "Coinkite signer"
+    del dump["hardware_signer_id"]
+
+    restored = KeyStore.from_dump(dump)
+    assert restored.hardware_signer_id == HardwareSigners.generic.id
+
+
 def test_is_identical_to_simple_pubkey_provider() -> None:
     """Test is identical to simple pubkey provider."""
     ks = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[0]
@@ -251,10 +340,8 @@ def test_from_signer_info_defaults() -> None:
     ks = KeyStore.from_signer_info(
         signer,
         network=base.network,
-        default_label="lbl",
         default_derivation_path="/<0;1>/*",
     )
-    assert ks.label == "lbl"
     assert ks.derivation_path == "/<0;1>/*"
 
 
@@ -273,12 +360,25 @@ def test_from_signer_info_overrides() -> None:
     ks = KeyStore.from_signer_info(
         signer,
         network=base.network,
-        default_label="lbl",
         default_derivation_path="/<0;1>/*",
     )
-    # Signer-supplied name/path should override defaults.
-    assert ks.label == "custom"
+    # Signer-supplied derivation path should override the default.
     assert ks.derivation_path == "/1/*"
+    assert ks.hardware_signer_id == HardwareSigners.generic.id
+
+
+def test_from_signer_info_infers_hardware_signer_id_from_name() -> None:
+    """Test signer names are used to infer the hardware signer id when possible."""
+    base = create_test_seed_keystores(signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST)[
+        0
+    ]
+    signer = SignerInfo(base.fingerprint, base.key_origin, base.xpub, name="Passport")
+    ks = KeyStore.from_signer_info(
+        signer,
+        network=base.network,
+        default_derivation_path="/<0;1>/*",
+    )
+    assert ks.hardware_signer_id == HardwareSigners.passport.id
 
 
 def test_sorted_keystores_orders_by_xpub() -> None:

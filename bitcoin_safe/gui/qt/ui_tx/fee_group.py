@@ -42,7 +42,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import (
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGroupBox, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
@@ -255,7 +255,8 @@ class FeeGroup(QObject):
             tx_status=tx_status,
             wallet_functions=wallet_functions,
         )
-        self.groupBox_Fee_layout.addWidget(self.mempool_buttons, alignment=Qt.AlignmentFlag.AlignHCenter)
+        self.mempool_buttons.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        self.groupBox_Fee_layout.addWidget(self.mempool_buttons)
 
         self.form_widget = QWidget()
         self.form = GridFormLayout(self.form_widget)

@@ -44,7 +44,7 @@ from bitcoin_safe.gui.qt.export_data import (
     QrToolButton,
     SyncChatToolButton,
 )
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.signer_ui import SignerUI
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.signer import (

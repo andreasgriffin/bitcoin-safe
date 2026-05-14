@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>প্লাগইন উৎস যোগ করুন</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer টোকেন</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>প্রদর্শন নাম</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>ম্যানিফেস্ট URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII-armored পাবলিক কী এখানে পেস্ট করুন</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>পিন করা পাবলিক কী</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>ইনভয়েসের মেয়াদ শেষ হওয়ার পরে একটি browser callback এসেছে। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>একটি পরিমাণ নির্বাচন করুন এবং একটি donation invoice তৈরি করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>আপনার ব্রাউজারে পেমেন্ট সম্পন্ন করুন। কোনো সমস্যা হলে, অনুগ্রহ করে আমাদের সাথে যোগাযোগ করতে দ্বিধা করবেন না: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ইনভয়েস তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>আপনার browser স্বয়ংক্রিয়ভাবে খোলা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>স্থানীয় callback server চালু করা যায়নি। স্বয়ংক্রিয় নিশ্চিতকরণ ছাড়া আপনার browser-এ invoice খোলা হচ্ছে।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>ইনভয়েস তৈরি করুন</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>ইনভয়েস প্রস্তুত। আপনার browser-এ পেমেন্ট সম্পন্ন করুন। স্বয়ংক্রিয় নিশ্চিতকরণ নাও থাকতে পারে।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>ইনভয়েস সেবা একটি ত্রুটি ফিরিয়ে দিয়েছে ({code})।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>ইনভয়েসের সময়সীমা শেষ হওয়ার আগে কোনো browser callback পাওয়া যায়নি। অনুদানটি আবার চেষ্টা করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>ইনভয়েসের সময়সীমা শেষ হওয়ার আগে কোনো browser callback পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>browser callback-এর মাধ্যমে পেমেন্ট নিশ্চিত হয়েছে। ধন্যবাদ!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>অনুগ্রহ করে একটি পরিমাণ নির্বাচন করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>ইনভয়েস অনুরোধ করা হচ্ছে...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>ইনভয়েস অনুরোধ করা হচ্ছে... একটি browser খুলবে এবং Bitcoin Safe স্থানীয়ভাবে callback-এর জন্য অপেক্ষা করবে।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>donation server-এ পৌঁছানো যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>ওয়ালেট {wallet_id} এর সিঙ্ক কী:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>{number} শব্দের সিডটি মিলানো প্রিন্ট করা pdf-এর উপর লাগান।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>{number} শব্দের সিডটি প্রিন্ট করা pdf-এর উপর লাগান।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>দয়া করে আগের ধাপগুলো সম্পন্ন করুন।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>রিকভারি শীট প্রিন্ট করুন</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>pdf প্রিন্ট করুন (এতে ওয়ালেট ডেসক্রিপ্টরও রয়েছে)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>সক্রিয় করুন</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>প্লাগইন খুলুন</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>সরবরাহকারী: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>বিজনেস প্ল্যান</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>বিজনেস প্ল্যান অ্যাক্সেস সক্রিয়।</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>একটি সাবস্ক্রিপশনের মাধ্যমে সব পেইড প্লাগইন আনলক করুন এবং নির্ধারিত-পেমেন্ট সার্ভিস ফি সরিয়ে দিন।</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>ব্লক এক্সপ্লোরারে খুলুন</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>অন্তর্ভুক্ত ফোল্ডার খুলুন</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number} টি hardware signer কিনুন                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe সব প্রধান hardware signer সমর্থন করে: &lt;a href="{url}"&gt;পূর্ণ তালিকা দেখুন&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -899,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>অনুগ্রহ করে প্রথমে একটি Multisignature ওয়ালেট নির্বাচন করুন</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>প্রয়োজনীয় সাইনার</translation>
 		</message>
@@ -916,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>ওয়ালেট বৈশিষ্ট্য</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>প্রথমে ফ্রি ট্রায়াল শুরু করুন, তারপর এখানে সাবস্ক্রিপশন পরিচালনা বা রিফ্রেশ করুন।</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1032,33 +1139,153 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>নিরাপদ স্থানগুলি সাবধানে নির্বাচন করুন, কারণ আপনার মাল্টিসিগ-ওয়ালেট থেকে খরচ করতে {m} এর মধ্যে {n} এ যেতে হবে।</translation>
+			<source>1. Print backup sheets</source>
+			<translation>ওয়ালেটের নাম</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>প্রতিটি সিড ব্যাকআপ এবং হার্ডওয়্যার সাইনার একটি নিরাপদ স্থানে রাখুন, যেমন:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. ব্যাকআপ শিট প্রিন্ট করুন</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>সিড ব্যাকআপ {j} এবং হার্ডওয়্যার সাইনার {j} অবস্থান {j} এ থাকা উচিত</translation>
+			<source>Backup sheet</source>
+			<translation>2. হ্যাঁ, আমি প্রিন্টআউটে seed শব্দ সংযুক্ত করেছি</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>হার্ডওয়্যার সাইনারটি নিরাপদ স্থানে সংরক্ষণ করুন।</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>ব্যাকআপ শিট</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>সিড ব্যাকআপটি &lt;b&gt;খুব&lt;/b&gt; নিরাপদ স্থানে সংরক্ষণ করুন (যেমন ভল্ট)।</translation>
+			<source>Backup sheet {number}</source>
+			<translation>ব্যাকআপ শিট {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>সিড ব্যাকআপ (24 শব্দ) তহবিলের উপর সম্পূর্ণ নিয়ন্ত্রণ দেয়।</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>২টি পৃথক স্থানে বিতরণ করুন</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>{n}টি পৃথক স্থানে বিতরণ করুন</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>একাধিক অবস্থান একই জায়গায় সংরক্ষণ করবেন না।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>একই জায়গায় একাধিক স্থান সংরক্ষণ করবেন না।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>সাইনিং ডিভাইস এবং seed শব্দসহ ব্যাকআপ শিট একই জায়গায় সংরক্ষণ করবেন না।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>প্রতিটি স্থান অফলাইন এবং শারীরিকভাবে নিরাপদ হতে হবে।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>গুরুত্বপূর্ণ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>স্থান</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>স্থান 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>স্থান 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>দয়া করে আগের ধাপগুলো সম্পন্ন করুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>এই সাইনারে seed শব্দ দেখার নির্দেশনা খুলুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>ব্যাকআপ শিট প্রিন্ট করুন (প্রয়োজনীয়)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>PDF প্রিন্ট করুন এবং প্রতিটি ব্যাকআপ শিটে seed শব্দ সংযুক্ত করুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>ব্যাকআপ শিট প্রিন্ট করুন এবং সবকিছু আলাদা, নিরাপদ স্থানে সংরক্ষণ করুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>আপনার ব্যাকআপ ও সাইনার নিরাপদ স্থানে রাখুন</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>শিট {number} / {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>স্বাক্ষরকারী ডিভাইস</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>সাইনার ডিভাইস</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>প্রতিটি সাইনারকে তার ব্যাকআপ শিট এবং seed শব্দসহ একই স্থানে সংরক্ষণ করুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>সাইনিং ডিভাইস এবং seed শব্দসহ ব্যাকআপ শিট আলাদা নিরাপদ স্থানে সংরক্ষণ করুন।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>ভল্ট {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seed শব্দ দেখুন</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>seed শব্দ দেখুন</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>আপনার ওয়ালেট থেকে ব্যয় করতে আপনাকে {n}টি অবস্থানের মধ্যে {m}টিতে যেতে হবে।</translation>
 		</message>
 	</context>
 	<context>
@@ -1099,6 +1326,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>বার্তা (ঐচ্ছিক)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>বার্তা (ঐচ্ছিক)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1185,6 +1422,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>পূর্ণ (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safe-এর জন্য ধন্যবাদ!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>প্লাগইন মুছুন</translation>
 		</message>
 	</context>
 	<context>
@@ -1342,43 +1593,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>পুনরায় চেষ্টা করুন</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>হ্যাঁ, আমি ইতিহাসে লেনদেনটি দেখতে পাচ্ছি</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>দয়া করে নিশ্চিত করুন যে অন্য কোনো প্রোগ্রাম হার্ডওয়্যার সাইনার ব্যবহার করছে না</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>দয়া করে হার্ডওয়্যার সাইনারের নাম (স্টিকার লেবেল) লিখুন</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>স্টিকার লেবেল</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>সফল! অনুগ্রহ করে সমস্ত হার্ডওয়্যার সাইনার দিয়ে এই ধাপটি সম্পূর্ণ করুন এবং তারপর পরবর্তী ক্লিক করুন।</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>সেটআপ সম্পূর্ণ হয়নি। অনুগ্রহ করে পুনরাবৃত্তি করুন।</translation>
 		</message>
 	</context>
 	<context>
@@ -1599,11 +1813,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>পরবর্তী স্বাক্ষরকারী</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>পরবর্তী ধাপ</translation>
 		</message>
@@ -1611,11 +1820,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>পূর্ববর্তী স্বাক্ষরকারী</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1641,6 +1845,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>প্লাগইন মুছুন</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) ওয়ালেটকে আপনার ঠিকানা গোপন রেখে প্রাসঙ্গিক ট্রানজ্যাকশন খুঁজে পেতে সাহায্য করে।</translation>
 		</message>
@@ -1651,13 +1860,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>প্রথম সিঙ্কের সময়, Bitcoin Safe একাধিক Bitcoin নোড থেকে কমপ্যাক্ট ব্লক সারাংশ সংগ্রহ করে। এটি ব্লক ডেটা ডাউনলোডের একটি ব্যক্তিগত পদ্ধতি।</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>অতিবাহিত {elapsed} | আনুমানিক বাকি {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>অতিবাহিত {elapsed} | আনুমানিক বাকি {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe গোপনীয়তার জন্য একাধিক নোড থেকে ব্লক সারাংশ ডাউনলোড করে। এই প্রাথমিক সিঙ্কের পরে, আপডেট দ্রুত হবে। আপনার নিজস্ব Electrum সার্ভার থাকলে বা অপেক্ষা করতে না চাইলে, নেটওয়ার্ক সেটিংসে একটি পাবলিক Electrum সার্ভারে সংযোগ করুন।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>নেটওয়ার্ক সেটিংস</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1769,13 +1983,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>উন্নত</translation>
+			<source>Add New Signer</source>
+			<translation>নতুন সাইনার যোগ করুন</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>বিবরণ</translation>
+			<source>Change device type</source>
+			<translation>ডিভাইসের ধরন পরিবর্তন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>সংযোগ করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>ডেরিভেশন পাথ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>ডিভাইস নির্দেশাবলী</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1794,10 +2023,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>স্বাক্ষরকারী ডিভাইসের নাম: ......
-স্বাক্ষরকারী ডিভাইসের অবস্থান: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>QR, USB, অথবা টেক্সট/ফাইল ইমপোর্ট দিয়ে সাইনার ডেটা ইমপোর্ট করুন।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;সমর্থিত হার্ডওয়্যার সাইনার&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1811,13 +2048,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>অনুগ্রহ করে নিশ্চিত করুন যে অন্য কোনো প্রোগ্রাম হার্ডওয়্যার signer-এ প্রবেশ করছে না</translation>
+			<source>Open the signer guide</source>
+			<translation>সাইনার গাইড খুলুন</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>অনুগ্রহ করে একটি বৈধ key origin লিখুন।</translation>
+			<source>Personal notes:</source>
+			<translation>ব্যক্তিগত নোট:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>অনুগ্রহ করে নিশ্চিত করুন যে অন্য কোনো প্রোগ্রাম হার্ডওয়্যার signer-এ প্রবেশ করছে না</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1841,8 +2083,43 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QR কোড</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>নিবন্ধন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>মাল্টিসিগ পুনরায় নিবন্ধন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>সিড</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>ব্র্যান্ড নির্বাচন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>মডেল নির্বাচন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>সাইনার ব্র্যান্ড নির্বাচন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>সাইনার মডেল নির্বাচন করুন</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1861,18 +2138,28 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>এই সাইনার সম্পর্কিত নোট, মেমো ইত্যাদি এখানে লিখুন...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub Origin</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} এখানে ব্যবহার করা যাবে না।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} এখানে ব্যবহার করা যাবে না।</translation>
+			<source>{device} instructions</source>
+			<translation>{device} নির্দেশাবলী</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1917,48 +2204,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>আপনার ইম্পোর্ট করা key origins {key_origins} ভিন্ন! অনুগ্রহ করে যাচাই করুন এটি আপনার ইচ্ছাকৃত ছিল কি না।</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>ব্যাকআপ গোপন সিঙ্ক কী:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>প্রতিটি কম্পিউটারে Sync &amp; Chat ট্যাবে বিশ্বস্ত কম্পিউটার নির্বাচন করুন।</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>সহযোগিতা ভিডিও</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>সক্রিয় করুন</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>address label এবং category-এর এনক্রিপ্টেড ক্লাউড ব্যাকআপ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>সমাপ্ত করুন</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>একাধিক কম্পিউটারের সিঙ্ক্রোনাইজেশন এবং চ্যাট</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>সিঙ্ক্রোনাইজেশন ভিডিও</translation>
 		</message>
 	</context>
 	<context>
@@ -2184,6 +2429,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;প্লাগইন</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;পূর্ববর্তী ওয়ালেট/ট্যাব</translation>
 		</message>
@@ -2261,6 +2511,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id} নামে একটি ওয়ালেট ইতিমধ্যেই আছে। অনুগ্রহ করে অন্য একটি নাম নির্বাচন করুন।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2369,6 +2624,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet-এ হট ওয়ালেট নিষ্ক্রিয় করা আছে। বাস্তব Bitcoin ব্যবহার না করেই Bitcoin Safe পরীক্ষা করতে আপনি Testnet-এ যেতে পারেন।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>খোলা রাখুন</translation>
 		</message>
@@ -2396,6 +2657,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>নতুন ট্যাব {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>এই নেটওয়ার্কের জন্য কোনো ডেমো ওয়ালেট উপলব্ধ নেই।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2451,6 +2717,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>আপনার Bitcoin ট্রানজ্যাকশন বা PSBT এখানে পেস্ট করুন অথবা একটি ফাইল ড্রপ করুন</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>অনুগ্রহ করে একটি wallet-এর নাম নির্বাচন করুন</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2630,6 +2901,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>ওয়ালেট {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>ওয়ালেটগুলো এখনও সিঙ্ক হচ্ছে এবং আপনি অ্যাপ বন্ধ করলে সিঙ্কিং আবার শুরু থেকে করতে হবে। আপনি কি এর বদলে ট্রেতে লুকাতে চান?</translation>
@@ -2658,11 +2934,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>হ্যাঁ, ট্রানজ্যাকশনের জন্য পূর্ণ স্ক্যান</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>নতুন</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2790,6 +3061,43 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (স্থানীয় সময়)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>তৈরি করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>নতুন ওয়ালেট তৈরি করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>বাস্তব bitcoin-এ যাওয়ার আগে নিরাপদ পরিবেশে অনুশীলন করুন।&lt;br&gt;• একটি ডেমো ওয়ালেট দিয়ে অ্যাপটি ঘুরে দেখুন&lt;br&gt;• এমন টেস্ট কয়েন ব্যবহার করুন যার কোনো আর্থিক মূল্য নেই&lt;br&gt;• শেখা, পরীক্ষা করা এবং নিরাপদে ভুল করার জন্য আদর্শ&lt;br&gt;&lt;i&gt;Signet নেটওয়ার্ক&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>নিরাপদ প্লেগ্রাউন্ড</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>নিরাপদ ওয়ালেট</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>আপনি যে Bitcoin নেটওয়ার্ক ব্যবহার করতে চান সেটি নির্বাচন করুন</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>বাস্তব তহবিলের জন্য প্রস্তুত হলে বাস্তব Bitcoin নেটওয়ার্ক ব্যবহার করুন।&lt;br&gt;• বাস্তব bitcoin পাঠান এবং গ্রহণ করুন&lt;br&gt;• আপনার দীর্ঘমেয়াদি ওয়ালেট সেটআপের জন্য সেরা&lt;br&gt;• লেনদেনের বাস্তব মূল্য এবং বাস্তব পরিণতি রয়েছে&lt;br&gt;&lt;i&gt;Mainnet নেটওয়ার্ক&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2960,8 +3268,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>এই proxy Sync&amp;Chat ফিচারে প্রযোজ্য নয়!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>প্রক্সি Sync&amp;Chat প্লাগইনে এবং সাবস্ক্রিপশন কেনার সময় প্রযোজ্য নয়!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2985,58 +3294,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>সিড ব্যাকআপ সংরক্ষণের জন্য ১টি নিরাপদ স্থান (কাগজ বা স্টিলের ওপর) প্রয়োজন</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>আপনার ফান্ডে প্রবেশ করতে ১টি সিড (২৪টি গোপন শব্দ) হলেই যথেষ্ট</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>১টি signing device</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>৩টির মধ্যে ২টি Multi-Signature Wal</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>৩টি নিরাপদ স্থান প্রয়োজন (প্রতিটিতে ১টি সিড ব্যাকআপ + wallet descriptor থাকবে)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>৩টি signing device</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>বড় অঙ্কের ফান্ডের জন্য সেরা</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>মাঝারি অঙ্কের ফান্ডের জন্য সেরা</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Multi-Signature নির্বাচন করুন</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Single Signature নির্বাচন করুন</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>অসুবিধাসমূহ:</translation>
+			<source>Connect Device(s)</source>
+			<translation>ডিভাইস সংযুক্ত করুন</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3045,49 +3304,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>কাস্টম ওয়ালেট তৈরি বা ইম্পোর্ট করুন</translation>
+			<source>Custom / Recovery</source>
+			<translation>কাস্টম / পুনরুদ্ধার</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>কাস্টম বা বিদ্যমান ওয়ালেট ইম্পোর্ট করুন</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>আপনার স্ব-হেফাজত ওয়ালেটের জন্য নির্দেশিত সেটআপ।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>আপনার প্রয়োজন অনুযায়ী ওয়ালেট কাস্টমাইজ করুন</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>হট সিঙ্গেল সিগনেচার ওয়ালেট</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>যদি ১টি সিড হারিয়ে যায় বা চুরি হয়, তবে বাকি ২টি সিড + wallet descriptor (QR-code) দিয়ে সব ফান্ড নতুন ওয়ালেটে স্থানান্তর করা যাবে</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>সমর্থিত হার্ডওয়্যার ওয়ালেট এবং স্বাক্ষরকারীদের তালিকা খুলুন।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>যদি প্রতারণার মাধ্যমে আপনি হ্যাকারদের আপনার সিড দিয়ে দেন, আপনার Bitcoin সঙ্গে সঙ্গে চুরি হয়ে যাবে</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>নিরাপদে অন্বেষণ করার জন্য কিছু টেস্ট কয়েন থাকা একটি বিদ্যমান ওয়ালেট নিয়ে পরীক্ষা করুন।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>রিকভারি ক্ষেত্রে অনলাইনে কম সহায়ক উপকরণ পাওয়া যায়</translation>
+			<source>Public Demo wallet</source>
+			<translation>পাবলিক ডেমো ওয়ালেট</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>সুবিধাসমূহ:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>তাৎক্ষণিক ব্যবহারের জন্য দ্রুত একটি ওয়ালেট তৈরি করুন, বিদ্যমান কোনো কী প্রয়োজন নেই।&lt;br&gt;&lt;small&gt;Mainnet-এ নিষ্ক্রিয় করা হয়েছে, কারণ ইন্টারনেট-সংযুক্ত কম্পিউটার অর্থের প্রতিনিধিত্বকারী গোপনীয়তা নিরাপদে রাখার জন্য ডিজাইন করা নয়।&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Single Signature ওয়ালেট</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>তাৎক্ষণিক ব্যবহারের জন্য দ্রুত একটি ওয়ালেট তৈরি করুন, বিদ্যমান কোনো কী প্রয়োজন নেই।&lt;br&gt;&lt;small&gt;ইন্টারনেট-সংযুক্ত কম্পিউটারে কী তৈরি এবং সংরক্ষণ করা অনিরাপদ। সাধারণ-উদ্দেশ্যের কম্পিউটার অর্থের প্রতিনিধিত্বকারী গোপনীয়তা রাখার জন্য ডিজাইন করা নয়।&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>ওয়ালেট পুনরুদ্ধার করতে wallet descriptor (QR-code) প্রয়োজন</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>হার্ডওয়্যার ওয়ালেট(গুলি) বা একটি descriptor থেকে ওয়ালেট পুনরুদ্ধার করুন।</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>সমর্থিত স্বাক্ষরকারীরা</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ওয়ালেটের নাম</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3175,6 +3448,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>মাসিক</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>ফ্রি ট্রায়াল শুরু করুন</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>সাবস্ক্রিপশন</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>বার্ষিক</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>পরিচালনা করুন</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>স্থিতি রিফ্রেশ করুন</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>সাবস্ক্রিপশন:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3239,93 +3556,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>ইনভয়েসের মেয়াদ শেষ হওয়ার পরে একটি browser callback এসেছে। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+			<source>Update</source>
+			<translation>আপডেট</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>একটি পরিমাণ নির্বাচন করুন এবং একটি donation invoice তৈরি করুন।</translation>
+			<source>Update available: {update_target}</source>
+			<translation>আপডেট উপলব্ধ: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>আপনার browser-এ পেমেন্ট সম্পন্ন করুন। কোনো সমস্যা হলে নির্দ্বিধায় আমাদের সাথে যোগাযোগ করুন: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target}-এ আপডেট করুন</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>ইনভয়েস তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>আপনার browser স্বয়ংক্রিয়ভাবে খোলা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>স্থানীয় callback server চালু করা যায়নি। স্বয়ংক্রিয় নিশ্চিতকরণ ছাড়া আপনার browser-এ invoice খোলা হচ্ছে।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>ইনভয়েস তৈরি করুন</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>ইনভয়েস প্রস্তুত। আপনার browser-এ পেমেন্ট সম্পন্ন করুন। স্বয়ংক্রিয় নিশ্চিতকরণ নাও থাকতে পারে।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>ইনভয়েস সেবা একটি ত্রুটি ফিরিয়ে দিয়েছে ({code})।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>ইনভয়েসের সময়সীমা শেষ হওয়ার আগে কোনো browser callback পাওয়া যায়নি। অনুদানটি আবার চেষ্টা করুন।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>ইনভয়েসের সময়সীমা শেষ হওয়ার আগে কোনো browser callback পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>browser callback-এর মাধ্যমে পেমেন্ট নিশ্চিত হয়েছে। ধন্যবাদ!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>অনুগ্রহ করে একটি donation amount এবং একটি currency নির্বাচন করুন।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>ইনভয়েস অনুরোধ করা হচ্ছে...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>ইনভয়েস অনুরোধ করা হচ্ছে... একটি browser খুলবে এবং Bitcoin Safe স্থানীয়ভাবে callback-এর জন্য অপেক্ষা করবে।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>donation server-এ পৌঁছানো যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</translation>
+			<source>Version {version}</source>
+			<translation>সংস্করণ {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>সক্রিয়/নিষ্ক্রিয় করুন</translation>
+			<source>Explore plugins</source>
+			<translation>প্লাগইন দেখুন</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>এই ওয়ালেটের জন্য প্লাগইন উপলব্ধ নয়, তাই এখানে কনফিগার করার কিছু নেই।</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>এই ওয়ালেটের জন্য উপলব্ধ প্লাগইনগুলি পর্যালোচনা করুন। আপনি এখনই আপনার পছন্দেরগুলো সক্ষম করতে পারেন এবং পরে যেকোনো সময় প্লাগইন ট্যাবে ফিরে আসতে পারেন।</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>ঐচ্ছিক ওয়ালেট ইন্টিগ্রেশন সক্রিয় ও পরিচালনা করুন।</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>প্লাগইনসমূহ</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>বাতিল</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>মুছুন</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>ইনস্টল করা প্লাগইন মুছুন</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>ইনস্টল করা প্লাগইন {plugin} মুছবেন?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>মুছে ফেলার আগে প্লাগইন নিষ্ক্রিয় করুন।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Manifest URL এবং পিন করা পাবলিক কী প্রয়োজন।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>প্লাগইন অপারেশন ব্যর্থ হয়েছে।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>প্লাগইন উৎস {source_id} বিদ্যমান নেই।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>ইনস্টল করা প্লাগইনগুলো পুনরায় পরীক্ষা করা হয়েছে।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>ইনস্টল করা প্লাগইনগুলো পুনরায় পরীক্ষা করা হয়েছে। {count}টি প্লাগইন অবৈধ।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>প্লাগইন উৎস সরান</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>প্লাগইন উৎস {source} সরাবেন?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>এই প্লাগইনটি মুছে ফেলা যাবে না।</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>সব পেইড প্লাগইন এবং সাবস্ক্রিপশন-নিয়ন্ত্রিত সার্ভিস ফি-তে প্রযোজ্য।</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Business প্ল্যান</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>প্লাগইনসমূহ</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>উৎসসমূহ</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>{count}টি প্লাগইন ইনস্টল থাকা অবস্থায় সরানো যাবে না।</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>মুছুন</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>শেষ ত্রুটি: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>রিফ্রেশ</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>উৎসটি মুছে ফেলার আগে এই উৎস থেকে ইনস্টল করা প্লাগইনগুলো সরান।</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>উৎস ID: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3738,18 +4137,13 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>ব্যালান্স = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>প্রাপ্ত হয়েছে কি না পরীক্ষা করুন</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>পরবর্তী ধাপ</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>সম্পন্ন - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3758,29 +4152,49 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
+			<source>Receive Test</source>
+			<translation>Receive Test</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>এই wallet-এর ১টি address-এ &lt;b&gt;অল্প&lt;/b&gt; পরিমাণ ( {test_amount} এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি সত্যিই ফান্ড নিয়ন্ত্রণ করেন কি না জানতে, wallet থেকে খরচ করে পরীক্ষা করতে হবে। &lt;br&gt; তাই wallet-এ উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে wallet থেকে খরচ করে এবং সব signer পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;। &lt;br&gt; &lt;br&gt; &lt;b&gt;এখনই wallet-এ বড় অঙ্কের ফান্ড পাঠাবেন না। অনুগ্রহ করে আগে সব self-send test সম্পন্ন করুন!&lt;/b&gt;                    </translation>
+			<translation>এই ওয়ালেটের ১টি ঠিকানায় একটি &lt;b&gt;ছোট&lt;/b&gt; পরিমাণ ({test_amount}-এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে ব্যয় করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে ব্যয় করা এবং সব স্বাক্ষরকারী পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;। &lt;br&gt; &lt;br&gt; &lt;b&gt;এখনও ওয়ালেটে বড় অঙ্কের তহবিল পাঠাবেন না। অনুগ্রহ করে আগে সব self-send পরীক্ষা সম্পূর্ণ করুন!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>গ্রহণের নির্দেশনা</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>স্বীকৃত লেনদেন</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>সাম্প্রতিক খোলা ওয়ালেটসমূহ</translation>
+			<source>ALL WALLETS</source>
+			<translation>সব ওয়ালেট</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>সাম্প্রতিক ওয়ালেট</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>ফাইল এক্সপ্লোরারে দেখান</translation>
 		</message>
 	</context>
 	<context>
@@ -3925,38 +4339,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe-এ ওয়ালেট তথ্য ইম্পোর্ট করুন</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>পরবর্তী স্বাক্ষরকারী</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>পরবর্তী ধাপ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>পূর্ববর্তী স্বাক্ষরকারী</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>ধাপটি এড়িয়ে যান</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>হ্যাঁ, আমি {n} নম্বর hardware signer-এ multisig নিবন্ধন করেছি</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>প্রতিটি সাইনিং ডিভাইসে multisig ওয়ালেট নিবন্ধন করুন।</translation>
 		</message>
 	</context>
 	<context>
@@ -4000,6 +4384,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>কোনো ফাইল নির্বাচন করা হয়নি</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>ডেমো সাবস্ক্রিপশন প্লাগইন</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient ভিত্তিক উদাহরণ প্লাগইন। সাবস্ক্রিপশন-গেটেড সক্রিয়করণ এবং প্লাগইন-ম্যানেজার অ্যাকশন যাচাই করতে এটি ব্যবহার করুন।</translation>
 		</message>
 	</context>
 	<context>
@@ -4065,14 +4461,38 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>সম্পন্ন - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>এই কার্ডে লেনদেনটি তৈরি করুন।</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>মুলতুবি - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>নিজেকে পাঠানোর পরীক্ষা {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>নিচের লেনদেনটি সাইন করে ব্রডকাস্ট করুন।</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>spend test এড়িয়ে যাবেন?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>আমরা আপনার wallet থেকে আপনারই wallet-এর আরেকটি address-এ পাঠাচ্ছি (self-send)।&lt;br&gt;এতে signing flow অনুশীলন হয় এবং সব hardware signer সঠিকভাবে সেটআপ হয়েছে কি না নিশ্চিত হয়।</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>লেনদেনটি প্রস্তুত হওয়ার জন্য অপেক্ষা করা হচ্ছে।</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4289,20 +4709,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>{device_name}-এ "{sticker}"</translation>
+			<source>Available version: {version}</source>
+			<translation>উপলভ্য সংস্করণ: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>লেবেল প্রিন্ট করুন</translation>
+			<source>Install {version}</source>
+			<translation>ইনস্টল করুন {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>আপনার hardware-এ নিচের stickerগুলো লাগান:</translation>
+			<source>Installed version: {version}</source>
+			<translation>ইনস্টল করা সংস্করণ: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>ইনস্টল করা হয়েছে {installed}; আপডেট উপলভ্য: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>সর্বশেষ {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available} এ আপডেট করুন</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>সংস্করণ {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>সংস্করণ {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>প্লাগইন উৎস যোগ করুন...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>বন্ধ করুন</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>কনফিগার করা প্লাগইন উৎস</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>এখনও কোনো প্লাগইন উৎস যোগ করা হয়নি।</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>প্লাগইন উৎস</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>ইনস্টল করা প্লাগইন আবার পরীক্ষা করুন</translation>
 		</message>
 	</context>
 	<context>
@@ -4798,11 +5275,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>পরবর্তী ধাপ</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBF-এর জন্য প্রয়োজনীয় সব transaction detail উপলব্ধ নেই</translation>
 		</message>
@@ -4821,11 +5293,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>অনুগ্রহ করে আগে wallet-এর বিদ্যমান local transaction সরিয়ে ফেলুন।</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5100,18 +5567,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>হ্যাঁ, আমি নিশ্চিত সব {number} টি শব্দ সঠিক</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5337,6 +5792,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>১ জন সাইনকারী</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>২-এর-৩ মাল্টি সিগনেচার</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>৩-এর-৫ মাল্টি সিগনেচার</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>১টি সাইনিং ডিভাইস এবং তার ব্যাকআপ seed হারানো সহ্য করতে পারে</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>২টি সাইনিং ডিভাইস এবং তাদের ব্যাকআপ seeds হারানো সহ্য করতে পারে</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>একটি ওয়ালেট টেমপ্লেট বেছে নিন</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>অসুবিধা</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>চালিয়ে যান</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>উচ্চ জটিলতা</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>যদি সাইনিং ডিভাইস এবং seed ব্যাকআপ হারিয়ে যায়, তবে তহবিল হারিয়ে যাবে</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>দীর্ঘমেয়াদি কোল্ড স্টোরেজ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>দীর্ঘমেয়াদি কোল্ড স্টোরেজ (২-এর-৩ মাল্টি সিগনেচার)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>কম জটিলতা</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>মাঝারি জটিলতা</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>অনুগ্রহ করে একটি wallet-এর নাম নির্বাচন করুন</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>পূর্ববর্তী ধাপ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>সুবিধা</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>রিকভারি</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>প্রয়োজনীয়</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>seed ব্যাকআপ সংরক্ষণের জন্য অ্যাক্সেস-নিয়ন্ত্রিত ১টি নিরাপদ স্থান প্রয়োজন</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>seed ব্যাকআপ সংরক্ষণের জন্য অ্যাক্সেস-নিয়ন্ত্রিত ৩টি নিরাপদ স্থান প্রয়োজন</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>seed ব্যাকআপ সংরক্ষণের জন্য অ্যাক্সেস-নিয়ন্ত্রিত ৫টি নিরাপদ স্থান প্রয়োজন</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>দীর্ঘমেয়াদি স্ব-হেফাজতের জন্য শক্তিশালী ওয়ালেট।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>তালিকা থেকে একটি টেমপ্লেট নির্বাচন করুন।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>১ জন স্বাক্ষরকারী এবং ১টি seed ব্যাকআপসহ স্ব-হেফাজত।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>সহজ কোল্ড স্টোরেজ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>সহজ কোল্ড স্টোরেজ (১ জন স্বাক্ষরকারী)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>একক ব্যর্থতার ঝুঁকি এড়াতে seed ব্যাকআপটি ডিভাইস থেকে আলাদাভাবে সংরক্ষণ করুন।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>অত্যন্ত মজবুত স্টোরেজ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>অত্যন্ত মজবুত স্টোরেজ (৩-of-৫ মাল্টি সিগনেচার)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>ওয়ালেট ডিসক্রিপ্টরসহ রিকভারি শিটটি প্রতিটি seed ব্যাকআপের সঙ্গে সংরক্ষণ করা উচিত।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>মোট</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ওয়ালেটের নাম</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>স্বাক্ষরকারী</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>স্বাক্ষরকারীরা</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5344,23 +5976,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>সব Self-Send test সফলভাবে সম্পন্ন হয়েছে।</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Backup Seed</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>hardware signer কিনুন</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Seed তৈরি করুন</translation>
+			<source>Choose template</source>
+			<translation>টেমপ্লেট নির্বাচন করুন</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5369,8 +5986,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>hardware signer-গুলোতে label লাগান</translation>
+			<source>Plugins</source>
+			<translation>প্লাগইনসমূহ</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>পূর্ববর্তী ধাপ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5386,6 +6008,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>signer-গুলোতে multisig নিবন্ধন করুন</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>লেনদেনটি পর্যালোচনা করুন এবং প্রস্তুত হলে তৈরি করুন।</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5409,16 +6036,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>test transaction '{tx_text}' সফলভাবে সম্পন্ন হয়েছে। অনুগ্রহ করে এখন self-send test '{next_text}' সম্পন্ন করুন</translation>
+			<source>Signer {index}</source>
+			<translation>স্বাক্ষরকারী {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5427,8 +6046,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Backup যাচাই করুন</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>লেনদেন তৈরি হয়েছে। নিচে স্বাক্ষর করে সম্প্রচার করুন, তারপর ওয়ালেটের স্বীকৃতির জন্য অপেক্ষা করুন।</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>লেনদেনটি ওয়ালেট দ্বারা স্বীকৃত হয়েছে।</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>সম্প্রচারিত লেনদেনটি ওয়ালেট স্বীকৃতি দেওয়ার জন্য অপেক্ষা করা হচ্ছে।</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5561,6 +6190,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>সমাপ্ত করুন</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6972,6 +7606,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>এই ওয়ালেট এবং ক্যাটাগরিগুলিতে পূর্ণ পড়া ও লেখার অ্যাক্সেস।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>এই wallet-এর পূর্ণ read এবং write access, যার মধ্যে balance, transaction, এবং UTXO অন্তর্ভুক্ত।</translation>
 		</message>
@@ -6987,8 +7626,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>নতুন লেনদেন বা ব্লকচেইন সিঙ্কের মতো ওয়ালেট কার্যকলাপের ইভেন্টে সাবস্ক্রাইব করুন।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>wallet activity event-এ subscribe করুন, যেমন নতুন transaction বা blockchain sync। এছাড়াও transaction এবং PSBT খোলার সুবিধা সক্রিয় করে।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>অজানা বিবরণ</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7106,25 +7755,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Business প্ল্যান অ্যাক্সেস সক্রিয়।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>বাতিল</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>চালিয়ে যান</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>বর্তমান সাবস্ক্রিপশন অবস্থা নির্ধারণ করা যায়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>বর্তমান অবস্থা: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>সাবস্ক্রিপশন রিমাইন্ডার এবং নবায়ন বিজ্ঞপ্তির জন্য ইমেল ঠিকানা:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>ফ্রি-ট্রায়াল ক্রয় কোনো ব্যবস্থাপনা payload ফেরত দেয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>ফ্রি-ট্রায়াল ক্রয় কোনো সেশন ফেরত দেয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>ফ্রি-ট্রায়াল ক্রয়ের জন্য একটি ওয়ালেট ডিসক্রিপ্টর প্রয়োজন।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>সর্বশেষ পরীক্ষা: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>সর্বশেষ রিফ্রেশ ত্রুটি: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>সাবস্ক্রিপশন পরিচালনা করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>ব্যবস্থাপনা URL সংরক্ষিত হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>এখনও কোনো সাবস্ক্রিপশন সক্রিয় করা হয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>সাবস্ক্রিপশন খুলুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>অনুগ্রহ করে একটি বৈধ ইমেল ঠিকানা লিখুন।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>সাবস্ক্রিপশন অবস্থা রিফ্রেশ করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>সাবস্ক্রিপশন রিমাইন্ডার</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>সাবস্ক্রিপশন প্রয়োজন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>সাবস্ক্রিপশন অবস্থা রিফ্রেশ ব্যর্থ হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>সাবস্ক্রিপশন অবস্থা রিফ্রেশ কোনো ফলাফল ফেরত দেয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>ফ্রি ট্রায়াল সক্রিয়করণ ব্যর্থ হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>ফ্রি ট্রায়াল সক্রিয়করণের সময় শেষ হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>এই প্লাগইনটি বর্তমানে নিষ্ক্রিয়। আবার সক্রিয় করার আগে সাবস্ক্রিপশন বাড়ান।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>ফ্রি ট্রায়াল সক্রিয় হওয়ার জন্য অপেক্ষা করা হচ্ছে...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} অনুগ্রহ করে পরে আবার চেষ্টা করুন। তবুও কাজ না করলে {email}-এ যোগাযোগ করুন।</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezor-এ দেখানো ৬-সংখ্যার পেয়ারিং কোড লিখুন:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Trezor কীপ্যাড বিন্যাস ব্যবহার করে PIN লিখুন (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezor পেয়ার করুন</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor আনলক করুন</translation>
 		</message>
 	</context>
 	<context>

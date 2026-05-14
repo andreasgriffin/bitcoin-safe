@@ -29,9 +29,9 @@
 
 from __future__ import annotations
 
+import enum
 import logging
-from collections.abc import Callable, Iterable
-from functools import partial
+from collections.abc import Callable
 from typing import cast
 
 import bdkpython as bdk
@@ -43,24 +43,22 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QCloseEvent, QIcon
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
-    QDialogButtonBox,
-    QFormLayout,
+    QComboBox,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
     QSizePolicy,
-    QTabWidget,
     QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.analyzer_indicator import AnalyzerIndicator
 from bitcoin_safe.gui.qt.analyzers import (
     FingerprintAnalyzer,
     KeyOriginAnalyzer,
@@ -68,29 +66,34 @@ from bitcoin_safe.gui.qt.analyzers import (
     XpubAnalyzer,
 )
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
+from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
 from bitcoin_safe.gui.qt.custom_edits import (
+    AnalyzerLineEdit,
+    AnalyzerMessage,
     AnalyzerState,
     AnalyzerTextEdit,
+    BaseAnalyzer,
+    FlexibleHeightTextedit,
     QCompleterLineEdit,
 )
+from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 
+from ...execute_config import DEMO_MODE
+from ...hardware_signers import (
+    SUPPORTED_HARDWARE_SIGNERS_URL,
+    FeatureLevel,
+    HardwareSigner,
+    HardwareSigners,
+)
 from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
-from ...signer import AbstractSignatureImporter, SignatureImporterUSB
 from .block_change_signals import BlockChangesSignals
 from .dialog_import import ImportDialog
-from .util import (
-    Message,
-    MessageType,
-    add_to_buttonbox,
-    create_tool_button,
-    generate_help_button,
-    set_no_margins,
-)
+from .util import Message, MessageType
 
 logger = logging.getLogger(__name__)
 
@@ -104,125 +107,17 @@ def icon_for_label(label: str) -> QIcon:
     )
 
 
-class BaseHardwareSignerInteractionWidget(QWidget):
-    aboutToClose = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
-
-    def __init__(self, parent: QWidget | None = None) -> None:
-        """Initialize instance."""
-        super().__init__(parent)
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
-        self._layout = QVBoxLayout(self)
-        set_no_margins(self._layout)
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-
-        # add the buttons
-        self.buttonBox = QDialogButtonBox()
-        self.help_button: QPushButton | None = None
-
-        self._layout.addWidget(self.buttonBox)
-        self._layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._layout.setAlignment(self.buttonBox, Qt.AlignmentFlag.AlignCenter)
-
-    def add_button(self, button: QPushButton | QToolButton):
-        """Add button."""
-        self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
-
-    def add_help_button(self, help_widget: QWidget) -> QPushButton:
-        """Add help button."""
-        self.buttonBoxHelp = QDialogButtonBox()
-        help_button = generate_help_button(help_widget)
-
-        self.buttonBoxHelp.addButton(help_button, QDialogButtonBox.ButtonRole.ActionRole)
-        self._layout.addWidget(self.buttonBoxHelp)
-        self._layout.setAlignment(self.buttonBoxHelp, Qt.AlignmentFlag.AlignCenter)
-
-        self.help_button = help_button
-        return help_button
-
-    def updateUi(self) -> None:
-        """UpdateUi."""
-        if self.help_button:
-            self.help_button.setText(self.tr("Device instructions"))
-
-    def closeEvent(self, a0: QCloseEvent | None):
-        """CloseEvent."""
-        self.aboutToClose.emit(self)  # Emit the signal when the window is about to close
-        super().closeEvent(a0)
+class KeyStoreUiState(enum.Enum):
+    Add = enum.auto()
+    Empty = enum.auto()
+    Filled = enum.auto()
+    ReadOnly = enum.auto()
 
 
-class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
-    def __init__(self, parent: QWidget | None = None) -> None:
-        """Initialize instance."""
-        super().__init__(parent)
-
-        # add the buttons
-        self.button_import_file: QPushButton | None = None
-        self.button_import_qr: QPushButton | None = None
-        self.button_export_qr: QToolButton | None = None
-        self.button_hwi: QPushButton | None = None
-        self.button_export_file: QToolButton | None = None
-
-        self._layout.addWidget(self.buttonBox)
-        self._layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._layout.setAlignment(self.buttonBox, Qt.AlignmentFlag.AlignCenter)
-
-    def add_import_file_button(self) -> QPushButton:
-        # Create custom buttons
-        """Add import file button."""
-        self.button_import_file = button_import_file = add_to_buttonbox(
-            self.buttonBox, self.tr(""), KeyStoreImporterTypes.file.icon_filename
-        )
-        return button_import_file
-
-    def add_copy_button(self) -> tuple[QToolButton, Menu]:
-        """Add copy button."""
-        button, menu = create_tool_button(parent=self)
-
-        button.setIcon(svg_tools.get_QIcon("bi--copy.svg"))
-
-        # Add the button to the QDialogButtonBox
-        self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
-
-        self.button_export_file = button
-        return self.button_export_file, menu
-
-    def add_qr_import_buttonn(self) -> QPushButton:
-        """Add qr import buttonn."""
-        self.button_import_qr = button_import_qr = add_to_buttonbox(
-            self.buttonBox, text="", icon_name=KeyStoreImporterTypes.qr.icon_filename
-        )
-        return button_import_qr
-
-    def add_hwi_button(self, signal_end_hwi_blocker: SignalProtocol[[]]) -> QPushButton:
-        """Add hwi button."""
-        button_hwi = SpinningButton(
-            text="",
-            signal_stop_spinning=signal_end_hwi_blocker,
-            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
-            timeout=60,
-            parent=self,
-        )
-        self.buttonBox.addButton(button_hwi, QDialogButtonBox.ButtonRole.ActionRole)
-        self.button_hwi = button_hwi
-        return button_hwi
-
-    def updateUi(self) -> None:
-        """UpdateUi."""
-        super().updateUi()
-        if self.button_import_file:
-            self.button_import_file.setText(self.tr("Import File or Text"))
-        if self.button_export_file:
-            self.button_export_file.setText(self.tr("Export File"))
-        if self.button_import_qr:
-            self.button_import_qr.setText(self.tr("QR Code"))
-        if self.button_export_qr:
-            self.button_export_qr.setText(self.tr("QR Code"))
-        if self.button_hwi:
-            self.button_hwi.setText(self.tr("USB"))
-
-
-class KeyStoreUI(QWidget):
+class KeyStoreUI(CardBase):
     signal_signer_infos = cast(SignalProtocol[[list[SignerInfo]]], pyqtSignal(list))
+    signal_ui_changed = cast(SignalProtocol[[]], pyqtSignal())
+    request_show_register_multisig = cast(SignalProtocol[[HardwareSigner | None]], pyqtSignal(object))
 
     def __init__(
         self,
@@ -230,54 +125,172 @@ class KeyStoreUI(QWidget):
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
-        label: str = "",
-        hardware_signer_label="",
+        hardware_signer_label: str = "",
         parent: QWidget | None = None,
+        read_only_mode: bool = False,
+        show_register_button: bool = True,
     ) -> None:
         """Initialize instance."""
-        super().__init__(parent)
+        super().__init__(parent=parent, expansion_mode=CardExpansionMode.EXPANDABLE)
         self.signals_min = signals_min
-
-        self.label = label
+        self._fallback_hardware_signer_label = hardware_signer_label
         self.hardware_signer_label = hardware_signer_label
         self.network = network
         self.get_address_type = get_address_type
+        self.read_only_mode = read_only_mode
+        self.show_register_button = show_register_button
+        self.loop_in_thread = loop_in_thread
+        self.counter_register_button_clicked = 0
+        self._device_type_editing = False
+        self._selected_hardware_signer: HardwareSigner | None = None
+        self._device_help_widget: QWidget | None = None
+        self._state = KeyStoreUiState.Add
+        self._status_pixmaps = {
+            AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
+            AnalyzerState.Warning: svg_tools.get_pixmap("warning.svg", size=(22, 22)),
+            AnalyzerState.Invalid: svg_tools.get_pixmap("error.svg", size=(22, 22)),
+        }
 
-        self.tab_layout = QHBoxLayout(self)
+        self.usb_gui = USBGui(
+            self.network, initalization_label=self.hardware_signer_label, loop_in_thread=loop_in_thread
+        )
 
-        self.tabs_import_type = QTabWidget(self)
-        self.tab_layout.addWidget(self.tabs_import_type)
+        self._build_widgets()
+        self._connect_signals()
+        self.updateUi()
+        self._apply_state()
 
-        self.tab_import = QWidget(self)
-        self.tab_import_layout = QVBoxLayout(self.tab_import)
-        self.tabs_import_type.addTab(self.tab_import, "")
-        self.tab_manual = QWidget(self.tab_import)
-        self.tabs_import_type.addTab(self.tab_manual, "")
+    def set_hardware_signer_label(self, value: str) -> None:
+        """Update the derived signer label used by the UI and USB workflows."""
+        self.hardware_signer_label = value
+        self.usb_gui.set_initalization_label(value)
 
-        self.label_fingerprint = QLabel(self)
+    def set_fallback_hardware_signer_label(self, value: str) -> None:
+        """Update the slot-based fallback label used before a concrete signer is known."""
+        self._fallback_hardware_signer_label = value
+        self._sync_hardware_signer_label()
+
+    def _sync_hardware_signer_label(self) -> None:
+        """Refresh the visible label from the selected signer or the slot fallback."""
+        hardware_signer = self.selected_hardware_signer
+        if hardware_signer and hardware_signer != HardwareSigners.generic:
+            self.set_hardware_signer_label(hardware_signer.display_name)
+            return
+        self.set_hardware_signer_label(self._fallback_hardware_signer_label)
+
+    def _build_widgets(self) -> None:
+        self.card_frame = self
+        self.card_layout = self.root_layout
+
+        self.header_icon.setFixedSize(36, 36)
+        self.header_text_layout.setSpacing(2)
+
+        self.header_status_icon = QLabel(self.header_text_widget)
+        self.header_status_icon.setFixedSize(22, 22)
+        self.header_title_row.addWidget(self.header_status_icon)
+        self.header_title_row.addStretch()
+        self.register_header_click_target(self.header_status_icon)
+
+        self.add_controls_widget = QWidget(self.header_widget)
+        self.add_controls_layout = QHBoxLayout(self.add_controls_widget)
+        self.add_controls_layout.setContentsMargins(0, 0, 0, 0)
+        self.add_controls_layout.setSpacing(8)
+        self.header_right_layout.addWidget(self.add_controls_widget)
+
+        self.device_type_help_label = IconLabel(parent=self.header_widget)
+        self.device_type_help_label.textLabel.setWordWrap(True)
+        self.device_type_help_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.add_controls_layout.addWidget(self.device_type_help_label, stretch=1)
+
+        self.combo_brand = QComboBox(self.header_widget)
+        self.combo_model = QComboBox(self.header_widget)
+        self.button_confirm_signer = QPushButton(self.header_widget)
+        self.button_confirm_signer.setEnabled(False)
+        self.add_controls_layout.addWidget(self.combo_brand)
+        self.add_controls_layout.addWidget(self.combo_model)
+        self.add_controls_layout.addWidget(self.button_confirm_signer)
+
+        self.header_actions_widget = QWidget(self.header_widget)
+        self.header_actions_layout = QHBoxLayout(self.header_actions_widget)
+        self.header_actions_layout.setContentsMargins(0, 0, 0, 0)
+        self.header_actions_layout.setSpacing(8)
+        self.header_right_layout.addWidget(self.header_actions_widget)
+
+        self.button_device_instructions = QPushButton(self.header_widget)
+        self.button_device_instructions.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
+        self.header_actions_layout.addWidget(self.button_device_instructions)
+
+        self.button_register = QPushButton(self.header_widget)
+        self.header_actions_layout.addWidget(self.button_register)
+
+        self.button_menu = QToolButton(self.header_widget)
+        self.button_menu.setAutoRaise(True)
+        self.button_menu.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.button_menu.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
+        self.button_menu.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+        self.menu_button_menu = Menu(self.button_menu)
+        self.button_menu.setMenu(self.menu_button_menu)
+        self.action_device_instructions = self.menu_button_menu.add_action(slot=self.show_device_instructions)
+        self.action_reregister = self.menu_button_menu.add_action(slot=self._request_show_register_multisig)
+        self.action_change_device_type = self.menu_button_menu.add_action(slot=self.start_device_type_change)
+        self.header_actions_layout.addWidget(self.button_menu)
+
+        self.content_body = QWidget(self.content_widget)
+        self._content_layout.addWidget(self.content_body)
+        self.content_layout = QHBoxLayout(self.content_body)
+        self.content_layout.setContentsMargins(0, 0, 0, 0)
+        self.content_layout.setSpacing(12)
+
+        self.left_widget = QWidget(self.content_body)
+        self.left_layout = QVBoxLayout(self.left_widget)
+        self.left_layout.setContentsMargins(0, 0, 0, 0)
+        self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.content_layout.addWidget(self.left_widget, stretch=7, alignment=Qt.AlignmentFlag.AlignTop)
+
+        self.connect_layout = QHBoxLayout()
+        self.left_layout.addLayout(self.connect_layout)
+
+        self.connect_help_label = IconLabel(parent=self.left_widget)
+        self.connect_layout.addWidget(self.connect_help_label)
+
+        self.connect_layout.addStretch()
+
+        self.button_connect_qr = QPushButton(self.left_widget)
+        self.button_connect_qr.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename))
+        self.connect_layout.addWidget(self.button_connect_qr)
+
+        self.button_connect_usb = SpinningButton(
+            text="",
+            signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
+            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            timeout=60,
+            parent=self.left_widget,
+        )
+        self.connect_layout.addWidget(self.button_connect_usb)
+
+        self.button_connect_import = QPushButton(self.left_widget)
+        self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
+        self.connect_layout.addWidget(self.button_connect_import)
+
+        self.label_fingerprint = IconLabel(parent=self.left_widget)
         self.edit_fingerprint = ButtonEdit(
             signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
-            parent=self,
+            parent=self.left_widget,
         )
-        self.edit_fingerprint.add_qr_input_from_camera_button(
-            network=self.network,
-        )
+        self.edit_fingerprint.add_copy_button()
         self.edit_fingerprint.signal_data.connect(self._on_handle_input)
-
         self.edit_fingerprint.input_field.setAnalyzer(FingerprintAnalyzer(parent=self))
-        # key_origin
-        self.label_key_origin = QLabel(self)
+
+        self.label_key_origin = IconLabel(parent=self.left_widget)
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
         self.edit_key_origin = ButtonEdit(
             input_field=self.edit_key_origin_input,
             signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
-            parent=self,
+            parent=self.left_widget,
         )
-        self.edit_key_origin.add_qr_input_from_camera_button(
-            network=self.network,
-        )
+        self.edit_key_origin.add_copy_button()
         self.edit_key_origin.signal_data.connect(self._on_handle_input)
         self.edit_key_origin_input.setAnalyzer(
             KeyOriginAnalyzer(
@@ -285,111 +298,410 @@ class KeyStoreUI(QWidget):
             )
         )
 
-        # xpub
-        self.label_xpub = QLabel(self)
+        self.label_xpub = IconLabel(parent=self.left_widget)
         self.edit_xpub = ButtonEdit(
             input_field=AnalyzerTextEdit(),
             signal_update=self.signals_min.language_switch,
             close_all_video_widgets=self.signals_min.close_all_video_widgets,
-            parent=self,
+            parent=self.left_widget,
         )
         self.edit_xpub.setFixedHeight(50)
-        self.edit_xpub.add_qr_input_from_camera_button(
-            network=self.network,
-        )
-        self.edit_xpub.add_usb_buttton(on_click=self.on_xpub_usb_click)
+        self.edit_xpub.add_copy_button()
         self.edit_xpub.signal_data.connect(self._on_handle_input)
-
         self.edit_xpub.input_field.setAnalyzer(XpubAnalyzer(self.network, parent=self))
-        self.label_seed = QLabel(self)
-        self.edit_seed = ButtonEdit(
-            close_all_video_widgets=self.signals_min.close_all_video_widgets, parent=self
-        )
 
+        self.label_seed = IconLabel(parent=self.left_widget)
+        self.edit_seed = ButtonEdit(
+            close_all_video_widgets=self.signals_min.close_all_video_widgets, parent=self.left_widget
+        )
+        self.edit_seed.add_copy_button()
         self.edit_seed.add_random_mnemonic_button(callback_seed=self.on_edit_seed_changed)
         self.edit_seed.input_field.setAnalyzer(SeedAnalyzer(parent=self))
         self.edit_seed.input_field.textChanged.connect(self.on_edit_seed_changed)
 
-        # put them on the formLayout
-        self.formLayout = QFormLayout(self.tab_manual)
-        self.formLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
-        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.label_fingerprint)
-        self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.edit_fingerprint)
-        self.formLayout.setWidget(2, QFormLayout.ItemRole.LabelRole, self.label_key_origin)
-        self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.edit_key_origin)
-        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, self.label_xpub)
-        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.edit_xpub)
-        self.formLayout.setWidget(4, QFormLayout.ItemRole.LabelRole, self.label_seed)
-        self.formLayout.setWidget(5, QFormLayout.ItemRole.FieldRole, self.edit_seed)
-        self.seed_visibility(self.network in KeyStoreImporterTypes.seed.networks)
+        self.details_widget = QWidget(self.left_widget)
+        self.details_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
 
-        # tab_import
+        self.details_layout = QGridLayout(self.details_widget)
+        self.details_layout.setContentsMargins(0, 0, 0, 0)
+        self.details_layout.setColumnStretch(1, 1)
+        self.details_layout.addWidget(self.label_fingerprint, 0, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_fingerprint, 0, 1)
+        self.details_layout.addWidget(self.label_key_origin, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_key_origin, 1, 1)
+        self.details_layout.addWidget(self.label_xpub, 2, 0, alignment=Qt.AlignmentFlag.AlignTop)
+        self.details_layout.addWidget(self.edit_xpub, 2, 1)
+        self.details_layout.addWidget(self.label_seed, 3, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_seed, 3, 1)
+        self.left_layout.addWidget(self.details_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
-        self.hardware_signer_interaction = HardwareSignerInteractionWidget()
-        self.button_qr = self.hardware_signer_interaction.add_qr_import_buttonn()
-        self.hardware_signer_interaction.add_help_button(ScreenshotsExportXpub())
-
-        self.button_qr.clicked.connect(self.edit_xpub.button_container.buttons[0].click)
-
-        self.usb_gui = USBGui(
-            self.network, initalization_label=self.hardware_signer_label, loop_in_thread=loop_in_thread
-        )
-        button_hwi = self.hardware_signer_interaction.add_hwi_button(
-            signal_end_hwi_blocker=self.usb_gui.signal_end_hwi_blocker
-        )
-        button_hwi.clicked.connect(self.on_hwi_click)
-
-        self.button_file = self.hardware_signer_interaction.add_import_file_button()
-        self.button_file.clicked.connect(self._import_dialog)
-
-        # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
-        self.tab_import_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.analyzer_indicator = AnalyzerIndicator(
-            line_edits=[
-                self.edit_fingerprint.input_field,
-                self.edit_key_origin_input,
-                self.edit_xpub.input_field,
-            ],
-            icon_OK=svg_tools.get_pixmap("checkmark.svg", size=(50, 50)),
-            icon_warning=svg_tools.get_pixmap("warning.svg", size=(50, 50)),
-            icon_error=svg_tools.get_pixmap("error.svg", size=(50, 50)),
-            hide_if_all_empty=True,
-        )
-        self.analyzer_indicator.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
-        self.tab_import_layout.addWidget(self.analyzer_indicator)
-        self.tab_import_layout.addWidget(self.hardware_signer_interaction)
-
-        # self.tab_import_layout.addItem(QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
-
-        self.right_widget = QWidget(self)
+        self.right_widget = QWidget(self.content_body)
         self.right_widget_layout = QVBoxLayout(self.right_widget)
-        # self.right_widget_layout.setContentsMargins(0,0,0,0)
+        self.right_widget_layout.setContentsMargins(0, 0, 0, 0)
+        self.content_layout.addWidget(self.right_widget, stretch=3)
 
-        self.label_description = QLabel(self)
-
+        self.label_description = QLabel(self.right_widget)
         self.right_widget_layout.addWidget(self.label_description)
 
-        self.textEdit_description = AnalyzerTextEdit()
+        self.textEdit_description = FlexibleHeightTextedit()
+        self.textEdit_description.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding
+        )
         self.right_widget_layout.addWidget(self.textEdit_description)
 
-        self.tab_layout.addWidget(self.right_widget)
+        self._populate_brand_combo()
+        self._seed_supported = self.network in KeyStoreImporterTypes.seed.networks
+        self.seed_visibility(self._seed_supported)
 
-        self.updateUi()
+    def _connect_signals(self) -> None:
+        for signal in (
+            self.edit_fingerprint.input_field.textChanged,
+            self.edit_key_origin.input_field.textChanged,
+            self.edit_xpub.input_field.textChanged,
+            self.edit_seed.input_field.textChanged,
+            self.textEdit_description.textChanged,
+        ):
+            signal.connect(self.signal_ui_changed.emit)
 
         self.edit_key_origin_input.textChanged.connect(self.format_all_fields)
+        self.edit_xpub.input_field.textChanged.connect(self._apply_state)
+        self.edit_fingerprint.input_field.textChanged.connect(self._apply_state)
+        self.edit_key_origin_input.textChanged.connect(self._apply_state)
+        self.textEdit_description.textChanged.connect(self._update_header_subtitle)
+
         self.signals_min.language_switch.connect(self.updateUi)
 
-    def _process_input(self, s: str) -> None:
-        """Process input."""
-        try:
-            res = Data.from_str(s, network=self.network)
-            self._on_handle_input(res)
-        except Exception as e:
-            Message(str(e), type=MessageType.Error, parent=self)
+        self.combo_brand.currentIndexChanged.connect(self._on_brand_changed)
+        self.combo_model.currentIndexChanged.connect(self._update_confirm_button)
+        self.combo_model.currentIndexChanged.connect(self._update_device_type_help)
+        self.button_confirm_signer.clicked.connect(self.confirm_device_type_selection)
+        self.button_connect_qr.clicked.connect(self.scan_signer_data_from_qr)
+        self.button_connect_usb.clicked.connect(self.on_hwi_click)
+        self.button_connect_import.clicked.connect(self._import_dialog)
+        self.connect_help_label.icon_label.clicked.connect(self.show_device_instructions)
+        self.button_device_instructions.clicked.connect(self.show_device_instructions)
+        self.button_register.clicked.connect(self._request_show_register_multisig)
 
-    def _import_dialog(self):
-        """Import dialog."""
+    @property
+    def selected_hardware_signer(self) -> HardwareSigner | None:
+        """Return the selected hardware signer."""
+        return self._selected_hardware_signer
+
+    @property
+    def state(self) -> KeyStoreUiState:
+        """Return the current UI state."""
+        return self._state
+
+    def _populate_brand_combo(self) -> None:
+        self.combo_brand.blockSignals(True)
+        self.combo_model.blockSignals(True)
+        self.combo_brand.clear()
+        self.combo_model.clear()
+        self.combo_brand.addItem("")
+        for brand_name in HardwareSigners.list_brands():
+            self.combo_brand.addItem(brand_name)
+        self.combo_model.addItem("", userData=None)
+        self.combo_brand.blockSignals(False)
+        self.combo_model.blockSignals(False)
+        self._on_brand_changed()
+
+    def _on_brand_changed(self) -> None:
+        brand_name = self.combo_brand.currentText()
+        selected_name = self.combo_model.currentData()
+        self.combo_model.blockSignals(True)
+        self.combo_model.clear()
+        if not brand_name:
+            self.combo_model.addItem("", userData=None)
+        else:
+            for hardware_signer in HardwareSigners.models_for_brand(brand_name):
+                self.combo_model.addItem(hardware_signer.display_name, userData=hardware_signer.id)
+            model_index = self.combo_model.findData(selected_name) if selected_name else -1
+            self.combo_model.setCurrentIndex(model_index if model_index >= 0 else 0)
+        self.combo_model.blockSignals(False)
+        self._update_confirm_button()
+        self._update_device_type_help()
+
+    def _update_confirm_button(self) -> None:
+        self.button_confirm_signer.setEnabled(self.combo_model.currentData() is not None)
+
+    def _device_type_help_target(self) -> tuple[str, str]:
+        """Return the link text and URL for the device-selection help label."""
+        hardware_signer = HardwareSigners.from_id(self.combo_model.currentData())
+        if hardware_signer and hardware_signer.info_url:
+            return (
+                self.tr('Learn more about <a href="{url}">{device}</a>.').format(
+                    url=hardware_signer.info_url,
+                    device=hardware_signer.display_name,
+                ),
+                hardware_signer.info_url,
+            )
+        return (
+            self.tr('Learn more about <a href="{url}">supported hardware signers</a>.').format(
+                url=SUPPORTED_HARDWARE_SIGNERS_URL
+            ),
+            SUPPORTED_HARDWARE_SIGNERS_URL,
+        )
+
+    def _update_device_type_help(self) -> None:
+        """Refresh the contextual help text shown during device selection."""
+        text, click_url = self._device_type_help_target()
+        self.device_type_help_label.setText(text)
+        self.device_type_help_label.set_icon_as_help(
+            tooltip=self.tr("Open the signer guide"),
+            click_url=click_url,
+        )
+
+    def _set_combo_selection(self, hardware_signer: HardwareSigner | None) -> None:
+        if not hardware_signer:
+            self.combo_brand.setCurrentIndex(0)
+            self.combo_model.setCurrentIndex(0)
+            return
+        brand_index = self.combo_brand.findText(hardware_signer.brand_name)
+        if brand_index >= 0:
+            brand_changed = self.combo_brand.currentIndex() != brand_index
+            self.combo_brand.setCurrentIndex(brand_index)
+            if not brand_changed:
+                self._on_brand_changed()
+        model_index = self.combo_model.findData(hardware_signer.id)
+        if model_index >= 0:
+            self.combo_model.setCurrentIndex(model_index)
+        self._update_confirm_button()
+
+    def set_selected_hardware_signer(self, hardware_signer: HardwareSigner | None) -> None:
+        """Set the selected hardware signer."""
+        self._selected_hardware_signer = hardware_signer
+        self._set_combo_selection(hardware_signer)
+        self._sync_hardware_signer_label()
+        self._update_header_icon()
+        self._update_connect_buttons()
+        self._update_help_visibility()
+        self._update_header_subtitle()
+
+    def start_device_type_change(self) -> None:
+        """Return to the device selection flow."""
+        self._device_type_editing = True
+        self.counter_register_button_clicked = 0
+        self._set_combo_selection(self.selected_hardware_signer)
+        self._apply_state()
+
+    def _analysis_fields(self) -> list[AnalyzerLineEdit | AnalyzerTextEdit]:
+        """Return the fields contributing to signer validation state."""
+        return [
+            self.edit_fingerprint.input_field,
+            self.edit_key_origin_input,
+            self.edit_xpub.input_field,
+        ]
+
+    def get_analysis_list(self, min_state: AnalyzerState = AnalyzerState.Valid) -> list[AnalyzerMessage]:
+        """Return analyzer messages for the visible signer detail fields."""
+        analysis_list: list[AnalyzerMessage] = []
+        for field in self._analysis_fields():
+            analyzer = field.analyzer()
+            if not analyzer:
+                continue
+            analysis = analyzer.analyze(field.text())
+            if analysis.state >= min_state:
+                analysis_list.append(analysis)
+        return analysis_list
+
+    def get_worst_analysis(self) -> AnalyzerMessage:
+        """Return the most severe analyzer message across the signer details."""
+        return BaseAnalyzer.worst_message(self.get_analysis_list())
+
+    def confirm_device_type_selection(self) -> None:
+        """Confirm the currently selected signer model."""
+        hardware_signer = HardwareSigners.from_id(self.combo_model.currentData())
+        if not hardware_signer:
+            return
+        self.select_hardware_signer(hardware_signer)
+
+    def select_hardware_signer(self, hardware_signer: HardwareSigner) -> None:
+        """Select a signer model and move the card into data entry mode."""
+        self._device_type_editing = False
+        super().set_expanded(True)
+        self.counter_register_button_clicked = 0
+        self.set_selected_hardware_signer(hardware_signer)
+        self.signal_ui_changed.emit()
+        self._apply_state()
+
+    def _update_header_icon(self) -> None:
+        if self.state == KeyStoreUiState.Add:
+            self.header_icon.clear()
+            self.header_icon.setStyleSheet("font-size: 28px; font-weight: 600;")
+            self.header_icon.setText("+")
+            return
+
+        self.header_icon.setStyleSheet("")
+        hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
+        pixmap = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name).pixmap(34, 34)
+        self.header_icon.setPixmap(pixmap)
+        self.header_icon.setText("")
+
+    def _update_header_subtitle(self) -> None:
+        if self.state == KeyStoreUiState.Add:
+            self.header_subtitle.setText("-")
+            return
+
+        parts = []
+        if self.edit_fingerprint.text().strip():
+            parts.append(self.edit_fingerprint.text().strip())
+        description = self.textEdit_description.toPlainText().strip()
+        if description:
+            parts.append(description.splitlines()[0])
+        self.header_subtitle.setText(" - ".join(parts) if parts else "-")
+
+    def _update_help_visibility(self) -> None:
+        visible = bool(
+            self.selected_hardware_signer
+            and self.selected_hardware_signer.id != HardwareSigners.generic.id
+            and self.state != KeyStoreUiState.Add
+        )
+        self.button_device_instructions.setVisible(visible and self.state != KeyStoreUiState.ReadOnly)
+        self.action_device_instructions.setVisible(visible)
+        if self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled):
+            self.connect_help_label.setVisible(visible)
+
+    def _update_connect_buttons(self, connect_visible: bool = True) -> None:
+        hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
+        self.button_connect_qr.setVisible(connect_visible and hardware_signer.supports_qr)
+        self.button_connect_usb.setVisible(
+            connect_visible and hardware_signer.usb != FeatureLevel.not_capable
+        )
+        self.button_connect_import.setVisible(connect_visible)
+
+    def _update_header_status_icon(self) -> None:
+        if self.state in (KeyStoreUiState.Add, KeyStoreUiState.Empty):
+            self.header_status_icon.setVisible(False)
+            return
+        analysis = self.get_worst_analysis()
+        self.header_status_icon.setPixmap(self._status_pixmaps[analysis.state])
+        self.header_status_icon.setToolTip(
+            "\n".join(str(item) for item in self.get_analysis_list(min_state=AnalyzerState.Warning))
+        )
+        self.header_status_icon.setVisible(True)
+
+    def _determine_state(self) -> KeyStoreUiState:
+        if not self.selected_hardware_signer:
+            return KeyStoreUiState.Add
+        if self.read_only_mode:
+            return KeyStoreUiState.ReadOnly
+        if self._has_complete_signer_data():
+            return KeyStoreUiState.Filled
+        return KeyStoreUiState.Empty
+
+    def _has_complete_signer_data(self) -> bool:
+        return bool(
+            self.edit_fingerprint.text().strip() and self.key_origin and self.edit_xpub.text().strip()
+        )
+
+    def expand(self) -> None:
+        """Show the full signer card."""
+        if self.is_expanded:
+            return
+        super().expand()
+        self._apply_state()
+
+    def collapse(self) -> None:
+        """Show only the signer card header."""
+        if not self.is_expanded:
+            return
+        super().collapse()
+        self._apply_state()
+
+    def _update_header_clickability(self) -> None:
+        self._update_header_cursor()
+
+    def _show_seed_input(self) -> bool:
+        """Whether the seed row should be visible for the current state and network."""
+        if DEMO_MODE:
+            return False
+        if not self._seed_supported:
+            return False
+        if self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly):
+            return True
+        return self.state == KeyStoreUiState.Empty and self.network != bdk.Network.BITCOIN
+
+    def _apply_state(self) -> None:
+        self._state = self._determine_state()
+        is_add_state = self.state == KeyStoreUiState.Add
+        show_device_selection = is_add_state or self._device_type_editing
+        show_content = self.selected_hardware_signer is not None
+        has_details = self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly)
+        show_seed_input = self._show_seed_input()
+        connect_visible = self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled)
+        show_expanded_content = self.is_expanded and show_content
+
+        self.add_controls_layout.setEnabled(show_device_selection)
+        self.combo_brand.setVisible(show_device_selection)
+        self.combo_model.setVisible(show_device_selection)
+        self.button_confirm_signer.setVisible(show_device_selection)
+
+        self.header_actions_layout.setEnabled(not is_add_state)
+        self.button_menu.setVisible(
+            not is_add_state and not self._device_type_editing and self.selected_hardware_signer is not None
+        )
+        self.button_device_instructions.setVisible(
+            not self._device_type_editing and self.button_device_instructions.isVisible()
+        )
+        self.button_register.setVisible(
+            self.show_register_button
+            and not self._device_type_editing
+            and self.state == KeyStoreUiState.ReadOnly
+            and self.counter_register_button_clicked == 0
+        )
+        self.device_type_help_label.setVisible(show_device_selection)
+        self.add_controls_widget.setVisible(show_device_selection)
+        self.header_actions_widget.setVisible(not is_add_state)
+
+        self.set_body_content_visible(show_content)
+        self.left_widget.setVisible(show_expanded_content)
+        self.right_widget.setVisible(show_expanded_content)
+        self.connect_help_label.setVisible(show_expanded_content and connect_visible)
+
+        for widget in (
+            self.label_fingerprint,
+            self.edit_fingerprint,
+            self.label_key_origin,
+            self.edit_key_origin,
+            self.label_xpub,
+            self.edit_xpub,
+            self.label_seed,
+            self.edit_seed,
+        ):
+            widget.setVisible(has_details)
+
+        self.label_seed.setVisible(show_seed_input)
+        self.edit_seed.setVisible(show_seed_input)
+
+        read_only_fields = self.state == KeyStoreUiState.ReadOnly
+        for field in (self.edit_fingerprint, self.edit_key_origin, self.edit_xpub, self.edit_seed):
+            field.setReadOnly(read_only_fields)
+
+        for button in self.edit_seed.button_container.buttons:
+            button.setVisible(not read_only_fields and show_seed_input)
+
+        self.header_title.setText(
+            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
+        )
+        self._update_header_icon()
+        self._update_connect_buttons(connect_visible=connect_visible)
+        self._update_help_visibility()
+        if self._device_type_editing:
+            self.button_device_instructions.setVisible(False)
+        self._update_header_subtitle()
+        self.header_subtitle.setVisible(not (show_device_selection and self.header_subtitle.text() == "-"))
+        self._update_device_type_help()
+        self._update_header_status_icon()
+        self._update_header_clickability()
+
+    def _process_input(self, value: str) -> None:
+        try:
+            res = Data.from_str(value, network=self.network)
+            self._on_handle_input(res)
+        except Exception as exc:
+            Message(str(exc), type=MessageType.Error, parent=self)
+
+    def _import_dialog(self) -> None:
         self._attached_import_dialog = ImportDialog(
             self.network,
             on_open=self._process_input,
@@ -401,37 +713,64 @@ class KeyStoreUI(QWidget):
         )
         self._attached_import_dialog.show()
 
-    def on_edit_seed_changed(self, text: str):
+    def scan_signer_data_from_qr(self) -> None:
+        """Scan signer data from a camera QR code."""
+        self.edit_xpub.input_qr_from_camera(self.network, set_data_as_string=False)
+
+    def show_device_instructions(self) -> None:
+        """Show device instructions for the selected hardware signer."""
+        hardware_signer = self.selected_hardware_signer
+        if not hardware_signer or hardware_signer.id == HardwareSigners.generic.id:
+            return
+        if self._device_help_widget:
+            self._device_help_widget.close()
+        self._device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
+        self._device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        self._device_help_widget.destroyed.connect(self._clear_device_help_widget)
+        self._device_help_widget.setWindowTitle(
+            self.tr("{device} instructions").format(device=hardware_signer.display_name)
+        )
+        self._device_help_widget.setWindowFlag(Qt.WindowType.Window, True)
+        self._device_help_widget.show()
+        self._device_help_widget.raise_()
+        self._device_help_widget.activateWindow()
+
+    def _clear_device_help_widget(self, destroyed_widget: QObject | None = None) -> None:
+        """Clear the cached device instructions window after it closes."""
+        _ = destroyed_widget
+        self._device_help_widget = None
+
+    def _request_show_register_multisig(self) -> None:
+        """Request the multisig registration dialog from the owner."""
+        self.counter_register_button_clicked += 1
+        self._apply_state()
+        self.request_show_register_multisig.emit(self.selected_hardware_signer)
+
+    def on_edit_seed_changed(self, text: str) -> None:
         """On edit seed changed."""
         try:
             keystore = self.get_ui_values_as_keystore()
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
-            Message(str(e), type=MessageType.Error, parent=self)
+        except Exception as exc:
+            logger.debug(f"{self.__class__.__name__}: {exc}")
+            Message(str(exc), type=MessageType.Error, parent=self)
             return
         self.edit_fingerprint.setText(keystore.fingerprint)
         self.edit_xpub.setText(keystore.xpub)
         self.key_origin = keystore.key_origin
 
-    def seed_visibility(self, visible=False) -> None:
+    def seed_visibility(self, visible: bool = False) -> None:
         """Seed visibility."""
         self.edit_seed.setHidden(not visible)
         self.label_seed.setHidden(not visible)
-
-        # self.edit_xpub.setHidden(visible)
-        # self.edit_fingerprint.setHidden(visible)
-        # self.label_xpub.setHidden(visible)
-        # self.label_fingerprint.setHidden(visible)
 
     @property
     def key_origin(self) -> str:
         """Key origin."""
         try:
             standardized = SimplePubKeyProvider.format_key_origin(self.edit_key_origin.text().strip())
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
+        except Exception as exc:
+            logger.debug(f"{self.__class__.__name__}: {exc}")
             return ""
-
         return standardized
 
     @key_origin.setter
@@ -439,36 +778,73 @@ class KeyStoreUI(QWidget):
         """Key origin."""
         self.edit_key_origin.setText(value if value else "")
 
+    def _apply_field_analysis(
+        self,
+        edit: ButtonEdit,
+        text: str,
+        analysis: AnalyzerMessage,
+        override_state: AnalyzerState | None = None,
+        extra_tooltip: str = "",
+    ) -> None:
+        """Apply analyzer styling and tooltip to a button edit."""
+        state = edit.input_field.state_for_text(text=text, analysis=analysis, override_state=override_state)
+        edit.format_edit(state)
+
+        tooltip_parts: list[str] = []
+        if analysis.msg and analysis.state != AnalyzerState.Valid:
+            tooltip_parts.append(analysis.msg)
+        if extra_tooltip:
+            tooltip_parts.append(extra_tooltip)
+        edit.setToolTip("\n".join(tooltip_parts))
+
     def format_all_fields(self) -> None:
         """Format all fields."""
         self.edit_fingerprint.format_and_apply_validator()
+        self.edit_xpub.input_field.normalize()
 
         expected_key_origin = self.get_expected_key_origin()
-        if expected_key_origin != self.key_origin:
-            self.edit_key_origin.format_as_error(True)
-            analyzer = self.edit_key_origin_input.analyzer()
-            analyzer_message = analyzer.analyze(self.key_origin).msg + "\n" if analyzer else ""
-            self.edit_key_origin.setToolTip(
-                analyzer_message
-                + self.tr(
-                    "Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure."
-                ).format(expected_key_origin=expected_key_origin, type=self.get_address_type().name)
+        key_origin_value = self.key_origin
+        key_origin_analysis = self.edit_key_origin_input.analyze_text(key_origin_value)
+        xpub_analysis = self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
+
+        key_origin_state: AnalyzerState | None = None
+        key_origin_tooltip = ""
+        xpub_state: AnalyzerState | None = None
+        xpub_tooltip = ""
+
+        if expected_key_origin != key_origin_value:
+            key_origin_state = key_origin_analysis.state
+            key_origin_tooltip = self.tr(
+                "Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure."
+            ).format(expected_key_origin=expected_key_origin, type=self.get_address_type().name)
+
+            xpub_state = (
+                xpub_analysis.state
+                if xpub_analysis.state != AnalyzerState.Valid
+                else key_origin_analysis.state
             )
-            self.edit_xpub.format_as_error(True)
-            self.edit_xpub.setToolTip(
-                self.tr(
-                    "The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair."
-                ).format(key_origin=self.key_origin)
-            )
-        else:
-            self.edit_xpub.format_and_apply_validator()
-            self.edit_xpub.setToolTip("")
-            self.edit_key_origin.format_and_apply_validator()
-            self.edit_key_origin.setToolTip("")
+            xpub_tooltip = self.tr(
+                "The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair."
+            ).format(key_origin=key_origin_value)
+
+        self._apply_field_analysis(
+            edit=self.edit_key_origin,
+            text=self.edit_key_origin.text(),
+            analysis=key_origin_analysis,
+            override_state=key_origin_state,
+            extra_tooltip=key_origin_tooltip,
+        )
+        self._apply_field_analysis(
+            edit=self.edit_xpub,
+            text=self.edit_xpub.text(),
+            analysis=xpub_analysis,
+            override_state=xpub_state,
+            extra_tooltip=xpub_tooltip,
+        )
         self.edit_key_origin.setPlaceholderText(expected_key_origin)
         self.edit_key_origin_input.reset_memory()
         self.edit_key_origin_input.add_to_memory(expected_key_origin)
-        self.analyzer_indicator.updateUi()
+        self._update_header_status_icon()
 
     def get_expected_key_origin(self) -> str:
         """Get expected key origin."""
@@ -485,36 +861,30 @@ class KeyStoreUI(QWidget):
         assert key_origin_input_analyzer
         analyzer_message = key_origin_input_analyzer.analyze(signer_info.key_origin)
         if analyzer_message.state == AnalyzerState.Invalid:
-            Message(
-                analyzer_message.msg,
-                type=MessageType.Error,
-                parent=self,
-            )
+            Message(analyzer_message.msg, type=MessageType.Error, parent=self)
             return
-        elif analyzer_message.state == AnalyzerState.Warning:
-            if not question_dialog(
-                self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
-            ):
-                return
+        if analyzer_message.state == AnalyzerState.Warning and not question_dialog(
+            self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
+        ):
+            return
 
         self.edit_xpub.setText(signer_info.xpub)
         self.key_origin = signer_info.key_origin
         self.edit_fingerprint.setText(signer_info.fingerprint)
+        self._apply_state()
 
     def _on_handle_input(self, data: Data, parent: QLineEdit | QTextEdit | None = None) -> None:
         """On handle input."""
         if data.data_type == DataType.SignerInfo:
             self.set_using_signer_info(data.data)
         elif data.data_type == DataType.SignerInfos and len(data.data) == 1:
-            # this case is relevant if a single SignerInfo is contains an account>0
             self.set_using_signer_info(data.data[0])
         elif data.data_type == DataType.SignerInfos:
             key_origin = self.get_key_origin()
-
             matching_signer_infos = [
                 signer_info
                 for signer_info in data.data
-                if isinstance(signer_info, SignerInfo) and (signer_info.key_origin == key_origin)
+                if isinstance(signer_info, SignerInfo) and signer_info.key_origin == key_origin
             ]
 
             if len(matching_signer_infos) == 1:
@@ -522,25 +892,19 @@ class KeyStoreUI(QWidget):
             elif len(matching_signer_infos) > 1:
                 self.signal_signer_infos.emit(matching_signer_infos)
             else:
-                # none found
                 Message(
                     self.tr(
                         "No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again."
                     ).format(key_origin=key_origin),
                     parent=self,
                 )
-
         elif data.data_type == DataType.Xpub:
             self.edit_xpub.setText(data.data)
         elif data.data_type == DataType.Fingerprint:
             self.edit_fingerprint.setText(data.data)
-        elif data.data_type in [
-            DataType.Descriptor,
-            DataType.MultisigWalletExport,
-        ]:
+        elif data.data_type in [DataType.Descriptor, DataType.MultisigWalletExport]:
             Message(
-                self.tr("Please paste descriptors into the descriptor field in the top right."),
-                parent=self,
+                self.tr("Please paste descriptors into the descriptor field in the top right."), parent=self
             )
         elif isinstance(data.data, str) and parent:
             parent.setText(data.data)
@@ -551,12 +915,11 @@ class KeyStoreUI(QWidget):
                 parent=self,
             )
         else:
-            Exception("Could not recognize the QR Code")
+            raise ValueError("Could not recognize the QR Code")
 
     def xpub_validator(self) -> bool:
         """Xpub validator."""
         xpub = self.edit_xpub.text()
-        # automatically convert slip132
         if ConverterXpub.is_slip132(xpub):
             Message(
                 self.tr("The xpub is in SLIP132 format. Converting to standard format."),
@@ -565,46 +928,85 @@ class KeyStoreUI(QWidget):
             )
             try:
                 self.edit_xpub.setText(ConverterXpub.convert_slip132_to_bip32(xpub))
-            except Exception as e:
-                logger.debug(f"{self.__class__.__name__}: {e}")
+            except Exception as exc:
+                logger.debug(f"{self.__class__.__name__}: {exc}")
                 return False
 
         return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
 
     def updateUi(self) -> None:
         """UpdateUi."""
-        self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_import), self.tr("Import"))
-        self.tabs_import_type.setTabText(self.tabs_import_type.indexOf(self.tab_manual), self.tr("Advanced"))
-        self.label_description.setText(self.tr("Description"))
+        self.label_description.setText(self.tr("Personal notes:"))
+        self.connect_help_label.setText(self.tr("Connect"))
+        self.connect_help_label.set_icon_as_help(
+            tooltip=self.tr("Import signer data with QR, USB, or text/file import.")
+        )
+        self.connect_help_label.icon_label.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.label_fingerprint.setText(self.tr("Fingerprint"))
-        self.edit_fingerprint.input_field.display_name = self.label_fingerprint.text()
-
-        self.label_key_origin.setText(self.tr("xPub Origin"))
-        self.edit_key_origin_input.display_name = self.label_key_origin.text()
-
-        self.label_xpub.setText(self.tr("xPub"))
-        self.edit_xpub.input_field.display_name = self.label_xpub.text()
-
-        self.label_seed.setText(self.tr("Seed"))
-        self.edit_seed.input_field.display_name = self.label_seed.text()
-
-        self.textEdit_description.setPlaceholderText(
-            self.tr(
-                "Name of signing device: ......\nLocation of signing device: .....",
+        self.label_fingerprint.set_icon_as_help(
+            tooltip=self.tr(
+                "The 8 digit fingerprint identifies the seed.\nYou can write it onto the hardware signer\nto keep track of different seeds and signing devices."
             )
         )
-        self.analyzer_indicator.updateUi()
-        self.hardware_signer_interaction.updateUi()
+        self.edit_fingerprint.input_field.display_name = self.label_fingerprint.textLabel.text()
+
+        self.label_key_origin.setText(self.tr("Derivation path"))
+        self.label_key_origin.set_icon_as_help(
+            tooltip=self.tr(
+                "The key origin is needed to construct\ntransactions (PSBTs) correctly and is connected to the xPub."
+            )
+        )
+        self.edit_key_origin_input.display_name = self.label_key_origin.textLabel.text()
+
+        self.label_xpub.setText(self.tr("xPub"))
+        self.label_xpub.set_icon_as_help(tooltip=self.tr("Wallet addresses are derived from the xPub."))
+        self.edit_xpub.input_field.display_name = self.label_xpub.textLabel.text()
+
+        self.label_seed.setText(self.tr("Seed"))
+        self.label_seed.set_icon_as_help(
+            tooltip=self.tr(
+                "The seed is the secret, that enables transaction signing.\nFor a single signature wallet it gives full control over the funds."
+            )
+        )
+        self.edit_seed.input_field.display_name = self.label_seed.textLabel.text()
+
+        self.header_title.setText(
+            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
+        )
+        self.textEdit_description.setPlaceholderText(
+            self.tr("Write here notes relative to this signer, memos, etc...")
+        )
+        self.combo_brand.setToolTip(self.tr("Select the signer brand"))
+        self.combo_model.setToolTip(self.tr("Select the signer model"))
+        self.combo_brand.setPlaceholderText(self.tr("Select Brand"))
+        self.combo_model.setPlaceholderText(self.tr("Select Model"))
+        if self.combo_brand.count():
+            self.combo_brand.setItemText(0, self.tr("Select Brand"))
+        if self.combo_model.count() and self.combo_model.itemData(0) is None:
+            self.combo_model.setItemText(0, self.tr("Select Model"))
+        self.button_confirm_signer.setText(self.tr("OK"))
+        self.button_device_instructions.setText(self.tr("Device instructions"))
+        self.action_device_instructions.setText(self.tr("Device instructions"))
+        self.button_register.setText(self.tr("Register"))
+        self.action_reregister.setText(self.tr("Reregister multisig"))
+        self.action_change_device_type.setText(self.tr("Change device type"))
+        self.button_connect_qr.setText(self.tr("QR Code"))
+        self.button_connect_usb.setText(self.tr("USB"))
+        self.button_connect_import.setText(self.tr("Import"))
+        self._update_device_type_help()
+
+        self._update_header_subtitle()
+        self._apply_state()
 
     def _on_hwi_click(self, key_origin: str) -> None:
         """On hwi click."""
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
+        except Exception as exc:
+            logger.debug(f"{self.__class__.__name__}: {exc}")
             Message(
-                str(e)
+                str(exc)
                 + "\n\n"
                 + self.tr("Please ensure that there are no other programs accessing the Hardware signer"),
                 type=MessageType.Error,
@@ -616,21 +1018,13 @@ class KeyStoreUI(QWidget):
 
         device, fingerprint, xpub = result
         self.set_using_signer_info(SignerInfo(fingerprint=fingerprint, key_origin=key_origin, xpub=xpub))
-        if not self.textEdit_description.text():
+        if not self.textEdit_description.toPlainText().strip():
             self.textEdit_description.setText(f"{device.get('type', '')} - {device.get('model', '')}")
 
     def on_hwi_click(self) -> None:
         """On hwi click."""
         address_type = self.get_address_type()
         key_origin = address_type.key_origin(self.network)
-        self._on_hwi_click(key_origin=key_origin)
-
-    def on_xpub_usb_click(self) -> None:
-        """On xpub usb click."""
-        key_origin = self.key_origin
-        if not key_origin:
-            Message(self.tr("Please enter a valid key origin."), parent=self)
-            return
         self._on_hwi_click(key_origin=key_origin)
 
     def get_ui_values_as_keystore(self) -> KeyStore:
@@ -640,7 +1034,6 @@ class KeyStoreUI(QWidget):
         if seed_str:
             mnemonic = str(bdk.Mnemonic.from_string(seed_str))
             key_origin = self.edit_key_origin.text().strip()
-            # if key_origin is empty  fill it with the default
             key_origin = key_origin if key_origin else self.get_address_type().key_origin(self.network)
             xpub, fingerprint = derive(mnemonic=mnemonic, key_origin=key_origin, network=self.network)
         else:
@@ -649,30 +1042,29 @@ class KeyStoreUI(QWidget):
             xpub = self.edit_xpub.text()
             key_origin = self.key_origin
 
-            # try to validate
-            # if this works, then these are valid values
             if not KeyStore.is_xpub_valid(xpub, self.network):
                 if xpub:
                     raise ValueError(self.tr("{xpub} is not a valid public xpub").format(xpub=xpub))
-                else:
-                    raise ValueError(self.tr("Please import the information from all hardware signers first"))
+                raise ValueError(self.tr("Please import the information from all hardware signers first"))
 
+        hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
         return KeyStore(
             xpub=xpub,
             fingerprint=fingerprint,
             key_origin=key_origin,
-            label=self.label,
             mnemonic=mnemonic if mnemonic else None,
             description=self.textEdit_description.toPlainText(),
+            hardware_signer_id=hardware_signer.id,
             network=self.network,
         )
 
     def set_ui_from_keystore(self, keystore: KeyStore) -> None:
         """Set ui from keystore."""
         with BlockChangesSignals([self]):
-            self.label = keystore.label
+            self.set_selected_hardware_signer(
+                HardwareSigners.from_id(keystore.hardware_signer_id) or HardwareSigners.generic
+            )
 
-            logger.debug(f"{self.__class__.__name__} set_ui_from_keystore")
             xpub = keystore.xpub if keystore.xpub else ""
             if xpub != self.edit_xpub.text():
                 self.edit_xpub.setText(xpub)
@@ -691,109 +1083,17 @@ class KeyStoreUI(QWidget):
             if self.edit_seed.text() != mnemonic:
                 self.edit_seed.setText(mnemonic)
 
+        self._device_type_editing = False
+        self._apply_state()
+
     def close(self) -> bool:
         """Close."""
         SignalTools.disconnect_all_signals_from(self)
+        if self._device_help_widget:
+            self._device_help_widget.close()
         self.edit_seed.close()
         self.edit_key_origin.close()
         self.edit_fingerprint.close()
         self.edit_key_origin_input.close()
         self.edit_xpub.close()
         return super().close()
-
-
-class SignedUI(QWidget):
-    def __init__(
-        self,
-        text: str,
-        psbt: bdk.Psbt,
-        network: bdk.Network,
-    ) -> None:
-        """Initialize instance."""
-        super().__init__()
-        self.text = text
-        self.psbt = psbt
-        self.network = network
-
-        self.layout_keystore_buttons = QHBoxLayout(self)
-
-        self.edit_signature = QTextEdit()
-        self.edit_signature.setMinimumHeight(30)
-        self.edit_signature.setReadOnly(True)
-        self.edit_signature.setText(str(self.text))
-        self.layout_keystore_buttons.addWidget(self.edit_signature)
-
-
-class SignerUI(QWidget):
-    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
-    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
-
-    def __init__(
-        self,
-        signature_importers: Iterable[AbstractSignatureImporter],
-        psbt: bdk.Psbt,
-        network: bdk.Network,
-        button_prefix: str = "",
-    ) -> None:
-        """Initialize instance."""
-        super().__init__()
-        self.signature_importers = signature_importers
-        self.psbt = psbt
-        self.network = network
-
-        self.layout_keystore_buttons = QVBoxLayout(self)
-
-        self.buttons: list[QPushButton] = []
-        for signer in self.signature_importers:
-            button: QPushButton
-            if isinstance(signer, SignatureImporterUSB):
-                signal_end_hwi_blocker = cast(SignalProtocol[[]], signer.usb_gui.signal_end_hwi_blocker)
-                button = SpinningButton(
-                    text=button_prefix + signer.label,
-                    signal_stop_spinning=signal_end_hwi_blocker,
-                    enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
-                    timeout=60,
-                    parent=self,
-                    svg_tools=svg_tools,
-                )
-            else:
-                button = QPushButton(button_prefix + signer.label, parent=self)
-                button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
-            self.buttons.append(button)
-            callback = partial(signer.sign, self.psbt)
-            button.clicked.connect(callback)
-            self.layout_keystore_buttons.addWidget(button)
-
-            # forward the signal_signature_added from each signer to self.signal_signature_added
-            signer.signal_signature_added.connect(self.signal_signature_added)
-            signer.signal_final_tx_received.connect(self.signal_tx_received)
-
-
-class SignerUIHorizontal(QWidget):
-    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
-    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
-
-    def __init__(
-        self,
-        signature_importers: list[AbstractSignatureImporter],
-        psbt: bdk.Psbt,
-        network: bdk.Network,
-    ) -> None:
-        """Initialize instance."""
-        super().__init__()
-        self.signature_importers = signature_importers
-        self.psbt = psbt
-        self.network = network
-
-        self.layout_keystore_buttons = QVBoxLayout(self)
-
-        for signer in self.signature_importers:
-            button = QPushButton(signer.label)
-            button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
-            action = partial(signer.sign, self.psbt)
-            button.clicked.connect(action)
-            self.layout_keystore_buttons.addWidget(button)
-
-            # forward the signal_signature_added from each signer to self.signal_signature_added
-            signer.signal_signature_added.connect(self.signal_signature_added)
-            signer.signal_final_tx_received.connect(self.signal_tx_received)

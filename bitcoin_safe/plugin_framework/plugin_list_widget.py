@@ -50,9 +50,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.icon_label import ClickableLabel
+from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.plugin_framework.plugin_card_frame import PluginCardFrame
 
 if TYPE_CHECKING:
     from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
@@ -60,7 +59,7 @@ if TYPE_CHECKING:
     from bitcoin_safe.plugin_framework.plugin_manager import SourceCatalogItem
 
 
-class BasePluginWidget(PluginCardFrame):
+class BasePluginWidget(CardBase):
     def __init__(
         self,
         title: str,
@@ -70,29 +69,16 @@ class BasePluginWidget(PluginCardFrame):
         icon_size: tuple[int, int] = (40, 40),
         parent: QWidget | None = None,
     ) -> None:
-        super().__init__(parent)
+        super().__init__(parent=parent, expansion_mode=CardExpansionMode.FIXED_EXPANDED)
         self.icon_size = icon_size
 
-        self._layout = QVBoxLayout(self)
-        self._layout.setContentsMargins(10, 10, 10, 10)
-        self._layout.setSpacing(10)
-
-        self.content_row = QHBoxLayout()
-        self.content_row.setContentsMargins(0, 0, 0, 0)
-        self.content_row.setSpacing(12)
-        self._layout.addLayout(self.content_row)
-
-        self.icon_label = ClickableLabel(self)
-        self.icon_label.setPixmap(icon.pixmap(QSize(*icon_size), self.devicePixelRatioF()))
-        self.content_row.addWidget(self.icon_label, alignment=Qt.AlignmentFlag.AlignTop)
-
-        self.text_container = QWidget(self)
-        self.text_layout = QVBoxLayout(self.text_container)
-        self.text_layout.setContentsMargins(0, 0, 0, 0)
-        self.text_layout.setSpacing(4)
-        self.content_row.addWidget(self.text_container, stretch=1)
-
-        self.title_label = QLabel(f"<b>{title}</b>", self.text_container)
+        self._layout = self.root_layout
+        self.content_row = self.header_layout
+        self.icon_label = self.header_icon
+        self.icon_label.setFixedSize(QSize(*icon_size))
+        self.text_container = self.header_text_widget
+        self.text_layout = self.header_text_layout
+        self.title_label = self.header_title
         self.title_label.setTextFormat(Qt.TextFormat.RichText)
 
         self.metadata_row = QWidget(self.text_container)
@@ -121,7 +107,7 @@ class BasePluginWidget(PluginCardFrame):
         self.metadata_layout.addWidget(self.provider_label)
         self.metadata_layout.addStretch()
 
-        self.description_label = QLabel(description, self.text_container)
+        self.description_label = self.header_subtitle
         self.description_label.setTextFormat(Qt.TextFormat.RichText)
         self.description_label.setWordWrap(True)
         self.description_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
@@ -131,16 +117,14 @@ class BasePluginWidget(PluginCardFrame):
         self.status_label.setWordWrap(True)
         self.status_label.setForegroundRole(QPalette.ColorRole.Dark)
 
-        self.text_layout.addWidget(self.title_label)
-        self.text_layout.addWidget(self.metadata_row)
-        self.text_layout.addWidget(self.description_label)
+        self.text_layout.insertWidget(1, self.metadata_row)
         self.text_layout.addWidget(self.status_label)
 
-        self.details_container = QWidget(self.text_container)
+        self.details_container = QWidget(self.content_widget)
         self.details_layout = QVBoxLayout(self.details_container)
         self.details_layout.setContentsMargins(0, 4, 0, 0)
         self.details_layout.setSpacing(8)
-        self.text_layout.addWidget(self.details_container)
+        self.content_layout.addWidget(self.details_container)
 
         self.management_section = QWidget(self.details_container)
         self.management_buttons_container = QWidget(self.management_section)
@@ -162,12 +146,12 @@ class BasePluginWidget(PluginCardFrame):
         self.management_layout.addWidget(self.destructive_buttons_container)
         self.details_layout.addWidget(self.management_section)
 
-        self.controls_container = QWidget(self)
+        self.controls_container = QWidget(self.header_widget)
         self.controls_layout = QVBoxLayout(self.controls_container)
         self.controls_layout.setContentsMargins(0, 0, 0, 0)
         self.controls_layout.setSpacing(6)
         self.controls_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
-        self.content_row.addWidget(self.controls_container, alignment=Qt.AlignmentFlag.AlignTop)
+        self.header_right_layout.addWidget(self.controls_container, alignment=Qt.AlignmentFlag.AlignTop)
 
         self.activation_section = self.controls_container
         self.enable_checkbox = QCheckBox(self.tr("Enable"), self.controls_container)
@@ -184,6 +168,7 @@ class BasePluginWidget(PluginCardFrame):
         self.details_container.setVisible(False)
         self.management_section.setVisible(False)
         self.controls_container.setVisible(False)
+        self.set_body_content_visible(False)
         self.set_plugin_metadata(title=title, description=description, provider=provider, icon=icon)
 
     def set_plugin_metadata(
@@ -384,6 +369,7 @@ class BasePluginWidget(PluginCardFrame):
         management_visible = management_buttons_visible or destructive_buttons_visible
         self.set_management_section_visible(management_visible)
         self.details_container.setVisible(management_visible)
+        self.set_body_content_visible(management_visible)
         self.set_activation_section_visible(self._activation_section_visible())
 
     def updateUi(self) -> None:
@@ -726,6 +712,7 @@ class PaidPluginWidget(PluginWidget):
         self.subscription_section.setVisible(subscription_visible)
         self.set_management_section_visible(management_row_visible)
         self.details_container.setVisible(subscription_visible or management_row_visible)
+        self.set_body_content_visible(subscription_visible or management_row_visible)
         self.set_activation_section_visible(self._activation_section_visible())
 
 

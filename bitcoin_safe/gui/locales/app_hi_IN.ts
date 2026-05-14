@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>प्लगइन स्रोत जोड़ें</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer टोकन</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>दिखने वाला नाम</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>मैनिफेस्ट URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII-armored सार्वजनिक कुंजी यहां पेस्ट करें</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>पिन की गई सार्वजनिक कुंजी</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>इनवॉइस की समय-सीमा समाप्त होने के बाद ब्राउज़र कॉलबैक प्राप्त हुआ। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>राशि चुनें और दान इनवॉइस बनाएं।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>अपने ब्राउज़र में भुगतान पूरा करें। यदि कोई समस्या हो, तो कृपया हमसे यहां संपर्क करने में संकोच न करें: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>इनवॉइस नहीं बनाया जा सका। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>आपका ब्राउज़र स्वचालित रूप से नहीं खुल सका। कृपया पुनः प्रयास करें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>स्थानीय कॉलबैक सर्वर शुरू नहीं किया जा सका। स्वचालित पुष्टि के बिना ब्राउज़र में इनवॉइस खोला जा रहा है।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>इनवॉइस बनाएं</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>इनवॉइस तैयार है। अपने ब्राउज़र में भुगतान पूरा करें। स्वचालित पुष्टि उपलब्ध नहीं हो सकती है।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>इनवॉइस सेवा ने एक त्रुटि लौटाई ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया दान फिर से करें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया फिर से प्रयास करें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ब्राउज़र कॉलबैक के माध्यम से भुगतान की पुष्टि हुई। धन्यवाद!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>कृपया एक राशि चुनें।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>इनवॉइस का अनुरोध किया जा रहा है...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>इनवॉइस का अनुरोध किया जा रहा है... एक ब्राउज़र खुलेगा और Bitcoin Safe स्थानीय रूप से कॉलबैक सुनेगा।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>डोनेशन सर्वर तक पहुँचने में असमर्थ। कृपया बाद में पुनः प्रयास करें।</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>वॉलेट {wallet_id} की सिंक कुंजी:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>मिलान करने वाले मुद्रित पीडीएफ पर {number} शब्द बीज चिपकाएं।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>मुद्रित पीडीएफ पर {number} शब्द बीज चिपकाएं।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>कृपया पिछले चरणों को पूरा करें।</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>पिछला चरण</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>रिकवरी शीट प्रिंट करें</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>पीडीएफ प्रिंट करें (इसमें वॉलेट वर्णनकर्ता भी शामिल है)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>सक्षम करें</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>प्लगइन खोलें</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>प्रदाता: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>बिज़नेस प्लान</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>बिज़नेस प्लान एक्सेस सक्रिय है।</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>एक सदस्यता के साथ सभी सशुल्क प्लगइन अनलॉक करें और निर्धारित-भुगतान सेवा शुल्क हटाएं।</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>ब्लॉक एक्सप्लोरर में खोलें</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>समावेशी फोल्डर खोलें</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number} हार्डवेयर साइनर खरीदें                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe सभी प्रमुख हार्डवेयर साइनर का समर्थन करता है: &lt;a href="{url}"&gt;पूरी सूची देखें&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -899,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>कृपया पहले एक मल्टीसिग्नेचर वॉलेट चुनें</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>आवश्यक साइनर्स</translation>
 		</message>
@@ -916,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>वॉलेट गुण</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>पहले निःशुल्क ट्रायल शुरू करें, फिर यहां सदस्यता प्रबंधित या रीफ़्रेश करें।</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1029,33 +1136,153 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>सुरक्षित स्थानों का चयन सावधानी से करें, यह मानते हुए कि आपको अपने मल्टीसिग-वॉलेट से खर्च करने के लिए {m} में से {n} में जाना होगा।</translation>
+			<source>1. Print backup sheets</source>
+			<translation>वॉलेट नाम</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>प्रत्येक बीज बैकअप और हार्डवेयर साइनर को सुरक्षित स्थान पर रखें, जैसे:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. बैकअप शीट प्रिंट करें</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>बीज बैकअप {j} और हार्डवेयर साइनर {j} को स्थान {j} में होना चाहिए</translation>
+			<source>Backup sheet</source>
+			<translation>2. हाँ, मैंने seed शब्दों को प्रिंटआउट से जोड़ दिया है</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>हार्डवेयर साइनर को सुरक्षित स्थान पर रखें।</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>बैकअप शीट</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>बीज बैकअप को बहुत सुरक्षित स्थान पर रखें (जैसे कि तिजोरी में)।</translation>
+			<source>Backup sheet {number}</source>
+			<translation>बैकअप शीट {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>बीज बैकअप (24 शब्द) धन पर पूर्ण नियंत्रण देता है।</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>2 अलग-अलग स्थानों में वितरित करें</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>{n} अलग-अलग स्थानों में वितरित करें</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>कई स्थानों को एक ही जगह पर संग्रहीत न करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>कई स्थानों को एक ही जगह पर संग्रहीत न करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>साइनिंग डिवाइस और seed शब्दों वाली बैकअप शीट को एक ही जगह पर संग्रहीत न करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>हर स्थान ऑफलाइन और भौतिक रूप से सुरक्षित होना चाहिए।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>महत्वपूर्ण</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>स्थान</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>स्थान 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>स्थान 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>कृपया पिछले चरणों को पूरा करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>इस साइनर पर seed शब्द देखने के निर्देश खोलें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>बैकअप शीट प्रिंट करें (आवश्यक)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>PDF प्रिंट करें और seed शब्दों को प्रत्येक बैकअप शीट से जोड़ें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>बैकअप शीट प्रिंट करें और सब कुछ अलग-अलग सुरक्षित जगहों पर संग्रहीत करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>अपने बैकअप और साइनर सुरक्षित स्थानों पर रखें</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>शीट {number} / {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>हस्ताक्षरकर्ता डिवाइस</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>साइनर डिवाइस</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>प्रत्येक साइनर को उसकी बैकअप शीट और seed शब्दों के साथ उसी स्थान पर संग्रहीत करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>साइनिंग डिवाइस और seed शब्दों वाली बैकअप शीट को अलग-अलग सुरक्षित स्थानों पर संग्रहीत करें।</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>वॉल्ट {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seed शब्द देखें</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>seed शब्द देखें</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>अपने वॉलेट से खर्च करने के लिए आपको {n} स्थानों में से {m} स्थानों पर जाना होगा।</translation>
 		</message>
 	</context>
 	<context>
@@ -1096,6 +1323,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>संदेश (वैकल्पिक)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>संदेश (वैकल्पिक)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1182,6 +1419,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>पूर्ण (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safe के लिए धन्यवाद!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>प्लगइन हटाएं</translation>
 		</message>
 	</context>
 	<context>
@@ -1340,43 +1591,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>पिछला चरण</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>पुन: प्रयास करें</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>हाँ, मैंने इतिहास में लेन-देन देखा है</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>कृपया हार्डवेयर साइनर का नाम (स्टिकर लेबल) दर्ज करें</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>स्टिकर लेबल</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>सफलता! कृपया इस चरण को सभी हार्डवेयर साइनरों के साथ पूरा करें और फिर अगला क्लिक करें।</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>सेटअप पूरा नहीं हुआ। कृपया दोहराएं।</translation>
 		</message>
 	</context>
 	<context>
@@ -1597,11 +1811,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>अगला हस्ताक्षरकर्ता</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>अगला चरण</translation>
 		</message>
@@ -1609,11 +1818,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>पिछला चरण</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>पिछला हस्ताक्षरकर्ता</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1639,6 +1843,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>प्लगइन हटाएं</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) वॉलेट को आपके पते निजी रखते हुए संबंधित लेनदेन खोजने की अनुमति देते हैं।</translation>
 		</message>
@@ -1649,13 +1858,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>पहली सिंक के दौरान Bitcoin Safe कई बिटकॉइन नोड्स से कॉम्पैक्ट ब्लॉक सारांश प्राप्त करता है। यह ब्लॉक डेटा डाउनलोड करने का एक निजी तरीका है।</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>बीत चुका समय {elapsed} | अनुमानित शेष {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>बीत चुका समय {elapsed} | अनुमानित शेष {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe गोपनीयता के लिए कई नोड्स से ब्लॉक सारांश डाउनलोड करता है। इस प्रारंभिक सिंक के बाद, अपडेट तेज़ होंगे। यदि आपके पास अपना Electrum सर्वर है या आप इंतज़ार नहीं करना चाहते, तो नेटवर्क सेटिंग्स में किसी सार्वजनिक Electrum सर्वर से कनेक्ट करें।</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>नेटवर्क सेटिंग्स</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1767,13 +1981,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>उन्नत</translation>
+			<source>Add New Signer</source>
+			<translation>नया साइनर जोड़ें</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>विवरण</translation>
+			<source>Change device type</source>
+			<translation>डिवाइस प्रकार बदलें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>कनेक्ट करें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>डेरिवेशन पाथ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>डिवाइस निर्देश</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1792,10 +2021,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>हस्ताक्षर डिवाइस का नाम: ......
-हस्ताक्षर डिवाइस का स्थान: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>QR, USB या टेक्स्ट/फ़ाइल इंपोर्ट के साथ साइनर डेटा इंपोर्ट करें।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;समर्थित हार्डवेयर साइनरों&lt;/a&gt; के बारे में और जानें।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt; के बारे में और जानें।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1809,13 +2046,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
+			<source>Open the signer guide</source>
+			<translation>साइनर गाइड खोलें</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>कृपया एक मान्य कुंजी मूल दर्ज करें।</translation>
+			<source>Personal notes:</source>
+			<translation>व्यक्तिगत नोट्स:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>कृपया सुनिश्चित करें कि हार्डवेयर साइनर तक कोई अन्य प्रोग्राम पहुँच नहीं रहा है</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1839,8 +2081,43 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>क्यूआर कोड</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>रजिस्टर करें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>मल्टीसिग फिर से रजिस्टर करें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>बीज</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>ब्रांड चुनें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>मॉडल चुनें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>साइनर ब्रांड चुनें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>साइनर मॉडल चुनें</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1859,18 +2136,28 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>यूएसबी</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>इस साइनर से संबंधित नोट्स, मेमो आदि यहाँ लिखें...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub मूल</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} यहाँ उपयोग नहीं किया जा सकता।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} यहाँ उपयोग नहीं किया जा सकता।</translation>
+			<source>{device} instructions</source>
+			<translation>{device} निर्देश</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1915,48 +2202,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>आपके आयातित की उत्पत्तियाँ {key_origins} अलग हैं! कृपया दोबारा जांच लें अगर आपने इसे इरादतन किया था।</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>बैकअप सीक्रेट सिंक की:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>प्रत्येक कंप्यूटर पर सिंक और चैट टैब में विश्वसनीय कंप्यूटरों का चयन करें।</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>कोलैबोरेशन वीडियो</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>सक्षम करें</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>पते के लेबल्स और श्रेणियों का एन्क्रिप्टेड क्लाउड बैकअप</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>समाप्त</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>मल्टी-कंप्यूटर सिंक्रोनाइजेशन और चैट</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>सिंक्रनाइज़ेशन वीडियो</translation>
 		</message>
 	</context>
 	<context>
@@ -2182,6 +2427,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;प्लगइन्स</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;पिछला वॉलेट/टैब</translation>
 		</message>
@@ -2259,6 +2509,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id} नाम का वॉलेट पहले से मौजूद है। कृपया कोई दूसरा नाम चुनें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2367,6 +2622,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet पर हॉट वॉलेट अक्षम हैं। आप वास्तविक Bitcoin का उपयोग किए बिना Bitcoin Safe का परीक्षण करने के लिए Testnet पर स्विच कर सकते हैं।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>खुला रखें</translation>
 		</message>
@@ -2394,6 +2655,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>नया टैब {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>इस नेटवर्क के लिए कोई डेमो वॉलेट उपलब्ध नहीं है।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2449,6 +2715,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>अपना बिटकॉइन लेन-देन या PSBT यहाँ पेस्ट करें या एक फ़ाइल ड्रॉप करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>कृपया एक वॉलेट नाम चुनें</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2628,6 +2899,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>वॉलेट {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>वॉलेट्स अभी भी सिंक हो रहे हैं, और यदि आप ऐप बंद करते हैं तो सिंकिंग को शुरू से शुरू करना होगा। क्या आप इसे ट्रे में छिपाना चाहते हैं?</translation>
@@ -2656,11 +2932,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>हाँ, लेनदेन के लिए पूर्ण स्कैन</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>नया</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2788,6 +3059,43 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (स्थानीय समय)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>बनाएं</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>नया वॉलेट बनाएं</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>वास्तविक bitcoin पर जाने से पहले सुरक्षित वातावरण में अभ्यास करें।&lt;br&gt;• डेमो वॉलेट के साथ ऐप एक्सप्लोर करें&lt;br&gt;• ऐसे टेस्ट कॉइन उपयोग करें जिनका कोई मौद्रिक मूल्य नहीं है&lt;br&gt;• सीखने, प्रयोग करने और सुरक्षित रूप से गलतियाँ करने के लिए आदर्श&lt;br&gt;&lt;i&gt;Signet नेटवर्क&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>सुरक्षित प्लेग्राउंड</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>सुरक्षित वॉलेट</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>वह Bitcoin नेटवर्क चुनें जिसे आप उपयोग करना चाहते हैं</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>जब आप वास्तविक धन के लिए तैयार हों तो वास्तविक Bitcoin नेटवर्क का उपयोग करें।&lt;br&gt;• वास्तविक bitcoin भेजें और प्राप्त करें&lt;br&gt;• आपके दीर्घकालिक वॉलेट सेटअप के लिए सबसे अच्छा&lt;br&gt;• लेन-देन का वास्तविक मूल्य और वास्तविक परिणाम होते हैं&lt;br&gt;&lt;i&gt;Mainnet नेटवर्क&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2959,8 +3267,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>प्रॉक्सी सिंक और चैट सुविधा पर लागू नहीं होती!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>प्रॉक्सी Sync&amp;Chat प्लगइन और सदस्यता खरीद के दौरान लागू नहीं होता!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2984,58 +3293,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>1 सुरक्षित स्थान बीज बैकअप को स्टोर करने के लिए आवश्यक है (कागज या स्टील पर)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 बीज (24 गुप्त शब्द) आपके फंड तक पहुंचने के लिए सब कुछ है</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 हस्ताक्षर उपकरण</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 में से 3 मल्टी-हस्ताक्षर वॉल</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3 सुरक्षित स्थान (प्रत्येक में 1 बीज बैकअप + वॉलेट वर्णनकर्ता आवश्यक हैं)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 हस्ताक्षर उपकरण</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>बड़े फंडों के लिए सबसे अच्छा</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>मध्यम आकार के फंडों के लिए सबसे अच्छा</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>मल्टी-हस्ताक्षर चुनें</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>एकल हस्ताक्षर चुनें</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>हानि:</translation>
+			<source>Connect Device(s)</source>
+			<translation>डिवाइस कनेक्ट करें</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3044,49 +3303,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>कस्टम वॉलेट बनाएं या आयात करें</translation>
+			<source>Custom / Recovery</source>
+			<translation>कस्टम / रिकवरी</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>अपनी मर्ज़ी का वॉलेट बनाएं या मौजूदा वॉलेट आयात करें</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>आपके सेल्फ-कस्टडी वॉलेट के लिए निर्देशित सेटअप।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>अपनी जरूरतों के अनुसार वॉलेट को अनुकूलित करें</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>हॉट सिंगल सिग्नेचर वॉलेट</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>यदि 1 बीज खो गया या चोरी हो गया, तो सभी फंड नए वॉलेट में 2 शेष बीज + वॉलेट वर्णनकर्ता (QR-कोड) के साथ स्थानांतरित किए जा सकते हैं</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>समर्थित हार्डवेयर वॉलेट और साइनरों की सूची खोलें।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>यदि आप हैकर्स को अपना बीज देने में धोखा खा जाते हैं, तो आपका बिटकॉइन तुरंत चोरी हो जाएगा</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>सुरक्षित रूप से खोज करने के लिए कुछ टेस्ट कॉइन वाले मौजूदा वॉलेट के साथ प्रयोग करें।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>पुनर्प्राप्ति के मामले में ऑनलाइन कम सहायता सामग्री</translation>
+			<source>Public Demo wallet</source>
+			<translation>पब्लिक डेमो वॉलेट</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>लाभ:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>तुरंत उपयोग के लिए जल्दी से वॉलेट जनरेट करें, किसी मौजूदा कुंजी की आवश्यकता नहीं।&lt;br&gt;&lt;small&gt;Mainnet पर अक्षम है क्योंकि इंटरनेट से जुड़ा कंप्यूटर पैसे का प्रतिनिधित्व करने वाले रहस्यों को सुरक्षित रूप से रखने के लिए डिज़ाइन नहीं किया गया है।&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>एकल हस्ताक्षर वॉलेट</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>तुरंत उपयोग के लिए जल्दी से वॉलेट जनरेट करें, किसी मौजूदा कुंजी की आवश्यकता नहीं।&lt;br&gt;&lt;small&gt;इंटरनेट से जुड़े कंप्यूटर पर कुंजियाँ बनाना और संग्रहीत करना असुरक्षित है। सामान्य-उद्देश्य वाला कंप्यूटर पैसे का प्रतिनिधित्व करने वाले रहस्यों को रखने के लिए डिज़ाइन नहीं किया गया है।&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>वॉलेट की पुनर्प्राप्ति के लिए वॉलेट वर्णनकर्ता (QR-कोड) आवश्यक है</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>हार्डवेयर वॉलेट या descriptor से वॉलेट पुनर्स्थापित करें।</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>समर्थित साइनर</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>वॉलेट का नाम</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3174,6 +3447,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>मासिक</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>मुफ़्त ट्रायल शुरू करें</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>सब्सक्रिप्शन</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>वार्षिक</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>प्रबंधित करें</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>स्थिति रीफ़्रेश करें</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>सब्सक्रिप्शन:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3238,93 +3555,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>इनवॉइस की समय-सीमा समाप्त होने के बाद ब्राउज़र कॉलबैक प्राप्त हुआ। कृपया फिर से प्रयास करें।</translation>
+			<source>Update</source>
+			<translation>अपडेट</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>राशि चुनें और दान इनवॉइस बनाएं।</translation>
+			<source>Update available: {update_target}</source>
+			<translation>अपडेट उपलब्ध: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>अपने ब्राउज़र में भुगतान पूरा करें। यदि कोई समस्या हो, तो कृपया हमसे इस पते पर संपर्क करने में संकोच न करें: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target} पर अपडेट करें</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>इनवॉइस नहीं बनाया जा सका। कृपया फिर से प्रयास करें।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>आपका ब्राउज़र स्वचालित रूप से नहीं खुल सका। कृपया पुनः प्रयास करें।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>स्थानीय कॉलबैक सर्वर शुरू नहीं किया जा सका। स्वचालित पुष्टि के बिना ब्राउज़र में इनवॉइस खोला जा रहा है।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>इनवॉइस बनाएं</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>इनवॉइस तैयार है। अपने ब्राउज़र में भुगतान पूरा करें। स्वचालित पुष्टि उपलब्ध नहीं हो सकती है।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>इनवॉइस सेवा ने एक त्रुटि लौटाई ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया दान फिर से करें।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>इनवॉइस के समय समाप्त होने से पहले कोई ब्राउज़र कॉलबैक प्राप्त नहीं हुआ। कृपया फिर से प्रयास करें।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>ब्राउज़र कॉलबैक के माध्यम से भुगतान की पुष्टि हुई। धन्यवाद!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>कृपया दान की राशि और मुद्रा चुनें।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>इनवॉइस का अनुरोध किया जा रहा है...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>इनवॉइस का अनुरोध किया जा रहा है... एक ब्राउज़र खुलेगा और Bitcoin Safe स्थानीय रूप से कॉलबैक सुनेगा।</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>डोनेशन सर्वर तक पहुँचने में असमर्थ। कृपया बाद में पुनः प्रयास करें।</translation>
+			<source>Version {version}</source>
+			<translation>संस्करण {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>सक्षम/अक्षम करें</translation>
+			<source>Explore plugins</source>
+			<translation>प्लगइन एक्सप्लोर करें</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>इस वॉलेट के लिए प्लगइन उपलब्ध नहीं हैं, इसलिए यहाँ कॉन्फ़िगर करने के लिए कुछ नहीं है।</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>इस वॉलेट के लिए उपलब्ध प्लगइन की समीक्षा करें। आप जिन्हें चाहें उन्हें अभी सक्षम कर सकते हैं और बाद में किसी भी समय प्लगइन टैब पर वापस आ सकते हैं।</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>वैकल्पिक वॉलेट इंटीग्रेशन सक्षम और प्रबंधित करें।</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>प्लगइन्स</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>रद्द करें</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>हटाएँ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>इंस्टॉल किया गया प्लगइन हटाएँ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>इंस्टॉल किया गया प्लगइन {plugin} हटाएँ?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>हटाने से पहले प्लगइन अक्षम करें।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Manifest URL और पिन की गई सार्वजनिक कुंजी आवश्यक हैं।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>प्लगइन ऑपरेशन विफल रहा।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>प्लगइन स्रोत {source_id} मौजूद नहीं है।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>इंस्टॉल किए गए प्लगइन फिर से जाँचे गए।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>इंस्टॉल किए गए प्लगइन फिर से जाँचे गए। {count} प्लगइन अमान्य हैं।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>प्लगइन स्रोत हटाएँ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>प्लगइन स्रोत {source} हटाएँ?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>यह प्लगइन हटाया नहीं जा सकता।</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>सभी भुगतान किए गए प्लगइन और सब्सक्रिप्शन-गेटेड सेवा शुल्कों पर लागू होता है।</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Business प्लान</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>प्लगइन्स</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>स्रोत</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>{count} प्लगइन इंस्टॉल होने के दौरान हटाया नहीं जा सकता।</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>हटाएँ</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>अंतिम त्रुटि: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>रिफ्रेश करें</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>स्रोत को हटाने से पहले इस स्रोत से इंस्टॉल किए गए प्लगइन्स हटाएँ।</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>स्रोत ID: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3737,18 +4136,13 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>बैलेंस = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>प्राप्ति की जांच करें</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>अगला चरण</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>पूर्ण - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3757,29 +4151,49 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>पिछला चरण</translation>
+			<source>Receive Test</source>
+			<translation>प्राप्त परीक्षण</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ( {test_amount} से कम ) प्राप्त करें।                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt;                     यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च का परीक्षण करना होगा।                      &lt;br&gt;                     इसलिए वॉलेट में बड़ी मात्रा में Bitcoin भेजने से पहले, खर्च का परीक्षण करना और सभी साइनरों का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;अभी बड़ी राशि वॉलेट में न भेजें। कृपया पहले सभी self-send परीक्षण पूरे करें!&lt;/b&gt;                    </translation>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ({test_amount} से कम) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए वॉलेट में पर्याप्त मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी हस्ताक्षरकर्ताओं का परीक्षण करना &lt;b&gt;अत्यंत महत्वपूर्ण&lt;/b&gt; है। &lt;br&gt; &lt;br&gt; &lt;b&gt;अभी वॉलेट में बड़ी राशि न भेजें। कृपया पहले सभी स्वयं-भेजने के परीक्षण पूरे करें!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>प्राप्त करने के निर्देश</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>पहचाना गया लेन-देन</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>हाल ही में खोले गए वॉलेट</translation>
+			<source>ALL WALLETS</source>
+			<translation>सभी वॉलेट</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>हाल के वॉलेट</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>फ़ाइल एक्सप्लोरर में दिखाएँ</translation>
 		</message>
 	</context>
 	<context>
@@ -3924,38 +4338,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>२. बिटकॉइन सुरक्षित में वॉलेट जानकारी आयात करें</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>अगला हस्ताक्षरकर्ता</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>अगला चरण</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>पिछला चरण</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>पिछला हस्ताक्षरकर्ता</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>चरण छोड़ें</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>हाँ, मैंने {n} हार्डवेयर साइनर पर मल्टीसिग पंजीकृत किया है</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>प्रत्येक साइनिंग डिवाइस पर multisig वॉलेट पंजीकृत करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -3999,6 +4383,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>कोई फ़ाइल नहीं चुनी गई</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>डेमो सदस्यता प्लगइन</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient पर आधारित उदाहरण प्लगइन। सदस्यता-गेटेड सक्रियण और प्लगइन-मैनेजर कार्रवाइयों को सत्यापित करने के लिए इसका उपयोग करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -4064,14 +4460,38 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>पूर्ण - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>इस कार्ड में लेन-देन बनाएँ।</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>लंबित - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>स्वयं-भेजें परीक्षण {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>नीचे दिए गए लेन-देन पर हस्ताक्षर करें और उसे प्रसारित करें।</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>खर्च परीक्षण छोड़ें?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>हम आपके वॉलेट से आपके वॉलेट के दूसरे पते पर भेज रहे हैं (self-send)।&lt;br&gt; यह हस्ताक्षर प्रक्रिया का अभ्यास करता है और सुनिश्चित करता है कि सभी हार्डवेयर साइनर सही तरीके से सेटअप हैं।</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>लेन-देन तैयार होने की प्रतीक्षा की जा रही है।</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4288,20 +4708,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" पर {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>उपलब्ध संस्करण: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>लेबल मुद्रित करें</translation>
+			<source>Install {version}</source>
+			<translation>इंस्टॉल करें {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>अपने हार्डवेयर पर निम्नलिखित स्टिकर लगाएं:</translation>
+			<source>Installed version: {version}</source>
+			<translation>इंस्टॉल किया गया संस्करण: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>इंस्टॉल किया गया {installed}; अपडेट उपलब्ध: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>नवीनतम {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available} पर अपडेट करें</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>संस्करण {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>संस्करण {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>प्लगइन स्रोत जोड़ें...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>बंद करें</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>कॉन्फ़िगर किए गए प्लगइन स्रोत</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>अभी तक कोई प्लगइन स्रोत नहीं जोड़ा गया।</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>प्लगइन स्रोत</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>इंस्टॉल किए गए प्लगइन्स फिर से जाँचें</translation>
 		</message>
 	</context>
 	<context>
@@ -4797,11 +5274,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>अगला चरण</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBF के लिए सभी आवश्यक लेन-देन विवरण उपलब्ध नहीं हैं</translation>
 		</message>
@@ -4820,11 +5292,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>कृपया पहले वॉलेट का मौजूदा स्थानीय लेन-देन हटाएँ।</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>पिछला चरण</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5099,18 +5566,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>पिछला चरण</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>हां, मैं सुनिश्चित हूं कि सभी {number} शब्द सही हैं</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5336,6 +5791,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 साइनर</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2-में-से-3 मल्टी सिग्नेचर</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3-में-से-5 मल्टी सिग्नेचर</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>1 साइनिंग डिवाइस और उसके बैकअप seed के खो जाने को सहन कर सकता है</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>2 साइनिंग डिवाइस और उनके बैकअप seeds के खो जाने को सहन कर सकता है</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>वॉलेट टेम्पलेट चुनें</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>कमियाँ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>जारी रखें</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>उच्च जटिलता</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>यदि साइनर डिवाइस और seed बैकअप खो जाता है, तो धन खो जाएगा</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>दीर्घकालिक कोल्ड स्टोरेज</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>दीर्घकालिक कोल्ड स्टोरेज (2-में-से-3 मल्टी सिग्नेचर)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>कम जटिलता</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>मध्यम जटिलता</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>कृपया एक वॉलेट नाम चुनें</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>पिछला चरण</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>लाभ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>पुनर्प्राप्ति</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>आवश्यक</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>seed बैकअप संग्रहीत करने के लिए एक्सेस-नियंत्रित 1 सुरक्षित स्थान की आवश्यकता है</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>seed बैकअप संग्रहीत करने के लिए एक्सेस-नियंत्रित 3 सुरक्षित स्थानों की आवश्यकता है</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>seed बैकअप संग्रहीत करने के लिए एक्सेस-नियंत्रित 5 सुरक्षित स्थानों की आवश्यकता है</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>दीर्घकालिक स्व-कस्टडी के लिए मज़बूत वॉलेट।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>सूची से एक टेम्पलेट चुनें।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>1 हस्ताक्षरकर्ता और 1 seed बैकअप के साथ सेल्फ-कस्टडी।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>सरल कोल्ड स्टोरेज</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>सरल कोल्ड स्टोरेज (1 हस्ताक्षरकर्ता)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>एकल विफलता बिंदु से बचने के लिए seed बैकअप को डिवाइस से अलग संग्रहीत करें।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>अत्यंत मजबूत स्टोरेज</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>अत्यंत मजबूत स्टोरेज (3-of-5 मल्टी सिग्नेचर)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>वॉलेट डिस्क्रिप्टर वाली रिकवरी शीट को प्रत्येक seed बैकअप के साथ संग्रहीत किया जाना चाहिए।</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>कुल</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>वॉलेट नाम</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>हस्ताक्षरकर्ता</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>हस्ताक्षरकर्ता</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5343,23 +5975,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Self-Send परीक्षण</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>बीज बैकअप</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>हार्डवेयर साइनर खरीदें</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>बीज उत्पन्न करें</translation>
+			<source>Choose template</source>
+			<translation>टेम्पलेट चुनें</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5368,8 +5985,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>हार्डवेयर साइनर को लेबल करें</translation>
+			<source>Plugins</source>
+			<translation>प्लगइन्स</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>पिछला चरण</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5385,6 +6007,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>साइनर्स पर मल्टीसिग पंजीकृत करें</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>लेन-देन की समीक्षा करें और तैयार होने पर इसे बनाएँ।</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5408,17 +6035,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>सिंक &amp; चैट</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>परीक्षण लेनदेन  '{tx_text}'  सफलतापूर्वक पूरा हुआ। कृपया self-send परीक्षण जारी रखें: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>हस्ताक्षरकर्ता {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5427,8 +6045,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>बैकअप मान्य करें</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>लेन-देन बनाया गया। नीचे इस पर हस्ताक्षर करें और प्रसारित करें, फिर वॉलेट द्वारा पहचाने जाने की प्रतीक्षा करें।</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>लेन-देन को वॉलेट ने पहचान लिया।</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>वॉलेट द्वारा प्रसारित लेन-देन को पहचानने की प्रतीक्षा की जा रही है।</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5561,6 +6189,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>समाप्त</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6973,6 +7606,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>इस वॉलेट और श्रेणियों तक पूर्ण पढ़ने और लिखने की पहुँच।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>इस वॉलेट के लिए पूर्ण पढ़ने और लिखने की पहुँच, जिसमें बैलेंस, लेनदेन और UTXO शामिल हैं।</translation>
 		</message>
@@ -6988,8 +7626,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>नए लेन-देन या ब्लॉकचेन सिंक जैसे वॉलेट गतिविधि इवेंट की सदस्यता लें।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>नए लेनदेन या ब्लॉकचेन सिंक जैसी वॉलेट गतिविधि घटनाओं की सदस्यता लें। यह लेनदेन और PSBT खोलने को भी सक्षम करता है।</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>अज्ञात विवरण</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7107,25 +7755,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Business प्लान एक्सेस सक्रिय है।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>रद्द करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>जारी रखें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>वर्तमान सदस्यता स्थिति निर्धारित नहीं की जा सकी।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>वर्तमान स्थिति: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>सदस्यता रिमाइंडर और नवीनीकरण नोटिस के लिए ईमेल पता:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>मुफ़्त परीक्षण खरीद ने प्रबंधन पेलोड वापस नहीं किया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>मुफ़्त परीक्षण खरीद ने सत्र वापस नहीं किया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>मुफ़्त परीक्षण खरीद के लिए वॉलेट डिस्क्रिप्टर आवश्यक है।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>अंतिम जाँच: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>अंतिम रिफ्रेश त्रुटि: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>सदस्यता प्रबंधित करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>प्रबंधन URL सहेजा गया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>अभी तक कोई सदस्यता सक्रिय नहीं की गई है।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>सदस्यता खोलें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>कृपया एक मान्य ईमेल पता दर्ज करें।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>सदस्यता स्थिति रिफ्रेश करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>सदस्यता रिमाइंडर</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>सदस्यता आवश्यक</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>सदस्यता स्थिति रिफ्रेश विफल रहा।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>सदस्यता स्थिति रिफ्रेश ने कोई परिणाम वापस नहीं किया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>मुफ़्त परीक्षण सक्रियण विफल रहा।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>मुफ़्त परीक्षण सक्रियण का समय समाप्त हो गया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>यह प्लगइन वर्तमान में निष्क्रिय है। इसे फिर से सक्षम करने से पहले सदस्यता बढ़ाएँ।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>मुफ़्त परीक्षण सक्रिय होने की प्रतीक्षा की जा रही है...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} कृपया बाद में पुनः प्रयास करें। यदि यह फिर भी काम नहीं करता है, तो {email} से संपर्क करें।</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezor पर दिखाया गया 6-अंकीय पेयरिंग कोड दर्ज करें:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Trezor कीपैड लेआउट का उपयोग करके PIN दर्ज करें (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezor पेयर करें</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor अनलॉक करें</translation>
 		</message>
 	</context>
 	<context>

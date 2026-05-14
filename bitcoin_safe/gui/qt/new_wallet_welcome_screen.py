@@ -30,78 +30,450 @@
 from __future__ import annotations
 
 import logging
-from typing import cast
+from pathlib import Path
+from typing import Protocol, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, Qt, pyqtSignal
+from PyQt6.QtGui import QHideEvent, QPalette, QShowEvent
 from PyQt6.QtWidgets import (
-    QGroupBox,
+    QDialog,
     QHBoxLayout,
     QLabel,
-    QPushButton,
+    QLineEdit,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
+from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
+from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
-from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.gui.qt.wallet_list import RecentlyOpenedWalletsGroup
-from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.gui.qt.styled_card_frame import BaseBorderCardFrame
+from bitcoin_safe.gui.qt.util import color_with_alpha, get_neutral_surface_colors, svg_tools, to_color_name
+from bitcoin_safe.hardware_signers import SUPPORTED_HARDWARE_SIGNERS_URL
 from bitcoin_safe.signals import Signals
-
-from .util import svg_widget_hardware_signer
 
 logger = logging.getLogger(__name__)
 
 
-class NewWalletWelcomeScreen(QWidget):
-    signal_onclick_multisig_signature = cast(SignalProtocol[[]], pyqtSignal())
-    signal_onclick_single_signature = cast(SignalProtocol[[]], pyqtSignal())
-    signal_onclick_custom_signature = cast(SignalProtocol[[]], pyqtSignal())
+class _ConfigWithWalletDir(Protocol):
+    wallet_dir: str
+
+
+class _WindowWithConfig(Protocol):
+    config: _ConfigWithWalletDir
+
+
+class WelcomeActionCard(CardBase):
+    clicked = cast(SignalProtocol[[]], pyqtSignal())
+
+    def __init__(self, icon_name: str, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent=parent, expansion_mode=CardExpansionMode.FIXED_COLLAPSED)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.set_header_clickable(True)
+        self.set_body_content_visible(False)
+        self.signal_header_clicked.connect(self.clicked.emit)
+        self.register_header_click_target(self)
+
+        self.root_layout.setContentsMargins(18, 16, 18, 16)
+        self.root_layout.setSpacing(0)
+        self.header_layout.setSpacing(14)
+        self.header_text_layout.setSpacing(4)
+
+        self.label_icon = self.header_icon
+        self.label_icon.setFixedWidth(40)
+        self.set_icon(icon_name, size=(26, 26))
+        self.label_title = self.header_title
+        self.label_title.setWordWrap(True)
+        self.label_title.setTextFormat(Qt.TextFormat.RichText)
+        self.label_description = self.header_subtitle
+        self.label_description.setWordWrap(True)
+        self.label_description.setTextFormat(Qt.TextFormat.RichText)
+
+    def set_content(self, title: str, description: str) -> None:
+        """Set the card content."""
+        self.label_title.setText(f"<b>{title}</b>")
+        self.label_description.setText(description)
+
+
+class NetworkChoiceCard(CardBase):
+    clicked = cast(SignalProtocol[[]], pyqtSignal())
+
+    def __init__(self, icon_name: str, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent=parent, expansion_mode=CardExpansionMode.FIXED_EXPANDED)
+        self._refreshing_style = False
+        self.signal_header_clicked.connect(self.clicked.emit)
+        self.set_header_clickable(True)
+        self.register_header_click_target(self)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setMinimumHeight(340)
+        self._border_radius = 8
+        self.header_widget.hide()
+        self.root_layout.setContentsMargins(0, 0, 0, 0)
+        self.content_layout.setContentsMargins(28, 24, 28, 24)
+        self.content_layout.setSpacing(0)
+
+        self.label_icon = QLabel(self.content_widget)
+        self.label_icon.setFixedSize(34, 34)
+        self.label_icon.setPixmap(svg_tools.get_QIcon(icon_name).pixmap(34, 34))
+        self.content_layout.addWidget(self.label_icon, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        self.content_layout.addSpacing(16)
+
+        self.label_eyebrow = QLabel(self.content_widget)
+        eyebrow_font = self.label_eyebrow.font()
+        eyebrow_font.setPointSize(max(eyebrow_font.pointSize() - 1, 8))
+        eyebrow_font.setCapitalization(eyebrow_font.Capitalization.AllUppercase)
+        self.label_eyebrow.setFont(eyebrow_font)
+        self.content_layout.addWidget(self.label_eyebrow)
+
+        self.content_layout.addSpacing(8)
+
+        self.label_title = QLabel(self.content_widget)
+        title_font = self.label_title.font()
+        title_font.setBold(True)
+        title_font.setPointSize(title_font.pointSize() + 6)
+        self.label_title.setFont(title_font)
+        self.label_title.setWordWrap(True)
+        self.content_layout.addWidget(self.label_title)
+
+        self.content_layout.addSpacing(14)
+
+        self.label_description = QLabel(self.content_widget)
+        self.label_description.setWordWrap(True)
+        self.content_layout.addWidget(self.label_description)
+
+        self.content_layout.addSpacing(14)
+
+        self.label_bullets = QLabel(self.content_widget)
+        self.label_bullets.setWordWrap(True)
+        self.label_bullets.setTextFormat(Qt.TextFormat.RichText)
+        self.content_layout.addWidget(self.label_bullets)
+        self.content_layout.addStretch(1)
+        self.content_layout.addSpacing(18)
+
+        self.cta_panel = BaseBorderCardFrame(self.content_widget)
+        self.cta_panel._border_radius = 8
+        cta_layout = QVBoxLayout(self.cta_panel)
+        cta_layout.setContentsMargins(18, 12, 18, 12)
+        cta_layout.setSpacing(3)
+
+        self.label_cta_title = QLabel(self.cta_panel)
+        cta_title_font = self.label_cta_title.font()
+        cta_title_font.setBold(True)
+        self.label_cta_title.setFont(cta_title_font)
+        self.label_cta_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        cta_layout.addWidget(self.label_cta_title)
+
+        self.label_cta_caption = QLabel(self.cta_panel)
+        cta_caption_font = self.label_cta_caption.font()
+        cta_caption_font.setPointSize(max(cta_caption_font.pointSize() - 1, 8))
+        self.label_cta_caption.setFont(cta_caption_font)
+        self.label_cta_caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        cta_layout.addWidget(self.label_cta_caption)
+
+        self.content_layout.addWidget(self.cta_panel)
+
+        for widget in (
+            self.content_widget,
+            self.label_icon,
+            self.label_eyebrow,
+            self.label_title,
+            self.label_description,
+            self.label_bullets,
+            self.cta_panel,
+            self.label_cta_title,
+            self.label_cta_caption,
+        ):
+            self.register_header_click_target(widget)
+            widget.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.refresh_style()
+
+    def set_content(
+        self,
+        eyebrow: str,
+        title: str,
+        description: str,
+        bullet_points: list[str],
+        cta_title: str,
+        cta_caption: str,
+    ) -> None:
+        """Set the card content."""
+        self.label_eyebrow.setText(eyebrow)
+        self.label_title.setText(title)
+        self.label_description.setText(description)
+        items = "".join(f"<li>{item}</li>" for item in bullet_points)
+        self.label_bullets.setText(
+            f"<ul style='margin-top: 0px; margin-bottom: 0px; padding-left: 16px;'>{items}</ul>"
+        )
+        self.label_cta_title.setText(cta_title)
+        self.label_cta_caption.setText(cta_caption)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh card styling when the theme changes."""
+        super().changeEvent(a0)
+        if (
+            a0
+            and a0.type()
+            in {
+                QEvent.Type.ApplicationPaletteChange,
+                QEvent.Type.EnabledChange,
+                QEvent.Type.PaletteChange,
+            }
+            and not self._refreshing_style
+        ):
+            self.refresh_style()
+
+    def _get_style_content(self) -> str:
+        surface_colors = get_neutral_surface_colors()
+        style_content = super()._get_style_content()
+        style_content += f"\nborder: 1px solid {to_color_name(surface_colors.panel_border)};"
+        return style_content
+
+    def refresh_style(self) -> None:
+        """Refresh palette-aware styling."""
+        if not hasattr(self, "cta_panel") or self._refreshing_style:
+            return
+        self._refreshing_style = True
+        surface_colors = get_neutral_surface_colors()
+        palette = self.palette()
+        eyebrow_color = to_color_name(color_with_alpha(palette.color(QPalette.ColorRole.WindowText), 120))
+        muted_color = to_color_name(surface_colors.muted_text)
+        cta_caption_color = to_color_name(color_with_alpha(palette.color(QPalette.ColorRole.WindowText), 145))
+        self.background_color = surface_colors.content_background
+        self.cta_panel.background_color = surface_colors.panel_background
+
+        try:
+            super().refresh_style()
+            self.cta_panel.refresh_style()
+            self.label_eyebrow.setStyleSheet(
+                f"color: {eyebrow_color}; font-weight: 600; letter-spacing: 0.08em;"
+            )
+            self.label_description.setStyleSheet(f"color: {muted_color};")
+            self.label_bullets.setStyleSheet(f"color: {muted_color};")
+            self.label_cta_caption.setStyleSheet(f"color: {cta_caption_color};")
+        finally:
+            self._refreshing_style = False
+
+
+class NetworkChoiceWelcomeScreen(QWidget):
+    signal_onclick_secure_wallet = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_safe_playground = cast(SignalProtocol[[]], pyqtSignal())
     signal_remove_me = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
+
+    def __init__(self, signals: Signals, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent)
+        self.setVisible(False)
+        self.signals = signals
+
+        self.name = "Network choice tab"
+        self.create_ui()
+
+        self.card_secure_wallet.clicked.connect(self.on_click_secure_wallet)
+        self.card_safe_playground.clicked.connect(self.on_click_safe_playground)
+
+    def remove_me(self) -> None:
+        """Remove me."""
+        self.signal_remove_me.emit(self)
+
+    def on_click_secure_wallet(self) -> None:
+        """Continue on mainnet."""
+        self.signal_onclick_secure_wallet.emit()
+        self.signal_remove_me.emit(self)
+
+    def on_click_safe_playground(self) -> None:
+        """Switch to the playground network."""
+        self.signal_onclick_safe_playground.emit()
+        self.signal_remove_me.emit(self)
+
+    def add_network_choice_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
+        """Add the network-choice tab."""
+        if node := main_tabs.root.findNodeByWidget(self):
+            node.select()
+            return
+        main_tabs.root.addChildNode(
+            SidebarNode(
+                icon=svg_tools.get_QIcon("file.svg"),
+                title=self.tr("Create new wallet"),
+                data=self,
+                widget=self,
+                closable=True,
+            )
+        )
+
+    def create_ui(self) -> None:
+        """Create ui."""
+        self._layout = QVBoxLayout(self)
+        self._layout.setContentsMargins(24, 24, 24, 24)
+        self._layout.setSpacing(14)
+        self._layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.label_title = QLabel(self)
+        title_font = self.label_title.font()
+        title_font.setBold(True)
+        title_font.setPointSize(title_font.pointSize() + 6)
+        self.label_title.setFont(title_font)
+
+        self.label_subtitle = QLabel(self)
+        subtitle_font = self.label_subtitle.font()
+        self.label_subtitle.setFont(subtitle_font)
+        self.label_subtitle.setWordWrap(True)
+
+        self.cards_container = QWidget(self)
+        self.cards_layout = QHBoxLayout(self.cards_container)
+        self.cards_layout.setContentsMargins(0, 0, 0, 0)
+        self.cards_layout.setSpacing(18)
+        self.cards_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.card_secure_wallet = NetworkChoiceCard("bitcoin-bitcoin.svg", self.cards_container)
+        self.card_safe_playground = NetworkChoiceCard("bitcoin-signet.svg", self.cards_container)
+
+        self.cards_layout.addWidget(self.card_secure_wallet, stretch=1)
+        self.cards_layout.addWidget(self.card_safe_playground, stretch=1)
+
+        self._layout.addWidget(self.label_title)
+        self._layout.addWidget(self.label_subtitle)
+        self._layout.addWidget(self.cards_container)
+        self._layout.addStretch()
+
+        self.updateUi()
+        self.signals.language_switch.connect(self.updateUi)
+
+    def updateUi(self) -> None:
+        """UpdateUi."""
+        self.label_title.setText(self.tr("Where would you like to start?"))
+        self.label_subtitle.setText(
+            self.tr(
+                "Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later."
+            )
+        )
+
+        self.card_secure_wallet.set_content(
+            eyebrow=self.tr("Real sound money (BTC)"),
+            title=self.tr("Manage Real Funds"),
+            description=self.tr(
+                "Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence."
+            ),
+            bullet_points=[
+                self.tr("Send and receive real bitcoin"),
+                self.tr("Best for long-term storage"),
+                self.tr("Transactions are permanent"),
+                self.tr("Keep your seed phrase safe"),
+            ],
+            cta_title=self.tr("Setup a Wallet"),
+            cta_caption=self.tr("Uses onchain Mainnet network"),
+        )
+        self.card_safe_playground.set_content(
+            eyebrow=self.tr("Test coins (tBTC) have no value"),
+            title=self.tr("Explore Playground"),
+            description=self.tr(
+                "Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret."
+            ),
+            bullet_points=[
+                self.tr("Explore with a demo wallet"),
+                self.tr("Test coins, no monetary value"),
+                self.tr("Learn safely, risk-free"),
+            ],
+            cta_title=self.tr("Start Exploring"),
+            cta_caption=self.tr("Uses Signet test network"),
+        )
+
+
+class NewWalletWelcomeScreen(QWidget):
+    signal_onclick_hot_wallet = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_connect_devices = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_custom_signature = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_demo_wallet = cast(SignalProtocol[[]], pyqtSignal())
+    signal_remove_me = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
+    visibilityChanged = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
     def __init__(
         self,
         network: bdk.Network,
         signals: Signals,
-        signal_recently_open_wallet_changed: SignalProtocol[[list[str]]],
         parent=None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
         self.setVisible(False)
         self.signals = signals
-        self.signal_recently_open_wallet_changed = signal_recently_open_wallet_changed
 
         self.name = "New wallet tab"
         self.network = network
 
         self.create_ui()
 
-        self.pushButton_multisig.clicked.connect(self.on_pushButton_multisig)
-        self.pushButton_singlesig.clicked.connect(self.on_pushButton_singlesig)
-        self.pushButton_custom_wallet.clicked.connect(self.on_pushButton_custom_wallet)
+        self.card_hot_wallet.clicked.connect(self.on_click_hot_wallet)
+        self.card_connect_devices.clicked.connect(self.on_click_connect_devices)
+        self.card_custom_wallet.clicked.connect(self.on_click_custom_wallet)
+        self.card_demo_wallet.clicked.connect(self.on_click_demo_wallet)
         logger.debug(f"initialized welcome_screen = {self.__class__.__name__}")
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        self.visibilityChanged.emit(True)
+
+    def hideEvent(self, a0: QHideEvent | None) -> None:
+        super().hideEvent(a0)
+        self.visibilityChanged.emit(False)
+
+    @property
+    def wallet_name(self) -> str:
+        """Wallet name."""
+        return self.edit_wallet_name.text().strip()
+
+    def set_wallet_name(self, wallet_name: str) -> None:
+        """Set the suggested wallet name."""
+        self.edit_wallet_name.setText(wallet_name)
 
     def remove_me(self) -> None:
         """Remove me."""
         self.signal_remove_me.emit(self)
 
-    def on_pushButton_multisig(self):
-        """On pushButton multisig."""
-        self.signal_onclick_multisig_signature.emit()
+    def on_click_hot_wallet(self) -> None:
+        """Create a hot wallet."""
+        self.signal_onclick_hot_wallet.emit()
         self.signal_remove_me.emit(self)
 
-    def on_pushButton_singlesig(self):
-        """On pushButton singlesig."""
-        self.signal_onclick_single_signature.emit()
+    def on_click_connect_devices(self) -> None:
+        """Open the device connection flow."""
+        self.signal_onclick_connect_devices.emit()
         self.signal_remove_me.emit(self)
 
-    def on_pushButton_custom_wallet(self):
-        """On pushButton custom wallet."""
+    def on_click_custom_wallet(self) -> None:
+        """Open the custom or recovery flow."""
         self.signal_onclick_custom_signature.emit()
+        self.signal_remove_me.emit(self)
+
+    def open_custom_wallet_dialog(self) -> None:
+        """Compatibility entry point for callers that expect a wallet-name dialog."""
+        main_window = self.window()
+        wallet_dir = Path(".")
+        if main_window is not None and hasattr(main_window, "config"):
+            configured_window = cast(_WindowWithConfig, main_window)
+            wallet_dir = Path(configured_window.config.wallet_dir)
+        dialog = WalletIdDialog(wallet_dir=wallet_dir, parent=self)
+
+        def on_finished(result: int) -> None:
+            if result == int(QDialog.DialogCode.Accepted):
+                self.set_wallet_name(dialog.wallet_id)
+                self.on_click_custom_wallet()
+            dialog.deleteLater()
+
+        dialog.finished.connect(on_finished)
+        dialog.open()
+
+    def on_click_demo_wallet(self) -> None:
+        """Open the demo wallet."""
+        self.signal_onclick_demo_wallet.emit()
         self.signal_remove_me.emit(self)
 
     def add_new_wallet_welcome_tab(self, main_tabs: SidebarTree[object]) -> None:
@@ -121,162 +493,88 @@ class NewWalletWelcomeScreen(QWidget):
 
     def create_ui(self) -> None:
         """Create ui."""
-        svg_max_height = 70
-        svg_max_width = 60
-        self._layout = QHBoxLayout(self)
+        self._layout = QVBoxLayout(self)
+        self._layout.setContentsMargins(16, 16, 16, 16)
+        self._layout.setSpacing(16)
 
-        self.groupbox_recently_opened_wallets = RecentlyOpenedWalletsGroup(
-            signal_open_wallet=self.signals.open_wallet,
-            signal_recently_open_wallet_changed=self.signal_recently_open_wallet_changed,
-        )
-        self._layout.addWidget(self.groupbox_recently_opened_wallets)
+        self.left_column = QWidget(self)
+        self.left_column.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.left_layout = QVBoxLayout(self.left_column)
+        self.left_layout.setContentsMargins(0, 0, 0, 0)
+        self.left_layout.setSpacing(16)
 
-        self.groupBox_singlesig = QGroupBox(self)
-        self.verticalLayout = QVBoxLayout(self.groupBox_singlesig)
-        self.label_singlesig = QLabel(self.groupBox_singlesig)
-        # font = QFont()
-        # font.setPointSize(11)
-        # self.label_singlesig.setFont(font)
-        self.label_singlesig.setWordWrap(True)
+        self.header_wallet_name = QLabel(self.left_column)
+        self.header_wallet_name.setTextFormat(Qt.TextFormat.RichText)
 
-        self.verticalLayout.addWidget(self.label_singlesig)
+        self.edit_wallet_name = QLineEdit(self.left_column)
+        self.edit_wallet_name.setPlaceholderText(self.tr("wallet_name"))
 
-        self.groupBox_1signingdevice = QGroupBox(self.groupBox_singlesig)
-        self.groupBox_1signingdevice.setEnabled(True)
-        self.horizontalLayout_4 = QHBoxLayout(self.groupBox_1signingdevice)
+        self.card_demo_wallet = WelcomeActionCard("bi--wallet2.svg", self.left_column)
+        self.card_hot_wallet = WelcomeActionCard("bi--dice-5.svg", self.left_column)
+        self.card_connect_devices = WelcomeActionCard("hardware_signers/q-icon.svg", self.left_column)
+        self.card_custom_wallet = WelcomeActionCard("material-symbols--signature.svg", self.left_column)
+        self.connect_devices_help_label = IconLabel(parent=self.card_connect_devices.header_widget)
+        self.connect_devices_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.card_connect_devices.header_right_layout.addWidget(self.connect_devices_help_label)
+        self.pushButton_demo_wallet = self.on_click_demo_wallet
+        self.pushButton_hot_wallet = self.on_click_hot_wallet
+        self.pushButton_connect_devices = self.on_click_connect_devices
+        self.pushButton_custom_wallet = self.open_custom_wallet_dialog
 
-        svg_widgets = [
-            svg_widget_hardware_signer(
-                0, parent=self.groupBox_1signingdevice, max_height=svg_max_height, max_width=svg_max_width
-            )
-        ]
-        for svg_widget in svg_widgets:
-            self.horizontalLayout_4.addWidget(svg_widget)
+        self.left_layout.addWidget(self.header_wallet_name)
+        self.left_layout.addWidget(self.edit_wallet_name)
+        self.left_layout.addSpacing(8)
+        self.left_layout.addWidget(self.card_demo_wallet)
+        self.left_layout.addWidget(self.card_hot_wallet)
+        self.left_layout.addWidget(self.card_connect_devices)
+        self.left_layout.addWidget(self.card_custom_wallet)
+        self.left_layout.addStretch()
 
-        # set size of groupbox according to svg
-        self.groupBox_1signingdevice.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self._layout.addWidget(self.left_column)
 
-        self.verticalLayout.addWidget(self.groupBox_1signingdevice)
-
-        self.pushButton_singlesig = QPushButton(self.groupBox_singlesig)
-        self.apply_style_to_buttons(self.pushButton_singlesig)
-
-        self.verticalLayout.addWidget(self.pushButton_singlesig)
-
-        self._layout.addWidget(self.groupBox_singlesig)
-
-        self.groupBox_multisig = QGroupBox(self)
-        self.verticalLayout_multisig = QVBoxLayout(self.groupBox_multisig)
-        self.label_multisig = QLabel(self.groupBox_multisig)
-        # font1 = QFont()
-        # font1.setFamily(u"Noto Sans")
-        # # font1.setPointSize(11)
-        # font1.setBold(False)
-        # font1.setItalic(False)
-        # font1.setWeight(50)
-        # self.label_multisig.setFont(font1)
-        self.label_multisig.setWordWrap(True)
-
-        self.verticalLayout_multisig.addWidget(self.label_multisig)
-
-        self.groupBox_3signingdevices = QGroupBox(self.groupBox_multisig)
-        self.groupBox_3signingdevices.setEnabled(True)
-        self.groupBox_3signingdevices_layout = QHBoxLayout(self.groupBox_3signingdevices)
-
-        svg_widgets = [
-            svg_widget_hardware_signer(
-                i, parent=self.groupBox_3signingdevices, max_height=svg_max_height, max_width=svg_max_width
-            )
-            for i in range(3)
-        ]
-        for svg_widget in svg_widgets:
-            self.groupBox_3signingdevices_layout.addWidget(svg_widget)
-
-        self.verticalLayout_multisig.addWidget(self.groupBox_3signingdevices)
-        # set size of groupbox according to svg
-        self.groupBox_3signingdevices.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-
-        self.pushButton_multisig = QPushButton(self.groupBox_multisig)
-        self.apply_style_to_buttons(self.pushButton_multisig)
-
-        self.verticalLayout_multisig.addWidget(self.pushButton_multisig)
-
-        self._layout.addWidget(self.groupBox_multisig)
-
-        self.groupBox_3 = QGroupBox(self)
-        self.verticalLayout_2 = QVBoxLayout(self.groupBox_3)
-        self.label_custom = QLabel(self.groupBox_3)
-        # self.label_custom.setFont(font)
-        self.label_custom.setWordWrap(True)
-
-        self.verticalLayout_2.addWidget(self.label_custom)
-
-        self.pushButton_custom_wallet = QPushButton(self.groupBox_3)
-        self.apply_style_to_buttons(self.pushButton_custom_wallet)
-
-        self.verticalLayout_2.addWidget(self.pushButton_custom_wallet)
-
-        self._layout.addWidget(self.groupBox_3)
-
-        self.label_singlesig.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.label_multisig.setAlignment(Qt.AlignmentFlag.AlignTop)
-        # self.groupBox_3.setTitle(QCoreApplication.translate("Form", u"Custom", None))
-        self.label_custom.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.updateUi()
         self.signals.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
         """UpdateUi."""
-        self.label_singlesig.setText(
-            f"""<h1>{self.tr("Single Signature Wallet")}</h1>
-<ul>
-<li>{self.tr("Best for medium-sized funds")}</li>
-</ul>             
-<p><b>{self.tr("Pros:")}</b></p>
-<ul>
-<li>{self.tr("1 seed (24 secret words) is all you need to access your funds")}</li>
-<li>{self.tr("1 secure location to store the seed backup (on paper or steel) is needed")}</li>
-</ul>
-<p><b>{self.tr("Cons:")}</b></p>
-<ul>
-<li>{self.tr("If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately")}</li>
-</ul>""",
-        )
-        self.groupBox_1signingdevice.setTitle(self.tr("1 signing devices"))
-        self.pushButton_singlesig.setText(self.tr("Choose Single Signature"))
+        self.header_wallet_name.setText(f"<b>{self.tr('Wallet name')}</b>")
 
-        self.label_multisig.setText(
-            f"""<h1>{self.tr("2 of 3 Multi-Signature Wal")}let</h1>
-<ul>
-<li>{self.tr("Best for large funds")}</li>
-</ul>             
-<p><b>{self.tr("Pros:")}</b></p>
-<ul>
-<li>{self.tr("If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)")}</li>
-</ul>
-<p><b>{self.tr("Cons:")}</b></p>
-<ul>
-<li>{self.tr("3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)")}</li>
-<li>{self.tr("The wallet descriptor (QR-code) is necessary to recover the wallet")}</li>
-</ul>
-""",
-        )
-        self.groupBox_3signingdevices.setTitle(self.tr("3 signing devices"))
-        self.pushButton_multisig.setText(self.tr("Choose Multi-Signature"))
-        self.label_custom.setText(
-            html_f(
-                f"""<h1>{self.tr("Custom or import existing Wallet")}</h1>
-                <p><b>{self.tr("Pros:")}</b></p><p>{self.tr("Customize the wallet to your needs")}</p>
-                <p><b>{self.tr("Cons:")}</b></p><p>{self.tr("Less support material online in case of recovery")}</p>""",
-                add_html_and_body=True,
-            )
-        )
-        self.pushButton_custom_wallet.setText(self.tr("Create or\nimport custom wallet"))
+        on_mainnet = self.network == bdk.Network.BITCOIN
+        on_testnet = not on_mainnet
 
-    def apply_style_to_buttons(self, bnt: QPushButton):
-        bnt.setObjectName(str(id(bnt)))
-        bnt.setStyleSheet(f"""
-    #{bnt.objectName()} {{
-        padding: 15px 20px;  /* top/bottom, left/right */
-    }}
-""")
+        self.card_demo_wallet.setVisible(on_testnet)
+        self.card_hot_wallet.setEnabled(on_testnet)
+
+        self.card_demo_wallet.set_content(
+            title=self.tr("Public Demo wallet"),
+            description=self.tr("Play with an existing wallet that has some test coins to explore safely."),
+        )
+        self.card_hot_wallet.set_content(
+            title=self.tr("Hot Single Signature Wallet"),
+            description=(
+                self.tr(
+                    "Quickly generate a wallet for immediate use, no existing keys required.<br>"
+                    "<small>Generating and storing keys on an internet-connected computer is insecure. "
+                    "A general-purpose computer is not designed to hold secrets representing money.</small>"
+                )
+                if on_testnet
+                else self.tr(
+                    "Quickly generate a wallet for immediate use, no existing keys required.<br>"
+                    "<small>Disabled on Mainnet because an internet-connected computer is not designed "
+                    "to safely hold secrets representing money.</small>"
+                )
+            ),
+        )
+        self.card_connect_devices.set_content(
+            title=self.tr("Connect Device(s)"),
+            description=self.tr("Guided setup for your self-custody wallet."),
+        )
+        self.connect_devices_help_label.setText(self.tr("Supported signers"))
+        self.connect_devices_help_label.set_icon_as_help(
+            self.tr("Open the list of supported hardware wallets and signers."),
+            SUPPORTED_HARDWARE_SIGNERS_URL,
+        )
+        self.card_custom_wallet.set_content(
+            title=self.tr("Custom / Recovery"),
+            description=self.tr("Restore a wallet from hardware wallet(s) or a descriptor."),
+        )

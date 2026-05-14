@@ -41,6 +41,7 @@ from functools import partial
 from typing import (
     Any,
     Literal,
+    cast,
 )
 from urllib.parse import urlparse
 
@@ -89,6 +90,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSizePolicy,
+    QStyle,
     QSystemTrayIcon,
     QToolButton,
     QToolTip,
@@ -915,6 +917,8 @@ class ColorScheme:
     YELLOW = ColorSchemeItem("#897b2a", "#ffff00")
     RED = ColorSchemeItem("#7c1111", "#f18c8c")
     BLUE = ColorSchemeItem("#123b7c", "#8cb3f2")
+    WARNING = ColorSchemeItem("#8a4b00", "#ffd49a")
+    ERROR = ColorSchemeItem("#7c1111", "#f18c8c")
     DUE_OVERDUE = ColorSchemeItem("#7c1111", "#f6b3b3")
     DUE_TODAY = ColorSchemeItem("#8a4b00", "#ffd49a")
     DUE_THIS_WEEK = ColorSchemeItem("#6e6a00", "#fff2a6")
@@ -1260,15 +1264,34 @@ def set_translucent(widget: QWidget):
     )
 
 
-def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int]) -> None:
+def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int], reset_other_margins=False) -> None:
     """Set one or more margins on a QLayout, each to its own value.
 
     :param layout: the layout whose contents-margins you want to adjust
     :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge} to the new margin (in pixels)
         for that edge
     """
-    cm = layout.contentsMargins()
-    left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
+    if reset_other_margins:
+        app = QApplication.instance()
+
+        if app is None:
+            app = QApplication([])
+
+        qapp = cast(QApplication, app)
+
+        style = qapp.style()
+        if not style:
+            return
+
+        left, top, right, bottom = (
+            style.pixelMetric(QStyle.PixelMetric.PM_LayoutLeftMargin),
+            style.pixelMetric(QStyle.PixelMetric.PM_LayoutTopMargin),
+            style.pixelMetric(QStyle.PixelMetric.PM_LayoutRightMargin),
+            style.pixelMetric(QStyle.PixelMetric.PM_LayoutBottomMargin),
+        )
+    else:
+        cm = layout.contentsMargins()
+        left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
 
     for edge, val in margins.items():
         if edge == Qt.Edge.LeftEdge:
@@ -1373,6 +1396,38 @@ def button_info(name: ButtonInfoType) -> ButtonInfo:
         )
 
 
-def to_color_name(color: str | QPalette.ColorRole) -> str:
+def to_color_name(color: str | QColor | QPalette.ColorRole) -> str:
     """To color name."""
-    return QApplication.palette().color(color).name() if isinstance(color, QPalette.ColorRole) else color
+    if isinstance(color, QPalette.ColorRole):
+        return QApplication.palette().color(color).name()
+    if isinstance(color, QColor):
+        return color.name(QColor.NameFormat.HexArgb)
+    return color
+
+
+@dataclass(frozen=True)
+class NeutralSurfaceColors:
+    panel_background: QColor
+    content_background: QColor
+    panel_border: QColor
+    row_hover: QColor
+    muted_text: QColor
+
+
+def color_with_alpha(color: QColor, alpha: int) -> QColor:
+    """Return a copy of ``color`` with the requested alpha applied."""
+    alpha_color = QColor(color)
+    alpha_color.setAlpha(alpha)
+    return alpha_color
+
+
+def get_neutral_surface_colors() -> NeutralSurfaceColors:
+    """Return the shared neutral surface palette used by cards and sidebars."""
+    palette = QApplication.palette()
+    return NeutralSurfaceColors(
+        panel_background=QColor(palette.color(QPalette.ColorRole.Window)),
+        content_background=QColor(palette.color(QPalette.ColorRole.Base)),
+        panel_border=color_with_alpha(palette.color(QPalette.ColorRole.Mid), 110),
+        row_hover=color_with_alpha(palette.color(QPalette.ColorRole.Mid), 55),
+        muted_text=color_with_alpha(palette.color(QPalette.ColorRole.WindowText), 170),
+    )

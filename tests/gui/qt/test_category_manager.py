@@ -41,10 +41,9 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
-from tests.gui.qt.test_setup_wallet import close_wallet
 
 from ...helpers import TestConfig
-from .helpers import Shutter, main_window_context
+from .helpers import Shutter, close_wallet, main_window_context
 
 
 @pytest.mark.marker_qt_2

@@ -38,113 +38,163 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QMouseEvent
-from PyQt6.QtWidgets import QTabBar
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
+from bitcoin_safe.gui.qt.card_base import CardList
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
+from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.signals import SignalsMin
-from bitcoin_safe.wallet_util import signer_name
+from bitcoin_safe.wallet import ProtoWallet
 
 from ...descriptors import AddressType
-from ...wallet import ProtoWallet
-from .keystore_ui import KeyStoreUI, icon_for_label
+from .keystore_ui import KeyStoreUI
 from .util import Message, MessageType
 
 logger = logging.getLogger(__name__)
 
 
-class OrderTrackingTabBar(QTabBar):
-    signal_new_tab_order = cast(SignalProtocol[[list[int]]], pyqtSignal(list))
+class KeyStoreUIs(QWidget):
+    signal_on_tab_change = cast(SignalProtocol[[]], pyqtSignal())
+    signal_ui_changed = cast(SignalProtocol[[]], pyqtSignal())
+    request_show_register_multisig = cast(SignalProtocol[[HardwareSigner | None]], pyqtSignal(object))
 
-    def __init__(self, parent=None):
-        """Initialize instance."""
-        super().__init__(parent)
-        self.order = []
-        self.tabMoved.connect(self.on_tab_moved)  # type: ignore
-
-    def mousePressEvent(self, a0):
-        # Capture the tab order when the drag starts
-        """MousePressEvent."""
-        self.order = list(range(self.count()))
-        super().mousePressEvent(a0)
-
-    def mouseReleaseEvent(self, a0: QMouseEvent | None) -> None:
-        # When the mouse is released, check if the order changed
-        """MouseReleaseEvent."""
-        normal_order = list(range(self.count()))
-        if normal_order != self.order:
-            logger.debug(f"Final order:  {self.order}")
-            self.signal_new_tab_order.emit(self.order)
-            self.order = normal_order
-        super().mouseReleaseEvent(a0)
-
-    def on_tab_moved(self, from_index, to_index):
-        """On tab moved."""
-        self.order.insert(to_index, self.order.pop(from_index))
-        logger.debug(f"New order:  {self.order}")
-
-
-class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
     def __init__(
         self,
         get_editable_protowallet: Callable[[], ProtoWallet],
         get_address_type: Callable[[], AddressType],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
+        read_only_mode: bool = False,
+        show_register_button: bool = True,
     ) -> None:
         """Initialize instance."""
         super().__init__()
-        self.tab_bar = OrderTrackingTabBar()
-        self.setTabBar(self.tab_bar)
-        self.setMovable(True)
         self.signal_tracker = SignalTracker()
         self.signals_min = signals_min
         self.loop_in_thread = loop_in_thread
+        self.read_only_mode = read_only_mode
+        self.show_register_button = show_register_button
 
         self.get_editable_protowallet = get_editable_protowallet
         self.get_address_type = get_address_type
 
-        for i, _keystore in enumerate(self.protowallet.keystores):
-            keystore_ui = KeyStoreUI(
-                self.protowallet.network,
-                get_address_type=self.get_address_type,
-                label=self.protowallet.signer_name(i),
-                signals_min=signals_min,
-                hardware_signer_label=self.protowallet.sticker_name(i),
-                loop_in_thread=loop_in_thread,
-            )
-            keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
-            self.addTab(
-                keystore_ui,
-                icon=icon_for_label(keystore_ui.label),
-                description=keystore_ui.label,
-                data=keystore_ui,
-            )
+        self._current_index = 0
+        self._keystore_uis: list[KeyStoreUI] = []
 
-        for signal in (
-            [ui.edit_xpub.input_field.textChanged for ui in self.getAllTabData().values()]
-            + [ui.edit_fingerprint.input_field.textChanged for ui in self.getAllTabData().values()]
-            + [ui.edit_key_origin.input_field.textChanged for ui in self.getAllTabData().values()]
-        ):
-            signal.connect(self.ui_keystore_ui_change)
-        for ui in self.getAllTabData().values():
-            ui.edit_seed.input_field.textChanged.connect(self.ui_keystore_ui_change)
+        self.layout_main = QVBoxLayout(self)
+        self.layout_main.setContentsMargins(0, 0, 0, 0)
+
+        self.card_list = CardList(self)
+        self.card_list.set_only_one_expanded_at_a_time(True)
+        self.layout_main.addWidget(self.card_list)
+        self.scroll_area = self.card_list.scroll_area
+        self.content_widget = self.card_list.scroll_area.content_widget
+        self.content_layout = self.card_list.content_layout
+
+        self._set_keystore_cards()
 
         self.signal_tracker.connect(self.signals_min.language_switch, self.updateUi)
-        self.signal_tracker.connect(self.tab_bar.signal_new_tab_order, self.on_tab_order_changed)
+        self.signal_tracker.connect(
+            self.card_list.signal_current_index_changed, self._on_current_index_changed
+        )
 
-    def on_tab_order_changed(self, new_order: list[int]):
-        """On tab order changed."""
-        if len(new_order) != len(self.protowallet.keystores):
+    @property
+    def protowallet(self) -> ProtoWallet:
+        """Protowallet."""
+        return self.get_editable_protowallet()
+
+    def _connect_keystore_ui(self, keystore_ui: KeyStoreUI) -> None:
+        keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
+        keystore_ui.signal_ui_changed.connect(self.ui_keystore_ui_change)
+        keystore_ui.request_show_register_multisig.connect(self.request_show_register_multisig.emit)
+
+    def _on_current_index_changed(self, index: int) -> None:
+        self._current_index = index
+        self.signal_on_tab_change.emit()
+
+    def _create_keystore_ui(self, index: int) -> KeyStoreUI:
+        keystore_ui = KeyStoreUI(
+            self.protowallet.network,
+            get_address_type=self.get_address_type,
+            signals_min=self.signals_min,
+            hardware_signer_label=self.protowallet.signer_fallback_name(index),
+            loop_in_thread=self.loop_in_thread,
+            read_only_mode=self.read_only_mode,
+            show_register_button=self.show_register_button,
+        )
+        self._connect_keystore_ui(keystore_ui)
+        return keystore_ui
+
+    def count(self) -> int:
+        """Return the number of keystore cards."""
+        return len(self._keystore_uis)
+
+    def tabText(self, index: int) -> str:
+        """Compatibility helper for existing tests/callers."""
+        return self._keystore_uis[index].hardware_signer_label
+
+    def setTabText(self, index: int, text: str) -> None:
+        """Compatibility helper."""
+        self._keystore_uis[index].set_fallback_hardware_signer_label(text)
+        self._keystore_uis[index].updateUi()
+
+    def setTabIcon(self, index: int, icon) -> None:
+        """Compatibility helper for callers that previously set tab icons."""
+        del index, icon
+
+    def getAllTabData(self) -> dict[QWidget, KeyStoreUI]:
+        """Return the widgets in insertion order."""
+        return {keystore_ui: keystore_ui for keystore_ui in self._keystore_uis}
+
+    def getCurrentTabData(self) -> KeyStoreUI | None:
+        """Return the selected keystore card."""
+        if not self._keystore_uis:
+            return None
+        return self._keystore_uis[self._current_index]
+
+    def currentIndex(self) -> int:
+        """Return the selected card index."""
+        return self._current_index
+
+    def setCurrentIndex(self, index: int) -> None:
+        """Expand one card by index and scroll it into view."""
+        self.expand_only(index)
+
+    def expand_only(self, index: int) -> None:
+        """Expand only the selected card and collapse the others."""
+        if not self._keystore_uis:
+            self._current_index = 0
             return
-        for i, ui in enumerate(self.getAllTabData().values()):
-            ui.label = self.protowallet.signer_name(i)
+        self.card_list.expand_only(index)
 
-        logger.info(f"Updated keystore order:  {new_order}")
-        self.ui_keystore_ui_change()
+    def collapse_all(self) -> None:
+        """Collapse every card while keeping the current selection."""
+        if not self._keystore_uis:
+            self._current_index = 0
+            return
+        self._current_index = max(0, min(self._current_index, self.count() - 1))
+        self.card_list.collapse_all()
+        self.signal_on_tab_change.emit()
 
-    def set_all_using_signer_infos(self, signer_infos: list[SignerInfo]):
+    def setTabEnabled(self, index: int, enabled: bool) -> None:
+        """Enable or disable one keystore card."""
+        self._keystore_uis[index].setEnabled(enabled)
+
+    def indexOf(self, keystore_ui: KeyStoreUI) -> int:
+        """Return the index for a card."""
+        return self._keystore_uis.index(keystore_ui)
+
+    def removeTab(self, index: int) -> None:
+        """Remove a card by index."""
+        keystore_ui = self._keystore_uis.pop(index)
+        self.card_list.remove_card(keystore_ui)
+        keystore_ui.close()
+        keystore_ui.setParent(None)
+        if self._current_index >= self.count():
+            self._current_index = max(0, self.count() - 1)
+        self.setCurrentIndex(self._current_index)
+
+    def set_all_using_signer_infos(self, signer_infos: list[SignerInfo]) -> None:
         """Set all using signer infos."""
         if len(signer_infos) != self.count():
             logger.error(f"Could not set {len(signer_infos)} signer_infos on {self.count()} keystore_uis")
@@ -156,19 +206,15 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
             ),
             parent=self,
         )
-        for signer_info, keystore_ui in zip(signer_infos, self.getAllTabData().values(), strict=False):
+        for signer_info, keystore_ui in zip(signer_infos, self._keystore_uis, strict=False):
             keystore_ui.set_using_signer_info(signer_info)
 
-    def get_warning_and_error_messages(
-        self,
-        keystore_uis: list[KeyStoreUI],
-    ) -> list[Message]:
+    def get_warning_and_error_messages(self, keystore_uis: list[KeyStoreUI]) -> list[Message]:
         """Get warning and error messages."""
         return_messages: list[Message] = []
         if not keystore_uis:
             return return_messages
 
-        # check for empty data and duplicates
         fingerprints = [keystore_ui.edit_fingerprint.text() for keystore_ui in keystore_uis]
         if "" in fingerprints:
             return_messages.append(
@@ -214,6 +260,7 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                     parent=self,
                 )
             )
+
         key_origins = [keystore_ui.edit_key_origin.text() for keystore_ui in keystore_uis]
         if "" in key_origins:
             return_messages.append(
@@ -238,43 +285,42 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
                 )
             )
 
-        # messages from status_label
         for keystore_ui in keystore_uis:
-            analyzer_indicator = keystore_ui.analyzer_indicator
-            for analysis in analyzer_indicator.get_analysis_list(min_state=AnalyzerState.Warning):
+            for analysis in keystore_ui.get_analysis_list(min_state=AnalyzerState.Warning):
                 if analysis.state == AnalyzerState.Warning:
-                    return_messages += [
+                    return_messages.append(
                         Message(
-                            f"{keystore_ui.label}: {analysis.msg}",
+                            f"{keystore_ui.hardware_signer_label}: {analysis.msg}",
                             no_show=True,
                             type=MessageType.Warning,
                             parent=self,
                         )
-                    ]
+                    )
                 if analysis.state == AnalyzerState.Invalid:
-                    return_messages += [
+                    return_messages.append(
                         Message(
-                            f"{keystore_ui.label}: {analysis.msg}",
+                            f"{keystore_ui.hardware_signer_label}: {analysis.msg}",
                             no_show=True,
                             type=MessageType.Error,
                             parent=self,
                         )
-                    ]
+                    )
 
         return return_messages
 
+    def has_blocking_messages(self, keystore_uis: list[KeyStoreUI] | None = None) -> bool:
+        """Return whether the selected keystore cards still have blocking validation errors."""
+        selected_keystore_uis = (
+            keystore_uis if keystore_uis is not None else list(self.getAllTabData().values())
+        )
+        return any(
+            message.type == MessageType.Error
+            for message in self.get_warning_and_error_messages(selected_keystore_uis)
+        )
+
     def updateUi(self) -> None:
-        # udpate the label for where the keystore exists
         """UpdateUi."""
-        for i, keystore_ui in enumerate(self.getAllTabData().values()):
-            keystore_ui.label = self.protowallet.signer_name(i)
-
-        self._set_keystore_tabs()
-
-    @property
-    def protowallet(self) -> ProtoWallet:
-        """Protowallet."""
-        return self.get_editable_protowallet()
+        self._set_keystore_cards()
 
     def ui_keystore_ui_change(self, *args) -> None:
         """Ui keystore ui change."""
@@ -282,78 +328,56 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         try:
             self.set_protowallet_from_keystore_ui()
             self.set_keystore_ui_from_protowallet()
-        except Exception as e:
-            logger.debug(f"{self.__class__.__name__}: {e}")
+        except Exception as exc:
+            logger.debug(f"{self.__class__.__name__}: {exc}")
             logger.warning("ui_keystore_ui_change: Invalid input")
+        self.signal_ui_changed.emit()
 
     def set_protowallet_from_keystore_ui(self) -> None:
-        # and last are the keystore uis, which can cause exceptions, because the UI is not filled correctly
         """Set protowallet from keystore ui."""
-        for i, keystore_ui in enumerate(self.getAllTabData().values()):
-            logger.debug("set_keystore_from_ui_values")
+        for i, keystore_ui in enumerate(self._keystore_uis):
             ui_keystore = keystore_ui.get_ui_values_as_keystore()
-
             keystore = self.protowallet.keystores[i]
             if keystore is None:
-                keystore = ui_keystore
-                self.protowallet.keystores[i] = keystore
+                self.protowallet.keystores[i] = ui_keystore
             else:
                 keystore.from_other_keystore(ui_keystore)
 
-        for i, keystore in enumerate(self.protowallet.keystores):
-            if keystore is None:
-                continue
-            keystore.label = signer_name(self.protowallet.threshold, i)
+    def _set_keystore_cards(self) -> None:
+        keep_all_collapsed = bool(self._keystore_uis) and all(
+            not keystore_ui.is_expanded for keystore_ui in self._keystore_uis
+        )
 
-    def _set_keystore_tabs(self) -> None:
-        # add keystore_ui if necessary
-        """Set keystore tabs."""
-        if self.count() < len(self.protowallet.keystores):
-            for i in range(self.count(), len(self.protowallet.keystores)):
-                keystore_ui = KeyStoreUI(
-                    self.protowallet.network,
-                    get_address_type=self.get_address_type,
-                    label=self.protowallet.signer_name(i),
-                    signals_min=self.signals_min,
-                    hardware_signer_label=self.protowallet.sticker_name(i),
-                    loop_in_thread=self.loop_in_thread,
-                )
-                keystore_ui.signal_signer_infos.connect(self.set_all_using_signer_infos)
-                self.addTab(
-                    keystore_ui,
-                    icon=icon_for_label(keystore_ui.label),
-                    description=keystore_ui.label,
-                    data=keystore_ui,
-                )
+        while self.count() < len(self.protowallet.keystores):
+            keystore_ui = self._create_keystore_ui(self.count())
+            self._keystore_uis.append(keystore_ui)
+            self.card_list.add_card(keystore_ui)
 
-        # remove keystore_ui if necessary
-        elif self.count() > len(self.protowallet.keystores):
-            for _i in range(len(self.protowallet.keystores), self.count()):
-                self.removeTab(self.count() - 1)
+        while self.count() > len(self.protowallet.keystores):
+            self.removeTab(self.count() - 1)
 
-        # now make a second pass and set the ui
         for i, (keystore, keystore_ui) in enumerate(
-            zip(self.protowallet.keystores, self.getAllTabData().values(), strict=False)
+            zip(self.protowallet.keystores, self._keystore_uis, strict=False)
         ):
-            keystore_ui.label = keystore.label if keystore else self.protowallet.signer_name(i)
+            keystore_ui.set_fallback_hardware_signer_label(self.protowallet.signer_fallback_name(i))
+            if keystore:
+                keystore_ui.set_ui_from_keystore(keystore)
+            keystore_ui.updateUi()
 
-            # set the tab title
-            index = self.indexOf(keystore_ui)
-            self.setTabText(index, keystore_ui.label)
-            self.setTabIcon(index, icon_for_label(keystore_ui.label))
-            keystore_ui.format_all_fields()
+        if self.count():
+            if keep_all_collapsed:
+                self.collapse_all()
+            else:
+                self.setCurrentIndex(self._current_index)
 
     def set_keystore_ui_from_protowallet(self) -> None:
         """Set keystore ui from protowallet."""
         logger.debug("set_keystore_ui_from_protowallet")
-        self._set_keystore_tabs()
-        for keystore, keystore_ui in zip(
-            self.protowallet.keystores, self.getAllTabData().values(), strict=False
-        ):
+        self._set_keystore_cards()
+        for keystore, keystore_ui in zip(self.protowallet.keystores, self._keystore_uis, strict=False):
             if not keystore:
                 continue
             keystore_ui.set_ui_from_keystore(keystore)
-            # i have to manually call this, because the signals are blocked
             keystore_ui.format_all_fields()
         assert len(self.protowallet.keystores) == self.count()
 
@@ -361,16 +385,15 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
         """Get keystore uis with unexpected origin."""
         return [
             keystore_ui
-            for keystore_ui in self.getAllTabData().values()
+            for keystore_ui in self._keystore_uis
             if keystore_ui.key_origin != keystore_ui.get_expected_key_origin()
         ]
 
     def ask_accept_unexpected_origins(self) -> bool:
         """Ask accept unexpected origins."""
-        keystore_uis_with_unexpected_origin = self.get_keystore_uis_with_unexpected_origin()
-        for keystore_ui in keystore_uis_with_unexpected_origin:
+        for keystore_ui in self.get_keystore_uis_with_unexpected_origin():
             if not question_dialog(
-                f"The key derivation path {keystore_ui.key_origin} of {keystore_ui.label} is not the default {keystore_ui.get_expected_key_origin()} for the address type {keystore_ui.get_address_type().name}. Do you want to proceed anyway?",
+                f"The key derivation path {keystore_ui.key_origin} of {keystore_ui.hardware_signer_label} is not the default {keystore_ui.get_expected_key_origin()} for the address type {keystore_ui.get_address_type().name}. Do you want to proceed anyway?",
                 true_button=self.tr("Proceed anyway"),
             ):
                 return False
@@ -379,9 +402,8 @@ class KeyStoreUIs(DataTabWidget[KeyStoreUI]):
     def close(self) -> bool:
         """Close."""
         self.signal_tracker.disconnect_all()
-        for tab in self.getAllTabData().values():
-            tab.close()
+        for keystore_ui in self._keystore_uis:
+            keystore_ui.close()
 
         SignalTools.disconnect_all_signals_from(self)
-
         return super().close()

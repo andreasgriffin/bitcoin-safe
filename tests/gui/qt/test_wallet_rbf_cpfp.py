@@ -55,6 +55,7 @@ from .helpers import (
     fund_wallet,
     main_window_context,
     save_wallet,
+    select_manual_entry_signer,
     sign_tx,
 )
 
@@ -105,7 +106,7 @@ def test_rbf_cpfp_flow(
         qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
         qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
         key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-        key.tabs_import_type.setCurrentWidget(key.tab_manual)
+        select_manual_entry_signer(key)
         key.edit_seed.setText(test_seeds[22])
         shutter.save(main_window)
 
@@ -193,7 +194,6 @@ def test_rbf_cpfp_flow(
         fund_wallet(qt_wallet=qt_wallet, amount=amount, faucet=faucet, qtbot=qtbot)
         address_info = qt_wallet.wallet.get_unused_category_address(category=None)
         viewer, txid_a = create_transaction_to_self(qt_wallet, str(address_info.address), amount)
-        viewer.button_next.click()
         sign_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
         broadcast_tx(qt_wallet=qt_wallet, qtbot=qtbot, shutter=shutter, viewer=viewer)
 

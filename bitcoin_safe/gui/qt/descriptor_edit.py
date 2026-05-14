@@ -45,7 +45,7 @@ from bitcoin_qr_tools.multipath_descriptor import (
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import QLocale, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QLocale, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -66,6 +66,7 @@ from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.util import Message, MessageType, center_on_screen, do_copy, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.signals import SignalsMin, WalletFunctions
 from bitcoin_safe.wallet import Wallet
 
@@ -113,14 +114,6 @@ class DescriptorExport(QDialog):
         super().closeEvent(a0)
 
 
-class DescriptorInputField(AnalyzerTextEdit):
-    def sizeHint(self) -> QSize:
-        """SizeHint."""
-        size = super().sizeHint()
-        size.setHeight(30)
-        return size
-
-
 class DescriptorEdit(QWidget):
     signal_descriptor_change = cast(SignalProtocol[[str]], pyqtSignal(str))
 
@@ -135,7 +128,7 @@ class DescriptorEdit(QWidget):
         """Initialize instance."""
         super().__init__()
         self.edit = ButtonEdit(
-            input_field=DescriptorInputField(),
+            input_field=AnalyzerTextEdit(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
             signals_min=wallet_functions,
@@ -238,6 +231,11 @@ class DescriptorEdit(QWidget):
         )
         self.pdf_button.setText(self.tr("Recovery Sheet"))
         self.register_button.setText(self.tr("Register with hardware signers"))
+
+    def set_descriptor_editable(self, editable: bool) -> None:
+        """Set whether the descriptor text can be edited or imported."""
+        self.edit.setReadOnly(not editable)
+        self.import_button.setVisible(editable)
 
     def _do_pdf(self) -> None:
         """Do pdf."""
@@ -352,7 +350,7 @@ class DescriptorEdit(QWidget):
         self.setParent(None)
         return super().close()
 
-    def show_register_multisig(self) -> None:
+    def show_register_multisig(self, hardware_signer: HardwareSigner | None = None) -> None:
         """Show register multisig."""
         if not self.wallet:
             return
@@ -368,6 +366,7 @@ class DescriptorEdit(QWidget):
         self._hardware_signer_interaction = RegisterMultisigInteractionWidget(
             wallet=self.wallet,
             loop_in_thread=self.loop_in_thread,
+            hardware_signer=hardware_signer,
             wallet_name=self.wallet.id,
             wallet_functions=self.wallet_functions,
         )

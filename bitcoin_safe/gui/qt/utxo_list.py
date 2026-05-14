@@ -75,12 +75,12 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.tx import short_tx_id
+from bitcoin_safe.wallet import TxStatus, Wallet, get_wallets
 
 from ...config import UserConfig
 from ...i18n import translate
 from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...wallet import TxStatus, Wallet, get_wallets
 from .my_treeview import (
     MyItemDataRole,
     MySortModel,

@@ -1,6 +1,6 @@
 #
 # Bitcoin Safe
-# Copyright (C) 2024-2026 Andreas Griffin
+# Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of version 3 of the GNU General Public License as
@@ -36,10 +36,9 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalTools, SignalTracker
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
+from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.signals import SignalsMin
-
-from .step_progress_bar import StepProgressContainer
 
 logger = logging.getLogger(__name__)
 

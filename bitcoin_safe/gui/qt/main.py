@@ -54,6 +54,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.storage import Storage
 from bitcoin_safe_lib.util import fast_version, rel_home_path_to_abs_path
 from bitcoin_safe_lib.util_os import show_file_in_explorer, webopen, xdg_open_file
+from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.tool_gui import ToolGui
 from cryptography.fernet import InvalidToken
 from PyQt6.QtCore import (
@@ -77,6 +78,7 @@ from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
     QFileDialog,
+    QHBoxLayout,
     QLabel,
     QMessageBox,
     QSizePolicy,
@@ -109,9 +111,9 @@ from bitcoin_safe.gui.qt.tx_util import are_txs_identical
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.gui.qt.wizard import ImportXpubs, TutorialStep, Wizard
+from bitcoin_safe.gui.qt.wizard.wizard import ImportXpubs, TutorialStep, WalletSetupOptions, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
-from bitcoin_safe.keystore import KeyStoreImporterTypes
+from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_contact, mail_feedback
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import P2pListenerType, Peers
@@ -122,7 +124,9 @@ from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPluginRegistry
 from bitcoin_safe.pyqt6_restart import restart_application
-from bitcoin_safe.util import OptExcInfo
+from bitcoin_safe.tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
+from bitcoin_safe.util import OptExcInfo, filename_clean
+from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from bitcoin_safe.wallet_util import get_default_categories
 
 from ...config import UserConfig
@@ -135,15 +139,14 @@ from ...pythonbdk_types import (
     get_prev_outpoints,
 )
 from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
-from ...tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
-from ...wallet import ProtoWallet, ToolsTxUiInfo, Wallet
 from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
 from .dialogs import PasswordQuestion, WalletIdDialog, show_textedit_message
 from .loading_wallet_tab import LoadingWalletTab
-from .new_wallet_welcome_screen import NewWalletWelcomeScreen
-from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase
+from .new_wallet_welcome_screen import NetworkChoiceWelcomeScreen, NewWalletWelcomeScreen
+from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase, create_tx_viewer
+from .recent_wallets_sidebar import RecentlyOpenedWalletsGroup
 from .sign_message import SignAndVerifyMessage
 from .tray_controller import TrayController
 from .unlockable_main_window import UnlockableMainWindow
@@ -157,11 +160,16 @@ from .util import (
     delayed_execution,
     do_copy,
 )
-from .utxo_list import UTXOList, UtxoListWithToolbar
 
 logger = logging.getLogger(__name__)
 
 MAC_OPEN_WALLET_LIMIT = 5
+
+
+def should_show_network_choice_welcome_screen(config: UserConfig) -> bool:
+    """Return whether first-time mainnet users should see the network chooser."""
+    config.clean_recently_open_wallet()
+    return config.network == bdk.Network.BITCOIN and not config.recently_open_wallets[config.network]
 
 
 class MainWindow(UnlockableMainWindow):
@@ -257,18 +265,29 @@ class MainWindow(UnlockableMainWindow):
         self.welcome_screen = NewWalletWelcomeScreen(
             network=self.config.network,
             signals=self.signals,
-            signal_recently_open_wallet_changed=self.signal_recently_open_wallet_changed,
             parent=self.tab_wallets,
         )
-        self.welcome_screen.signal_remove_me.connect(self.on_new_wallet_welcome_screen_remove_me)
+        self.network_choice_welcome_screen = NetworkChoiceWelcomeScreen(
+            signals=self.signals,
+            parent=self.tab_wallets,
+        )
+        self.welcome_screen.signal_remove_me.connect(self.on_create_screen_remove_me)
+        self.network_choice_welcome_screen.signal_remove_me.connect(self.on_create_screen_remove_me)
+        self.welcome_screen.visibilityChanged.connect(self._sync_recent_wallets_sidebar_visibility)
+
         self.init_p2p_listening()
 
         # signals
-        self.welcome_screen.signal_onclick_single_signature.connect(self.click_create_single_signature_wallet)
-        self.welcome_screen.signal_onclick_multisig_signature.connect(
-            self.click_create_multisig_signature_wallet
-        )
+        self.welcome_screen.signal_onclick_hot_wallet.connect(self.click_create_hot_wallet)
+        self.welcome_screen.signal_onclick_connect_devices.connect(self.click_connect_devices)
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
+        self.welcome_screen.signal_onclick_demo_wallet.connect(self.open_demo_wallet)
+        self.network_choice_welcome_screen.signal_onclick_secure_wallet.connect(
+            self.on_network_choice_secure_wallet
+        )
+        self.network_choice_welcome_screen.signal_onclick_safe_playground.connect(
+            self.on_network_choice_safe_playground
+        )
         self.signals.add_qt_wallet.connect(self.add_qt_wallet)
         self.signals.close_qt_wallet.connect(self.remove_qt_wallet_by_id)
 
@@ -277,6 +296,7 @@ class MainWindow(UnlockableMainWindow):
         self.signals.open_wallet.connect(self.open_wallet)
         self.signals.any_wallet_updated.connect(self.on_any_wallet_updated)
         self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
+        self.signals.signal_open_history_for_tx.connect(self.on_signal_open_history_for_tx)
         self.signals.language_switch.connect(self.updateUI)
         self.signal_recently_open_wallet_changed.connect(self.populate_recent_wallets_menu)
         self.signals.close_all_video_widgets.connect(self.close_video_widget)
@@ -290,6 +310,7 @@ class MainWindow(UnlockableMainWindow):
         )
 
         self.updateUI()
+        self.welcome_screen.set_wallet_name(self.make_default_wallet_id())
         self.setup_signal_handlers()
 
         delayed_execution(self.load_last_state, self)
@@ -314,30 +335,15 @@ class MainWindow(UnlockableMainWindow):
                 res[tab.data.wallet.id] = tab.data
         return res
 
-    def get_node(self, wallet_id: str) -> SidebarNode | None:
-        """Get node."""
-        for tab in self.tab_wallets.roots:
-            if isinstance(tab.data, QTWallet) and tab.data.wallet.id == wallet_id:
-                return tab
-            if isinstance(tab.data, QTProtoWallet) and tab.data.protowallet.id == wallet_id:
-                return tab
-            if (
-                isinstance(tab.data, Wizard)
-                and isinstance(tab.data.qtwalletbase, QTProtoWallet)
-                and tab.data.qtwalletbase.protowallet.id == wallet_id
-            ):
-                return tab
-        return None
-
     def update_fx_rate_in_config(self):
         """Update fx rate in config."""
         self.config.rates.clear()
         self.config.rates.update(self.fx.list_rates())
 
-    def on_new_wallet_welcome_screen_remove_me(self, tab: QWidget):
-        """On new wallet welcome screen remove me."""
+    def on_create_screen_remove_me(self, tab: QWidget):
+        """Remove a create-screen tab when another tab is available."""
         if self.tab_wallets.count() > 1:
-            # remove only if there is 1 additional tab besides the new_wallet_welcome_screen
+            # remove only if there is 1 additional tab besides the create-screen
             node = self.tab_wallets.root.findNodeByWidget(tab)
             if node:
                 self.close_tab(node)
@@ -365,7 +371,7 @@ class MainWindow(UnlockableMainWindow):
         """Load last state."""
         opened_qt_wallets = self.open_last_opened_wallets()
         if not opened_qt_wallets:
-            self.welcome_screen.add_new_wallet_welcome_tab(self.tab_wallets)
+            self._show_default_create_screen()
 
         self.open_last_opened_tx()
         for file_path in self.open_files_at_startup:
@@ -386,6 +392,16 @@ class MainWindow(UnlockableMainWindow):
         self.set_title()
         self.rebuild_current_wallet_tab_menu()
         self.refresh_plugin_notification_bars()
+
+        current_node = node or self.tab_wallets.currentNode()
+        self._sync_recent_wallets_sidebar_visibility(
+            bool(current_node and current_node.widget is self.welcome_screen)
+        )
+
+    def _sync_recent_wallets_sidebar_visibility(self, visible: bool) -> None:
+        """Show the recent-wallets sidebar only beside the new-wallet welcome screen."""
+
+        self.recent_wallets_sidebar.setVisible(visible)
 
     def _collect_plugin_notification_bars(self) -> list[NotificationBar]:
         """Gather plugin notification bars from all loaded wallets."""
@@ -547,7 +563,24 @@ class MainWindow(UnlockableMainWindow):
 
         self._layout.addWidget(self.main_notification_bars_container)
         self._layout.addWidget(self.plugin_notification_bars_container)
-        self._layout.addWidget(self.sidebar_search_tree)
+
+        self.content_row = QWidget(central_widget)
+        self.content_row_layout = QHBoxLayout(self.content_row)
+        self.content_row_layout.setContentsMargins(0, 0, 0, 0)
+        self.content_row_layout.setSpacing(0)
+
+        self.recent_wallets_sidebar = RecentlyOpenedWalletsGroup(
+            signal_open_wallet=self.signals.open_wallet,
+            signal_recently_open_wallet_changed=self.signal_recently_open_wallet_changed,
+            wallet_dir=Path(self.config.wallet_dir),
+            parent=self.content_row,
+        )
+        self.recent_wallets_sidebar.setFixedWidth(250)
+        self.recent_wallets_sidebar.hide()
+
+        self.content_row_layout.addWidget(self.sidebar_search_tree, stretch=1)
+        self.content_row_layout.addWidget(self.recent_wallets_sidebar, stretch=0)
+        self._layout.addWidget(self.content_row)
         self.setCentralWidget(central_widget)
 
         self.setMinimumWidth(800)
@@ -1470,23 +1503,27 @@ class MainWindow(UnlockableMainWindow):
 
     def on_signal_broadcast_tx(self, transaction: bdk.Transaction) -> None:
         """On signal broadcast tx."""
-        last_qt_wallet_involved: QTWallet | None = None
-        for qt_wallet in self.qt_wallets.values():
-            if qt_wallet.wallet.transaction_related_to_my_addresses(transaction):
-                last_qt_wallet_involved = qt_wallet
-
-        if last_qt_wallet_involved:
-            last_qt_wallet_involved.hist_node.select()
-            last_qt_wallet_involved.history_list.select_row_by_key(
-                str(transaction.compute_txid()), scroll_to_last=True
-            )
-
         # due to fulcrum delay,
         # syncing immediately after broadcast will not see the new tx.
         # So I have to wait until it is taken into the electrum server index
         QTimer.singleShot(2000, self.sync_all)
         # # the second sync is a backup, in case the first didnt catch
         # QTimer.singleShot(6000, self.sync_all)
+
+    def on_signal_open_history_for_tx(self, transaction: bdk.Transaction) -> None:
+        """Open the history tab and select the given transaction when possible."""
+        last_qt_wallet_involved: QTWallet | None = None
+        for qt_wallet in self.qt_wallets.values():
+            if qt_wallet.wallet.transaction_related_to_my_addresses(transaction):
+                last_qt_wallet_involved = qt_wallet
+
+        if not last_qt_wallet_involved:
+            return
+
+        last_qt_wallet_involved.hist_node.select()
+        last_qt_wallet_involved.history_list.select_row_by_key(
+            str(transaction.compute_txid()), scroll_to_last=True
+        )
 
     def sync_all(self):
         """Sync all."""
@@ -1859,35 +1896,22 @@ class MainWindow(UnlockableMainWindow):
                 self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
 
-        utxo_list = UTXOList(
+        viewer = create_tx_viewer(
             config=self.config,
             wallet_functions=self.wallet_functions,
-            outpoints=get_prev_outpoints(tx),
             fx=self.fx,
-            # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
-            sort_column=UTXOList.Columns.ADDRESS,
-            sort_order=Qt.SortOrder.AscendingOrder,
-            hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
-        )
-
-        widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, self.tab_wallets)
-
-        viewer = UITx_Viewer(
-            self.config,
-            self.wallet_functions,
-            self.fx,
-            widget_utxo_with_toolbar,
-            network=self.config.network,
             mempool_manager=self.mempool_manager,
+            network=self.config.network,
+            data=data,
+            outpoints=get_prev_outpoints(tx),
+            client=self.get_client_of_any_wallet(),
+            parent=self.tab_wallets,
             fee_info=(
                 FeeInfo(fee, tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
                 if fee is not None
                 else None
             ),
             chain_position=chain_position,
-            client=self.get_client_of_any_wallet(),
-            data=data,
-            parent=self,
             focus_ui_element=focus_ui_element,
         )
 
@@ -1994,31 +2018,18 @@ class MainWindow(UnlockableMainWindow):
                 self.tab_wallets.setCurrentWidget(existing_tx_viewer)
                 return None
 
-        utxo_list = UTXOList(
-            config=self.config,
-            wallet_functions=self.wallet_functions,
-            outpoints=get_prev_outpoints(psbt.extract_tx()),
-            fx=self.fx,
-            txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
-            # the ADDRESS. ROLE SORT ORDER saves the order of the get_outpoints
-            sort_column=UTXOList.Columns.ADDRESS,
-            sort_order=Qt.SortOrder.AscendingOrder,
-            hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
-        )
-
-        widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, self.config, parent=self.tab_wallets)
-
-        viewer = UITx_Viewer(
+        viewer = create_tx_viewer(
             config=self.config,
             wallet_functions=self.wallet_functions,
             fx=self.fx,
-            widget_utxo_with_toolbar=widget_utxo_with_toolbar,
-            network=self.config.network,
             mempool_manager=self.mempool_manager,
-            fee_info=fee_info,
-            client=self.get_client_of_any_wallet(),
+            network=self.config.network,
             data=data,
-            parent=self,
+            outpoints=get_prev_outpoints(psbt.extract_tx()),
+            client=self.get_client_of_any_wallet(),
+            parent=self.tab_wallets,
+            fee_info=fee_info,
+            txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
             hidden_tx_infos=hidden_tx_infos,
         )
 
@@ -2245,29 +2256,167 @@ class MainWindow(UnlockableMainWindow):
         if current_node := self.tab_wallets.currentNode():
             self.config.last_tab_title = current_node.get_nested_titles()
 
-    def click_create_single_signature_wallet(self) -> None:
-        """Click create single signature wallet."""
-        qt_protowallet = self.create_qtprotowallet((1, 1), show_tutorial=True)
-        if qt_protowallet:
-            qt_protowallet.wallet_descriptor_ui.disable_fields()
+    def wallet_file_path(self, wallet_id: str) -> Path:
+        """Return the expected wallet file path for the given wallet name."""
+        return Path(self.config.wallet_dir) / filename_clean(wallet_id)
 
-    def click_create_multisig_signature_wallet(self) -> None:
-        """Click create multisig signature wallet."""
-        qt_protowallet = self.create_qtprotowallet((2, 3), show_tutorial=True)
-        if qt_protowallet:
-            qt_protowallet.wallet_descriptor_ui.disable_fields()
+    def is_wallet_id_available(
+        self, wallet_id: str, current_qt_protowallet: QTProtoWallet | None = None
+    ) -> bool:
+        """Check whether the wallet name can be used safely."""
+        normalized_wallet_id = wallet_id.strip()
+        if not normalized_wallet_id:
+            return False
+
+        if self.wallet_file_path(normalized_wallet_id).exists():
+            return False
+
+        for root in self.tab_wallets.roots:
+            if isinstance(root.data, QTWallet) and root.data.wallet.id == normalized_wallet_id:
+                return False
+            if (
+                isinstance(root.data, QTProtoWallet)
+                and root.data is not current_qt_protowallet
+                and root.data.protowallet.id == normalized_wallet_id
+            ):
+                return False
+        return True
+
+    def ensure_wallet_id_available(
+        self, wallet_id: str, current_qt_protowallet: QTProtoWallet | None = None
+    ) -> bool:
+        """Show an error if the wallet name cannot be used."""
+        normalized_wallet_id = wallet_id.strip()
+        if not normalized_wallet_id:
+            Message(self.tr("Please choose a wallet name"), type=MessageType.Warning, parent=self)
+            return False
+        if self.is_wallet_id_available(normalized_wallet_id, current_qt_protowallet=current_qt_protowallet):
+            return True
+        Message(
+            self.tr("A wallet named {wallet_id} already exists. Please choose a different name.").format(
+                wallet_id=normalized_wallet_id
+            ),
+            type=MessageType.Warning,
+            parent=self,
+        )
+        return False
+
+    def make_default_wallet_id(self) -> str:
+        """Create a readable default wallet name."""
+        for n in range(1, 1000):
+            wallet_id = self.tr("Wallet {n}").format(n=n)
+            if self.is_wallet_id_available(wallet_id):
+                return wallet_id
+        suffix = 1
+        while True:
+            wallet_id = f"wallet_{suffix}"
+            if self.is_wallet_id_available(wallet_id):
+                return wallet_id
+            suffix += 1
+
+    def preferred_wallet_id(self, proposed_wallet_id: str | None = None) -> str:
+        """Return a usable wallet id, keeping the requested one when possible."""
+        candidate = (proposed_wallet_id or "").strip()
+        if candidate and self.is_wallet_id_available(candidate):
+            return candidate
+        return self.make_default_wallet_id()
+
+    def click_create_hot_wallet(self) -> None:
+        """Create a testnet-only hot wallet with a generated seed."""
+        if self.config.network == bdk.Network.BITCOIN:
+            Message(
+                self.tr(
+                    "Hot wallets are disabled on Bitcoin Mainnet.\nYou can switch to Testnet to test Bitcoin Safe without using real Bitcoin."
+                ),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
+
+        wallet_id = self.preferred_wallet_id(self.welcome_screen.wallet_name)
+        protowallet = ProtoWallet(
+            threshold=1,
+            keystores=[None],
+            network=self.config.network,
+            wallet_id=wallet_id,
+        )
+        mnemonic = str(bdk.Mnemonic(bdk.WordCount.WORDS12))
+        key_origin = protowallet.address_type.key_origin(self.config.network)
+        xpub, fingerprint = derive(mnemonic=mnemonic, key_origin=key_origin, network=self.config.network)
+        protowallet.keystores[0] = KeyStore(
+            xpub=xpub,
+            fingerprint=fingerprint,
+            key_origin=key_origin,
+            network=self.config.network,
+            mnemonic=mnemonic,
+        )
+        self.create_qtwallet_from_protowallet(
+            protowallet=protowallet,
+            tutorial_index=None,
+            known_new_wallet=True,
+        )
+
+    def click_connect_devices(self) -> None:
+        """Start the device-guided wallet creation flow."""
+        self.open_qtprotowallet_setup(
+            (2, 3),
+            wallet_id=self.preferred_wallet_id(self.welcome_screen.wallet_name),
+            show_tutorial=True,
+        )
 
     def click_custom_signature(self) -> None:
         """Click custom signature."""
-        self.create_qtprotowallet((3, 5), show_tutorial=False)
+        self.open_qtprotowallet_setup(
+            (3, 5),
+            wallet_id=self.preferred_wallet_id(self.welcome_screen.wallet_name),
+            show_tutorial=False,
+        )
+
+    def on_network_choice_secure_wallet(self) -> None:
+        """Open the standard welcome screen after choosing mainnet."""
+        self._show_welcome_screen()
+
+    def on_network_choice_safe_playground(self) -> None:
+        """Restart into signet for the playground flow."""
+        self.restart(new_startup_network=bdk.Network.SIGNET)
+
+    def open_demo_wallet(self) -> None:
+        """Open the bundled demo wallet for the active test network."""
+        demo_wallet_files = copy_testnet_demo_wallet(config=self.config)
+        demo_wallet_path = demo_wallet_files[0] if demo_wallet_files else None
+        if not demo_wallet_path:
+            demo_candidates = sorted(Path(self.config.wallet_dir).glob("demo-public-*.wallet"))
+            demo_wallet_path = demo_candidates[0] if demo_candidates else None
+        if not demo_wallet_path:
+            Message(self.tr("No demo wallet is available for this network."), parent=self)
+            return
+        self.open_wallet(file_path=str(demo_wallet_path))
 
     def new_wallet(self) -> None:
         """New wallet."""
+        self._show_default_create_screen()
+
+    def _show_default_create_screen(self) -> None:
+        """Open the correct create screen for the current network and history state."""
+        if should_show_network_choice_welcome_screen(self.config):
+            self._show_network_choice_welcome_screen()
+            return
+        self._show_welcome_screen()
+
+    def _show_welcome_screen(self) -> None:
+        """Show the existing new-wallet welcome screen."""
+        if not self.tab_wallets.root.findNodeByWidget(self.welcome_screen):
+            self.welcome_screen.set_wallet_name(self.make_default_wallet_id())
         self.welcome_screen.add_new_wallet_welcome_tab(self.tab_wallets)
 
-    def new_wallet_id(self) -> str:
-        """New wallet id."""
-        return f"{self.tr('new')}{len(self.qt_wallets)}"
+    def _show_network_choice_welcome_screen(self) -> None:
+        """Show the mainnet first-run network chooser."""
+        self.network_choice_welcome_screen.add_network_choice_welcome_tab(self.tab_wallets)
+
+    def _remove_create_screens(self) -> None:
+        """Close any visible create-screen tabs once a real wallet is opened."""
+        self.welcome_screen.remove_me()
+        self.network_choice_welcome_screen.remove_me()
 
     def _ask_if_full_scan(self) -> bool | None:
         return question_dialog(
@@ -2277,11 +2426,17 @@ class MainWindow(UnlockableMainWindow):
         )
 
     def create_qtwallet_from_protowallet(
-        self, protowallet: ProtoWallet, tutorial_index: int | None
+        self,
+        protowallet: ProtoWallet,
+        tutorial_index: int | None,
+        known_new_wallet: bool | None = None,
     ) -> QTWallet:
         """Create qtwallet from protowallet."""
-        is_new_wallet = False
-        if self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        is_new_wallet = bool(known_new_wallet)
+        if (
+            known_new_wallet is None
+            and self.config.network_config.server_type == BlockchainType.CompactBlockFilter
+        ):
             answer = self._ask_if_full_scan()
             if answer is False:
                 is_new_wallet = True
@@ -2346,35 +2501,31 @@ class MainWindow(UnlockableMainWindow):
         self, root_node: SidebarNode, qt_protowallet: QTProtoWallet
     ) -> None:
         """Create qtwallet from qtprotowallet."""
+        if not self.ensure_wallet_id_available(
+            qt_protowallet.protowallet.id, current_qt_protowallet=qt_protowallet
+        ):
+            return
         self.create_qtwallet_from_ui(
             root_node=root_node,
             protowallet=qt_protowallet.protowallet,
             keystore_uis=qt_protowallet.wallet_descriptor_ui.keystore_uis,
-            tutorial_index=(
-                qt_protowallet.tutorial_index + 1
-                if qt_protowallet.tutorial_index is not None
-                else qt_protowallet.tutorial_index
-            ),
+            tutorial_index=2 if qt_protowallet.tutorial_index is not None else None,
         )
 
-    def create_qtprotowallet(
-        self, m_of_n: tuple[int, int], show_tutorial: bool = False
+    def open_qtprotowallet_setup(
+        self,
+        m_of_n: tuple[int, int],
+        wallet_id: str | None = None,
+        show_tutorial: bool = False,
     ) -> QTProtoWallet | None:
-        # ask for wallet name
-        """Create qtprotowallet."""
-        dialog = WalletIdDialog(Path(self.config.wallet_dir), parent=self)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            wallet_id = dialog.wallet_id
-            logger.info(f"new wallet name: {wallet_id}")
-        else:
-            return None
-
+        """Create a proto-wallet tab and open its setup flow."""
+        resolved_wallet_id = self.preferred_wallet_id(wallet_id)
         m, n = m_of_n
         protowallet = ProtoWallet(
             threshold=m,
             keystores=[None for i in range(n)],
             network=self.config.network,
-            wallet_id=wallet_id,
+            wallet_id=resolved_wallet_id,
         )
 
         qt_protowallet = QTProtoWallet(
@@ -2387,8 +2538,12 @@ class MainWindow(UnlockableMainWindow):
         qt_protowallet.tabs.setIcon(svg_tools.get_QIcon("file.svg"))
         qt_protowallet.tabs.setTitle(qt_protowallet.protowallet.id)
 
-        qt_protowallet.signal_close_wallet.connect(self.on_signal_close_qtprotowallet)
-        qt_protowallet.signal_create_wallet.connect(self.on_signal_create_qtprotowallet)
+        qt_protowallet.signal_close_wallet.connect(
+            partial(self.on_signal_close_qtprotowallet_setup, qt_protowallet)
+        )
+        qt_protowallet.signal_create_wallet.connect(
+            partial(self.on_signal_create_qtprotowallet_setup, qt_protowallet)
+        )
         self.tab_wallets.root.addChildNode(qt_protowallet.tabs)
 
         # tutorial
@@ -2397,8 +2552,13 @@ class MainWindow(UnlockableMainWindow):
         )
         qt_protowallet.wizard = wizard
         qt_protowallet.wizard.signal_create_wallet.connect(
-            partial(self.create_qtwallet_from_protowallet_from_wizard_keystore, wizard)
+            partial(self.create_qtwallet_from_protowallet_from_wizard_keystore, wizard, qt_protowallet)
         )
+        if isinstance(
+            wallet_setup := qt_protowallet.wizard.tab_generators.get(TutorialStep.wallet_setup),
+            WalletSetupOptions,
+        ):
+            wallet_setup.edit_wallet_name.setText(resolved_wallet_id)
 
         if show_tutorial:
             qt_protowallet.wizard.set_current_index(0)
@@ -2409,7 +2569,12 @@ class MainWindow(UnlockableMainWindow):
 
         return qt_protowallet
 
-    def create_qtwallet_from_protowallet_from_wizard_keystore(self, wizard: Wizard, protowallet_id: str):
+    def create_qtwallet_from_protowallet_from_wizard_keystore(
+        self,
+        wizard: Wizard,
+        qt_protowallet: QTProtoWallet,
+        protowallet_id: str,
+    ) -> None:
         """The keystore from the wizard UI are the ones used for walle creation.
 
         It is checked if qt_protowallet.protowallet  is consitent with the UI of the wizard
@@ -2420,16 +2585,10 @@ class MainWindow(UnlockableMainWindow):
         Returns:
             _type_: _description_
         """
-        node = self.get_node(wallet_id=protowallet_id)
-        if not node:
-            logger.error(f"Could not find node with {protowallet_id=}")
-            return
-        if not isinstance(node.data, QTProtoWallet):
-            logger.error(f"wrong type  {type(node.data)=}. Not wizard")
-            return
-        qt_protowallet = node.data
-
-        assert qt_protowallet.protowallet.id == protowallet_id
+        if qt_protowallet.protowallet.id != protowallet_id:
+            logger.warning(
+                f"Wizard protowallet id changed during setup: {protowallet_id=} != {qt_protowallet.protowallet.id=}"
+            )
 
         if not isinstance(
             tab_import_xpub := wizard.tab_generators.get(TutorialStep.import_xpub), ImportXpubs
@@ -2451,33 +2610,28 @@ class MainWindow(UnlockableMainWindow):
             Message("QtProtowallet inconsitent. Cannot create wallet", type=MessageType.Error, parent=self)
             return
 
+        if not self.ensure_wallet_id_available(
+            qt_protowallet.protowallet.id, current_qt_protowallet=qt_protowallet
+        ):
+            return
+
+        node = qt_protowallet.tabs
         self.create_qtwallet_from_ui(
             root_node=node,
             protowallet=qt_protowallet.protowallet,
             keystore_uis=tab_import_xpub.keystore_uis,
-            tutorial_index=qt_protowallet.tutorial_index,
+            tutorial_index=2 if qt_protowallet.tutorial_index is not None else None,
         )
 
-    def on_signal_close_qtprotowallet(self, wallet_id: str):
-        """On signal close qtprotowallet."""
-        node = self.get_node(wallet_id=wallet_id)
-        if not node:
-            logger.error(f"Could not find node with {wallet_id=}")
-            return
-        self.close_tab(node)
+    def on_signal_close_qtprotowallet_setup(self, qt_protowallet: QTProtoWallet, wallet_id: str) -> None:
+        """Close the proto-wallet setup flow."""
+        del wallet_id
+        self.close_tab(qt_protowallet.tabs)
 
-    def on_signal_create_qtprotowallet(self, wallet_id: str):
-        """On signal create qtprotowallet."""
-        node = self.get_node(wallet_id=wallet_id)
-        if not node:
-            logger.error(f"Could not find node with {wallet_id=}")
-            return
-
-        if not isinstance(node.data, QTProtoWallet):
-            logger.error(f"wrong type  {type(node.data)=}. Not QTProtoWallet")
-            return
-
-        self.create_qtwallet_from_qtprotowallet(root_node=node, qt_protowallet=node.data)
+    def on_signal_create_qtprotowallet_setup(self, qt_protowallet: QTProtoWallet, wallet_id: str) -> None:
+        """Finish the proto-wallet setup flow and create the wallet."""
+        del wallet_id
+        self.create_qtwallet_from_qtprotowallet(root_node=qt_protowallet.tabs, qt_protowallet=qt_protowallet)
 
     def on_set_tab_properties(self, tab: object, tab_text: str, icon_name: str, tooltip: str) -> None:
         """On set tab properties."""
@@ -2523,7 +2677,7 @@ class MainWindow(UnlockableMainWindow):
         qt_wallet.tabs.setTitle(qt_wallet.wallet.id)
 
         with LoadingWalletTab(self.tab_wallets, qt_wallet.wallet.id, focus=True):
-            self.welcome_screen.remove_me()
+            self._remove_create_screens()
             # tutorial
             wizard = Wizard(
                 qtwalletbase=qt_wallet,
@@ -2620,7 +2774,7 @@ class MainWindow(UnlockableMainWindow):
     def event_wallet_tab_closed(self) -> None:
         """Event wallet tab closed."""
         if not self.tab_wallets.count():
-            self.welcome_screen.add_new_wallet_welcome_tab(self.tab_wallets)
+            self._show_default_create_screen()
         # necessary to remove old qt_wallets from memory
         self.rebuild_current_wallet_tab_menu()
 

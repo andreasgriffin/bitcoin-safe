@@ -224,7 +224,7 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
             descriptor=descriptor, expected_address=expected_address, kind=kind, address_index=address_index
         )
 
-        text_titles = "\n".join([f"{keystore.label}:" for keystore in keystores])
+        text_titles = "\n".join([f"{keystore.technical_hardware_signer_label()}:" for keystore in keystores])
         text_xpubs = "\n".join([keystore.xpub for keystore in keystores])
         self.label_title_keystore.setText(text_titles)
         self.label_xpubs_keystore.setText(text_xpubs)

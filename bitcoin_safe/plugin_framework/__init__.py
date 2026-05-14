@@ -27,4 +27,6 @@
 # SOFTWARE.
 #
 
-from .plugin_card_frame import PluginCardFrame as PluginCardFrame
+from bitcoin_safe.gui.qt.styled_card_frame import BaseCardFrame
+
+__all__ = ["BaseCardFrame"]

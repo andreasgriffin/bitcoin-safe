@@ -36,9 +36,9 @@ from PyQt6.QtGui import QShowEvent
 
 from bitcoin_safe.gui.qt.util import category_color
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
+from bitcoin_safe.wallet import Wallet
 
 from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletSignals
-from ...wallet import Wallet
 from .qr_components.quick_receive import QuickReceive, ReceiveGroup
 
 logger = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ class BitcoinQuickReceive(
 
     def update_content(self, update_filter: UpdateFilter) -> None:
         """Update content."""
-        if self.maybe_defer_update():
+        if self.maybe_defer_update() and not update_filter.refresh_all:
             return
 
         # decide whether to update

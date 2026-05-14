@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>เพิ่มแหล่งปลั๊กอิน</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer token</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>ชื่อที่แสดง</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL ของ manifest</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>วางกุญแจสาธารณะแบบ ASCII-armored ที่นี่</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>กุญแจสาธารณะที่ปักหมุดไว้</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>ได้รับการเรียกกลับจากเบราว์เซอร์หลังจากใบแจ้งหนี้หมดอายุ โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>เลือกจำนวนเงินและสร้างใบแจ้งหนี้การบริจาค</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>ดำเนินการชำระเงินให้เสร็จในเบราว์เซอร์ของคุณ หากมีปัญหา โปรดอย่าลังเลที่จะติดต่อเราที่: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>ไม่สามารถสร้างใบแจ้งหนี้ได้ โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติได้ กรุณาลองอีกครั้ง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ไม่สามารถเริ่มเซิร์ฟเวอร์เรียกกลับภายในเครื่องได้ กำลังเปิดใบแจ้งหนี้ในเบราว์เซอร์โดยไม่มีการยืนยันอัตโนมัติ</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>สร้างใบแจ้งหนี้</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>ใบแจ้งหนี้พร้อมแล้ว ทำการชำระเงินให้เสร็จสิ้นในเบราว์เซอร์ของคุณ การยืนยันอัตโนมัติอาจไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>บริการใบแจ้งหนี้ส่งคืนข้อผิดพลาด ({code})</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองบริจาคอีกครั้ง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองอีกครั้ง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ยืนยันการชำระเงินผ่านการเรียกกลับของเบราว์เซอร์แล้ว ขอบคุณ!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>โปรดเลือกจำนวนเงิน</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>กำลังขอใบแจ้งหนี้...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>กำลังขอใบแจ้งหนี้... เบราว์เซอร์จะเปิดขึ้นและ Bitcoin Safe จะรับฟังการเรียกกลับในเครื่อง</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์รับบริจาคได้ กรุณาลองใหม่ภายหลัง</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>คีย์ซิงค์ของกระเป๋าสตางค์ {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>ติด {number} คำที่เมล็ดพันธุ์ลงบน pdf ที่พิมพ์ตรงกัน</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>ติด {number} คำที่เมล็ดพันธุ์ลงบน pdf ที่พิมพ์</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>โปรดทำขั้นตอนก่อนหน้านี้ให้เสร็จสมบูรณ์</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>พิมพ์ใบเรียกคืน</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>พิมพ์ pdf (ยังมีตัวบ่งชี้กระเป๋าเงิน)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>เปิดใช้งาน</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>เปิดปลั๊กอิน</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>ให้บริการโดย: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>แผนธุรกิจ</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>การเข้าถึงแผนธุรกิจกำลังใช้งานอยู่</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>ปลดล็อกปลั๊กอินแบบชำระเงินทั้งหมดด้วยการสมัครสมาชิกเดียว และลบค่าบริการสำหรับการชำระเงินตามกำหนดเวลา</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>เปิดในตัวสำรวจบล็อก</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>เปิดโฟลเดอร์ที่มี</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>ซื้ออุปกรณ์ลงนามฮาร์ดแวร์ {number} 
-                            &lt;ul&gt;         {different_hint}          &lt;li&gt;Bitcoin Safe รองรับอุปกรณ์ลงนามฮาร์ดแวร์หลักทั้งหมด: &lt;a href="{url}"&gt;ดูรายการทั้งหมด&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -899,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>โปรดเลือกกระเป๋าเงิน Multisignature ก่อน</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>ต้องการผู้ลงนาม</translation>
 		</message>
@@ -916,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>คุณสมบัติของกระเป๋าเงิน</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>เริ่มทดลองใช้ฟรีก่อน จากนั้นจัดการหรือรีเฟรชการสมัครสมาชิกที่นี่</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1029,33 +1136,153 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>เลือกสถานที่ปลอดภัยอย่างระมัดระวัง โดยพิจารณาว่าคุณต้องไปที่ {m} จาก {n} เพื่อใช้จ่ายจากกระเป๋าเงิน multisig</translation>
+			<source>1. Print backup sheets</source>
+			<translation>ชื่อกระเป๋าเงิน</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>วางการสำรองข้อมูลเมล็ดพันธุ์และผู้ลงนามฮาร์ดแวร์ในสถานที่ปลอดภัย เช่น:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. พิมพ์แผ่นสำรอง</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>การสำรองข้อมูลเมล็ดพันธุ์ {j} และผู้ลงนามฮาร์ดแวร์ {j} ควรอยู่ในที่ตั้ง {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. ใช่ ฉันแนบคำ seed เข้ากับเอกสารที่พิมพ์แล้ว</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>เก็บผู้ลงนามฮาร์ดแวร์ไว้ในที่ปลอดภัย</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>แผ่นสำรอง</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>เก็บการสำรองข้อมูลเมล็ดพันธุ์ในที่ตั้งที่ปลอดภัยมาก (เช่นตู้นิรภัย)</translation>
+			<source>Backup sheet {number}</source>
+			<translation>แผ่นสำรอง {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>การสำรองข้อมูลเมล็ดพันธุ์ (24 คำ) ให้การควบคุมเงินทั้งหมด</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>กระจายไปยัง 2 สถานที่แยกกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>กระจายไปยัง {n} สถานที่แยกกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>อย่าเก็บหลายสถานที่ไว้ในที่เดียวกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>อย่าเก็บหลายสถานที่ไว้ในที่เดียวกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>อย่าเก็บอุปกรณ์ลงนามและแผ่นสำรองที่มีคำ seed ไว้ในที่เดียวกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>แต่ละสถานที่ต้องออฟไลน์และปลอดภัยทางกายภาพ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>สำคัญ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>สถานที่</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>สถานที่ 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>สถานที่ 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>โปรดทำขั้นตอนก่อนหน้านี้ให้เสร็จสมบูรณ์</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>เปิดคำแนะนำสำหรับการดูคำ seed บนผู้ลงนามนี้</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>พิมพ์แผ่นสำรอง (จำเป็น)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>พิมพ์ PDF และแนบคำ seed เข้ากับแผ่นสำรองแต่ละแผ่น</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>พิมพ์แผ่นสำรองและเก็บทุกอย่างไว้ในสถานที่ที่แยกจากกันและปลอดภัย</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>วางข้อมูลสำรองและผู้ลงนามของคุณไว้ในสถานที่ปลอดภัย</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>แผ่น {number} จาก {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>อุปกรณ์ผู้ลงนาม</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>อุปกรณ์ผู้ลงนาม</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>เก็บผู้ลงนามแต่ละรายพร้อมกับแผ่นสำรองและคำ seed ไว้ในสถานที่เดียวกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>เก็บอุปกรณ์ลงนามและแผ่นสำรองที่มีคำ seed ไว้ในสถานที่ปลอดภัยที่แยกจากกัน</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>ตู้นิรภัย {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>ดูคำ seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>ดูคำ seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>คุณต้องไปยัง {m} จาก {n} สถานที่เพื่อใช้จ่ายจากกระเป๋าเงินของคุณ</translation>
 		</message>
 	</context>
 	<context>
@@ -1096,6 +1323,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>ข้อความ (ไม่บังคับ)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>ข้อความ (ไม่บังคับ)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1182,6 +1419,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>เต็ม (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>ขอบคุณสำหรับ Bitcoin Safe!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>ลบปลั๊กอิน</translation>
 		</message>
 	</context>
 	<context>
@@ -1339,43 +1590,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>ลองใหม่</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>ใช่, ฉันเห็นธุรกรรมในประวัติ</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>โปรดตรวจสอบว่าไม่มีโปรแกรมอื่นๆ เข้าถึงผู้ลงนามฮาร์ดแวร์</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>โปรดใส่ชื่อ (ป้ายสติกเกอร์) ของผู้ลงนามฮาร์ดแวร์</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>ป้ายสติกเกอร์</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>สำเร็จ! โปรดทำขั้นตอนนี้กับผู้ลงนามฮาร์ดแวร์ทั้งหมดแล้วคลิกถัดไป</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>การตั้งค่าไม่สมบูรณ์ โปรดทำซ้ำ</translation>
 		</message>
 	</context>
 	<context>
@@ -1596,11 +1810,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>ผู้ลงนามถัดไป</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>ขั้นตอนถัดไป</translation>
 		</message>
@@ -1608,11 +1817,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>ผู้ลงนามก่อนหน้า</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1638,6 +1842,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>ลบปลั๊กอิน</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) ช่วยให้วอลเล็ตค้นพบธุรกรรมที่เกี่ยวข้องในขณะที่ยังคงรักษาความเป็นส่วนตัวของที่อยู่ของคุณ</translation>
 		</message>
@@ -1648,13 +1857,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>ในระหว่างการซิงก์ครั้งแรก Bitcoin Safe จะดึงสรุปบล็อกแบบ compact จากหลายโหนด Bitcoin นี่เป็นวิธีส่วนตัวในการดาวน์โหลดข้อมูลบล็อก</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>เวลาที่ผ่านไป {elapsed} | เวลาที่เหลือโดยประมาณ {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>เวลาที่ผ่านไป {elapsed} | เวลาที่เหลือโดยประมาณ {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe ดาวน์โหลดสรุปบล็อกจากหลายโหนดเพื่อความเป็นส่วนตัว หลังจากการซิงค์เริ่มต้นนี้ การอัปเดตจะรวดเร็ว หากคุณมีเซิร์ฟเวอร์ Electrum ของคุณเองหรือไม่ต้องการรอ ให้เชื่อมต่อกับเซิร์ฟเวอร์ Electrum สาธารณะในการตั้งค่าเครือข่าย</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>การตั้งค่าเครือข่าย</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1766,13 +1980,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>ขั้นสูง</translation>
+			<source>Add New Signer</source>
+			<translation>เพิ่มผู้ลงนามใหม่</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>คำอธิบาย</translation>
+			<source>Change device type</source>
+			<translation>เปลี่ยนประเภทอุปกรณ์</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>เชื่อมต่อ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>พาธการอนุมาน</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>คำแนะนำของอุปกรณ์</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1791,11 +2020,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>ชื่ออุปกรณ์ลงนาม: ......
-
-ตำแหน่งอุปกรณ์ลงนาม: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>นำเข้าข้อมูลผู้ลงนามด้วย QR, USB หรือการนำเข้าข้อความ/ไฟล์</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับ&lt;a href="{url}"&gt;อุปกรณ์ลงนามฮาร์ดแวร์ที่รองรับ&lt;/a&gt;</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับ &lt;a href="{url}"&gt;{device}&lt;/a&gt;</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1809,13 +2045,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>โปรดตรวจสอบว่าไม่มีโปรแกรมอื่นๆ เข้าถึงผู้ลงนามฮาร์ดแวร์</translation>
+			<source>Open the signer guide</source>
+			<translation>เปิดคู่มือผู้ลงนาม</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>โปรดใส่คีย์ต้นทางที่ถูกต้อง</translation>
+			<source>Personal notes:</source>
+			<translation>บันทึกส่วนตัว:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>โปรดตรวจสอบว่าไม่มีโปรแกรมอื่นๆ เข้าถึงผู้ลงนามฮาร์ดแวร์</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1839,8 +2080,43 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>รหัส QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>ลงทะเบียน</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>ลงทะเบียน multisig อีกครั้ง</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>เมล็ดพันธุ์</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>เลือกแบรนด์</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>เลือกรุ่น</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>เลือกแบรนด์ของผู้ลงนาม</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>เลือกรุ่นของผู้ลงนาม</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1859,18 +2135,28 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>เขียนบันทึกที่เกี่ยวข้องกับผู้ลงนามนี้ บันทึกช่วยจำ ฯลฯ ที่นี่...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>ต้นกำเนิด xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} ไม่สามารถใช้ที่นี่</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} ไม่สามารถใช้ที่นี่</translation>
+			<source>{device} instructions</source>
+			<translation>คำแนะนำสำหรับ {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1916,48 +2202,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>คีย์ต้นทางที่คุณนำเข้า {key_origins} แตกต่างกัน! กรุณาตรวจสอบอีกครั้งหากคุณตั้งใจเช่นนี้</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>กุญแจลับสำหรับการซิงค์สำรอง:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>เลือกคอมพิวเตอร์ที่เชื่อถือได้ในแท็บ Sync &amp; Chat ที่แต่ละคอมพิวเตอร์</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>วิดีโอความร่วมมือ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>เปิดใช้งาน</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>การสำรองข้อมูลบนคลาวด์ที่เข้ารหัสของป้ายกำกับที่อยู่และหมวดหมู่</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>เสร็จสิ้น</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>การซิงค์และแชทหลายคอมพิวเตอร์</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>วิดีโอซิงโครไนซ์</translation>
 		</message>
 	</context>
 	<context>
@@ -2183,6 +2427,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;ปลั๊กอิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;กระเป๋า/แท็บก่อนหน้า</translation>
 		</message>
@@ -2260,6 +2509,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>มีกระเป๋าเงินชื่อ {wallet_id} อยู่แล้ว โปรดเลือกชื่ออื่น</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2368,6 +2622,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ Bitcoin Safe โดยไม่ต้องใช้ Bitcoin จริง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>คงเปิดไว้</translation>
 		</message>
@@ -2395,6 +2655,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>แท็บใหม่ {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>ไม่มีวอลเล็ตสาธิตสำหรับเครือข่ายนี้</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2450,6 +2715,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>วางธุรกรรมบิตคอยน์ หรือ PSBT ของคุณที่นี่หรือวางไฟล์</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>โปรดเลือกชื่อกระเป๋าเงิน</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2629,6 +2899,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>วอลเล็ต {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>กระเป๋าทั้งหมดยังอยู่ระหว่างการซิงค์ และการซิงค์จะต้องเริ่มใหม่หากคุณปิดแอป ต้องการซ่อนไว้ที่ถาดระบบแทนหรือไม่?</translation>
@@ -2657,11 +2932,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>ใช่, สแกนธุรกรรมทั้งหมด</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>ใหม่</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2788,6 +3058,43 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (เวลาท้องถิ่น)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>สร้าง</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>สร้างกระเป๋าเงินใหม่</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>ฝึกใช้งานในสภาพแวดล้อมที่ปลอดภัยก่อนย้ายไปใช้ bitcoin จริง&lt;br&gt;• สำรวจแอปด้วยวอลเล็ตสาธิต&lt;br&gt;• ใช้เหรียญทดสอบที่ไม่มีมูลค่าทางการเงิน&lt;br&gt;• เหมาะสำหรับการเรียนรู้ ทดลอง และทำผิดพลาดได้อย่างปลอดภัย&lt;br&gt;&lt;i&gt;เครือข่าย Signet&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>พื้นที่ทดลองที่ปลอดภัย</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>วอลเล็ตที่ปลอดภัย</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>เลือกเครือข่าย Bitcoin ที่คุณต้องการใช้</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>ใช้เครือข่าย Bitcoin จริงเมื่อคุณพร้อมสำหรับเงินจริง&lt;br&gt;• ส่งและรับ bitcoin จริง&lt;br&gt;• เหมาะที่สุดสำหรับการตั้งค่าวอลเล็ตระยะยาวของคุณ&lt;br&gt;• ธุรกรรมมีมูลค่าจริงและผลลัพธ์จริง&lt;br&gt;&lt;i&gt;เครือข่าย Mainnet&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2958,8 +3265,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy ไม่ใช้กับฟีเจอร์ Sync&amp;Chat!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>พร็อกซีไม่ใช้กับปลั๊กอิน Sync&amp;Chat และระหว่างการซื้อการสมัครสมาชิก!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2983,58 +3291,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>ต้องการสถานที่ปลอดภัย 1 แห่งในการเก็บการสำรองข้อมูลเมล็ดพันธุ์ (บนกระดาษหรือเหล็ก)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>เมล็ดพันธุ์ 1 ตัว (24 คำลับ) เพียงพอสำหรับการเข้าถึงเงินของคุณ</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>อุปกรณ์ลงนาม 1 ตัว</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>กระเป๋าเงิน Multi-Signature 2 จาก 3</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>ต้องการสถานที่ปลอดภัย 3 แห่ง (แต่ละแห่งมีการสำรองข้อมูลเมล็ดพันธุ์ + ตัวบ่งชี้กระเป๋าเงิน)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>อุปกรณ์ลงนาม 3 ตัว</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>เหมาะสำหรับเงินจำนวนมาก</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>เหมาะสำหรับเงินจำนวนปานกลาง</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>เลือก Multi-Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>เลือกลายเซ็นเดี่ยว</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>ข้อเสีย:</translation>
+			<source>Connect Device(s)</source>
+			<translation>เชื่อมต่ออุปกรณ์</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3043,49 +3301,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>สร้างหรือ นำเข้า กระเป๋าเงินแบบกำหนดเอง</translation>
+			<source>Custom / Recovery</source>
+			<translation>กำหนดเอง / กู้คืน</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>กำหนดเองหรือนำเข้ากระเป๋าเงินที่มีอยู่</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>การตั้งค่าแบบแนะนำสำหรับกระเป๋าเงินแบบดูแลด้วยตนเองของคุณ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>ปรับแต่งกระเป๋าเงินให้ตรงกับความต้องการของคุณ</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>กระเป๋าเงินร้อนแบบลายเซ็นเดียว</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>หากเมล็ดพันธุ์หายหรือถูกขโมย สามารถโอนเงินทั้งหมดไปยังกระเป๋าเงินใหม่ด้วยเมล็ดพันธุ์ 2 ตัวที่เหลือและตัวบ่งชี้กระเป๋าเงิน (QR-code)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>เปิดรายการกระเป๋าเงินฮาร์ดแวร์และผู้ลงนามที่รองรับ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>หากคุณถูกหลอกให้มอบเมล็ดพันธุ์ให้กับแฮกเกอร์ เงิน Bitcoin ของคุณจะถูกขโมยทันที</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>ลองใช้กระเป๋าเงินที่มีอยู่ซึ่งมีเหรียญทดสอบบางส่วนเพื่อสำรวจอย่างปลอดภัย</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>ในกรณีที่ต้องการกู้คืน อาจหาข้อมูลสนับสนุนทางออนไลน์ได้น้อย</translation>
+			<source>Public Demo wallet</source>
+			<translation>กระเป๋าเงินสาธิตสาธารณะ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>ข้อดี:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>สร้างกระเป๋าเงินอย่างรวดเร็วเพื่อใช้งานทันที โดยไม่ต้องใช้กุญแจที่มีอยู่&lt;br&gt;&lt;small&gt;ถูกปิดใช้งานบน Mainnet เนื่องจากคอมพิวเตอร์ที่เชื่อมต่ออินเทอร์เน็ตไม่ได้ออกแบบมาเพื่อเก็บความลับที่แทนมูลค่าเงินอย่างปลอดภัย&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>กระเป๋าเงินลายเซ็นเดี่ยว</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>สร้างกระเป๋าเงินอย่างรวดเร็วเพื่อใช้งานทันที โดยไม่ต้องใช้กุญแจที่มีอยู่&lt;br&gt;&lt;small&gt;การสร้างและจัดเก็บกุญแจบนคอมพิวเตอร์ที่เชื่อมต่ออินเทอร์เน็ตไม่ปลอดภัย คอมพิวเตอร์อเนกประสงค์ไม่ได้ออกแบบมาเพื่อเก็บความลับที่แทนมูลค่าเงิน&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>ตัวบ่งชี้กระเป๋าเงิน (QR-code) เป็นสิ่งจำเป็นในการกู้คืนกระเป๋าเงิน</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>กู้คืนกระเป๋าเงินจากกระเป๋าเงินฮาร์ดแวร์หรือ descriptor</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>ผู้ลงนามที่รองรับ</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ชื่อกระเป๋าเงิน</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3173,6 +3445,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>รายเดือน</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>เริ่มทดลองใช้ฟรี</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>การสมัครสมาชิก</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>รายปี</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>จัดการ</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>รีเฟรชสถานะ</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>การสมัครสมาชิก:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3237,93 +3553,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>ได้รับการเรียกกลับจากเบราว์เซอร์หลังจากใบแจ้งหนี้หมดอายุ โปรดลองอีกครั้ง</translation>
+			<source>Update</source>
+			<translation>อัปเดต</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>เลือกจำนวนเงินและสร้างใบแจ้งหนี้การบริจาค</translation>
+			<source>Update available: {update_target}</source>
+			<translation>มีอัปเดตพร้อมใช้งาน: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>ทำการชำระเงินให้เสร็จสิ้นในเบราว์เซอร์ของคุณ หากมีปัญหา โปรดอย่าลังเลที่จะติดต่อเราที่: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>อัปเดตเป็น {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>ไม่สามารถสร้างใบแจ้งหนี้ได้ โปรดลองอีกครั้ง</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติได้ กรุณาลองอีกครั้ง</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>ไม่สามารถเริ่มเซิร์ฟเวอร์เรียกกลับภายในเครื่องได้ กำลังเปิดใบแจ้งหนี้ในเบราว์เซอร์โดยไม่มีการยืนยันอัตโนมัติ</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>สร้างใบแจ้งหนี้</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>ใบแจ้งหนี้พร้อมแล้ว ทำการชำระเงินให้เสร็จสิ้นในเบราว์เซอร์ของคุณ การยืนยันอัตโนมัติอาจไม่พร้อมใช้งาน</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>บริการใบแจ้งหนี้ส่งคืนข้อผิดพลาด ({code})</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองบริจาคอีกครั้ง</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>ไม่ได้รับการเรียกกลับจากเบราว์เซอร์ก่อนใบแจ้งหนี้หมดเวลา โปรดลองอีกครั้ง</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>ยืนยันการชำระเงินผ่านการเรียกกลับของเบราว์เซอร์แล้ว ขอบคุณ!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>โปรดเลือกจำนวนเงินบริจาคและสกุลเงิน</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>กำลังขอใบแจ้งหนี้...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>กำลังขอใบแจ้งหนี้... เบราว์เซอร์จะเปิดขึ้นและ Bitcoin Safe จะรับฟังการเรียกกลับในเครื่อง</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์รับบริจาคได้ กรุณาลองใหม่ภายหลัง</translation>
+			<source>Version {version}</source>
+			<translation>เวอร์ชัน {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>เปิด/ปิด</translation>
+			<source>Explore plugins</source>
+			<translation>สำรวจปลั๊กอิน</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>ไม่มีปลั๊กอินสำหรับกระเป๋าเงินนี้ ดังนั้นจึงไม่มีอะไรให้กำหนดค่าที่นี่</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>ตรวจสอบปลั๊กอินที่มีสำหรับกระเป๋าเงินนี้ คุณสามารถเปิดใช้งานปลั๊กอินที่ต้องการได้ตอนนี้ และกลับมาที่แท็บปลั๊กอินในภายหลังได้ทุกเมื่อ</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>เปิดใช้งานและจัดการการเชื่อมต่อกระเป๋าเงินเพิ่มเติม</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>ปลั๊กอิน</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>ยกเลิก</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>ลบ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>ลบปลั๊กอินที่ติดตั้งแล้ว</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>ลบปลั๊กอินที่ติดตั้งแล้ว {plugin}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>ปิดใช้งานปลั๊กอินก่อนลบ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>ต้องมี URL ของ manifest และกุญแจสาธารณะที่ปักหมุดไว้</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>การดำเนินการปลั๊กอินล้มเหลว</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>แหล่งปลั๊กอิน {source_id} ไม่มีอยู่</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>ตรวจสอบปลั๊กอินที่ติดตั้งแล้วอีกครั้ง</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>ตรวจสอบปลั๊กอินที่ติดตั้งแล้วอีกครั้ง ปลั๊กอิน {count} รายการไม่ถูกต้อง</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>ลบแหล่งปลั๊กอิน</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>ลบแหล่งปลั๊กอิน {source}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>ไม่สามารถลบปลั๊กอินนี้ได้</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>ใช้กับปลั๊กอินแบบชำระเงินทั้งหมดและค่าบริการที่จำกัดด้วยการสมัครสมาชิก</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>แผน Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>ปลั๊กอิน</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>แหล่งที่มา</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>ไม่สามารถลบได้ในขณะที่ติดตั้งปลั๊กอิน {count} รายการอยู่</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>ลบ</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>ข้อผิดพลาดล่าสุด: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>รีเฟรช</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>ลบปลั๊กอินที่ติดตั้งจากแหล่งนี้ก่อนลบแหล่ง</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>รหัสแหล่ง: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3736,18 +4134,13 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>ยอดเงิน = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>ตรวจสอบว่าได้รับหรือไม่</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>ขั้นตอนถัดไป</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>เสร็จสมบูรณ์ - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3756,29 +4149,49 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
+			<source>Receive Test</source>
+			<translation>ทดสอบการรับ</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อให้ทราบว่าคุณควบคุมเงินได้ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                      &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากไปยังกระเป๋าเงิน จึงเป็นสิ่ง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่จะต้องทดสอบการใช้จ่ายและผู้ลงนามทั้งหมด                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;อย่าส่งเงินจำนวนมากไปยังกระเป๋าเงินในตอนนี้ โปรดทำการทดสอบ self-send ทั้งหมดให้เสร็จก่อน!&lt;/b&gt;                    </translation>
+			<translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าไปในกระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; &lt;br&gt; &lt;br&gt; &lt;b&gt;อย่าเพิ่งส่งเงินจำนวนมากเข้าไปในกระเป๋าเงิน โปรดทำการทดสอบส่งให้ตนเองทั้งหมดให้เสร็จก่อน!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>คำแนะนำการรับ</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>ธุรกรรมที่รู้จัก</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>กระเป๋าเงินที่เปิดล่าสุด</translation>
+			<source>ALL WALLETS</source>
+			<translation>กระเป๋าทั้งหมด</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>กระเป๋าล่าสุด</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>แสดงในตัวสำรวจไฟล์</translation>
 		</message>
 	</context>
 	<context>
@@ -3923,38 +4336,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. นำข้อมูลกระเป๋าเงินเข้าสู่ Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>ผู้ลงนามถัดไป</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>ขั้นตอนถัดไป</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>ผู้ลงนามก่อนหน้า</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>ข้ามขั้นตอน</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>ใช่, ฉันได้ลงทะเบียน multisig บนผู้ลงนามฮาร์ดแวร์ที่ {n}</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>ลงทะเบียนกระเป๋า multisig บนอุปกรณ์ลงนามแต่ละเครื่อง</translation>
 		</message>
 	</context>
 	<context>
@@ -3998,6 +4381,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ไม่ได้เลือกไฟล์</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>ปลั๊กอินสมัครสมาชิกสาธิต</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>ปลั๊กอินตัวอย่างที่อิงจาก PaidPluginClient ใช้สิ่งนี้เพื่อตรวจสอบการเปิดใช้งานที่จำกัดด้วยการสมัครสมาชิกและการทำงานของตัวจัดการปลั๊กอิน</translation>
 		</message>
 	</context>
 	<context>
@@ -4063,14 +4458,38 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>เสร็จสมบูรณ์ - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>สร้างธุรกรรมในการ์ดนี้</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>รอดำเนินการ - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>ทดสอบส่งถึงตัวเอง {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>ลงนามและเผยแพร่ธุรกรรมด้านล่าง</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>ข้ามการทดสอบการใช้จ่าย?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>เรากำลังส่งจากกระเป๋าเงินของคุณไปยังที่อยู่อื่นในกระเป๋าเงินของคุณ (self-send)&lt;br&gt; สิ่งนี้ช่วยฝึกกระบวนการลงนามและทำให้แน่ใจว่าอุปกรณ์ลงนามทั้งหมดได้รับการตั้งค่าอย่างถูกต้อง</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>กำลังรอให้เตรียมธุรกรรม</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4287,20 +4706,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" บน {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>เวอร์ชันที่มีให้ใช้: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>พิมพ์ป้าย</translation>
+			<source>Install {version}</source>
+			<translation>ติดตั้ง {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>ติดสติกเกอร์ต่อไปนี้บนฮาร์ดแวร์ของคุณ:</translation>
+			<source>Installed version: {version}</source>
+			<translation>เวอร์ชันที่ติดตั้ง: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>ติดตั้งแล้ว {installed}; มีอัปเดต: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>ล่าสุด {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>อัปเดตเป็น {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>เวอร์ชัน {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>เวอร์ชัน {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>เพิ่มแหล่งปลั๊กอิน...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>ปิด</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>แหล่งปลั๊กอินที่กำหนดค่าแล้ว</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>ยังไม่ได้เพิ่มแหล่งปลั๊กอิน</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>แหล่งปลั๊กอิน</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>ตรวจสอบปลั๊กอินที่ติดตั้งอีกครั้ง</translation>
 		</message>
 	</context>
 	<context>
@@ -4795,11 +5271,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>ขั้นตอนถัดไป</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>ไม่มีรายละเอียดธุรกรรมที่จำเป็นทั้งหมดสำหรับ RBF</translation>
 		</message>
@@ -4818,11 +5289,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>โปรดลบธุรกรรมในเครื่องของกระเป๋าสตางค์ที่มีอยู่ก่อน</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5097,18 +5563,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>ใช่, ฉันมั่นใจว่าคำทั้ง {number} ถูกต้อง</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5334,6 +5788,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>ผู้ลงนาม 1 คน</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>ลายเซ็นหลายฝ่าย 2 จาก 3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>ลายเซ็นหลายฝ่าย 3 จาก 5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>สามารถทนต่อการสูญเสียอุปกรณ์ลงนาม 1 เครื่องและ seed สำรองของอุปกรณ์นั้น</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>สามารถทนต่อการสูญเสียอุปกรณ์ลงนาม 2 เครื่องและ seed สำรองของอุปกรณ์เหล่านั้น</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>เลือกแม่แบบกระเป๋า</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>ข้อเสีย</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>ดำเนินการต่อ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>ความซับซ้อนสูง</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>หากอุปกรณ์ลงนามและ seed สำรองสูญหาย เงินก็จะสูญหาย</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>การจัดเก็บแบบเย็นระยะยาว</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>การจัดเก็บแบบเย็นระยะยาว (ลายเซ็นหลายฝ่าย 2 จาก 3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>ความซับซ้อนต่ำ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>ความซับซ้อนปานกลาง</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>โปรดเลือกชื่อกระเป๋าเงิน</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>ขั้นตอนก่อนหน้า</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>ข้อดี</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>การกู้คืน</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>จำเป็น</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>ต้องมีสถานที่ปลอดภัยที่ควบคุมการเข้าถึง 1 แห่งเพื่อจัดเก็บ seed สำรอง</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>ต้องมีสถานที่ปลอดภัยที่ควบคุมการเข้าถึง 3 แห่งเพื่อจัดเก็บ seed สำรอง</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>ต้องมีสถานที่ปลอดภัยที่ควบคุมการเข้าถึง 5 แห่งเพื่อจัดเก็บ seed สำรอง</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>กระเป๋าที่แข็งแกร่งสำหรับการดูแลสินทรัพย์ด้วยตนเองระยะยาว</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>เลือกเทมเพลตจากรายการ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>การดูแลด้วยตนเองพร้อมผู้ลงนาม 1 คนและข้อมูลสำรอง seed 1 ชุด</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>ที่เก็บแบบเย็นอย่างง่าย</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>ที่เก็บแบบเย็นอย่างง่าย (ผู้ลงนาม 1 คน)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>เก็บข้อมูลสำรอง seed แยกจากอุปกรณ์เพื่อหลีกเลี่ยงจุดล้มเหลวเพียงจุดเดียว</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>ที่เก็บที่แข็งแกร่งเป็นพิเศษ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>ที่เก็บที่แข็งแกร่งเป็นพิเศษ (หลายลายเซ็น 3-จาก-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>ควรเก็บแผ่นกู้คืนที่มีตัวอธิบายกระเป๋าเงินไว้กับข้อมูลสำรอง seed แต่ละชุด</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>รวม</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ชื่อกระเป๋าเงิน</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>ผู้ลงนาม</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>ผู้ลงนาม</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5341,23 +5972,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>การทดสอบ self-send</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>สำรองเมล็ดพันธุ์</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>ซื้อผู้ลงนามฮาร์ดแวร์</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>สร้างเมล็ดพันธุ์</translation>
+			<source>Choose template</source>
+			<translation>เลือกเทมเพลต</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5366,8 +5982,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>ป้ายกำกับผู้ลงนามฮาร์ดแวร์</translation>
+			<source>Plugins</source>
+			<translation>ปลั๊กอิน</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>ขั้นตอนก่อนหน้า</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5383,6 +6004,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>ลงทะเบียน multisig บนผู้ลงนาม</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>ตรวจสอบธุรกรรมและสร้างเมื่อคุณพร้อม</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5406,17 +6032,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>ธุรกรรมทดสอบ  '{tx_text}'  เสร็จสมบูรณ์เรียบร้อยแล้ว โปรดดำเนินการทดสอบ self-send ต่อไป: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>ผู้ลงนาม {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5425,8 +6042,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>ตรวจสอบการสำรองข้อมูล</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>สร้างธุรกรรมแล้ว ลงนามและเผยแพร่ด้านล่าง จากนั้นรอให้กระเป๋าเงินรู้จักธุรกรรม</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>กระเป๋าเงินรู้จักธุรกรรมแล้ว</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>กำลังรอให้กระเป๋าเงินรู้จักธุรกรรมที่เผยแพร่</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5559,6 +6186,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>เสร็จสิ้น</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6971,6 +7603,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>สิทธิ์อ่านและเขียนเต็มรูปแบบสำหรับกระเป๋าเงินนี้และหมวดหมู่</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>การเข้าถึงแบบอ่านและเขียนเต็มรูปแบบสำหรับกระเป๋าเงินนี้ รวมถึงยอดคงเหลือ ธุรกรรม และ UTXO</translation>
 		</message>
@@ -6986,8 +7623,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>สมัครรับเหตุการณ์กิจกรรมของกระเป๋าเงิน เช่น ธุรกรรมใหม่หรือการซิงค์บล็อกเชน</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>สมัครรับเหตุการณ์กิจกรรมของกระเป๋าเงิน เช่น ธุรกรรมใหม่หรือการซิงค์บล็อกเชน รวมถึงเปิดธุรกรรมและ PSBT</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>คำอธิบายที่ไม่รู้จัก</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7105,25 +7752,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>การเข้าถึงแผน Business เปิดใช้งานอยู่</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>ยกเลิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>ดำเนินการต่อ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>ไม่สามารถระบุสถานะการสมัครสมาชิกปัจจุบันได้</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>สถานะปัจจุบัน: {status}</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>ที่อยู่อีเมลสำหรับการแจ้งเตือนการสมัครสมาชิกและประกาศการต่ออายุ:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>การซื้อทดลองใช้ฟรีไม่ได้ส่งคืนเพย์โหลดการจัดการ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>การซื้อทดลองใช้ฟรีไม่ได้ส่งคืนเซสชัน</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>การซื้อทดลองใช้ฟรีต้องใช้ตัวอธิบายกระเป๋าเงิน</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>ตรวจสอบล่าสุด: {checked_at}</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>ข้อผิดพลาดการรีเฟรชล่าสุด: {error}</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>จัดการการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>บันทึก URL การจัดการแล้ว</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>ยังไม่มีการเปิดใช้งานการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>เปิดการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>โปรดป้อนที่อยู่อีเมลที่ถูกต้อง</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>รีเฟรชสถานะการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>การแจ้งเตือนการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>ต้องสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>รีเฟรชสถานะการสมัครสมาชิกไม่สำเร็จ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>การรีเฟรชสถานะการสมัครสมาชิกไม่ส่งคืนผลลัพธ์</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>การเปิดใช้งานทดลองใช้ฟรีล้มเหลว</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>การเปิดใช้งานทดลองใช้ฟรีหมดเวลา</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>ปลั๊กอินนี้ไม่ได้ใช้งานอยู่ในขณะนี้ ต่ออายุการสมัครสมาชิกก่อนเปิดใช้งานอีกครั้ง</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>กำลังรอให้เปิดใช้งานทดลองใช้ฟรี...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} โปรดลองอีกครั้งในภายหลัง หากยังใช้งานไม่ได้ โปรดติดต่อ {email}</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>ป้อนรหัสจับคู่ 6 หลักที่แสดงบน Trezor:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>ป้อน PIN โดยใช้รูปแบบแป้นกดของ Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>จับคู่ Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>ปลดล็อก Trezor</translation>
 		</message>
 	</context>
 	<context>

@@ -69,10 +69,12 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
 from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
-from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
+from bitcoin_safe.gui.qt.signer_ui import SignerUI
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
@@ -80,6 +82,11 @@ from ...helpers import TestConfig
 from ...util import wait_for_sync
 
 logger = logging.getLogger(__name__)
+
+
+def select_manual_entry_signer(key: KeyStoreUI) -> None:
+    """Select the generic signer to enable direct manual entry in tests."""
+    key.select_hardware_signer(HardwareSigners.generic)
 
 
 def get_current_test_name() -> str | None:
@@ -111,7 +118,8 @@ def main_window_context(test_config: UserConfig) -> Generator[MainWindow, None, 
     try:
         yield window
     finally:
-        window.close()
+        with patch("bitcoin_safe.gui.qt.main.question_dialog", return_value=True):
+            window.close()
 
 
 # Define a Type Variable
@@ -215,7 +223,7 @@ def setup_single_sig_wallet(
     qt_protowallet.wallet_descriptor_ui.spin_req.setValue(1)
     qt_protowallet.wallet_descriptor_ui.spin_signers.setValue(1)
     key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-    key.tabs_import_type.setCurrentWidget(key.tab_manual)
+    select_manual_entry_signer(key)
     key.edit_seed.setText(seed)
     shutter.save(main_window)
 
@@ -234,7 +242,6 @@ def setup_single_sig_wallet(
 
 def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWallet) -> None:
     """Sign tx."""
-    assert not viewer.button_next.isVisible()
     assert viewer.button_send.isVisible()
     assert not viewer.button_send.isEnabled()
     shutter.save(viewer)

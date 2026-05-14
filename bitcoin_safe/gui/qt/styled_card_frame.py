@@ -29,23 +29,52 @@
 
 from __future__ import annotations
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPalette
 from PyQt6.QtWidgets import QFrame, QWidget
 
+from .util import get_neutral_surface_colors, to_color_name
 
-class PluginCardFrame(QFrame):
+
+class BaseCardFrame(QFrame):
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
         super().__init__(parent)
-        self.setFrameShape(QFrame.Shape.StyledPanel)
-        self.setObjectName(str(id(self)))
+        self._border_radius = 8
+        self.background_color: QColor | str | None = get_neutral_surface_colors().panel_background
 
-        color_background = self.palette().color(QPalette.ColorRole.Dark)
-        color_background.setAlpha(30)
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        if not self.objectName():
+            self.setObjectName(f"styledCardFrame_{id(self)}")
+
+    def _get_style_content(self):
+        return f"border-radius: {self._border_radius}px;" + (
+            f" background: {to_color_name(self.background_color)};" if self.background_color else ""
+        )
+
+    def refresh_style(self) -> None:
         self.setStyleSheet(
             f"""
             #{self.objectName()} {{
-                border-radius: 8px;
-                background: {color_background.name(QColor.NameFormat.HexArgb)};
+                {self._get_style_content()}
             }}
             """
         )
+
+
+class BaseBorderCardFrame(BaseCardFrame):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._selected = False
+        self.border_width = 1
+
+    def _get_style_content(self):
+        surface_colors = get_neutral_surface_colors()
+        border_color = (
+            self.palette().color(QPalette.ColorRole.Mid) if self._selected else surface_colors.panel_border
+        )
+
+        s = super()._get_style_content()
+        s += f"\nborder: {self.border_width}px solid {to_color_name(border_color)};"
+        return s

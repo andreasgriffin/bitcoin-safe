@@ -363,12 +363,11 @@ class QuickReceive(QWidget):
         while self.group_boxes:
             self.remove_last_box()
 
-    def set_manage_categories_enabled(self, enabled: bool) -> None:
+    def set_manage_categories_visible(self, enabled: bool) -> None:
         """Toggle the Manage Categories button availability."""
 
-        self.manage_categories_button.setEnabled(enabled)
-        self.manage_categories_button.setVisible(True)
-        self.add_category_button.setEnabled(enabled)
+        self.manage_categories_button.setVisible(enabled)
+        self.add_category_button.setVisible(enabled)
 
     def close(self) -> bool:
         """Close."""

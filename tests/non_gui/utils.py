@@ -42,7 +42,9 @@ from .test_signers import test_seeds
 logger = logging.getLogger(__name__)
 
 
-def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Network.REGTEST) -> KeyStore:
+def create_keystore(
+    seed_str: str, key_origin: str, description: str, network=bdk.Network.REGTEST
+) -> KeyStore:
     """Create keystore."""
     mnemonic = str(bdk.Mnemonic.from_string(seed_str))
     key_origin = key_origin
@@ -52,10 +54,9 @@ def create_keystore(seed_str: str, key_origin: str, label: str, network=bdk.Netw
         xpub,
         fingerprint,
         key_origin,
-        label,
         network=network,
         mnemonic=seed_str,
-        description=label,
+        description=description,
     )
 
 
@@ -66,7 +67,7 @@ def create_test_seed_keystores(
     keystores: list[KeyStore] = []
     for i, seed_str in enumerate(test_seeds[test_seed_offset : test_seed_offset + signers]):
         keystores.append(
-            create_keystore(seed_str=seed_str, key_origin=key_origins[i], label=f"{i}", network=network)
+            create_keystore(seed_str=seed_str, key_origin=key_origins[i], description=f"{i}", network=network)
         )
     return keystores
 

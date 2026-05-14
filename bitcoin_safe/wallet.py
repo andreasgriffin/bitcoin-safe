@@ -77,7 +77,6 @@ from bitcoin_safe.wallet_util import (
     WalletDifference,
     WalletDifferences,
     WalletDifferenceType,
-    signer_name,
 )
 
 from .config import UserConfig
@@ -326,7 +325,9 @@ class ProtoWallet(BaseSaveableClass):
                 )
             )
 
-        for keystore, other_keystore in zip(self.keystores, other_wallet.keystores, strict=False):
+        for i, (keystore, other_keystore) in enumerate(
+            zip(self.keystores, other_wallet.keystores, strict=False)
+        ):
             if type(keystore) is not type(other_keystore):
                 differences.append(
                     WalletDifference(
@@ -337,7 +338,9 @@ class ProtoWallet(BaseSaveableClass):
                     )
                 )
             if keystore and other_keystore:
-                differences += keystore.get_differences(other_keystore, prefix=f"{keystore.label} ")
+                differences += keystore.get_differences(
+                    other_keystore, prefix=f"{self.technical_hardware_signer_label(i)} "
+                )
 
         return differences
 
@@ -377,7 +380,6 @@ class ProtoWallet(BaseSaveableClass):
         keystores: list[KeyStore | None] = [
             KeyStore(
                 **spk_provider.__dict__,
-                label=signer_name(i=i, threshold=info.threshold),
                 network=network,
             )
             for i, spk_provider in enumerate(info.spk_providers)
@@ -394,15 +396,28 @@ class ProtoWallet(BaseSaveableClass):
         """Update the descriptor address type used by the proto wallet."""
         self.address_type = address_type
 
-    def signer_name(self, i: int) -> str:
-        """Return a human-friendly label for the ith signer."""
-        return signer_name(self.threshold, i)
+    def signer_fallback_name(self, i: int) -> str:
+        """Return the slot-based fallback label for the ith signer."""
+        index = i + 1
+        if index <= self.threshold:
+            return translate("d", "Signer {i}").format(i=index)
+        return translate("d", "Recovery Signer {i}").format(i=index)
 
-    def sticker_name(self, i: int | str) -> str:
-        """Return the printable sticker name for a signer index."""
-        number = i if isinstance(i, str) else f"{i + 1}"
-        name = f"{self.id} {number}" if len(self.keystores) > 1 else f"{self.id}"
-        return name.strip()
+    def hardware_signer_label(self, i: int) -> str:
+        """Return the normal label for the ith signer slot."""
+        keystore = self.keystores[i]
+        fallback_name = self.signer_fallback_name(i)
+        return keystore.hardware_signer_label(fallback_name=fallback_name) if keystore else fallback_name
+
+    def technical_hardware_signer_label(self, i: int) -> str:
+        """Return the detailed label for the ith signer slot."""
+        keystore = self.keystores[i]
+        fallback_name = self.signer_fallback_name(i)
+        return (
+            keystore.technical_hardware_signer_label(fallback_name=fallback_name)
+            if keystore
+            else fallback_name
+        )
 
     def set_gap(self, gap: int) -> None:
         """Set the address discovery gap for the proto wallet."""
@@ -908,6 +923,22 @@ class Wallet(BaseSaveableClass, CacheManager):
         info = DescriptorInfo.from_str(str(self.multipath_descriptor))
         return info.threshold, len(info.spk_providers)
 
+    def signer_fallback_name(self, i: int) -> str:
+        """Return the slot-based fallback label for the ith signer."""
+        threshold, _ = self.get_mn_tuple()
+        index = i + 1
+        if index <= threshold:
+            return translate("d", "Signer {i}").format(i=index)
+        return translate("d", "Recovery Signer {i}").format(i=index)
+
+    def hardware_signer_label(self, i: int) -> str:
+        """Return the normal label for the ith signer slot."""
+        return self.keystores[i].hardware_signer_label(fallback_name=self.signer_fallback_name(i))
+
+    def technical_hardware_signer_label(self, i: int) -> str:
+        """Return the detailed label for the ith signer slot."""
+        return self.keystores[i].technical_hardware_signer_label(fallback_name=self.signer_fallback_name(i))
+
     def as_protowallet(self) -> ProtoWallet:
         """Return a ProtoWallet representation of the current wallet."""
         # fill the protowallet with the xpub info
@@ -1022,8 +1053,12 @@ class Wallet(BaseSaveableClass, CacheManager):
                 )
             )
 
-        for keystore, other_keystore in zip(self.keystores, other_wallet.keystores, strict=False):
-            differences += keystore.get_differences(other_keystore, prefix=f"{keystore.label} ")
+        for i, (keystore, other_keystore) in enumerate(
+            zip(self.keystores, other_wallet.keystores, strict=False)
+        ):
+            differences += keystore.get_differences(
+                other_keystore, prefix=f"{self.technical_hardware_signer_label(i)} "
+            )
 
         if (this_descriptor := self.multipath_descriptor.to_string_with_secret()) != (
             other_descriptor := other_wallet.multipath_descriptor.to_string_with_secret()

@@ -40,11 +40,11 @@ from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
+from bitcoin_safe.wallet import TxStatus, Wallet, get_tx_details, get_wallets
 
 from ...psbt_util import FeeInfo
 from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
 from ...signals import WalletFunctions
-from ...wallet import TxStatus, Wallet, get_tx_details, get_wallets
 from .util import Message
 
 logger = logging.getLogger(__name__)

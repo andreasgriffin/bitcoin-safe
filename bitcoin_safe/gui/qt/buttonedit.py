@@ -61,14 +61,7 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
-from bitcoin_safe.gui.qt.util import (
-    Message,
-    MessageType,
-    clear_layout,
-    do_copy,
-    get_icon_path,
-    svg_tools,
-)
+from bitcoin_safe.gui.qt.util import Message, MessageType, clear_layout, do_copy, get_icon_path, svg_tools
 from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
@@ -478,29 +471,21 @@ class ButtonEdit(QWidget):
         self.open_file_button = button
         return self.open_file_button
 
-    def format_as_error(self, value: bool) -> None:
-        """Format as error."""
-        self.input_field.setObjectName(f"{id(self)}")
-
-        if value:
-            self.input_field.setStyleSheet(
-                f"#{self.input_field.objectName()} {{ background-color: #ff6c54; }}"
-            )
-        else:
-            self.input_field.setStyleSheet(f"#{self.input_field.objectName()} {{  }}")
+    def format_edit(self, analyzer_state: AnalyzerState | None) -> None:
+        """Format the wrapped edit based on analyzer severity."""
+        self.input_field.format_edit(analyzer_state)
 
     def format_and_apply_validator(self) -> None:
         """Format and apply validator."""
         analyzer = self.input_field.analyzer()
         if not analyzer:
-            self.format_as_error(False)
+            self.format_edit(None)
             return
 
-        self.input_field.normalize()
-        analysis = analyzer.analyze(self.input_field.text(), self.input_field.cursorPosition())
-        error = bool(self.input_field.text()) and (analysis.state != AnalyzerState.Valid)
-        self.format_as_error(error)
-        self.setToolTip(analysis.msg if error else "")
+        analysis = self.input_field.analyze_current_text()
+        state = self.input_field.state_for_text(self.input_field.text(), analysis)
+        self.format_edit(state)
+        self.setToolTip(analysis.msg if state else "")
 
     def close(self) -> bool:
         """Close."""

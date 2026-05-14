@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Thêm Nguồn Plugin</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer token</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Tên hiển thị</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL manifest</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>Dán khóa công khai ASCII-armored vào đây</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Khóa công khai được ghim</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Callback trình duyệt đến sau khi hóa đơn hết hạn. Vui lòng thử lại.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Chọn số tiền và tạo hóa đơn quyên góp.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Hoàn tất thanh toán trong trình duyệt của bạn.
+Nếu có vấn đề, vui lòng đừng ngần ngại liên hệ với chúng tôi tại: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Không thể tạo hóa đơn. Vui lòng thử lại.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Không thể mở trình duyệt tự động. Vui lòng thử lại.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Không thể khởi động máy chủ callback cục bộ. Đang mở hóa đơn trong trình duyệt mà không có xác nhận tự động.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Tạo hóa đơn</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Hóa đơn sẵn sàng. Hoàn tất thanh toán trong trình duyệt. Xác nhận tự động có thể không khả dụng.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Dịch vụ hóa đơn trả về lỗi ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Không nhận được callback trình duyệt trước khi hóa đơn hết hạn. Vui lòng thử lại quyên góp.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Không nhận được callback trình duyệt trước khi hóa đơn hết hạn. Vui lòng thử lại.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Thanh toán đã được xác nhận qua callback trình duyệt. Cảm ơn bạn!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Vui lòng chọn một số tiền.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Đang yêu cầu hóa đơn...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Đang yêu cầu hóa đơn... Trình duyệt sẽ mở và Bitcoin Safe sẽ chờ callback cục bộ.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Không thể kết nối đến máy chủ quyên góp. Vui lòng thử lại sau.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Khóa đồng bộ của ví {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Dán seed {number} từ vào tệp pdf đã in tương ứng.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Dán seed {number} từ vào tệp pdf đã in.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Vui lòng hoàn thành các bước trước.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Bước trước</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>In tờ khôi phục</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>In tệp pdf (cũng chứa descriptor ví)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Bật</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Mở plugin</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Được cung cấp bởi: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Gói Doanh nghiệp</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Quyền truy cập gói doanh nghiệp đang hoạt động.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Mở khóa tất cả plugin trả phí bằng một gói đăng ký và loại bỏ phí dịch vụ thanh toán theo lịch.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Mở trong block explorer</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>Mở thư mục chứa</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>Mua {number} thiết bị ký phần cứng                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe hỗ trợ tất cả các thiết bị ký phần cứng phổ biến: &lt;a href="{url}"&gt;Xem danh sách đầy đủ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -900,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Vui lòng chọn ví đa chữ ký trước</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Signer bắt buộc</translation>
 		</message>
@@ -917,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Thuộc tính ví</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Trước tiên hãy bắt đầu dùng thử miễn phí, sau đó quản lý hoặc làm mới gói đăng ký tại đây.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1139,153 @@ Mặc định 20</translation>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Chọn các vị trí an toàn cẩn thận, vì bạn cần tới {m} trong {n} để chi tiêu từ ví multisig.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Tên ví</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Đặt mỗi bản sao lưu seed và thiết bị ký phần cứng ở vị trí an toàn, ví dụ:</translation>
+			<source>2. Yes, I attached the seed words to the printout</source>
+			<translation>1. In các tờ sao lưu</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>Bản sao lưu seed {j} và thiết bị ký phần cứng {j} nên ở vị trí {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. Có, tôi đã đính kèm các từ seed vào bản in</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Lưu thiết bị ký phần cứng ở vị trí an toàn.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Tờ sao lưu</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Lưu bản sao lưu seed ở vị trí &lt;b&gt;rất&lt;/b&gt; an toàn (như két sắt).</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Tờ sao lưu {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>Bản sao lưu seed (24 từ) cho toàn quyền kiểm soát tiền.</translation>
+			<source>Distribute to 2 separate locations</source>
+			<translation>Phân phối đến 2 địa điểm riêng biệt</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>Phân phối đến {n} địa điểm riêng biệt</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store multiple locations in the same place.</source>
+			<translation>Không lưu trữ nhiều địa điểm ở cùng một nơi.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Do not store the signing device and backup sheet with seed words in the same place.</source>
+			<translation>Không lưu trữ nhiều địa điểm ở cùng một nơi.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Each location must be offline and physically secure.</source>
+			<translation>Không lưu trữ thiết bị ký và tờ sao lưu có từ seed ở cùng một nơi.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Important</source>
+			<translation>Mỗi địa điểm phải ngoại tuyến và an toàn về mặt vật lý.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Quan trọng</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Địa điểm</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Địa điểm 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Địa điểm 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Vui lòng hoàn thành các bước trước.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print backup sheets (required)</source>
+			<translation>Mở hướng dẫn để xem từ seed trên người ký này.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the PDF and attach the seed words to each backup sheet.</source>
+			<translation>In các tờ sao lưu (bắt buộc)</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the backup sheets and store everything in separate, safe places.</source>
+			<translation>In PDF và đính kèm các từ seed vào từng tờ sao lưu.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Put your backups and signers in secure locations</source>
+			<translation>In các tờ sao lưu và lưu trữ mọi thứ ở những nơi riêng biệt, an toàn.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Đặt bản sao lưu và người ký của bạn ở các địa điểm an toàn</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Sheet {number} of {total}</source>
+			<translation>Tờ {number} trên {total}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>Thiết bị của người ký</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>Thiết bị ký</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Lưu trữ từng người ký cùng với tờ sao lưu và từ seed của nó ở cùng một địa điểm.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>The backup sheet with seed words gives full control over the wallet.</source>
+			<translation>Lưu trữ thiết bị ký và tờ sao lưu có từ seed ở các địa điểm an toàn riêng biệt.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Kho {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Xem các từ seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You must print the backup sheets and attach the seed words before you continue.</source>
+			<translation>Xem từ seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>You need to go to {m} of the {n} locations to spend from your wallet.</source>
+			<translation>Bạn cần đi đến {m} trong số {n} địa điểm để chi tiêu từ ví của mình.</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1326,16 @@ Mặc định 20</translation>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Tin nhắn (tùy chọn)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Tin nhắn (tùy chọn)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1422,20 @@ Mặc định 20</translation>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Đầy đủ (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Cảm ơn vì Bitcoin Safe!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Xóa Plugin</translation>
 		</message>
 	</context>
 	<context>
@@ -1342,43 +1594,6 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Bước trước</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Thử lại</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Có, tôi thấy giao dịch trong lịch sử</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Vui lòng đảm bảo không có chương trình nào khác truy cập thiết bị ký phần cứng</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Vui lòng nhập tên (nhãn dán) của thiết bị ký phần cứng</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Nhãn dán</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Thành công! Vui lòng hoàn tất bước này với tất cả thiết bị ký phần cứng rồi nhấp Tiếp theo.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>Thiết lập chưa hoàn tất. Vui lòng lặp lại.</translation>
 		</message>
 	</context>
 	<context>
@@ -1599,11 +1814,6 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Next signer</source>
-			<translation>Signer tiếp theo</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
 			<source>Next step</source>
 			<translation>Bước tiếp theo</translation>
 		</message>
@@ -1611,11 +1821,6 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Bước trước</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signer trước</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1641,6 +1846,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Xóa Plugin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) cho phép ví phát hiện các giao dịch liên quan trong khi vẫn giữ địa chỉ của bạn riêng tư.</translation>
 		</message>
@@ -1651,13 +1861,18 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Trong lần đồng bộ đầu tiên, Bitcoin Safe tải các bản tóm tắt khối compact từ nhiều nút Bitcoin. Đây là cách riêng tư để tải dữ liệu khối.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Đã trôi qua {elapsed} | Ước tính còn lại {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Đã trôi qua {elapsed} | Ước tính còn lại {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe tải xuống tóm tắt khối từ nhiều nút để bảo vệ quyền riêng tư. Sau lần đồng bộ ban đầu này, các bản cập nhật sẽ nhanh. Nếu bạn có máy chủ Electrum riêng hoặc không muốn chờ, hãy kết nối với một máy chủ Electrum công khai trong cài đặt mạng.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Cài đặt mạng</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1769,13 +1984,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Nâng cao</translation>
+			<source>Add New Signer</source>
+			<translation>Thêm Người ký Mới</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Mô tả</translation>
+			<source>Change device type</source>
+			<translation>Thay đổi loại thiết bị</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Kết nối</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Đường dẫn dẫn xuất</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Hướng dẫn thiết bị</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1794,10 +2024,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>Tên thiết bị ký: ......
-Vị trí thiết bị ký: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>Nhập dữ liệu người ký bằng QR, USB hoặc nhập văn bản/tệp.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>Tìm hiểu thêm về &lt;a href="{url}"&gt;các thiết bị ký phần cứng được hỗ trợ&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>Tìm hiểu thêm về &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1811,13 +2049,18 @@ Vị trí thiết bị ký: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Vui lòng đảm bảo không có chương trình nào khác truy cập thiết bị ký phần cứng</translation>
+			<source>Open the signer guide</source>
+			<translation>Mở hướng dẫn người ký</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Vui lòng nhập nguồn gốc khóa hợp lệ.</translation>
+			<source>Personal notes:</source>
+			<translation>Ghi chú cá nhân:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Vui lòng đảm bảo không có chương trình nào khác truy cập thiết bị ký phần cứng</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1841,8 +2084,43 @@ Vị trí thiết bị ký: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>Mã QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Đăng ký</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Đăng ký lại multisig</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Seed</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Brand</source>
+			<translation>Chọn thương hiệu</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Chọn mẫu</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>Chọn thương hiệu người ký</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>Chọn mẫu người ký</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1861,18 +2139,28 @@ Vị trí thiết bị ký: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Viết tại đây các ghi chú liên quan đến người ký này, ghi nhớ, v.v...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>Nguồn gốc xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} không thể sử dụng ở đây.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} không thể sử dụng ở đây.</translation>
+			<source>{device} instructions</source>
+			<translation>Hướng dẫn {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1917,48 +2205,6 @@ Bạn có muốn tiếp tục không?</translation>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>Nguồn gốc khóa đã nhập {key_origins} khác nhau! Vui lòng kiểm tra lại nếu bạn có chủ ý.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Sao lưu khóa đồng bộ bí mật:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Chọn máy tính đáng tin cậy trong tab Sync &amp; Chat trên mỗi máy tính.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>Video cộng tác</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Bật</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Sao lưu cloud mã hóa cho nhãn và danh mục địa chỉ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Hoàn tất</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Đồng bộ nhiều máy tính và chat</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Video đồng bộ</translation>
 		</message>
 	</context>
 	<context>
@@ -2184,6 +2430,11 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Plugin</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Ví/Tab trước</translation>
 		</message>
@@ -2261,6 +2512,11 @@ Bạn có muốn tiếp tục không?</translation>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>Ví có tên {wallet_id} đã tồn tại. Vui lòng chọn tên khác.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2369,6 +2625,13 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Ví nóng bị tắt trên Bitcoin Mainnet.
+Bạn có thể chuyển sang Testnet để thử nghiệm Bitcoin Safe mà không cần dùng Bitcoin thật.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Giữ mở</translation>
 		</message>
@@ -2396,6 +2659,11 @@ Bạn có muốn tiếp tục không?</translation>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Tab mới {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>Không có ví demo nào khả dụng cho mạng này.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2451,6 +2719,11 @@ Bạn có muốn tiếp tục không?</translation>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Dán giao dịch Bitcoin hoặc PSBT tại đây hoặc thả tệp</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Vui lòng chọn tên ví</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2631,6 +2904,11 @@ Bạn có muốn giữ ví mở không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Ví {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Ví vẫn đang đồng bộ và việc đồng bộ sẽ phải bắt đầu lại nếu bạn đóng ứng dụng.
@@ -2660,11 +2938,6 @@ Bạn có muốn ẩn vào khay thay vì vậy không?</translation>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Có, quét đầy đủ giao dịch</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>mới</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +3067,43 @@ nên thường chậm khoảng {minutes} phút so với tip.</translation>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (giờ địa phương)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create</source>
+			<translation>Tạo</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Tạo ví mới</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a safe environment before moving to real bitcoin.&lt;br&gt;• Explore the app with a demo wallet&lt;br&gt;• Use test coins that have no monetary value&lt;br&gt;• Ideal for learning, experimenting, and making mistakes safely&lt;br&gt;&lt;i&gt;Signet Network&lt;/i&gt;</source>
+			<translation>Thực hành trong môi trường an toàn trước khi chuyển sang bitcoin thật.&lt;br&gt;• Khám phá ứng dụng với ví demo&lt;br&gt;• Sử dụng coin thử nghiệm không có giá trị tiền tệ&lt;br&gt;• Lý tưởng để học hỏi, thử nghiệm và mắc lỗi một cách an toàn&lt;br&gt;&lt;i&gt;Mạng Signet&lt;/i&gt;</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Safe Playground</source>
+			<translation>Sân chơi an toàn</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Secure Wallet</source>
+			<translation>Ví an toàn</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Select the Bitcoin network you want to use</source>
+			<translation>Chọn mạng Bitcoin bạn muốn sử dụng</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Use the real Bitcoin network when you are ready for actual funds.&lt;br&gt;• Send and receive real bitcoin&lt;br&gt;• Best for your long-term wallet setup&lt;br&gt;• Transactions have real value and real consequences&lt;br&gt;&lt;i&gt;Mainnet Network&lt;/i&gt;</source>
+			<translation>Sử dụng mạng Bitcoin thật khi bạn đã sẵn sàng cho tiền thật.&lt;br&gt;• Gửi và nhận bitcoin thật&lt;br&gt;• Tốt nhất cho thiết lập ví dài hạn của bạn&lt;br&gt;• Giao dịch có giá trị thật và hậu quả thật&lt;br&gt;&lt;i&gt;Mạng Mainnet&lt;/i&gt;</translation>
 		</message>
 	</context>
 	<context>
@@ -2965,8 +3275,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Proxy không áp dụng cho tính năng Sync&amp;Chat!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Proxy không áp dụng cho plugin Sync&amp;Chat và trong quá trình mua đăng ký!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2993,58 +3304,8 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>Cần 1 vị trí an toàn để lưu bản sao seed (trên giấy hoặc thép)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 seed (24 từ bí mật) là tất cả những gì bạn cần để truy cập tiền</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 thiết bị ký</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 trên 3 ví đa chữ ký</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>Cần 3 vị trí an toàn (mỗi vị trí có 1 bản sao seed + descriptor ví)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 thiết bị ký</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Tốt nhất cho số tiền lớn</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Tốt nhất cho số tiền trung bình</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Chọn đa chữ ký</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Chọn chữ ký đơn</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Nhược điểm:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Kết nối thiết bị</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3053,49 +3314,63 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Tạo hoặc nhập ví tùy chỉnh</translation>
+			<source>Custom / Recovery</source>
+			<translation>Tùy chỉnh / Khôi phục</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Ví tùy chỉnh hoặc nhập ví hiện có</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Thiết lập có hướng dẫn cho ví tự lưu ký của bạn.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Tùy chỉnh ví theo nhu cầu của bạn</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Ví nóng chữ ký đơn</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Nếu 1 seed bị mất hoặc bị đánh cắp, toàn bộ tiền có thể chuyển sang ví mới với 2 seed còn lại + descriptor ví (mã QR)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Mở danh sách ví phần cứng và bên ký được hỗ trợ.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Nếu bạn bị lừa cung cấp seed cho hacker, Bitcoin của bạn sẽ bị đánh cắp ngay lập tức</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Dùng thử một ví hiện có với một số coin thử nghiệm để khám phá an toàn.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Ít tài liệu hỗ trợ hơn trong trường hợp khôi phục</translation>
+			<source>Public Demo wallet</source>
+			<translation>Ví Demo công khai</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Ưu điểm:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Nhanh chóng tạo ví để sử dụng ngay, không cần khóa hiện có.&lt;br&gt;&lt;small&gt;Bị tắt trên Mainnet vì máy tính kết nối internet không được thiết kế để giữ an toàn các bí mật đại diện cho tiền.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Ví chữ ký đơn</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Nhanh chóng tạo ví để sử dụng ngay, không cần khóa hiện có.&lt;br&gt;&lt;small&gt;Tạo và lưu trữ khóa trên máy tính kết nối internet là không an toàn. Máy tính đa dụng không được thiết kế để giữ các bí mật đại diện cho tiền.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Descriptor ví (mã QR) là cần thiết để khôi phục ví</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Khôi phục ví từ ví phần cứng hoặc bộ mô tả.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Bên ký được hỗ trợ</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Tên ví</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3183,6 +3458,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Hàng tháng</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Bắt đầu dùng thử miễn phí</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Đăng ký</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Hàng năm</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Quản lý</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Làm mới trạng thái</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Đăng ký:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3247,94 +3566,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Callback trình duyệt đến sau khi hóa đơn hết hạn. Vui lòng thử lại.</translation>
+			<source>Update</source>
+			<translation>Cập nhật</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Chọn số tiền và tạo hóa đơn quyên góp.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Có bản cập nhật: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Hoàn tất thanh toán trong trình duyệt.
-Nếu có vấn đề, vui lòng liên hệ: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>Cập nhật lên {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>Không thể tạo hóa đơn. Vui lòng thử lại.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Không thể mở trình duyệt tự động. Vui lòng thử lại.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>Không thể khởi động máy chủ callback cục bộ. Đang mở hóa đơn trong trình duyệt mà không có xác nhận tự động.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Tạo hóa đơn</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Hóa đơn sẵn sàng. Hoàn tất thanh toán trong trình duyệt. Xác nhận tự động có thể không khả dụng.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>Dịch vụ hóa đơn trả về lỗi ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>Không nhận được callback trình duyệt trước khi hóa đơn hết hạn. Vui lòng thử lại quyên góp.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>Không nhận được callback trình duyệt trước khi hóa đơn hết hạn. Vui lòng thử lại.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Thanh toán đã được xác nhận qua callback trình duyệt. Cảm ơn bạn!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Vui lòng chọn số tiền quyên góp và tiền tệ.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Đang yêu cầu hóa đơn...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Đang yêu cầu hóa đơn... Trình duyệt sẽ mở và Bitcoin Safe sẽ chờ callback cục bộ.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>Không thể kết nối đến máy chủ quyên góp. Vui lòng thử lại sau.</translation>
+			<source>Version {version}</source>
+			<translation>Phiên bản {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Bật/Tắt</translation>
+			<source>Explore plugins</source>
+			<translation>Khám phá plugin</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Plugin không khả dụng cho ví này, nên không có gì để cấu hình ở đây.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Xem lại các plugin khả dụng cho ví này. Bạn có thể bật những plugin mình muốn ngay bây giờ và quay lại tab Plugin bất cứ lúc nào sau này.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>Bật và quản lý các tích hợp ví tùy chọn.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Hủy</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Xóa</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Xóa plugin đã cài đặt</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Xóa plugin đã cài đặt {plugin}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Tắt plugin trước khi xóa.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>URL manifest và khóa công khai đã ghim là bắt buộc.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>Thao tác plugin thất bại.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>Nguồn plugin {source_id} không tồn tại.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>Đã kiểm tra lại các plugin đã cài đặt.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>Đã kiểm tra lại các plugin đã cài đặt. {count} plugin không hợp lệ.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Xóa nguồn plugin</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Xóa nguồn plugin {source}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Không thể xóa plugin này.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>Áp dụng cho tất cả plugin trả phí và phí dịch vụ bị giới hạn bởi đăng ký.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Gói Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Nguồn</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>Không thể xóa khi {count} plugin đang được cài đặt.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Xóa</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Lỗi cuối cùng: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Làm mới</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Gỡ các plugin đã cài đặt từ nguồn này trước khi xóa nguồn.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ID nguồn: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3748,18 +4148,13 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Số dư = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Kiểm tra nếu đã nhận</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Next step</source>
-			<translation>Bước tiếp theo</translation>
+			<source>Completed - txid {txid}</source>
+			<translation>Đã hoàn tất - txid {txid}</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3768,30 +4163,49 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Bước trước</translation>
+			<source>Receive Test</source>
+			<translation>Kiểm tra nhận</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;
                     </source>
-			<translation>Nhận một số tiền &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát được số tiền hay không, bạn phải thử chi tiêu từ ví. &lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả các signer là &lt;b&gt;cực kỳ quan trọng&lt;/b&gt;. &lt;br&gt; &lt;br&gt; &lt;b&gt;ĐỪNG gửi số tiền lớn vào ví lúc này. Vui lòng hoàn tất tất cả bài kiểm tra tự gửi trước!&lt;/b&gt;                    </translation>
+			<translation>Nhận một khoản &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này. &lt;br&gt;&lt;br&gt; &lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát tiền hay không, bạn phải thử chi tiêu từ ví. &lt;br&gt; Vì vậy, trước khi gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả người ký là &lt;b&gt;cực kỳ quan trọng&lt;/b&gt;. &lt;br&gt; &lt;br&gt; &lt;b&gt;CHƯA gửi số tiền lớn vào ví. Vui lòng hoàn tất tất cả các bài kiểm tra tự gửi trước!&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Hướng dẫn nhận</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Giao dịch đã nhận diện</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Ví đã mở gần đây</translation>
+			<source>ALL WALLETS</source>
+			<translation>TẤT CẢ VÍ</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>VÍ GẦN ĐÂY</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Hiển thị trong file explorer</translation>
 		</message>
 	</context>
 	<context>
@@ -3936,38 +4350,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Nhập thông tin ví vào Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Signer tiếp theo</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Bước tiếp theo</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Bước trước</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signer trước</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Bỏ qua bước</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Có, tôi đã đăng ký multisig trên {n} thiết bị ký phần cứng</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Đăng ký ví multisig trên từng thiết bị ký.</translation>
 		</message>
 	</context>
 	<context>
@@ -4011,6 +4395,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Không có tệp nào được chọn</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Plugin Đăng ký Demo</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Plugin ví dụ dựa trên PaidPluginClient. Dùng plugin này để xác minh kích hoạt bị giới hạn theo đăng ký và các thao tác của trình quản lý plugin.</translation>
 		</message>
 	</context>
 	<context>
@@ -4077,14 +4473,38 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Completed - txid {txid}</source>
+			<translation>Đã hoàn tất - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>Tạo giao dịch trong thẻ này.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Pending - txid {txid}</source>
+			<translation>Đang chờ - txid {txid}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Kiểm tra tự gửi {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Ký và phát giao dịch bên dưới.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Bỏ qua kiểm tra chi tiêu?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Chúng tôi đang gửi từ ví của bạn tới một địa chỉ khác trong chính ví của bạn (tự gửi).&lt;br&gt; Việc này luyện quy trình ký và đảm bảo tất cả thiết bị ký phần cứng đã được thiết lập đúng.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>Đang chờ giao dịch được chuẩn bị.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4301,20 +4721,77 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" trên {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>Phiên bản có sẵn: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>In nhãn</translation>
+			<source>Install {version}</source>
+			<translation>Cài đặt {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Dán các nhãn sau lên thiết bị phần cứng của bạn:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Phiên bản đã cài đặt: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Đã cài đặt {installed}; có bản cập nhật: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>Mới nhất {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>Cập nhật lên {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Phiên bản {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Phiên bản {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Thêm nguồn plugin...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Đóng</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Nguồn plugin đã cấu hình</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Chưa thêm nguồn plugin nào.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Nguồn plugin</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Kiểm tra lại plugin đã cài đặt</translation>
 		</message>
 	</context>
 	<context>
@@ -4812,11 +5289,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Bước tiếp theo</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>Không có đủ chi tiết giao dịch cần thiết cho RBF</translation>
 		</message>
@@ -4836,11 +5308,6 @@ Hoặc bạn có thể phát sóng qua {url}</translation>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Vui lòng xóa giao dịch cục bộ hiện có của ví trước.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Bước trước</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5116,18 +5583,6 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Bước trước</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Có, tôi chắc chắn tất cả {number} từ đều đúng</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5353,6 +5808,183 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 người ký</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>Đa chữ ký 2-trong-3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>Đa chữ ký 3-trong-5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>Có thể chịu được việc mất 1 thiết bị ký và seed sao lưu của nó</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>Có thể chịu được việc mất 2 thiết bị ký và các seed sao lưu của chúng</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Chọn mẫu ví</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Nhược điểm</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Tiếp tục</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Độ phức tạp cao</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>Nếu thiết bị ký và bản sao lưu seed bị mất, thì tiền sẽ bị mất</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Lưu trữ lạnh dài hạn</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Lưu trữ lạnh dài hạn (Đa chữ ký 2-trong-3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Độ phức tạp thấp</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Độ phức tạp trung bình</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Vui lòng chọn tên ví</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Bước trước</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Ưu điểm</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Khôi phục</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Bắt buộc</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Yêu cầu 1 nơi an toàn có kiểm soát truy cập để lưu trữ bản sao lưu seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Yêu cầu 3 nơi an toàn có kiểm soát truy cập để lưu trữ các bản sao lưu seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Yêu cầu 5 nơi an toàn có kiểm soát truy cập để lưu trữ các bản sao lưu seed</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Ví mạnh mẽ cho tự lưu ký dài hạn.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Chọn một mẫu từ danh sách.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>Tự lưu ký với 1 người ký và 1 bản sao lưu seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Lưu trữ lạnh đơn giản</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Lưu trữ lạnh đơn giản (1 Người ký)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Lưu bản sao lưu seed tách biệt khỏi thiết bị để tránh điểm lỗi đơn lẻ.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Lưu trữ siêu bền vững</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Lưu trữ siêu bền vững (Đa chữ ký 3-trong-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>Tờ khôi phục có bộ mô tả ví nên được lưu cùng với mỗi bản sao lưu seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Tổng</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Tên ví</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>người ký</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>người ký</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5360,23 +5992,8 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Tất cả bài kiểm tra Tự gửi đã hoàn tất thành công.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Sao lưu seed</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Mua thiết bị ký phần cứng</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Tạo seed</translation>
+			<source>Choose template</source>
+			<translation>Chọn mẫu</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5385,8 +6002,13 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Dán nhãn thiết bị ký phần cứng</translation>
+			<source>Plugins</source>
+			<translation>Plugin</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Bước trước</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5402,6 +6024,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>Đăng ký multisig trên các thiết bị ký</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>Xem lại giao dịch và tạo khi bạn đã sẵn sàng.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5425,16 +6052,8 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>Giao dịch kiểm tra '{tx_text}' đã thành công. Vui lòng tiếp tục làm bài kiểm tra tự gửi: '{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>Người ký {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5443,8 +6062,18 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Xác thực sao lưu</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>Giao dịch đã được tạo. Ký và phát sóng bên dưới, sau đó chờ ví nhận diện.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>Giao dịch đã được ví nhận diện.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>Đang chờ ví nhận diện giao dịch đã phát sóng.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5577,6 +6206,11 @@ Quốc gia: {country}</translation>
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish</source>
+			<translation>Hoàn tất</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6991,6 +7625,11 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Quyền truy cập đọc và ghi đầy đủ vào ví này và các danh mục.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Quyền đọc và ghi đầy đủ đối với ví này, bao gồm số dư, giao dịch và UTXO.</translation>
 		</message>
@@ -7006,8 +7645,18 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Đăng ký các sự kiện hoạt động của ví như giao dịch mới hoặc đồng bộ blockchain.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>Đăng ký nhận sự kiện hoạt động của ví như giao dịch mới hoặc đồng bộ blockchain. Cũng cho phép mở giao dịch và PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Mô tả không xác định</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7125,25 +7774,162 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Quyền truy cập gói Business đang hoạt động.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Hủy</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Tiếp tục</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>Không thể xác định trạng thái đăng ký hiện tại.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>Trạng thái hiện tại: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Địa chỉ email cho lời nhắc đăng ký và thông báo gia hạn:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>Giao dịch mua bản dùng thử miễn phí không trả về payload quản lý.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>Giao dịch mua bản dùng thử miễn phí không trả về phiên.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>Giao dịch mua bản dùng thử miễn phí yêu cầu bộ mô tả ví.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Kiểm tra lần cuối: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Lỗi làm mới lần cuối: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Quản lý Đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL quản lý đã được lưu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Chưa có đăng ký nào được kích hoạt.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Mở đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Vui lòng nhập địa chỉ email hợp lệ.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Làm mới trạng thái Đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Lời nhắc đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Yêu cầu đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>Làm mới trạng thái đăng ký không thành công.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>Làm mới trạng thái đăng ký không trả về kết quả.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>Kích hoạt bản dùng thử miễn phí không thành công.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>Kích hoạt bản dùng thử miễn phí đã hết thời gian chờ.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Plugin này hiện không hoạt động. Gia hạn đăng ký trước khi bật lại.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>Đang chờ bản dùng thử miễn phí được kích hoạt...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Vui lòng thử lại sau. Nếu vẫn không hoạt động, hãy liên hệ {email}.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Nhập mã ghép nối 6 chữ số hiển thị trên Trezor:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Nhập PIN bằng bố cục bàn phím Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Ghép nối Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Mở khóa Trezor</translation>
 		</message>
 	</context>
 	<context>
