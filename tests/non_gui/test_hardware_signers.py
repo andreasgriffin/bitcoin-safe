@@ -72,7 +72,7 @@ def test_q_supports_usb() -> None:
 
 def test_infer_from_text_matches_display_name() -> None:
     """Test free-form text inference resolves a known display name."""
-    assert HardwareSigners.infer_from_text("Krux App backup") == HardwareSigners.krux
+    assert HardwareSigners.infer_from_text("Krux App backup") == HardwareSigners.krux_diy
 
 
 def test_signer_ids_are_unique() -> None:

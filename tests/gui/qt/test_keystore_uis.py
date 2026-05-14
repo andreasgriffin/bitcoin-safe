@@ -87,7 +87,7 @@ def test_keystore_uis_syncs_back_to_protowallet(qtbot: QtBot, loop_in_thread: Lo
     widget.show()
 
     keystore_ui = list(widget.getAllTabData().values())[0]
-    hardware_signer = HardwareSigners.krux
+    hardware_signer = HardwareSigners.krux_diy
     keystore_ui.combo_brand.setCurrentText(hardware_signer.brand_name)
     keystore_ui.combo_model.setCurrentText(hardware_signer.display_name)
     keystore_ui.confirm_device_type_selection()
