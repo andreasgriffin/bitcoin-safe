@@ -61,7 +61,6 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMenu,
-    QMessageBox,
     QSplitter,
     QStackedWidget,
     QVBoxLayout,
@@ -105,7 +104,7 @@ from bitcoin_safe.pythonbdk_types import (
     get_prev_outpoints,
     python_utxo_balance,
 )
-from bitcoin_safe.tx import HiddenTxUiInfos, PostCreateEnum, TxBuilderInfos, TxUiInfos, short_tx_id
+from bitcoin_safe.tx import HiddenTxUiInfos, PostCreateEnum, TxBuilderInfos, TxUiInfos
 from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
 from bitcoin_safe.wallet import (
     DeltaCacheListTransactions,
@@ -1254,6 +1253,26 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             )
         return "\n\n".join(blocks)
 
+    def _get_removed_transaction_export_dir(self, tx: TransactionDetails) -> Path:
+        """Return the wallet-local export directory for a removed transaction."""
+        export_date = tx.get_datetime(current_height=self.wallet.get_height()).date().isoformat()
+        return Path(self.config.wallet_dir) / "removed-transactions" / export_date
+
+    def _export_removed_transactions(self, removed_txs: list[TransactionDetails]) -> Path:
+        """Export removed transactions into wallet-local dated folders."""
+        export_root = Path(self.config.wallet_dir) / "removed-transactions"
+        for tx in removed_txs:
+            export_dir = self._get_removed_transaction_export_dir(tx)
+            export_dir.mkdir(parents=True, exist_ok=True)
+
+            data = Data.from_tx(tx.transaction, network=self.wallet.network)
+            filename = export_dir / f"{tx.txid}.tx"
+            fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+            data.write_to_filedescriptor(fd)
+            logger.info(f"Exported removed transaction {tx.txid} to {filename}")
+
+        return export_root
+
     def handle_removed_txs(
         self, removed_txs: list[TransactionDetails], appended_txs: list[TransactionDetails]
     ) -> None:
@@ -1289,33 +1308,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         if unreplaced_txs:
             txs_details = self._format_removed_txs_details(unreplaced_txs)
-            message_content = self.tr("Removed Transaction(s) in Wallet '{wallet}':\n\n{txs}").format(
-                txs=txs_details, wallet=self.wallet.id
+            export_root = self._export_removed_transactions(unreplaced_txs)
+            message_content = self.tr(
+                "Removed Transaction(s) in Wallet '{wallet}':\n\n{txs}\n\nSaved copies to:\n{path}"
+            ).format(
+                txs=txs_details,
+                wallet=self.wallet.id,
+                path=export_root,
             )
             Message(
                 message_content,
                 no_show=True,
                 parent=self,
+                notification_event_type=NotificationEventType.Warning,
             ).emit_with(self.signals.notification)
-            if question_dialog(
-                message_content + "\n\n" + self.tr("Do you want to save a copy of these transactions?"),
-                true_button=self.tr("Save Transactions"),
-                false_button=QMessageBox.StandardButton.No,
-                default_is_true_button=True,
-            ):
-                folder_path = QFileDialog.getExistingDirectory(
-                    self, "Select Folder to save the removed transactions"
-                )
-
-                if folder_path:
-                    for tx in unreplaced_txs:
-                        data = Data.from_tx(tx.transaction, network=self.wallet.network)
-                        filename = Path(folder_path) / f"{short_tx_id(tx.txid)}.tx"
-
-                        # create a file descriptor
-                        fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
-                        data.write_to_filedescriptor(fd)
-                        logger.info(f"Exported {tx.txid} to {filename}")
 
         # all the lists must be updated
         self.refresh_caches_and_ui_lists(force_ui_refresh=True)
