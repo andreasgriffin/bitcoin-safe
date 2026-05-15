@@ -229,8 +229,8 @@ def get_default_p2p_node_urls(network: bdk.Network) -> dict[str, str]:
 def get_testnet_faucet(network: bdk.Network) -> str | None:
     """Get testnet faucet."""
     d = {
-        bdk.Network.TESTNET: "https://bitcoinfaucet.uo1.net/",
-        bdk.Network.TESTNET4: "https://faucet.testnet4.dev/",
+        bdk.Network.TESTNET: "https://coinfaucet.eu/en/btc-testnet/",
+        bdk.Network.TESTNET4: "https://coinfaucet.eu/en/btc-testnet4/",
         bdk.Network.SIGNET: "https://signet25.bublina.eu.org/",
     }
     return d.get(network)
