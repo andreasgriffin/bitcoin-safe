@@ -511,7 +511,9 @@ class NewWalletWelcomeScreen(QWidget):
 
         self.card_demo_wallet = WelcomeActionCard("bi--wallet2.svg", self.left_column)
         self.card_hot_wallet = WelcomeActionCard("bi--dice-5.svg", self.left_column)
-        self.card_connect_devices = WelcomeActionCard("hardware_signers/q-icon.svg", self.left_column)
+        self.card_connect_devices = WelcomeActionCard(
+            "hardware_signers/generic-hardware-wallet-icon.svg", self.left_column
+        )
         self.card_custom_wallet = WelcomeActionCard("material-symbols--signature.svg", self.left_column)
         self.connect_devices_help_label = IconLabel(parent=self.card_connect_devices.header_widget)
         self.connect_devices_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
