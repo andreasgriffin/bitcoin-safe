@@ -126,7 +126,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
 
         self.button_import_file: QPushButton | None = None
         self.button_import_qr: QPushButton | None = None
-        self.button_export_qr: QToolButton | None = None
+        self.simple_button_export_qr: QPushButton | QToolButton | None = None
         self.button_hwi: QPushButton | None = None
         self.button_export_file: QToolButton | None = None
 
@@ -174,7 +174,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
             self.button_export_file.setText(self.tr("Export File"))
         if self.button_import_qr:
             self.button_import_qr.setText(self.tr("QR Code"))
-        if self.button_export_qr:
-            self.button_export_qr.setText(self.tr("QR Code"))
+        if self.simple_button_export_qr:
+            self.simple_button_export_qr.setText(self.tr("QR Code"))
         if self.button_hwi:
             self.button_hwi.setText(self.tr("USB"))

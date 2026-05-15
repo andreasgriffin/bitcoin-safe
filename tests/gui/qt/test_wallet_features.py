@@ -46,7 +46,7 @@ from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication, QDialogButtonBox
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QPushButton, QToolButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
@@ -143,9 +143,44 @@ def test_register_multisig_dialog_uses_hardware_signer_default_qr(
     )
     qtbot.addWidget(dialog)
 
+    assert isinstance(dialog.simple_button_export_qr, QPushButton)
+    assert not isinstance(dialog.simple_button_export_qr, QToolButton)
     assert dialog.export_qr_button.export_qr_widget.combo_qr_type.getCurrentExportType() == (
         DescriptorQrExportTypes.coldcard_legacy
     )
+
+
+@pytest.mark.marker_qt_1
+def test_register_multisig_dialog_uses_qr_menu_without_hardware_signer(
+    qtbot: QtBot, loop_in_thread: LoopInThread, test_config: TestConfig
+) -> None:
+    wallet = _create_register_multisig_wallet(test_config=test_config, loop_in_thread=loop_in_thread)
+    dialog = RegisterMultisigInteractionWidget(
+        wallet_functions=WalletFunctions(Signals()),
+        wallet=wallet,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(dialog)
+
+    assert dialog.simple_button_export_qr is dialog.export_qr_button
+    assert isinstance(dialog.simple_button_export_qr, QToolButton)
+
+
+@pytest.mark.marker_qt_1
+def test_register_multisig_dialog_uses_qr_menu_without_preferred_signer_qr(
+    qtbot: QtBot, loop_in_thread: LoopInThread, test_config: TestConfig
+) -> None:
+    wallet = _create_register_multisig_wallet(test_config=test_config, loop_in_thread=loop_in_thread)
+    dialog = RegisterMultisigInteractionWidget(
+        wallet_functions=WalletFunctions(Signals()),
+        wallet=wallet,
+        loop_in_thread=loop_in_thread,
+        hardware_signer=HardwareSigners.seedsigner,
+    )
+    qtbot.addWidget(dialog)
+
+    assert dialog.simple_button_export_qr is dialog.export_qr_button
+    assert isinstance(dialog.simple_button_export_qr, QToolButton)
 
 
 @pytest.mark.marker_qt_2

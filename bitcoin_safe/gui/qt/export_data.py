@@ -615,8 +615,8 @@ class QrComboBox(QComboBox):
                     userData=qr_type,
                 )
 
-    def setCurrentQrType(self, value: QrExportType):
-        """SetCurrentQrType."""
+    def select_export_type(self, value: QrExportType) -> None:
+        """Select the matching QR export type."""
         for i in range(self.count()):
             if value == self.itemData(i):
                 self.setCurrentIndex(i)
@@ -1026,11 +1026,16 @@ class QrToolButton(QToolButton):
         self._fill_menu()
         self.updateUi()
 
-    def _show_export_widget(self, export_type: QrExportType):
-        """Show export widget."""
+    def select_export_type(self, export_type: QrExportType) -> None:
+        """Select the QR export type without opening the export dialog."""
+        self.export_qr_widget.combo_qr_type.select_export_type(value=export_type)
+
+    def show_export_widget(self, export_type: QrExportType | None = None) -> None:
+        """Show the export dialog, optionally preselecting an export type."""
         if not self.export_qr_widget:
             return
-        self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
+        if export_type:
+            self.select_export_type(export_type=export_type)
         self.export_qr_widget.show()
         self.signal_exported.emit()
 
@@ -1041,7 +1046,7 @@ class QrToolButton(QToolButton):
             for qr_type in self.export_qr_widget.qr_types:
                 self._menu.add_action(
                     get_export_display_name(qr_type),
-                    partial(self._show_export_widget, qr_type),
+                    partial(self.show_export_widget, qr_type),
                     icon=get_export_icon(qr_type),
                 )
 

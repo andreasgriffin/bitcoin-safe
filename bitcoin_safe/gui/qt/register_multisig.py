@@ -30,17 +30,19 @@
 from __future__ import annotations
 
 import logging
+from functools import partial
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.unified_encoder import QrExportType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QPushButton, QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
 from bitcoin_safe.gui.qt.hardware_signer_interaction_widget import HardwareSignerInteractionWidget
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, HardwareSigner
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import Wallet
@@ -86,6 +88,9 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 data_type=DataType.Descriptor,
                 network=self.wallet.network,
             )
+            preferred_qr_type = (
+                preferred_register_multisig_qr_type(self.hardware_signer) if self.hardware_signer else None
+            )
 
             # qr
             self.export_qr_button = QrToolButton(
@@ -96,11 +101,20 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 parent=self,
                 wallet_name=wallet_name,
             )
-            if self.hardware_signer:
-                qr_type = preferred_register_multisig_qr_type(self.hardware_signer)
-                if qr_type:
-                    self.export_qr_button.export_qr_widget.combo_qr_type.setCurrentQrType(qr_type)
             self.add_button(self.export_qr_button)
+
+            self.simple_button_export_qr = QPushButton(self)
+            self.simple_button_export_qr.setIcon(svg_tools.get_QIcon("bi--qr-code.svg"))
+            self.simple_button_export_qr.clicked.connect(
+                partial(self.export_qr_button.show_export_widget, preferred_qr_type)
+            )
+            self.add_button(self.simple_button_export_qr)
+
+            if preferred_qr_type:
+                self.export_qr_button.select_export_type(preferred_qr_type)
+                self.export_qr_button.setVisible(False)
+            else:
+                self.simple_button_export_qr.setVisible(False)
 
             ## hwi
 
