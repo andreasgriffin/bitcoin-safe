@@ -36,7 +36,6 @@ from functools import partial
 from typing import Generic, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from bitcoin_safe_lib.gui.qt.util import is_dark_mode
 from PyQt6.QtCore import QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
@@ -59,6 +58,7 @@ from bitcoin_safe.gui.qt.qr_components.square_buttons import (
     FlatSquareButton,
 )
 from bitcoin_safe.gui.qt.util import (
+    get_neutral_surface_colors,
     set_no_margins,
     set_translucent,
     to_color_name,
@@ -66,11 +66,7 @@ from bitcoin_safe.gui.qt.util import (
 
 logger = logging.getLogger(__name__)
 
-
-def modify_color(color: QColor, alpha: int):
-    """Modify color."""
-    color.setAlpha(alpha)
-    return color
+ColorSpec = str | QColor | QPalette.ColorRole
 
 
 class SidebarRow(QWidget):
@@ -79,9 +75,9 @@ class SidebarRow(QWidget):
     def __init__(
         self,
         sidebar_btn: SidebarButton,
-        hover_color: str | None | QPalette.ColorRole,
-        selected_color: str | None | QPalette.ColorRole,
-        selected_hover_color: str | None | QPalette.ColorRole,
+        hover_color: ColorSpec | None,
+        selected_color: ColorSpec | None,
+        selected_hover_color: ColorSpec | None,
         parent=None,
     ):
         """Initialize instance."""
@@ -246,8 +242,6 @@ class SidebarNode(QFrame, Generic[TT]):
     nodeUnSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeToggled = cast(SignalProtocol[[object, bool]], pyqtSignal(object, bool))
 
-    hide_icon_name = "close.svg"
-
     def __init__(
         self,
         title: str,
@@ -261,10 +255,10 @@ class SidebarNode(QFrame, Generic[TT]):
         auto_collapse_siblings: bool = False,
         show_expand_button: bool = False,
         initially_collapsed: bool = False,
-        background_color: str | None | QPalette.ColorRole = None,
-        selected_color: str | None | QPalette.ColorRole = QPalette.ColorRole.Base,
-        hover_color: str | None | QPalette.ColorRole = QPalette.ColorRole.Midlight,
-        selected_hover_color: str | None | QPalette.ColorRole = None,
+        background_color: ColorSpec | None = None,
+        selected_color: ColorSpec | None = None,
+        hover_color: ColorSpec | None = None,
+        selected_hover_color: ColorSpec | None = None,
         indent: float = 0,
         indent_factor: float = 1,
         bf_top_level: bool = True,
@@ -288,10 +282,11 @@ class SidebarNode(QFrame, Generic[TT]):
         self.initially_collapsed = initially_collapsed
         self.indent_factor = indent_factor
 
+        surface_colors = get_neutral_surface_colors()
         self.background_color = background_color
-        self.selected_color = selected_color
-        self.hover_color = hover_color
-        self.selected_hover_color = selected_hover_color or selected_color
+        self.selected_color = selected_color or surface_colors.content_background
+        self.hover_color = hover_color or surface_colors.row_hover
+        self.selected_hover_color = selected_hover_color or self.selected_color
 
         self.indent = indent
         self.parent_node = parent_node
@@ -304,7 +299,7 @@ class SidebarNode(QFrame, Generic[TT]):
         # Optional background for whole frame
         style = ""
         if self.background_color:
-            style += f"#{self.objectName()} {{ background-color: {self.background_color}; }}"
+            style += f"#{self.objectName()} {{ background-color: {to_color_name(self.background_color)}; }}"
         if style:
             self.setStyleSheet(style)
 
@@ -918,20 +913,20 @@ class SidebarTree(QWidget, Generic[TT]):
     nodeContextMenuRequested = pyqtSignal(object, object)  # (node: SidebarNode|None, global_pos: QPoint)
     emptyContextMenuRequested = pyqtSignal(object)  # (global_pos: QPoint)
 
-    scroll_bg = "rgba(255,255,255,0.1)" if is_dark_mode() else "rgba(0,0,0,0.1)"
-
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, show_stack: bool = True):
         """Initialize instance."""
         super().__init__(parent)
+        self.show_stack = show_stack
         self.stack = QStackedWidget(self)
         self._selection_history: list[SidebarNode[TT]] = []
         self._navigation_index = -1
         self._navigating_history = False
         self._current_node: SidebarNode[TT] | None = None
+        self._surface_colors = get_neutral_surface_colors()
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
         pal = self.stack.palette()
-        pal.setColor(QPalette.ColorRole.Window, pal.color(QPalette.ColorRole.Base))
+        pal.setColor(QPalette.ColorRole.Window, self._surface_colors.content_background)
         self.stack.setPalette(pal)
 
         self.stack.currentChanged.connect(self._on_stack_current_changed)  # NEW
@@ -974,9 +969,15 @@ class SidebarTree(QWidget, Generic[TT]):
         main_layout = QHBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-        self.left_panel.setFixedWidth(200)
-        main_layout.addWidget(self.left_panel)
-        main_layout.addWidget(self.stack, 1)
+        if self.show_stack:
+            self.stack.setVisible(True)
+            self.left_panel.setFixedWidth(200)
+            main_layout.addWidget(self.left_panel)
+            main_layout.addWidget(self.stack, 1)
+        else:
+            self.stack.setVisible(False)
+            self.left_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+            main_layout.addWidget(self.left_panel, 1)
 
         # Create master root (no header shown)
         self.root = SidebarNode[TT](

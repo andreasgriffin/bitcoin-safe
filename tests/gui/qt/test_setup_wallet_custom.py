@@ -57,6 +57,7 @@ from .helpers import (
     do_modal_click,
     main_window_context,
     save_wallet,
+    select_manual_entry_signer,
     setup_single_sig_wallet,
 )
 
@@ -183,7 +184,7 @@ def test_custom_wallet_setup_custom_single_sig(
             for i in range(signers):
                 assert qt_protowallet.wallet_descriptor_ui.keystore_uis.tabText(
                     i
-                ) == qt_protowallet.protowallet.signer_name(i)
+                ) == qt_protowallet.protowallet.hardware_signer_label(i)
 
             if qt_protowallet.protowallet.is_multisig():
                 # Multisig should expose p2wsh in address types.
@@ -239,7 +240,7 @@ def test_custom_wallet_setup_custom_single_sig(
             """Do save wallet."""
             # Fill the seed fields and persist the wallet.
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
-            key.tabs_import_type.setCurrentWidget(key.tab_manual)
+            select_manual_entry_signer(key)
 
             shutter.save(main_window)
 

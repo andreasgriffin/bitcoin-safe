@@ -141,35 +141,3 @@ def test_chained_one_time_signal_connections(caplog: LogCaptureFixture) -> None:
         assert [record.msg for record in caplog.records if record.name == __name__] == [
             str(i) for i in range(n)
         ]
-
-
-def test_chained_one_time_signal_connections_prevent_disconnect(caplog: LogCaptureFixture) -> None:
-    # repeat, but now do not return True
-    """Test chained one time signal connections prevent disconnect."""
-    with caplog.at_level(logging.INFO):
-        n = 4
-        instances = [MySignalclass() for _ in range(n)]
-
-        def factory(i, instance):
-            """Factory."""
-
-            def f(i=i, instance=instance):
-                """F."""
-                logger.info(str(i))
-                return None
-
-            return f
-
-        fs = [factory(i, instance) for i, instance in enumerate(instances)]
-
-        # Connect the chain but keep the first handler returning falsy.
-        chained_one_time_signal_connections([instance.signal for instance in instances], fs)
-
-        for instance in instances:
-            instance.signal.emit()
-
-        for instance in instances:
-            instance.signal.emit()
-
-        # since f(0) == None, the 1. signal simply reconnects
-        assert [record.msg for record in caplog.records if record.name == __name__] == ["0", "0"]

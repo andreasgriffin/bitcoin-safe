@@ -50,15 +50,19 @@ logger = logging.getLogger(__name__)
 
 
 class ScreenshotsTutorial(QWidget):
-    enabled_hardware_signers = HardwareSigners.as_list()  # activate all of them
+    enabled_hardware_signers = HardwareSigners.as_list(include_generic=False)  # activate all of them
 
     def __init__(
         self,
         group: str = "tutorial",
+        hardware_signers: list | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
+        self.hardware_signers = (
+            hardware_signers if hardware_signers is not None else self.enabled_hardware_signers
+        )
 
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
@@ -129,7 +133,7 @@ class SeedWarningBar(NotificationBar):
 class ScreenshotsGenerateSeed(ScreenshotsTutorial):
     def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
         """Initialize instance."""
-        super().__init__(group, parent)
+        super().__init__(group, parent=parent)
 
         self.image_widgets: dict[str, EnlargableImageWidgetWithButton] = {}
         self.tabs: dict[str, QWidget] = {}
@@ -137,14 +141,14 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
         self.never_label = SeedWarningBar(parent=self)
         self._layout.insertWidget(1, self.never_label)
 
-        for hardware_signer in self.enabled_hardware_signers:
+        for hardware_signer in self.hardware_signers:
             result = self.add_image_tab(
                 hardware_signer.generate_seed_png, hardware_signer.display_name, size_hint=(400, 50)
             )
             if result:
                 image_widget, tab = result
-                self.image_widgets[hardware_signer.name] = image_widget
-                self.tabs[hardware_signer.name] = tab
+                self.image_widgets[hardware_signer.id] = image_widget
+                self.tabs[hardware_signer.id] = tab
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -169,11 +173,16 @@ class ScreenshotsGenerateSeed(ScreenshotsTutorial):
 
 
 class ScreenshotsExportXpub(ScreenshotsTutorial):
-    def __init__(self, group: str = "tutorial", parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        group: str = "tutorial",
+        hardware_signers: list | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
         """Initialize instance."""
-        super().__init__(group, parent)
+        super().__init__(group, hardware_signers=hardware_signers, parent=parent)
 
-        for hardware_signer in self.enabled_hardware_signers:
+        for hardware_signer in self.hardware_signers:
             self.add_image_tab(
                 hardware_signer.wallet_export_png, hardware_signer.display_name, size_hint=(400, 50)
             )
@@ -190,12 +199,14 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
         self,
         title_text=None,
         group: str = "tutorial",
+        hardware_signers: list | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
-        super().__init__(group, parent)
+        super().__init__(group, hardware_signers=hardware_signers, parent=parent)
+        self.title_text = title_text
 
-        for hardware_signer in self.enabled_hardware_signers:
+        for hardware_signer in self.hardware_signers:
             self.add_image_tab(
                 hardware_signer.view_seed_png, hardware_signer.display_name, size_hint=(400, 50)
             )
@@ -206,7 +217,9 @@ class ScreenshotsViewSeed(ScreenshotsTutorial):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.set_title(
-            self.tr(
+            self.title_text
+            if self.title_text
+            else self.tr(
                 "Compare the {number} words on the backup paper to the hardware signer.\n"
                 "If you make a mistake here, your money is lost!"
             ).format(number=TEXT_24_WORDS)
@@ -217,16 +230,18 @@ class ScreenshotsRegisterMultisig(ScreenshotsTutorial):
     def __init__(
         self,
         group: str = "tutorial",
+        hardware_signers: list | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
             group,
-            parent,
+            hardware_signers=hardware_signers,
+            parent=parent,
         )
         self.setMinimumSize(500, 300)
 
-        for hardware_signer in self.enabled_hardware_signers:
+        for hardware_signer in self.hardware_signers:
             self.add_image_tab(
                 hardware_signer.register_multisig_decriptor_png,
                 hardware_signer.display_name,

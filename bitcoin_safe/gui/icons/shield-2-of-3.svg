@@ -1,0 +1,6 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2 of 3 multisignature cold storage">
+  <path d="M16 5L25 8V15.5C25 21.5 21.2 25.5 16 27C10.8 25.5 7 21.5 7 15.5V8L16 5Z" fill="none" stroke="#B0BEC5" stroke-width="1.7" stroke-linejoin="round"/>
+  <circle cx="13" cy="14" r="2.6" fill="#1976D2"/>
+  <circle cx="19" cy="14" r="2.6" fill="#1976D2"/>
+  <circle cx="16" cy="20" r="2.6" fill="#B0BEC5"/>
+</svg>

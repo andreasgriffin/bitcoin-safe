@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Ajouter une source de plugin</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Jeton Bearer</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Nom d’affichage</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL du manifeste</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>Collez ici la clé publique ASCII-armored</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Clé publique épinglée</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Un rappel du navigateur est arrivé après l’expiration de la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Choisissez un montant et créez une facture de don.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Finalisez le paiement dans votre navigateur.
+En cas de problème, n’hésitez pas à nous contacter à : {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Impossible de créer la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Impossible d’ouvrir automatiquement votre navigateur. Veuillez réessayer.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Impossible de démarrer le serveur de rappel local. Ouverture de la facture dans votre navigateur sans confirmation automatique.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Créer une facture</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Facture prête. Finalisez le paiement dans votre navigateur. La confirmation automatique peut ne pas être disponible.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Le service de facturation a renvoyé une erreur ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer le don.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Paiement confirmé via le rappel du navigateur. Merci !</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Veuillez choisir un montant.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Demande de facture...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Demande de facture... Un navigateur va s’ouvrir et Bitcoin Safe écoutera le rappel localement.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Impossible d’atteindre le serveur de dons. Veuillez réessayer plus tard.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Clé de synchronisation du portefeuille {wallet_id} :  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Collez le mot de semence {number} sur le PDF imprimé correspondant.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Collez le mot de semence {number} sur le PDF imprimé.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Veuillez compléter les étapes précédentes.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Étape précédente</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>Imprimer la feuille de récupération</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Imprimer le PDF (contient également le descripteur du portefeuille)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Activer</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Ouvrir le plugin</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Fourni par : {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Formule Business</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>L’accès à la formule Business est actif.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Débloquez tous les plugins payants avec un seul abonnement et supprimez les frais de service des paiements programmés.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Ouvrir dans l’explorateur de blocs</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>Ouvrir le dossier contenant</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>Acheter {number} signataires matériels                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe prend en charge tous les principaux signataires matériels : &lt;a href="{url}"&gt;Voir la liste complète&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -900,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Veuillez d'abord sélectionner un portefeuille Multisignature</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Signataires requis</translation>
 		</message>
@@ -917,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Propriétés du portefeuille</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Commencez d’abord l’essai gratuit, puis gérez ou actualisez l’abonnement ici.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1030,33 +1138,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Choisissez les lieux sécurisés avec soin, en considérant que vous devez aller à {m} des {n}, pour dépenser depuis votre portefeuille multisig.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Nom du portefeuille</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Placez chaque sauvegarde de graine et signataire matériel dans un endroit sécurisé, tel que :</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Feuille de récupération de sauvegarde (obligatoire)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>La sauvegarde de graine {j} et le signataire matériel {j} doivent être à l'emplacement {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. Oui, j’ai joint les mots de seed à l’impression</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Stockez le signataire matériel dans un endroit sécurisé.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Feuille de sauvegarde</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Stockez la sauvegarde de graine dans un endroit &lt;b&gt;très&lt;/b&gt; sécurisé (comme un coffre-fort).</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Feuille de sauvegarde {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>La sauvegarde de graine (24 mots) donne un contrôle total sur les fonds.</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Félicitations, votre portefeuille est prêt. Protégez-le maintenant !</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>Répartir dans 2 emplacements séparés</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>Répartir dans {n} emplacements séparés</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Suivez les étapes ci-dessous pour vous assurer de créer une sauvegarde sécurisée afin de restaurer vos fonds dans le pire des cas.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Important</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Emplacement</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Emplacement 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Une fois imprimée, recopiez à la main la phrase de récupération depuis votre appareil sur la feuille, ou confirmez qu’elle est déjà transcrite sur une feuille de papier séparée stockée avec celle-ci.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Emplacement 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Veuillez compléter les étapes précédentes.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Veuillez sélectionner au moins une feuille de sauvegarde à imprimer.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Imprimez les feuilles de récupération associées aux appareils que vous possédez et contrôlez.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>Signataire de récupération {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Placez vos sauvegardes et signataires dans des emplacements sécurisés</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>Appareil du signataire</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>Signataire {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>Appareil signataire</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Stockez chaque signataire avec sa feuille de sauvegarde et ses mots de seed au même emplacement.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Coffre {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Afficher les mots de seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Oui, je confirme que les mots de récupération sont joints à l’impression</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Votre portefeuille est protégé par sa feuille de récupération, qui doit être conservée dans un endroit différent de celui de votre signataire matériel. Imprimez-la, joignez la seed et conservez-la dans un emplacement sécurisé à accès contrôlé. Avec les mots de récupération, vous avez le contrôle total de votre portefeuille.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Votre portefeuille est protégé par {n} feuilles de sauvegarde avec des seeds jointes, stockées dans différents emplacements. Imprimez-les et placez-les dans des emplacements sécurisés à accès contrôlé. Avec {m} d’entre elles, vous avez le contrôle total de votre portefeuille.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} sur {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1097,6 +1320,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Message (facultatif)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Message (facultatif)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1183,6 +1416,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Complet (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Merci pour Bitcoin Safe !</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Supprimer le plugin</translation>
 		</message>
 	</context>
 	<context>
@@ -1341,43 +1588,6 @@ car la taille finale de la transaction est inconnue.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Étape précédente</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Réessayer</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Oui, je vois la transaction dans l'historique</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Veuillez entrer le nom (étiquette autocollante) du signataire matériel</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Étiquette autocollante</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Succès ! Veuillez compléter cette étape avec tous les signataires matériels puis cliquer sur Suivant.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>La configuration n'est pas terminée. Veuillez répéter.</translation>
 		</message>
 	</context>
 	<context>
@@ -1593,13 +1803,8 @@ car la taille finale de la transaction est inconnue.</translation>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Signataire suivant</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Importer les informations du signataire matériel dans Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1610,11 +1815,6 @@ car la taille finale de la transaction est inconnue.</translation>
 		<message>
 			<source>Previous Step</source>
 			<translation>Étape précédente</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signataire précédent</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1640,6 +1840,11 @@ car la taille finale de la transaction est inconnue.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Supprimer le plugin</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Les Compact Block Filters (BIP157/BIP158) permettent aux portefeuilles de découvrir les transactions pertinentes tout en gardant vos adresses privées.</translation>
 		</message>
@@ -1650,13 +1855,18 @@ car la taille finale de la transaction est inconnue.</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Lors de la première synchronisation, Bitcoin Safe récupère des résumés de blocs compacts depuis plusieurs nœuds Bitcoin. C’est une manière privée de télécharger les données des blocs.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Temps écoulé {elapsed} | Temps restant estimé {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Temps écoulé {elapsed} | Temps restant estimé {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe télécharge des résumés de blocs depuis plusieurs nœuds pour préserver la confidentialité. Après cette synchronisation initiale, les mises à jour seront rapides. Si vous avez votre propre serveur Electrum ou si vous ne souhaitez pas attendre, connectez-vous à un serveur Electrum public dans les paramètres réseau.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Paramètres réseau</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1768,13 +1978,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Avancé</translation>
+			<source>Add New Signer</source>
+			<translation>Ajouter un nouveau signataire</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Description</translation>
+			<source>Change device type</source>
+			<translation>Changer le type d’appareil</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Connecter</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Chemin de dérivation</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instructions de l’appareil</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1793,10 +2018,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>Nom du dispositif de signature: ......
-Emplacement du dispositif de signature: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>Importez les données du signataire par QR, USB ou importation de texte/fichier.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>En savoir plus sur les &lt;a href="{url}"&gt;signataires matériels pris en charge&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>En savoir plus sur &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1810,13 +2043,18 @@ Emplacement du dispositif de signature: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel</translation>
+			<source>Open the signer guide</source>
+			<translation>Ouvrir le guide du signataire</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Veuillez entrer une origine de clé valide.</translation>
+			<source>Personal notes:</source>
+			<translation>Notes personnelles :</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Veuillez vous assurer qu'aucun autre programme n'accède au signataire matériel</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1840,13 +2078,67 @@ Emplacement du dispositif de signature: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>Code QR</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Enregistrer</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Réenregistrer le multisig</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Graine</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>Sélectionner la marque</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Sélectionner le modèle</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>Sélectionner la marque du signataire</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>Sélectionner le modèle du signataire</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>Le standard pour le type d'adresse sélectionné {type} est {expected_key_origin}. Veuillez corriger si vous n'êtes pas sûr.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>L’empreinte à 8 chiffres identifie la seed. Vous pouvez l’écrire sur le signataire matériel pour suivre les différentes seeds et les différents appareils de signature.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>L’origine de la clé est nécessaire pour construire correctement les transactions (PSBT) et elle est liée à la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>La seed est le secret qui permet la signature des transactions. Pour un portefeuille à signature unique, elle donne le contrôle total des fonds.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1860,18 +2152,33 @@ Emplacement du dispositif de signature: .....</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Les adresses du portefeuille sont dérivées de la xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Écrivez ici les notes relatives à ce signataire, mémos, etc...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>Origine xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} ne peut pas être utilisé ici.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} ne peut pas être utilisé ici.</translation>
+			<source>{device} instructions</source>
+			<translation>Instructions pour {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1916,48 +2223,6 @@ Voulez-vous continuer malgré tout?</translation>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>Vos origines de clé importées {key_origins} diffèrent ! Veuillez vérifier si cela était intentionnel.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Clé secrète de synchronisation de sauvegarde :</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Choisissez des ordinateurs de confiance dans l'onglet Sync &amp; Chat sur chaque ordinateur.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>Vidéo de collaboration</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Activer</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Sauvegarde cloud cryptée des étiquettes d'adresse et des catégories</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Terminer</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Synchronisation multi-ordinateurs et chat</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Vidéo de synchronisation</translation>
 		</message>
 	</context>
 	<context>
@@ -2183,6 +2448,11 @@ Voulez-vous continuer malgré tout?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Extensions</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Portefeuille/Onglet précédent</translation>
 		</message>
@@ -2260,6 +2530,11 @@ Voulez-vous continuer malgré tout?</translation>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>Un portefeuille nommé {wallet_id} existe déjà. Veuillez choisir un autre nom.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2368,6 +2643,13 @@ Voulez-vous continuer malgré tout?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Les portefeuilles chauds sont désactivés sur Bitcoin Mainnet.
+Vous pouvez passer à Testnet pour tester Bitcoin Safe sans utiliser de vrais bitcoins.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Garder ouvert</translation>
 		</message>
@@ -2395,6 +2677,11 @@ Voulez-vous continuer malgré tout?</translation>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Nouvel onglet {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>Aucun portefeuille de démonstration n’est disponible pour ce réseau.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2450,6 +2737,11 @@ Voulez-vous continuer malgré tout?</translation>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Collez votre Transaction Bitcoin ou PSBT ici ou déposez un fichier</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Veuillez choisir un nom de portefeuille</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2630,6 +2922,11 @@ Voulez-vous garder le portefeuille ouvert ?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Portefeuille {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Les portefeuilles sont encore en cours de synchronisation et celle-ci devra recommencer depuis le début si vous fermez l’application.
@@ -2659,11 +2956,6 @@ Voulez-vous le masquer dans la barre d’état système à la place ?</translati
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Oui, analyse complète des transactions</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>nouveau</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2793,6 +3085,108 @@ il est donc généralement d’environ {minutes} minutes en retard sur la pointe
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (heure locale)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Vous connaissez déjà Bitcoin ? Configurez en toute confiance un portefeuille qui détient et déplace une valeur réelle.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Idéal pour le stockage à long terme</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Créer un nouveau portefeuille</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Explorer le terrain de jeu</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>Explorer avec un portefeuille de démonstration</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>Gardez votre phrase de récupération en sécurité</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>Apprenez en toute sécurité, sans risque</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>Gérer des fonds réels</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Entraînez-vous dans un environnement sans risque et voyez exactement comment tout fonctionne. Essayez d’envoyer, de recevoir et de modifier les frais avec des pièces de test que vous pouvez perdre sans regret.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Monnaie saine réelle (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Envoyer et recevoir de vrais bitcoins</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Configurer un portefeuille</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Commencer l’exploration</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Commencez à effectuer des transactions avec une monnaie saine ou apprenez dans un terrain de jeu sécurisé. Dans tous les cas, vous pourrez toujours créer un autre portefeuille plus tard.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Les pièces de test (tBTC) n’ont aucune valeur</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Pièces de test, aucune valeur monétaire</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Les transactions sont permanentes</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Utilise le réseau de test Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Utilise le réseau onchain Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>Par où souhaitez-vous commencer ?</translation>
 		</message>
 	</context>
 	<context>
@@ -2964,8 +3358,9 @@ Laissez vide pour s’appuyer sur la découverte automatique des pairs.</transla
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Le proxy ne s'applique pas à la fonction Sync&amp;Chat!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Le proxy ne s’applique pas au plugin Sync&amp;Chat ni lors de l’achat d’un abonnement !</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2992,58 +3387,8 @@ Utiliser plus de pairs améliore la couverture mais consomme plus de bande passa
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>1 emplacement sécurisé pour stocker la sauvegarde de graine (sur papier ou acier) est nécessaire</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 graine (24 mots secrets) est tout ce dont vous avez besoin pour accéder à vos fonds</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 dispositif de signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 sur 3 Multi-Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3 emplacements sécurisés (chacun avec 1 sauvegarde de graine + descripteur de portefeuille) sont nécessaires</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 dispositifs de signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Meilleur pour les grands fonds</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Meilleur pour les fonds de taille moyenne</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Choisir Multi-Signature</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Choisir Signature Unique</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Inconvénients:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Connecter le(s) appareil(s)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3052,49 +3397,63 @@ Utiliser plus de pairs améliore la couverture mais consomme plus de bande passa
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Créer ou importer un portefeuille personnalisé</translation>
+			<source>Custom / Recovery</source>
+			<translation>Personnalisé / Récupération</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Personnaliser ou importer un portefeuille existant</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Configuration guidée de votre portefeuille en auto-conservation.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Personnaliser le portefeuille selon vos besoins</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Portefeuille chaud à signature unique</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Si 1 graine était perdue ou volée, tous les fonds peuvent être transférés à un nouveau portefeuille avec les 2 graines restantes + descripteur de portefeuille (QR-code)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Ouvrir la liste des portefeuilles matériels et signataires pris en charge.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Si vous êtes trompé en donnant votre graine à des pirates, vos Bitcoin seront immédiatement volés</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Jouez avec un portefeuille existant contenant quelques pièces de test pour explorer en toute sécurité.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Moins de matériel de support en ligne en cas de récupération</translation>
+			<source>Public Demo wallet</source>
+			<translation>Portefeuille de démonstration public</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Avantages:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Générez rapidement un portefeuille pour une utilisation immédiate, aucune clé existante requise.&lt;br&gt;&lt;small&gt;Désactivé sur le Mainnet, car un ordinateur connecté à Internet n’est pas conçu pour conserver en sécurité des secrets représentant de l’argent.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Portefeuille Signature Unique</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Générez rapidement un portefeuille pour une utilisation immédiate, aucune clé existante requise.&lt;br&gt;&lt;small&gt;Générer et stocker des clés sur un ordinateur connecté à Internet n’est pas sûr. Un ordinateur généraliste n’est pas conçu pour conserver des secrets représentant de l’argent.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Le descripteur de portefeuille (QR-code) est nécessaire pour récupérer le portefeuille</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Restaurer un portefeuille à partir de portefeuille(s) matériel(s) ou d’un descripteur.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Signataires pris en charge</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nom du portefeuille</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3182,6 +3541,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Mensuel</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Démarrer l’essai gratuit</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Abonnement</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Annuel</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Gérer</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Actualiser l’état</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Abonnement :</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3246,94 +3649,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Un rappel du navigateur est arrivé après l’expiration de la facture. Veuillez réessayer.</translation>
+			<source>Update</source>
+			<translation>Mettre à jour</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Choisissez un montant et créez une facture de don.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Mise à jour disponible : {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Finalisez le paiement dans votre navigateur.
-En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>Mettre à jour vers {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>Impossible de créer la facture. Veuillez réessayer.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Impossible d’ouvrir automatiquement votre navigateur. Veuillez réessayer.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>Impossible de démarrer le serveur de rappel local. Ouverture de la facture dans votre navigateur sans confirmation automatique.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Créer une facture</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Facture prête. Finalisez le paiement dans votre navigateur. La confirmation automatique peut ne pas être disponible.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>Le service de facturation a renvoyé une erreur ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer le don.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>Aucun rappel du navigateur n’a été reçu avant l’expiration de la facture. Veuillez réessayer.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Paiement confirmé via le rappel du navigateur. Merci !</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Veuillez choisir un montant de don et une devise.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Demande de facture...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Demande de facture... Un navigateur va s’ouvrir et Bitcoin Safe écoutera le rappel localement.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>Impossible d’atteindre le serveur de dons. Veuillez réessayer plus tard.</translation>
+			<source>Version {version}</source>
+			<translation>Version {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Activer/Désactiver</translation>
+			<source>Explore plugins</source>
+			<translation>Explorer les plugins</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Les plugins ne sont pas disponibles pour ce portefeuille, il n’y a donc rien à configurer ici.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Passez en revue les plugins disponibles pour ce portefeuille. Vous pouvez activer ceux que vous souhaitez maintenant et revenir à l’onglet Plugins à tout moment plus tard.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>Activer et gérer les intégrations facultatives du portefeuille.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Annuler</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Supprimer</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Supprimer le plugin installé</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Supprimer le plugin installé {plugin} ?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Désactivez le plugin avant de le supprimer.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>L’URL du manifeste et la clé publique épinglée sont requises.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>L’opération du plugin a échoué.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>La source de plugin {source_id} n’existe pas.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>Plugins installés revérifiés.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>Plugins installés revérifiés. {count} plugin(s) ne sont pas valides.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Supprimer la source du plugin</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Supprimer la source de plugin {source} ?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Ce plugin ne peut pas être supprimé.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>S’applique à tous les plugins payants et aux frais de service soumis à abonnement.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Forfait Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Sources</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>Impossible de supprimer tant que {count} plugin(s) sont installés.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Supprimer</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Dernière erreur : {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Rafraîchir</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Supprimez les plugins installés depuis cette source avant de supprimer la source.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ID de la source : {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3463,8 +3947,13 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Descripteur</translation>
+			<source>Dashboard</source>
+			<translation>Tableau de bord</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Détails</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3485,11 +3974,6 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 		<message>
 			<source>Export labels</source>
 			<translation>Exporter les étiquettes</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Historique</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3542,6 +4026,11 @@ En cas de problème, n’hésitez pas à nous contacter à : [andreasgriffin@pro
 		<message>
 			<source>Password incorrect</source>
 			<translation>Mot de passe incorrect</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Veuillez choisir un nom de portefeuille</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3748,18 +4237,8 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Solde = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Vérifier si reçu</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>Étape suivante</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3768,31 +4247,51 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Étape précédente</translation>
+			<source>Receive Test</source>
+			<translation>Test de Réception</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt;                     Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. 
-                    &lt;br&gt;                     Donc avant d'envoyer un montant important de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;N'envoyez PAS encore de fonds importants dans le portefeuille. Veuillez d'abord terminer tous les tests d'auto-envoi !&lt;/b&gt;                    </translation>
+			<translation>Recevez un &lt;b&gt;petit&lt;/b&gt; montant (inférieur à {test_amount}) sur 1 adresse de ce portefeuille. &lt;br&gt;&lt;br&gt; &lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt; Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. &lt;br&gt; Avant d’envoyer un montant important de Bitcoin dans le portefeuille, il est donc &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Instructions de réception</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Transaction reconnue</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>En attente de l’arrivée des fonds dans le portefeuille...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Portefeuilles récemment ouverts</translation>
+			<source>ALL WALLETS</source>
+			<translation>TOUS LES PORTEFEUILLES</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>PORTEFEUILLES RÉCENTS</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Afficher dans l’explorateur de fichiers</translation>
 		</message>
 	</context>
 	<context>
@@ -3937,38 +4436,8 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Importer les informations du portefeuille dans Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Signataire suivant</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Étape suivante</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Étape précédente</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Signataire précédent</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Sauter l'étape</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Oui, j'ai enregistré le multisig sur le signataire matériel {n}</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Enregistrez le portefeuille multisig sur chaque appareil de signature.</translation>
 		</message>
 	</context>
 	<context>
@@ -4012,6 +4481,18 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>Aucun fichier sélectionné</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Plugin d’abonnement de démonstration</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Plugin d’exemple basé sur PaidPluginClient. Utilisez-le pour vérifier l’activation soumise à abonnement et les actions du gestionnaire de plugins.</translation>
 		</message>
 	</context>
 	<context>
@@ -4078,14 +4559,28 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>Créez la transaction dans cette carte.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Test d’auto-envoi {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Signez et diffusez la transaction ci-dessous.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Sauter le test de dépense?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Nous envoyons depuis votre portefeuille vers une autre adresse de votre portefeuille (auto-envoi).&lt;br&gt; Cela permet de pratiquer le flux de signature et garantit que tous les signataires matériels sont correctement configurés.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>En attente de la préparation de la transaction.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4302,20 +4797,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" sur {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>Version disponible : {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>Imprimer les étiquettes</translation>
+			<source>Install {version}</source>
+			<translation>Installer {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Mettez les autocollants suivants sur votre matériel:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Version installée : {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Installée {installed} ; mise à jour disponible : {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>Dernière {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>Réinstaller {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>Mettre à jour vers {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Version {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Version {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Ajouter une source de plugins...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Fermer</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Sources de plugins configurées</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Aucune source de plugins n’a encore été ajoutée.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Sources de plugins</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Revérifier les plugins installés</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Terminé</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Actuel</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Étapes futures incomplètes</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Étape {current} sur {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4611,13 +5190,13 @@ Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser mainte
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Créer et collecter la {n}. signature</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Entrée {i} : Signée avec le flag {sighash_type} , Signature : {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrée {i} : Signée avec le flag {sighash_type} , Signature : {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Signature {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4815,11 +5394,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Étape suivante</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>Tous les détails de transaction nécessaires ne sont pas disponibles pour RBF</translation>
 		</message>
@@ -4839,11 +5413,6 @@ Sinon, vous pouvez la diffuser via {url}</translation>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Veuillez d'abord supprimer la transaction locale existante du portefeuille.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Étape précédente</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5119,18 +5688,6 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Étape précédente</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Oui, je suis sûr que tous les {number} mots sont corrects</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5356,6 +5913,183 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 signataire</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>Signature multiple 2 sur 3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>Signature multiple 3 sur 5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>Peut tolérer la perte de 1 appareil de signature et de sa seed de sauvegarde</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>Peut tolérer la perte de 2 appareils de signature et de leurs seeds de sauvegarde</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Choisissez un modèle de portefeuille</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Inconvénients</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Continuer</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Complexité élevée</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>Si l’appareil de signature et la seed de sauvegarde sont perdus, les fonds sont perdus</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Stockage à froid à long terme</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Stockage à froid à long terme (Signature multiple 2 sur 3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Faible complexité</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Complexité moyenne</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Veuillez choisir un nom de portefeuille</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Étape précédente</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Avantages</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Récupération</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Requis</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Nécessite 1 emplacement sécurisé à accès contrôlé pour stocker la seed de sauvegarde</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Nécessite 3 emplacements sécurisés à accès contrôlé pour stocker les seeds de sauvegarde</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Nécessite 5 emplacements sécurisés à accès contrôlé pour stocker les seeds de sauvegarde</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Portefeuille robuste pour l’auto-conservation à long terme.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Sélectionnez un modèle dans la liste.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>Auto-conservation avec 1 signataire et 1 sauvegarde de seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Stockage à froid simple</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Stockage à froid simple (1 signataire)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Stockez la sauvegarde de seed séparément de l’appareil afin d’éviter un point de défaillance unique.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Stockage ultra robuste</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Stockage ultra robuste (multi-signature 3 sur 5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>La feuille de récupération contenant le descripteur du portefeuille doit être conservée avec chaque sauvegarde de seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Total</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Nom du portefeuille</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>signataire</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>signataires</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5363,23 +6097,8 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Test d'auto-envoi</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Sauvegarder la Graine</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Acheter des signataires matériels</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Générer une Graine</translation>
+			<source>Choose template</source>
+			<translation>Choisir un modèle</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5388,13 +6107,13 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Étiqueter les signataires matériels</translation>
+			<source>Plugins</source>
+			<translation>Plugins</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Mettre dans des emplacements sécurisés</translation>
+			<source>Previous Step</source>
+			<translation>Étape précédente</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5405,6 +6124,16 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>Enregistrer le multisig sur les signataires</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>Vérifiez la transaction et créez-la lorsque vous êtes prêt.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Sécurisez vos clés</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5428,17 +6157,8 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>La transaction de test  '{tx_text}'  a été effectuée avec succès. Veuillez procéder au test d'auto-envoi : 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>Signataire {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5447,8 +6167,18 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Valider la Sauvegarde</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>Transaction créée. Signez-la et diffusez-la ci-dessous, puis attendez la reconnaissance par le portefeuille.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>Transaction reconnue par le portefeuille.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>En attente de la reconnaissance de la transaction diffusée par le portefeuille.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5581,6 +6311,11 @@ Pays : {country}</translation>
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>Terminer et accéder au tableau de bord</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6997,6 +7732,11 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Accès complet en lecture et écriture à ce portefeuille et aux catégories.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Accès complet en lecture et écriture à ce portefeuille, y compris les soldes, transactions et UTXO.</translation>
 		</message>
@@ -7012,8 +7752,18 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Abonnez-vous aux événements d’activité du portefeuille, tels que les nouvelles transactions ou la synchronisation de la blockchain.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>S’abonner aux événements d’activité du portefeuille tels que les nouvelles transactions ou la synchronisation de la blockchain. Permet également l’ouverture de transactions et de PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Description inconnue</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7131,25 +7881,162 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>L’accès au forfait Business est actif.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Annuler</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Continuer</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>Impossible de déterminer l’état actuel de l’abonnement.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>État actuel : {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Adresse e-mail pour les rappels d’abonnement et les avis de renouvellement :</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>L’achat de l’essai gratuit n’a pas renvoyé de charge utile de gestion.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>L’achat de l’essai gratuit n’a pas renvoyé de session.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>L’achat de l’essai gratuit nécessite un descripteur de portefeuille.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Dernière vérification : {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Dernière erreur d’actualisation : {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Gérer l’abonnement</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL de gestion enregistrée.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Aucun abonnement n’a encore été activé.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Ouvrir l’abonnement</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Veuillez saisir une adresse e-mail valide.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Actualiser l’état de l’abonnement</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Rappels d’abonnement</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Abonnement requis</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>L’actualisation de l’état de l’abonnement a échoué.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>L’actualisation de l’état de l’abonnement n’a renvoyé aucun résultat.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>L’activation de l’essai gratuit a échoué.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>L’activation de l’essai gratuit a expiré.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Ce plugin est actuellement inactif. Prolongez l’abonnement avant de le réactiver.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>En attente de l’activation de l’essai gratuit...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Veuillez réessayer plus tard. Si cela ne fonctionne toujours pas, contactez {email}.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Saisissez le code d’appairage à 6 chiffres affiché sur le Trezor :</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Saisissez le PIN en utilisant la disposition du clavier Trezor (7 8 9 / 4 5 6 / 1 2 3) :</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Appairer Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Déverrouiller Trezor</translation>
 		</message>
 	</context>
 	<context>

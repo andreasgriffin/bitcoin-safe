@@ -61,9 +61,9 @@ def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:
             "key_origin": "m/41h/1h/0h/2h",
             "derivation_path": "/<0;1>/*",
             "network": test_config.network,
-            "label": "0",
             "mnemonic": "peanut all ghost appear daring exotic choose disease bird ready love salad",
             "description": "0",
+            "hardware_signer_id": "generic",
         },
         {
             "xpub": "tpubDE2ECxCKZhscAKFA2NG2VGzeQow9ZnSrYz8VxmRKPvNCwNv8rg6wXE2hNuB4vdLKfBf6enmrn2zmkLTt1h1fiLEXxTt9tPSXJCTogzYmnfX",
@@ -71,9 +71,9 @@ def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:
             "key_origin": "m/42h/1h/0h/2h",
             "derivation_path": "/<0;1>/*",
             "network": test_config.network,
-            "label": "1",
             "mnemonic": "chair useful hammer word edge hat title drastic priority chalk city gentle",
             "description": "1",
+            "hardware_signer_id": "generic",
         },
         {
             "xpub": "tpubDEbicbTmJ1g9sY7KynzsrodCDp5CoFcPPnxNHpDAbJsufTLTJKrtCo4GvUdgby5NXA8xppgXzawmHYgQqDSB3R6i1YjtS1Ko774FSVqmpA1",
@@ -81,9 +81,9 @@ def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:
             "key_origin": "m/43h/1h/0h/2h",
             "derivation_path": "/<0;1>/*",
             "network": test_config.network,
-            "label": "2",
             "mnemonic": "expand text improve perfect sponsor gesture flush wolf poem blouse kangaroo lesson",
             "description": "2",
+            "hardware_signer_id": "generic",
         },
         {
             "xpub": "tpubDEtp92LMMkxJx7cBdUJ68LE2oLApiNYKAyrgHCewGNbWBfumnPXUYamFbGUHM7dfYkJQtSVuj3scqQhPcgy9yv9xr53JVubYQpMby137qQv",
@@ -91,9 +91,9 @@ def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:
             "key_origin": "m/44h/1h/0h/2h",
             "derivation_path": "/<0;1>/*",
             "network": test_config.network,
-            "label": "3",
             "mnemonic": "base episode pyramid share teach degree ocean copper merit auto source noble",
             "description": "3",
+            "hardware_signer_id": "generic",
         },
         {
             "xpub": "tpubDEk3xNvJFZN72ikNADMXKyHzX6EEeaANeurUoyBvzxZvxufRqXH1ECSUyDK7hw6YvSYdxmnGXKfpHAxKwYyZpWdjRnDtgoXicwGWY6nujAy",
@@ -101,9 +101,9 @@ def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:
             "key_origin": "m/45h/1h/0h/2h",
             "derivation_path": "/<0;1>/*",
             "network": test_config.network,
-            "label": "4",
             "mnemonic": "scout clarify assist brain moon canvas rack memory coast gauge short child",
             "description": "4",
+            "hardware_signer_id": "generic",
         },
     ]
 

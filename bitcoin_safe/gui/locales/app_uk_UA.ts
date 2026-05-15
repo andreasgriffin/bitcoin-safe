@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>Додати джерело плагіна</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer-токен</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>Відображуване ім’я</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>URL маніфесту</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>Вставте сюди публічний ключ у форматі ASCII-armored</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>Закріплений публічний ключ</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>Зворотний виклик браузера надійшов після завершення терміну дії рахунку. Будь ласка, спробуйте ще раз.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>Виберіть суму та створіть рахунок для пожертви.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>Завершіть оплату у своєму браузері.
+Якщо виникне проблема, будь ласка, не вагайтеся звернутися до нас за адресою: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>Не вдалося створити рахунок. Будь ласка, спробуйте ще раз.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>Не вдалося автоматично відкрити браузер. Будь ласка, спробуйте ще раз.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>Не вдалося запустити локальний сервер зворотного виклику. Відкриття рахунку в браузері без автоматичного підтвердження.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>Створити рахунок</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>Рахунок готовий. Завершіть оплату у своєму браузері. Автоматичне підтвердження може бути недоступним.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>Сервіс рахунків повернув помилку ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>Зворотний виклик браузера не був отриманий до завершення терміну дії рахунку. Будь ласка, повторіть пожертву.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>Зворотний виклик браузера не був отриманий до завершення терміну дії рахунку. Будь ласка, спробуйте ще раз.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>Платіж підтверджено через зворотний виклик браузера. Дякуємо!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>Будь ласка, виберіть суму.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>Запит рахунку...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>Запит рахунку... Відкриється браузер, і Bitcoin Safe буде локально очікувати зворотний виклик.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>Не вдалося підключитися до сервера пожертв. Будь ласка, спробуйте пізніше.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>Ключ синхронізації гаманця {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>Приклейте seed-фразу з {number} словами до відповідного надрукованого PDF.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>Приклейте seed-фразу з {number} словами на надрукований PDF.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>Будь ласка, виконайте попередні кроки.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Попередній крок</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>Надрукувати аркуш відновлення</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>Надрукуйте PDF (він також містить дескриптор гаманця)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>Увімкнути</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>Відкрити плагін</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>Надано: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Бізнес-план</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Доступ до бізнес-плану активний.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>Розблокуйте всі платні плагіни за однією підпискою та приберіть сервісний збір за заплановані платежі.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,27 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Відкрити у блок-експлорері</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>Відкрити теку, що містить</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>Купити {number} апаратних підписантів                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe підтримує всі основні апаратні підписанти: &lt;a href="{url}"&gt;Переглянути повний список&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;
-        </translation>
 		</message>
 	</context>
 	<context>
@@ -901,6 +998,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>Спершу виберіть гаманець з мультипідписом</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>Необхідні підписувачі</translation>
 		</message>
@@ -918,6 +1020,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>Властивості гаманця</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Спочатку почніть безкоштовний пробний період, а потім керуйте або оновіть підписку тут.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1031,33 +1138,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>Обирайте безпечні місця обережно, зважаючи, що для витрачання з вашого мультисиг-гаманця вам потрібно дістатися до {m} із {n}.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>Назва гаманця</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>Розмістіть кожну резервну копію seed-фрази та апаратний підписувач у безпечному місці, наприклад:</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>Аркуш резервного відновлення (обов’язково)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>Резервна копія seed-фрази {j} і апаратний підписувач {j} мають бути в місці {j}</translation>
+			<source>Backup sheet</source>
+			<translation>2. Так, я прикріпив seed-слова до роздруківки</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>Зберігайте   апаратний підписувач   у безпечному місці.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>Резервний аркуш</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>Зберігайте  резервну копію seed-фрази   у &lt;b&gt;дуже&lt;/b&gt; безпечному місці (наприклад, у сейфі).</translation>
+			<source>Backup sheet {number}</source>
+			<translation>Аркуш резервної копії {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>Резервна копія seed-фрази (24 слова) дає повний контроль над коштами.</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>Вітаємо, ваш гаманець готовий. Тепер захистіть його!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>Розподілити по 2 окремих місцях</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>Розподілити по {n} окремих місцях</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>Виконайте наведені нижче кроки, щоб переконатися, що ви створили безпечну резервну копію для відновлення своїх коштів у найгіршому випадку.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>Важливо</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>Місце</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Місце 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>Після друку вручну перепишіть seed-фразу зі свого пристрою на аркуш або підтвердьте, що вона вже записана на окремому аркуші паперу, який зберігається разом із ним.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>Місце 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>Будь ласка, виконайте попередні кроки.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>Будь ласка, виберіть принаймні один резервний аркуш для друку.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>Роздрукуйте аркуші відновлення, пов’язані з пристроями, якими ви володієте та керуєте.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>Пристрій відновлення {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>Помістіть свої резервні копії та підписувачів у безпечні місця</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>Пристрій підписувача</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>Підписувач {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>Пристрій підписувача</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>Зберігайте кожного підписувача разом із його резервним аркушем і seed-словами в одному місці.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Сховище {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Переглянути слова seed</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>Так, я підтверджую, що seed-слова додані до роздруківки</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>Ваш гаманець захищений його аркушем відновлення, який слід зберігати в іншому місці, ніж ваш апаратний підписувач. Роздрукуйте його, додайте seed і зберігайте в безпечному місці з контрольованим доступом. Із seed-словами ви маєте повний контроль над своїм гаманцем.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>Ваш гаманець захищений {n} резервними аркушами з доданими seeds, що зберігаються в різних місцях. Роздрукуйте їх і розмістіть у безпечних місцях з контрольованим доступом. Маючи {m} з них, ви маєте повний контроль над своїм гаманцем.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} з {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1098,6 +1320,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>Повідомлення (необов’язково)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>Повідомлення (необов’язково)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1184,6 +1416,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>Повний (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Дякуємо за Bitcoin Safe!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Видалити плагін</translation>
 		</message>
 	</context>
 	<context>
@@ -1342,43 +1588,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Попередній крок</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>Повторити</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>Так, я бачу транзакцію в історії</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Переконайтеся, що жодні інші програми не отримують доступ до апаратного підписувача</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>Введіть назву (стікер-мітку) апаратного підписувача</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>Стікер-мітка</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>Успішно! Виконайте цей крок для всіх апаратних підписувачів і натисніть «Далі».</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>Налаштування не завершено. Будь ласка, повторіть.</translation>
 		</message>
 	</context>
 	<context>
@@ -1594,13 +1803,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Імпортуйте інформацію гаманця в Bitcoin Safe</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Наступний підписувач</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>Імпортувати інформацію апаратного підписувача в Bitcoin Safe</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1611,11 +1815,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>Попередній крок</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Попередній підписувач</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1641,6 +1840,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Видалити плагін</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) дозволяють гаманцям знаходити релевантні транзакції, зберігаючи ваші адреси приватними.</translation>
 		</message>
@@ -1651,13 +1855,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>Під час першої синхронізації Bitcoin Safe отримує компактні зведення блоків від кількох вузлів Bitcoin. Це приватний спосіб завантаження даних блоків.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>Минуло {elapsed} | Орієнтовно залишилось {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Минуло {elapsed} | Орієнтовно залишилось {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe завантажує зведення блоків із кількох вузлів для конфіденційності. Після цієї початкової синхронізації оновлення будуть швидкими. Якщо у вас є власний сервер Electrum або ви не хочете чекати, під’єднайтеся до публічного сервера Electrum у налаштуваннях мережі.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Налаштування мережі</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1769,13 +1978,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>Розширені</translation>
+			<source>Add New Signer</source>
+			<translation>Додати нового підписувача</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>Опис</translation>
+			<source>Change device type</source>
+			<translation>Змінити тип пристрою</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>Підключити</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Шлях деривації</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Інструкції пристрою</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1794,10 +2018,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>Назва пристрою підписання: ......
-Розташування пристрою підписання: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>Імпортуйте дані підписувача за допомогою QR, USB або імпорту тексту/файлу.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>Дізнайтеся більше про &lt;a href="{url}"&gt;підтримувані апаратні підписувачі&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>Дізнайтеся більше про &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1811,13 +2043,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Переконайтеся, що жодні інші програми не отримують доступ до апаратного підписувача</translation>
+			<source>Open the signer guide</source>
+			<translation>Відкрити посібник підписувача</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>Введіть коректне походження ключа.</translation>
+			<source>Personal notes:</source>
+			<translation>Особисті нотатки:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>Переконайтеся, що жодні інші програми не отримують доступ до апаратного підписувача</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1841,13 +2078,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QR-код</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>Зареєструвати</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>Повторно зареєструвати мультипідпис</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>Сид</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>Вибрати бренд</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>Вибрати модель</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>Вибрати бренд підписувача</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>Вибрати модель підписувача</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>Стандарт для обраного типу адреси {type} — {expected_key_origin}.  Виправте, якщо ви не впевнені.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8-значний відбиток ідентифікує seed. Ви можете записати його на апаратному підписувачі, щоб відстежувати різні seeds і пристрої підпису.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>Походження ключа потрібне для правильного створення транзакцій (PSBTs) і пов’язане з xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>Seed — це секрет, який дає змогу підписувати транзакції. Для гаманця з одним підписом він надає повний контроль над коштами.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1861,18 +2152,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>Адреси гаманця походять від xPub.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>Напишіть тут нотатки, що стосуються цього підписувача, пам’ятки тощо...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>Походження xPub</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} не можна тут використовувати.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} не можна тут використовувати.</translation>
+			<source>{device} instructions</source>
+			<translation>Інструкції для {device}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1917,48 +2223,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>Імпортовані вами походження ключів {key_origins} відрізняються! Будь ласка, ще раз перевірте, чи ви саме цього хотіли.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>Резервна копія секретного ключа синхронізації:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>Оберіть довірені комп’ютери на вкладці «Sync &amp; Chat» на кожному комп’ютері.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>Відео про співпрацю</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>Увімкнути</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>Зашифрована хмарна резервна копія міток адрес і категорій</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>Завершити</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>Синхронізація між кількома комп’ютерами та чат</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>Відео про синхронізацію</translation>
 		</message>
 	</context>
 	<context>
@@ -2184,6 +2448,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;Плагіни</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;Попередній гаманець/вкладка</translation>
 		</message>
@@ -2261,6 +2530,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>Гаманець із назвою {wallet_id} вже існує. Виберіть іншу назву.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2369,6 +2643,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Гарячі гаманці вимкнено в Bitcoin Mainnet.
+Ви можете перемкнутися на Testnet, щоб протестувати Bitcoin Safe без використання справжніх Bitcoin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>Тримати відкритим</translation>
 		</message>
@@ -2396,6 +2677,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>Нова вкладка {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>Для цієї мережі демо-гаманець недоступний.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2451,6 +2737,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>Вставте сюди вашу біткоїн-транзакцію або PSBT чи перетягніть файл</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Будь ласка, оберіть назву гаманця</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2631,6 +2922,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>Гаманець {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>Гаманці ще синхронізуються, і якщо закрити застосунок — синхронізацію доведеться почати спочатку.
@@ -2660,11 +2956,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>Так, повне сканування транзакцій</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>новий</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2794,6 +3085,108 @@ median-time-past — це медіанна мітка часу останніх 
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (місцевий час)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Уже знайомі з Bitcoin? Налаштуйте гаманець, який упевнено зберігає та переміщує реальну цінність.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>Найкраще для довгострокового зберігання</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>Створити новий гаманець</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Дослідити Playground</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>Дослідити з демо-гаманцем</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>Зберігайте свою seed-фразу в безпеці</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>Навчайтеся безпечно, без ризику</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>Керувати Реальними Коштами</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>Практикуйтеся в середовищі без ризику й точно побачте, як усе працює. Спробуйте надсилати, отримувати та змінювати комісії за допомогою тестових монет, які можна втратити без жалю.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>Справжні тверді гроші (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>Надсилайте й отримуйте справжній bitcoin</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Налаштувати гаманець</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>Почати дослідження</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>Почніть здійснювати транзакції з твердими грошима або навчайтеся в безпечному playground. У будь-якому разі ви завжди зможете створити інший гаманець пізніше.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>Тестові монети (tBTC) не мають цінності</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>Тестові монети, без грошової цінності</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>Транзакції є постійними</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Використовує тестову мережу Signet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>Використовує onchain-мережу Mainnet</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>З чого ви хотіли б почати?</translation>
 		</message>
 	</context>
 	<context>
@@ -2965,8 +3358,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Проксі не застосовується до функції Sync&amp;Chat!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Проксі не застосовується до плагіна Sync&amp;Chat і під час купівлі підписки!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2993,58 +3387,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>Потрібне 1 безпечне місце для зберігання резервної копії сид-фрази (на папері або сталі)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1 сид (24 секретні слова) — все, що потрібно для доступу до ваших коштів</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1 пристрій підписання</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2 з 3 мультипідписний гаманець</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>Потрібно 3 безпечні місця (кожне з 1 резервною копією сіда   + дескриптором гаманця   )</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3 пристрої підписання</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>Найкраще для великих сум</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>Найкраще для середніх сум</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Обрати мультипідпис</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>Обрати один підпис</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>Мінуси:</translation>
+			<source>Connect Device(s)</source>
+			<translation>Підключити пристрій(ої)</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3053,49 +3397,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>Створити або імпортувати користувацький гаманець</translation>
+			<source>Custom / Recovery</source>
+			<translation>Власний / Відновлення</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>Користувацький або імпортувати наявний гаманець</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>Покрокове налаштування вашого гаманця із самостійним зберіганням.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>Налаштуйте гаманець під свої потреби</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Гарячий гаманець з одним підписом</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>Якщо 1 сид було втрачено або вкрадено, усі кошти можна перевести до нового гаманця за допомогою 2 решти сидів + дескриптора гаманця (QR-код)</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>Відкрийте список підтримуваних апаратних гаманців і підписувачів.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>Якщо вас обдурять і ви віддасте зловмисникам свій сид, ваші біткоїни буде негайно викрадено</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>Спробуйте наявний гаманець із кількома тестовими монетами, щоб безпечно досліджувати.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>Менше довідкових матеріалів онлайн у разі відновлення</translation>
+			<source>Public Demo wallet</source>
+			<translation>Публічний демо-гаманець</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>Плюси:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Швидко створіть гаманець для негайного використання, без наявних ключів.&lt;br&gt;&lt;small&gt;Вимкнено в Mainnet, оскільки комп’ютер, підключений до інтернету, не призначений для безпечного зберігання секретів, що представляють гроші.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>Гаманець з одним підписом</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>Швидко створіть гаманець для негайного використання, без наявних ключів.&lt;br&gt;&lt;small&gt;Створення та зберігання ключів на комп’ютері, підключеному до інтернету, є небезпечним. Комп’ютер загального призначення не призначений для зберігання секретів, що представляють гроші.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>Для відновлення гаманця потрібен дескриптор гаманця (QR-код)</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>Відновіть гаманець з апаратного гаманця(ів) або дескриптора.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>Підтримувані підписувачі</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Назва гаманця</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3183,6 +3541,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>Щомісяця</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>Почати безкоштовний пробний період</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>Підписка</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>Щороку</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>Керувати</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>Оновити статус</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>Підписка:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3247,94 +3649,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Зворотний виклик браузера надійшов після завершення терміну дії рахунку. Будь ласка, спробуйте ще раз.</translation>
+			<source>Update</source>
+			<translation>Оновити</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>Виберіть суму та створіть рахунок для пожертви.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>Доступне оновлення: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>Завершіть оплату у своєму браузері.
-Якщо виникнуть проблеми, будь ласка, звертайтеся до нас за адресою: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>Оновити до {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>Не вдалося створити рахунок. Будь ласка, спробуйте ще раз.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Не вдалося автоматично відкрити браузер. Будь ласка, спробуйте ще раз.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>Не вдалося запустити локальний сервер зворотного виклику. Відкриття рахунку в браузері без автоматичного підтвердження.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>Створити рахунок</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>Рахунок готовий. Завершіть оплату у своєму браузері. Автоматичне підтвердження може бути недоступним.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>Сервіс рахунків повернув помилку ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>Зворотний виклик браузера не був отриманий до завершення терміну дії рахунку. Будь ласка, повторіть пожертву.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>Зворотний виклик браузера не був отриманий до завершення терміну дії рахунку. Будь ласка, спробуйте ще раз.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>Платіж підтверджено через зворотний виклик браузера. Дякуємо!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>Будь ласка, виберіть суму пожертви та валюту.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>Запит рахунку...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Запит рахунку... Відкриється браузер, і Bitcoin Safe буде локально очікувати зворотний виклик.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>Не вдалося підключитися до сервера пожертв. Будь ласка, спробуйте пізніше.</translation>
+			<source>Version {version}</source>
+			<translation>Версія {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>Увімкнути/Вимкнути</translation>
+			<source>Explore plugins</source>
+			<translation>Оглянути плагіни</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>Плагіни недоступні для цього гаманця, тому тут нічого налаштовувати.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>Перегляньте доступні плагіни для цього гаманця. Ви можете ввімкнути потрібні зараз і повернутися на вкладку «Плагіни» пізніше будь-коли.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>Увімкніть і керуйте додатковими інтеграціями гаманця.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Плагіни</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Скасувати</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>Видалити</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>Видалити встановлений плагін</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>Видалити встановлений плагін {plugin}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>Вимкніть плагін перед видаленням.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Потрібні URL маніфесту та закріплений відкритий ключ.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>Операція плагіна не вдалася.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>Джерело плагіна {source_id} не існує.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>Встановлені плагіни перевірено повторно.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>Встановлені плагіни перевірено повторно. {count} плагін(ів) недійсні.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Видалити джерело плагіна</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>Видалити джерело плагіна {source}?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>Цей плагін не можна видалити.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>Застосовується до всіх платних плагінів і сервісних зборів, обмежених підпискою.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>План Business</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>Плагіни</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Джерела</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>Неможливо видалити, поки встановлено {count} плагін(ів).</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>Видалити</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>Остання помилка: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>Оновити</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>Видаліть плагіни, встановлені з цього джерела, перш ніж видаляти джерело.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>ID джерела: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3464,8 +3947,13 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>Дескриптор</translation>
+			<source>Dashboard</source>
+			<translation>Панель керування</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>Подробиці</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3486,11 +3974,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Export labels</source>
 			<translation>Експорт міток</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>Історія</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3543,6 +4026,11 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Password incorrect</source>
 			<translation>Неправильний пароль</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Будь ласка, оберіть назву гаманця</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3749,18 +4237,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>Баланс = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>Перевірити, чи отримано</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>Наступний крок</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3769,31 +4247,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Попередній крок</translation>
+			<source>Receive Test</source>
+			<translation>Тест отримання</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше {test_amount}) на 1 адресу цього гаманця.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt;                     Щоб переконатися, що ви контролюєте кошти, потрібно протестувати витрати з гаманця. 
-                    &lt;br&gt;                     Тому перед надсиланням значної кількості Bitcoin у гаманець &lt;b&gt;критично важливо&lt;/b&gt; протестувати витрати і всіх підписувачів.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Поки НЕ надсилайте великі суми в гаманець. Спочатку завершіть усі тести self-send!&lt;/b&gt;                    </translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця. &lt;br&gt;&lt;br&gt; &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця. &lt;br&gt; Тому перед тим, як надіслати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця та протестувати всіх підписувачів.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>Інструкції з отримання</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>Розпізнана транзакція</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>Очікування надходження коштів у гаманець...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>Нещодавно відкриті гаманці</translation>
+			<source>ALL WALLETS</source>
+			<translation>УСІ ГАМАНЦІ</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>НЕЩОДАВНІ ГАМАНЦІ</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>Показати у файловому провіднику</translation>
 		</message>
 	</context>
 	<context>
@@ -3938,38 +4436,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Імпортуйте інформацію гаманця в Bitcoin Safe</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>Наступний підписувач</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>Наступний крок</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Попередній крок</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>Попередній підписувач</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>Пропустити крок</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>Так, я зареєстрував мультисиг на {n} апаратному підписувачі</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>Зареєструйте multisig-гаманець на кожному пристрої підпису.</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4481,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Файл не вибрано</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Демонстраційний плагін підписки</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Приклад плагіна на основі PaidPluginClient. Використовуйте його для перевірки активації, обмеженої підпискою, і дій менеджера плагінів.</translation>
 		</message>
 	</context>
 	<context>
@@ -4079,14 +4559,28 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>Створіть транзакцію в цій картці.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>Тест надсилання самому собі {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>Підпишіть і транслюйте транзакцію нижче.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>Пропустити тест витрати?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>Ми надсилаємо з вашого гаманця на іншу адресу у вашому гаманці (self-send).&lt;br&gt; Це дозволяє перевірити процес підпису і гарантує, що всі апаратні підписувачі налаштовані правильно.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>Очікування підготовки транзакції.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4303,20 +4797,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>«{sticker}» на {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>Доступна версія: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>Друкувати мітки</translation>
+			<source>Install {version}</source>
+			<translation>Встановити {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>Наклейте такі стікери на ваш апаратний пристрій:</translation>
+			<source>Installed version: {version}</source>
+			<translation>Встановлена версія: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>Встановлено {installed}; доступне оновлення: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>Остання {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>Перевстановити {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>Оновити до {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>Версія {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>Версія {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>Додати джерело плагінів...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>Закрити</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>Налаштовані джерела плагінів</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>Джерела плагінів ще не додано.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>Джерела плагінів</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>Повторно перевірити встановлені плагіни</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>Завершено</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>Поточний</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>Майбутні незавершені кроки</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>Крок {current} з {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4612,13 +5190,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>Створити та зібрати {n}-й підпис</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Вхід {i}: Підписано з прапором {sighash_type} , Підпис: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Вхід {i}: Підписано з прапором {sighash_type} , Підпис: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>Підпис {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4816,11 +5394,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>Наступний крок</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>Не всі необхідні деталі транзакції доступні для RBF</translation>
 		</message>
@@ -4840,11 +5413,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>Будь ласка, спочатку видаліть наявну локальну транзакцію гаманця.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>Попередній крок</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5120,18 +5688,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Попередній крок</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>Так, я впевнений, що всі {number} слів правильні</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5357,6 +5913,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>1 підписант</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>Мультипідпис 2 з 3</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>Мультипідпис 3 з 5</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>Може витримати втрату 1 пристрою підпису та його резервної seed-фрази</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>Може витримати втрату 2 пристроїв підпису та їхніх резервних seed-фраз</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>Виберіть шаблон гаманця</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>Недоліки</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>Продовжити</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>Висока складність</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>Якщо пристрій підпису та резервну seed-фразу втрачено, кошти буде втрачено</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>Довгострокове холодне зберігання</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>Довгострокове холодне зберігання (Мультипідпис 2 з 3)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>Низька складність</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>Середня складність</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>Будь ласка, оберіть назву гаманця</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>Попередній крок</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>Переваги</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>Відновлення</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>Обов’язково</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>Потрібне 1 безпечне місце з контрольованим доступом для зберігання резервної seed-фрази</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>Потрібні 3 безпечні місця з контрольованим доступом для зберігання резервних seed-фраз</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>Потрібні 5 безпечних місць із контрольованим доступом для зберігання резервних seed-фраз</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>Надійний гаманець для довгострокового самостійного зберігання.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>Виберіть шаблон зі списку.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>Самостійне зберігання з 1 підписувачем і 1 резервною копією seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>Просте холодне зберігання</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>Просте холодне зберігання (1 підписувач)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>Зберігайте резервну копію seed окремо від пристрою, щоб уникнути єдиної точки відмови.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>Надійне надстійке зберігання</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>Надійне надстійке зберігання (мультипідпис 3-з-5)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>Аркуш відновлення з дескриптором гаманця слід зберігати з кожною резервною копією seed.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>Разом</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Назва гаманця</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>підписувач</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>підписувачі</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5364,23 +6097,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Тест self-send</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>Резервна копія сіда</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>Купити апаратні підписувачі</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>Згенерувати сид</translation>
+			<source>Choose template</source>
+			<translation>Вибрати шаблон</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5389,13 +6107,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>Помітити апаратні підписувачі</translation>
+			<source>Plugins</source>
+			<translation>Плагіни</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>Розмістити у безпечних місцях</translation>
+			<source>Previous Step</source>
+			<translation>Попередній крок</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5406,6 +6124,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>Зареєструвати мультисиг на підписувачах</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>Перегляньте транзакцію та створіть її, коли будете готові.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>Захистіть свої ключі</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5429,17 +6157,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Синхр &amp; Чат</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>Тестова транзакція  '{tx_text}'  успішно виконана. Будь ласка, продовжуйте тест self-send: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>Підписувач {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5448,8 +6167,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>Перевірити резервну копію</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>Транзакцію створено. Підпишіть і транслюйте її нижче, а потім зачекайте, поки гаманець її розпізнає.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>Транзакцію розпізнано гаманцем.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>Очікування, поки гаманець розпізнає трансльовану транзакцію.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5582,6 +6311,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>Завершити й перейти до Панелі керування</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6998,6 +7732,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>Повний доступ на читання і запис до цього гаманця та категорій.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>Повний доступ на читання та запис до цього гаманця, включно з балансами, транзакціями та UTXO.</translation>
 		</message>
@@ -7013,8 +7752,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>Підпишіться на події активності гаманця, як-от нові транзакції або синхронізація блокчейну.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>Підписка на події активності гаманця, такі як нові транзакції або синхронізація блокчейна. Також дозволяє відкривати транзакції та PSBT.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>Невідомий опис</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7132,25 +7881,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Доступ до плану Business активний.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>Скасувати</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>Продовжити</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>Не вдалося визначити поточний статус підписки.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>Поточний статус: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>Адреса електронної пошти для нагадувань про підписку та повідомлень про поновлення:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>Покупка безкоштовної пробної версії не повернула керівне корисне навантаження.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>Покупка безкоштовної пробної версії не повернула сеанс.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>Для покупки безкоштовної пробної версії потрібен дескриптор гаманця.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>Остання перевірка: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>Остання помилка оновлення: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>Керувати підпискою</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>URL керування збережено.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>Ще не активовано жодної підписки.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>Відкрити підписку</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>Введіть дійсну адресу електронної пошти.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>Оновити статус підписки</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>Нагадування про підписку</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>Потрібна підписка</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>Не вдалося оновити статус підписки.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>Оновлення статусу підписки не повернуло результату.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>Не вдалося активувати безкоштовну пробну версію.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>Час активації безкоштовної пробної версії вичерпано.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>Цей плагін наразі неактивний. Подовжте підписку, перш ніж увімкнути його знову.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>Очікування активації безкоштовної пробної версії...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} Повторіть спробу пізніше. Якщо це все одно не працює, зверніться до {email}.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Введіть 6-значний код сполучення, показаний на Trezor:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Введіть PIN, використовуючи розкладку клавіатури Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Сполучити Trezor</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Розблокувати Trezor</translation>
 		</message>
 	</context>
 	<context>

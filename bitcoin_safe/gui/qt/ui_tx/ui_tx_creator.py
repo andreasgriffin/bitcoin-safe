@@ -44,7 +44,14 @@ from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QShowEvent
-from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QPushButton, QSplitter, QWidget
+from PyQt6.QtWidgets import (
+    QDialogButtonBox,
+    QHBoxLayout,
+    QPushButton,
+    QSizePolicy,
+    QSplitter,
+    QWidget,
+)
 
 from bitcoin_safe.constants import MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
@@ -207,9 +214,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.outer_widget_sub = QWidget(self)
         self.outer_widget_sub_layout = QHBoxLayout(self.outer_widget_sub)
         self.outer_widget_sub_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
-        self._layout.addWidget(self.outer_widget_sub)
+        self.outer_widget_sub.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self._layout.addWidget(self.outer_widget_sub, stretch=1)
 
         self.splitter = QSplitter()
+        self.splitter.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.outer_widget_sub_layout.addWidget(self.splitter)
 
         #     return self.tabs_inputs
@@ -272,6 +281,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.button_clear = self.button_box.addButton(QDialogButtonBox.StandardButton.Reset)
         if self.button_clear:
             self.button_clear.clicked.connect(self.clear_ui)
+        self._show_reset_button = True
 
         self._layout.addWidget(HLine())
         self._layout.addWidget(self.button_box)
@@ -533,6 +543,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_fee.header_widget.syncWith(
             self.column_inputs.header_widget, self.column_recipients.header_widget
         )
+        self.set_show_reset_button(self._show_reset_button)
 
     def update_opportunistic_checkbox(self):
         """Update opportunistic checkbox."""
@@ -552,6 +563,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Return to the previously active tab."""
 
         self.signals.tab_history_backward.emit()
+
+    def set_show_reset_button(self, visible: bool) -> None:
+        """Show or hide the built-in reset action."""
+        self._show_reset_button = visible
+        if self.button_clear:
+            self.button_clear.setVisible(visible)
 
     def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
         """On signal address text changed."""
@@ -1133,7 +1150,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
     ):
         conflicing_txids = set(txo.is_spent_by_txid for txo in conflicted_unconfirmed if txo.is_spent_by_txid)
 
-        self.rbf_bar.set_infos(
+        self._set_rbf_notification_bar(
             current_fee=current_fee, min_fee_rate=min_fee_rate, conflicing_txids=conflicing_txids
         )
         self.column_fee.fee_group.set_rbf_label(
@@ -1217,6 +1234,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 scroll_to_last=True,
             )
 
+        self.column_inputs.setVisible(not tx_ui_infos.hide_entire_input_column)
         if tx_ui_infos.hide_entire_input_column:
             self.splitter.setSizes([0, 1, 1])
 

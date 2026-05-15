@@ -171,7 +171,10 @@ class VerifiedPluginSourceManifest(SaveAllClass):
 @dataclass(frozen=True)
 class InstalledSourcePluginMetadata(SaveAllClass):
     VERSION = "0.0.1"
-    known_classes = {**SaveAllClass.known_classes}
+    known_classes = {
+        **SaveAllClass.known_classes,
+        ExternalPluginCatalogEntry.__name__: ExternalPluginCatalogEntry,
+    }
     bundle_id: str
     source_id: str
     version: str
@@ -179,6 +182,7 @@ class InstalledSourcePluginMetadata(SaveAllClass):
     installed_at: str
     trusted_auto_allow_signer: bool
     verified_signer_fingerprint: str
+    catalog_entry: ExternalPluginCatalogEntry | None = None
     last_verification_ok: bool = True
     last_verification_error: str | None = None
 

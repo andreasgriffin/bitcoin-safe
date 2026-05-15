@@ -57,10 +57,10 @@ from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import center_on_screen, set_no_margins, svg_tools
 from bitcoin_safe.mempool_manager import MempoolManager
+from bitcoin_safe.wallet import Wallet
 
 from ...descriptors import get_address_bip32_path
 from ...signals import SignalsMin, WalletFunctions
-from ...wallet import Wallet
 from .hist_list import HistList
 from .util import do_copy
 

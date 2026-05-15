@@ -51,7 +51,6 @@ from bitcoin_usb.address_types import (
 from hwilib.descriptor import parse_descriptor
 
 from bitcoin_safe.keystore import KeyStore
-from bitcoin_safe.wallet_util import signer_name
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +117,6 @@ def from_multisig_wallet_export(
         KeyStore.from_signer_info(
             signer_info=signer_info,
             network=network,
-            default_label=signer_name(threshold=multisig_wallet_export.threshold, i=i),
             default_derivation_path=ConstDerivationPaths.multipath,
         )
         for i, signer_info in enumerate(multisig_wallet_export.signer_infos)

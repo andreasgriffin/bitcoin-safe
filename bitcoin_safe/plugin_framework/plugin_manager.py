@@ -56,7 +56,12 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
-from bitcoin_safe.gui.qt.util import Message, MessageType, set_no_margins, svg_tools
+from bitcoin_safe.gui.qt.util import (
+    Message,
+    MessageType,
+    set_no_margins,
+    svg_tools,
+)
 from bitcoin_safe.plugin_framework.builtin_plugins import (
     BUILTIN_PLUGIN_BUNDLES,
     BUILTIN_PLUGIN_BUNDLES_BY_CLIENT_CLASS,
@@ -132,16 +137,6 @@ class PluginManagerWidget(QWidget):
         self.business_plan_section_layout.addWidget(self.business_plan_header)
 
         self.business_plan_container = QFrame(self.business_plan_section)
-        self.business_plan_container.setObjectName("businessPlanContainer")
-        self.business_plan_container.setStyleSheet(
-            """
-            QFrame#businessPlanContainer {
-                border: 1px solid palette(midlight);
-                border-radius: 8px;
-                background: palette(alternate-base);
-            }
-            """
-        )
         self.business_plan_container_layout = QVBoxLayout(self.business_plan_container)
         self.business_plan_container_layout.setContentsMargins(8, 8, 8, 8)
         self.business_plan_container_layout.setSpacing(0)
@@ -158,9 +153,9 @@ class PluginManagerWidget(QWidget):
         self.plugin_list_widget.plugins_header.add_title_widget(self.header_button_row)
         self.container_layout.addWidget(self.plugin_list_widget)
 
-        layout = QVBoxLayout(self)
-        set_no_margins(layout)
-        layout.addWidget(scroll)
+        self._layout = QVBoxLayout(self)
+        set_no_margins(self._layout)
+        self._layout.addWidget(scroll)
 
         self.node = SidebarNode[object](
             data=self,

@@ -100,7 +100,6 @@ class Faucet:
             xpub=xpub,
             fingerprint=fingerprint,
             key_origin=key_origin,
-            label="faucet",
             network=self.network,
             mnemonic=str(self.mnemonic),
             description="faucet",

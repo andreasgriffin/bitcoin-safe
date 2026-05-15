@@ -45,6 +45,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QMenu,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -515,6 +516,8 @@ class VerticalButtonGroup(InvisibleScrollArea):
         """Initialize instance."""
         super().__init__(parent)
         self._layout = QVBoxLayout(self.content_widget)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        self.content_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         # if button_count > 1:
         #     self.setMinimumHeight(size + 20)
@@ -635,6 +638,11 @@ class MempoolButtons(VerticalButtonGroup):
             button.signal_edit_with_fee_icon.connect(self.signal_edit_with_fee_icon)
             button.signal_explorer_explorer_icon.connect(self.signal_explorer_explorer_icon)
         self.mempool_manager.signal_data_updated.connect(self.refresh)
+
+    def sizeHint(self) -> QSize:
+        parent = super().sizeHint()
+        button_height = self.buttons[0].sizeHint().height() if self.buttons else 0
+        return QSize(parent.width(), button_height)
 
     @staticmethod
     def _tx_status_to_size(tx_status: TxStatus) -> int:

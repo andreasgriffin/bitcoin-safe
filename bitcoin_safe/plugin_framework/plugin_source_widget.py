@@ -63,6 +63,7 @@ from bitcoin_safe.plugin_framework.external_plugin_registry import (
 from bitcoin_safe.plugin_framework.plugin_display import format_version_with_hash
 from bitcoin_safe.plugin_framework.plugin_list_widget import (
     BasePluginWidget,
+    SourceCatalogItemWidget,
 )
 from bitcoin_safe.signature_manager import KnownGPGKeys
 
@@ -370,6 +371,9 @@ class SourceCatalogItem(QObject):
             return self.tr("Reinstall {version}").format(version=self.entry.version)
         return self.tr("Install {version}").format(version=self.entry.version)
 
+    def show_install_button(self) -> bool:
+        return self.entry.installed_version is None or self.entry.update_available
+
     def _available_update_target_text(self) -> str:
         return format_version_with_hash(
             self,
@@ -384,7 +388,5 @@ class SourceCatalogItem(QObject):
         self,
         icon_size: tuple[int, int] = (40, 40),
         parent: QWidget | None = None,
-    ) -> BasePluginWidget:
-        from bitcoin_safe.plugin_framework.plugin_list_widget import SourceCatalogItemWidget
-
+    ) -> SourceCatalogItemWidget:
         return SourceCatalogItemWidget(item=self, icon_size=icon_size, parent=parent)

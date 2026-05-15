@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>플러그인 소스 추가</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer 토큰</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>표시 이름</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>매니페스트 URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII-armored 공개 키를 여기에 붙여넣으세요</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>고정된 공개 키</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,90 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>청구서가 만료된 후 브라우저 콜백이 도착했습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>금액을 선택하고 기부 청구서를 생성하세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>브라우저에서 결제를 완료하세요.
+문제가 있으면 주저하지 말고 다음 주소로 문의해 주세요: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>청구서를 생성할 수 없습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>브라우저를 자동으로 열 수 없습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>로컬 콜백 서버를 시작할 수 없습니다. 자동 확인 없이 브라우저에서 청구서를 엽니다.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>청구서 생성</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>청구서가 준비되었습니다. 브라우저에서 결제를 완료하세요. 자동 확인을 사용할 수 없을 수도 있습니다.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>청구서 서비스에서 오류가 반환되었습니다 ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 기부를 다시 시도해 주세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 다시 시도해 주세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>브라우저 콜백을 통해 결제가 확인되었습니다. 감사합니다!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>금액을 선택하세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>청구서 요청 중...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>청구서 요청 중... 브라우저가 열리고 Bitcoin Safe가 로컬에서 콜백을 수신합니다.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>기부 서버에 연결할 수 없습니다. 나중에 다시 시도해 주세요.</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +443,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>지갑 {wallet_id}의 동기화 키:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>{number} 단어 시드를 인쇄된 pdf 중 일치하는 곳에 붙입니다.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>인쇄된 pdf에 {number} 단어 시드를 붙입니다.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>이전 단계를 완료하세요.</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>이전 단계</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>복구 시트 인쇄</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>pdf 인쇄(지갑 디스크립트도 포함됨)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +516,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>활성화</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>플러그인 열기</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>제공자: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +554,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>비즈니스 플랜</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>비즈니스 플랜 이용 권한이 활성화되어 있습니다.</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>하나의 구독으로 모든 유료 플러그인을 잠금 해제하고 예약 결제 서비스 수수료를 제거하세요.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +587,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>블록 탐색기에서 열기</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>폴더 열기</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number}개의 하드웨어 서명자 구매                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe는 모든 주요 하드웨어 서명자를 지원합니다: &lt;a href="{url}"&gt;전체 목록 보기&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -898,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>먼저 멀티 서명 지갑을 선택하세요</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>필요한 서명 기계</translation>
 		</message>
@@ -915,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>지갑 속성</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>먼저 무료 체험을 시작한 다음 여기에서 구독을 관리하거나 새로고침하세요.</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1028,33 +1136,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>멀티시그 지갑에서 지출하려면 {m}의 {n}으로 이동해야 하므로 안전한 장소를 신중하게 선택하세요.</translation>
+			<source>1. Print backup sheets</source>
+			<translation>지갑 이름</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>각 시드 백업과 하드웨어 서명 기계를 안전한 위치에 보관하세요.</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>백업 복구 시트 (필수)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>시드 백업 {j} 및 하드웨어 서명 기계 {j}는 위치 {j}에 있어야 합니다</translation>
+			<source>Backup sheet</source>
+			<translation>2. 예, 출력물에 seed 단어를 첨부했습니다</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>하드웨어 서명 기계를 안전한 위치에 보관하세요.</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>백업 시트</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>시드 백업을 &lt;b&gt;매우&lt;/b&gt; 안전한 위치(금고 등)에 보관하세요.</translation>
+			<source>Backup sheet {number}</source>
+			<translation>백업 시트 {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>시드 백업(24 단어)은 자금에 대한 전체 제어 권한을 제공합니다.</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>축하합니다. 지갑이 준비되었습니다. 이제 지갑을 보호하세요!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>2개의 별도 위치에 분산</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>{n}개의 별도 위치에 분산</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>최악의 상황에서 자금을 복구할 수 있도록 안전한 백업을 만들기 위해 아래 단계를 따르세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>중요</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>위치</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>위치 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>인쇄한 후, 기기에서 seed 문구를 시트에 손으로 적거나, 함께 보관된 별도의 종이에 이미 기록되어 있음을 확인하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>위치 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>이전 단계를 완료하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>인쇄할 백업 시트를 하나 이상 선택하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>소유하고 제어하는 기기와 연결된 복구 시트를 인쇄하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>복구 서명 기계 {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>백업과 서명자를 안전한 위치에 두세요</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>서명자 장치</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>서명 기계 {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>서명자 장치</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>각 서명자를 해당 백업 시트와 seed 단어와 함께 같은 위치에 보관하세요.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>금고 {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seed 단어 보기</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>예, seed 단어가 인쇄물에 첨부되어 있음을 확인합니다</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>지갑은 복구 시트로 보호되며, 이 시트는 하드웨어 서명기가 있는 곳과 다른 장소에 보관해야 합니다. 이를 인쇄하고 seed를 첨부한 뒤, 안전하고 접근이 통제되는 위치에 보관하세요. seed 단어가 있으면 지갑을 완전히 제어할 수 있습니다.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>지갑은 서로 다른 위치에 보관된, seed가 첨부된 {n}개의 백업 시트로 보호됩니다. 이를 인쇄하여 안전하고 접근이 통제되는 위치에 두세요. 그중 {m}개가 있으면 지갑을 완전히 제어할 수 있습니다.</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{total}개 중 {number}개</translation>
 		</message>
 	</context>
 	<context>
@@ -1095,6 +1318,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>메시지 (선택 사항)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>메시지(선택 사항)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1181,6 +1414,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>전체 (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safe를 이용해 주셔서 감사합니다!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>플러그인 삭제</translation>
 		</message>
 	</context>
 	<context>
@@ -1338,43 +1585,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>이전 단계</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>재시도</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>예, 히스토리에서 트랜잭션을 확인했습니다</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>다른 프로그램이 하드웨어 서명 기계에 접근하지 않도록 해주세요</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>하드웨어 서명 기계의 이름(스티커 명칭)을 입력하세요</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>스티커 명칭</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>성공! 모든 하드웨어 서명 기계와 함께 이 단계를 완료한 후 다음을 클릭하세요.</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>설정이 완료되지 않았습니다. 다시 시도해주세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -1590,13 +1800,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe로 지갑 가져오기</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>다음 서명 기계</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>하드웨어 서명기 정보를 Bitcoin Safe로 가져오기</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1607,11 +1812,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>이전 단계</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>이전 서명 기계</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1637,6 +1837,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>플러그인 삭제</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158)는 지갑이 주소를 비공개로 유지하면서 관련 거래를 발견할 수 있도록 합니다.</translation>
 		</message>
@@ -1647,13 +1852,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>첫 동기화 동안 Bitcoin Safe는 여러 비트코인 노드에서 컴팩트 블록 요약을 가져옵니다. 이는 블록 데이터를 다운로드하는 비공개 방식입니다.</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>경과 시간 {elapsed} | 예상 남은 시간 {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>경과 시간 {elapsed} | 예상 남은 시간 {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe는 개인정보 보호를 위해 여러 노드에서 블록 요약을 다운로드합니다. 이 초기 동기화 후에는 업데이트가 빨라집니다. 자체 Electrum 서버가 있거나 기다리고 싶지 않다면 네트워크 설정에서 공개 Electrum 서버에 연결하세요.</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>네트워크 설정</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1765,13 +1975,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>고급</translation>
+			<source>Add New Signer</source>
+			<translation>새 서명자 추가</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>설명</translation>
+			<source>Change device type</source>
+			<translation>장치 유형 변경</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>연결</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>파생 경로</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>장치 지침</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1790,10 +2015,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>서명 장치 이름: ......
-서명 장치 위치: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>QR, USB 또는 텍스트/파일 가져오기로 서명자 데이터를 가져옵니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;지원되는 하드웨어 서명자&lt;/a&gt;에 대해 자세히 알아보세요.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt;에 대해 자세히 알아보세요.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1807,13 +2040,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>다른 프로그램이 하드웨어 서명 기계에 접근하지 않도록 해주세요</translation>
+			<source>Open the signer guide</source>
+			<translation>서명자 가이드 열기</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>유효한 키 원점을 입력해 주세요.</translation>
+			<source>Personal notes:</source>
+			<translation>개인 메모:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>다른 프로그램이 하드웨어 서명 기계에 접근하지 않도록 해주세요</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1837,13 +2075,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QR 코드</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>등록</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>멀티시그 재등록</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>시드</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>브랜드 선택</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>모델 선택</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>서명자 브랜드 선택</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>서명자 모델 선택</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>선택된 주소 유형 {type}에 대한 표준은 {expected_key_origin}입니다. 확실하지 않으면 수정해 주세요.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>8자리 지문은 seed를 식별합니다. 서로 다른 seed와 서명 기기를 추적하기 위해 하드웨어 서명기에 이를 적어둘 수 있습니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>키 출처는 거래(PSBT)를 올바르게 구성하는 데 필요하며 xPub와 연결됩니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed는 거래 서명을 가능하게 하는 비밀입니다. 단일 서명 지갑의 경우 자금에 대한 완전한 제어권을 제공합니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1857,18 +2149,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>지갑 주소는 xPub에서 파생됩니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>이 서명자와 관련된 메모, 참고 사항 등을 여기에 작성하세요...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub 출처</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type}을 여기에 사용할 수 없습니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type}을 여기에 사용할 수 없습니다.</translation>
+			<source>{device} instructions</source>
+			<translation>{device} 지침</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1913,48 +2220,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>가져온 키 출처{key_origins}이 다릅니다! 맞는 것인지 다시 확인하세요.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>백업 비밀 동기화 키:</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>각 컴퓨터에서 Sync &amp; Chat 탭에서 신뢰할 수 있는 컴퓨터를 선택하세요.</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>협업 비디오</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>활성화</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>주소 명칭과 카테고리의 암호화된 클라우드 백업</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>완료</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>멀티 컴퓨터 동기화 및 채팅</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>동기화 비디오</translation>
 		</message>
 	</context>
 	<context>
@@ -2180,6 +2445,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;플러그인</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;이전 지갑/탭</translation>
 		</message>
@@ -2257,6 +2527,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>&amp;X/Twitter DM</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id}라는 지갑이 이미 존재합니다. 다른 이름을 선택하세요.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2365,6 +2640,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet에서는 핫 월렛이 비활성화되어 있습니다.
+실제 Bitcoin을 사용하지 않고 Bitcoin Safe를 테스트하려면 Testnet으로 전환할 수 있습니다.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>열어 두기</translation>
 		</message>
@@ -2392,6 +2674,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>새 탭 {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>이 네트워크에는 데모 지갑을 사용할 수 없습니다.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2447,6 +2734,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>비트코인 트랜잭션 또는 PSBT를 여기에 붙여넣거나 파일을 드롭하세요</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>지갑 이름을 선택해 주세요.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2627,6 +2919,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>지갑 {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>지갑들이 아직 동기화 중이며 앱을 닫으면 처음부터 다시 시작해야 합니다.
@@ -2656,11 +2953,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>예, 거래 전체 스캔</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>새로운</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2789,6 +3081,108 @@ Median-time-past는 최근 11개 블록의 중앙값 타임스탬프이므로 �
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (현지 시간)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>이미 Bitcoin에 익숙하신가요? 실제 가치를 보관하고 이동하는 지갑을 자신 있게 설정하세요.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>장기 보관에 가장 적합</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>새 지갑 생성</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>플레이그라운드 탐색</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>데모 지갑으로 탐색</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>seed 문구를 안전하게 보관하세요</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>안전하게, 위험 없이 배우기</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>실제 자금 관리</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>위험 없는 환경에서 연습하고 모든 것이 정확히 어떻게 작동하는지 확인하세요. 잃어도 후회 없는 테스트 코인으로 보내기, 받기, 수수료 변경을 시도해 보세요.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>진짜 건전한 화폐 (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>실제 bitcoin 보내기 및 받기</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>지갑 설정</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>탐색 시작</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>건전한 화폐로 거래를 시작하거나 안전한 플레이그라운드에서 배우세요. 어느 쪽이든 나중에 언제든지 다른 지갑을 만들 수 있습니다.</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>테스트 코인(tBTC)은 가치가 없습니다</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>테스트 코인, 금전적 가치 없음</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>거래는 영구적입니다</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet 테스트 네트워크 사용</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>온체인 Mainnet 네트워크 사용</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>어디에서 시작하시겠습니까?</translation>
 		</message>
 	</context>
 	<context>
@@ -2960,8 +3354,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>프록시는 Sync&amp;Chat 기능에 적용되지 않습니다!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>프록시는 Sync&amp;Chat 플러그인 및 구독 구매 중에는 적용되지 않습니다!</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2988,58 +3383,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>시드 백업을 저장할 1개의 안전한 장소가 필요합니다(종이나 강철로)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>1개의 시드(24개의 비밀 단어)만 있으면 자금에 접근할 수 있습니다</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>1개의 서명 장치</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2의 3 멀티 시그 지갑</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>3개의 안전한 위치가 필요합니다(각 위치에 1개의 시드 백업 + 지갑 디스크립터 필요)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>3개의 서명 장치</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>큰 금액에 최적</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>중간값에 최적</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>멀티 서명 선택</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>단일 서명 선택</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>단점:</translation>
+			<source>Connect Device(s)</source>
+			<translation>장치 연결</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3048,49 +3393,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>맞춤 지갑 생성 또는 가져오기</translation>
+			<source>Custom / Recovery</source>
+			<translation>사용자 지정 / 복구</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>사용자 정의 또는 기존 지갑 가져오기</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>자기 보관 지갑을 위한 안내 설정.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>지갑 사용자 정의</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>핫 단일 서명 지갑</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>1개의 시드가 분실되거나 도난당한 경우, 나머지 2개의 시드 + 지갑 디스크립터(QR 코드)로 새 지갑으로 자금을 이전할 수 있습니다</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>지원되는 하드웨어 지갑 및 서명자의 목록을 엽니다.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>해커들에게 시드를 넘겨줄 경우, 비트코인은 즉시 도난당할 수 있습니다</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>안전하게 탐색할 수 있도록 테스트 코인이 일부 들어 있는 기존 지갑으로 사용해 보세요.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>복구 시 온라인 지원 자료가 적음</translation>
+			<source>Public Demo wallet</source>
+			<translation>공개 데모 지갑</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>장점:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>기존 키 없이 즉시 사용할 지갑을 빠르게 생성합니다.&lt;br&gt;&lt;small&gt;인터넷에 연결된 컴퓨터는 돈을 나타내는 비밀을 안전하게 보관하도록 설계되지 않았기 때문에 Mainnet에서는 비활성화되어 있습니다.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>단일 서명 지갑</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>기존 키 없이 즉시 사용할 지갑을 빠르게 생성합니다.&lt;br&gt;&lt;small&gt;인터넷에 연결된 컴퓨터에서 키를 생성하고 저장하는 것은 안전하지 않습니다. 범용 컴퓨터는 돈을 나타내는 비밀을 보관하도록 설계되지 않았습니다.&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>지갑을 복구하기 위해 지갑 디스크립터(QR 코드)가 필요합니다</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>하드웨어 지갑 또는 디스크립터에서 지갑을 복원합니다.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>지원되는 서명자</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>지갑 이름</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3178,6 +3537,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>월간</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>무료 체험 시작</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>구독</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>연간</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>관리</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>상태 새로 고침</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>구독:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3242,94 +3645,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>청구서가 만료된 후 브라우저 콜백이 도착했습니다. 다시 시도해 주세요.</translation>
+			<source>Update</source>
+			<translation>업데이트</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>금액을 선택하고 기부 청구서를 생성하세요.</translation>
+			<source>Update available: {update_target}</source>
+			<translation>업데이트 사용 가능: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>브라우저에서 결제를 완료하세요.
-문제가 있으면 다음 주소로 언제든지 문의해 주세요: [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me)</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target}(으)로 업데이트</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>청구서를 생성할 수 없습니다. 다시 시도해 주세요.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>브라우저를 자동으로 열 수 없습니다. 다시 시도해 주세요.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>로컬 콜백 서버를 시작할 수 없습니다. 자동 확인 없이 브라우저에서 청구서를 엽니다.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>청구서 생성</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>청구서가 준비되었습니다. 브라우저에서 결제를 완료하세요. 자동 확인을 사용할 수 없을 수도 있습니다.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>청구서 서비스에서 오류가 반환되었습니다 ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 기부를 다시 시도해 주세요.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>청구서가 시간 초과되기 전에 브라우저 콜백을 받지 못했습니다. 다시 시도해 주세요.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>브라우저 콜백을 통해 결제가 확인되었습니다. 감사합니다!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>기부 금액과 통화를 선택해 주세요.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>청구서 요청 중...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>청구서 요청 중... 브라우저가 열리고 Bitcoin Safe가 로컬에서 콜백을 수신합니다.</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>기부 서버에 연결할 수 없습니다. 나중에 다시 시도해 주세요.</translation>
+			<source>Version {version}</source>
+			<translation>버전 {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>사용/사용 안 함</translation>
+			<source>Explore plugins</source>
+			<translation>플러그인 살펴보기</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>이 지갑에서는 플러그인을 사용할 수 없으므로 여기에서 구성할 항목이 없습니다.</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>이 지갑에서 사용할 수 있는 플러그인을 검토하세요. 원하는 플러그인을 지금 활성화하고 나중에 언제든지 플러그인 탭으로 돌아올 수 있습니다.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>선택적 지갑 통합을 활성화하고 관리합니다.</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>플러그인</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>취소</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>삭제</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>설치된 플러그인 삭제</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>설치된 플러그인 {plugin}을(를) 삭제하시겠습니까?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>삭제하기 전에 플러그인을 비활성화하세요.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>매니페스트 URL과 고정된 공개 키가 필요합니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>플러그인 작업에 실패했습니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>플러그인 소스 {source_id}이(가) 존재하지 않습니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>설치된 플러그인을 다시 확인했습니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>설치된 플러그인을 다시 확인했습니다. {count}개의 플러그인이 유효하지 않습니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>플러그인 소스 제거</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>플러그인 소스 {source}을(를) 제거하시겠습니까?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>이 플러그인은 삭제할 수 없습니다.</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>모든 유료 플러그인 및 구독 제한 서비스 수수료에 적용됩니다.</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>비즈니스 플랜</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>플러그인</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>소스</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>{count}개의 플러그인이 설치되어 있는 동안에는 제거할 수 없습니다.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>삭제</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>마지막 오류: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>새로 고침</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>소스를 삭제하기 전에 이 소스에서 설치된 플러그인을 제거하세요.</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>소스 ID: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3459,8 +3943,13 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>디스크립터</translation>
+			<source>Dashboard</source>
+			<translation>대시보드</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>세부 정보</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3481,11 +3970,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Export labels</source>
 			<translation>명칭 내보내기</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>내역</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3538,6 +4022,11 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Password incorrect</source>
 			<translation>비밀번호가 틀렸습니다</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>지갑 이름을 선택해 주세요.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3743,18 +4232,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>잔액 = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>수신 확인</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>다음 단계</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3763,31 +4242,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>이전 단계</translation>
+			<source>Receive Test</source>
+			<translation>수신 테스트</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>이 지갑의 1개 주소로 &lt;b&gt;소량&lt;/b&gt;({test_amount} 미만)을 받으십시오.
-                    &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다. 
-                    &lt;br&gt;                     따라서 지갑에 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출하고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 지갑에 큰 금액을 보내지 마십시오. 먼저 모든 self-send 테스트를 완료하십시오!&lt;/b&gt;                    </translation>
+			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜인가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>받기 지침</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>인식된 거래</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>자금이 지갑에 도착하기를 기다리는 중...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>최근에 열린 지갑들</translation>
+			<source>ALL WALLETS</source>
+			<translation>모든 지갑</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>최근 지갑</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>파일 탐색기에서 표시</translation>
 		</message>
 	</context>
 	<context>
@@ -3932,38 +4431,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe로 지갑 가져오기</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>다음 서명 기계</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>다음 단계</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>이전 단계</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>이전 서명 기계</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>건너뛰기</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>예, {n}번째 하드웨어 서명 기계에서 멀티시그를 등록했습니다</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>각 서명 장치에 멀티시그 지갑을 등록하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -4007,6 +4476,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>파일이 선택되지 않았습니다</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>데모 구독 플러그인</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient 기반 예제 플러그인입니다. 구독 제한 활성화 및 플러그인 관리자 작업을 확인하는 데 사용하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -4073,14 +4554,28 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>이 카드에서 거래를 생성하세요.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>셀프 전송 테스트 {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>아래 거래에 서명하고 브로드캐스트하세요.</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>송금 테스트를 건너뛰겠습니까?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>지갑에서 지갑 내의 다른 주소로 전송하고 있습니다 (self-send).&lt;br&gt; 이는 서명 흐름을 연습하고 모든 하드웨어 서명자가 올바르게 설정되었는지 확인합니다.</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>거래가 준비되기를 기다리는 중입니다.</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4297,20 +4792,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" on {device_name}</translation>
+			<source>Available version: {version}</source>
+			<translation>사용 가능한 버전: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>라벨 인쇄</translation>
+			<source>Install {version}</source>
+			<translation>{version} 설치</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>하드웨어에 다음 스티커를 붙이세요:</translation>
+			<source>Installed version: {version}</source>
+			<translation>설치된 버전: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>설치됨 {installed}; 사용 가능한 업데이트: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>최신 {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} 재설치</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available}(으)로 업데이트</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>버전 {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>버전 {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>플러그인 소스 추가...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>닫기</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>구성된 플러그인 소스</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>아직 추가된 플러그인 소스가 없습니다.</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>플러그인 소스</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>설치된 플러그인 다시 확인</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>완료됨</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>현재</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>향후 미완료 단계</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>{total}단계 중 {current}단계</translation>
 		</message>
 	</context>
 	<context>
@@ -4606,13 +5185,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n}번째 서명 생성 및 수집</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>서명 {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4805,11 +5384,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>다음 단계</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBF에 필요한 모든 거래 세부 정보가 제공되지 않음</translation>
 		</message>
@@ -4829,11 +5403,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>지갑의 기존 로컬 트랜잭션을 먼저 제거해 주세요.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>이전 단계</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5109,18 +5678,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>이전 단계</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>예, 모든 {number} 단어가 정확합니다</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5346,6 +5903,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>서명자 1명</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2-of-3 멀티시그</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3-of-5 멀티시그</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>서명 장치 1개와 해당 백업 seed의 손실을 견딜 수 있음</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>서명 장치 2개와 해당 백업 seed의 손실을 견딜 수 있음</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>지갑 템플릿 선택</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>단점</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>계속</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>높은 복잡도</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>서명 장치와 seed 백업을 잃어버리면 자금을 잃게 됩니다</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>장기 콜드 스토리지</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>장기 콜드 스토리지 (2-of-3 멀티시그)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>낮은 복잡도</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>중간 복잡도</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>지갑 이름을 선택해 주세요.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>이전 단계</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>장점</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>복구</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>필수</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>seed 백업을 저장할 접근 통제된 안전한 장소 1곳 필요</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>seed 백업을 저장할 접근 통제된 안전한 장소 3곳 필요</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>seed 백업을 저장할 접근 통제된 안전한 장소 5곳 필요</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>장기 셀프 커스터디를 위한 견고한 지갑.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>목록에서 템플릿을 선택하세요.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>서명자 1명과 시드 백업 1개로 셀프 커스터디.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>간단한 콜드 스토리지</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>간단한 콜드 스토리지 (서명자 1명)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>단일 장애 지점을 피하려면 시드 백업을 장치와 별도로 보관하세요.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>매우 견고한 스토리지</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>매우 견고한 스토리지 (3-of-5 다중 서명)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>지갑 디스크립터가 포함된 복구 시트는 각 시드 백업과 함께 보관해야 합니다.</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>합계</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>지갑 이름</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>서명자</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>서명자</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5353,23 +6087,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Self-Send 테스트</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>시드 백업</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>하드웨어 서명 기계 구매</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>시드 생성</translation>
+			<source>Choose template</source>
+			<translation>템플릿 선택</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5378,13 +6097,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>하드웨어 서명 기계에 명칭 붙이기</translation>
+			<source>Plugins</source>
+			<translation>플러그인</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>안전한 위치에 넣기</translation>
+			<source>Previous Step</source>
+			<translation>이전 단계</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5395,6 +6114,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>서명 기계에 멀티시그 등록</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>트랜잭션을 검토하고 준비가 되면 생성하세요.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>키 보안 설정</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5418,17 +6147,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>테스트 거래  '{tx_text}'  가 성공적으로 완료되었습니다. Self-send 테스트를 계속 진행하십시오: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>서명자 {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5437,8 +6157,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>백업 유효성 검사</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>트랜잭션이 생성되었습니다. 아래에서 서명하고 브로드캐스트한 다음, 지갑이 인식할 때까지 기다리세요.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>트랜잭션이 지갑에 의해 인식되었습니다.</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>지갑이 브로드캐스트된 트랜잭션을 인식하기를 기다리는 중입니다.</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5571,6 +6301,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>완료하고 대시보드로 이동</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6985,6 +7720,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>이 지갑 및 카테고리에 대한 전체 읽기 및 쓰기 권한.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>잔액, 거래 및 UTXO를 포함한 이 지갑에 대한 전체 읽기 및 쓰기 권한.</translation>
 		</message>
@@ -7000,8 +7740,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>새 트랜잭션 또는 블록체인 동기화와 같은 지갑 활동 이벤트를 구독하세요.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>새 거래 또는 블록체인 동기화와 같은 지갑 활동 이벤트를 구독합니다. 또한 거래 및 PSBT 열기를 활성화합니다.</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>알 수 없는 설명</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7119,25 +7869,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>비즈니스 플랜 액세스가 활성화되었습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>취소</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>계속</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>현재 구독 상태를 확인할 수 없습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>현재 상태: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>구독 알림 및 갱신 안내를 받을 이메일 주소:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>무료 체험 구매가 관리 페이로드를 반환하지 않았습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>무료 체험 구매가 세션을 반환하지 않았습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>무료 체험 구매에는 지갑 디스크립터가 필요합니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>마지막 확인: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>마지막 새로 고침 오류: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>구독 관리</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>관리 URL이 저장되었습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>아직 활성화된 구독이 없습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>구독 열기</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>유효한 이메일 주소를 입력하세요.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>구독 상태 새로 고침</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>구독 알림</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>구독 필요</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>구독 상태 새로 고침에 실패했습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>구독 상태 새로 고침이 결과를 반환하지 않았습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>무료 체험 활성화에 실패했습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>무료 체험 활성화 시간이 초과되었습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>이 플러그인은 현재 비활성 상태입니다. 다시 활성화하기 전에 구독을 연장하세요.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>무료 체험이 활성화되기를 기다리는 중...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} 나중에 다시 시도하세요. 그래도 작동하지 않으면 {email}로 문의하세요.</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezor에 표시된 6자리 페어링 코드를 입력하세요:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Trezor 키패드 레이아웃을 사용하여 PIN을 입력하세요 (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezor 페어링</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor 잠금 해제</translation>
 		</message>
 	</context>
 	<context>

@@ -36,8 +36,7 @@ from dataclasses import dataclass
 import bdkpython as bdk
 
 from bitcoin_safe.pythonbdk_types import TransactionDetails
-
-from ...tx import TxBuilderInfos, TxUiInfos
+from bitcoin_safe.tx import TxBuilderInfos, TxUiInfos
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,148 @@
+#
+# Bitcoin Safe
+# Copyright (C) 2026 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+from __future__ import annotations
+
+import logging
+from collections.abc import Iterable
+from functools import partial
+from typing import cast
+
+import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
+from bitcoin_safe.gui.qt.util import svg_tools
+
+from ...signer import AbstractSignatureImporter, SignatureImporterUSB
+
+logger = logging.getLogger(__name__)
+
+
+class SignedUI(QWidget):
+    def __init__(
+        self,
+        text: str,
+        psbt: bdk.Psbt,
+        network: bdk.Network,
+    ) -> None:
+        """Initialize instance."""
+        super().__init__()
+        self.text = text
+        self.psbt = psbt
+        self.network = network
+
+        self.layout_keystore_buttons = QHBoxLayout(self)
+
+        self.edit_signature = QTextEdit()
+        self.edit_signature.setMinimumHeight(30)
+        self.edit_signature.setReadOnly(True)
+        self.edit_signature.setText(str(self.text))
+        self.layout_keystore_buttons.addWidget(self.edit_signature)
+
+
+class SignerUI(QWidget):
+    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+
+    def __init__(
+        self,
+        signature_importers: Iterable[AbstractSignatureImporter],
+        psbt: bdk.Psbt,
+        network: bdk.Network,
+        button_prefix: str = "",
+    ) -> None:
+        """Initialize instance."""
+        super().__init__()
+        self.signature_importers = signature_importers
+        self.psbt = psbt
+        self.network = network
+
+        self.layout_keystore_buttons = QVBoxLayout(self)
+
+        self.buttons: list[QPushButton] = []
+        for signer in self.signature_importers:
+            button: QPushButton
+            if isinstance(signer, SignatureImporterUSB):
+                signal_end_hwi_blocker = cast(SignalProtocol[[]], signer.usb_gui.signal_end_hwi_blocker)
+                button = SpinningButton(
+                    text=button_prefix + signer.label,
+                    signal_stop_spinning=signal_end_hwi_blocker,
+                    enabled_icon=svg_tools.get_QIcon(signer.keystore_type.icon_filename),
+                    timeout=60,
+                    parent=self,
+                    svg_tools=svg_tools,
+                )
+            else:
+                button = QPushButton(button_prefix + signer.label, parent=self)
+                button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
+            self.buttons.append(button)
+            callback = partial(signer.sign, self.psbt)
+            button.clicked.connect(callback)
+            self.layout_keystore_buttons.addWidget(button)
+
+            signer.signal_signature_added.connect(self.signal_signature_added)
+            signer.signal_final_tx_received.connect(self.signal_tx_received)
+
+
+class SignerUIHorizontal(QWidget):
+    signal_signature_added = cast(SignalProtocol[[bdk.Psbt]], pyqtSignal(bdk.Psbt))
+    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+
+    def __init__(
+        self,
+        signature_importers: list[AbstractSignatureImporter],
+        psbt: bdk.Psbt,
+        network: bdk.Network,
+    ) -> None:
+        """Initialize instance."""
+        super().__init__()
+        self.signature_importers = signature_importers
+        self.psbt = psbt
+        self.network = network
+
+        self.layout_keystore_buttons = QVBoxLayout(self)
+
+        for signer in self.signature_importers:
+            button = QPushButton(signer.label)
+            button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
+            action = partial(signer.sign, self.psbt)
+            button.clicked.connect(action)
+            self.layout_keystore_buttons.addWidget(button)
+
+            signer.signal_signature_added.connect(self.signal_signature_added)
+            signer.signal_final_tx_received.connect(self.signal_tx_received)

@@ -38,7 +38,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import get_address_types
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialogButtonBox,
@@ -46,6 +46,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QSizePolicy,
     QSpinBox,
@@ -56,12 +57,13 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
+from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
 from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
+from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.signals import WalletFunctions
+from bitcoin_safe.wallet import ProtoWallet, Wallet
 
 from ...descriptors import AddressType, get_default_address_type
-from ...wallet import ProtoWallet, Wallet
-from .block_change_signals import BlockChangesSignals
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +72,7 @@ class DescriptorUI(QWidget):
     signal_qtwallet_apply_setting_changes = cast(SignalProtocol[[]], pyqtSignal())
     signal_qtwallet_cancel_setting_changes = cast(SignalProtocol[[]], pyqtSignal())
     signal_qtwallet_cancel_wallet_creation = cast(SignalProtocol[[]], pyqtSignal())
+    signal_wallet_name_changed = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
@@ -88,11 +91,9 @@ class DescriptorUI(QWidget):
         self.wallet = wallet
         self.wallet_functions = wallet_functions
         self.loop_in_thread = loop_in_thread
-
-        self.no_edit_mode = (self.protowallet.threshold, len(self.protowallet.keystores)) in [(1, 1), (2, 3)]
+        self._register_dialog: RegisterMultisigInteractionWidget | None = None
 
         self.create_wallet_type_and_descriptor(loop_in_thread=loop_in_thread)
-
         self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
 
         self.edit_descriptor.signal_descriptor_change.connect(self.on_descriptor_change)
@@ -102,12 +103,16 @@ class DescriptorUI(QWidget):
             get_address_type=self.get_address_type_from_ui,
             signals_min=wallet_functions.signals,
             loop_in_thread=self.loop_in_thread,
+            read_only_mode=self.wallet is not None,
+            show_register_button=False,
         )
+        self.keystore_uis.request_show_register_multisig.connect(self.show_register_multisig)
         self._layout.addWidget(self.keystore_uis)
 
         self.keystore_uis.setCurrentIndex(0)
 
         self.set_all_ui_from_protowallet()
+        self._set_initial_keystore_card_visibility()
         # diasbeling fields MUST be done after the ui is filled
         self.disable_fields()
 
@@ -119,9 +124,44 @@ class DescriptorUI(QWidget):
         """Get editable protowallet."""
         return self.protowallet
 
+    def _set_initial_keystore_card_visibility(self) -> None:
+        """Apply the default keystore card expansion for this descriptor view."""
+        if self.keystore_uis.count() <= 1:
+            self.keystore_uis.setCurrentIndex(0)
+            return
+        if self.wallet is not None:
+            self.keystore_uis.collapse_all()
+            return
+        self.keystore_uis.setCurrentIndex(0)
+
+    def show_register_multisig(self, hardware_signer: HardwareSigner | None = None) -> None:
+        """Show the multisig registration dialog for the current wallet."""
+        if not self.wallet:
+            return
+        if not self.wallet.is_multisig():
+            Message(
+                self.tr("Please select a Multisignature wallet first"),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
+        if self._register_dialog:
+            self._register_dialog.close()
+        self._register_dialog = RegisterMultisigInteractionWidget(
+            wallet=self.wallet,
+            loop_in_thread=self.loop_in_thread,
+            hardware_signer=hardware_signer,
+            wallet_name=self.wallet.id,
+            wallet_functions=self.wallet_functions,
+        )
+        self._register_dialog.set_minimum_size_as_floating_window()
+        self._register_dialog.show()
+        self._register_dialog.raise_()
+
     def updateUi(self) -> None:
         """UpdateUi."""
         self.label_signers.setText(self.tr("Required Signers"))
+        self.label_wallet_name.setText(self.tr("Wallet name"))
         self.label_gap.textLabel.setText(self.tr("Scan Addresses ahead"))
         self.label_gap.set_icon_as_help(
             tooltip=self.tr(
@@ -137,6 +177,7 @@ class DescriptorUI(QWidget):
         """Set protowallet."""
         self.protowallet = protowallet
         self.set_all_ui_from_protowallet()
+        self.disable_fields()
 
     def on_wallet_ui_changes(self) -> None:
         """On wallet ui changes."""
@@ -172,43 +213,96 @@ class DescriptorUI(QWidget):
 
     def _set_keystore_tabs(self) -> None:
         """Set keystore tabs."""
-        self.keystore_uis._set_keystore_tabs()
+        self.keystore_uis._set_keystore_cards()
 
         self.spin_req.setMinimum(1)
         self.spin_req.setMaximum(self.spin_signers.value())
         self.spin_signers.setMinimum(self.spin_req.value())
         self.spin_signers.setMaximum(10)
 
+    def _set_spin_box_state(self, spin_box: QSpinBox, minimum: int, maximum: int, value: int) -> bool:
+        """Update a spin box only where its state differs."""
+        changed = False
+        if spin_box.minimum() != minimum:
+            spin_box.setMinimum(minimum)
+            changed = True
+        if spin_box.maximum() != maximum:
+            spin_box.setMaximum(maximum)
+            changed = True
+        if spin_box.value() != value:
+            spin_box.setValue(value)
+            changed = True
+        return changed
+
+    def _set_combo_index_if_different(self, combo_box: QComboBox, index: int) -> bool:
+        """Update a combo box index only when needed."""
+        if combo_box.currentIndex() != index:
+            combo_box.setCurrentIndex(index)
+            return True
+        return False
+
+    def _set_text_if_different(self, line_edit: QLineEdit, value: str) -> bool:
+        """Update a line edit only when the text changed."""
+        if line_edit.text() != value:
+            line_edit.setText(value)
+            return True
+        return False
+
     def set_wallet_ui_from_protowallet(self) -> None:
         """Set wallet ui from protowallet."""
-        with BlockChangesSignals([self]):
-            logger.debug(f"{self.__class__.__name__} set_wallet_ui_from_protowallet")
+        logger.debug(f"{self.__class__.__name__} set_wallet_ui_from_protowallet")
+
+        desired_wallet_name = self.protowallet.id
+        desired_signer_count = len(self.protowallet.keystores)
+        desired_threshold = self.protowallet.threshold
+        desired_address_type = self.protowallet.address_type
+        desired_gap = self.protowallet.gap
+
+        combo_index = self.comboBox_address_type.findData(desired_address_type)
+        if combo_index < 0:
             self.repopulate_comboBox_address_type(self.protowallet.is_multisig())
-            self.comboBox_address_type.setCurrentText(self.protowallet.address_type.name)
-            self.spin_req.setMinimum(1)
-            self.spin_req.setMaximum(len(self.protowallet.keystores))
-            self.spin_req.setValue(self.protowallet.threshold)
+            combo_index = self.comboBox_address_type.findData(desired_address_type)
 
-            self.spin_signers.setMinimum(self.protowallet.threshold)
-            self.spin_signers.setMaximum(10)
-            self.spin_signers.setValue(len(self.protowallet.keystores))
+        blockers = [
+            QSignalBlocker(self.edit_wallet_name),
+            QSignalBlocker(self.comboBox_address_type),
+            QSignalBlocker(self.spin_req),
+            QSignalBlocker(self.spin_signers),
+            QSignalBlocker(self.spin_gap),
+        ]
+        try:
+            self._set_text_if_different(self.edit_wallet_name, desired_wallet_name)
+            if combo_index >= 0:
+                self._set_combo_index_if_different(self.comboBox_address_type, combo_index)
+            self._set_spin_box_state(
+                self.spin_req, minimum=1, maximum=desired_signer_count, value=desired_threshold
+            )
+            self._set_spin_box_state(
+                self.spin_signers,
+                minimum=desired_threshold,
+                maximum=10,
+                value=desired_signer_count,
+            )
+            if self.spin_gap.value() != desired_gap:
+                self.spin_gap.setValue(desired_gap)
+        finally:
+            del blockers
 
-            if self.spin_req.value() < self.spin_signers.value():
-                labels_of_recovery_signers = [
-                    f'"{keystore_ui.label}"' for keystore_ui in self.keystore_uis.getAllTabData().values()
-                ][self.spin_req.value() :]
-                self.spin_req.setToolTip(
-                    f"In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n"
-                    f"In case of loss of 1 of the devices, you can recover your funds using\n {' or '.join(labels_of_recovery_signers)} and send the funds to a new wallet."
-                )
-            if self.spin_req.value() == self.spin_signers.value() != 1:
-                self.spin_req.setToolTip(
-                    "Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer any benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5"
-                )
-            if self.spin_req.value() == self.spin_signers.value() == 1:
-                self.spin_req.setToolTip("A single signing device can sign outgoing transactions.")
-
-            self.spin_gap.setValue(self.protowallet.gap)
+        if self.spin_req.value() < self.spin_signers.value():
+            labels_of_recovery_signers = [
+                f'"{keystore_ui.hardware_signer_label}"'
+                for keystore_ui in self.keystore_uis.getAllTabData().values()
+            ][self.spin_req.value() :]
+            self.spin_req.setToolTip(
+                f"In the chosen multisig setup, you need {self.spin_req.value()} devices (signers) to sign every outgoing transaction.\n"
+                f"In case of loss of 1 of the devices, you can recover your funds using\n {' or '.join(labels_of_recovery_signers)} and send the funds to a new wallet."
+            )
+        if self.spin_req.value() == self.spin_signers.value() != 1:
+            self.spin_req.setToolTip(
+                "Warning!  Choosing a multisig setup where ALL signers need to sign every transaction\n is very RISKY and does not offer any benefits of multisig. Recommended multisig setups are 2-of-3 or 3-of-5"
+            )
+        if self.spin_req.value() == self.spin_signers.value() == 1:
+            self.spin_req.setToolTip("A single signing device can sign outgoing transactions.")
 
     def set_all_ui_from_protowallet(self) -> None:
         """Updates the 3 parts.
@@ -228,6 +322,7 @@ class DescriptorUI(QWidget):
         logger.debug("set_protowallet_from_keystore_ui")
 
         # these wallet settings must come first
+        self.protowallet.id = self.get_wallet_id_from_ui()
         m, n = self.get_m_of_n_from_ui()
         self.protowallet.set_number_of_keystores(n)
         self.protowallet.set_threshold(m)
@@ -239,7 +334,8 @@ class DescriptorUI(QWidget):
     def set_combo_box_address_type_from_protowallet(self) -> None:
         """Set combo box address type from protowallet."""
         address_types = get_address_types(self.protowallet.is_multisig())
-        self.comboBox_address_type.setCurrentIndex(address_types.index(self.protowallet.address_type))
+        desired_index = address_types.index(self.protowallet.address_type)
+        self._set_combo_index_if_different(self.comboBox_address_type, desired_index)
 
     def get_address_type_from_ui(self) -> AddressType:
         """Get address type from ui."""
@@ -260,6 +356,10 @@ class DescriptorUI(QWidget):
     def get_m_of_n_from_ui(self) -> tuple[int, int]:
         """Get m of n from ui."""
         return (self.spin_req.value(), self.spin_signers.value())
+
+    def get_wallet_id_from_ui(self) -> str:
+        """Get wallet id from ui."""
+        return self.edit_wallet_name.text().strip()
 
     def get_gap_from_ui(self) -> int:
         """Get gap from ui."""
@@ -282,46 +382,59 @@ class DescriptorUI(QWidget):
 
     def disable_fields(self) -> None:
         """Disable fields."""
-        self.comboBox_address_type.setEnabled(not self.no_edit_mode)
+        is_existing_wallet = self.wallet is not None
+
         self.label_address_type.setHidden(False)
-        self.spin_signers.setHidden(self.no_edit_mode)
-        self.spin_req.setHidden(self.no_edit_mode)
-        self.label_signers.setHidden(self.no_edit_mode)
-        self.label_of.setHidden(self.no_edit_mode)
+        self.label_wallet_name.setHidden(False)
+        self.spin_signers.setHidden(False)
+        self.spin_req.setHidden(False)
+        self.label_signers.setHidden(False)
+        self.label_of.setHidden(False)
 
-        with BlockChangesSignals([self]):
-            self.set_combo_box_address_type_from_protowallet()
-            self.spin_signers.setValue(len(self.protowallet.keystores))
+        desired_signer_count = len(self.protowallet.keystores)
+        desired_combo_index = self.comboBox_address_type.findData(self.protowallet.address_type)
+        blockers = [
+            QSignalBlocker(self.comboBox_address_type),
+            QSignalBlocker(self.spin_signers),
+        ]
+        try:
+            if desired_combo_index >= 0:
+                self._set_combo_index_if_different(self.comboBox_address_type, desired_combo_index)
+            if self.spin_signers.value() != desired_signer_count:
+                self.spin_signers.setValue(desired_signer_count)
+        finally:
+            del blockers
 
-        if self.protowallet.is_multisig():
-            self.label_of.setEnabled(True)
-            self.spin_signers.setEnabled(True)
-        else:
-            self.label_of.setDisabled(True)
-            self.spin_signers.setDisabled(True)
+        self.comboBox_address_type.setEnabled(not is_existing_wallet)
+        self.edit_wallet_name.setEnabled(True)
+        self.spin_req.setEnabled(not is_existing_wallet)
+        self.spin_signers.setEnabled(not is_existing_wallet)
+        self.spin_gap.setEnabled(True)
+        self.edit_descriptor.set_descriptor_editable(not is_existing_wallet)
+        self.label_of.setEnabled(True)
 
     def repopulate_comboBox_address_type(self, is_multisig: bool) -> None:
         """Repopulate comboBox address type."""
-        with BlockChangesSignals([self]):
-            # Fetch the new address types
-            address_types = get_address_types(is_multisig)
-            address_type_names = [a.name for a in address_types]
+        address_types = get_address_types(is_multisig)
+        address_type_names = [address_type.name for address_type in address_types]
+        current_names = [
+            self.comboBox_address_type.itemText(i) for i in range(self.comboBox_address_type.count())
+        ]
 
-            # Get the current items in the combo box
-            current_names = [
-                self.comboBox_address_type.itemText(i) for i in range(self.comboBox_address_type.count())
-            ]
+        if address_type_names == current_names:
+            return
 
-            # Check if the new list is different from the current items
-            if address_type_names != current_names:
-                # Clear and update the combo box
-                self.comboBox_address_type.clear()
-                for address_type in address_types:
-                    self.comboBox_address_type.addItem(address_type.name, userData=address_type)
+        blocker = QSignalBlocker(self.comboBox_address_type)
+        try:
+            self.comboBox_address_type.clear()
+            for address_type in address_types:
+                self.comboBox_address_type.addItem(address_type.name, userData=address_type)
 
-                default_address_type = get_default_address_type(is_multisig).name
-                if default_address_type in address_type_names:
-                    self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
+            default_address_type = get_default_address_type(is_multisig).name
+            if default_address_type in address_type_names:
+                self.comboBox_address_type.setCurrentIndex(address_type_names.index(default_address_type))
+        finally:
+            del blocker
 
     def create_wallet_type_and_descriptor(self, loop_in_thread: LoopInThread) -> None:
         """Create wallet type and descriptor."""
@@ -344,6 +457,15 @@ class DescriptorUI(QWidget):
         form_wallet_type = QGridLayout(self.box_wallet_type)
 
         # box_signers_with_slider
+        row = 0
+        self.label_wallet_name = QLabel(self.box_wallet_type)
+        self.edit_wallet_name = QLineEdit(self.box_wallet_type)
+        if self.wallet is None:
+            self.edit_wallet_name.textChanged.connect(self.signal_wallet_name_changed.emit)
+        form_wallet_type.addWidget(self.label_wallet_name, row, 0)
+        form_wallet_type.addWidget(self.edit_wallet_name, row, 1, 1, 3)
+        row += 1
+
         self.label_signers = QLabel()
 
         self.spin_req = QSpinBox()
@@ -361,10 +483,10 @@ class DescriptorUI(QWidget):
         self.spin_signers.setMaximum(10)
 
         # Add widgets to the layout
-        form_wallet_type.addWidget(self.label_signers, 0, 0)
-        form_wallet_type.addWidget(self.spin_req, 0, 1)
-        form_wallet_type.addWidget(self.label_of, 0, 2)
-        form_wallet_type.addWidget(self.spin_signers, 0, 3)
+        form_wallet_type.addWidget(self.label_signers, row, 0)
+        form_wallet_type.addWidget(self.spin_req, row, 1)
+        form_wallet_type.addWidget(self.label_of, row, 2)
+        form_wallet_type.addWidget(self.spin_signers, row, 3)
 
         # box_address_type
         self.label_address_type = QLabel()
@@ -373,9 +495,9 @@ class DescriptorUI(QWidget):
         self.comboBox_address_type = QComboBox()
         self.comboBox_address_type.setObjectName("this QComboBox")
         self.comboBox_address_type.currentIndexChanged.connect(self.on_wallet_ui_changes)
-        form_wallet_type.addWidget(self.label_address_type, 2, 0)
+        form_wallet_type.addWidget(self.label_address_type, row + 1, 0)
         form_wallet_type.setObjectName("this form_wallet_type")
-        form_wallet_type.addWidget(self.comboBox_address_type, 2, 1, 1, 3)
+        form_wallet_type.addWidget(self.comboBox_address_type, row + 1, 1, 1, 3)
 
         # box_gap
         self.label_gap = IconLabel()
@@ -386,8 +508,8 @@ class DescriptorUI(QWidget):
         self.spin_gap.setMaximum(int(1e6))
 
         # Add widgets to the layout
-        form_wallet_type.addWidget(self.label_gap, 3, 0)
-        form_wallet_type.addWidget(self.spin_gap, 3, 1, 1, 3)
+        form_wallet_type.addWidget(self.label_gap, row + 2, 0)
+        form_wallet_type.addWidget(self.spin_gap, row + 2, 1, 1, 3)
 
         self.box_wallet_type.setLayout(form_wallet_type)
         box_wallet_type_and_descriptor_layout.addWidget(self.box_wallet_type)
@@ -514,6 +636,8 @@ class DescriptorUI(QWidget):
 
     def close(self):
         """Close."""
+        if self._register_dialog:
+            self._register_dialog.close()
         self.edit_descriptor.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

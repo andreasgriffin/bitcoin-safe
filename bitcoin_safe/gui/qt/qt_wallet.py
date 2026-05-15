@@ -69,7 +69,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.category_info import CategoryInfo
-from bitcoin_safe.client import ProgressInfo, UpdateInfo
+from bitcoin_safe.client import Client, ProgressInfo, UpdateInfo
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
@@ -80,9 +80,11 @@ from bitcoin_safe.gui.qt.my_treeview import (
     SearchableTab,
     TreeViewWithToolbar,
 )
+from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.keystore import KeyStore
@@ -93,29 +95,32 @@ from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPlugi
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManager, PluginManagerWidget
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
+from bitcoin_safe.psbt_util import FeeInfo, SimplePSBT
 from bitcoin_safe.pythonbdk_types import (
     Balance,
     BlockchainType,
+    OutPoint,
     TransactionDetails,
+    TxOut,
     get_prev_outpoints,
     python_utxo_balance,
 )
+from bitcoin_safe.tx import HiddenTxUiInfos, PostCreateEnum, TxBuilderInfos, TxUiInfos, short_tx_id
 from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
-from bitcoin_safe.wallet_util import WalletDifferenceType
-
-from ...config import UserConfig
-from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
-from ...mempool_manager import MempoolManager
-from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
-from ...tx import TxBuilderInfos, TxUiInfos, short_tx_id
-from ...util import AddressBalanceDict, dict_intersection
-from ...wallet import (
+from bitcoin_safe.wallet import (
     DeltaCacheListTransactions,
     ProtoWallet,
     TxStatus,
     Wallet,
     get_wallets,
 )
+from bitcoin_safe.wallet_util import WalletDifferenceType
+
+from ...config import UserConfig
+from ...execute_config import DEFAULT_LANG_CODE, ENABLE_PLUGINS, ENABLE_TIMERS
+from ...mempool_manager import MempoolManager
+from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions, WalletSignals
+from ...util import AddressBalanceDict, dict_intersection
 from .address_list import AddressList, AddressListWithToolbar
 from .bitcoin_quick_receive import BitcoinQuickReceive
 from .descriptor_ui import DescriptorUI
@@ -143,6 +148,52 @@ T = TypeVar("T")
 MINIMUM_INTERVAL_SYNC_REGULARLY = (
     5 * 60
 )  # in seconds  .  A high value is OK here because the p2p monitoring will inform of any new txs instantly
+
+
+def create_tx_viewer(
+    config: UserConfig,
+    wallet_functions: WalletFunctions,
+    fx: FX,
+    mempool_manager: MempoolManager,
+    network: bdk.Network,
+    data: Data,
+    outpoints: list[OutPoint],
+    client: Client | None,
+    parent: QWidget | None,
+    fee_info: FeeInfo | None = None,
+    chain_position: bdk.ChainPosition | None = None,
+    txout_dict: dict[str, bdk.TxOut] | dict[str, TxOut] | None = None,
+    hidden_tx_infos: HiddenTxUiInfos | None = None,
+    focus_ui_element: UiElements = UiElements.none,
+) -> UITx_Viewer:
+    """Build a transaction viewer widget for both tabs and embedded tutorial cards."""
+    utxo_list = UTXOList(
+        config=config,
+        wallet_functions=wallet_functions,
+        outpoints=outpoints,
+        fx=fx,
+        txout_dict=txout_dict,
+        sort_column=UTXOList.Columns.ADDRESS,
+        sort_order=Qt.SortOrder.AscendingOrder,
+        hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
+    )
+    widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, config, parent=parent)
+
+    return UITx_Viewer(
+        config=config,
+        wallet_functions=wallet_functions,
+        fx=fx,
+        widget_utxo_with_toolbar=widget_utxo_with_toolbar,
+        network=network,
+        mempool_manager=mempool_manager,
+        fee_info=fee_info,
+        chain_position=chain_position,
+        client=client,
+        data=data,
+        parent=parent,
+        hidden_tx_infos=hidden_tx_infos,
+        focus_ui_element=focus_ui_element,
+    )
 
 
 class QTProtoWallet(QtWalletBase):
@@ -186,7 +237,12 @@ class QTProtoWallet(QtWalletBase):
 
     def get_keystore_labels(self) -> list[str]:
         """Get keystore labels."""
-        return [self.protowallet.signer_name(i) for i in range(len(self.protowallet.keystores))]
+        return [self.protowallet.hardware_signer_label(i) for i in range(len(self.protowallet.keystores))]
+
+    def set_wallet_id(self, wallet_id: str) -> None:
+        """Update the proto wallet name and the sidebar title."""
+        self.protowallet.id = wallet_id
+        self.tabs.setTitle(wallet_id)
 
     def create_and_add_settings_tab(self, protowallet: ProtoWallet) -> tuple[DescriptorUI, SidebarNode]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
@@ -207,6 +263,7 @@ class QTProtoWallet(QtWalletBase):
 
         wallet_descriptor_ui.signal_qtwallet_apply_setting_changes.connect(self.on_apply_setting_changes)
         wallet_descriptor_ui.signal_qtwallet_cancel_wallet_creation.connect(self.on_cancel_wallet_creation)
+        wallet_descriptor_ui.signal_wallet_name_changed.connect(self.set_wallet_id)
         return wallet_descriptor_ui, settings_node
 
     def on_cancel_wallet_creation(self):
@@ -267,6 +324,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     signal_wallet_update = cast(SignalProtocol[[UpdateInfo]], pyqtSignal(UpdateInfo))
     signal_refresh_sync_status = cast(SignalProtocol[[]], pyqtSignal())
     signal_request_open_network_settings = cast(SignalProtocol[[]], pyqtSignal())
+    signal_psbt_created = cast(SignalProtocol[[TxBuilderInfos]], pyqtSignal(object))
 
     @property
     def plugin_manager_widget(self) -> PluginManagerWidget | None:
@@ -332,6 +390,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.plugins_menu = QMenu()
         self._file_path = file_path
         self._client_bridge_tasks: list[Future[Any]] = []
+        self._sync_task: Future[Any] | None = None
         self.progress_update_timer = QTimer()
         self.timer_sync_retry = QTimer()
         self.timer_sync_regularly = QTimer()
@@ -365,8 +424,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.category_manager,
             self.address_list_with_toolbar,
         ) = self._create_addresses_tab(self.tabs, address_list_with_toolbar=address_list_with_toolbar)
-
-        self.quick_receive.set_manage_categories_enabled(True)
 
         self.uitx_creator, self.send_node = self._create_send_tab(uitx_creator=uitx_creator)
         self.wallet_descriptor_ui, self.settings_node = self.create_and_add_settings_tab()
@@ -635,19 +692,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def get_plugins_node(self) -> SidebarNode[object] | None:
         """Get plugins node."""
-        for node in self.tabs.child_nodes:
-            if isinstance(node.data, PluginManager):
-                return node
-        return None
+        if not self.plugin_manager:
+            return None
+        if node := self.tabs.findNodeByWidget(self.plugin_manager.widget):
+            return node
+        return self.plugin_manager.node
 
     def updateUi(self) -> None:
         """UpdateUi."""
         if _node := self.tabs.findNodeByWidget(self.uitx_creator):
             _node.setTitle(self.tr("Send"))
         if _node := self.tabs.findNodeByWidget(self.wallet_descriptor_ui):
-            _node.setTitle(self.tr("Descriptor"))
+            _node.setTitle(self.tr("Details"))
         if _node := self.tabs.findNodeByWidget(self.history_tab):
-            _node.setTitle(self.tr("History"))
+            _node.setTitle(self.tr("Dashboard"))
         if _node := self.tabs.findNodeByWidget(self.address_tab):
             _node.setTitle(self.tr("Addresses"))
         if self.plugin_manager and (_node := self.tabs.findNodeByWidget(self.plugin_manager.widget)):
@@ -771,7 +829,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def get_keystore_labels(self) -> list[str]:
         """Get keystore labels."""
-        return [keystore.label for keystore in self.wallet.keystores]
+        return [self.wallet.technical_hardware_signer_label(i) for i in range(len(self.wallet.keystores))]
 
     def _default_file_name(self, id: str | None = None) -> str:
         """Default file name."""
@@ -847,22 +905,42 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """On qtwallet apply setting changes."""
         self.save()
 
+        requested_wallet_id = self.wallet_descriptor_ui.get_wallet_id_from_ui()
+        if not requested_wallet_id:
+            Message(self.tr("Please choose a wallet name"), type=MessageType.Warning, parent=self)
+            return
+
         current_protowallet = self.wallet.as_protowallet()
         self.wallet_descriptor_ui.set_protowallet_from_ui()
         updated_protowallet = self.wallet_descriptor_ui.protowallet
 
-        differences = current_protowallet.get_differences(updated_protowallet)
+        rename_requested = requested_wallet_id != self.wallet.id
+        updated_protowallet.id = current_protowallet.id
+        try:
+            differences = current_protowallet.get_differences(updated_protowallet)
+        finally:
+            updated_protowallet.id = requested_wallet_id
+
         worst = differences.worst()
-        if not worst:
+        if not worst and not rename_requested:
             Message(self.tr("No changes to apply."), parent=self)
+            return
+        if not worst:
+            if not self.change_wallet_id(requested_wallet_id):
+                return
+            self.save()
+            Message(self.tr("Changes applied."), parent=self)
             return
 
         if worst.type == WalletDifferenceType.NoRescan:
+            if rename_requested and not self.change_wallet_id(requested_wallet_id):
+                return
             self._apply_no_impact_setting_changes(updated_protowallet)
             self.save()
             Message(self.tr("Changes applied."), parent=self)
             return
-        elif worst.type == WalletDifferenceType.NeedsRescan:
+
+        if worst.type == WalletDifferenceType.NeedsRescan:
             pass
         elif worst.type == WalletDifferenceType.ImpactOnAddresses:
             if not question_dialog(
@@ -879,6 +957,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             loop_in_thread=self.loop_in_thread,
             initialization_tips=self.wallet.tips,
         )
+        if rename_requested and not self.change_wallet_id(requested_wallet_id):
+            return
         self._recreate_qt_wallet(new_wallet=new_wallet)
 
     def _apply_no_impact_setting_changes(self, updated_protowallet: ProtoWallet) -> None:
@@ -898,7 +978,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             if not updated_keystore:
                 continue
             keystore.description = updated_keystore.description
-            keystore.label = updated_keystore.label
+            keystore.hardware_signer_id = updated_keystore.hardware_signer_id
 
     def save_backup(self) -> str:
         """_summary_
@@ -931,6 +1011,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def change_wallet_id(self, new_id: str) -> Path | None:
         """Change wallet id."""
+        new_id = new_id.strip()
+        if not new_id:
+            Message(self.tr("Please choose a wallet name"), type=MessageType.Warning, parent=self)
+            return None
+
+        if new_id == self.wallet.id:
+            return Path(self.file_path)
+
         old_file_path = self.file_path
 
         if not os.path.exists(self.config.wallet_dir):
@@ -1407,7 +1495,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     reason=UpdateFilterReason.CreatePSBT,
                 )
                 self.wallet_signals.updated.emit(update_filter)
-                self.signals.open_tx_like.emit(builder_infos)
+                if builder_infos.hidden_tx_infos is None:
+                    builder_infos.hidden_tx_infos = txinfos.hidden
+                self.signal_psbt_created.emit(builder_infos)
+                if builder_infos.hidden_tx_infos.post_create_action == PostCreateEnum.open_tab:
+                    self.signals.open_tx_like.emit(builder_infos)
                 self.uitx_creator.clear_ui()
             except Exception as e:
                 caught_exception_message(e, parent=self)
@@ -1429,6 +1521,34 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             on_error=on_error,
             key=f"{id(self)}create_psbt",
             multiple_strategy=MultipleStrategy.QUEUE,
+        )
+
+    def create_viewer_from_builder_infos(
+        self, builder_infos: TxBuilderInfos, parent: QWidget | None = None
+    ) -> UITx_Viewer:
+        """Create a PSBT viewer widget for the given builder infos."""
+        fee_info = None
+        if builder_infos.fee_rate is not None:
+            fee_info = FeeInfo.from_fee_rate(
+                fee_amount=builder_infos.psbt.fee(),
+                fee_rate=builder_infos.fee_rate,
+                fee_rate_is_estimated=False,
+                fee_amount_is_estimated=False,
+            )
+
+        return create_tx_viewer(
+            config=self.config,
+            wallet_functions=self.wallet_functions,
+            fx=self.fx,
+            mempool_manager=self.mempool_manager,
+            network=self.config.network,
+            data=Data.from_psbt(builder_infos.psbt, network=self.config.network),
+            outpoints=get_prev_outpoints(builder_infos.psbt.extract_tx()),
+            client=self.wallet.client,
+            parent=parent if parent is not None else self.tabs,
+            fee_info=fee_info,
+            txout_dict=SimplePSBT.from_psbt(builder_infos.psbt).get_prev_txouts(),
+            hidden_tx_infos=builder_infos.hidden_tx_infos,
         )
 
     def get_wallet(self) -> Wallet:
@@ -1761,6 +1881,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_done(self, result: object) -> None:
         """Sync on done."""
+        self._sync_task = None
         self._syncing_delay = datetime.datetime.now() - self._last_syncing_start
         interval_timer_sync_regularly = min(
             60 * 60 * 24, max(int(self._syncing_delay.total_seconds() * 200), MINIMUM_INTERVAL_SYNC_REGULARLY)
@@ -1793,6 +1914,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self, packed_error_info: tuple[type[BaseException], BaseException, TracebackType | None] | None
     ) -> None:
         """Sync on error."""
+        self._sync_task = None
         if self.wallet.client:
             self.wallet.client.set_sync_status(SyncStatus.error)
         self.signal_refresh_sync_status.emit()
@@ -1804,6 +1926,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _sync_on_success(self, result) -> None:
         """Sync on success."""
+        self._sync_task = None
         self._has_unacknowledged_sync_error = False
         logger.info(f"success syncing wallet '{self.wallet.id}'")
 
@@ -1838,7 +1961,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             # must be started from the main thread for cbf node!!!
             self.init_blockchain()
 
-        self.wallet.loop_in_thread.run_task(
+        self._sync_task = self.wallet.loop_in_thread.run_task(
             self._trigger_sync(),
             on_done=self._sync_on_done,
             on_success=self._sync_on_success,
@@ -1885,6 +2008,16 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             if task and not task.done():
                 task.cancel()
         self._client_bridge_tasks.clear()
+
+    def _cancel_sync_task(self) -> None:
+        """Cancel the current sync task if it is still running."""
+        if self._sync_task and not self._sync_task.done():
+            self._sync_task.cancel()
+        self._sync_task = None
+
+    def has_running_sync_task(self) -> bool:
+        """Return whether a wallet UI initiated sync task is still running."""
+        return bool(self._sync_task and not self._sync_task.done())
 
     def _start_bridges(self) -> None:
         """Start bridges."""
@@ -1972,7 +2105,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             update_info.update_type == UpdateInfo.UpdateType.full_sync
             and self.wallet._more_than_gap_revealed_addresses()
         ):
-            self.loop_in_thread.run_task(
+            self._sync_task = self.loop_in_thread.run_task(
                 self._sync_revealed_spks(),
                 on_done=self._sync_on_done,
                 on_success=self._sync_on_success,
@@ -2195,6 +2328,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # crucial is to explicitly close everything that has a wallet attached
         """Close."""
         self.stop_sync_timer()
+        self._cancel_sync_task()
         self._cancel_client_tasks()
         self.quick_receive.close()
         self.address_tab.close()

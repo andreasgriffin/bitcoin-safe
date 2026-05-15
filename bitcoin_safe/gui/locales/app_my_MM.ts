@@ -87,6 +87,38 @@
 		</message>
 	</context>
 	<context>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Add Plugin Source</source>
+			<translation>ပလပ်အင် အရင်းအမြစ် ထည့်ရန်</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Bearer token</source>
+			<translation>Bearer တိုကင်</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Display name</source>
+			<translation>ပြသမည့်အမည်</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Manifest URL</source>
+			<translation>Manifest URL</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Paste the ASCII-armored public key here</source>
+			<translation>ASCII-armored အများပိုင်ကီးကို ဤနေရာတွင် ကူးထည့်ပါ</translation>
+		</message>
+		<name>AddPluginSourceDialog</name>
+		<message>
+			<source>Pinned public key</source>
+			<translation>ချိတ်ထားသော အများပိုင်ကီး</translation>
+		</message>
+	</context>
+	<context>
 		<name>AddressAnalyzer</name>
 		<message>
 			<source>Invalid Address</source>
@@ -301,6 +333,89 @@
 		</message>
 	</context>
 	<context>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>A browser callback arrived after the invoice expired. Please try again.</source>
+			<translation>အင်ဗွိုက်စ် သက်တမ်းကုန်ပြီးနောက် ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်ရရှိခဲ့သည်။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Choose an amount and create a donation invoice.</source>
+			<translation>ပမာဏကို ရွေးချယ်ပြီး လှူဒါန်းမှု အင်ဗွိုက်စ် တစ်ခု ဖန်တီးပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Complete the payment in your browser.
+If there is an issue, please dont hesitate to contact us at: {email}</source>
+			<translation>သင့် browser တွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ ပြဿနာရှိပါက ကျွန်ုပ်တို့ကို ဤနေရာသို့ ဆက်သွယ်ရန် မလ தயанပါနှင့်: {email}</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not create invoice. Please try again.</source>
+			<translation>အင်ဗွိုက်စ်ကို ဖန်တီး၍ မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not open your browser automatically. Please try again.</source>
+			<translation>ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+			<translation>ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ဆာဗာကို စတင်၍ မရပါ။ အလိုအလျောက် အတည်ပြုခြင်း မရှိဘဲ ဘရောက်ဇာတွင် အင်ဗွိုက်စ်ကို ဖွင့်နေပါသည်။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Create invoice</source>
+			<translation>အင်ဗွိုက်စ် ဖန်တီးပါ</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+			<translation>အင်ဗွိုက်စ် အသင့်ဖြစ်ပါသည်။ သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ အလိုအလျောက် အတည်ပြုမှု မရနိုင်ပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Invoice service returned an error ({code}).</source>
+			<translation>အင်ဗွိုက်စ် ဝန်ဆောင်မှုမှ အမှားတစ်ခု ပြန်လည်ပေးပို့ခဲ့သည် ({code}).</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ လှူဒါန်းမှုကို ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>No browser callback was received before the invoice timed out. Please try again.</source>
+			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Payment confirmed via browser callback. Thank you!</source>
+			<translation>ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မှတစ်ဆင့် ငွေပေးချေမှုကို အတည်ပြုပြီးပါပြီ။ ကျေးဇူးတင်ပါသည်!</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Please choose an amount.</source>
+			<translation>ကျေးဇူးပြု၍ ပမာဏတစ်ခု ရွေးပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice...</source>
+			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်...</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
+			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်... ဘရောက်ဇာတစ်ခု ဖွင့်လှစ်မည်ဖြစ်ပြီး Bitcoin Safe သည် ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ကို နားထောင်ပါမည်။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>Unable to reach the donation server. Please try again later.</source>
+			<translation>လှူဒါန်းမှု ဆာဗာကို ဆက်သွယ်၍မရပါ။ နောက်မှ ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+	</context>
+	<context>
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
@@ -327,38 +442,6 @@
 		<message>
 			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
 			<translation>ပိုက်ဆံအိတ် {wallet_id} ၏ စင့်ကီး:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the matching printed pdf.</source>
-			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Glue the {number} word seed onto the printed pdf.</source>
-			<translation>ပရင့်ထုတ်ထားသော pdf တွင် {number} စကားလုံးအစေ့ကိုကပ်ပါ။</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>ယခင်အဆင့်များကိုပြီးဆုံးပါ။</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print recovery sheet</source>
-			<translation>ပြန်လည်အသုံးပြုနိုင်သောမှတ်တမ်းကို စာရွက်ထုတ်ပါ</translation>
-		</message>
-		<name>BackupSeed</name>
-		<message>
-			<source>Print the pdf (it also contains the wallet descriptor)</source>
-			<translation>pdf ထုတ်ပြီးတော့မည် (ဒါဟာ ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)</translation>
 		</message>
 	</context>
 	<context>
@@ -432,6 +515,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Enable</source>
+			<translation>ဖွင့်ပါ</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Open plugin</source>
+			<translation>ပလပ်အင် ဖွင့်ရန်</translation>
+		</message>
+		<name>BasePluginWidget</name>
+		<message>
+			<source>Provided by: {provider}</source>
+			<translation>ပေးသူ: {provider}</translation>
+		</message>
+	</context>
+	<context>
 		<name>BitcoinDmChatGui</name>
 		<message>
 			<source>Me</source>
@@ -453,6 +553,23 @@
 		</message>
 	</context>
 	<context>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business Plan</source>
+			<translation>Business Plan</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Business plan အသုံးပြုခွင့်သည် လက်ရှိသက်ဝင်နေသည်။</translation>
+		</message>
+		<name>BusinessPlanItem</name>
+		<message>
+			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+			<translation>စာရင်းသွင်းမှုတစ်ခုတည်းဖြင့် အခကြေးငွေပေးရသော ပလပ်အင်အားလုံးကို ဖွင့်ပြီး အချိန်ဇယားသတ်မှတ်ထားသော ငွေပေးချေမှု ဝန်ဆောင်ခကို ဖယ်ရှားပါ။</translation>
+		</message>
+	</context>
+	<context>
 		<name>ButtonEdit</name>
 		<message>
 			<source>Could not recognize the input. Do you want to scan again?</source>
@@ -469,26 +586,6 @@
 		<message>
 			<source>Open in the block explorer</source>
 			<translation>Block Explorer တွင်ဖွင့်ရန်</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonList</name>
-		<message>
-			<source>Open containing folder</source>
-			<translation>ဖိုင်ထဲကိုဖွင့်ပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>BuyHardware</name>
-		<message>
-			<source>Buy {number} hardware signers                         
-    &lt;ul&gt;
-        {different_hint} 
-        &lt;li&gt;Bitcoin Safe supports all major hardware signers: &lt;a href="{url}"&gt;See full list&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-        </source>
-			<translation>{number} ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူများကို ဝယ်ပါ                              &lt;ul&gt;         {different_hint} 
-        &lt;li&gt;Bitcoin Safe သည် အဓိက ဟာ့ဒ်ဝဲ လက်မှတ်ရေးသူအားလုံးကို ထောက်ပံ့ပေးသည်။ &lt;a href="{url}"&gt;စာရင်းအပြည့်အစုံကို ကြည့်ပါ&lt;/a&gt;&lt;/li&gt;     &lt;/ul&gt;        </translation>
 		</message>
 	</context>
 	<context>
@@ -899,6 +996,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Please select a Multisignature wallet first</source>
+			<translation>ဦးစွာ Multisignature ပိုက်ဆံအိတ်ကိုရွေးပါ။</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Required Signers</source>
 			<translation>လိုအပ်သောလက်မှတ်သားများ</translation>
 		</message>
@@ -916,6 +1018,11 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<message>
 			<source>Wallet Properties</source>
 			<translation>ပိုက်ဆံအိတ်ပုံရိပ်</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>ပထမဦးစွာ အခမဲ့စမ်းသုံးမှုကို စတင်ပါ၊ ထို့နောက် ဤနေရာတွင် စာရင်းသွင်းမှုကို စီမံပါ သို့မဟုတ် ပြန်လည်လန်းဆန်းစေပါ။</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1029,33 +1136,148 @@ Default 20</source>
 	<context>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Choose the secure places carefully, considering that you need to go to {m} of the {n}, to spend from your multisig-wallet.</source>
-			<translation>သင့်မဲ့လ်တီဆစ်-ပိုက်ဆံအိတ်ကိုသုံးစွဲရန် {m} မှ {n} အထိသွားရန်လိုအပ်သည့်အရာကိုစဉ်းစားပြီး လုံခြုံရာနေရာများကိုသေချာစွာရွေးပါ။</translation>
+			<source>1. Print backup sheets</source>
+			<translation>ပိုက်ဆံအိတ်အမည်</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Place each seed backup and hardware signer in a secure location, such:</source>
-			<translation>seed backup နှင့် hardware signer တစ်ခုချင်းစီကို လုံခြုံသောနေရာများတွင် ထားရှိပါ၊ ဥပမာအားဖြင့်–</translation>
+			<source>Backup Recovery Sheet (required)</source>
+			<translation>အရန်သိမ်းဆည်းမှု ပြန်လည်ရယူရေးစာရွက် (လိုအပ်သည်)</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Seed backup {j} and hardware signer {j} should be in location {j}</source>
-			<translation>မျိုးစေ့အရန် {j} နှင့် ဟာ့ဒ်ဝဲလ်အမှတ်သား {j} သည် {j} တည်နေရာတွင်ရှိရမည်</translation>
+			<source>Backup sheet</source>
+			<translation>2. ဟုတ်ကဲ့၊ seed စကားလုံးများကို ပရင့်ထုတ်ထားသောစာရွက်တွင် တွဲထားပြီးပါပြီ</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the   hardware signer   in secure location.</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားကိုလုံခြုံရာနေရာတွင်သိမ်းဆည်းပါ။</translation>
+			<source>Backup sheet + seed words</source>
+			<translation>အရန်စာရွက်</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Store the  seed backup   in a &lt;b&gt;very&lt;/b&gt; secure location (like a vault).</source>
-			<translation>မျိုးစေ့အရန်ကို &lt;b&gt;အလွန်&lt;/b&gt; လုံခြုံသောနေရာတွင် (ဥပမာ - သိုေလှာင်ရုံ) သိမ်းဆည်းပါ။</translation>
+			<source>Backup sheet {number}</source>
+			<translation>မိတ္တူစာရွက် {number}</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>The seed backup (24 words) give total control over the funds.</source>
-			<translation>မျိုးစေ့အရန် (24 စကားလုံး) သည် ငွေကြေးကိုအပြည့်အဝထိန်းချုပ်နိုင်သည်။</translation>
+			<source>Congratulations, your wallet is ready. Now protect it!</source>
+			<translation>ဂုဏ်ယူပါတယ်၊ သင့် wallet အဆင်သင့်ဖြစ်ပါပြီ။ အခုတော့ ၎င်းကို ကာကွယ်ပါ!</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to 2 separate locations</source>
+			<translation>နေရာ ၂ ခုသို့ ခွဲဝေထားပါ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Distribute to {n} separate locations</source>
+			<translation>နေရာ {n} ခုသို့ ခွဲဝေထားပါ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+			<translation>အဆိုးဆုံးအခြေအနေတွင် သင့်ရန်ပုံငွေများကို ပြန်လည်ရယူနိုင်ရန် လုံခြုံသော အရန်သိမ်းဆည်းမှုတစ်ခု ဖန်တီးထားကြောင်း သေချာစေရန် အောက်ပါအဆင့်များကို လိုက်နာပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location</source>
+			<translation>အရေးကြီး</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 1</source>
+			<translation>တည်နေရာ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>တည်နေရာ 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+			<translation>ပုံနှိပ်ပြီးပါက သင့်စက်မှ seed phrase ကို စာရွက်ပေါ်တွင် လက်ရေးဖြင့် ရေးပါ၊ သို့မဟုတ် ၎င်းနှင့်အတူ သိမ်းဆည်းထားသော သီးခြားစာရွက်တစ်ရွက်ပေါ်တွင် ရေးသားထားပြီးဖြစ်ကြောင်း အတည်ပြုပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Open instructions for viewing seed words on this signer.</source>
+			<translation>တည်နေရာ 2</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please complete the previous steps.</source>
+			<translation>ယခင်အဆင့်များကိုပြီးဆုံးပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Please select at least one backup sheet to print.</source>
+			<translation>ပုံနှိပ်ရန် အရန်စာရွက် အနည်းဆုံးတစ်ရွက်ကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
+			<translation>သင်ပိုင်ဆိုင်ပြီး ထိန်းချုပ်သော စက်များနှင့် ဆက်စပ်သည့် ပြန်လည်ရယူရေးစာရွက်များကို ပုံနှိပ်ပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Recovery Signer {i}</source>
+			<translation>ပြန်လည်အရန်လက်မှတ်သား {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Seed words attached</source>
+			<translation>သင်၏အရန်များနှင့် လက်မှတ်ရေးထိုးသူများကို လုံခြုံသော တည်နေရာများတွင် ထားပါ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer device</source>
+			<translation>လက်မှတ်ထိုးသူ စက်ပစ္စည်း</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Signer {i}</source>
+			<translation>လက်မှတ်သား {i}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
+			<translation>လက်မှတ်ရေးထိုးသူကိရိယာ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+			<translation>လက်မှတ်ရေးထိုးသူတစ်ခုစီကို ၎င်း၏အရန်စာရွက်နှင့် seed စကားလုံးများနှင့်အတူ တည်နေရာတစ်ခုတည်းတွင် သိမ်းဆည်းပါ။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Vault {letter}</source>
+			<translation>Vault {letter}</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>View seed words</source>
+			<translation>Seed စကားလုံးများကို ကြည့်ပါ</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Yes, I confirm seed words are attached to the printout</source>
+			<translation>ဟုတ်ကဲ့၊ seed စကားလုံးများကို ပုံနှိပ်စာရွက်နှင့် တွဲထားကြောင်း ကျွန်ုပ်အတည်ပြုပါသည်</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+			<translation>သင့် wallet ကို ပြန်လည်ရယူရေးစာရွက်ဖြင့် ကာကွယ်ထားပြီး၊ ၎င်းကို သင့် hardware signer ရှိသည့်နေရာနှင့် မတူသောနေရာတွင် သိမ်းဆည်းသင့်သည်။ ၎င်းကို ပုံနှိပ်ပါ၊ seed ကို တွဲပါ၊ လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသည့် နေရာတွင် သိမ်းဆည်းပါ။ seed စကားလုံးများဖြင့် သင့် wallet ကို အပြည့်အဝ ထိန်းချုပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+			<translation>သင့် wallet ကို seed များတွဲထားပြီး နေရာအမျိုးမျိုးတွင် သိမ်းဆည်းထားသည့် {n} ရွက်သော အရန်စာရွက်များဖြင့် ကာကွယ်ထားသည်။ ၎င်းတို့ကို ပုံနှိပ်ပြီး လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသည့် နေရာများတွင် ထားပါ။ ၎င်းတို့ထဲမှ {m} ရွက်ဖြင့် သင့် wallet ကို အပြည့်အဝ ထိန်းချုပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>{number} of {total}</source>
+			<translation>{number} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -1096,6 +1318,16 @@ Default 20</source>
 		</message>
 	</context>
 	<context>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Message (optional)</source>
+			<translation>စာတို (ရွေးချယ်နိုင်သည်)</translation>
+		</message>
+		<name>DonationInvoiceWidget</name>
+		<message>
+			<source>Thanks for Bitcoin Safe!</source>
+			<translation>စာတို (ရွေးချယ်နိုင်သည်)</translation>
+		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Value</source>
@@ -1182,6 +1414,20 @@ Default 20</source>
 		<message>
 			<source>Full (Bitcoin Safe)</source>
 			<translation>လုံးဝ (Bitcoin Safe)</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPaidPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Bitcoin Safe အတွက် ကျေးဇူးတင်ပါသည်!</translation>
+		</message>
+	</context>
+	<context>
+		<name>ExternalPluginWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>ပလပ်အင် ဖျက်ရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -1339,43 +1585,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>ယခင်အဆင့်</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Retry</source>
-			<translation>ထပ်မံလုပ်ပါ</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Yes, I see the transaction in the history</source>
-			<translation>ဟုတ်ပါတယ်၊ သမိုင်းထဲမှာငွေလွှဲကိုမြင်တယ်</translation>
-		</message>
-	</context>
-	<context>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Please enter the name (sticker label) of the hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သား၏ အမည်ကို (စတစ်ကာတံဆိပ်) ထည့်ပါ</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Sticker Label</source>
-			<translation>စတစ်ကာတံဆိပ်</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>Success! Please complete this step with all hardware signers and then click Next.</source>
-			<translation>အောင်မြင်သည်! ဟာ့ဒ်ဝဲလ်အမှတ်သားများအားလုံးဖြင့်ဤအဆင့်ကိုပြီးဆုံးပါရန်နောက်တစ်ဆင့်ကိုနှိပ်ပါ။</translation>
-		</message>
-		<name>GenerateSeed</name>
-		<message>
-			<source>The setup didnt complete. Please repeat.</source>
-			<translation>စီမံခန့်ခွဲမှုမပြီးသေးပါ။ ထပ်မံလုပ်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -1591,13 +1800,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next signer</source>
-			<translation>နောက်လာမည့်လက်မှတ်သား</translation>
+			<source>Import hardware signer information into Bitcoin Safe</source>
+			<translation>hardware signer အချက်အလက်ကို Bitcoin Safe ထဲသို့ တင်သွင်းပါ</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1608,11 +1812,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Previous Step</source>
 			<translation>ယခင်အဆင့်</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>ယခင်လက်မှတ်သား</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1638,6 +1837,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>ပလပ်အင် ဖျက်ရန်</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) သည် wallet များအား သင့်လိပ်စာများ၏ ကိုယ်ရေးလုံခြုံမှုကို ထိန်းသိမ်းထားစဉ် ဆက်စပ်သော transaction များကို ရှာဖွေခွင့်ပြုသည်။</translation>
 		</message>
@@ -1648,13 +1852,18 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>During first sync, Bitcoin Safe fetches compact block summaries from multiple Bitcoin nodes. This is a private way to download block data.</source>
-			<translation>ပထမဆုံး sync လုပ်စဉ်အတွင်း Bitcoin Safe သည် Bitcoin node အများအပြားထံမှ compact block summary များကို ရယူသည်။ ဤသည်မှာ block data များကို ကိုယ်ရေးလုံခြုံစွာ download လုပ်ရန် နည်းလမ်းတစ်ခုဖြစ်သည်။</translation>
+			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
+			<translation>ကြာမြင့်ချိန် {elapsed} | ခန့်မှန်းကျန်ရှိချိန် {remaining}</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>ကြာမြင့်ချိန် {elapsed} | ခန့်မှန်းကျန်ရှိချိန် {remaining}</translation>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe သည် ကိုယ်ရေးလုံခြုံမှုအတွက် node များစွာမှ block အကျဉ်းချုပ်များကို ဒေါင်းလုဒ်လုပ်သည်။ ဤကနဦး sync ပြီးနောက် update များသည် မြန်ဆန်မည်။ သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက network settings တွင် public Electrum server တစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
+		</message>
+		<name>InitialCbfSyncWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>ကွန်ရက် ဆက်တင်များ</translation>
 		</message>
 		<name>InitialCbfSyncWidget</name>
 		<message>
@@ -1766,13 +1975,28 @@ received from these peers via the bitcoin network.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Advanced</source>
-			<translation>အဆင့်မြင့်</translation>
+			<source>Add New Signer</source>
+			<translation>လက်မှတ်ရေးထိုးသူ အသစ် ထည့်ရန်</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Description</source>
-			<translation>ဖော်ပြချက်</translation>
+			<source>Change device type</source>
+			<translation>ကိရိယာအမျိုးအစား ပြောင်းရန်</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Connect</source>
+			<translation>ချိတ်ဆက်ရန်</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Derivation path</source>
+			<translation>Derivation path</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>စက်အညွှန်းများ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1791,10 +2015,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Name of signing device: ......
-Location of signing device: .....</source>
-			<translation>လက်မှတ်သားစက်အမည်: ......
-လက်မှတ်သားစက်တည်နေရာ: .....</translation>
+			<source>Import signer data with QR, USB, or text/file import.</source>
+			<translation>QR၊ USB သို့မဟုတ် စာသား/ဖိုင် ထည့်သွင်းခြင်းဖြင့် လက်မှတ်ထိုးသူ ဒေတာကို ထည့်သွင်းပါ။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;ပံ့ပိုးထားသော ဟာ့ဒ်ဝဲ လက်မှတ်ထိုးသူများ&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1808,13 +2040,18 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။</translation>
+			<source>Open the signer guide</source>
+			<translation>လက်မှတ်ထိုးသူ လမ်းညွှန်ကို ဖွင့်ပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Please enter a valid key origin.</source>
-			<translation>တရားဝင်သောသော့ချက်မူလအစီအမံကိုရိုက်ထည့်ပါ။</translation>
+			<source>Personal notes:</source>
+			<translation>ကိုယ်ရေးကိုယ်တာ မှတ်စုများ:</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
+			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားသို့သင့်လွှတ်ကျော်ဖို့အခြားပရိုဂရမ်များမရှိသေချာပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1838,13 +2075,67 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>QR Code</source>
+			<translation>QR ကုဒ်</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Register</source>
+			<translation>မှတ်ပုံတင်ရန်</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Reregister multisig</source>
+			<translation>multisig ကို ပြန်လည်မှတ်ပုံတင်ရန်</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Seed</source>
 			<translation>မျိုးစေ့</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select Brand</source>
+			<translation>အမှတ်တံဆိပ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select Model</source>
+			<translation>မော်ဒယ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer brand</source>
+			<translation>လက်မှတ်ထိုးသူ အမှတ်တံဆိပ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select the signer model</source>
+			<translation>လက်မှတ်ထိုးသူ မော်ဒယ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>ရွေးချယ်ထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းမှာ {expected_key_origin} ဖြစ်သည်။ သေချာမရှိပါကပြင်ဆင်ပါ။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The 8 digit fingerprint identifies the seed.
+You can write it onto the hardware signer
+to keep track of different seeds and signing devices.</source>
+			<translation>ဂဏန်း ၈ လုံး fingerprint သည် seed ကို သတ်မှတ်ဖော်ထုတ်ပေးသည်။ seed များနှင့် signing device များကို ခြေရာခံရန် ၎င်းကို hardware signer ပေါ်တွင် ရေးနိုင်သည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The key origin is needed to construct
+transactions (PSBTs) correctly and is connected to the xPub.</source>
+			<translation>transaction များ (PSBTs) ကို မှန်ကန်စွာ တည်ဆောက်ရန် key origin လိုအပ်ပြီး xPub နှင့် ချိတ်ဆက်ထားသည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The seed is the secret, that enables transaction signing.
+For a single signature wallet it gives full control over the funds.</source>
+			<translation>seed သည် transaction signing ကို လုပ်ဆောင်နိုင်စေသော လျှို့ဝှက်ချက်ဖြစ်သည်။ single signature wallet အတွက် ၎င်းသည် ရန်ပုံငွေများအပေါ် အပြည့်အဝ ထိန်းချုပ်ခွင့် ပေးသည်။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1858,18 +2149,33 @@ Location of signing device: .....</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>USB</source>
+			<translation>USB</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Wallet addresses are derived from the xPub.</source>
+			<translation>wallet address များသည် xPub မှ ဆင်းသက်လာသည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Write here notes relative to this signer, memos, etc...</source>
+			<translation>ဤလက်မှတ်ထိုးသူနှင့် သက်ဆိုင်သော မှတ်စုများ၊ မှတ်တမ်းတိုများ စသည်တို့ကို ဤနေရာတွင် ရေးပါ...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>xPub</source>
 			<translation>xPub</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>xPub Origin</source>
-			<translation>xPub မူလအစ</translation>
+			<source>{data_type} cannot be used here.</source>
+			<translation>{data_type} ကိုဤနေရာတွင်အသုံးမပြုနိုင်ပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} ကိုဤနေရာတွင်အသုံးမပြုနိုင်ပါ။</translation>
+			<source>{device} instructions</source>
+			<translation>{device} လမ်းညွှန်ချက်များ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1914,48 +2220,6 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
 			<translation>သင်တင်သွင်းထားသောသော့ချက်မူလများ {key_origins} ကွဲပြားနေပါသည်! ဤသို့မည်သည့်အရာကိုရည်ရွယ်ခဲ့သည်ကိုနှစ်ချက်စစ်ဆေးပါ။</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelBackup</name>
-		<message>
-			<source>Backup secret sync key:</source>
-			<translation>လျှို့ဝှက်မျှော်စင်ကီးကိုအရန်ပြန်ပေးပါ။</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Choose trusted computers in Sync &amp; Chat tab on each computer.</source>
-			<translation>ကွန်ပျူတာတိုင်း၏ Sync &amp; Chat တက်ဘ်ပေါ်တွင်ယုံကြည်ရသောကွန်ပျူတာများကိုရွေးပါ။</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Collaboration video</source>
-			<translation>ပူးပေါင်းဆောင်ရွက်မှုဗီဒီယို</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Enable</source>
-			<translation>ဖွင့်ပါ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Encrypted cloud backup of the address labels and categories</source>
-			<translation>လိပ်စာတံဆိပ်နှင့်အုပ်စုများ၏လျှို့ဝှက်တိမ်းညွှန်းများ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Finish</source>
-			<translation>ပြီးဆုံးပါ</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Multi-computer synchronization and chat</source>
-			<translation>ကွန်ပျူတာအများစုကြားဆက်သွယ်ရေးနှင့်စကားပြောခြင်း</translation>
-		</message>
-		<name>LabelBackup</name>
-		<message>
-			<source>Synchronization video</source>
-			<translation>အချိန်ညှိဗီဒီယို</translation>
 		</message>
 	</context>
 	<context>
@@ -2181,6 +2445,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Plugins</source>
+			<translation>&amp;ပလပ်အင်များ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;Previous Wallet/Tab</source>
 			<translation>&amp;သိမ်းဆည်းမည်</translation>
 		</message>
@@ -2258,6 +2527,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>&amp;X/Twitter DM</source>
 			<translation>Bitcoin Safe ကို ಸಮುದಾಯမှ ငွေပေးကြေးမြေပေးထောက်ပံ့ထားသည်။ သင့်ထောက်ပံ့မှုက ဖwicklungကို လွတ်လပ်စွာ ဆောင်ရွက်နိုင်စေပြီး လက္ခဏာအသစ်များ ထုတ်လုပ်နိုင်ခြင်းနှင့် လုံခြုံရေးပြန်လည်စစ်ဆေးမှုများကို မြှင့်တင်ပေးသည်။ အထောက်အပံ့အများဆုံးပေးသူများကို ကျွန်ုပ်တို့၏ &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;အထောက်အပံ့ပေးသူများ စာမျက်နှာ&lt;/a&gt;တွင် ဖော်ပြနိုင်သည်။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+			<translation>{wallet_id} အမည်ရှိ ဝေါလက်တစ်ခု ရှိပြီးသားဖြစ်သည်။ အခြားအမည်တစ်ခုကို ရွေးချယ်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2366,6 +2640,12 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ Bitcoin Safe ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Keep open</source>
 			<translation>ဖွင့်ထားပါ</translation>
 		</message>
@@ -2393,6 +2673,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>New Tab {n}</source>
 			<translation>တැබ်အသစ် {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>No demo wallet is available for this network.</source>
+			<translation>ဤကွန်ရက်အတွက် demo wallet မရှိပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2448,6 +2733,11 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
 			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ သို့မဟုတ် ဖိုင်ကိုထည့်ပါ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2627,6 +2917,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet {n}</source>
+			<translation>ဝေါလက် {n}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
 			<translation>ပိုက်ဆံအိတ်များသည် စနစ်ချိန်ညှိနေဆဲဖြစ်ပြီး အက်ပ်ကို ပိတ်ပါက စတင်မှစချိန်ညှိရန်လိုပါသည်။ ၎င်းကို tray ထဲတွင် ဖျောက်ထားလိုပါသလား?</translation>
@@ -2655,11 +2950,6 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>Yes, full scan for transactions</source>
 			<translation>ဟုတ်ကဲ့၊ ငွေရှင်းလုပ်ဆောင်မှုအတွက် ပြည့်စုံစစ်ဆေးပါ</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>new</source>
-			<translation>အသစ်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2786,6 +3076,108 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>{value} (local time)</source>
 			<translation>{value} (ဒေသတွင်း အချိန်)</translation>
+		</message>
+	</context>
+	<context>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+			<translation>Bitcoin ကို သိပြီးသားလား? အမှန်တကယ်တန်ဖိုးကို ထိန်းသိမ်းပြီး ရွှေ့ပြောင်းနိုင်သည့် wallet တစ်ခုကို ယုံကြည်စိတ်ချစွာ စီစဉ်ပါ။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Best for long-term storage</source>
+			<translation>ရေရှည်သိမ်းဆည်းရန် အကောင်းဆုံး</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Create new wallet</source>
+			<translation>ပိုက်ဆံအိတ်အသစ်ဖန်တီးပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore Playground</source>
+			<translation>Playground ကို လေ့လာပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Explore with a demo wallet</source>
+			<translation>demo wallet ဖြင့် လေ့လာပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Keep your seed phrase safe</source>
+			<translation>သင့် seed phrase ကို လုံခြုံအောင်ထားပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Learn safely, risk-free</source>
+			<translation>လုံခြုံစွာ၊ အန္တရာယ်ကင်းစွာ သင်ယူပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Manage Real Funds</source>
+			<translation>အမှန်တကယ် ရန်ပုံငွေများကို စီမံပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+			<translation>အန္တရာယ်ကင်းသော ပတ်ဝန်းကျင်တွင် လေ့ကျင့်ပြီး အရာအားလုံး ဘယ်လိုအလုပ်လုပ်သည်ကို အတိအကျ ကြည့်ပါ။ နောင်တမရှိဘဲ ဆုံးရှုံးနိုင်သော test coin များဖြင့် ပို့ခြင်း၊ လက်ခံခြင်း၊ fee ပြောင်းခြင်းတို့ကို စမ်းကြည့်ပါ။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Real sound money (BTC)</source>
+			<translation>အမှန်တကယ် ခိုင်မာသောငွေ (BTC)</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Send and receive real bitcoin</source>
+			<translation>အမှန်တကယ် bitcoin ကို ပို့ပြီး လက်ခံပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Setup a Wallet</source>
+			<translation>Wallet တစ်ခု စီစဉ်ပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start Exploring</source>
+			<translation>စတင် လေ့လာပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+			<translation>ခိုင်မာသောငွေဖြင့် transaction စတင်ပါ သို့မဟုတ် လုံခြုံသော playground တွင် သင်ယူပါ။ မည်သို့ပင်ဖြစ်စေ နောက်ပိုင်းတွင် wallet နောက်တစ်ခုကို အမြဲ ဖန်တီးနိုင်ပါသည်။</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins (tBTC) have no value</source>
+			<translation>test coin (tBTC) များတွင် တန်ဖိုးမရှိပါ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Test coins, no monetary value</source>
+			<translation>test coin များ၊ ငွေကြေးတန်ဖိုးမရှိ</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Transactions are permanent</source>
+			<translation>transaction များသည် အမြဲတမ်းဖြစ်သည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses Signet test network</source>
+			<translation>Signet test network ကို အသုံးပြုသည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Uses onchain Mainnet network</source>
+			<translation>onchain Mainnet network ကို အသုံးပြုသည်</translation>
+		</message>
+		<name>NetworkChoiceWelcomeScreen</name>
+		<message>
+			<source>Where would you like to start?</source>
+			<translation>ဘယ်နေရာကနေ စတင်ချင်ပါသလဲ?</translation>
 		</message>
 	</context>
 	<context>
@@ -2956,8 +3348,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to the Sync&amp;Chat feature!</source>
-			<translation>Sync&amp;Chat အင်္ဂါရပ်အတွက် Proxy မလိုအပ်ပါ!</translation>
+			<source>The proxy does not apply to Sync&amp;Chat
+plugin and during subscription purchase!</source>
+			<translation>Proxy သည် Sync&amp;Chat plugin နှင့် subscription ဝယ်ယူနေချိန်တွင် မသက်ဆိုင်ပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -2981,58 +3374,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 	<context>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>1 secure location to store the seed backup (on paper or steel) is needed</source>
-			<translation>မျိုးစေ့အရန်ကိုသိမ်းဆည်းရန်လုံခြံုရာနေရာတစ်ခုလိုအပ်သည် (စက္ကူသို့မဟုတ်သံပြားတွင်)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 seed (24 secret words) is all you need to access your funds</source>
-			<translation>ငွေကြေးရယူရန် 24 စကားလုံးမျိုးစေ့တစ်ခုသာလိုအပ်သည်</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>1 signing devices</source>
-			<translation>လက်မှတ်သားစက် 1 ခု</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>2 of 3 Multi-Signature Wal</source>
-			<translation>2‑of‑3 Multi‑Signature ပိုက်ဆံအိတ်</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 secure locations (each with 1 seed backup   + wallet descriptor   are needed)</source>
-			<translation>လုံခြံုရေးနေရာ 3 ခုလိုအပ်သည် (တစ်ခုစီတွင် 1 မျိုးစေ့အရန် + ပိုက်ဆံအိတ်ဖော်ပြချက်ပါဝင်သည်)</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>3 signing devices</source>
-			<translation>လက်မှတ်သားစက် 3 ခု</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for large funds</source>
-			<translation>ကြီးမားသောငွေကြေးများအတွက်အကောင်းဆုံး</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Best for medium-sized funds</source>
-			<translation>အလတ်စားငွေကြေးများအတွက်အကောင်းဆုံး</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Multi-Signature</source>
-			<translation>Multi‑Signature ကို ရွေးချယ်ပါ</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Choose Single Signature</source>
-			<translation>တစ်ဆင့်သောလက်မှတ်သားရွေးပါ</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Cons:</source>
-			<translation>အန္တရာယ်များ:</translation>
+			<source>Connect Device(s)</source>
+			<translation>စက်(များ)ကို ချိတ်ဆက်ပါ</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3041,49 +3384,63 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Create or
-import custom wallet</source>
-			<translation>စိတ်ကြိုက် ဝေါလက် ဖန်တီးရန် သို့မဟုတ် တင်သွင်းရန်</translation>
+			<source>Custom / Recovery</source>
+			<translation>စိတ်ကြိုက် / ပြန်လည်ရယူခြင်း</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Custom or import existing Wallet</source>
-			<translation>စိတ်ကြိုက်သို့မဟုတ်ရှိပြီးသားပိုက်ဆံအိတ်တစ်ခုကိုတင်သွင်းပါ</translation>
+			<source>Guided setup for your self-custody wallet.</source>
+			<translation>သင်၏ ကိုယ်တိုင်ထိန်းသိမ်းသော wallet အတွက် လမ်းညွှန်ထားသော စနစ်တကျပြင်ဆင်မှု။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Customize the wallet to your needs</source>
-			<translation>သင့်ရဲ့လိုအပ်ချက်အရပိုက်ဆံအိတ်ကိုသီးသန့်ဖြစ်စေပါ</translation>
+			<source>Hot Single Signature Wallet</source>
+			<translation>Hot Single Signature Wallet</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If 1 seed was lost or stolen, all the funds can be transferred to a new wallet with the 2 remaining seeds + wallet descriptor (QR-code)</source>
-			<translation>မျိုးစေ့ 1 ခုပျောက်ဆုံးသွားသို့မဟုတ်ခိုးယူခံရပါက ကျန်ရှိသော 2 မျိုးစေ့များ + ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) ဖြင့်အသစ်ပိုက်ဆံအိတ်သို့ငွေကြေးများကိုလွှဲပြောင်းနိုင်သည်။</translation>
+			<source>Open the list of supported hardware wallets and signers.</source>
+			<translation>ထောက်ပံ့ထားသော hardware wallet များနှင့် signer များ၏ စာရင်းကို ဖွင့်ပါ။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>If you get tricked into giving hackers your seed, your Bitcoin will be stolen immediately</source>
-			<translation>သင်ဟက်ကာများကိုမျိုးစေ့ပေးသွားမိပါကသင့်ရဲ့ Bitcoin ကိုချက်ချင်းခိုးယူသွားမည်။</translation>
+			<source>Play with an existing wallet that has some test coins to explore safely.</source>
+			<translation>လုံခြုံစွာ စူးစမ်းလေ့လာရန် test coin အချို့ပါသော ရှိပြီးသား wallet တစ်ခုဖြင့် စမ်းသုံးပါ။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Less support material online in case of recovery</source>
-			<translation>ပြန်လည်ယူရန်အတွက်အွန်လိုင်းပံ့ပိုးမှုမရ</translation>
+			<source>Public Demo wallet</source>
+			<translation>အများပြည်သူသုံး Demo wallet</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Pros:</source>
-			<translation>အကျိုးအမြတ်များ:</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+			<translation>ရှိပြီးသား key မလိုအပ်ဘဲ ချက်ချင်းအသုံးပြုရန် wallet တစ်ခုကို လျင်မြန်စွာ ဖန်တီးပါ။&lt;br&gt;&lt;small&gt;အင်တာနက်ချိတ်ဆက်ထားသော ကွန်ပျူတာသည် ငွေကြေးကို ကိုယ်စားပြုသော လျှို့ဝှက်ချက်များကို လုံခြုံစွာ ထိန်းသိမ်းရန် ဒီဇိုင်းမပြုလုပ်ထားသောကြောင့် Mainnet တွင် ပိတ်ထားသည်။&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>Single Signature Wallet</source>
-			<translation>တစ်ဆင့်သောလက်မှတ်သားပိုက်ဆံအိတ်</translation>
+			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+			<translation>ရှိပြီးသား key မလိုအပ်ဘဲ ချက်ချင်းအသုံးပြုရန် wallet တစ်ခုကို လျင်မြန်စွာ ဖန်တီးပါ။&lt;br&gt;&lt;small&gt;အင်တာနက်ချိတ်ဆက်ထားသော ကွန်ပျူတာပေါ်တွင် key များ ဖန်တီးခြင်းနှင့် သိမ်းဆည်းခြင်းသည် မလုံခြုံပါ။ အထွေထွေသုံး ကွန်ပျူတာသည် ငွေကြေးကို ကိုယ်စားပြုသော လျှို့ဝှက်ချက်များကို ထိန်းသိမ်းရန် ဒီဇိုင်းမပြုလုပ်ထားပါ။&lt;/small&gt;</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
-			<source>The wallet descriptor (QR-code) is necessary to recover the wallet</source>
-			<translation>ပိုက်ဆံအိတ်ဖော်ပြချက် (QR-code) သည်ပိုက်ဆံအိတ်ကိုပြန်ယူရန်လိုအပ်သည်</translation>
+			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+			<translation>hardware wallet များ သို့မဟုတ် descriptor တစ်ခုမှ wallet ကို ပြန်လည်ရယူပါ။</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Supported signers</source>
+			<translation>ထောက်ပံ့ထားသော signer များ</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Wallet အမည်</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>wallet_name</source>
+			<translation>wallet_name</translation>
 		</message>
 	</context>
 	<context>
@@ -3171,6 +3528,50 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Monthly</source>
+			<translation>လစဉ်</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Start free trial</source>
+			<translation>အခမဲ့စမ်းသုံးမှု စတင်ပါ</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Subscription</source>
+			<translation>စာရင်းသွင်းမှု</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>Yearly</source>
+			<translation>နှစ်စဉ်</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} / {duration}</source>
+			<translation>{price} / {duration}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Manage</source>
+			<translation>စီမံရန်</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Refresh status</source>
+			<translation>အခြေအနေကို ပြန်လည်ဆန်းသစ်ပါ</translation>
+		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>Subscription:</source>
+			<translation>စာရင်းသွင်းမှု:</translation>
+		</message>
+	</context>
+	<context>
 		<name>PasswordCreation</name>
 		<message>
 			<source>Create Password</source>
@@ -3235,93 +3636,175 @@ import custom wallet</source>
 		</message>
 	</context>
 	<context>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>အင်ဗွိုက်စ် သက်တမ်းကုန်ပြီးနောက် ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်ရရှိခဲ့သည်။ ထပ်မံကြိုးစားပါ။</translation>
+			<source>Update</source>
+			<translation>အပ်ဒိတ်</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>ပမာဏကို ရွေးချယ်ပြီး လှူဒါန်းမှု အင်ဗွိုက်စ် တစ်ခု ဖန်တီးပါ။</translation>
+			<source>Update available: {update_target}</source>
+			<translation>အပ်ဒိတ် ရနိုင်သည်: {update_target}</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: andreasgriffin@proton.me</source>
-			<translation>သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ ပြဿနာရှိပါက [andreasgriffin@proton.me](mailto:andreasgriffin@proton.me) သို့ ဆက်သွယ်ရန် မလှမ်းမီပါနှင့်။</translation>
+			<source>Update to {update_target}</source>
+			<translation>{update_target} သို့ အပ်ဒိတ်လုပ်ပါ</translation>
 		</message>
-		<name>PaymentButton</name>
+		<name>PluginClient</name>
 		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>အင်ဗွိုက်စ်ကို ဖန်တီး၍ မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ဆာဗာကို စတင်၍ မရပါ။ အလိုအလျောက် အတည်ပြုခြင်း မရှိဘဲ ဘရောက်ဇာတွင် အင်ဗွိုက်စ်ကို ဖွင့်နေပါသည်။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>အင်ဗွိုက်စ် ဖန်တီးပါ</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>အင်ဗွိုက်စ် အသင့်ဖြစ်ပါသည်။ သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ အလိုအလျောက် အတည်ပြုမှု မရနိုင်ပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>အင်ဗွိုက်စ် ဝန်ဆောင်မှုမှ အမှားတစ်ခု ပြန်လည်ပေးပို့ခဲ့သည် ({code}).</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ လှူဒါန်းမှုကို ထပ်မံကြိုးစားပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>အင်ဗွိုက်စ် အချိန်ကုန်မီ ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မရရှိခဲ့ပါ။ ထပ်မံကြိုးစားပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>ဘရောက်ဇာ ခေါ်ဆိုမှု ပြန်လည်မှတစ်ဆင့် ငွေပေးချေမှုကို အတည်ပြုပြီးပါပြီ။ ကျေးဇူးတင်ပါသည်!</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Please choose a donation amount and a currency.</source>
-			<translation>လှူဒါန်းမှု ပမာဏနှင့် ငွေကြေးအမျိုးအစားကို ရွေးချယ်ပါ။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်...</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်... ဘရောက်ဇာတစ်ခု ဖွင့်လှစ်မည်ဖြစ်ပြီး Bitcoin Safe သည် ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ကို နားထောင်ပါမည်။</translation>
-		</message>
-		<name>PaymentButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>လှူဒါန်းမှု ဆာဗာကို ဆက်သွယ်၍မရပါ။ နောက်မှ ထပ်မံကြိုးစားပါ။</translation>
+			<source>Version {version}</source>
+			<translation>ဗားရှင်း {version}</translation>
 		</message>
 	</context>
 	<context>
-		<name>PluginWidget</name>
+		<name>PluginListStep</name>
 		<message>
-			<source>Enable/Disable</source>
-			<translation>ဖွင့်/ပိတ်</translation>
+			<source>Explore plugins</source>
+			<translation>Plugin များကို စူးစမ်းပါ</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+			<translation>ဤ wallet အတွက် plugin များ မရနိုင်သောကြောင့် ဤနေရာတွင် စီစဉ်ရန် ဘာမှမရှိပါ။</translation>
+		</message>
+		<name>PluginListStep</name>
+		<message>
+			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+			<translation>ဤ wallet အတွက် ရနိုင်သော plugin များကို ပြန်လည်သုံးသပ်ပါ။ သင်လိုချင်သော plugin များကို ယခုပင် ဖွင့်နိုင်ပြီး နောက်ပိုင်း မည်သည့်အချိန်မဆို Plugins တဘ်သို့ ပြန်လာနိုင်ပါသည်။</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Enable and manage optional wallet integrations.</source>
+			<translation>ရွေးချယ်နိုင်သော wallet integration များကို ဖွင့်ပြီး စီမံပါ။</translation>
+		</message>
+		<name>PluginListWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>ပလပ်အင်များ</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManager</name>
+		<message>
+			<source>Cancel</source>
+			<translation>ပယ်ဖျက်</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete</source>
+			<translation>ဖျက်ပါ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete Installed Plugin</source>
+			<translation>ထည့်သွင်းထားသော Plugin ကို ဖျက်ပါ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Delete installed plugin {plugin}?</source>
+			<translation>ထည့်သွင်းထားသော plugin {plugin} ကို ဖျက်မလား?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Disable the plugin before deleting it.</source>
+			<translation>ဖျက်မည့်မတိုင်မီ plugin ကို ပိတ်ပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Manifest URL and pinned public key are required.</source>
+			<translation>Manifest URL နှင့် pin လုပ်ထားသော public key လိုအပ်သည်။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin operation failed.</source>
+			<translation>Plugin လုပ်ဆောင်ချက် မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Plugin source {source_id} does not exist.</source>
+			<translation>Plugin source {source_id} မရှိပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins.</source>
+			<translation>ထည့်သွင်းထားသော plugin များကို ပြန်လည်စစ်ဆေးပြီးပါပြီ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+			<translation>ထည့်သွင်းထားသော plugin များကို ပြန်လည်စစ်ဆေးပြီးပါပြီ။ plugin {count} ခု မမှန်ကန်ပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove Plugin Source</source>
+			<translation>Plugin Source ကို ဖယ်ရှားပါ</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Remove plugin source {source}?</source>
+			<translation>plugin source {source} ကို ဖယ်ရှားမလား?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This plugin cannot be deleted.</source>
+			<translation>ဤ plugin ကို ဖျက်၍မရပါ။</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Applies to all paid plugins and subscription-gated service fees.</source>
+			<translation>ပေးချေရသော plugin အားလုံးနှင့် subscription-gated service fee များအားလုံးအတွက် သက်ဆိုင်သည်။</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Business plan</source>
+			<translation>Business အစီအစဉ်</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Plugins</source>
+			<translation>ပလပ်အင်များ</translation>
+		</message>
+		<name>PluginManagerWidget</name>
+		<message>
+			<source>Sources</source>
+			<translation>Source များ</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Cannot remove while {count} plugin(s) are installed.</source>
+			<translation>plugin {count} ခု ထည့်သွင်းထားစဉ် ဖယ်ရှား၍မရပါ။</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Delete</source>
+			<translation>ဖျက်ပါ</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Last error: {error}</source>
+			<translation>နောက်ဆုံး အမှား: {error}</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Refresh</source>
+			<translation>ပြန်လည်အသစ်လုပ်ပါ</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Remove installed plugins from this source before deleting the source.</source>
+			<translation>အရင်းအမြစ်ကို မဖျက်မီ ဤအရင်းအမြစ်မှ ထည့်သွင်းထားသော ပလပ်အင်များကို ဖယ်ရှားပါ။</translation>
+		</message>
+		<name>PluginSourceWidget</name>
+		<message>
+			<source>Source ID: {source_id}</source>
+			<translation>အရင်းအမြစ် ID: {source_id}</translation>
 		</message>
 	</context>
 	<context>
@@ -3451,8 +3934,13 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Descriptor</source>
-			<translation>ဖော်ပြချက်</translation>
+			<source>Dashboard</source>
+			<translation>Dashboard</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Details</source>
+			<translation>အသေးစိတ်များ</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3473,11 +3961,6 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Export labels</source>
 			<translation>တံဆိပ်များထုတ်ပို့ပါ</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>History</source>
-			<translation>သမိုင်း</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3530,6 +4013,11 @@ If there is an issue, please dont hesitate to contact us at: andreasgriffin@prot
 		<message>
 			<source>Password incorrect</source>
 			<translation>စကားဝှက်မှားနေပါသည်</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3734,18 +4222,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Balance = {amount}</source>
-			<translation>လက်ကျန်ငွေ = {amount}</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
 			<source>Check if received</source>
 			<translation>လက်ခံရရှိသည်ကိုစစ်ဆေးပါ</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -3754,29 +4232,51 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်</translation>
+			<source>Receive Test</source>
+			<translation>လက်ခံစမ်းသပ်မှု</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
                     &lt;br&gt;&lt;br&gt;
                     &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet. 
+                    To know if you control the funds, you have to test spending from the wallet.
                     &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
-                    &lt;br&gt;
-                    &lt;br&gt;
-                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all self-send tests first!&lt;/b&gt;   
+                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>ဤ Wallet ၏ Address ၁ ခုသို့ &lt;b&gt;အသေးစား&lt;/b&gt; ပမာဏ ({test_amount} ထက် နည်းသော) ကို လက်ခံပါ။                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt;                     Funds ကို သင်ထိန်းချုပ်ထားကြောင်း သိရန် Wallet မှ အသုံးပြုမှုကို စမ်းသပ်ရပါမည်။                      &lt;br&gt;                     ထို့ကြောင့် Bitcoin ပမာဏကြီးကို Wallet သို့ မပို့မီ အသုံးပြုခြင်းနှင့် Signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီးပါသည်&lt;/b&gt;။                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;ယခုအချိန်တွင် Funds ပမာဏကြီးကို Wallet သို့ မပို့ပါနှင့်။ Self-Send test အားလုံးကို အရင် ပြီးစီးစေပါ!&lt;/b&gt;                    </translation>
+			<translation>ဤ wallet ၏ address ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်ကြောင်း သိရန် wallet မှ အသုံးပြုခြင်းကို စမ်းသပ်ရမည်။ &lt;br&gt; ထို့ကြောင့် Bitcoin ပမာဏများစွာကို wallet ထဲသို့ မပို့မီ wallet မှ အသုံးပြုပြီး signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive instructions</source>
+			<translation>လက်ခံရန် ညွှန်ကြားချက်များ</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Recognized Transaction</source>
+			<translation>အသိအမှတ်ပြုထားသော ငွေလွှဲမှု</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Waiting for funds to arrive in the wallet...</source>
+			<translation>wallet ထဲသို့ ရန်ပုံငွေများ ရောက်ရှိလာရန် စောင့်ဆိုင်းနေသည်...</translation>
 		</message>
 	</context>
 	<context>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
-			<source>Recently Opened Wallets</source>
-			<translation>လတ်တလောဖွင့်ထားသောပိုက်ဆံအိတ်များ</translation>
+			<source>ALL WALLETS</source>
+			<translation>ဝေါလက်အားလုံး</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>RECENT WALLETS</source>
+			<translation>မကြာသေးမီက ဝေါလက်များ</translation>
+		</message>
+		<name>RecentlyOpenedWalletsGroup</name>
+		<message>
+			<source>Reveal in file explorer</source>
+			<translation>ဖိုင် အစ်ပလိုရာတွင် ပြရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -3921,38 +4421,8 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisig</name>
 		<message>
-			<source>2. Import wallet information into Bitcoin Safe</source>
-			<translation>2. Bitcoin Safe သို့ပိုက်ဆံအိတ်အချက်အလက်တင်သွင်းပါ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next signer</source>
-			<translation>နောက်လာမည့်လက်မှတ်သား</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Previous signer</source>
-			<translation>ယခင်လက်မှတ်သား</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Skip step</source>
-			<translation>အဆင့်ကျော်ပါ</translation>
-		</message>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Yes, I registered the multisig on the {n} hardware signer</source>
-			<translation>ဟုတ်ကဲ့၊ ငါဟာ {n} လက်မှတ်သားစက်ပေါ်မှာ multisig ကိုမှတ်ပုံတင်ခဲ့တယ်။</translation>
+			<source>Register the multisig wallet on each signing device.</source>
+			<translation>signing device တစ်ခုချင်းစီတွင် multisig ဝေါလက်ကို မှတ်ပုံတင်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -3996,6 +4466,18 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ဖိုင်မရွေးရသေးပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>ဒေမို စာရင်းသွင်းမှု ပလပ်အင်</translation>
+		</message>
+		<name>ScheduledPaymentsClient</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient ပေါ်အခြေခံထားသော နမူနာ ပလပ်အင်။ စာရင်းသွင်းမှုဖြင့် ကန့်သတ်ထားသော အသက်သွင်းမှုနှင့် ပလပ်အင်မန်နေဂျာ လုပ်ဆောင်ချက်များကို အတည်ပြုရန် အသုံးပြုပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -4061,14 +4543,28 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SendTest</name>
 		<message>
+			<source>Create the transaction in this card.</source>
+			<translation>ဤကတ်တွင် ငွေလွှဲမှုကို ဖန်တီးပါ။</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}</source>
+			<translation>ကိုယ်တိုင်ပို့ စမ်းသပ်မှု {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Sign and broadcast the transaction below.</source>
+			<translation>အောက်ပါ ငွေလွှဲမှုကို လက်မှတ်ထိုးပြီး ထုတ်လွှင့်ပါ။</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Skip spend test?</source>
 			<translation>အရာကိုကျော်ပါ</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>We are sending from your wallet to another address in your wallet (self-send).&lt;br&gt;
-This practices the signing flow and ensures all hardware signers are setup correctly.</source>
-			<translation>သင့် Wallet မှ သင့် Wallet အတွင်းရှိ အခြား Address သို့ ပို့နေပါသည် (self-send)&lt;br&gt; ဤသည် Signing လုပ်ငန်းစဉ်ကို လေ့ကျင့်စေပြီး Hardware signer များအားလုံး မှန်ကန်စွာ ပြင်ဆင်ထားကြောင်း သေချာစေသည်။</translation>
+			<source>Waiting for the transaction to be prepared.</source>
+			<translation>ငွေလွှဲမှု ပြင်ဆင်ပြီးစီးရန် စောင့်ဆိုင်းနေသည်။</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4285,20 +4781,104 @@ This practices the signing flow and ensures all hardware signers are setup corre
 		</message>
 	</context>
 	<context>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>"{sticker}" on {device_name}</source>
-			<translation>"{sticker}" သည် {device_name} တွင်</translation>
+			<source>Available version: {version}</source>
+			<translation>ရရှိနိုင်သော ဗားရှင်း: {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Print labels</source>
-			<translation>ဆိုဒ်များကို ပုံနှိပ်ပါ</translation>
+			<source>Install {version}</source>
+			<translation>ထည့်သွင်းပါ {version}</translation>
 		</message>
-		<name>StickerTheHardware</name>
+		<name>SourceCatalogItem</name>
 		<message>
-			<source>Put the following stickers on your hardware:</source>
-			<translation>သင့်ဟာ့ဒ်ဝဲလ်ပေါ်တွင်အောက်ပါစတစ်ကာများကိုကပ်ပါ:</translation>
+			<source>Installed version: {version}</source>
+			<translation>ထည့်သွင်းထားသော ဗားရှင်း: {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Installed {installed}; update available: {available}</source>
+			<translation>ထည့်သွင်းထားသည် {installed}; အပ်ဒိတ် ရရှိနိုင်သည်: {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Latest {version}</source>
+			<translation>နောက်ဆုံး {version}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Reinstall {version}</source>
+			<translation>{version} ကို ပြန်လည်တပ်ဆင်ပါ</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Update to {available}</source>
+			<translation>{available} သို့ အပ်ဒိတ်လုပ်ပါ</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {installed} -&gt; {available}</source>
+			<translation>ဗားရှင်း {installed} -&gt; {available}</translation>
+		</message>
+		<name>SourceCatalogItem</name>
+		<message>
+			<source>Version {version}</source>
+			<translation>ဗားရှင်း {version}</translation>
+		</message>
+	</context>
+	<context>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Add Plugin Source...</source>
+			<translation>ပလပ်အင် အရင်းအမြစ် ထည့်ပါ...</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Close</source>
+			<translation>ပိတ်ပါ</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Configured plugin sources</source>
+			<translation>ပြင်ဆင်သတ်မှတ်ထားသော ပလပ်အင် အရင်းအမြစ်များ</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>No plugin sources added yet.</source>
+			<translation>ပလပ်အင် အရင်းအမြစ် မထည့်ရသေးပါ။</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Plugin Sources</source>
+			<translation>ပလပ်အင် အရင်းအမြစ်များ</translation>
+		</message>
+		<name>SourceManagementDialog</name>
+		<message>
+			<source>Recheck Installed Plugins</source>
+			<translation>ထည့်သွင်းထားသော ပလပ်အင်များကို ပြန်စစ်ဆေးပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Completed</source>
+			<translation>ပြီးစီးခဲ့သည်</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Current</source>
+			<translation>လက်ရှိ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Future incomplete steps</source>
+			<translation>အနာဂတ်တွင် မပြီးစီးသေးသော အဆင့်များ</translation>
+		</message>
+		<name>StepProgressContainer</name>
+		<message>
+			<source>Step {current} of {total}</source>
+			<translation>အဆင့် {current} / {total}</translation>
 		</message>
 	</context>
 	<context>
@@ -4593,13 +5173,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Create and collect {n}. signature</source>
-			<translation>{n} လက်မှတ်လုပ်ပြီးစုဆောင်းပါ</translation>
+			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
+			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
+			<source>Signature {n}</source>
+			<translation>လက်မှတ် {n}</translation>
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
@@ -4793,11 +5373,6 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Next step</source>
-			<translation>နောက်တစ်ဆင့်</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
 			<source>Not all necessary transaction details are available for RBF</source>
 			<translation>RBF အတွက်လိုအပ်သော လုပ်ဆောင်ချက်အသေးစိတ် အားလုံးမရရှိနိုင်ပါ</translation>
 		</message>
@@ -4816,11 +5391,6 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>Please remove the existing local transaction of the wallet first.</source>
 			<translation>ကျေးဇူးပြု၍ ဝေါလက်ထဲရှိပြီးသား ဒေသတွင်း ငွေလွှဲစာရင်းကို ပထမဦးစွာ ဖယ်ရှားပါ။</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Previous step</source>
-			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5095,18 +5665,6 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်</translation>
-		</message>
-		<name>ValidateBackup</name>
-		<message>
-			<source>Yes, I am sure all {number} words are correct</source>
-			<translation>ဟုတ်ကဲ့၊ ငါ့ {number} စကားလုံးတွေအားလုံးမှန်ကန်ပါတယ်။</translation>
-		</message>
-	</context>
-	<context>
 		<name>VerifyGpgMessageTab</name>
 		<message>
 			<source>Signed message</source>
@@ -5332,6 +5890,183 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>1 Signer</source>
+			<translation>လက်မှတ်ထိုးသူ 1 ဦး</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>2-of-3 Multi Signature</source>
+			<translation>2-of-3 Multi Signature</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>3-of-5 Multi Signature</source>
+			<translation>3-of-5 Multi Signature</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 1 signing device and its backup seed</source>
+			<translation>signing device 1 ခုနှင့် ၎င်း၏ backup seed ပျောက်ဆုံးမှုကို ခံနိုင်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+			<translation>signing device 2 ခုနှင့် ၎င်းတို့၏ backup seeds ပျောက်ဆုံးမှုကို ခံနိုင်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Choose a wallet template</source>
+			<translation>ဝေါလက် တမ်းပလိတ်ကို ရွေးပါ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Cons</source>
+			<translation>အားနည်းချက်များ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Continue</source>
+			<translation>ဆက်လုပ်ရန်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>High complexity</source>
+			<translation>ရှုပ်ထွေးမှု မြင့်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>If the signer device and seed backup is lost, then the funds are lost</source>
+			<translation>signing device နှင့် seed backup ပျောက်ဆုံးပါက ရန်ပုံငွေများ ပျောက်ဆုံးမည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage</source>
+			<translation>ရေရှည် cold storage</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
+			<translation>ရေရှည် cold storage (2-of-3 Multi Signature)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Low complexity</source>
+			<translation>ရှုပ်ထွေးမှု နိမ့်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Medium complexity</source>
+			<translation>ရှုပ်ထွေးမှု အလယ်အလတ်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Please choose a wallet name</source>
+			<translation>ပိုက်ဆံအိတ်အမည်တစ်ခုရွေးပါ။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Previous Step</source>
+			<translation>ယခင်အဆင့်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Pros</source>
+			<translation>အားသာချက်များ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Recovery</source>
+			<translation>ပြန်လည်အရန်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Required</source>
+			<translation>လိုအပ်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 1 secure access-controlled place to store the seed backup</source>
+			<translation>seed backup သိမ်းဆည်းရန် လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသော နေရာ 1 ခု လိုအပ်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 3 secure access-controlled places to store the seed backups</source>
+			<translation>seed backups သိမ်းဆည်းရန် လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသော နေရာ 3 ခု လိုအပ်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Requires 5 secure access-controlled places to store the seed backups</source>
+			<translation>seed backups သိမ်းဆည်းရန် လုံခြုံပြီး ဝင်ရောက်ခွင့်ထိန်းချုပ်ထားသော နေရာ 5 ခု လိုအပ်သည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Robust wallet for long-term self-custody.</source>
+			<translation>ရေရှည် ကိုယ်တိုင်ထိန်းသိမ်းမှုအတွက် ခိုင်မာသော ဝေါလက်။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Select a template from the list.</source>
+			<translation>စာရင်းမှ နမူနာပုံစံတစ်ခုကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Self-custody with 1 signer and 1 seed backup.</source>
+			<translation>လက်မှတ်ထိုးသူ ၁ ဦးနှင့် seed မိတ္တူကူးယူမှု ၁ ခုပါသော ကိုယ်တိုင်ထိန်းသိမ်းမှု။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage</source>
+			<translation>ရိုးရှင်းသော cold storage</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Simple cold storage (1 Signer)</source>
+			<translation>ရိုးရှင်းသော cold storage (လက်မှတ်ထိုးသူ ၁ ဦး)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
+			<translation>တစ်နေရာတည်း ပျက်ကွက်မှုကို ရှောင်ရှားရန် seed မိတ္တူကို စက်ပစ္စည်းနှင့် သီးခြားသိမ်းဆည်းပါ။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage</source>
+			<translation>အလွန်ခိုင်မာသော သိမ်းဆည်းမှု</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Super robust storage (3-of-5 Multi Signature)</source>
+			<translation>အလွန်ခိုင်မာသော သိမ်းဆည်းမှု (3-of-5 Multi Signature)</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+			<translation>wallet descriptor ပါဝင်သော ပြန်လည်ရယူရေးစာရွက်ကို seed မိတ္တူတစ်ခုစီနှင့်အတူ သိမ်းဆည်းထားသင့်သည်။</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Total</source>
+			<translation>စုစုပေါင်း</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>Wallet name</source>
+			<translation>Wallet အမည်</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signer</source>
+			<translation>လက်မှတ်ထိုးသူ</translation>
+		</message>
+		<name>WalletSetupOptions</name>
+		<message>
+			<source>signers</source>
+			<translation>လက်မှတ်ထိုးသူများ</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -5339,23 +6074,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>All Self-Send tests done successfully.</source>
-			<translation>Self-Send Test</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Backup Seed</source>
-			<translation>မျိုးစေ့အရန်</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Buy hardware signers</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်များအားတံဆိပ်ထိုးပါ</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Generate Seed</source>
-			<translation>မျိုးစေ့ဖန်တီးပါ</translation>
+			<source>Choose template</source>
+			<translation>နမူနာပုံစံ ရွေးချယ်ပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5364,13 +6084,13 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Label the hardware signers</source>
-			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားများကို တံဆိပ်ကပ်ပါ</translation>
+			<source>Plugins</source>
+			<translation>ပလပ်အင်များ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Put in secure locations</source>
-			<translation>လုံခြံုရာနေရာတွင်ထားပါ</translation>
+			<source>Previous Step</source>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5381,6 +6101,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Register multisig on signers</source>
 			<translation>လက်မှတ်သားများပေါ်တွင် multisig မှတ်ပုံတင်ပါ</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Review the transaction and create it when you are ready.</source>
+			<translation>ငွေလွှဲမှုကို ပြန်လည်စစ်ဆေးပြီး အသင့်ဖြစ်သောအခါ ဖန်တီးပါ။</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Secure your Keys</source>
+			<translation>သင့် Keys များကို လုံခြုံအောင်ထားပါ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5404,17 +6134,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>Sync &amp; Chat</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The test transaction 
-'{tx_text}'
- was done successfully. Please proceed to do the self-send test: 
-'{next_text}'</source>
-			<translation>Test Transaction  '{tx_text}'  ကို အောင်မြင်စွာ ပြုလုပ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ Self-Send test ကို ဆက်လက်လုပ်ဆောင်ပါ: 
-'{next_text}'</translation>
+			<source>Signer {index}</source>
+			<translation>လက်မှတ်ထိုးသူ {index}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5423,8 +6144,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Validate Backup</source>
-			<translation>အရန်စစ်ဆေးပါ</translation>
+			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+			<translation>ငွေလွှဲမှု ဖန်တီးပြီးပါပြီ။ အောက်တွင် လက်မှတ်ထိုးပြီး ထုတ်လွှင့်ပါ၊ ထို့နောက် wallet က အသိအမှတ်ပြုရန် စောင့်ပါ။</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Transaction recognized by the wallet.</source>
+			<translation>ငွေလွှဲမှုကို wallet က အသိအမှတ်ပြုပြီးပါပြီ။</translation>
+		</message>
+		<name>Wizard</name>
+		<message>
+			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
+			<translation>ထုတ်လွှင့်ထားသော ငွေလွှဲမှုကို wallet က အသိအမှတ်ပြုရန် စောင့်ဆိုင်းနေသည်။</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -5557,6 +6288,11 @@ IP: {ip}
 		</message>
 	</context>
 	<context>
+		<name>basetab</name>
+		<message>
+			<source>Finish and go to Dashboard</source>
+			<translation>ပြီးဆုံးပြီး Dashboard သို့ သွားပါ</translation>
+		</message>
 		<name>basetab</name>
 		<message>
 			<source>Next step</source>
@@ -6969,6 +7705,11 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Full read and write access to this wallet and categories.</source>
+			<translation>ဤ wallet နှင့် အမျိုးအစားများအတွက် အပြည့်အဝ ဖတ်ရှုနှင့် ရေးသားခွင့်။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
 			<translation>သင့် wallet ၏ အညွှန်းများနှင့် အမျိုးအစားများကို ဖတ်ရှု၍ ပြင်ဆင်ပါ။</translation>
 		</message>
@@ -6984,8 +7725,18 @@ Click here to learn more.</source>
 		</message>
 		<name>plugins</name>
 		<message>
+			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
+			<translation>ငွေလွှဲအသစ်များ သို့မဟုတ် blockchain sync ကဲ့သို့သော wallet လှုပ်ရှားမှုဖြစ်ရပ်များကို စာရင်းသွင်းပါ။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
 			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
 			<translation>wallet ၏ multisig အနိမ့်အမြင့် (m-of-n) ပြင်ဆင်မှုကို ကြည့်ရှုပါ။</translation>
+		</message>
+		<name>plugins</name>
+		<message>
+			<source>Unknown description</source>
+			<translation>မသိသော ဖော်ပြချက်</translation>
 		</message>
 		<name>plugins</name>
 		<message>
@@ -7103,25 +7854,162 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
+		<name>subscription</name>
+		<message>
+			<source>Business plan access is active.</source>
+			<translation>Business အစီအစဉ် အသုံးပြုခွင့် လက်ရှိအသက်ဝင်နေသည်။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Cancel</source>
+			<translation>ပယ်ဖျက်</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Continue</source>
+			<translation>ဆက်လုပ်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Could not determine the current subscription status.</source>
+			<translation>လက်ရှိ စာရင်းသွင်းမှုအခြေအနေကို မဆုံးဖြတ်နိုင်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Current status: {status}.</source>
+			<translation>လက်ရှိအခြေအနေ: {status}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Email address for subscription reminders and renewal notices:</source>
+			<translation>စာရင်းသွင်းမှု သတိပေးချက်များနှင့် သက်တမ်းတိုး အသိပေးချက်များအတွက် အီးမေးလ်လိပ်စာ:</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a management payload.</source>
+			<translation>အခမဲ့စမ်းသပ်မှု ဝယ်ယူမှုက စီမံခန့်ခွဲမှု payload ကို ပြန်မပေးခဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase did not return a session.</source>
+			<translation>အခမဲ့စမ်းသပ်မှု ဝယ်ယူမှုက session ကို ပြန်မပေးခဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Free-trial purchase requires a wallet descriptor.</source>
+			<translation>အခမဲ့စမ်းသပ်မှု ဝယ်ယူရန် wallet descriptor လိုအပ်သည်။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last checked: {checked_at}.</source>
+			<translation>နောက်ဆုံးစစ်ဆေးချိန်: {checked_at}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Last refresh error: {error}.</source>
+			<translation>နောက်ဆုံး refresh အမှား: {error}.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Manage Subscription</source>
+			<translation>စာရင်းသွင်းမှုကို စီမံပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Management URL saved.</source>
+			<translation>စီမံခန့်ခွဲမှု URL သိမ်းပြီးပါပြီ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>No subscription has been activated yet.</source>
+			<translation>စာရင်းသွင်းမှု မည်သည့်အရာမျှ မအသက်သွင်းရသေးပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Open subscription</source>
+			<translation>စာရင်းသွင်းမှု ဖွင့်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid email address.</source>
+			<translation>ကျေးဇူးပြု၍ မှန်ကန်သော အီးမေးလ်လိပ်စာ ထည့်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Refresh Subscription status</source>
+			<translation>စာရင်းသွင်းမှု အခြေအနေကို refresh လုပ်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription reminders</source>
+			<translation>စာရင်းသွင်းမှု သတိပေးချက်များ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription required</source>
+			<translation>စာရင်းသွင်းမှု လိုအပ်သည်</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh failed.</source>
+			<translation>စာရင်းသွင်းမှု အခြေအနေ refresh မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription status refresh returned no result.</source>
+			<translation>စာရင်းသွင်းမှု အခြေအနေ refresh သည် ရလဒ်မပြန်ပေးပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation failed.</source>
+			<translation>အခမဲ့စမ်းသပ်မှု အသက်သွင်းခြင်း မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The free trial activation timed out.</source>
+			<translation>အခမဲ့စမ်းသပ်မှု အသက်သွင်းခြင်း အချိန်ကုန်သွားသည်။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+			<translation>ဤ plugin သည် လက်ရှိတွင် မသက်ဝင်ပါ။ ထပ်မံဖွင့်မည်ဆိုပါက စာရင်းသွင်းမှုကို အရင်တိုးချဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Waiting for the free trial to be activated...</source>
+			<translation>အခမဲ့စမ်းသပ်မှု အသက်သွင်းရန် စောင့်ဆိုင်းနေသည်...</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>name@example.com</source>
+			<translation>name@example.com</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+			<translation>{reason} ကျေးဇူးပြု၍ နောက်မှ ထပ်ကြိုးစားပါ။ ဆက်လက်မလုပ်ဆောင်နိုင်ပါက {email} ကို ဆက်သွယ်ပါ။</translation>
+		</message>
+	</context>
+	<context>
 		<name>trezor</name>
 		<message>
 			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation/>
+			<translation>Trezor ပေါ်တွင် ပြထားသော ဂဏန်း ၆ လုံး pairing code ကို ထည့်ပါ:</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation/>
+			<translation>Trezor keypad layout ကို အသုံးပြု၍ PIN ထည့်ပါ (7 8 9 / 4 5 6 / 1 2 3):</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Pair Trezor</source>
-			<translation/>
+			<translation>Trezor ကို ချိတ်ဆက်ပါ</translation>
 		</message>
 		<name>trezor</name>
 		<message>
 			<source>Unlock Trezor</source>
-			<translation/>
+			<translation>Trezor ကို လော့ခ်ဖွင့်ပါ</translation>
 		</message>
 	</context>
 	<context>
