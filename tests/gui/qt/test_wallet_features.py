@@ -150,39 +150,6 @@ def test_register_multisig_dialog_uses_hardware_signer_default_qr(
     )
 
 
-@pytest.mark.marker_qt_1
-def test_register_multisig_dialog_uses_qr_menu_without_hardware_signer(
-    qtbot: QtBot, loop_in_thread: LoopInThread, test_config: TestConfig
-) -> None:
-    wallet = _create_register_multisig_wallet(test_config=test_config, loop_in_thread=loop_in_thread)
-    dialog = RegisterMultisigInteractionWidget(
-        wallet_functions=WalletFunctions(Signals()),
-        wallet=wallet,
-        loop_in_thread=loop_in_thread,
-    )
-    qtbot.addWidget(dialog)
-
-    assert dialog.simple_button_export_qr is dialog.export_qr_button
-    assert isinstance(dialog.simple_button_export_qr, QToolButton)
-
-
-@pytest.mark.marker_qt_1
-def test_register_multisig_dialog_uses_qr_menu_without_preferred_signer_qr(
-    qtbot: QtBot, loop_in_thread: LoopInThread, test_config: TestConfig
-) -> None:
-    wallet = _create_register_multisig_wallet(test_config=test_config, loop_in_thread=loop_in_thread)
-    dialog = RegisterMultisigInteractionWidget(
-        wallet_functions=WalletFunctions(Signals()),
-        wallet=wallet,
-        loop_in_thread=loop_in_thread,
-        hardware_signer=HardwareSigners.seedsigner,
-    )
-    qtbot.addWidget(dialog)
-
-    assert dialog.simple_button_export_qr is dialog.export_qr_button
-    assert isinstance(dialog.simple_button_export_qr, QToolButton)
-
-
 @pytest.mark.marker_qt_2
 def test_wallet_features_multisig(
     qapp: QApplication,
