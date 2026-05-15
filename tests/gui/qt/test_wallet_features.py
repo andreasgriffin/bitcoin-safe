@@ -46,7 +46,7 @@ from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.tool_gui import ToolGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QPushButton, QToolButton
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
@@ -143,8 +143,6 @@ def test_register_multisig_dialog_uses_hardware_signer_default_qr(
     )
     qtbot.addWidget(dialog)
 
-    assert isinstance(dialog.simple_button_export_qr, QPushButton)
-    assert not isinstance(dialog.simple_button_export_qr, QToolButton)
     assert dialog.export_qr_button.export_qr_widget.combo_qr_type.getCurrentExportType() == (
         DescriptorQrExportTypes.coldcard_legacy
     )

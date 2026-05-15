@@ -126,7 +126,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
 
         self.button_import_file: QPushButton | None = None
         self.button_import_qr: QPushButton | None = None
-        self.simple_button_export_qr: QPushButton | QToolButton | None = None
+        self.simple_button_export_qr: QPushButton | None = None
         self.button_hwi: QPushButton | None = None
         self.button_export_file: QToolButton | None = None
 
