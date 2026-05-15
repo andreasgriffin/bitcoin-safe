@@ -84,6 +84,10 @@ class SearchSidebarTree(QWidget):
         self.bottom_controls_layout.addWidget(self.search_view.lineEdit())
         self.sidebar_tree.left_vbox.addWidget(self.search_view.resultsView(), 1)
         self.sidebar_tree.left_vbox.addWidget(self.bottom_controls_container)
+        # The SearchTreeView itself is only a temporary owner for the line edit/results view.
+        # After those widgets are reparented into the sidebar layouts, keep the empty shell
+        # hidden so it does not sit at (0, 0) above the first sidebar row.
+        self.search_view.hide()
 
         # Toggle only the left list visibility (the search field stays)
         def _toggle_left_list(active: bool) -> None:
