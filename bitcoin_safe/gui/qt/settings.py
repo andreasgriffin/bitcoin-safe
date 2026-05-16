@@ -37,6 +37,7 @@ from PyQt6.QtGui import QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import QTabWidget
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.about_tab import AboutTab, LicenseDialog, UpdateStatus
 from bitcoin_safe.gui.qt.interface_settings_ui import InterfaceSettingsUi
@@ -64,7 +65,7 @@ class Settings(QTabWidget):
         self.language_chooser = language_chooser
         self._license_dialog = LicenseDialog(self)
 
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self.about_tab = AboutTab(
             license_dialog=self._license_dialog,

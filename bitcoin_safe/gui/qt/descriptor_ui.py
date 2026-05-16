@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
@@ -455,6 +456,7 @@ class DescriptorUI(QWidget):
 
         # Create a QFormLayout
         form_wallet_type = QGridLayout(self.box_wallet_type)
+        form_wallet_type.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
 
         # box_signers_with_slider
         row = 0
@@ -463,7 +465,7 @@ class DescriptorUI(QWidget):
         if self.wallet is None:
             self.edit_wallet_name.textChanged.connect(self.signal_wallet_name_changed.emit)
         form_wallet_type.addWidget(self.label_wallet_name, row, 0)
-        form_wallet_type.addWidget(self.edit_wallet_name, row, 1, 1, 3)
+        form_wallet_type.addWidget(self.edit_wallet_name, row, 2, 1, 3)
         row += 1
 
         self.label_signers = QLabel()
@@ -484,9 +486,9 @@ class DescriptorUI(QWidget):
 
         # Add widgets to the layout
         form_wallet_type.addWidget(self.label_signers, row, 0)
-        form_wallet_type.addWidget(self.spin_req, row, 1)
-        form_wallet_type.addWidget(self.label_of, row, 2)
-        form_wallet_type.addWidget(self.spin_signers, row, 3)
+        form_wallet_type.addWidget(self.spin_req, row, 2)
+        form_wallet_type.addWidget(self.label_of, row, 3)
+        form_wallet_type.addWidget(self.spin_signers, row, 4)
 
         # box_address_type
         self.label_address_type = QLabel()
@@ -497,7 +499,7 @@ class DescriptorUI(QWidget):
         self.comboBox_address_type.currentIndexChanged.connect(self.on_wallet_ui_changes)
         form_wallet_type.addWidget(self.label_address_type, row + 1, 0)
         form_wallet_type.setObjectName("this form_wallet_type")
-        form_wallet_type.addWidget(self.comboBox_address_type, row + 1, 1, 1, 3)
+        form_wallet_type.addWidget(self.comboBox_address_type, row + 1, 2, 1, 3)
 
         # box_gap
         self.label_gap = IconLabel()
@@ -509,7 +511,7 @@ class DescriptorUI(QWidget):
 
         # Add widgets to the layout
         form_wallet_type.addWidget(self.label_gap, row + 2, 0)
-        form_wallet_type.addWidget(self.spin_gap, row + 2, 1, 1, 3)
+        form_wallet_type.addWidget(self.spin_gap, row + 2, 2, 1, 3)
 
         self.box_wallet_type.setLayout(form_wallet_type)
         box_wallet_type_and_descriptor_layout.addWidget(self.box_wallet_type)

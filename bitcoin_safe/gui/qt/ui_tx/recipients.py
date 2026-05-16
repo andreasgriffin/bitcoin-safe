@@ -58,6 +58,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
@@ -107,6 +108,7 @@ class RecipientWidget(QWidget):
         self.setLayout(self.form_layout)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.form_layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.form_layout.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         # works only for automatically created QLabels
         # self.form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 

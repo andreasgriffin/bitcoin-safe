@@ -35,11 +35,12 @@ from datetime import datetime
 
 import pytest
 from PyQt6.QtTest import QTest
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.dialog_import import ImportDialog
-from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
+from bitcoin_safe.gui.qt.export_data import FileToolButton
+from bitcoin_safe.gui.qt.tx_signing_steps import ExportImportUI, TxSigningDeviceList
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.signer import SignatureImporterFile
 
@@ -99,8 +100,9 @@ def test_signature_import_of_psbt_without_utxos(
 
         assert isinstance(importer[1], SignatureImporterFile)
 
-        widget_import_export = uitx_viewer.tx_singning_steps.stacked_widget.widget(0)
-        assert isinstance(widget_import_export, HorizontalImportExportAll)
+        device_list = uitx_viewer.tx_singning_steps.stacked_widget.widget(0)
+        assert isinstance(device_list, TxSigningDeviceList)
+        assert device_list.cards
 
         def text_entry(dialog: ImportDialog) -> None:
             """Text entry."""
@@ -113,14 +115,21 @@ def test_signature_import_of_psbt_without_utxos(
             shutter.save(dialog)
             dialog.button_ok.click()
 
-        assert not widget_import_export.file.button_import.buttons[0].isEnabled()
-        widget_import_export.file.button_export.action_copy_txid.trigger()
-        assert widget_import_export.file.button_import.buttons[0].isEnabled()
-
-        assert widget_import_export.file
-        do_modal_click(
-            widget_import_export.file.button_import.buttons[0].click, text_entry, qtbot, cls=ImportDialog
+        card = device_list.cards[0]
+        card.expand()
+        file_button = next(
+            button for button in card.findChildren(QPushButton) if button.text() == "Export / Import"
         )
+        file_button.click()
+        action_pair = card.findChild(ExportImportUI)
+        assert action_pair
+
+        assert not action_pair.import_widget.button.isEnabled()
+        assert isinstance(action_pair.export_button, FileToolButton)
+        action_pair.export_button.action_copy_txid.trigger()
+        assert action_pair.import_widget.button.isEnabled()
+
+        do_modal_click(action_pair.import_widget.button.click, text_entry, qtbot, cls=ImportDialog)
 
         # Let the UI update with the newly imported signatures.
         QApplication.processEvents()

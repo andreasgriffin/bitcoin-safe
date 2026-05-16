@@ -52,6 +52,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.descriptors import get_address_bip32_path
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
@@ -95,12 +96,17 @@ class SignMessageBase(QWidget):
         self.network = network
         self.signals_min = signals_min
         self.close_all_video_widgets = close_all_video_widgets
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self.grid_layout = grid_layout if grid_layout else QGridLayout(self)
+        self.grid_layout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
+        self.grid_layout.setColumnStretch(2, 1)
 
         self.usb_gui = USBGui(
-            network, allow_emulators_only_for_testnet_works=True, loop_in_thread=loop_in_thread
+            network,
+            allow_emulators_only_for_testnet_works=True,
+            loop_in_thread=loop_in_thread,
+            window_icon=svg_tools.get_QIcon(LOGO_NAME),
         )
 
         self.sign_usb_button = SpinningButton(
@@ -220,9 +226,9 @@ class SignMessage(SignMessageBase):
             grid_layout=grid_layout,
         )
         self.grid_layout.addWidget(self.sign_label, 1, 0)
-        self.grid_layout.addWidget(self.sign_edit, 1, 1)
-        self.grid_layout.addWidget(self.sign_usb_button, 1, 2)
-        self.grid_layout.addWidget(self.sign_qr_button, 1, 3)
+        self.grid_layout.addWidget(self.sign_edit, 1, 2)
+        self.grid_layout.addWidget(self.sign_usb_button, 1, 3)
+        self.grid_layout.addWidget(self.sign_qr_button, 1, 4)
 
         self.updateUI()
 
@@ -280,13 +286,13 @@ class _SignTab(SignMessageBase):
         self.sign_address_edit.setPlaceholderText(self.tr("Address used to sign the message"))
 
         self.grid_layout.addWidget(QLabel(self.tr("Message")), 0, 0)
-        self.grid_layout.addWidget(self.sign_message_edit, 0, 1, 1, 3)
+        self.grid_layout.addWidget(self.sign_message_edit, 0, 2, 1, 3)
 
         self.grid_layout.addWidget(QLabel(self.tr("Address")), 1, 0)
-        self.grid_layout.addWidget(self.sign_address_edit, 1, 1, 1, 3)
+        self.grid_layout.addWidget(self.sign_address_edit, 1, 2, 1, 3)
         self.sign_button_box.addButton(self.sign_usb_button, QDialogButtonBox.ButtonRole.ActionRole)
         self.sign_button_box.addButton(self.sign_qr_button, QDialogButtonBox.ButtonRole.ActionRole)
-        self.grid_layout.addWidget(self.sign_button_box, 2, 1, 1, 3)
+        self.grid_layout.addWidget(self.sign_button_box, 2, 2, 1, 3)
 
         self.signals_min.language_switch.connect(self.updateUI)
         self.updateUI()
@@ -337,12 +343,14 @@ class VerifyGpgMessageTab(QWidget):
         self.disclaimer_label.setOpenExternalLinks(True)
 
         layout = QGridLayout(self)
+        layout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
+        layout.setColumnStretch(2, 1)
         layout.addWidget(QLabel(self.tr("Signed message")), 0, 0)
-        layout.addWidget(self.signed_message_edit, 0, 1, 1, 3)
+        layout.addWidget(self.signed_message_edit, 0, 2, 1, 3)
         button_box = QDialogButtonBox(Qt.Orientation.Horizontal)
         button_box.addButton(self.verify_button, QDialogButtonBox.ButtonRole.ActionRole)
-        layout.addWidget(button_box, 1, 1, 1, 3)
-        layout.addWidget(self.disclaimer_label, 2, 1, 1, 3)
+        layout.addWidget(button_box, 1, 2, 1, 3)
+        layout.addWidget(self.disclaimer_label, 2, 2, 1, 3)
 
         self.verify_button.clicked.connect(self._emit_verify_request)
         self.signals_min.language_switch.connect(self.updateUI)
@@ -416,14 +424,16 @@ class SignAndVerifyMessage(QWidget):
 
         self.verify_tab = QWidget()
         verify_layout = QGridLayout(self.verify_tab)
+        verify_layout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
+        verify_layout.setColumnStretch(2, 1)
         verify_layout.addWidget(self.verify_message_label, 0, 0)
-        verify_layout.addWidget(self.verify_message_edit, 0, 1, 1, 3)
+        verify_layout.addWidget(self.verify_message_edit, 0, 2, 1, 3)
         verify_layout.addWidget(self.verify_address_label, 1, 0)
-        verify_layout.addWidget(self.verify_address_edit, 1, 1, 1, 3)
+        verify_layout.addWidget(self.verify_address_edit, 1, 2, 1, 3)
         verify_layout.addWidget(self.verify_signature_label, 2, 0)
-        verify_layout.addWidget(self.verify_signature_edit, 2, 1, 1, 3)
+        verify_layout.addWidget(self.verify_signature_edit, 2, 2, 1, 3)
         self.verify_button_box.addButton(self.verify_button, QDialogButtonBox.ButtonRole.ActionRole)
-        verify_layout.addWidget(self.verify_button_box, 3, 1, 1, 3)
+        verify_layout.addWidget(self.verify_button_box, 3, 2, 1, 3)
 
         self.verify_armored_tab = QWidget()
         verify_armored_layout = QVBoxLayout(self.verify_armored_tab)

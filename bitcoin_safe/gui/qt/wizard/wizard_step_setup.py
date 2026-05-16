@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.descriptors import get_default_address_type
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet
 from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
@@ -283,10 +284,10 @@ class WalletSetupOptions(BaseTab):
         widget_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         grid = QGridLayout()
-        grid.setHorizontalSpacing(16)
         grid.setVerticalSpacing(14)
+        grid.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
         grid.setColumnStretch(0, 0)
-        grid.setColumnStretch(1, 1)
+        grid.setColumnStretch(2, 1)
 
         self.label_wallet_name = QLabel(widget)
         self.edit_wallet_name = QLineEdit(widget)
@@ -337,7 +338,7 @@ class WalletSetupOptions(BaseTab):
         )
 
         grid.addWidget(self.label_wallet_name, 0, 0)
-        grid.addWidget(self.edit_wallet_name, 0, 1)
+        grid.addWidget(self.edit_wallet_name, 0, 2)
         widget_layout.addLayout(grid)
 
         template_layout = QHBoxLayout()

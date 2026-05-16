@@ -55,6 +55,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.util import filename_clean
 
@@ -69,7 +70,7 @@ class PasswordQuestion(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle(self.tr("Password Input"))
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self._layout = QVBoxLayout(self)
 

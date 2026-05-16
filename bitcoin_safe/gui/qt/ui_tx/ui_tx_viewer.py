@@ -82,7 +82,7 @@ from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....psbt_util import FeeInfo, PubKeyInfo, SimpleInput, SimplePSBT
+from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -104,6 +104,7 @@ from ....signer import (
     SignatureImporterQR,
     SignatureImporterUSB,
     SignatureImporterWallet,
+    SignerIdentity,
 )
 from ....wallet import (
     ToolsTxUiInfo,
@@ -918,158 +919,117 @@ class UITx_Viewer(UITx_Base):
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         """Enrich simple psbt with wallet data."""
-
-        def get_keystore(fingerprint: str, keystores: list[KeyStore]) -> KeyStore | None:
-            """Get keystore."""
-            for keystore in keystores:
-                if keystore.fingerprint == fingerprint:
-                    return keystore
-            return None
-
-        # collect all wallets that have input utxos
-        inputs: list[bdk.TxIn] = self.extract_tx().input()
-
-        outpoint_dict = {
-            outpoint_str: (python_utxo, wallet)
-            for wallet in get_wallets(self.wallet_functions)
-            for outpoint_str, python_utxo in wallet.get_all_txos_dict().items()
-        }
-
-        # fill fingerprints, if not available
-        for this_input, simple_input in zip(inputs, simple_psbt.inputs, strict=False):
-            outpoint_str = str(this_input.previous_output)
-            if outpoint_str not in outpoint_dict:
-                continue
-            python_utxo, wallet = outpoint_dict[outpoint_str]
-
-            simple_input.wallet_id = wallet.id
-            simple_input.m_of_n = wallet.get_mn_tuple()
-
-            if not simple_input.pubkeys:
-                # fill with minimal info
-                simple_input.pubkeys = [
-                    PubKeyInfo(fingerprint=keystore.fingerprint) for keystore in wallet.keystores
-                ]
-
-            # fill additional info (label) if available
-            for pubkey in simple_input.pubkeys:
-                keystore = get_keystore(pubkey.fingerprint, wallet.keystores)
-                if not keystore:
-                    continue
-                pubkey.label = keystore.technical_hardware_signer_label()
-
-        return simple_psbt
-
-    def get_wallet_inputs(self, simple_psbt: SimplePSBT) -> dict[str, list[SimpleInput]]:
-        """structures the inputs into categories, usually wallet_ids,
-        such that all the inputs are sure to belong to 1 wallet"""
-        wallet_inputs: dict[str, list[SimpleInput]] = {}
-        for i, _input in enumerate(simple_psbt.inputs):
-            if _input.wallet_id and _input.m_of_n:
-                id = _input.wallet_id
-            elif _input.pubkeys:
-                id = ", ".join(
-                    sorted(
-                        [(pubkey.fingerprint or pubkey.pubkey or pubkey.label) for pubkey in _input.pubkeys]
-                    )
+        outpoint_dict: dict[str, InputEnrichment] = {}
+        for wallet in get_wallets(self.wallet_functions):
+            wallet_pubkeys = [
+                PubKeyInfo(
+                    fingerprint=keystore.fingerprint,
+                    label=keystore.technical_hardware_signer_label(),
                 )
-            else:
-                id = f"Input {i}"
+                for keystore in wallet.keystores
+            ]
+            for outpoint_str in wallet.get_all_txos_dict():
+                outpoint_dict[outpoint_str] = InputEnrichment(
+                    wallet_id=wallet.id,
+                    m_of_n=wallet.get_mn_tuple(),
+                    pubkeys=wallet_pubkeys,
+                )
 
-            inputs = wallet_inputs.setdefault(id, [])
-            inputs.append(_input)
+        return simple_psbt.enrich_with_outpoint_data(outpoint_dict)
 
-        return wallet_inputs
+    @staticmethod
+    def _normalize_fingerprint(fingerprint: str | None) -> str:
+        if not fingerprint:
+            return ""
+        if not KeyStore.is_fingerprint_valid(fingerprint):
+            return ""
+        return KeyStore.format_fingerprint(fingerprint)
+
+    def _normalize_fingerprints(self, fingerprints: list[str]) -> list[str]:
+        normalized_fingerprints: list[str] = []
+        for fingerprint in fingerprints:
+            normalized_fingerprint = self._normalize_fingerprint(fingerprint)
+            if normalized_fingerprint and normalized_fingerprint not in normalized_fingerprints:
+                normalized_fingerprints.append(normalized_fingerprint)
+        return normalized_fingerprints
+
+    def _wallet_signing_fingerprints(self, wallet: Wallet, fingerprints: list[str]) -> list[str]:
+        signing_fingerprints = self._normalize_fingerprints(
+            [keystore.fingerprint for keystore in wallet.keystores if keystore.mnemonic]
+        )
+        requested_fingerprints = set(self._normalize_fingerprints(fingerprints))
+        return [fingerprint for fingerprint in signing_fingerprints if fingerprint in requested_fingerprints]
 
     def get_combined_signature_importers(self, psbt: bdk.Psbt) -> dict[str, list[AbstractSignatureImporter]]:
         """Get combined signature importers."""
         signature_importers: dict[str, list[AbstractSignatureImporter]] = {}
+        completed_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
+        pending_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
 
-        def get_signing_fingerprints_of_wallet(wallet: Wallet) -> set[str]:
-            # check which keys the wallet can sign
-
-            """Get signing fingerprints of wallet."""
-            wallet_signing_fingerprints = set(
-                [keystore.fingerprint for keystore in wallet.keystores if keystore.mnemonic]
-            )
-            return wallet_signing_fingerprints
-
-        def get_wallets_with_seed(fingerprints: list[str]) -> list[Wallet]:
+        def get_wallets_with_seed(fingerprints: list[str]) -> list[tuple[Wallet, list[str]]]:
             """Get wallets with seed."""
-            result = []
+            result: list[tuple[Wallet, list[str]]] = []
             for wallet in wallets:
-                signing_fingerprints_of_wallet = get_signing_fingerprints_of_wallet(wallet)
-                if set(fingerprints).intersection(signing_fingerprints_of_wallet):
-                    if wallet not in result:
-                        result.append(wallet)
+                matching_fingerprints = self._wallet_signing_fingerprints(wallet, fingerprints)
+                if matching_fingerprints:
+                    result.append((wallet, matching_fingerprints))
             return result
-
-        def get_pubkey_dict(pubkeys_of_inp: list[list[PubKeyInfo]]) -> dict[str, PubKeyInfo]:
-            """Get pubkey dict."""
-            pubkeys = {}
-            for _pubkeys in pubkeys_of_inp:
-                for _pubkey in _pubkeys:
-                    if _pubkey.fingerprint not in pubkeys:
-                        pubkeys[_pubkey.fingerprint] = _pubkey
-            return pubkeys
 
         simple_psbt = SimplePSBT.from_psbt(psbt)
         simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
 
-        wallet_inputs = self.get_wallet_inputs(simple_psbt)
-
         wallets: list[Wallet] = get_wallets(self.wallet_functions)
 
-        for wallet_id, inputs in wallet_inputs.items():
-            if not inputs:
+        for input_group in simple_psbt.group_inputs():
+            if not input_group.inputs:
                 continue
-            m, n = inputs[0].get_estimated_m_of_n()
-
-            pubkeys_with_signature = get_pubkey_dict([inp.get_pub_keys_with_signature() for inp in inputs])
-            pubkeys_without_signature = get_pubkey_dict(
-                [inp.get_pub_keys_without_signature() for inp in inputs]
-            )
+            m, _n = input_group.m_of_n
+            signed_signers = list(input_group.signed_signers())
+            unsigned_signers = list(input_group.unsigned_signers())
+            unsigned_signer_identifiers = list(input_group.unsigned_signer_identifiers)
+            unsigned_fingerprints = self._normalize_fingerprints(unsigned_signer_identifiers)
 
             # only add a maximum of m *(all_signature_importers) for each wallet
             for i in range(m):
-                signer_list = signature_importers.setdefault(f"{wallet_id}.{i}", [])
-                if pubkeys_with_signature:
-                    fingerprint, pubkey_info = pubkeys_with_signature.popitem()
-
-                    signatures = {}
-                    for inp in inputs:
-                        if (
-                            pubkey_info.pubkey
-                            and (sig := inp.partial_sigs.get(pubkey_info.pubkey))
-                            and inp in simple_psbt.inputs
-                        ):
-                            signatures[simple_psbt.inputs.index(inp)] = sig
+                signer_list: list[AbstractSignatureImporter] = []
+                step_key = f"{input_group.group_id}.{i}"
+                if signed_signers:
+                    signer_id, _pubkey_info, signatures = signed_signers.pop(0)
+                    normalized_fingerprint = self._normalize_fingerprint(signer_id)
+                    display_label = normalized_fingerprint or signer_id
+                    signer_identity = SignerIdentity(
+                        id=signer_id,
+                        fingerprint=normalized_fingerprint,
+                        label=display_label,
+                    )
 
                     signer_list.append(
                         SignatureImporterFile(
                             self.network,
-                            signature_available=True,
+                            display_label=display_label,
+                            signer_identities=[signer_identity],
                             signatures=signatures,
-                            key_label=fingerprint,
                             label=self.tr("Import file"),
                             close_all_video_widgets=self.signals.close_all_video_widgets,
                             loop_in_thread=self.loop_in_thread,
                         )
                     )
+                    completed_steps.append((step_key, signer_list))
                     continue
 
                 # check if any wallet has keys for this fingerprint
-                for wallet_with_seed in get_wallets_with_seed(
-                    [fingerprint for fingerprint in pubkeys_without_signature.keys()]
-                ):
+                for wallet_with_seed, matching_fingerprints in get_wallets_with_seed(unsigned_fingerprints):
                     if DEMO_MODE:
                         break
                     signer_list.append(
                         SignatureImporterWallet(
                             wallet_with_seed,
                             self.network,
-                            signature_available=False,
-                            key_label=wallet_id,
+                            display_label=input_group.display_label,
+                            signer_identities=[
+                                SignerIdentity(id=fingerprint, fingerprint=fingerprint)
+                                for fingerprint in matching_fingerprints
+                            ],
                             loop_in_thread=self.loop_in_thread,
                             close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
@@ -1084,15 +1044,27 @@ class UITx_Viewer(UITx_Base):
                     SignatureImporterUSB,
                 ]
                 for cls in classes:
+                    signer_identities = [
+                        SignerIdentity(
+                            id=signer_identifier,
+                            fingerprint=self._normalize_fingerprint(signer_identifier),
+                            label=signer_identifier,
+                        )
+                        for signer_identifier, _pubkey_info in unsigned_signers
+                    ]
                     signer_list.append(
                         cls(
                             self.network,
-                            signature_available=False,
-                            key_label=wallet_id,
+                            display_label=input_group.display_label,
+                            signer_identities=signer_identities,
                             loop_in_thread=self.loop_in_thread,
                             close_all_video_widgets=self.signals.close_all_video_widgets,
                         )
                     )
+                pending_steps.append((step_key, signer_list))
+
+        for step_key, signer_list in completed_steps + pending_steps:
+            signature_importers[step_key] = signer_list
         # connect signals
         for importers in signature_importers.values():
             for importer in importers:

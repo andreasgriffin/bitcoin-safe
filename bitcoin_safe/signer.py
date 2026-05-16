@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from functools import partial
 from typing import cast
 
@@ -43,12 +44,14 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import tx_of_psbt_to_hex, tx_to_hex
+from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.software_signer import SoftwareSigner
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
-from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message
+from bitcoin_safe.constants import LOGO_NAME
+from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PartialSig
 
@@ -57,6 +60,17 @@ from .keystore import KeyStoreImporterTypes
 from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class SignerIdentity:
+    id: str
+    fingerprint: str = ""
+    label: str = ""
+
+    @property
+    def display_name(self) -> str:
+        return self.label or self.fingerprint or self.id
 
 
 class AbstractSignatureImporter(QObject):
@@ -69,16 +83,16 @@ class AbstractSignatureImporter(QObject):
         network: bdk.Network,
         loop_in_thread: LoopInThread,
         close_all_video_widgets: SignalProtocol[[]],
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
     ) -> None:
         """Initialize instance."""
         super().__init__()
         self.network = network
-        self.signatures = signatures
-        self.signature_available = signature_available
-        self.key_label = key_label
+        self.signatures = dict(signatures) if signatures else {}
+        self.display_label = display_label
+        self.signer_identities = signer_identities
         self.close_all_video_widgets = close_all_video_widgets
         self.loop_in_thread = loop_in_thread
 
@@ -95,6 +109,14 @@ class AbstractSignatureImporter(QObject):
     def label(self) -> str:
         """Label."""
         return ""
+
+    @property
+    def signing_fingerprints(self) -> list[str]:
+        return [identity.fingerprint for identity in self.signer_identities if identity.fingerprint]
+
+    @property
+    def signature_available(self) -> bool:
+        return bool(self.signatures)
 
     def get_singing_options(self):
         """Get singing options."""
@@ -191,19 +213,20 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         network: bdk.Network,
         loop_in_thread: LoopInThread,
         close_all_video_widgets: SignalProtocol[[]],
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
     ) -> None:
         """Initialize instance."""
         super().__init__(
             network=network,
-            signature_available=signature_available,
+            display_label=display_label,
+            signer_identities=signer_identities,
             signatures=signatures,
-            key_label=key_label,
             loop_in_thread=loop_in_thread,
             close_all_video_widgets=close_all_video_widgets,
         )
+        self.wallet = wallet
         self.wallet_id = wallet.id
 
         receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
@@ -263,17 +286,17 @@ class SignatureImporterQR(AbstractSignatureImporter):
         network: bdk.Network,
         loop_in_thread: LoopInThread,
         close_all_video_widgets: SignalProtocol[[]],
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
         label: str | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
             network=network,
-            signature_available=signature_available,
+            display_label=display_label,
+            signer_identities=signer_identities,
             signatures=signatures,
-            key_label=key_label,
             loop_in_thread=loop_in_thread,
             close_all_video_widgets=close_all_video_widgets,
         )
@@ -320,17 +343,17 @@ class SignatureImporterFile(SignatureImporterQR):
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
         loop_in_thread: LoopInThread,
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
         label: str = translate("importer", "Import file"),
     ) -> None:
         """Initialize instance."""
         super().__init__(
             network=network,
-            signature_available=signature_available,
+            display_label=display_label,
+            signer_identities=signer_identities,
             signatures=signatures,
-            key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
             loop_in_thread=loop_in_thread,
@@ -364,17 +387,17 @@ class SignatureImporterClipboard(SignatureImporterFile):
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
         loop_in_thread: LoopInThread,
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
         label: str = translate("importer", "Import Signature"),
     ) -> None:
         """Initialize instance."""
         super().__init__(
             network=network,
-            signature_available=signature_available,
+            display_label=display_label,
+            signer_identities=signer_identities,
             signatures=signatures,
-            key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
             loop_in_thread=loop_in_thread,
@@ -407,26 +430,33 @@ class SignatureImporterUSB(SignatureImporterQR):
         network: bdk.Network,
         close_all_video_widgets: SignalProtocol[[]],
         loop_in_thread: LoopInThread,
-        signature_available: bool = False,
+        display_label: str,
+        signer_identities: list[SignerIdentity],
         signatures: dict[int, PartialSig] | None = None,
-        key_label: str = "",
         label: str | None = None,
     ) -> None:
         """Initialize instance."""
         label = label if label else self.tr("USB and Bluetooth")
         super().__init__(
             network=network,
-            signature_available=signature_available,
+            display_label=display_label,
+            signer_identities=signer_identities,
             signatures=signatures,
-            key_label=key_label,
             label=label,
             close_all_video_widgets=close_all_video_widgets,
             loop_in_thread=loop_in_thread,
         )
-        self.usb_gui = USBGui(self.network, loop_in_thread=loop_in_thread)
+        self.usb_gui = USBGui(
+            self.network, loop_in_thread=loop_in_thread, window_icon=svg_tools.get_QIcon(LOGO_NAME)
+        )
 
-    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
-        """Sign."""
+    def sign(
+        self,
+        psbt: bdk.Psbt,
+        sign_options: bdk.SignOptions | None = None,
+        autoscan_mode: AutoScanMode = AutoScanMode.USB,
+    ):
+        self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             signed_psbt = self.usb_gui.sign(psbt)
             if signed_psbt:

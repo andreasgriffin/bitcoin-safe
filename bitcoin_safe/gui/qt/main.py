@@ -88,6 +88,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.client import Client
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_tab import UpdateStatus
 from bitcoin_safe.gui.qt.btcpay_web_button import DonateDialog
@@ -225,7 +226,7 @@ class MainWindow(UnlockableMainWindow):
             self.config.currency = self.fx.get_currency_iso(QLocale(self.config.language_code))
         self.language_chooser.set_language(self.config.language_code)
         self.hwi_tool_gui = ToolGui(self.config.network, loop_in_thread=self.loop_in_thread)
-        self.hwi_tool_gui.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.hwi_tool_gui.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.setupUi(config_present=bool(config_present))
         self.sidebar_network_combobox.signal_network_changed.connect(self.restart)
 
@@ -465,7 +466,7 @@ class MainWindow(UnlockableMainWindow):
     def setupUi(self, config_present: bool) -> None:
         """SetupUi."""
         logger.debug("start setupUi")
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         w, h = 900, 600
         self.setMinimumSize(w, h)
 
@@ -1161,7 +1162,7 @@ class MainWindow(UnlockableMainWindow):
 
         dialog = QDialog(self)
         dialog.setWindowTitle(self.tr("Message Signatures"))
-        dialog.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        dialog.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         dialog.setMinimumWidth(520)
 
         layout = QVBoxLayout(dialog)

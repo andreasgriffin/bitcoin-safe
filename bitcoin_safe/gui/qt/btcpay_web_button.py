@@ -68,7 +68,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.constants import CONTACT_EMAIL, LOGO_NAME
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
 from bitcoin_safe.network_utils import ProxyInfo
@@ -626,7 +626,7 @@ class DonateDialog(QWidget):
         self._on_about_to_close = on_about_to_close
 
         self.setWindowTitle(self.tr("Support Bitcoin Safe"))
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.setMinimumWidth(420)
         self.setMinimumHeight(620)
 
@@ -634,7 +634,7 @@ class DonateDialog(QWidget):
 
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo_label.setPixmap(svg_tools.get_QIcon("logo.svg").pixmap(QSize(96, 96), self.devicePixelRatioF()))
+        logo_label.setPixmap(svg_tools.get_QIcon(LOGO_NAME).pixmap(QSize(96, 96), self.devicePixelRatioF()))
         layout.addWidget(logo_label)
 
         title_label = QLabel(self.tr("Help Bitcoin Safe grow as Free and Open Source Software."))

@@ -119,9 +119,9 @@ class PluginClient(QWidget, BaseSaveableClass):
 
     @classmethod
     def set_base_infos(cls):
-        cls.title = translate("ScheduledPaymentsClient", "Demo Subscription Plugin")
+        cls.title = translate("plugin", "Demo Subscription Plugin")
         cls.description = translate(
-            "ScheduledPaymentsClient",
+            "plugin",
             "Example plugin based on PaidPluginClient. "
             "Use this to verify subscription-gated activation and plugin-manager actions.",
         )

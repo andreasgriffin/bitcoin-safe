@@ -41,6 +41,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, 
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
+from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
@@ -53,12 +54,14 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QSizePolicy,
+    QSplitter,
     QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.gui.qt.analyzers import (
     FingerprintAnalyzer,
     KeyOriginAnalyzer,
@@ -93,7 +96,7 @@ from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
 from .block_change_signals import BlockChangesSignals
 from .dialog_import import ImportDialog
-from .util import Message, MessageType
+from .util import Message, MessageType, set_margins
 
 logger = logging.getLogger(__name__)
 
@@ -153,7 +156,10 @@ class KeyStoreUI(CardBase):
         }
 
         self.usb_gui = USBGui(
-            self.network, initalization_label=self.hardware_signer_label, loop_in_thread=loop_in_thread
+            self.network,
+            initalization_label=self.hardware_signer_label,
+            loop_in_thread=loop_in_thread,
+            window_icon=svg_tools.get_QIcon(LOGO_NAME),
         )
 
         self._build_widgets()
@@ -195,7 +201,6 @@ class KeyStoreUI(CardBase):
         self.add_controls_widget = QWidget(self.header_widget)
         self.add_controls_layout = QHBoxLayout(self.add_controls_widget)
         self.add_controls_layout.setContentsMargins(0, 0, 0, 0)
-        self.add_controls_layout.setSpacing(8)
         self.header_right_layout.addWidget(self.add_controls_widget)
 
         self.device_type_help_label = IconLabel(parent=self.header_widget)
@@ -214,7 +219,6 @@ class KeyStoreUI(CardBase):
         self.header_actions_widget = QWidget(self.header_widget)
         self.header_actions_layout = QHBoxLayout(self.header_actions_widget)
         self.header_actions_layout.setContentsMargins(0, 0, 0, 0)
-        self.header_actions_layout.setSpacing(8)
         self.header_right_layout.addWidget(self.header_actions_widget)
 
         self.button_device_instructions = QPushButton(self.header_widget)
@@ -237,16 +241,25 @@ class KeyStoreUI(CardBase):
         self.header_actions_layout.addWidget(self.button_menu)
 
         self.content_body = QWidget(self.content_widget)
-        self._content_layout.addWidget(self.content_body)
-        self.content_layout = QHBoxLayout(self.content_body)
-        self.content_layout.setContentsMargins(0, 0, 0, 0)
-        self.content_layout.setSpacing(12)
+        self.content_layout.addWidget(self.content_body)
+        self.content_body_layout = QHBoxLayout(self.content_body)
+        self.content_body_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.left_widget = QWidget(self.content_body)
+        self.content_splitter = QSplitter(Qt.Orientation.Horizontal, self.content_body)
+        self.content_splitter.setChildrenCollapsible(False)
+        self.content_body_layout.addWidget(self.content_splitter)
+
+        self.left_widget = QWidget(self.content_splitter)
         self.left_layout = QVBoxLayout(self.left_widget)
-        self.left_layout.setContentsMargins(0, 0, 0, 0)
+        set_margins(
+            self.left_layout,
+            margins={
+                Qt.Edge.TopEdge: 0,
+                Qt.Edge.BottomEdge: 0,
+            },
+        )
         self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.content_layout.addWidget(self.left_widget, stretch=7, alignment=Qt.AlignmentFlag.AlignTop)
+        self.content_splitter.addWidget(self.left_widget)
 
         self.connect_layout = QHBoxLayout()
         self.left_layout.addLayout(self.connect_layout)
@@ -268,6 +281,15 @@ class KeyStoreUI(CardBase):
             parent=self.left_widget,
         )
         self.connect_layout.addWidget(self.button_connect_usb)
+
+        self.button_connect_bluetooth = SpinningButton(
+            text="",
+            signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
+            enabled_icon=svg_tools.get_QIcon("bi--bluetooth.svg"),
+            timeout=60,
+            parent=self.left_widget,
+        )
+        self.connect_layout.addWidget(self.button_connect_bluetooth)
 
         self.button_connect_import = QPushButton(self.left_widget)
         self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
@@ -327,21 +349,32 @@ class KeyStoreUI(CardBase):
 
         self.details_layout = QGridLayout(self.details_widget)
         self.details_layout.setContentsMargins(0, 0, 0, 0)
-        self.details_layout.setColumnStretch(1, 1)
+        self.details_layout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
+        self.details_layout.setColumnStretch(2, 1)
         self.details_layout.addWidget(self.label_fingerprint, 0, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_fingerprint, 0, 1)
+        self.details_layout.addWidget(self.edit_fingerprint, 0, 2)
         self.details_layout.addWidget(self.label_key_origin, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_key_origin, 1, 1)
+        self.details_layout.addWidget(self.edit_key_origin, 1, 2)
         self.details_layout.addWidget(self.label_xpub, 2, 0, alignment=Qt.AlignmentFlag.AlignTop)
-        self.details_layout.addWidget(self.edit_xpub, 2, 1)
+        self.details_layout.addWidget(self.edit_xpub, 2, 2)
         self.details_layout.addWidget(self.label_seed, 3, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_seed, 3, 1)
+        self.details_layout.addWidget(self.edit_seed, 3, 2)
         self.left_layout.addWidget(self.details_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
-        self.right_widget = QWidget(self.content_body)
+        self.right_widget = QWidget(self.content_splitter)
         self.right_widget_layout = QVBoxLayout(self.right_widget)
-        self.right_widget_layout.setContentsMargins(0, 0, 0, 0)
-        self.content_layout.addWidget(self.right_widget, stretch=3)
+        set_margins(
+            self.right_widget_layout,
+            margins={
+                Qt.Edge.TopEdge: 0,
+                Qt.Edge.BottomEdge: 0,
+                Qt.Edge.RightEdge: 0,
+            },
+        )
+        self.content_splitter.addWidget(self.right_widget)
+        self.content_splitter.setStretchFactor(self.content_splitter.indexOf(self.left_widget), 7)
+        self.content_splitter.setStretchFactor(self.content_splitter.indexOf(self.right_widget), 3)
+        self.content_splitter.setSizes([700, 300])
 
         self.label_description = QLabel(self.right_widget)
         self.right_widget_layout.addWidget(self.label_description)
@@ -400,7 +433,10 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.button_connect_qr.clicked), self.scan_signer_data_from_qr
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.button_connect_usb.clicked), self.on_hwi_click
+            cast(SignalProtocol[[]], self.button_connect_usb.clicked), self.on_hwi_click_usb
+        )
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.button_connect_bluetooth.clicked), self.on_hwi_click_bluetooth
         )
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.button_connect_import.clicked), self._import_dialog
@@ -597,6 +633,9 @@ class KeyStoreUI(CardBase):
         self.button_connect_qr.setVisible(connect_visible and hardware_signer.supports_qr)
         self.button_connect_usb.setVisible(
             connect_visible and hardware_signer.usb != FeatureLevel.not_capable
+        )
+        self.button_connect_bluetooth.setVisible(
+            connect_visible and hardware_signer.bluetooth != FeatureLevel.not_capable
         )
         self.button_connect_import.setVisible(connect_visible)
 
@@ -903,6 +942,17 @@ class KeyStoreUI(CardBase):
         self.edit_fingerprint.setText(signer_info.fingerprint)
         self._apply_state()
 
+    def _get_signer_info_from_descriptor(self, data: Data) -> SignerInfo | None:
+        """Decode descriptor-like data into signer info when possible."""
+        if data.data_type not in [DataType.Descriptor, DataType.MultiPathDescriptor]:
+            return None
+
+        try:
+            return SignerInfo.decode_descriptor_as_signer_info(data.data_as_string(), network=self.network)
+        except Exception as exc:
+            logger.debug(f"{self.__class__.__name__}: {exc}")
+            return None
+
     def _on_handle_input(self, data: Data, parent: QLineEdit | QTextEdit | None = None) -> None:
         """On handle input."""
         if data.data_type == DataType.SignerInfo:
@@ -932,7 +982,13 @@ class KeyStoreUI(CardBase):
             self.edit_xpub.setText(data.data)
         elif data.data_type == DataType.Fingerprint:
             self.edit_fingerprint.setText(data.data)
-        elif data.data_type in [DataType.Descriptor, DataType.MultisigWalletExport]:
+        elif signer_info := self._get_signer_info_from_descriptor(data):
+            self.set_using_signer_info(signer_info)
+        elif data.data_type in [
+            DataType.Descriptor,
+            DataType.MultiPathDescriptor,
+            DataType.MultisigWalletExport,
+        ]:
             Message(
                 self.tr("Please paste descriptors into the descriptor field in the top right."), parent=self
             )
@@ -969,7 +1025,7 @@ class KeyStoreUI(CardBase):
         self.label_description.setText(self.tr("Personal notes:"))
         self.connect_help_label.setText(self.tr("Connect"))
         self.connect_help_label.set_icon_as_help(
-            tooltip=self.tr("Import signer data with QR, USB, or text/file import.")
+            tooltip=self.tr("Import signer data with QR, USB, Bluetooth, or text/file import.")
         )
         self.connect_help_label.icon_label.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -1023,14 +1079,17 @@ class KeyStoreUI(CardBase):
         self.action_change_device_type.setText(self.tr("Change device type"))
         self.button_connect_qr.setText(self.tr("QR Code"))
         self.button_connect_usb.setText(self.tr("USB"))
+        self.button_connect_bluetooth.setText(self.tr("Bluetooth"))
         self.button_connect_import.setText(self.tr("Import"))
         self._update_device_type_help()
 
         self._update_header_subtitle()
         self._apply_state()
 
-    def _on_hwi_click(self, key_origin: str) -> None:
+    def _on_hwi_click(self, autoscan_mode: AutoScanMode) -> None:
         """On hwi click."""
+        key_origin = self.get_address_type().key_origin(self.network)
+        self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
         except Exception as exc:
@@ -1051,11 +1110,13 @@ class KeyStoreUI(CardBase):
         if not self.textEdit_description.toPlainText().strip():
             self.textEdit_description.setText(f"{device.get('type', '')} - {device.get('model', '')}")
 
-    def on_hwi_click(self) -> None:
-        """On hwi click."""
-        address_type = self.get_address_type()
-        key_origin = address_type.key_origin(self.network)
-        self._on_hwi_click(key_origin=key_origin)
+    def on_hwi_click_usb(self) -> None:
+        """Import signer data by scanning USB devices first."""
+        self._on_hwi_click(autoscan_mode=AutoScanMode.USB)
+
+    def on_hwi_click_bluetooth(self) -> None:
+        """Import signer data by scanning Bluetooth devices first."""
+        self._on_hwi_click(autoscan_mode=AutoScanMode.BLUETOOTH)
 
     def get_ui_values_as_keystore(self) -> KeyStore:
         """Get ui values as keystore."""

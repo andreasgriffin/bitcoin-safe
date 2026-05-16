@@ -68,13 +68,13 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation, WalletIdDialog
-from bitcoin_safe.gui.qt.import_export import HorizontalImportExportAll
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
-from bitcoin_safe.gui.qt.signer_ui import SignerUI
+from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.hardware_signers import HardwareSigners
+from bitcoin_safe.signer import SignatureImporterWallet
 from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
@@ -258,14 +258,16 @@ def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWa
 
     assert viewer.tx_singning_steps
     widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
-    assert isinstance(widget, HorizontalImportExportAll)
-    signer_ui = widget.wallet_importers.signer_ui
-    assert isinstance(signer_ui, SignerUI)
-    for button in signer_ui.findChildren(QPushButton):
-        assert button.text() == f"{qt_wallet.wallet.id}"
-        assert button.isVisible()
-        with qtbot.waitSignal(signer_ui.signal_signature_added, timeout=10_000):
-            button.click()
+    assert isinstance(widget, TxSigningDeviceList)
+    seed_importer = next(importer for importer in importers if isinstance(importer, SignatureImporterWallet))
+    seed_card = next(card for card in widget.cards if card.device.has_seed)
+    seed_card.expand()
+    seed_button = next(
+        button for button in seed_card.findChildren(QPushButton) if button.text() == "Sign now"
+    )
+    assert seed_button.isEnabled()
+    with qtbot.waitSignal(seed_importer.signal_signature_added, timeout=10_000):
+        seed_button.click()
 
     assert viewer.button_send.isVisible()
 
