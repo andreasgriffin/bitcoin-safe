@@ -440,13 +440,13 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
     assert len(groups) == 2
     assert groups[0].group_id == "Input 0"
     assert groups[0].m_of_n == (0, 0)
-    assert groups[0].signed_fingerprints == []
-    assert groups[0].unsigned_fingerprints == []
+    assert groups[0].signed_signer_identifiers == []
+    assert groups[0].unsigned_signer_identifiers == []
 
     assert groups[1].group_id == "75B600B9, 836DA7F8"
     assert groups[1].m_of_n == (1, 2)
-    assert groups[1].signed_fingerprints == ["75B600B9"]
-    assert groups[1].unsigned_fingerprints == ["836DA7F8"]
+    assert groups[1].signed_signer_identifiers == ["75B600B9"]
+    assert groups[1].unsigned_signer_identifiers == ["836DA7F8"]
 
 
 def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:
