@@ -46,6 +46,7 @@ from bitcoin_safe.psbt_util import (
     SimpleInput,
     SimpleOutput,
     SimplePSBT,
+    parse_witness_script,
 )
 from bitcoin_safe.pythonbdk_types import TxOut
 from bitcoin_safe.signer import AbstractSignatureImporter
@@ -102,6 +103,51 @@ mixed_input_no_signatures = bdk.Psbt(
 mixed_input_no_signatures_partially_signed = bdk.Psbt(
     "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"
 )
+
+
+# this is the problematic PSBT from https://github.com/bitcoindevkit/bdk/issues/2204#issue-4460743754
+# that bitcoin core can fianlize, but not bdk
+mixed_finalized_and_partially_signed_psbt = """
+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
+AIACAACAAAAAAAEAAAAA
+""".strip().replace("\n", "")
 
 
 def _make_simple_input(
@@ -353,6 +399,54 @@ def test_group_inputs_collect_derived_group_data() -> None:
     assert groups[2].signatures_by_identifier() == {
         fingerprint_c: {2: PartialSig(signature=f"sig-{fingerprint_c}", sighash_type="ALL")}
     }
+
+
+def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
+    psbt = bdk.Psbt(mixed_finalized_and_partially_signed_psbt)
+    simple_psbt = SimplePSBT.from_psbt(psbt)
+
+    # TODO: once https://github.com/bitcoindevkit/bdk/issues/2204 is solved
+    # then this should evalute to true
+    # assert psbt.finalize().could_finalize
+
+    finalized_input = simple_psbt.inputs[0]
+    assert finalized_input.is_fully_signed()
+    assert isinstance(finalized_input.final_script_witness, list)
+    assert len(finalized_input.partial_sigs) == 0
+    assert finalized_input.pubkeys == []
+    assert finalized_input.m_of_n is None
+
+    assert parse_witness_script(finalized_input.final_script_witness[-1]) == (
+        2,
+        [
+            "0250ca2af1e0f2552436c66078c24736e0396e36938c421fdbee6f4fe377e5f6af",
+            "03622f05e03b50037b7de99a00fe6cd1d0950fbb1e1f462cdff85ff077e57e931d",
+            "03cc3bf2cb38bfbf03264b567490ed45cd09f465843b0fc7a8dd1be9b852816e00",
+        ],
+    )
+
+    partially_signed_input = simple_psbt.inputs[1]
+    assert partially_signed_input.m_of_n == (1, 2)
+    assert not partially_signed_input.is_fully_signed()
+    assert [pubkey.fingerprint for pubkey in partially_signed_input.get_pub_keys_with_signature()] == [
+        "75B600B9"
+    ]
+    assert [pubkey.fingerprint for pubkey in partially_signed_input.get_pub_keys_without_signature()] == [
+        "836DA7F8"
+    ]
+
+    groups = simple_psbt.group_inputs()
+
+    assert len(groups) == 2
+    assert groups[0].group_id == "Input 0"
+    assert groups[0].m_of_n == (0, 0)
+    assert groups[0].signed_fingerprints == []
+    assert groups[0].unsigned_fingerprints == []
+
+    assert groups[1].group_id == "75B600B9, 836DA7F8"
+    assert groups[1].m_of_n == (1, 2)
+    assert groups[1].signed_fingerprints == ["75B600B9"]
+    assert groups[1].unsigned_fingerprints == ["836DA7F8"]
 
 
 def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:
