@@ -192,8 +192,8 @@ def test_mixed_steps_keep_device_cards_instead_of_step_summary(
     signed_step_widget = widget.stacked_widget.widget(0)
     unsigned_step_widget = widget.stacked_widget.widget(1)
 
-    assert isinstance(signed_step_widget, TxSigningDeviceList)
     assert isinstance(unsigned_step_widget, TxSigningDeviceList)
+    assert not isinstance(signed_step_widget, TxSigningDeviceList)
 
     unsigned_card = next(
         card for card in unsigned_step_widget.cards if card.device.fingerprint == keystores[1].fingerprint
@@ -203,6 +203,10 @@ def test_mixed_steps_keep_device_cards_instead_of_step_summary(
     assert unsigned_card.body.findChild(SignedUI) is None
     assert unsigned_card.button_sign.text() == "Sign with this device"
     assert {button.text() for button in unsigned_card.body.findChildren(QPushButton)} == {"Show QR Code"}
+
+    widget.set_current_index(0)
+    signed_step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(signed_step_widget, TxSigningDeviceList)
 
 
 def _make_qr_device_card(
@@ -470,6 +474,9 @@ def test_partially_signed_psbt_keeps_stable_steps_and_signed_cards(qtbot: QtBot,
     assert len([device for device in widget.signing_devices if device.signature_available]) == 2
     assert widget.current_index() == 2
 
+    assert not isinstance(widget.stacked_widget.widget(0), TxSigningDeviceList)
+
+    widget.set_current_index(0)
     signed_step_widget = widget.stacked_widget.widget(0)
     assert isinstance(signed_step_widget, TxSigningDeviceList)
 
