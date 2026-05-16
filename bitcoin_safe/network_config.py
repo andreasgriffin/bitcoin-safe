@@ -229,8 +229,8 @@ def get_default_p2p_node_urls(network: bdk.Network) -> dict[str, str]:
 def get_testnet_faucet(network: bdk.Network) -> str | None:
     """Get testnet faucet."""
     d = {
-        bdk.Network.TESTNET: "https://bitcoinfaucet.uo1.net/",
-        bdk.Network.TESTNET4: "https://faucet.testnet4.dev/",
+        bdk.Network.TESTNET: "https://coinfaucet.eu/en/btc-testnet/",
+        bdk.Network.TESTNET4: "https://coinfaucet.eu/en/btc-testnet4/",
         bdk.Network.SIGNET: "https://signet25.bublina.eu.org/",
     }
     return d.get(network)
@@ -456,7 +456,8 @@ class NetworkConfig(BaseSaveableClass):
         self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
         self.manual_peers: Peers = Peers()
         self.p2p_autodiscover_additional_peers: bool = True
-        self.p2p_listener_parallel_connections: int = 2
+        # testnets nodes are less reliable, so we need more connections
+        self.p2p_listener_parallel_connections: int = 2 if self.network == bdk.Network.BITCOIN else 6
         self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 

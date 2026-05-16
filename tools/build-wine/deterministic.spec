@@ -38,7 +38,6 @@ datas = [
     (certifi.where(), "certifi/"), # necessary on mac to avail ssl errors
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
-    (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/screenshots/*", f"{PYPKG}/gui/screenshots"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/locales/*", f"{PYPKG}/gui/locales"), 
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/REGTEST/*", f"{PYPKG}/gui/demo_wallets/REGTEST"), 
