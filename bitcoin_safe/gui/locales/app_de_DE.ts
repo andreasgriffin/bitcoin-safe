@@ -66,7 +66,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>Die txid der signierten psbt stimmt nicht mit der ursprünglichen txid überein</translation>
+			<translation>Die TXID der signierten PSBT stimmt nicht mit der ursprünglichen TXID überein.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -110,12 +110,12 @@
 		<name>AddPluginSourceDialog</name>
 		<message>
 			<source>Paste the ASCII-armored public key here</source>
-			<translation>Fügen Sie hier den ASCII-armored öffentlichen Schlüssel ein</translation>
+			<translation>Fügen Sie hier den öffentlichen Schlüssel im ASCII-Format ein</translation>
 		</message>
 		<name>AddPluginSourceDialog</name>
 		<message>
 			<source>Pinned public key</source>
-			<translation>Angepinnter öffentlicher Schlüssel</translation>
+			<translation>Angehefteter öffentlicher Schlüssel</translation>
 		</message>
 	</context>
 	<context>
@@ -156,7 +156,7 @@
 		<name>AddressDialog</name>
 		<message>
 			<source>Advanced</source>
-			<translation>Fortgeschritten</translation>
+			<translation>Erweitert</translation>
 		</message>
 		<name>AddressDialog</name>
 		<message>
@@ -676,7 +676,7 @@ Der kombinierte Eltern-Kind-Tarif sollte dem Zielblock entsprechen.</translation
 		<name>CategoryList</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXO's</translation>
+			<translation>UTXOs</translation>
 		</message>
 		<name>CategoryList</name>
 		<message>
@@ -1025,7 +1025,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet name</source>
-			<translation>Starten Sie zuerst die kostenlose Testversion und verwalten oder aktualisieren Sie das Abonnement dann hier.</translation>
+			<translation>Wallet-Name</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1144,7 +1144,7 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>1. Print backup sheets</source>
-			<translation>Wallet-Name</translation>
+			<translation>1. Backup-Blätter drucken</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1154,12 +1154,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Backup sheet</source>
-			<translation>2. Ja, ich habe die Seed-Wörter dem Ausdruck beigefügt</translation>
+			<translation>Backup-Blatt</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Backup sheet + seed words</source>
-			<translation>Backup-Blatt</translation>
+			<translation>Backup-Blatt + Seed-Wörter</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1174,12 +1174,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Distribute to 2 separate locations</source>
-			<translation>Auf 2 separate Orte verteilen</translation>
+			<translation>Auf 2 getrennte Orte verteilen</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Distribute to {n} separate locations</source>
-			<translation>Auf {n} separate Orte verteilen</translation>
+			<translation>Auf {n} getrennte Orte verteilen</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1189,17 +1189,17 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Location</source>
-			<translation>Wichtig</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Location 1</source>
 			<translation>Standort</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
-			<source>Location 2</source>
+			<source>Location 1</source>
 			<translation>Standort 1</translation>
+		</message>
+		<name>DistributeSeeds</name>
+		<message>
+			<source>Location 2</source>
+			<translation>Standort 2</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1209,12 +1209,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
-			<translation>Standort 2</translation>
+			<translation>Anleitung zum Anzeigen der Seed-Wörter auf diesem Signierer öffnen.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Please complete the previous steps.</source>
-			<translation>Bitte die vorherigen Schritte abschließen.</translation>
+			<translation>Bitte schließe zuerst die vorherigen Schritte ab.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1234,7 +1234,7 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Seed words attached</source>
-			<translation>Legen Sie Ihre Backups und Signierer an sicheren Standorten ab</translation>
+			<translation>Seed-Wörter beigefügt</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1249,12 +1249,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
-			<translation>Signiergerät</translation>
+			<translation>Bewahre jeden Signierer zusammen mit seinem Backup-Blatt und den Seed-Wörtern am selben Standort auf.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
-			<translation>Bewahren Sie jeden Signierer zusammen mit seinem Backup-Blatt und den Seed-Wörtern am selben Standort auf.</translation>
+			<translation>Bewahre das Signiergerät und das Backup-Blatt mit den Seed-Wörtern an getrennten sicheren Orten auf.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -2541,7 +2541,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
-			<translation>Eine Wallet mit dem Namen {wallet_id} existiert bereits. Bitte wähle einen anderen Namen.</translation>
+			<translation>Eine Wallet mit dem Namen {wallet_id} existiert bereits. Bitte wählen Sie einen anderen Namen.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3113,7 +3113,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Explore Playground</source>
-			<translation>Playground erkunden</translation>
+			<translation>Testumgebung erkunden</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3143,12 +3143,12 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Real sound money (BTC)</source>
-			<translation>Echtes solides Geld (BTC)</translation>
+			<translation>Echtes, werthaltiges Geld (BTC)</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Send and receive real bitcoin</source>
-			<translation>Echte bitcoin senden und empfangen</translation>
+			<translation>Echte Bitcoin senden und empfangen</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3163,7 +3163,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
-			<translation>Beginne mit Transaktionen mit solidem Geld oder lerne in einem sicheren Playground. In jedem Fall kannst du später jederzeit eine weitere Wallet erstellen.</translation>
+			<translation>Beginne mit Transaktionen mit solidem Geld oder lerne in einer sicheren Testumgebung. In jedem Fall kannst du später jederzeit eine weitere Wallet erstellen.</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3188,7 +3188,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Uses onchain Mainnet network</source>
-			<translation>Verwendet das onchain Mainnet-Netzwerk</translation>
+			<translation>Verwendet das On-Chain-Mainnet</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3731,7 +3731,7 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<name>PluginManager</name>
 		<message>
 			<source>Disable the plugin before deleting it.</source>
-			<translation>Deaktiviere das Plugin, bevor du es löschst.</translation>
+			<translation>Deaktivieren Sie das Plugin, bevor Sie es löschen.</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4550,7 +4550,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SearchWallets</name>
 		<message>
 			<source>UTXOs</source>
-			<translation>UTXO's</translation>
+			<translation>UTXOs</translation>
 		</message>
 	</context>
 	<context>
@@ -7388,7 +7388,7 @@ Land: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Starte dein bitcoind mit dem Befehl „bitcoind -chain=signet“  </translation>
+			<translation>Führen Sie Ihren bitcoind mit "bitcoind -chain=signet" aus</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
