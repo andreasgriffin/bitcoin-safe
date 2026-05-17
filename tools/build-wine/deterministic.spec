@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import site
-from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs, copy_metadata
 from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 import sys, os
@@ -46,6 +46,10 @@ datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/demo_wallets/TESTNET4/*", f"{PYPKG}/gui/demo_wallets/TESTNET4"), 
     (f"{PROJECT_ROOT}/{PYPKG}/data/*", f"{PYPKG}/data"), 
 ]
+
+# slip10 reads its version from importlib.metadata at import time, so the
+# bundled app also needs the distribution metadata.
+datas += copy_metadata("slip10")
 
 ##### data of included modules 
 # Get the site-packages directory
@@ -117,7 +121,7 @@ for x in a.datas.copy():
 # not reproducible (see #7739):
 print("Removing *.dist-info/ from datas:")
 for x in a.datas.copy():
-    if ".dist-info\\" in x[0].lower():
+    if ".dist-info\\" in x[0].lower() and not x[0].lower().startswith("slip10-"):
         a.datas.remove(x)
         print('----> Removed x =', x)
 

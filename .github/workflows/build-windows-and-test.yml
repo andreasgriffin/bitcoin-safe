@@ -303,6 +303,14 @@ jobs:
               throw "Did not find 'pyzbar could be loaded successfully' in $expectedLogPath"
             }
             Write-Log "Verified 'pyzbar could be loaded successfully' in application log."
+            $criticalMatches = Select-String -Path $resolvedLogPath -Pattern 'CRITICAL' -SimpleMatch
+            if ($criticalMatches) {
+              foreach ($match in $criticalMatches) {
+                Write-Log "CRITICAL log line: $($match.LineNumber): $($match.Line)"
+              }
+              throw "Application log contains CRITICAL entries."
+            }
+            Write-Log "Verified application log does not contain CRITICAL entries."
 
           } finally {
             if ($process -and -not $process.HasExited) {
