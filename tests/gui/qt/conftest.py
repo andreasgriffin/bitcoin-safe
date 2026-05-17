@@ -55,9 +55,9 @@ def _disable_mempool_fetch(self, force=False) -> None:
     del force
     self.data.recommended = {
         "fastestFee": 12.0,
-        "halfHourFee": 8.0,
-        "hourFee": 5.0,
-        "economyFee": 3.0,
+        "halfHourFee": 4.0,
+        "hourFee": float(MIN_RELAY_FEE),
+        "economyFee": float(MIN_RELAY_FEE),
         "minimumFee": float(MIN_RELAY_FEE),
     }
     self.data.mempool_blocks = [
@@ -74,16 +74,16 @@ def _disable_mempool_fetch(self, force=False) -> None:
             "blockVSize": 940_000,
             "nTx": 1_500,
             "totalFees": 800_000,
-            "medianFee": 8.0,
-            "feeRange": [8.0, 12.0],
+            "medianFee": 4.0,
+            "feeRange": [4.0, 12.0],
         },
         {
             "blockSize": 910_000,
             "blockVSize": 910_000,
             "nTx": 1_200,
             "totalFees": 500_000,
-            "medianFee": 5.0,
-            "feeRange": [5.0, 8.0],
+            "medianFee": float(MIN_RELAY_FEE),
+            "feeRange": [float(MIN_RELAY_FEE), 4.0],
         },
     ]
     self.data.mempool_dict = {
