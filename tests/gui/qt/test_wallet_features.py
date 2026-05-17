@@ -62,7 +62,7 @@ from bitcoin_safe.gui.qt.register_multisig import (
 from bitcoin_safe.gui.qt.settings import Settings
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, HardwareSigners
 from bitcoin_safe.signals import Signals, WalletFunctions
-from bitcoin_safe.signature_manager import Asset
+from bitcoin_safe.signature_manager import Asset, GitHubRelease
 from bitcoin_safe.util import filename_clean
 from bitcoin_safe.wallet import Wallet
 
@@ -176,12 +176,18 @@ def test_wallet_features_multisig(
     asset_extension = asset_extension_by_system.get(platform.system(), "AppImage")
 
     monkeypatch.setattr(
-        "bitcoin_safe.gui.qt.update_notification_bar.GitHubAssetDownloader.get_assets_latest",
+        "bitcoin_safe.gui.qt.update_notification_bar.GitHubAssetDownloader.get_releases",
         lambda self: [
-            Asset(
+            GitHubRelease(
                 tag="999.0.0",
-                url=f"https://example.com/bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
-                name=f"bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
+                prerelease=False,
+                assets=[
+                    Asset(
+                        tag="999.0.0",
+                        url=f"https://example.com/bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
+                        name=f"bitcoin-safe-999.0.0-{asset_architecture}.{asset_extension}",
+                    )
+                ],
             )
         ],
     )

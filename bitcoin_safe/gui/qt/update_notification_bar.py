@@ -36,12 +36,13 @@ import shutil
 import tarfile
 import tempfile
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import fast_version
+from packaging.version import InvalidVersion
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
@@ -59,6 +60,7 @@ from ...html_utils import html_f
 from ...signature_manager import (
     Asset,
     GitHubAssetDownloader,
+    GitHubRelease,
     KnownGPGKeys,
     SignatureVerifyer,
 )
@@ -66,6 +68,8 @@ from ...util_os import xdg_open_file
 from .util import Message, MessageType, set_margins
 
 logger = logging.getLogger(__name__)
+
+SHOW_PRERELEASE_UPDATES = False
 
 
 class UpdateNotificationBar(NotificationBar):
@@ -148,6 +152,49 @@ class UpdateNotificationBar(NotificationBar):
             tag = self.assets[-1].tag
             return tag
         return None
+
+    @staticmethod
+    def should_include_prerelease_updates(current_version: str, show_prerelease_updates: bool) -> bool:
+        """Return whether prerelease updates are eligible."""
+        try:
+            current = fast_version(current_version)
+        except InvalidVersion:
+            return show_prerelease_updates
+        return current.is_prerelease or show_prerelease_updates
+
+    @classmethod
+    def select_newest_eligible_release(
+        cls,
+        releases: list[GitHubRelease],
+        current_version: str,
+        show_prerelease_updates: bool,
+    ) -> GitHubRelease | None:
+        """Return the newest eligible release newer than the current version."""
+        try:
+            current = fast_version(current_version)
+        except InvalidVersion:
+            return None
+
+        include_prerelease_updates = cls.should_include_prerelease_updates(
+            current_version=current_version,
+            show_prerelease_updates=show_prerelease_updates,
+        )
+        newest_release: GitHubRelease | None = None
+        newest_version = current
+
+        for release in releases:
+            if release.prerelease and not include_prerelease_updates:
+                continue
+            try:
+                release_version = fast_version(release.tag)
+            except InvalidVersion:
+                continue
+            if release_version <= current or release_version <= newest_version:
+                continue
+            newest_release = release
+            newest_version = release_version
+
+        return newest_release
 
     def is_new_version_available(self) -> bool:
         """Is new version available."""
@@ -371,13 +418,18 @@ class UpdateNotificationBar(NotificationBar):
     def check(self) -> None:
         """Check."""
 
-        async def do() -> Any:
+        async def do() -> list[GitHubRelease]:
             """Do."""
-            return GitHubAssetDownloader(self.key.repository, proxies=self.proxies).get_assets_latest()
+            return GitHubAssetDownloader(self.key.repository, proxies=self.proxies).get_releases()
 
-        def on_success(assets: list[Asset] | None) -> None:
+        def on_success(releases: list[GitHubRelease] | None) -> None:
             """On success."""
-            self.assets = self.get_filtered_assets(assets or [])
+            release = self.select_newest_eligible_release(
+                releases=releases or [],
+                current_version=__version__,
+                show_prerelease_updates=SHOW_PRERELEASE_UPDATES,
+            )
+            self.assets = self.get_filtered_assets(release.assets if release else [])
             self.refresh()
             self.signal_on_success.emit()
 
