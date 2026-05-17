@@ -156,6 +156,13 @@ class Asset:
     name: str
 
 
+@dataclass
+class GitHubRelease:
+    tag: str
+    prerelease: bool
+    assets: list[Asset]
+
+
 class GitHubAssetDownloader:
     def __init__(self, repository: str, proxies: dict | None) -> None:
         """Initialize instance."""
@@ -163,21 +170,53 @@ class GitHubAssetDownloader:
         self.proxies = proxies
         logger.debug(f"initialized {self.__class__.__name__}")
 
-    def _get_assets(self, api_url) -> list[Asset]:
-        """Get assets."""
+    @staticmethod
+    def _release_from_payload(payload: dict[str, Any]) -> GitHubRelease:
+        tag = str(payload.get("tag_name", ""))
+        assets_payload = payload.get("assets", [])
+        assets = []
+        if isinstance(assets_payload, list):
+            assets = [
+                Asset(
+                    tag=tag,
+                    url=asset["browser_download_url"],
+                    name=asset["name"],
+                )
+                for asset in assets_payload
+            ]
+        return GitHubRelease(
+            tag=tag,
+            prerelease=bool(payload.get("prerelease", False)),
+            assets=assets,
+        )
+
+    def _get_release(self, api_url: str) -> GitHubRelease | None:
+        """Get a single release."""
         try:
             logger.debug(f"Get assets from {api_url}")
             response = requests.get(api_url, timeout=default_timeout(self.proxies), proxies=self.proxies)
             response.raise_for_status()
-            assets = response.json().get("assets", [])
+            payload = response.json()
+            if not isinstance(payload, dict):
+                return None
+            return self._release_from_payload(payload)
+        except requests.RequestException:
+            logger.error(f"Failed to download: {api_url}")
+            return None
 
+    def _get_releases(self, api_url: str) -> list[GitHubRelease]:
+        """Get releases."""
+        try:
+            logger.debug(f"Get releases from {api_url}")
+            response = requests.get(api_url, timeout=default_timeout(self.proxies), proxies=self.proxies)
+            response.raise_for_status()
+            payload = response.json()
+            if not isinstance(payload, list):
+                return []
             return [
-                Asset(
-                    tag=response.json().get("tag_name", ""),
-                    url=asset["browser_download_url"],
-                    name=asset["name"],
-                )
-                for asset in assets
+                self._release_from_payload(release_payload)
+                for release_payload in payload
+                if isinstance(release_payload, dict) and not bool(release_payload.get("draft", False))
             ]
         except requests.RequestException:
             logger.error(f"Failed to download: {api_url}")
@@ -185,11 +224,21 @@ class GitHubAssetDownloader:
 
     def get_assets_by_tag(self, tag: str) -> list[Asset]:
         """Get assets by tag."""
-        return self._get_assets(f"https://api.github.com/repos/{self.repository}/releases/tags/{tag}")
+        release = self._get_release(f"https://api.github.com/repos/{self.repository}/releases/tags/{tag}")
+        return release.assets if release else []
 
     def get_assets_latest(self) -> list[Asset]:
         """Get assets latest."""
-        return self._get_assets(f"https://api.github.com/repos/{self.repository}/releases/latest")
+        release = self.get_latest_release()
+        return release.assets if release else []
+
+    def get_latest_release(self) -> GitHubRelease | None:
+        """Get latest stable release."""
+        return self._get_release(f"https://api.github.com/repos/{self.repository}/releases/latest")
+
+    def get_releases(self) -> list[GitHubRelease]:
+        """Get releases."""
+        return self._get_releases(f"https://api.github.com/repos/{self.repository}/releases")
 
 
 class SignatureVerifyer:
