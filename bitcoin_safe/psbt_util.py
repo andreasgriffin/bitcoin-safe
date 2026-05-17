@@ -444,16 +444,57 @@ class SimpleInput:
         signature, pubkey = finalized_signature
 
         self.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey))
-        self.partial_sigs[pubkey] = PartialSig(signature=signature, sighash_type="ALL")
+        self.partial_sigs[pubkey] = PartialSig(
+            signature=signature, sighash_type=self._recovered_sighash_type(signature)
+        )
+        # Heuristic: recover the common finalized singlesig witness shape as 1-of-1.
         self.m_of_n = (1, 1)
 
     def _finalized_singlesig_signature_and_pubkey(self) -> tuple[str, str] | None:
+        """Return ``(signature, pubkey)`` for a likely finalized singlesig witness.
+
+        This treats a 2-item ``final_script_witness`` whose second item is a
+        compressed pubkey as the common finalized singlesig pattern.
+
+        It only inspects witness shape. It does not validate script semantics,
+        recover the fingerprint, or rule out custom scripts that look similar.
+        """
         if self.final_script_witness and len(self.final_script_witness) == 2:
             signature, pubkey = self.final_script_witness
             if len(pubkey) == 66 and pubkey.startswith(("02", "03")):
                 return signature, pubkey
 
         return None
+
+    def _recovered_sighash_type(self, signature: str) -> str:
+        """Resolve the sighash flag for recovered finalized signatures.
+
+        Prefer the PSBT input's explicit ``sighash_type`` when present. If it is
+        absent, fall back to the sighash byte appended to the DER signature.
+        """
+        if self.sighash_type is not None:
+            return self._format_sighash_type(self.sighash_type)
+        if len(signature) >= 2:
+            return self._format_sighash_type(int(signature[-2:], 16))
+        return "unknown"
+
+    @staticmethod
+    def _format_sighash_type(sighash_type: int | str) -> str:
+        """Format a sighash flag as a display string."""
+        if isinstance(sighash_type, str):
+            return sighash_type
+
+        base_names = {
+            0: "DEFAULT",
+            1: "ALL",
+            2: "NONE",
+            3: "SINGLE",
+        }
+        base_type = sighash_type & 0x1F
+        parts = [base_names.get(base_type, hex(sighash_type))]
+        if sighash_type & 0x80:
+            parts.append("ANYONECANPAY")
+        return "|".join(parts)
 
     def is_fully_signed(self) -> bool:
         # This heuristic assumes the presence of final_script_sig or
@@ -482,7 +523,7 @@ class SimpleInput:
         if finalized_pubkey != pubkey_info.pubkey:
             return None
 
-        return PartialSig(signature=signature, sighash_type="ALL")
+        return PartialSig(signature=signature, sighash_type=self._recovered_sighash_type(signature))
 
     def get_pub_keys_without_signature(self) -> list[PubKeyInfo]:
         # If the input is fully signed, there are no pubkeys without a signature

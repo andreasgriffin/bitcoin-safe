@@ -502,6 +502,25 @@ def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
     }
 
 
+def test_recovered_finalized_singlesig_uses_signature_sighash_when_psbt_field_missing() -> None:
+    recovered = SimpleInput(
+        txin=p2wsh_psbt_1_1of1.extract_tx().input()[0],
+        final_script_witness=[
+            "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
+            "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
+        ],
+    )
+
+    recovered._recover_finalized_singlesig_signer_data()
+
+    assert recovered.partial_sigs == {
+        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": PartialSig(
+            signature="3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
+            sighash_type="SINGLE|ANYONECANPAY",
+        )
+    }
+
+
 def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:
     psbt = SimplePSBT.from_psbt(mixed_input_no_signatures)
 
