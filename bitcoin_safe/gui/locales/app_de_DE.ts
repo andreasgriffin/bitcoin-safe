@@ -2133,7 +2133,8 @@ von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>Der 8-stellige Fingerprint identifiziert den Seed. Du kannst ihn auf den Hardware-Signer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
+			<translation>Der 8-stellige Fingerprint identifiziert den Seed.
+Du kannst ihn auf den Hardware-Signer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2145,7 +2146,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Der Seed ist das Geheimnis, das das Signieren von Transaktionen ermöglicht. Bei einer Single-Signature-Wallet gibt er die volle Kontrolle über die Gelder.</translation>
+			<translation>Der Seed ist das Geheimnis, das das Signieren von Transaktionen ermöglicht.
+Bei einer Single-Signature-Wallet gibt er die volle Kontrolle über die Gelder.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3969,11 +3971,6 @@ Was ist passiert: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Möchten Sie eine Kopie dieser Transaktionen speichern?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>Wallet nicht speichern</translation>
 		</message>
@@ -4073,15 +4070,11 @@ Was ist passiert: {happened_text}</translation>
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Entfernte Transaktion(en) in Wallet '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Transaktionen speichern</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4268,7 +4261,9 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Empfange einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieser Wallet. &lt;br&gt;&lt;br&gt; &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Gelder kontrollierst, musst du das Ausgeben aus der Wallet testen. &lt;br&gt; Bevor du also einen erheblichen Betrag an Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Signer zu testen.</translation>
+			<translation>Empfange einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieser Wallet.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Gelder kontrollierst, musst du das Ausgeben aus der Wallet testen.
+&lt;br&gt; Bevor du also einen erheblichen Betrag an Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Signer zu testen.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -5216,7 +5211,9 @@ Signatures:
 
 
 </source>
-			<translation>Transaktion mit dem privaten Schlüssel von {label} signiert Signaturen: {signatures}</translation>
+			<translation>Transaktion mit dem privaten Schlüssel von {label}
+signiert Signaturen:
+{signatures}</translation>
 		</message>
 	</context>
 	<context>
@@ -7388,7 +7385,7 @@ Land: {country}</translation>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>Führen Sie Ihren bitcoind mit "bitcoind -chain=signet" aus</translation>
+			<translation>Führen Sie Ihren bitcoind mit "bitcoind -chain=signet" aus  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>

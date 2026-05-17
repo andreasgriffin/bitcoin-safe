@@ -2129,7 +2129,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>La huella de 8 dígitos identifica la seed. Puedes escribirla en el firmante de hardware para llevar un seguimiento de distintas seeds y dispositivos de firma.</translation>
+			<translation>La huella de 8 dígitos identifica la seed.
+Puedes escribirla en el firmante de hardware para llevar un seguimiento de distintas seeds y dispositivos de firma.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2141,7 +2142,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>La seed es el secreto que permite firmar transacciones. Para un monedero de firma única, da control total sobre los fondos.</translation>
+			<translation>La seed es el secreto que permite firmar transacciones.
+Para un monedero de firma única, da control total sobre los fondos.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3967,11 +3969,6 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>¿Desea guardar una copia de estas transacciones?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>No guardar la cartera</translation>
 		</message>
@@ -4071,15 +4068,11 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Transacción(es) eliminada(s) en el monedero '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Guardar transacciones</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4266,7 +4259,9 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Recibe una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menos de {test_amount}) en 1 dirección de este monedero. &lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, debes probar a gastar desde el monedero. &lt;br&gt; Por eso, antes de enviar una cantidad importante de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.</translation>
+			<translation>Recibe una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menos de {test_amount}) en 1 dirección de este monedero.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, debes probar a gastar desde el monedero.
+&lt;br&gt; Por eso, antes de enviar una cantidad importante de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

@@ -3952,11 +3952,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>क्या आप इन लेन-देन की एक प्रति सहेजना चाहते हैं?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>वॉलेट सेव न करें</translation>
 		</message>
@@ -4056,15 +4051,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>वॉलेट '{wallet}' में हटाए गए लेनदेन:
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>लेनदेन सहेजें</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4247,7 +4238,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ({test_amount} से कम) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए वॉलेट में पर्याप्त मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी साइनरों का परीक्षण करना &lt;b&gt;अत्यंत महत्वपूर्ण&lt;/b&gt; है।</translation>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ({test_amount} से कम) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए वॉलेट में पर्याप्त मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी साइनरों का परीक्षण करना &lt;b&gt;अत्यंत महत्वपूर्ण&lt;/b&gt; है।                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

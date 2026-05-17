@@ -2127,7 +2127,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>Dấu vân tay 8 chữ số xác định seed. Bạn có thể viết nó lên thiết bị ký phần cứng để theo dõi các seed và thiết bị ký khác nhau.</translation>
+			<translation>Dấu vân tay 8 chữ số xác định seed.
+Bạn có thể viết nó lên thiết bị ký phần cứng để theo dõi các seed và thiết bị ký khác nhau.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2139,7 +2140,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Seed là bí mật cho phép ký giao dịch. Đối với ví chữ ký đơn, nó cho phép toàn quyền kiểm soát tiền.</translation>
+			<translation>Seed là bí mật cho phép ký giao dịch.
+Đối với ví chữ ký đơn, nó cho phép toàn quyền kiểm soát tiền.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3962,11 +3964,6 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Bạn có muốn lưu bản sao các giao dịch này không?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>Không lưu ví</translation>
 		</message>
@@ -4066,15 +4063,11 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Đã xóa giao dịch trong ví '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Lưu giao dịch</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4259,7 +4252,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Nhận một khoản &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này. &lt;br&gt;&lt;br&gt; &lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví. &lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả các thiết bị ký là &lt;b&gt;rất quan trọng&lt;/b&gt;.</translation>
+			<translation>Nhận một khoản &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví.
+&lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả các thiết bị ký là &lt;b&gt;rất quan trọng&lt;/b&gt;.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

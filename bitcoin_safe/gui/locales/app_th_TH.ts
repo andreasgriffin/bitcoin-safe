@@ -3950,11 +3950,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>คุณต้องการบันทึกสำเนาของธุรกรรมเหล่านี้หรือไม่?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>ไม่ต้องบันทึกกระเป๋า</translation>
 		</message>
@@ -4054,15 +4049,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>ธุรกรรมที่ถูกลบในกระเป๋าเงิน '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>บันทึกธุรกรรม</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4245,7 +4236,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน จึงเป็นเรื่อง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่ต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด</translation>
+			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน จึงเป็นเรื่อง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่ต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

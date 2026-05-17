@@ -2126,7 +2126,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>L’empremta de 8 dígits identifica la seed. La pots escriure al signador de maquinari per fer el seguiment de diferents seeds i dispositius de signatura.</translation>
+			<translation>L’empremta de 8 dígits identifica la seed.
+La pots escriure al signador de maquinari per fer el seguiment de diferents seeds i dispositius de signatura.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2138,7 +2139,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>La seed és el secret que permet signar transaccions. Per a una cartera de signatura única, dona control total sobre els fons.</translation>
+			<translation>La seed és el secret que permet signar transaccions.
+Per a una cartera de signatura única, dona control total sobre els fons.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3962,11 +3964,6 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Vols desar una còpia d'aquestes transaccions?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>No desis la cartera</translation>
 		</message>
@@ -4066,15 +4063,11 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Desa les transaccions</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4259,7 +4252,9 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera. &lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.</translation>
+			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera.
+&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

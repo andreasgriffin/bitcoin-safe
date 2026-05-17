@@ -2125,7 +2125,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>اثر انگشت ۸ رقمی، seed را شناسایی می‌کند. می‌توانید آن را روی امضاکننده سخت‌افزاری بنویسید تا seeds و دستگاه‌های امضای مختلف را پیگیری کنید.</translation>
+			<translation>اثر انگشت ۸ رقمی، seed را شناسایی می‌کند.
+می‌توانید آن را روی امضاکننده سخت‌افزاری بنویسید تا seeds و دستگاه‌های امضای مختلف را پیگیری کنید.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2137,7 +2138,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>seed همان راز است که امضای تراکنش را ممکن می‌کند. برای یک کیف پول تک‌امضایی، کنترل کامل وجوه را فراهم می‌کند.</translation>
+			<translation>seed همان راز است که امضای تراکنش را ممکن می‌کند.
+برای یک کیف پول تک‌امضایی، کنترل کامل وجوه را فراهم می‌کند.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3960,11 +3962,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>آیا می‌خواهید نسخه‌ای از این تراکنش‌ها ذخیره کنید؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>کیف‌پول را ذخیره نکن</translation>
 		</message>
@@ -4064,15 +4061,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>تراکنش(های) حذف‌شده در کیف‌پول '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>ذخیره تراکنش‌ها</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4257,7 +4250,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید. &lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید آیا وجوه را کنترل می‌کنید یا نه، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.</translation>
+			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید آیا وجوه را کنترل می‌کنید یا نه، باید خرج کردن از کیف پول را آزمایش کنید.
+&lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

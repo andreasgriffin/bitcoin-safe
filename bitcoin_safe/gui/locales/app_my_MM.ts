@@ -3949,11 +3949,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>ဤငွေလွှဲများ၏ကော်ပီကိုသိမ်းချင်ပါသလား?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>ပိုက်ဆံအိတ် မသိမ်းပါနှင့်</translation>
 		</message>
@@ -4053,15 +4048,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Wallet '{wallet}' တွင် ဖယ်ရှားထားသော Transaction(များ):
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Transaction များကို သိမ်းဆည်းမည်</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4244,7 +4235,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>ဤ wallet ၏ address ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်ကြောင်း သိရန် wallet မှ အသုံးပြုခြင်းကို စမ်းသပ်ရမည်။ &lt;br&gt; ထို့ကြောင့် Bitcoin ပမာဏများစွာကို wallet ထဲသို့ မပို့မီ wallet မှ အသုံးပြုပြီး signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။</translation>
+			<translation>ဤ wallet ၏ address ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်ကြောင်း သိရန် wallet မှ အသုံးပြုခြင်းကို စမ်းသပ်ရမည်။ &lt;br&gt; ထို့ကြောင့် Bitcoin ပမာဏများစွာကို wallet ထဲသို့ မပို့မီ wallet မှ အသုံးပြုပြီး signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

@@ -3953,11 +3953,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>আপনি কি এই ট্রানজ্যাকশনগুলোর একটি কপি সংরক্ষণ করতে চান?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>ওয়ালেট সংরক্ষণ করবেন না</translation>
 		</message>
@@ -4057,15 +4052,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>ওয়ালেট '{wallet}'-এ সরানো ট্রানজ্যাকশন(সমূহ):
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>ট্রানজ্যাকশন সংরক্ষণ করুন</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4248,7 +4239,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>এই ওয়ালেটের ১টি ঠিকানায় &lt;b&gt;ছোট&lt;/b&gt; পরিমাণ ({test_amount}-এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে খরচ করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে খরচ করা এবং সব সাইনার পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;।</translation>
+			<translation>এই ওয়ালেটের ১টি ঠিকানায় &lt;b&gt;ছোট&lt;/b&gt; পরিমাণ ({test_amount}-এর কম) গ্রহণ করুন। &lt;br&gt;&lt;br&gt; &lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে খরচ করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে খরচ করা এবং সব সাইনার পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;।                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
