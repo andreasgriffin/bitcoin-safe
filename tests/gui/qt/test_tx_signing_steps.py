@@ -209,6 +209,57 @@ def test_mixed_steps_keep_device_cards_instead_of_step_summary(
     assert isinstance(signed_step_widget, TxSigningDeviceList)
 
 
+def test_non_seed_wallet_importer_keeps_hardware_signer_device_identity(qtbot: QtBot, loop_in_thread) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    keystores = create_test_seed_keystores(
+        signers=1,
+        key_origins=["m/48h/1h/0h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    keystore = keystores[0]
+    keystore.hardware_signer_id = HardwareSigners.jade.id
+    keystore.mnemonic = None
+    wallet = DummyWallet(id="multisig", keystores=[keystore])
+    wallet_functions.get_wallets.connect(lambda: wallet)
+
+    qr_importer = SignatureImporterQR(
+        network=bdk.Network.REGTEST,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        display_label=keystore.fingerprint,
+        signer_identities=[SignerIdentity(id=keystore.fingerprint, fingerprint=keystore.fingerprint)],
+    )
+
+    widget = TxSigningSteps(
+        signature_importer_dict={"wallet.0": [qr_importer]},
+        psbt=tr_psbt_singlesig,
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+
+    assert len(widget.signing_devices) == 1
+    device = widget.signing_devices[0]
+    assert device.fingerprint == keystore.fingerprint
+    assert device.hardware_signer == HardwareSigners.jade
+    assert not device.has_seed
+
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+    assert len(step_widget.cards) == 1
+
+    card = step_widget.cards[0]
+    assert card.header_title.text() == HardwareSigners.jade.display_name
+    assert card.device.hardware_signer == HardwareSigners.jade
+
+    card.expand()
+
+    assert {button.text() for button in card.body.findChildren(QPushButton)} == {"Show QR Code"}
+
+
 def _make_qr_device_card(
     qtbot: QtBot,
     loop_in_thread,

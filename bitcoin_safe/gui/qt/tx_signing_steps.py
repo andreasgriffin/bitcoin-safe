@@ -688,12 +688,28 @@ class TxSigningSteps(StepProgressContainer):
 
     def _wallets_from_signature_importers(self) -> list[Wallet]:
         involved_wallets: list[Wallet] = []
+        signer_fingerprints: set[str] = set()
         for signature_importers in self.signature_importer_dict.values():
             for importer in signature_importers:
-                if not isinstance(importer, SignatureImporterWallet):
-                    continue
-                if importer.wallet not in involved_wallets:
+                if isinstance(importer, SignatureImporterWallet) and importer.wallet not in involved_wallets:
                     involved_wallets.append(importer.wallet)
+                signer_fingerprints.update(
+                    normalized_fingerprint
+                    for signer_identity in importer.signer_identities
+                    if (normalized_fingerprint := self._normalize_fingerprint(signer_identity.fingerprint))
+                )
+
+        if not signer_fingerprints:
+            return involved_wallets
+
+        for wallet in get_wallets(self.wallet_functions):
+            if wallet in involved_wallets:
+                continue
+            if any(
+                self._normalize_fingerprint(keystore.fingerprint) in signer_fingerprints
+                for keystore in wallet.keystores
+            ):
+                involved_wallets.append(wallet)
         return involved_wallets
 
     def _collect_generic_psbt_devices(self) -> dict[str, SigningDevice]:
