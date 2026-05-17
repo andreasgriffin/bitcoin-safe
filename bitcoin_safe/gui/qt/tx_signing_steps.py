@@ -691,8 +691,12 @@ class TxSigningSteps(StepProgressContainer):
         signer_fingerprints: set[str] = set()
         for signature_importers in self.signature_importer_dict.values():
             for importer in signature_importers:
+                # Example: wallet_id="vault", fingerprint="ABCD1234", hardware_signer=jade.
+                # Seed path: SignatureImporterWallet already points to the wallet. Reason: use it directly.
                 if isinstance(importer, SignatureImporterWallet) and importer.wallet not in involved_wallets:
                     involved_wallets.append(importer.wallet)
+                # Non-seed path: QR/file importer still carries fingerprint="ABCD1234".
+                # Reason: keep enough data to find the same wallet later.
                 signer_fingerprints.update(
                     normalized_fingerprint
                     for signer_identity in importer.signer_identities
@@ -705,6 +709,8 @@ class TxSigningSteps(StepProgressContainer):
         for wallet in get_wallets(self.wallet_functions):
             if wallet in involved_wallets:
                 continue
+            # Match wallet.keystore.fingerprint="ABCD1234" back to wallet_id="vault".
+            # Reason: preserve the wallet's jade label/icon for non-seed signing too.
             if any(
                 self._normalize_fingerprint(keystore.fingerprint) in signer_fingerprints
                 for keystore in wallet.keystores
