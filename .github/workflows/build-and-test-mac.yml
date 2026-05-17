@@ -200,12 +200,17 @@ jobs:
         shell: bash
 
 
-      - name: Check for pyzbar log entry in bitcoin_safe.log
+      - name: Check startup log
         run: |
           LOG_PATH="$HOME/Library/Application Support/bitcoin_safe/bitcoin_safe.log"
-          echo "Checking bitcoin_safe.log for 'pyzbar could be loaded successfully' at $LOG_PATH..." | tee -a test_dmg.log
+          echo "Checking startup log at $LOG_PATH..." | tee -a test_dmg.log
           if ! grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
             echo "Error: 'pyzbar could be loaded successfully' not found in bitcoin_safe.log" | tee -a test_dmg.log
+            exit 1
+          fi
+          if grep -q "CRITICAL" "$LOG_PATH"; then
+            grep -n "CRITICAL" "$LOG_PATH" | tee -a test_dmg.log || true
+            echo "Error: unexpected CRITICAL entry found in bitcoin_safe.log" | tee -a test_dmg.log
             exit 1
           fi
                 

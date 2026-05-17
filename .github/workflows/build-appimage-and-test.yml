@@ -291,6 +291,11 @@ jobs:
             tail -n 100 "$LOG_PATH" || true
             exit 1
           fi
+          if grep -q "CRITICAL" "$LOG_PATH"; then
+            grep -n "CRITICAL" "$LOG_PATH" || true
+            echo "Unexpected CRITICAL entry found in startup log"
+            exit 1
+          fi
           PROCESS_COUNT=$(ps aux | grep -i 'bitcoin' | grep -i 'safe' | grep -v grep | wc -l)
           if [ "$PROCESS_COUNT" -eq 0 ]; then
             echo "Bitcoin Safe process does not appear to be running"
