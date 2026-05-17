@@ -1738,41 +1738,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>اشتراک‌گذاری</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>امضا با فایل</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>امضا با QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>امضا با USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>امضا با seed</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1982,6 +1947,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>تغییر نوع دستگاه</translation>
 		</message>
@@ -2017,8 +1987,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>داده‌های امضاکننده را با QR، USB یا وارد کردن متن/فایل وارد کنید.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>وارد کردن داده‌های امضاکننده با QR، USB، Bluetooth یا وارد کردن متن/فایل.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4065,7 +4035,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>تراکنش(های) حذف‌شده در کیف پول '{wallet}': {txs} نسخه‌های ذخیره‌شده در: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4252,7 +4222,8 @@ Outputs stay the same; only the fee changes.</source>
                     </source>
 			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید آیا وجوه را کنترل می‌کنید یا نه، باید خرج کردن از کیف پول را آزمایش کنید.
-&lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.                    </translation>
+&lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4474,18 +4445,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>فایلی انتخاب نشد</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>افزونه اشتراک نمایشی</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>افزونه نمونه مبتنی بر PaidPluginClient. از این برای تأیید فعال‌سازی محدودشده به اشتراک و اقدامات مدیر افزونه استفاده کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -5181,11 +5140,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>ورودی {i}: با پرچم {sighash_type} امضا شد ، امضا: {signature}</translation>
+			<source>Collapse</source>
+			<translation>جمع کردن</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>تشخیص دستگاه</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>خروجی گرفتن / وارد کردن</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>اشتراک‌گذاری با...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>نمایش کد QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>اکنون امضا کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>امضا از طریق Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>امضا از طریق Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>امضا از طریق فایل</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>امضا از طریق QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>امضا از طریق USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>امضا با این دستگاه</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>امضا شد</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>استفاده از Seed کیف پول</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5193,19 +5219,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>تراکنش با کلید خصوصی متعلق به {label}
-امضا شد امضاها:
-{signatures}
-
-
-</translation>
+			<source>Signing Device</source>
+			<translation>دستگاه امضا</translation>
 		</message>
 	</context>
 	<context>
@@ -7714,6 +7729,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} یک PGPSignature نیست</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>افزونه اشتراک نمایشی</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>افزونه نمونه مبتنی بر PaidPluginClient. از این برای تأیید فعال‌سازی محدودشده به اشتراک و اقدامات مدیر افزونه استفاده کنید.</translation>
 		</message>
 	</context>
 	<context>

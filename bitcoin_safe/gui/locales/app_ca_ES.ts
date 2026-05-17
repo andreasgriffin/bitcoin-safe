@@ -1739,41 +1739,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>Comparteix</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>Signar amb fitxer</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>Signar amb QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>Signar amb USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>Signar amb llavor</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1983,6 +1948,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>Canvia el tipus de dispositiu</translation>
 		</message>
@@ -2018,8 +1988,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>Importa les dades del signant amb QR, USB o importació de text/fitxer.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>Importa les dades del signant amb QR, USB, Bluetooth o importació de text/fitxer.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4067,7 +4037,7 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}': {txs} Còpies desades a: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4254,7 +4224,8 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                     </source>
 			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera.
-&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.                    </translation>
+&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4476,18 +4447,6 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>Cap fitxer seleccionat</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>Connector de subscripció de demostració</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>Connector d’exemple basat en PaidPluginClient. Utilitzeu-lo per verificar l’activació restringida per subscripció i les accions del gestor de connectors.</translation>
 		</message>
 	</context>
 	<context>
@@ -5183,11 +5142,78 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrada {i}: Signada amb el flag {sighash_type} , Signatura: {signature}</translation>
+			<source>Collapse</source>
+			<translation>Replega</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>Detecta el dispositiu</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>Exporta / Importa</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>Comparteix amb...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>Mostra el codi QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>Signa ara</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Signa via Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Signa via Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>Signa via fitxer</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>Signa via QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>Signa via USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>Signa amb aquest dispositiu</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>Signat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>Usa la seed de la cartera</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5195,19 +5221,8 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>Transacció signada amb la clau privada pertanyent a {label}
-Signatures:
-{signatures}
-
-
-</translation>
+			<source>Signing Device</source>
+			<translation>Dispositiu de signatura</translation>
 		</message>
 	</context>
 	<context>
@@ -7717,6 +7732,18 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} no és una PGPSignature</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Connector de subscripció de demostració</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Connector d’exemple basat en PaidPluginClient. Utilitzeu-lo per verificar l’activació restringida per subscripció i les accions del gestor de connectors.</translation>
 		</message>
 	</context>
 	<context>

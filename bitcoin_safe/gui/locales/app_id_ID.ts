@@ -1738,41 +1738,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>Bagikan</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>Tanda tangani dengan file</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>Tanda tangani dengan QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>Tanda tangani dengan USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>Tanda tangani dengan seed</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1982,6 +1947,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>Ubah jenis perangkat</translation>
 		</message>
@@ -2017,8 +1987,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>Impor data penanda tangan dengan QR, USB, atau impor teks/file.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>Impor data penanda tangan dengan QR, USB, Bluetooth, atau impor teks/file.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4066,7 +4036,7 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>Transaksi yang Dihapus di Dompet '{wallet}': {txs} Salinan tersimpan ke: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4253,7 +4223,8 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     </source>
 			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.
-&lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang substansial ke dompet, &lt;b&gt;sangat penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                    </translation>
+&lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang substansial ke dompet, &lt;b&gt;sangat penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4475,18 +4446,6 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>Tidak ada file yang dipilih</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>Plugin Langganan Demo</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>Plugin contoh berbasis PaidPluginClient. Gunakan ini untuk memverifikasi aktivasi berbasis langganan dan tindakan pengelola plugin.</translation>
 		</message>
 	</context>
 	<context>
@@ -5182,11 +5141,78 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Input {i}: Ditandatangani dengan flag {sighash_type}, Tanda tangan: {signature}</translation>
+			<source>Collapse</source>
+			<translation>Ciutkan</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>Deteksi Perangkat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>Ekspor / Impor</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>Bagikan dengan...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>Tampilkan Kode QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>Tandatangani sekarang</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Tandatangani via Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Tandatangani via Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>Tandatangani via File</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>Tandatangani via QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>Tandatangani via USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>Tandatangani dengan perangkat ini</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>Ditandatangani</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>Gunakan Seed Dompet</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5194,19 +5220,8 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>Transaksi ditandatangani dengan kunci pribadi milik {label}
-Tanda tangan:
-{signatures}
-
-
-</translation>
+			<source>Signing Device</source>
+			<translation>Perangkat Penandatangan</translation>
 		</message>
 	</context>
 	<context>
@@ -7716,6 +7731,18 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} bukan PGPSignature</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Plugin Langganan Demo</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Plugin contoh berbasis PaidPluginClient. Gunakan ini untuk memverifikasi aktivasi berbasis langganan dan tindakan pengelola plugin.</translation>
 		</message>
 	</context>
 	<context>

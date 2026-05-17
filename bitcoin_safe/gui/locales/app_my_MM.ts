@@ -1736,41 +1736,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>မျှဝေပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>ဖိုင်ဖြင့် လက်မှတ်ထိုးပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>QR ဖြင့် လက်မှတ်ထိုးပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>USB ဖြင့် လက်မှတ်ထိုးပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>seed ဖြင့် လက်မှတ်ထိုးပါ</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1980,6 +1945,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>ကိရိယာအမျိုးအစား ပြောင်းရန်</translation>
 		</message>
@@ -2015,8 +1985,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>QR၊ USB သို့မဟုတ် စာသား/ဖိုင် ထည့်သွင်းခြင်းဖြင့် လက်မှတ်ထိုးသူ ဒေတာကို ထည့်သွင်းပါ။</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>QR၊ USB၊ Bluetooth သို့မဟုတ် စာသား/ဖိုင် တင်သွင်းမှုဖြင့် လက်မှတ်ထိုးသူ ဒေတာကို တင်သွင်းပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4052,7 +4022,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>ဝေါလက် '{wallet}' တွင် ဖယ်ရှားထားသော ငွေလွှဲမှု(များ): {txs} သိမ်းဆည်းထားသော မိတ္တူများကို: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4457,18 +4427,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ဖိုင်မရွေးရသေးပါ</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>ဒေမို စာရင်းသွင်းမှု ပလပ်အင်</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>PaidPluginClient ပေါ်အခြေခံထားသော နမူနာ ပလပ်အင်။ စာရင်းသွင်းမှုဖြင့် ကန့်သတ်ထားသော အသက်သွင်းမှုနှင့် ပလပ်အင်မန်နေဂျာ လုပ်ဆောင်ချက်များကို အတည်ပြုရန် အသုံးပြုပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -5162,11 +5120,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Input {i}: {sighash_type} အလံဖြင့် စာချုပ်ထိုး , လက်မှတ်: {signature}</translation>
+			<source>Collapse</source>
+			<translation>ခေါက်သိမ်းမည်</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>စက်ကို ရှာဖွေမည်</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>တင်ပို့ / တင်သွင်း</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>...ဖြင့် မျှဝေပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>QR ကုဒ် ပြပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>ယခု လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Bluetooth ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Chat&amp;Sync ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>ဖိုင်ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>QR ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>USB ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>ဤစက်ဖြင့် လက်မှတ်ထိုးပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>လက်မှတ်ထိုးပြီး</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>Wallet Seed ကို အသုံးပြုပါ</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5174,16 +5199,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>{label}
-သို့ ဆိုင်သော private key ဖြင့် လင်ဒင်းကို စာချုပ်ထိုးပြီး  လက်မှတ်များ:
-{signatures}</translation>
+			<source>Signing Device</source>
+			<translation>လက်မှတ်ထိုး စက်</translation>
 		</message>
 	</context>
 	<context>
@@ -7686,6 +7703,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} သည် PGPSignature မဟုတ်ပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>ဒေမို စာရင်းသွင်းမှု ပလပ်အင်</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient ပေါ်အခြေခံထားသော နမူနာ ပလပ်အင်။ စာရင်းသွင်းမှုဖြင့် ကန့်သတ်ထားသော အသက်သွင်းမှုနှင့် ပလပ်အင်မန်နေဂျာ လုပ်ဆောင်ချက်များကို အတည်ပြုရန် အသုံးပြုပါ။</translation>
 		</message>
 	</context>
 	<context>

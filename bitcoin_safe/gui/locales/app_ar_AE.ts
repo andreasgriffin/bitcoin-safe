@@ -1738,41 +1738,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>مشاركة</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>التوقيع باستخدام ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>التوقيع باستخدام QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>التوقيع باستخدام USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>التوقيع باستخدام العبارة الأولية</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1982,6 +1947,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>تغيير نوع الجهاز</translation>
 		</message>
@@ -2017,8 +1987,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>استورد بيانات الموقّع باستخدام QR أو USB أو استيراد نص/ملف.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>استيراد بيانات جهاز التوقيع عبر QR أو USB أو Bluetooth أو استيراد نص/ملف.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4067,7 +4037,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>المعاملة/المعاملات المُزالة في المحفظة '{wallet}': {txs} تم حفظ النسخ في: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4254,7 +4224,8 @@ Outputs stay the same; only the fee changes.</source>
                     </source>
 			<translation>استلم مبلغاً &lt;b&gt;صغيراً&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.
-&lt;br&gt; لذلك قبل أن ترسل كمية كبيرة من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.                    </translation>
+&lt;br&gt; لذلك قبل أن ترسل كمية كبيرة من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4476,18 +4447,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>لم يتم اختيار ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>إضافة اشتراك تجريبية</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>إضافة نموذجية مبنية على PaidPluginClient. استخدمها للتحقق من التفعيل المقيّد بالاشتراك وإجراءات مدير الإضافات.</translation>
 		</message>
 	</context>
 	<context>
@@ -5183,11 +5142,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>الإدخال {i}: موقَّع بعلامة {sighash_type} ، التوقيع: {signature}</translation>
+			<source>Collapse</source>
+			<translation>طي</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>اكتشاف الجهاز</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>تصدير / استيراد</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>مشاركة مع...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>إظهار رمز QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>وقّع الآن</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>وقّع عبر Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>وقّع عبر Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>وقّع عبر ملف</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>وقّع عبر QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>وقّع عبر USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>وقّع بهذا الجهاز</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>تم التوقيع</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>استخدام Seed المحفظة</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5195,16 +5221,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>تم توقيع المعاملة بالمفتاح الخاص العائد إلى {label}
- التواقيع:
-{signatures}</translation>
+			<source>Signing Device</source>
+			<translation>جهاز التوقيع</translation>
 		</message>
 	</context>
 	<context>
@@ -7711,6 +7729,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} ليس PGPSignature</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>إضافة اشتراك تجريبية</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>إضافة نموذجية مبنية على PaidPluginClient. استخدمها للتحقق من التفعيل المقيّد بالاشتراك وإجراءات مدير الإضافات.</translation>
 		</message>
 	</context>
 	<context>

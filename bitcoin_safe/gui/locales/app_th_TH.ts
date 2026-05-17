@@ -1736,41 +1736,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>แชร์</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>ลงนามด้วยไฟล์</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>ลงนามด้วย QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>ลงนามด้วย USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>ลงนามด้วย seed</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1980,6 +1945,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>เปลี่ยนประเภทอุปกรณ์</translation>
 		</message>
@@ -2015,8 +1985,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>นำเข้าข้อมูลผู้ลงนามด้วย QR, USB หรือการนำเข้าข้อความ/ไฟล์</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>นำเข้าข้อมูลผู้ลงนามด้วย QR, USB, Bluetooth หรือการนำเข้าข้อความ/ไฟล์</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4053,7 +4023,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>ธุรกรรมที่ถูกนำออกในวอลเล็ต '{wallet}': {txs} บันทึกสำเนาไปที่: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4458,18 +4428,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>ไม่ได้เลือกไฟล์</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>ปลั๊กอินสมัครสมาชิกสาธิต</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>ปลั๊กอินตัวอย่างที่อิงจาก PaidPluginClient ใช้สิ่งนี้เพื่อตรวจสอบการเปิดใช้งานที่จำกัดด้วยการสมัครสมาชิกและการทำงานของตัวจัดการปลั๊กอิน</translation>
 		</message>
 	</context>
 	<context>
@@ -5163,11 +5121,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>อินพุต {i}: ลงนามด้วยแฟล็ก {sighash_type} , ลายเซ็น: {signature}</translation>
+			<source>Collapse</source>
+			<translation>ยุบ</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>ตรวจหาอุปกรณ์</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>ส่งออก / นำเข้า</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>แชร์กับ...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>แสดงคิวอาร์โค้ด</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>ลงนามตอนนี้</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>ลงนามผ่าน Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>ลงนามผ่าน Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>ลงนามผ่านไฟล์</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>ลงนามผ่าน QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>ลงนามผ่าน USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>ลงนามด้วยอุปกรณ์นี้</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>ลงนามแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>ใช้ Seed ของวอลเล็ต</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5175,16 +5200,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>ธุรกรรมถูกลงนามด้วยกุญแจส่วนตัวที่เป็นของ {label}
- ลายเซ็น:
-{signatures}</translation>
+			<source>Signing Device</source>
+			<translation>อุปกรณ์ลงนาม</translation>
 		</message>
 	</context>
 	<context>
@@ -7687,6 +7704,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} ไม่ใช่ PGPSignature</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>ปลั๊กอินสมัครสมาชิกสาธิต</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>ปลั๊กอินตัวอย่างที่อิงจาก PaidPluginClient ใช้สิ่งนี้เพื่อตรวจสอบการเปิดใช้งานที่จำกัดด้วยการสมัครสมาชิกและการทำงานของตัวจัดการปลั๊กอิน</translation>
 		</message>
 	</context>
 	<context>

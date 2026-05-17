@@ -1742,41 +1742,6 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>Compartir</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>Firmar con archivo</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>Firmar con QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>Firmar con USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>Firmar con semilla</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1986,6 +1951,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>Cambiar tipo de dispositivo</translation>
 		</message>
@@ -2021,8 +1991,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>Importa los datos del firmante mediante QR, USB o importación de texto/archivo.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>Importar datos del firmante con QR, USB, Bluetooth o importación de texto/archivo.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4072,7 +4042,7 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>Transacción(es) eliminada(s) en la cartera '{wallet}': {txs} Copias guardadas en: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4261,7 +4231,8 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                     </source>
 			<translation>Recibe una cantidad &lt;b&gt;pequeña&lt;/b&gt; (menos de {test_amount}) en 1 dirección de este monedero.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, debes probar a gastar desde el monedero.
-&lt;br&gt; Por eso, antes de enviar una cantidad importante de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.                    </translation>
+&lt;br&gt; Por eso, antes de enviar una cantidad importante de Bitcoin al monedero, es &lt;b&gt;crucial&lt;/b&gt; gastar desde el monedero y probar todos los firmantes.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4483,18 +4454,6 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
 		<message>
 			<source>No file selected</source>
 			<translation>No se ha seleccionado ningún archivo</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>Plugin de suscripción de demostración</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>Plugin de ejemplo basado en PaidPluginClient. Úsalo para verificar la activación restringida por suscripción y las acciones del gestor de plugins.</translation>
 		</message>
 	</context>
 	<context>
@@ -5190,11 +5149,78 @@ Si desea seguir usando ambos, restablezca ahora la clave de sincronización de C
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Entrada {i}: Firmada con la marca {sighash_type} , Firma: {signature}</translation>
+			<source>Collapse</source>
+			<translation>Contraer</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>Detectar dispositivo</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>Exportar / Importar</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>Compartir con...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>Mostrar código QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>Firmar ahora</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Firmar vía Bluetooth</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Firmar vía Chat&amp;Sync</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>Firmar vía archivo</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>Firmar vía QR</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>Firmar vía USB</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>Firmar con este dispositivo</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>Firmado</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>Usar la seed de la cartera</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5202,19 +5228,8 @@ Si desea seguir usando ambos, restablezca ahora la clave de sincronización de C
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>Transacción firmada con la clave privada perteneciente a {label}
-Firmas:
-{signatures}
-
-
-</translation>
+			<source>Signing Device</source>
+			<translation>Dispositivo de firma</translation>
 		</message>
 	</context>
 	<context>
@@ -7730,6 +7745,18 @@ Haz clic aquí para saber más.</translation>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} no es una PGPSignature</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Plugin de suscripción de demostración</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>Plugin de ejemplo basado en PaidPluginClient. Úsalo para verificar la activación restringida por suscripción y las acciones del gestor de plugins.</translation>
 		</message>
 	</context>
 	<context>
