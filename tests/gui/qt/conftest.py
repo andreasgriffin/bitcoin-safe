@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import platform
 
 import pytest
@@ -133,10 +134,12 @@ def disable_startup_network_fetches(monkeypatch: pytest.MonkeyPatch) -> None:
         "bitcoin_safe.mempool_manager.MempoolManager.set_data_from_mempoolspace",
         _disable_mempool_fetch,
     )
-    monkeypatch.setattr(
-        "bitcoin_safe.signature_manager.GitHubAssetDownloader.get_releases",
-        _fake_github_releases,
-    )
+    current_test = os.environ.get("PYTEST_CURRENT_TEST", "")
+    if "tests/gui/qt/test_update_notification_bar.py" not in current_test:
+        monkeypatch.setattr(
+            "bitcoin_safe.signature_manager.GitHubAssetDownloader.get_releases",
+            _fake_github_releases,
+        )
 
 
 @pytest.fixture(autouse=True)
