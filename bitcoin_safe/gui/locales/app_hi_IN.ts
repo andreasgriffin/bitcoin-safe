@@ -1737,41 +1737,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>साझा करें</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>फ़ाइल से हस्ताक्षर करें</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>QR से हस्ताक्षर करें</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>USB से हस्ताक्षर करें</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>सीड से हस्ताक्षर करें</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1981,6 +1946,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>डिवाइस प्रकार बदलें</translation>
 		</message>
@@ -2016,8 +1986,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>QR, USB या टेक्स्ट/फ़ाइल इंपोर्ट के साथ साइनर डेटा इंपोर्ट करें।</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>QR, USB, Bluetooth या टेक्स्ट/फ़ाइल आयात के साथ हस्ताक्षरकर्ता डेटा आयात करें।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4055,7 +4025,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>वॉलेट '{wallet}' में हटाए गए लेन-देन: {txs} सहेजी गई प्रतियां यहां: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4460,18 +4430,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>कोई फ़ाइल नहीं चुनी गई</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>डेमो सदस्यता प्लगइन</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>PaidPluginClient पर आधारित उदाहरण प्लगइन। सदस्यता-गेटेड सक्रियण और प्लगइन-मैनेजर कार्रवाइयों को सत्यापित करने के लिए इसका उपयोग करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -5165,11 +5123,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>इनपुट {i}: {sighash_type} फ्लैग से साइन , हस्ताक्षर: {signature}</translation>
+			<source>Collapse</source>
+			<translation>संक्षिप्त करें</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>डिवाइस पहचानें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>निर्यात / आयात</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>इसके साथ साझा करें...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>QR कोड दिखाएं</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>अभी हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Bluetooth के ज़रिए हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Chat&amp;Sync के ज़रिए हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>फ़ाइल के ज़रिए हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>QR के ज़रिए हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>USB के ज़रिए हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>इस डिवाइस से हस्ताक्षर करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>हस्ताक्षरित</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>वॉलेट Seed का उपयोग करें</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5177,16 +5202,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>{label}
-की निजी कुंजी से लेन-देन पर हस्ताक्षर किए गए  हस्ताक्षर:
-{signatures}</translation>
+			<source>Signing Device</source>
+			<translation>हस्ताक्षर डिवाइस</translation>
 		</message>
 	</context>
 	<context>
@@ -7690,6 +7707,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} PGPSignature नहीं है</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>डेमो सदस्यता प्लगइन</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient पर आधारित उदाहरण प्लगइन। सदस्यता-गेटेड सक्रियण और प्लगइन-मैनेजर कार्रवाइयों को सत्यापित करने के लिए इसका उपयोग करें।</translation>
 		</message>
 	</context>
 	<context>

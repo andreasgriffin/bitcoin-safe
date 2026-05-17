@@ -1736,41 +1736,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>공유</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>파일로 서명</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>QR로 서명</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>USB로 서명</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>시드로 서명</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1980,6 +1945,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>장치 유형 변경</translation>
 		</message>
@@ -2015,8 +1985,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>QR, USB 또는 텍스트/파일 가져오기로 서명자 데이터를 가져옵니다.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>QR, USB, Bluetooth 또는 텍스트/파일 가져오기로 서명자 데이터를 가져옵니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4063,7 +4033,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>'{wallet}' 지갑에서 제거된 거래: {txs} 저장된 사본 위치: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4249,7 +4219,8 @@ Outputs stay the same; only the fee changes.</source>
                     </source>
 			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;왜인가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.
-&lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                    </translation>
+&lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4471,18 +4442,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>파일이 선택되지 않았습니다</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>데모 구독 플러그인</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>PaidPluginClient 기반 예제 플러그인입니다. 구독 제한 활성화 및 플러그인 관리자 작업을 확인하는 데 사용하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -5178,11 +5137,78 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>입력 {i}: {sighash_type} 플래그로 서명 , 서명: {signature}</translation>
+			<source>Collapse</source>
+			<translation>접기</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>장치 감지</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>내보내기 / 가져오기</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>다음으로 공유...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>QR 코드 표시</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>지금 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Bluetooth로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Chat&amp;Sync로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>파일로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>QR로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>USB로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>이 장치로 서명</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>서명됨</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>지갑 시드 사용</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5190,15 +5216,8 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation>{label}에 속한 개인키로 트랜잭션 서명 완료  서명들:
-{signatures}</translation>
+			<source>Signing Device</source>
+			<translation>서명 장치</translation>
 		</message>
 	</context>
 	<context>
@@ -7705,6 +7724,18 @@ Click here to learn more.</source>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t}은(는) PGPSignature가 아닙니다</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>데모 구독 플러그인</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient 기반 예제 플러그인입니다. 구독 제한 활성화 및 플러그인 관리자 작업을 확인하는 데 사용하세요.</translation>
 		</message>
 	</context>
 	<context>

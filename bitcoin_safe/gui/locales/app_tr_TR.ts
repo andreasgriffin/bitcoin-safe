@@ -1739,41 +1739,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>HorizontalImportExportClipboard</name>
-		<message>
-			<source>Share</source>
-			<translation>Paylaş</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportFile</name>
-		<message>
-			<source>Sign with File</source>
-			<translation>Dosya ile imzala</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportQR</name>
-		<message>
-			<source>Sign with QR</source>
-			<translation>QR ile imzala</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportUSB</name>
-		<message>
-			<source>Sign with USB</source>
-			<translation>USB ile imzala</translation>
-		</message>
-	</context>
-	<context>
-		<name>HorizontalImportExportWallet</name>
-		<message>
-			<source>Sign with seed</source>
-			<translation>Tohum ile imzala</translation>
-		</message>
-	</context>
-	<context>
 		<name>ImportLabelMenu</name>
 		<message>
 			<source>Electrum Wallet</source>
@@ -1983,6 +1948,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Bluetooth</source>
+			<translation>Bluetooth</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Change device type</source>
 			<translation>Cihaz türünü değiştir</translation>
 		</message>
@@ -2018,8 +1988,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Import signer data with QR, USB, or text/file import.</source>
-			<translation>İmzacı verilerini QR, USB veya metin/dosya içe aktarma ile içe aktarın.</translation>
+			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+			<translation>İmzalayan verilerini QR, USB, Bluetooth veya metin/dosya içe aktarma ile içe aktar.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4067,7 +4037,7 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 
 Saved copies to:
 {path}</source>
-			<translation/>
+			<translation>'{wallet}' Cüzdanında Kaldırılan İşlem(ler): {txs} Kayıtlı kopyalar şuraya kaydedildi: {path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4254,7 +4224,8 @@ Outputs stay the same; only the fee changes.</source>
                     </source>
 			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın.
 &lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir.
-&lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                    </translation>
+&lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.
+                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4476,18 +4447,6 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>No file selected</source>
 			<translation>Dosya seçilmedi</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>Demo Abonelik Eklentisi</translation>
-		</message>
-		<name>ScheduledPaymentsClient</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>PaidPluginClient tabanlı örnek eklenti. Bunu abonelikle kısıtlanan etkinleştirmeyi ve eklenti yöneticisi işlemlerini doğrulamak için kullanın.</translation>
 		</message>
 	</context>
 	<context>
@@ -5183,11 +5142,78 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 	</context>
 	<context>
-		<name>TxSigningSteps</name>
+		<name>TxSigningDeviceCard</name>
 		<message>
-			<source>Input {i}: Signed with flag {sighash_type} , Signature: {signature}</source>
-			<translation>Girdi {i}: {sighash_type} bayrağı ile imzalandı , İmza: {signature}</translation>
+			<source>Collapse</source>
+			<translation>Daralt</translation>
 		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Detect Device</source>
+			<translation>Cihazı Algıla</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Export / Import</source>
+			<translation>Dışa Aktar / İçe Aktar</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Share with...</source>
+			<translation>Şununla paylaş...</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Show QR Code</source>
+			<translation>QR Kodunu Göster</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign now</source>
+			<translation>Şimdi imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Bluetooth</source>
+			<translation>Bluetooth ile imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via Chat&amp;Sync</source>
+			<translation>Chat&amp;Sync ile imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via File</source>
+			<translation>Dosya ile imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via QR</source>
+			<translation>QR ile imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign via USB</source>
+			<translation>USB ile imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Sign with this device</source>
+			<translation>Bu cihazla imzala</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Signed</source>
+			<translation>İmzalandı</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Use Wallet Seed</source>
+			<translation>Cüzdan Seed’ini Kullan</translation>
+		</message>
+	</context>
+	<context>
 		<name>TxSigningSteps</name>
 		<message>
 			<source>Signature {n}</source>
@@ -5195,14 +5221,8 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 		<name>TxSigningSteps</name>
 		<message>
-			<source>Transaction signed with the private key belonging to {label}
-
-Signatures:
-{signatures}
-
-
-</source>
-			<translation/>
+			<source>Signing Device</source>
+			<translation>İmzalama Cihazı</translation>
 		</message>
 	</context>
 	<context>
@@ -7712,6 +7732,18 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>{t} not a PGPSignature</source>
 			<translation>{t} bir PGPSignature değil</translation>
+		</message>
+	</context>
+	<context>
+		<name>plugin</name>
+		<message>
+			<source>Demo Subscription Plugin</source>
+			<translation>Demo Abonelik Eklentisi</translation>
+		</message>
+		<name>plugin</name>
+		<message>
+			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+			<translation>PaidPluginClient tabanlı örnek eklenti. Bunu abonelikle kısıtlanan etkinleştirmeyi ve eklenti yöneticisi işlemlerini doğrulamak için kullanın.</translation>
 		</message>
 	</context>
 	<context>
