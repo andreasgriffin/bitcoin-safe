@@ -232,7 +232,10 @@ find "$APPDIR" -type f \( -name '.gitmodules' -o -name '.gitignore' -o -name '.g
 find "$APPDIR" -path '*/__pycache__*' -delete
 # although note that *.dist-info might be needed by certain packages...
 # e.g. importlib-metadata, see https://gitlab.com/python-devs/importlib_metadata/issues/71
-rm -rf "$PYDIR"/site-packages/*.dist-info/
+# slip10 reads its version from importlib.metadata at import time, so keep its
+# metadata in the AppImage.
+find "$PYDIR"/site-packages -mindepth 1 -maxdepth 1 -type d -name '*.dist-info' \
+    ! -name 'slip10-*.dist-info' -exec rm -rf {} +
 rm -rf "$PYDIR"/site-packages/*.egg-info/
 
 
