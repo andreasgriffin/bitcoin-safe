@@ -480,7 +480,14 @@ class SimpleInput:
 
     @staticmethod
     def _format_sighash_type(sighash_type: int | str) -> str:
-        """Format a sighash flag as a display string."""
+        """Format a sighash flag as a display string.
+
+        References:
+        - BIP 143 for ALL/NONE/SINGLE and ANYONECANPAY semantics:
+          https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
+        - BIP 341 for the taproot DEFAULT sighash value:
+          https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#common-signature-message
+        """
         if isinstance(sighash_type, str):
             return sighash_type
 
