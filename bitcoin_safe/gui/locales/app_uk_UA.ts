@@ -2126,7 +2126,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>8-значний відбиток ідентифікує seed. Ви можете записати його на апаратному підписувачі, щоб відстежувати різні seeds і пристрої підпису.</translation>
+			<translation>8-значний відбиток ідентифікує seed.
+Ви можете записати його на апаратному підписувачі, щоб відстежувати різні seeds і пристрої підпису.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2138,7 +2139,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Seed — це секрет, який дає змогу підписувати транзакції. Для гаманця з одним підписом він надає повний контроль над коштами.</translation>
+			<translation>Seed — це секрет, який дає змогу підписувати транзакції.
+Для гаманця з одним підписом він надає повний контроль над коштами.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3962,11 +3964,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Бажаєте зберегти копію цих транзакцій?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>Не зберігати гаманець</translation>
 		</message>
@@ -4066,15 +4063,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Видалені транзакції в гаманці '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Зберегти транзакції</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4259,7 +4252,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця. &lt;br&gt;&lt;br&gt; &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця. &lt;br&gt; Тому перед тим, як надіслати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця та протестувати всіх підписувачів.</translation>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця.
+&lt;br&gt; Тому перед тим, як надіслати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця та протестувати всіх підписувачів.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

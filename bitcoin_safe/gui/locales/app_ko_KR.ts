@@ -2123,7 +2123,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>8자리 지문은 seed를 식별합니다. 서로 다른 seed와 서명 기기를 추적하기 위해 하드웨어 서명기에 이를 적어둘 수 있습니다.</translation>
+			<translation>8자리 지문은 seed를 식별합니다.
+서로 다른 seed와 서명 기기를 추적하기 위해 하드웨어 서명기에 이를 적어둘 수 있습니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2135,7 +2136,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>seed는 거래 서명을 가능하게 하는 비밀입니다. 단일 서명 지갑의 경우 자금에 대한 완전한 제어권을 제공합니다.</translation>
+			<translation>seed는 거래 서명을 가능하게 하는 비밀입니다.
+단일 서명 지갑의 경우 자금에 대한 완전한 제어권을 제공합니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3958,11 +3960,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>이 트랜잭션들의 사본을 저장하시겠습니까?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>지갑 저장하지 않기</translation>
 		</message>
@@ -4062,15 +4059,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>지갑 '{wallet}' 에서 제거된 거래:
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>거래 저장</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4254,7 +4247,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜인가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.</translation>
+			<translation>이 지갑의 주소 1개로 &lt;b&gt;소액&lt;/b&gt;({test_amount} 미만)을 받으세요.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;왜인가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 확인하려면 지갑에서 지출을 테스트해야 합니다.
+&lt;br&gt; 따라서 상당한 양의 Bitcoin을 지갑으로 보내기 전에 지갑에서 지출하고 모든 서명기를 테스트하는 것이 &lt;b&gt;매우 중요합니다&lt;/b&gt;.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

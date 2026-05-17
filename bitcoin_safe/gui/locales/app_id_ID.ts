@@ -2125,7 +2125,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>Sidik jari 8 digit mengidentifikasi seed. Anda dapat menuliskannya pada penanda tangan perangkat keras untuk melacak seed dan perangkat penandatangan yang berbeda.</translation>
+			<translation>Sidik jari 8 digit mengidentifikasi seed.
+Anda dapat menuliskannya pada penanda tangan perangkat keras untuk melacak seed dan perangkat penandatangan yang berbeda.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2137,7 +2138,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Seed adalah rahasia yang memungkinkan penandatanganan transaksi. Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</translation>
+			<translation>Seed adalah rahasia yang memungkinkan penandatanganan transaksi.
+Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3961,11 +3963,6 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Apakah Anda ingin menyimpan salinan transaksi ini?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>Jangan simpan dompet</translation>
 		</message>
@@ -4065,15 +4062,11 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Transaksi yang Dihapus di Dompet '{wallet}':
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>Simpan Transaksi</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4258,7 +4251,9 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini. &lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet. &lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang substansial ke dompet, &lt;b&gt;sangat penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.</translation>
+			<translation>Terima jumlah &lt;b&gt;kecil&lt;/b&gt; (kurang dari {test_amount}) ke 1 alamat dompet ini.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengendalikan dana, Anda harus menguji pengeluaran dari dompet.
+&lt;br&gt; Jadi sebelum Anda mengirim jumlah Bitcoin yang substansial ke dompet, &lt;b&gt;sangat penting&lt;/b&gt; untuk membelanjakan dari dompet dan menguji semua penanda tangan.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

@@ -3960,11 +3960,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>您要保存这些交易的副本吗？</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>不保存钱包</translation>
 		</message>
@@ -4064,14 +4059,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>钱包 '{wallet}' 中移除的交易： 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>保存交易</translation>
+{txs}
+
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4258,7 +4250,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>向此钱包的 1 个地址接收一笔&lt;b&gt;小额&lt;/b&gt;金额（少于 {test_amount}）。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制资金，您必须测试从钱包中花费。 &lt;br&gt; 因此，在您向钱包发送大量 Bitcoin 之前，从钱包中花费并测试所有签名器是&lt;b&gt;至关重要的&lt;/b&gt;。</translation>
+			<translation>向此钱包的 1 个地址接收一笔&lt;b&gt;小额&lt;/b&gt;金额（少于 {test_amount}）。 &lt;br&gt;&lt;br&gt; &lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道您是否控制资金，您必须测试从钱包中花费。 &lt;br&gt; 因此，在您向钱包发送大量 Bitcoin 之前，从钱包中花费并测试所有签名器是&lt;b&gt;至关重要的&lt;/b&gt;。                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

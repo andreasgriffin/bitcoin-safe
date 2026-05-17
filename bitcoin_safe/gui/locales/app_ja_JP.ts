@@ -3949,11 +3949,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>これらのトランザクションのコピーを保存しますか？</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>ウォレットを保存しない</translation>
 		</message>
@@ -4053,15 +4048,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>ウォレット '{wallet}' で削除されたトランザクション:
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>トランザクションを保存</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4245,7 +4236,7 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。 &lt;br&gt;&lt;br&gt; &lt;b&gt;なぜですか？&lt;/b&gt; &lt;br&gt; 資金を制御できているか確認するには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、かなりの量の Bitcoin をウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。</translation>
+			<translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount} 未満）を受け取ってください。 &lt;br&gt;&lt;br&gt; &lt;b&gt;なぜですか？&lt;/b&gt; &lt;br&gt; 資金を制御できているか確認するには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、かなりの量の Bitcoin をウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>

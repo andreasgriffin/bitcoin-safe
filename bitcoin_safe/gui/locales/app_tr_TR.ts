@@ -2126,7 +2126,8 @@ received from these peers via the bitcoin network.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>8 haneli parmak izi seed’i tanımlar. Farklı seed’leri ve imzalama cihazlarını takip etmek için bunu donanım imzalayıcının üzerine yazabilirsiniz.</translation>
+			<translation>8 haneli parmak izi seed’i tanımlar.
+Farklı seed’leri ve imzalama cihazlarını takip etmek için bunu donanım imzalayıcının üzerine yazabilirsiniz.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2138,7 +2139,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Seed, işlem imzalamayı mümkün kılan sırdır. Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation>
+			<translation>Seed, işlem imzalamayı mümkün kılan sırdır.
+Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3962,11 +3964,6 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		</message>
 		<name>QTWallet</name>
 		<message>
-			<source>Do you want to save a copy of these transactions?</source>
-			<translation>Bu işlemlerin bir kopyasını kaydetmek istiyor musunuz?</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
 			<source>Don't save wallet</source>
 			<translation>Cüzdanı kaydetme</translation>
 		</message>
@@ -4066,15 +4063,11 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		<message>
 			<source>Removed Transaction(s) in Wallet '{wallet}':
 
-{txs}</source>
-			<translation>Cüzdan '{wallet}' içindeki Kaldırılan İşlem(ler):
+{txs}
 
-{txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save Transactions</source>
-			<translation>İşlemleri Kaydet</translation>
+Saved copies to:
+{path}</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4259,7 +4252,9 @@ Outputs stay the same; only the fee changes.</source>
                     &lt;br&gt;
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                     </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın. &lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.</translation>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın.
+&lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir.
+&lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.                    </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -5205,12 +5200,9 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 Signatures:
 {signatures}
 
-</source>
-			<translation>İşlem {label}
-ait özel anahtar ile imzalandı İmzalar:
-{signatures}
 
-</translation>
+</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
