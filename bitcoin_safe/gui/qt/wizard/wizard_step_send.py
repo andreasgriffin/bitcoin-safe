@@ -94,7 +94,7 @@ class SendTest(BaseTab):
                 return
             uitx = self.refs.qt_wallet.uitx_creator
             uitx.setParent(None)
-            self.active_card.set_content_widget(uitx, stretch=1)
+            self.active_card.set_content_widget(uitx)
             uitx.setHidden(False)
             self.refresh_cards()
             return
@@ -302,7 +302,7 @@ class SendTest(BaseTab):
         self.viewer_layout.addWidget(viewer)
         self.viewer_container.show()
         viewer.show()
-        self.active_card.set_content_widget(self.viewer_container, stretch=1)
+        self.active_card.set_content_widget(self.viewer_container)
         self.refresh_cards()
 
     def close_embedded_viewer(self, refresh: bool = True) -> None:

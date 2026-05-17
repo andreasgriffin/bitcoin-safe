@@ -1084,6 +1084,7 @@ def clear_layout(layout: QLayout) -> None:
         widget = item.widget()
         if widget:
             layout.removeWidget(widget)
+            widget.hide()
             widget.setParent(None)  # Remove widget from parent to fully disconnect it
 
 

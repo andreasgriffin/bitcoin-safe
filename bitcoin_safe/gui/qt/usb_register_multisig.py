@@ -51,6 +51,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
@@ -79,7 +80,10 @@ class USBValidateAddressWidget(QWidget):
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
         self.usb_gui = USBGui(
-            self.network, allow_emulators_only_for_testnet_works=True, loop_in_thread=loop_in_thread
+            self.network,
+            allow_emulators_only_for_testnet_works=True,
+            loop_in_thread=loop_in_thread,
+            window_icon=svg_tools.get_QIcon(LOGO_NAME),
         )
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._layout = QVBoxLayout(self)

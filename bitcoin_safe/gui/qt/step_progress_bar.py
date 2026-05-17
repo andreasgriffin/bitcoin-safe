@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QSizePolicy,
     QStackedWidget,
+    QStyle,
     QToolTip,
     QVBoxLayout,
     QWidget,
@@ -80,8 +81,26 @@ class StepProgressBar(QWidget):
         self.enumeration_alphabet: list[str] | None = None
         self.cursor_set = False
         self.labels = [f"Step {i + 1}" for i in range(number_of_steps)]
-        self.segment_gap = 16
-        self.padding = 6
+
+        self.segment_gap = (
+            max(
+                5,
+                style.pixelMetric(
+                    QStyle.PixelMetric.PM_LayoutHorizontalSpacing,
+                    None,
+                    self,
+                ),
+                style.pixelMetric(
+                    QStyle.PixelMetric.PM_ButtonMargin,
+                    None,
+                    self,
+                ),
+            )
+            if (style := self.style()) is not None
+            else 10
+        )
+
+        self.padding = 0
         self.use_checkmark_icon = use_checkmark_icon
         self.mark_current_index_as_completed = mark_current_index_as_completed
         self.circle_sizes: list[int] = []

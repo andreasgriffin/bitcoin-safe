@@ -1,0 +1,34 @@
+<svg width="32.061mm" height="33.061mm" viewBox="0 0 32.061 33.061" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg-blue" cx="6.924" cy="6.678" r="17.0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c0d8fc"/>
+      <stop offset="1" stop-color="#c0d8fc" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg-cream" cx="26.497" cy="8.093" r="17.0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9f6e1"/>
+      <stop offset="1" stop-color="#f9f6e1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg-lavender" cx="25.943" cy="26.928" r="17.0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e9d8ee"/>
+      <stop offset="1" stop-color="#eee1f2" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg-pink" cx="4.831" cy="28.159" r="17.0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5c7df"/>
+      <stop offset="1" stop-color="#f1e9f8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- softer no-filter shadow approximation; still compatible with simple SVG renderers -->
+  <rect x="2.15" y="3.05" width="27.761" height="27.761" rx="3.753" ry="3.753" fill="#000" opacity=".045"/>
+  <rect x="2.25" y="2.85" width="27.561" height="27.561" rx="3.653" ry="3.653" fill="#000" opacity=".06"/>
+  <rect x="2.4" y="2.7" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="#000" opacity=".055"/>
+
+  <!-- the visible rounded app tile, built from stacked rounded rectangles so simple renderers do not need clipPath support -->
+  <rect x="2.4" y="2.4" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="#fff" opacity=".505"/>
+  <rect x="2.4" y="2.4" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="url(#bg-blue)"/>
+  <rect x="2.4" y="2.4" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="url(#bg-cream)"/>
+  <rect x="2.4" y="2.4" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="url(#bg-lavender)"/>
+  <rect x="2.4" y="2.4" width="27.261" height="27.261" rx="3.503" ry="3.503" fill="url(#bg-pink)"/>
+
+  <g transform="matrix(.169 0 0 .169 5.9892 5.9094)"><rect x="6.9031" y="4.1519" width="108.72" height="107.34" ry="6.0451" style="fill:#f7931a;paint-order:markers stroke fill;stroke-width:1.0016;stroke:#00410e"/><path d="m13.6 0h94.33c2.54 0 4.86 1.04 6.54 2.72l0.01 0.01c1.68 1.68 2.72 4 2.72 6.54v95.79c0 2.54-1.04 4.86-2.72 6.54l-0.01 0.01c-1.68 1.68-4 2.72-6.54 2.72h-9.01l-3.72 8.54h-10.42l-3.9-8.54h-37.72l-3.72 8.54h-10.42l-3.9-8.54h-11.52c-2.54 0-4.86-1.04-6.54-2.72l-0.01-0.01c-1.68-1.68-2.72-4-2.72-6.54v-8.35h-2.03c-1.26 0-2.3-1.03-2.3-2.3v-29.48c0-1.26 1.03-2.3 2.3-2.3h2.03v-13.31h-2.03c-1.26 0-2.3-1.03-2.3-2.3v-29.49c0-1.26 1.03-2.3 2.3-2.3h2.03v-5.96c0-2.54 1.04-4.86 2.72-6.54l0.01-0.01c1.68-1.68 4-2.72 6.54-2.72zm-4.88 62.63h2.21c1.26 0 2.3 1.03 2.3 2.3v29.49c0 1.26-1.03 2.3-2.3 2.3h-2.21v8.35c0 1.34 0.55 2.56 1.42 3.44l0.01 0.01c0.88 0.88 2.1 1.42 3.44 1.42h94.33c1.34 0 2.56-0.55 3.44-1.42l0.01-0.01c0.88-0.88 1.42-2.1 1.42-3.44v-95.8c0-1.34-0.55-2.56-1.42-3.44l-0.01-0.01c-0.88-0.88-2.1-1.42-3.44-1.42h-94.32c-1.34 0-2.56 0.55-3.44 1.42l-0.01 0.01c-0.88 0.88-1.42 2.1-1.42 3.44v5.96h2.21c1.26 0 2.3 1.03 2.3 2.3v29.49c0 1.26-1.03 2.3-2.3 2.3h-2.22z"/><path d="m97.287 47.577c1.5376-10.278-6.2879-15.803-16.988-19.489l3.471-13.923-8.4749-2.1121-3.3793 13.556c-2.2279-0.55517-4.5162-1.079-6.79-1.5979l3.4035-13.645-8.47-2.1121-3.4735 13.918c-1.8441-0.42-3.6545-0.83517-5.4117-1.2721l0.0096-0.04341-11.688-2.9183-2.2545 9.0517s6.288 1.441 6.1552 1.5304c3.4324 0.8569 4.0528 3.1283 3.949 4.929l-3.9538 15.861c0.23656 0.06038 0.54312 0.14725 0.88104 0.28242-0.28241-0.07001-0.58413-0.14723-0.89551-0.22207l-5.542 22.219c-0.42 1.0428-1.4845 2.6069-3.8838 2.0131 0.08449 0.1231-6.16-1.5376-6.16-1.5376l-4.2073 9.701 11.029 2.7493c2.0517 0.51413 4.0624 1.0524 6.0417 1.5593l-3.5073 14.082 8.4652 2.1121 3.4735-13.932c2.3124 0.62758 4.5573 1.2069 6.7538 1.7524l-3.4614 13.867 8.4748 2.1121 3.5073-14.056c14.451 2.7348 25.318 1.6317 29.892-11.439 3.6859-10.524-0.18345-16.595-7.7869-20.554 5.5373-1.2769 9.7083-4.9193 10.821-12.443zm-19.363 27.153c-2.619 10.524-20.339 4.8348-26.084 3.4083l4.6538-18.656c5.7448 1.4338 24.167 4.2724 21.43 15.248zm2.6214-27.305c-2.3897 9.5731-17.138 4.7093-21.922 3.5169l4.2193-16.921c4.7841 1.1924 20.191 3.4179 17.703 13.404z" style="fill:#fff;stroke-width:2.4138"/></g>
+</svg>

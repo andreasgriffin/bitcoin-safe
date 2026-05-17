@@ -51,6 +51,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.bitcoin_quotes import BitcoinQuote, get_random_quote
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.gui.qt.util import get_icon_path, svg_tools
 from bitcoin_safe.html_utils import link
 from bitcoin_safe.util_os import webopen
@@ -61,7 +62,7 @@ class LicenseDialog(QDialog):
         """Initialize instance."""
         super().__init__(parent)
         self.setWindowTitle(self.tr("License Info"))
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.setModal(True)
         self.initUI()
 

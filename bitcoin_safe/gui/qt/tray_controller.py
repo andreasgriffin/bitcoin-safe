@@ -37,6 +37,7 @@ from PyQt6.QtCore import QRectF, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QWidget
 
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -49,7 +50,7 @@ class TrayController(QSystemTrayIcon):
     signal_on_close = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, parent: UnlockableMainWindow) -> None:
-        tray_icon_default = svg_tools.get_QIcon("logo.svg")
+        tray_icon_default = svg_tools.get_QIcon(LOGO_NAME)
         super().__init__(tray_icon_default, parent)
         self._parent = parent
         self._tray_visible_windows: list[QWidget] = []

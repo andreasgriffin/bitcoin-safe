@@ -61,6 +61,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.execute_config import IS_PRODUCTION
 from bitcoin_safe.gui.qt.buttonedit import SquareButton
 from bitcoin_safe.gui.qt.custom_edits import QCompleterLineEdit
@@ -197,7 +198,7 @@ class NetworkSettingsUI(QWidget):
         # Prevent shrinking below the natural size of contained widgets without hard-coded dimensions
         self._layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
 
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.network_combobox = NetworkComboBox(network=network, parent=self)
         self._layout.addWidget(self.network_combobox)
 
@@ -217,6 +218,7 @@ class NetworkSettingsUI(QWidget):
         # Compact Block Filters
         self.compactBlockFiltersTab = QWidget()
         self.compactBlockFiltersLayout = QGridLayout(self.compactBlockFiltersTab)
+        self.compactBlockFiltersLayout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
 
         self.cbf_connection_label = IconLabel()
         self.cbf_connection_label.textLabel.setVisible(True)
@@ -225,19 +227,20 @@ class NetworkSettingsUI(QWidget):
 
         self.cbf_connections_edit = QSpinBox()
         self.cbf_connections_edit.setRange(1, 16)  # values for kyoto
-        self.compactBlockFiltersLayout.addWidget(self.cbf_connections_edit, 0, 1)
+        self.compactBlockFiltersLayout.addWidget(self.cbf_connections_edit, 0, 2)
 
         self.cbf_description = QLabel()
         self.cbf_description.setWordWrap(True)
         self.cbf_description.setTextFormat(Qt.TextFormat.RichText)
         self.cbf_description.setOpenExternalLinks(True)  # Enable opening links
-        self.compactBlockFiltersLayout.addWidget(self.cbf_description, 1, 0, 1, 2)
+        self.compactBlockFiltersLayout.addWidget(self.cbf_description, 1, 0, 1, 3)
 
         self.stackedWidget.addWidget(self.compactBlockFiltersTab)
 
         # Electrum Server
         self.electrumServerTab = QWidget()
         self.electrumServerLayout = QFormLayout(self.electrumServerTab)
+        self.electrumServerLayout.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         self.electrumServerLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         #
         self.electrum_url_edit = QCompleterLineEdit(
@@ -268,6 +271,7 @@ class NetworkSettingsUI(QWidget):
         # Esplora Server
         self.esploraServerTab = QWidget()
         self.esploraServerLayout = QFormLayout(self.esploraServerTab)
+        self.esploraServerLayout.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         self.esploraServerLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         self.esplora_url_edit = QCompleterLineEdit(
             network=network,
@@ -290,6 +294,7 @@ class NetworkSettingsUI(QWidget):
         # RPC
         self.rpcTab = QWidget()
         self.rpcTabLayout = QFormLayout(self.rpcTab)
+        self.rpcTabLayout.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         self.rpcTabLayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
         self.rpc_ip_address_edit = QCompleterLineEdit(
@@ -342,6 +347,7 @@ class NetworkSettingsUI(QWidget):
         # p2p listener
         self.groupbox_p2p = QGroupBox()
         self.groupbox_p2p_layout = QGridLayout(self.groupbox_p2p)
+        self.groupbox_p2p_layout.setColumnMinimumWidth(2, FORM_LABEL_FIELD_SPACING)
 
         self.p2p_typeComboBox = QComboBox()
         self.p2p_typeComboBox.addItem(self.tr("Automatic"), P2pListenerType.automatic)
@@ -377,13 +383,13 @@ class NetworkSettingsUI(QWidget):
         self.p2p_listener_refresh_button.setToolTip(self.tr("Connect to a different peer"))
 
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_icon_label_help, 1, 0)
-        self.groupbox_p2p_layout.addWidget(self.p2p_typeComboBox, 1, 1, 1, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_typeComboBox, 1, 1, 1, 3)
         self.groupbox_p2p_layout.addWidget(self.p2p_parallel_label, 2, 1)
-        self.groupbox_p2p_layout.addWidget(self.p2p_parallel_spinbox, 2, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_parallel_spinbox, 2, 3)
         self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_icon_label, 3, 1)
-        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_button, 3, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_button, 3, 3)
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_status_label, 5, 1)
-        self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 5, 2)
+        self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 5, 3)
 
         # proxy
         self.groupbox_proxy = QGroupBox()

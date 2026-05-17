@@ -325,7 +325,7 @@ class PubKeyInfo:
         label: str = "",
     ) -> None:
         """Initialize instance."""
-        self.fingerprint = SimplePubKeyProvider.format_fingerprint(fingerprint)
+        self.fingerprint = SimplePubKeyProvider.format_fingerprint(fingerprint) if fingerprint else ""
         self.pubkey = pubkey
         self.derivation_path = (
             (derivation_path if derivation_path.startswith("m/") else "m/" + derivation_path)
@@ -333,6 +333,22 @@ class PubKeyInfo:
             else None
         )
         self.label = label
+
+    @property
+    def signer_id(self) -> str:
+        if self.fingerprint:
+            return self.fingerprint
+        if self.pubkey:
+            return self.pubkey
+        return self.label
+
+    def clone(self) -> PubKeyInfo:
+        return PubKeyInfo(
+            fingerprint=self.fingerprint,
+            pubkey=self.pubkey,
+            derivation_path=self.derivation_path,
+            label=self.label,
+        )
 
 
 @dataclass
@@ -349,7 +365,7 @@ class SimpleInput:
     # {pubkey: signature}
     partial_sigs: dict[str, PartialSig] = field(default_factory=dict)
     final_script_sig: str | None = None
-    final_script_witness: str | None = None
+    final_script_witness: list[str] | None = None
     pubkeys: list[PubKeyInfo] = field(default_factory=list)
     wallet_id: str | None = None
     m_of_n: tuple[int, int] | None = None
@@ -412,8 +428,80 @@ class SimpleInput:
                 PubKeyInfo(pubkey=pubkey, fingerprint=fingerprint, derivation_path=derivation_path)
             )
 
+        self._recover_finalized_singlesig_signer_data()
         self.m_of_n = self._get_m_of_n()
         return self
+
+    def _recover_finalized_singlesig_signer_data(self) -> None:
+        """Recover signer data from finalized singlesig witnesses when derivation data is absent."""
+        if self.pubkeys or self.partial_sigs:
+            return
+
+        finalized_signature = self._finalized_singlesig_signature_and_pubkey()
+        if not finalized_signature:
+            return
+
+        signature, pubkey = finalized_signature
+
+        self.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey))
+        self.partial_sigs[pubkey] = PartialSig(
+            signature=signature, sighash_type=self._recovered_sighash_type(signature)
+        )
+        # Heuristic: recover the common finalized singlesig witness shape as 1-of-1.
+        self.m_of_n = (1, 1)
+
+    def _finalized_singlesig_signature_and_pubkey(self) -> tuple[str, str] | None:
+        """Return ``(signature, pubkey)`` for a likely finalized singlesig witness.
+
+        This treats a 2-item ``final_script_witness`` whose second item is a
+        compressed pubkey as the common finalized singlesig pattern.
+
+        It only inspects witness shape. It does not validate script semantics,
+        recover the fingerprint, or rule out custom scripts that look similar.
+        """
+        if self.final_script_witness and len(self.final_script_witness) == 2:
+            signature, pubkey = self.final_script_witness
+            if len(pubkey) == 66 and pubkey.startswith(("02", "03")):
+                return signature, pubkey
+
+        return None
+
+    def _recovered_sighash_type(self, signature: str) -> str:
+        """Resolve the sighash flag for recovered finalized signatures.
+
+        Prefer the PSBT input's explicit ``sighash_type`` when present. If it is
+        absent, fall back to the sighash byte appended to the DER signature.
+        """
+        if self.sighash_type is not None:
+            return self._format_sighash_type(self.sighash_type)
+        if len(signature) >= 2:
+            return self._format_sighash_type(int(signature[-2:], 16))
+        return "unknown"
+
+    @staticmethod
+    def _format_sighash_type(sighash_type: int | str) -> str:
+        """Format a sighash flag as a display string.
+
+        References:
+        - BIP 143 for ALL/NONE/SINGLE and ANYONECANPAY semantics:
+          https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
+        - BIP 341 for the taproot DEFAULT sighash value:
+          https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#common-signature-message
+        """
+        if isinstance(sighash_type, str):
+            return sighash_type
+
+        base_names = {
+            0: "DEFAULT",
+            1: "ALL",
+            2: "NONE",
+            3: "SINGLE",
+        }
+        base_type = sighash_type & 0x1F
+        parts = [base_names.get(base_type, hex(sighash_type))]
+        if sighash_type & 0x80:
+            parts.append("ANYONECANPAY")
+        return "|".join(parts)
 
     def is_fully_signed(self) -> bool:
         # This heuristic assumes the presence of final_script_sig or
@@ -424,28 +512,46 @@ class SimpleInput:
     def signature_count(self) -> str:
         # Just return the count of partial signatures, as we can't determine the total required
         """Signature count."""
-        return str(len(self.partial_sigs))
+        return str(len(self.get_pub_keys_with_signature()))
+
+    def signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        if not pubkey_info.pubkey:
+            return None
+
+        partial_sig = self.partial_sigs.get(pubkey_info.pubkey)
+        if partial_sig:
+            return partial_sig
+
+        finalized_signature = self._finalized_singlesig_signature_and_pubkey()
+        if not finalized_signature:
+            return None
+
+        signature, finalized_pubkey = finalized_signature
+        if finalized_pubkey != pubkey_info.pubkey:
+            return None
+
+        return PartialSig(signature=signature, sighash_type=self._recovered_sighash_type(signature))
 
     def get_pub_keys_without_signature(self) -> list[PubKeyInfo]:
         # If the input is fully signed, there are no pubkeys without a signature
         """Get pub keys without signature."""
         if self.is_fully_signed():
             return []
-        return [pubkey_info for pubkey_info in self.pubkeys if pubkey_info.pubkey not in self.partial_sigs]
+        return [pubkey_info for pubkey_info in self.pubkeys if not self.signature_for_pubkey(pubkey_info)]
 
     def get_pub_keys_with_signature(self) -> list[PubKeyInfo]:
         # If the input is fully signed, all pubkeys are considered to have a signature
         """Get pub keys with signature."""
         if self.is_fully_signed():
             return self.pubkeys
-        return [pubkey_info for pubkey_info in self.pubkeys if pubkey_info.pubkey in self.partial_sigs]
+        return [pubkey_info for pubkey_info in self.pubkeys if self.signature_for_pubkey(pubkey_info)]
 
     def fingerprint_has_signature(self, fingerprint: str) -> bool:
         """Fingerprint has signature."""
         if self.is_fully_signed():
             return True
         for pubkey_info in self.pubkeys:
-            if pubkey_info.fingerprint == fingerprint and pubkey_info.pubkey in self.partial_sigs:
+            if pubkey_info.fingerprint == fingerprint and self.signature_for_pubkey(pubkey_info):
                 return True
         return False
 
@@ -519,6 +625,70 @@ class SimpleOutput:
 
 
 @dataclass
+class InputGroup:
+    group_id: str
+    inputs: list[SimpleInput]
+    input_indices: list[int]
+    wallet_id: str | None
+    m_of_n: tuple[int, int]
+    signer_identifiers: dict[str, PubKeyInfo]
+
+    @property
+    def display_label(self) -> str:
+        return self.group_id
+
+    @property
+    def has_wallet_id(self) -> bool:
+        return bool(self.wallet_id)
+
+    def _signatures_for_pubkey(self, pubkey_info: PubKeyInfo) -> dict[int, PartialSig]:
+        signatures: dict[int, PartialSig] = {}
+        for input_index, simple_input in zip(self.input_indices, self.inputs, strict=False):
+            partial_sig = simple_input.signature_for_pubkey(pubkey_info)
+            if partial_sig:
+                signatures[input_index] = partial_sig
+        return signatures
+
+    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
+        return {
+            signer_identifier: signatures
+            for signer_identifier, pubkey_info in self.signer_identifiers.items()
+            if (signatures := self._signatures_for_pubkey(pubkey_info))
+        }
+
+    def signed_signers(self) -> list[tuple[str, PubKeyInfo, dict[int, PartialSig]]]:
+        signatures_by_identifier = self.signatures_by_identifier()
+        return [
+            (signer_identifier, pubkey_info, signatures_by_identifier[signer_identifier])
+            for signer_identifier, pubkey_info in self.signer_identifiers.items()
+            if signer_identifier in signatures_by_identifier
+        ]
+
+    def unsigned_signers(self) -> list[tuple[str, PubKeyInfo]]:
+        signatures_by_identifier = self.signatures_by_identifier()
+        return [
+            (signer_identifier, pubkey_info)
+            for signer_identifier, pubkey_info in self.signer_identifiers.items()
+            if signer_identifier not in signatures_by_identifier
+        ]
+
+    @property
+    def signed_signer_identifiers(self) -> list[str]:
+        return [signer_identifier for signer_identifier, _pubkey_info, _signatures in self.signed_signers()]
+
+    @property
+    def unsigned_signer_identifiers(self) -> list[str]:
+        return [signer_identifier for signer_identifier, _pubkey_info in self.unsigned_signers()]
+
+
+@dataclass
+class InputEnrichment:
+    wallet_id: str
+    m_of_n: tuple[int, int]
+    pubkeys: list[PubKeyInfo]
+
+
+@dataclass
 class SimplePSBT:
     txid: str
     inputs: list[SimpleInput] = field(default_factory=list)
@@ -571,6 +741,93 @@ class SimplePSBT:
             pubkeys_fully_signed,
             pubkeys_not_fully_signed,
         )
+
+    @staticmethod
+    def _input_group_id(simple_input: SimpleInput, index: int) -> str:
+        if simple_input.wallet_id and simple_input.m_of_n:
+            return simple_input.wallet_id
+        if simple_input.pubkeys:
+            return ", ".join(sorted([pubkey.signer_id for pubkey in simple_input.pubkeys]))
+        return f"Input {index}"
+
+    @staticmethod
+    def _pubkeys_by_signer_id(pubkeys_of_inputs: list[list[PubKeyInfo]]) -> dict[str, PubKeyInfo]:
+        pubkeys: dict[str, PubKeyInfo] = {}
+        for pubkeys_of_input in pubkeys_of_inputs:
+            for pubkey in pubkeys_of_input:
+                if pubkey.signer_id and pubkey.signer_id not in pubkeys:
+                    pubkeys[pubkey.signer_id] = pubkey
+        return pubkeys
+
+    def enrich_with_outpoint_data(
+        self,
+        outpoint_dict: dict[str, InputEnrichment],
+    ) -> SimplePSBT:
+        for simple_input in self.inputs:
+            outpoint_str = str(simple_input.txin.previous_output)
+            enrichment = outpoint_dict.get(outpoint_str)
+            if not enrichment:
+                continue
+
+            simple_input.wallet_id = enrichment.wallet_id
+            simple_input.m_of_n = enrichment.m_of_n
+
+            if not simple_input.pubkeys:
+                simple_input.pubkeys = [pubkey.clone() for pubkey in enrichment.pubkeys]
+                continue
+
+            enrichment_pubkeys = self._pubkeys_by_signer_id([enrichment.pubkeys])
+            for pubkey in simple_input.pubkeys:
+                enrichment_pubkey = enrichment_pubkeys.get(pubkey.signer_id)
+                if not enrichment_pubkey and pubkey.pubkey:
+                    enrichment_pubkey = next(
+                        (
+                            candidate
+                            for candidate in enrichment.pubkeys
+                            if candidate.pubkey and candidate.pubkey == pubkey.pubkey
+                        ),
+                        None,
+                    )
+                if not enrichment_pubkey:
+                    continue
+                if not pubkey.fingerprint and enrichment_pubkey.fingerprint:
+                    pubkey.fingerprint = enrichment_pubkey.fingerprint
+                if not pubkey.pubkey and enrichment_pubkey.pubkey:
+                    pubkey.pubkey = enrichment_pubkey.pubkey
+                if not pubkey.derivation_path:
+                    pubkey.derivation_path = enrichment_pubkey.derivation_path
+                if enrichment_pubkey.label:
+                    pubkey.label = enrichment_pubkey.label
+
+        return self
+
+    def group_inputs(self) -> list[InputGroup]:
+        grouped_inputs: dict[str, list[tuple[int, SimpleInput]]] = {}
+        for index, simple_input in enumerate(self.inputs):
+            group_id = self._input_group_id(simple_input, index)
+            grouped_inputs.setdefault(group_id, []).append((index, simple_input))
+
+        result: list[InputGroup] = []
+        for group_id, entries in grouped_inputs.items():
+            input_indices = [index for index, _ in entries]
+            inputs = [simple_input for _, simple_input in entries]
+            signer_identifiers = self._pubkeys_by_signer_id([simple_input.pubkeys for simple_input in inputs])
+            wallet_id = next(
+                (simple_input.wallet_id for simple_input in inputs if simple_input.wallet_id), None
+            )
+
+            result.append(
+                InputGroup(
+                    group_id=group_id,
+                    inputs=inputs,
+                    input_indices=input_indices,
+                    wallet_id=wallet_id,
+                    m_of_n=inputs[0].get_estimated_m_of_n(),
+                    signer_identifiers=signer_identifiers,
+                )
+            )
+
+        return result
 
     def get_prev_txouts(self) -> dict[str, TxOut]:
         """Get prev txouts."""

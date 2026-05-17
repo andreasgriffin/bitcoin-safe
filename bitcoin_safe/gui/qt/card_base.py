@@ -35,8 +35,9 @@ from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QMouseEvent, QPixmap
+from PyQt6.QtGui import QIcon, QMouseEvent, QPalette, QPixmap
 from PyQt6.QtWidgets import (
+    QFrame,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -48,7 +49,7 @@ from bitcoin_safe.gui.qt.icon_label import ClickableLabel
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 
 from .styled_card_frame import BaseCardFrame
-from .util import get_neutral_surface_colors, set_no_margins, svg_tools
+from .util import get_neutral_surface_colors, set_no_margins, svg_tools, to_color_name
 
 
 class CardExpansionMode(enum.Enum):
@@ -60,7 +61,6 @@ class CardExpansionMode(enum.Enum):
 class CardBase(BaseCardFrame):
     signal_header_clicked = cast(SignalProtocol[[]], pyqtSignal())
     signal_expand_requested = cast(SignalProtocol[[]], pyqtSignal())
-    signal_layout_changed = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -75,14 +75,17 @@ class CardBase(BaseCardFrame):
         self._header_click_targets: list[QWidget] = []
 
         self.root_layout = QVBoxLayout(self)
-        self.root_layout.setContentsMargins(10, 10, 10, 10)
-        self.root_layout.setSpacing(10)
 
         self.header_widget = QWidget(self)
         self.header_layout = QHBoxLayout(self.header_widget)
         set_no_margins(self.header_layout)
         self.header_layout.setSpacing(12)
         self.root_layout.addWidget(self.header_widget)
+
+        self.hline = QFrame()
+        self.hline.setFrameShape(QFrame.Shape.HLine)
+        self.hline.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+        self.root_layout.addWidget(self.hline)
 
         self.header_icon = ClickableLabel(self.header_widget)
         self.header_icon.setFixedSize(40, 40)
@@ -97,7 +100,6 @@ class CardBase(BaseCardFrame):
 
         self.header_title_row = QHBoxLayout()
         set_no_margins(self.header_title_row)
-        self.header_title_row.setSpacing(8)
         self.header_text_layout.addLayout(self.header_title_row)
 
         self.header_title = QLabel(self.header_text_widget)
@@ -117,7 +119,6 @@ class CardBase(BaseCardFrame):
         self.header_right_widget = QWidget(self.header_widget)
         self.header_right_layout = QHBoxLayout(self.header_right_widget)
         set_no_margins(self.header_right_layout)
-        self.header_right_layout.setSpacing(8)
         self.header_right_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
         self.header_layout.addWidget(self.header_right_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
@@ -126,9 +127,8 @@ class CardBase(BaseCardFrame):
 
         self.content_widget = QWidget(self)
         self.content_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        self._content_layout = QVBoxLayout(self.content_widget)
-        set_no_margins(self._content_layout)
-        self.content_layout: QVBoxLayout | QHBoxLayout = self._content_layout
+        self.content_layout = QVBoxLayout(self.content_widget)
+        set_no_margins(self.content_layout)
         self.root_layout.addWidget(self.content_widget, stretch=1)
 
         for widget in (
@@ -210,17 +210,34 @@ class CardBase(BaseCardFrame):
         self.header_icon.setPixmap(pixmap)
         self.header_icon.setText("")
 
-    def set_content_widget(self, widget: QWidget, stretch: int = 0) -> None:
-        index = self._content_layout.indexOf(widget)
+    def set_content_widget(self, widget: QWidget) -> None:
+        index = self.content_layout.indexOf(widget)
         if index == -1:
-            self._content_layout.addWidget(widget, stretch=stretch)
+            self.content_layout.addWidget(widget)
             return
-        self._content_layout.setStretch(index, stretch)
+
+    def preferred_size_hint(self, expanded: bool) -> QSize:
+        """Return preferred card size for either collapsed or expanded state."""
+        current_size = self.sizeHint()
+
+        content_size = self.content_widget.sizeHint()
+        hline_size = self.hline.sizeHint()
+        spacing = self.root_layout.spacing()
+
+        combined_size = QSize(
+            max(content_size.width(), hline_size.width()),
+            content_size.height() + spacing + hline_size.height() + spacing,
+        )
+
+        expanded_size = current_size if self._effective_body_visible() else current_size + combined_size
+        collapsed_size = expanded_size - combined_size
+
+        return expanded_size if expanded else collapsed_size
 
     def clear_content_widget(self, widget: QWidget) -> None:
-        if self._content_layout.indexOf(widget) == -1:
+        if self.content_layout.indexOf(widget) == -1:
             return
-        self._content_layout.removeWidget(widget)
+        self.content_layout.removeWidget(widget)
         widget.setParent(None)
 
     def register_header_click_target(self, widget: QWidget) -> None:
@@ -258,13 +275,13 @@ class CardBase(BaseCardFrame):
 
     def _refresh_body_visibility(self) -> None:
         show_body = self._effective_body_visible()
+        self.hline.setVisible(show_body)
         self.content_widget.setVisible(show_body)
         self.setSizePolicy(
             QSizePolicy.Policy.Preferred,
             QSizePolicy.Policy.Expanding if show_body else QSizePolicy.Policy.Fixed,
         )
         self.updateGeometry()
-        self.signal_layout_changed.emit()
 
     def _update_header_cursor(self) -> None:
         if self._header_clickable or (
@@ -313,7 +330,7 @@ class CardList(QWidget):
         self.content_layout = QVBoxLayout(self.scroll_area.content_widget)
         set_no_margins(self.content_layout)
         self.content_layout.setSpacing(12)
-        self.content_layout.addStretch()
+        self.content_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
     def add_card(self, card: CardBase) -> None:
         self.insert_card(self.count(), card)
@@ -328,12 +345,10 @@ class CardList(QWidget):
 
         self._expand_request_handlers[card] = handler
         card.signal_expand_requested.connect(handler)
-        card.signal_layout_changed.connect(self._refresh_card_stretches)
         if self._current_index == -1:
             self._set_current_index(0)
         elif bounded_index <= self._current_index:
             self._current_index += 1
-        self._refresh_card_stretches()
 
     def remove_card(self, card_or_index: CardBase | int) -> CardBase:
         index = card_or_index if isinstance(card_or_index, int) else self.index_of(card_or_index)
@@ -344,15 +359,11 @@ class CardList(QWidget):
             card.signal_expand_requested.disconnect(handler)
         except TypeError:
             pass
-        try:
-            card.signal_layout_changed.disconnect(self._refresh_card_stretches)
-        except TypeError:
-            pass
+
         if not self._cards:
             self._current_index = -1
         else:
             self._set_current_index(min(self._current_index, self.count() - 1))
-        self._refresh_card_stretches()
         return card
 
     def cards(self) -> list[CardBase]:
@@ -407,6 +418,9 @@ class CardList(QWidget):
     def only_one_expanded_at_a_time(self) -> bool:
         return self._only_one_expanded_at_a_time
 
+    def sizeHint(self) -> QSize:
+        return self._preferred_list_size()
+
     def _on_expand_requested(self, card: CardBase) -> None:
         index = self.index_of(card)
         if self._only_one_expanded_at_a_time:
@@ -418,14 +432,34 @@ class CardList(QWidget):
 
     def _set_current_index(self, index: int) -> None:
         if self._current_index == index:
-            self._refresh_card_stretches()
             return
         self._current_index = index
-        self._refresh_card_stretches()
         self.signal_current_index_changed.emit(index)
 
-    def _refresh_card_stretches(self) -> None:
+    def _preferred_list_size(self) -> QSize:
+        """Preferred list size with room for one expanded card."""
+        if not self._cards:
+            return super().sizeHint()
+
+        base_size = super().sizeHint()
+
+        max_extra_height = max(
+            card.preferred_size_hint(expanded=True).height()
+            - card.preferred_size_hint(expanded=False).height()
+            for card in self._cards
+        )
+
+        scroll_fudge = 10
+
+        return QSize(
+            base_size.width(),
+            base_size.height() + max(0, max_extra_height) + scroll_fudge,
+        )
+
+    def _preferred_expanded_index(self) -> int:
         for index, card in enumerate(self._cards):
-            stretch = 1 if index == self._current_index and card.is_expanded else 0
-            self.content_layout.setStretch(index, stretch)
-        self.content_layout.setStretch(self.content_layout.count() - 1, 0)
+            if card.is_expanded:
+                return index
+        if 0 <= self._current_index < len(self._cards):
+            return self._current_index
+        return 0

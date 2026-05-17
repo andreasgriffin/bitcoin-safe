@@ -45,6 +45,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
@@ -73,7 +74,7 @@ class BaseHardwareSignerInteractionWidget(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(parent)
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self._layout = QVBoxLayout(self)
         set_no_margins(self._layout)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)

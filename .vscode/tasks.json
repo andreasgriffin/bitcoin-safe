@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "poetry install",
             "osx": {
-                "command": "export PATH=\"$HOME/.local/bin:$HOME/.poetry/bin:$HOME/Library/Application Support/pypoetry/venv/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH\"; poetry install || python3 -m poetry install || python -m poetry install"
+                "command": "if [ -x \"${workspaceFolder}/.venv/bin/poetry\" ]; then \"${workspaceFolder}/.venv/bin/poetry\" install; elif [ -x \"$HOME/Library/Application Support/pypoetry/venv/bin/poetry\" ]; then \"$HOME/Library/Application Support/pypoetry/venv/bin/poetry\" install; else export PATH=\"$HOME/.local/bin:$HOME/.poetry/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH\"; poetry install; fi"
             },
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -17,6 +17,13 @@
             "label": "Prepare VSCode Launch",
             "type": "process",
             "command": "${workspaceFolder}/.venv/bin/python",
+            "osx": {
+                "command": "/bin/zsh",
+                "args": [
+                    "-lc",
+                    "if [ -x \"${workspaceFolder}/.venv/bin/python\" ]; then \"${workspaceFolder}/.venv/bin/python\" tools/write_vscode_env.py; elif [ -x \"${workspaceFolder}/.venv/bin/poetry\" ]; then \"${workspaceFolder}/.venv/bin/poetry\" run python tools/write_vscode_env.py; elif [ -x \"$HOME/Library/Application Support/pypoetry/venv/bin/poetry\" ]; then \"$HOME/Library/Application Support/pypoetry/venv/bin/poetry\" run python tools/write_vscode_env.py; else export PATH=\"$HOME/.local/bin:$HOME/.poetry/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH\"; poetry run python tools/write_vscode_env.py; fi"
+                ]
+            },
             "windows": {
                 "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
             },

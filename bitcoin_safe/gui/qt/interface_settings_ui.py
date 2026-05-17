@@ -46,6 +46,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.gui.qt.language_chooser import (
     LanguageChooser,
     create_language_combobox,
@@ -101,6 +102,7 @@ class InterfaceSettingsUi(QWidget):
 
         # 3) Layout
         form = QFormLayout(self)
+        form.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         self.label_language = QLabel("")
         self.label_currency = QLabel("")
         self.label_bitcoin_symbol = QLabel("")

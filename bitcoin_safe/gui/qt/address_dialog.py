@@ -49,6 +49,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
@@ -82,9 +83,11 @@ class AddressDetailsAdvanced(QWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         form_layout = QGridLayout(self)
+        form_layout.setColumnMinimumWidth(1, FORM_LABEL_FIELD_SPACING)
+        form_layout.setColumnStretch(2, 1)
         # form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
 
         # try:
@@ -111,7 +114,7 @@ class AddressDetailsAdvanced(QWidget):
         der_path_e.setReadOnly(True)
 
         form_layout.addWidget(QLabel(self.tr("Address descriptor")), 0, 0)
-        form_layout.addWidget(der_path_e, 0, 1, 1, 3)
+        form_layout.addWidget(der_path_e, 0, 2, 1, 3)
 
         # sign message row
         self.sign_message = SignMessage(
@@ -149,7 +152,7 @@ class AddressValidateTab(QWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self._layout = QHBoxLayout(self)
 
@@ -193,7 +196,7 @@ class AddressDialog(QWidget):
         """Initialize instance."""
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle(self.tr("Address"))
-        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self.mempool_manager = mempool_manager
         self.address = address

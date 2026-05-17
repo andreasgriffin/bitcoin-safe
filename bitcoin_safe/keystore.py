@@ -92,6 +92,9 @@ class KeyStoreImporterTypes:
     hwi = KeyStoreImporterType(
         "hwi", "USB hardware signer", "Connect \nUSB \nhardware signer", "bi--usb-symbol.svg"
     )
+    bluetooth = KeyStoreImporterType(
+        "bluetooth", "Bluetooth hardware signer", "Connect \nBluetooth \nhardware signer", "bi--bluetooth.svg"
+    )
     file = KeyStoreImporterType(
         "file",
         "SD card",
@@ -114,7 +117,7 @@ class KeyStoreImporterTypes:
         "seed",
         "Seed",
         "Mnemonic Seed\n(Testnet only)",
-        "logo-black.svg",
+        "signed.svg",
         networks=[bdk.Network.REGTEST, bdk.Network.TESTNET, bdk.Network.TESTNET4, bdk.Network.SIGNET],
     )  # add networks here to make the seed option visible
 
