@@ -236,6 +236,9 @@ class PaidPluginClient(PluginClient):
             else self.subscription_manager_for_storage_key(storage_key)
         )
         price_text = self.subscription_price_lookup.raw_price_text_for_manager(subscription_manager)
+        if price_text is None and self._needs_subscription_price_texts():
+            self.subscription_price_lookup.ensure_prices(subscription_manager)
+            price_text = self.subscription_price_lookup.raw_price_text_for_manager(subscription_manager)
         if price_text is None:
             return None
         return self._format_subscription_price_text(
@@ -247,6 +250,8 @@ class PaidPluginClient(PluginClient):
         return self.displayed_subscription_manager.subscription_status_text()
 
     def ensure_price_texts(self) -> None:
+        if not self._needs_subscription_price_texts():
+            return
         for subscription_manager in self.subscription_managers:
             self.subscription_price_lookup.ensure_prices(subscription_manager)
 
@@ -443,6 +448,9 @@ class PaidPluginClient(PluginClient):
             if subscription_manager.activation_in_progress:
                 return subscription_manager
         return None
+
+    def _needs_subscription_price_texts(self) -> bool:
+        return self.supports_plan_selection() and not self.subscription_allows_access()
 
     def subscription_allows_access(self) -> bool:
         return any(manager.subscription_allows_access() for manager in self.subscription_managers)
