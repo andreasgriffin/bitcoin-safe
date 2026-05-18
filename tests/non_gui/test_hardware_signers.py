@@ -36,6 +36,7 @@ def test_models_for_brand_returns_expected_signers() -> None:
     """Test brand filtering returns the expected models."""
     assert [signer.id for signer in HardwareSigners.models_for_brand("Coinkite")] == [
         HardwareSigners.coldcard.id,
+        HardwareSigners.coldcard_mk5.id,
         HardwareSigners.q.id,
     ]
 

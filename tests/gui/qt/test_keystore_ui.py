@@ -160,7 +160,7 @@ def test_brand_selection_defaults_to_first_model(qtbot: QtBot, loop_in_thread: L
 
     widget.combo_brand.setCurrentText("Coinkite")
 
-    assert widget.combo_model.count() == 2
+    assert widget.combo_model.count() == 3
     assert widget.combo_model.currentData() == HardwareSigners.coldcard.id
     assert widget.button_confirm_signer.isEnabled()
 
