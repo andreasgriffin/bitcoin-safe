@@ -407,6 +407,7 @@ class SidebarNode(QFrame, Generic[TT]):
     def _connect_to_parent_signals(self, parent_node: SidebarNode[TT]) -> None:
         """Track the signal forwarding this node installs into its parent."""
         self._parent_signal_tracker.disconnect_all()
+        self._parent_signal_tracker.connect(self.hideClicked, parent_node.hideClicked)
         self._parent_signal_tracker.connect(self.closeClicked, parent_node.closeClicked)
         self._parent_signal_tracker.connect(self.nodeSelected, parent_node._bubble_selected)
         self._parent_signal_tracker.connect(self.nodeUnSelected, parent_node._bubble_unselected)
@@ -906,6 +907,7 @@ class SidebarTree(QWidget, Generic[TT]):
     nodeSelected = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
     nodeUnSelected = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
     closeClicked = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
+    hideClicked = cast(SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object))
     currentChanged = cast(
         SignalProtocol[[SidebarNode[TT]]], pyqtSignal(object)
     )  # emits the SidebarNode (or None) for the new current page
@@ -995,6 +997,7 @@ class SidebarTree(QWidget, Generic[TT]):
         self.root._attach_to_stack(self.stack)
         # Bubble node signals once from the master root
         self.root.closeClicked.connect(self._on_close_clicked)
+        self.root.hideClicked.connect(self._on_hide_clicked)
         self.root.nodeSelected.connect(self._on_node_selected)
         self.root.nodeUnSelected.connect(self._on_node_unselected)
         self.root.nodeToggled.connect(self._on_node_toggled)
@@ -1186,6 +1189,12 @@ class SidebarTree(QWidget, Generic[TT]):
             return
         self.closeClicked.emit(node)
 
+    def _on_hide_clicked(self, node: object) -> None:
+        """On close clicked."""
+        if not isinstance(node, SidebarNode):
+            return
+        self.hideClicked.emit(node)
+
     def _on_node_unselected(self, node: object) -> None:
         """On node unselected."""
         if not isinstance(node, SidebarNode):
@@ -1203,7 +1212,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         self.nodeUnSelected.emit(node)
 
-    def _append_to_slection_history(self, node: SidebarNode):
+    def _append_to_selection_history(self, node: SidebarNode):
         """Append to slection history."""
         if 0 <= self._navigation_index < len(self._selection_history):
             self._selection_history = self._selection_history[: self._navigation_index + 1]
@@ -1219,13 +1228,13 @@ class SidebarTree(QWidget, Generic[TT]):
         if not self._navigating_history:
             prev = self._current_node
             if prev is not None and prev is not node:
-                self._append_to_slection_history(prev)
-            self._append_to_slection_history(node)
+                self._append_to_selection_history(prev)
+            self._append_to_selection_history(node)
         else:
             try:
                 self._navigation_index = self._selection_history.index(node)
             except ValueError:
-                self._append_to_slection_history(node)
+                self._append_to_selection_history(node)
         self._current_node = node
         self._scroll_node_into_view(node)
         self.nodeSelected.emit(node)
