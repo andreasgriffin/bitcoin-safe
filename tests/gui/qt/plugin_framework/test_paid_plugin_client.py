@@ -32,6 +32,7 @@ from __future__ import annotations
 import asyncio
 import time
 from collections.abc import Callable
+from concurrent.futures import Future
 from datetime import datetime
 from typing import Any
 
@@ -959,6 +960,74 @@ def test_subscription_price_lookup_close_is_idempotent(qapp: QApplication) -> No
     assert subscription_price_lookup.close()
     assert subscription_price_lookup._closed
     assert subscription_price_lookup.close()
+
+
+@pytest.mark.marker_qt_1
+def test_subscription_price_lookup_close_cancels_outstanding_fetch_tasks(qapp: QApplication) -> None:
+    class FakeLoopInThread:
+        def __init__(self) -> None:
+            self.future: Future[dict[str, BtcpayPosItemData]] | None = None
+
+        def run_task(
+            self,
+            coro,
+            on_success=None,
+            on_done=None,
+            on_error=None,
+            cancel=None,
+            key=None,
+            multiple_strategy=None,
+        ) -> Future[dict[str, BtcpayPosItemData]]:
+            del on_success, on_done, on_error, cancel, key, multiple_strategy
+            coro.close()
+            self.future = Future()
+            return self.future
+
+    class FakeProduct:
+        pos_id = "demo"
+
+    class FakeSubscriptionManager:
+        def __init__(self) -> None:
+            self.subscription_product = FakeProduct()
+            self.subscription_pos_base_url = "https://example.com/pos"
+            self.loop_in_thread = FakeLoopInThread()
+
+        def proxy_dict(self) -> dict[str, str] | None:
+            return None
+
+    subscription_price_lookup = SubscriptionPriceLookup()
+    subscription_manager = FakeSubscriptionManager()
+
+    subscription_price_lookup.ensure_prices(subscription_manager)
+
+    assert subscription_manager.loop_in_thread.future is not None
+    assert subscription_price_lookup._fetch_tasks_by_pos_url == {
+        subscription_manager.subscription_pos_base_url: subscription_manager.loop_in_thread.future
+    }
+    assert subscription_manager.subscription_pos_base_url in subscription_price_lookup._loading_pos_urls
+
+    assert subscription_price_lookup.close()
+
+    assert subscription_manager.loop_in_thread.future.cancelled()
+    assert subscription_price_lookup._fetch_tasks_by_pos_url == {}
+    assert subscription_price_lookup._loading_pos_urls == set()
+
+
+@pytest.mark.marker_qt_1
+def test_subscription_price_lookup_deleted_object_ignores_late_callback(
+    qapp: QApplication,
+    qtbot: QtBot,
+) -> None:
+    subscription_price_lookup = SubscriptionPriceLookup()
+    updates: list[str] = []
+    subscription_price_lookup.signal_prices_changed.connect(updates.append)
+    state = subscription_price_lookup._state
+
+    subscription_price_lookup.deleteLater()
+    qtbot.waitUntil(lambda: state.closed, timeout=1_000)
+    subscription_price_lookup._set_items("https://example.com/pos", {})
+
+    assert updates == []
 
 
 def _attach_fake_descriptor_server(plugin: DemoPaidPluginClient) -> None:
