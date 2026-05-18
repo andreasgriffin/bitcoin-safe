@@ -541,6 +541,112 @@ def test_plugin_list_widget_shows_btcpay_price_texts_without_business_plan(
 
 
 @pytest.mark.marker_qt_1
+def test_plugin_widget_fetches_subscription_prices_when_plan_selector_visible(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fetch_calls = 0
+    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
+    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
+    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
+
+    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
+        nonlocal fetch_calls
+        fetch_calls += 1
+        return {
+            demo_monthly_product.pos_id: _make_pos_item(
+                pos_url=subscription_pos_base_url,
+                item_id=demo_monthly_product.pos_id,
+                price_text="2,00 EUR",
+            ),
+            demo_yearly_product.pos_id: _make_pos_item(
+                pos_url=subscription_pos_base_url,
+                item_id=demo_yearly_product.pos_id,
+                price_text="20,00 EUR",
+            ),
+        }
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
+        fake_fetch,
+    )
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
+
+    try:
+        widget = PluginManagerWidget(business_plan=None)
+        qtbot.addWidget(widget)
+        widget.set_plugins([plugin])
+        widget.show()
+
+        first_widget = widget.plugins_widgets[0]
+        assert isinstance(first_widget, PaidPluginWidget)
+        qtbot.waitUntil(
+            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
+            timeout=5_000,
+        )
+        assert fetch_calls == 1
+
+        widget.close()
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_plugin_widget_skips_subscription_price_fetch_when_plan_selector_hidden(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fetch_calls = 0
+
+    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
+        nonlocal fetch_calls
+        fetch_calls += 1
+        return {}
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
+        fake_fetch,
+    )
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/manage",
+        status=SubscriptionManagementStatus(
+            status=SubscriptionManagementStatusCode.TRIAL,
+            phase=SubscriptionManagementPhase.TRIAL,
+            is_active=True,
+            is_suspended=False,
+        ),
+    )
+
+    try:
+        widget = PluginManagerWidget(business_plan=None)
+        qtbot.addWidget(widget)
+        widget.set_plugins([plugin])
+        widget.show()
+
+        first_widget = widget.plugins_widgets[0]
+        assert isinstance(first_widget, PaidPluginWidget)
+        assert first_widget.plan_selector_container.isHidden()
+        assert fetch_calls == 0
+
+        widget.close()
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
 def test_plugin_widget_hides_subscription_prices_when_lookup_returns_no_item(
     qapp: QApplication,
     qtbot: QtBot,
@@ -589,6 +695,79 @@ def test_plugin_widget_hides_subscription_prices_when_lookup_returns_no_item(
         assert not first_widget.offer_label.isVisible()
         assert _plan_texts(widget.business_plan_widget) == ["Yearly"]
         assert _plan_texts(first_widget) == ["Monthly", "Yearly"]
+
+        widget.close()
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_plugin_widget_fetches_subscription_prices_when_plan_selector_becomes_visible(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fetch_calls = 0
+    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
+    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
+    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
+
+    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
+        nonlocal fetch_calls
+        fetch_calls += 1
+        return {
+            demo_monthly_product.pos_id: _make_pos_item(
+                pos_url=subscription_pos_base_url,
+                item_id=demo_monthly_product.pos_id,
+                price_text="2,00 EUR",
+            ),
+            demo_yearly_product.pos_id: _make_pos_item(
+                pos_url=subscription_pos_base_url,
+                item_id=demo_yearly_product.pos_id,
+                price_text="20,00 EUR",
+            ),
+        }
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
+        fake_fetch,
+    )
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/manage",
+        status=SubscriptionManagementStatus(
+            status=SubscriptionManagementStatusCode.TRIAL,
+            phase=SubscriptionManagementPhase.TRIAL,
+            is_active=True,
+            is_suspended=False,
+        ),
+    )
+
+    try:
+        widget = PluginManagerWidget(business_plan=None)
+        qtbot.addWidget(widget)
+        widget.set_plugins([plugin])
+        widget.show()
+
+        first_widget = widget.plugins_widgets[0]
+        assert isinstance(first_widget, PaidPluginWidget)
+        assert first_widget.plan_selector_container.isHidden()
+        assert fetch_calls == 0
+
+        plugin.subscription_manager.clear_subscription_state()
+
+        qtbot.waitUntil(lambda: not first_widget.plan_selector_container.isHidden(), timeout=5_000)
+        qtbot.waitUntil(
+            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
+            timeout=5_000,
+        )
+        assert fetch_calls == 1
 
         widget.close()
     finally:
