@@ -39,9 +39,11 @@ from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.address_comparer import AddressComparer
+from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
 from ...helpers import TestConfig
+from ...non_gui.test_psbt_util import mixed_inputs_finalized_and_nothing_signed_psbt
 from .helpers import Shutter, main_window_context
 
 logger = logging.getLogger(__name__)
@@ -187,3 +189,40 @@ def test_psbt_warning_poision(
             AddressComparer.ADDRESS_SIMILARITY_THRESHOLD = org_ADDRESS_SIMILARITY_THRESHOLD
 
         do_psbt()
+
+
+@pytest.mark.marker_qt_2
+def test_psbt_mixed_inputs_finalized_and_nothing_signed_signing_steps(
+    qapp: QApplication,
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: TestConfig,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test signing steps for mixed finalized and unsigned PSBT inputs."""
+    frame = inspect.currentframe()
+    assert frame
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
+
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
+        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+
+        main_window.open_tx_like_in_tab(mixed_inputs_finalized_and_nothing_signed_psbt)
+
+        qtbot.waitUntil(
+            lambda: isinstance(main_window.tab_wallets.currentWidget(), UITx_Viewer),
+            timeout=10000,
+        )
+
+        tab = main_window.tab_wallets.root.child_nodes[-1].data
+        assert isinstance(tab, UITx_Viewer)
+        assert tab.tx_singning_steps
+        assert tab.tx_singning_steps.count() == 3
+
+        current_step_widget = tab.tx_singning_steps.stacked_widget.currentWidget()
+        assert isinstance(current_step_widget, TxSigningDeviceList)
+        assert len(current_step_widget.cards) == 3
+
+        shutter.save(main_window)
