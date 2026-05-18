@@ -112,7 +112,6 @@ class HardwareSigner:
     id: str
     brand_name: str
     display_name: str
-    usb_preferred: bool
     qr_types: list[QrExportType]
     descriptor_export_types: list[DescriptorExportType]
     usb: FeatureLevel = FeatureLevel.not_capable
@@ -162,7 +161,6 @@ class HardwareSigners:
         id="generic",
         brand_name="Generic",
         display_name="Generic Signer",
-        usb_preferred=False,
         qr_types=QrExportTypes.as_list(),
         descriptor_export_types=DescriptorExportTypes.as_list(),
         usb=FeatureLevel.capable,
@@ -173,8 +171,18 @@ class HardwareSigners:
     coldcard = HardwareSigner(
         id="coldcard",
         brand_name="Coinkite",
-        display_name="Coldcard-Mk4/5",
-        usb_preferred=False,
+        display_name="Coldcard-Mk4",
+        qr_types=[],
+        descriptor_export_types=[DescriptorExportTypes.coldcard],
+        usb=FeatureLevel.supported,
+        info_url=None,
+        icon_filename="coldcard-icon.svg",
+        screenshot_name="coldcard",
+    )
+    coldcard_mk5 = HardwareSigner(
+        id="coldcard_mk5",
+        brand_name="Coinkite",
+        display_name="Coldcard-Mk5",
         qr_types=[],
         descriptor_export_types=[DescriptorExportTypes.coldcard],
         usb=FeatureLevel.supported,
@@ -186,7 +194,6 @@ class HardwareSigners:
         id="q",
         brand_name="Coinkite",
         display_name="Q",
-        usb_preferred=False,
         qr_types=[
             QrExportTypes.bbqr,
             DescriptorQrExportTypes.coldcard_legacy,
@@ -203,7 +210,6 @@ class HardwareSigners:
         id="bitbox02",
         brand_name="Shift Crypto",
         display_name="BitBox02",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -215,7 +221,6 @@ class HardwareSigners:
         id="bitbox02_nova",
         brand_name="Shift Crypto",
         display_name="BitBox02 Nova",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -227,7 +232,6 @@ class HardwareSigners:
         id="jade",
         brand_name="Blockstream",
         display_name="Jade",
-        usb_preferred=True,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -240,7 +244,6 @@ class HardwareSigners:
         id="jade_plus",
         brand_name="Blockstream",
         display_name="Jade Plus",
-        usb_preferred=True,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -253,7 +256,6 @@ class HardwareSigners:
         id="passport",
         brand_name="Foundation",
         display_name="Passport",
-        usb_preferred=False,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.default],
         usb=FeatureLevel.not_capable,
@@ -265,7 +267,6 @@ class HardwareSigners:
         id="passport_prime",
         brand_name="Foundation",
         display_name="Passport Prime",
-        usb_preferred=False,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.default],
         usb=FeatureLevel.not_capable,
@@ -277,7 +278,6 @@ class HardwareSigners:
         id="keystone",
         brand_name="Keystone",
         display_name="Keystone",
-        usb_preferred=False,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.default],
         usb=FeatureLevel.not_capable,
@@ -289,7 +289,6 @@ class HardwareSigners:
         id="trezor_safe_5",
         brand_name="Trezor",
         display_name="Safe 5",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -301,7 +300,6 @@ class HardwareSigners:
         id="trezor_safe_3",
         brand_name="Trezor",
         display_name="Safe 3",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -313,7 +311,6 @@ class HardwareSigners:
         id="trezor_safe_7",
         brand_name="Trezor",
         display_name="Safe 7",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -325,7 +322,6 @@ class HardwareSigners:
         id="ledger",
         brand_name="Ledger",
         display_name="Nano S",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -337,7 +333,6 @@ class HardwareSigners:
         id="ledger_nano_s_plus",
         brand_name="Ledger",
         display_name="Nano S Plus",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -349,7 +344,6 @@ class HardwareSigners:
         id="ledger_flex",
         brand_name="Ledger",
         display_name="Flex",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -361,7 +355,6 @@ class HardwareSigners:
         id="ledger_x",
         brand_name="Ledger",
         display_name="X",
-        usb_preferred=True,
         qr_types=[],
         descriptor_export_types=[],
         usb=FeatureLevel.supported,
@@ -373,7 +366,6 @@ class HardwareSigners:
         id="specterdiy",
         brand_name="Specter",
         display_name="Specter-DIY",
-        usb_preferred=False,
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.specterdiy, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.specterdiy],
         usb=FeatureLevel.not_capable,
@@ -385,7 +377,6 @@ class HardwareSigners:
         id="seedsigner",
         brand_name="SeedSigner",
         display_name="SeedSigner",
-        usb_preferred=False,
         qr_types=[
             QrExportTypes.ur,
         ],
@@ -399,7 +390,6 @@ class HardwareSigners:
         id="krux",
         brand_name="Krux",
         display_name="Krux DIY",
-        usb_preferred=False,
         qr_types=[
             QrExportTypes.ur,
             QrExportTypes.bbqr,
@@ -414,18 +404,6 @@ class HardwareSigners:
         info_url=_signer_info_url("krux"),
         icon_filename="krux-icon.svg",
         screenshot_name="krux",
-    )
-    keepkey = HardwareSigner(
-        id="keepkey",
-        brand_name="KeepKey",
-        display_name="KeepKey Wallet",
-        usb_preferred=True,
-        qr_types=[],
-        descriptor_export_types=[],
-        usb=FeatureLevel.supported,
-        info_url=_signer_info_url("keepkey"),
-        icon_filename="keepkey-icon.svg",
-        screenshot_name="keepkey",
     )
 
     @classmethod
