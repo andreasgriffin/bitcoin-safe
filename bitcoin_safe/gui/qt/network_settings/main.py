@@ -550,7 +550,7 @@ class NetworkSettingsUI(QWidget):
             )
         )
 
-        self.groupbox_p2p.setTitle(self.tr("Bitcoin network monitoring"))
+        self.groupbox_p2p.setTitle(self.tr("P2P monitoring"))
         self.p2p_manual_peers_icon_label.set_icon_as_help(
             tooltip=self.tr(
                 "Optional list of peers (one per line) the listener should try first.\n"
