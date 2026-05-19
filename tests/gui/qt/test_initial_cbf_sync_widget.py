@@ -156,7 +156,12 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
     cbf_peer_hosts.clear()
 
     assert "P2P listener peers: 1" in widget.peer_legend_label.textLabel.text()
-    assert "CBF peers: 1" in widget.cbf_legend_label.textLabel.text()
+    if test_config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        assert "CBF peers: 1" in widget.cbf_legend_label.textLabel.text()
+        assert not widget.cbf_legend_label.isHidden()
+    else:
+        assert widget.cbf_legend_label.isHidden()
+        assert widget.cbf_legend_label.textLabel.text() == ""
     assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
 
 
