@@ -59,6 +59,7 @@ from bitcoin_safe.gui.qt.util import clear_layout, set_no_margins, svg_tools, sv
 from bitcoin_safe.hardware_signers import FeatureLevel, HardwareSigner, HardwareSigners
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
+from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.psbt_util import PartialSig, SimplePSBT
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.signer import (
@@ -332,10 +333,7 @@ class TxSigningDeviceCard(CardBase):
             buttons.append((self.tr("Sign via File"), button_file))
 
         if self._clipboard_importer():
-            button_share = self._action_button(
-                self.tr("Share with..."),
-                KeyStoreImporterTypes.clipboard.icon_filename,
-            )
+            button_share = self._action_button(self.tr("Share with..."), icon_name=SYNC_CHAT_ICON_NAME)
             button_share.clicked.connect(self._show_share_detail)
             buttons.append((self.tr("Sign via Chat&Sync"), button_share))
 
