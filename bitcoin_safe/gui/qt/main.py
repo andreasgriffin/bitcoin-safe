@@ -2940,7 +2940,8 @@ class MainWindow(UnlockableMainWindow):
 
     def close_tab(self, node: SidebarNode[TT]) -> None:
         """Close tab."""
-        if not node.closable and not node.widget == self.welcome_screen:
+        is_global_network_map = node.data is self.global_network_map_widget
+        if not node.closable and not node.widget == self.welcome_screen and not is_global_network_map:
             return
         tab_data = node.data
         if isinstance(tab_data, QTWallet):
@@ -2978,8 +2979,12 @@ class MainWindow(UnlockableMainWindow):
                 tab_data.export_data_simple.button_export_file.export_to_file()
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
             tab_data.close()
-        elif tab_data == self.global_network_map_widget:
+        elif is_global_network_map:
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
+            if self.global_network_map_widget:
+                self.global_network_map_widget.close()
+            self.global_network_map_widget = None
+            self.global_network_map_node = None
         else:
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
 
