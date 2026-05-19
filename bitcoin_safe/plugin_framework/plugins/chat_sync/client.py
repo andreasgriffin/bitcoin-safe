@@ -65,6 +65,7 @@ from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
+from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import filename_clean
@@ -200,7 +201,7 @@ class SyncClient(PluginClient):
         device_info: dict[str, str] | None = None,
     ):
         """Initialize instance."""
-        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("bi--cloud.svg"))
+        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME))
         self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
         self.device_info = device_info or {}

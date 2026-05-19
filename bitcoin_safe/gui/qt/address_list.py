@@ -86,6 +86,7 @@ from bitcoin_safe.gui.qt.category_manager.category_manager import AddressDragInf
 from bitcoin_safe.gui.qt.category_manager.category_menu import CategoryComboBox
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
+from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
 from bitcoin_safe.tx import TxUiInfos
 from bitcoin_safe.wallet import TxStatus, Wallet
@@ -145,7 +146,7 @@ class ImportLabelMenu(Menu):
         self.action_nostr_import = self.add_action(
             "",
             self.import_nostr_labels,
-            icon=svg_tools.get_QIcon("bi--cloud.svg"),
+            icon=svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME),
         )
         self.updateUi()
 

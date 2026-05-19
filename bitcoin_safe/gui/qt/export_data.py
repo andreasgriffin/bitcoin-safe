@@ -68,6 +68,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import DataExportPDF
+from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.util import filename_clean
 
@@ -483,7 +484,7 @@ class SyncChatToolButton(QToolButton):
         self._menu.aboutToShow.connect(self._fill_menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(svg_tools.get_QIcon("bi--cloud.svg"))
+        self.setIcon(svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME))
 
         self.updateUi()
 
