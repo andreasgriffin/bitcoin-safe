@@ -4,12 +4,12 @@
  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
+      
+    Bitcoin-Safe: Free & OpenSource software (FOSS) for managing cold storage wallets
+    Copyright (C) 2024  Andreas Griffin
 
- Bitcoin-Safe: Free & OpenSource software (FOSS) for managing cold storage wallets
- Copyright (C) 2024  Andreas Griffin
 
-  
-                            Preamble
+Preamble
 
   The GNU General Public License is a free, copyleft license for
 software and other kinds of works.
