@@ -280,10 +280,13 @@ def test_network_map_widget_renders_multiple_wallet_progress_rows(qtbot: QtBot, 
         ),
     )
 
-    assert not widget.wallet_progress_section.isHidden()
     assert len(widget._wallet_progress_cards) == 2
     assert widget._wallet_progress_cards["wallet-a"].wallet_title_label.text() == "Wallet A"
     assert widget._wallet_progress_cards["wallet-b"].progress_label.text() == "Downloading blocks"
+    if test_config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        assert not widget.wallet_progress_section.isHidden()
+    else:
+        assert widget.wallet_progress_section.isHidden()
 
 
 def test_network_map_widget_maps_electrum_server_hostnames(
