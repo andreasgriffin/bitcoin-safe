@@ -2939,10 +2939,25 @@ class MainWindow(UnlockableMainWindow):
         self.event_wallet_tab_closed_or_hidden(node)
 
     def close_tab(self, node: SidebarNode[TT]) -> None:
-        """Close tab."""
-        is_global_network_map = node.data is self.global_network_map_widget
-        if not node.closable and not node.widget == self.welcome_screen and not is_global_network_map:
+        if node.closable:
+            self._close_tab(node)
+        else:
+            self._hide_tab(node)
+
+    def _hide_tab(self, node: SidebarNode[TT]) -> None:
+
+        if not node.hidable:
             return
+
+        logger.info(self.tr("Hiding tab {name}").format(name=node.title))
+
+        # other events
+        self.event_wallet_tab_closed_or_hidden(node)
+
+    def _close_tab(self, node: SidebarNode[TT]) -> None:
+        if not node.closable:
+            return
+
         tab_data = node.data
         if isinstance(tab_data, QTWallet):
             if tab_data.is_in_cbf_ibd():
@@ -2979,12 +2994,6 @@ class MainWindow(UnlockableMainWindow):
                 tab_data.export_data_simple.button_export_file.export_to_file()
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
             tab_data.close()
-        elif is_global_network_map:
-            logger.info(self.tr("Closing tab {name}").format(name=node.title))
-            if self.global_network_map_widget:
-                self.global_network_map_widget.close()
-            self.global_network_map_widget = None
-            self.global_network_map_node = None
         else:
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
 
