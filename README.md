@@ -1,3 +1,6 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![REUSE compliant](https://api.reuse.software/badge/github.com/andreasgriffin/bitcoin-safe)](https://api.reuse.software/info/github.com/andreasgriffin/bitcoin-safe)
+
 # Bitcoin Safe
 
 #### A bitcoin savings wallet for the entire family
