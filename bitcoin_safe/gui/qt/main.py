@@ -1243,7 +1243,6 @@ class MainWindow(UnlockableMainWindow):
 
         if current_node.hidable:
             current_node.hideClicked.emit(current_node)
-            current_node.setVisible(False)
             return
 
         if qt_wallet := self.get_qt_wallet(if_none_serve_last_active=False):
@@ -2950,6 +2949,7 @@ class MainWindow(UnlockableMainWindow):
             return
 
         logger.info(self.tr("Hiding tab {name}").format(name=node.title))
+        node.hide()
 
         # other events
         self.event_wallet_tab_closed_or_hidden(node)

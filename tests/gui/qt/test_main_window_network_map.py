@@ -63,14 +63,18 @@ def test_network_map_tool_tab_is_lazy_and_reusable(qtbot: QtBot, test_config: Te
         main_window.close_tab(node)
         QApplication.processEvents()
 
-        assert main_window.global_network_map_widget is None
-        assert main_window.global_network_map_node is None
+        assert main_window.global_network_map_widget is first_widget
+        assert main_window.global_network_map_node is node
+        assert not node.isVisible()
 
         main_window.open_network_map()
         QApplication.processEvents()
 
         assert isinstance(main_window.global_network_map_widget, NetworkMapWidget)
-        assert main_window.global_network_map_widget is not first_widget
+        assert main_window.global_network_map_widget is first_widget
+        assert main_window.global_network_map_node is node
+        assert node.isVisible()
+        assert [root for root in main_window.tab_wallets.roots if root.widget is first_widget] == [node]
 
         main_window.refresh_global_network_map()
         QApplication.processEvents()
