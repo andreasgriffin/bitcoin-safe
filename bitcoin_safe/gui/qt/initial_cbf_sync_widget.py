@@ -31,13 +31,14 @@ from __future__ import annotations
 
 import json
 import logging
+import socket
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import cast
 
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from bitcoin_safe_lib.gui.qt.util import age
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
+from bitcoin_safe_lib.time_util import AgeStyle, age
 from PyQt6.QtCore import QLocale, QPointF, QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
@@ -51,6 +52,7 @@ from PyQt6.QtGui import (
     QRadialGradient,
 )
 from PyQt6.QtWidgets import (
+    QFrame,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -64,10 +66,13 @@ from bitcoin_safe.client import ProgressInfo
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
 from bitcoin_safe.network_config import Peer
+from bitcoin_safe.network_utils import ProxyInfo, get_host_and_port
+from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.util import resource_path
 
 from .cbf_progress_bar import CBFProgressBar
 from .icon_label import IconLabel
+from .styled_card_frame import BaseBorderCardFrame
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +81,7 @@ class PeerSource(Enum):
     p2p_listener = "p2p_listener"
     cbf = "cbf"
     node = "node"
+    server = "server"
 
 
 @dataclass(frozen=True)
@@ -85,6 +91,7 @@ class PeerMapPoint:
     host: str
     source: PeerSource
     country_code: str | None = None
+    label: str | None = None
 
 
 class WorldPeerMapWidget(QWidget):
@@ -265,6 +272,8 @@ class WorldPeerMapWidget(QWidget):
             return self._P2P_COLOR
         if source == PeerSource.cbf:
             return self._CBF_COLOR
+        if source == PeerSource.server:
+            return self._CBF_COLOR
         return self._NODE_COLOR
 
     def _point_radius(self, point: PeerMapPoint) -> float:
@@ -277,20 +286,38 @@ class WorldPeerMapWidget(QWidget):
         return self._to_widget(point.longitude, point.latitude, map_rect)
 
     def _tooltip_for_point(self, point: PeerMapPoint) -> str:
-        source_label = ""
+        source_label = point.label or ""
         if point.source == PeerSource.p2p_listener:
             source_label = self.tr("P2P listener peer")
         if point.source == PeerSource.node:
             source_label = self.tr("Bitcoin node")
         if point.source == PeerSource.cbf:
             source_label = self.tr("CBF peer")
+        if point.source == PeerSource.server:
+            source_label = point.label or self.tr("Server")
 
         country = self._country_name(point.country_code)
-        return self.tr("{source}\nIP: {ip}\nCountry: {country}").format(
+        endpoint_label = self.tr("IP") if self._looks_like_ip(point.host) else self.tr("Host")
+        return self.tr("{source}\n{endpoint_label}: {ip}\nCountry: {country}").format(
             source=source_label,
+            endpoint_label=endpoint_label,
             ip=point.host,
             country=country,
         )
+
+    @staticmethod
+    def _looks_like_ip(host: str) -> bool:
+        try:
+            socket.inet_pton(socket.AF_INET, host)
+            return True
+        except OSError:
+            pass
+
+        try:
+            socket.inet_pton(socket.AF_INET6, host)
+            return True
+        except OSError:
+            return False
 
     def _country_name(self, country_code: str | None) -> str:
         if not country_code:
@@ -408,15 +435,95 @@ class WorldPeerMapWidget(QWidget):
         super().mouseMoveEvent(a0)
 
 
-class InitialCbfSyncWidget(QWidget):
-    """Shown while CBF sync is running and history list is still empty."""
+class NetworkMapWidgetMode(Enum):
+    cbf_initial_sync = "cbf_initial_sync"
+    tools_tab = "tools_tab"
+
+
+class WalletSyncProgressCard(BaseBorderCardFrame):
+    def __init__(
+        self,
+        config: UserConfig,
+        parent: QWidget | None = None,
+        wallet_title: str | None = None,
+    ) -> None:
+        super().__init__(parent=parent)
+        self.refresh_style()
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setSpacing(8)
+
+        self.wallet_title_label = QLabel(self)
+        title_font = QFont(self.wallet_title_label.font())
+        title_font.setBold(True)
+        self.wallet_title_label.setFont(title_font)
+        self.wallet_title_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.wallet_title_label.setVisible(bool(wallet_title))
+        layout.addWidget(self.wallet_title_label)
+
+        self.progress_label = QLabel(self)
+        progress_font = QFont(self.progress_label.font())
+        progress_font.setPointSize(max(12, progress_font.pointSize() + 1))
+        progress_font.setBold(True)
+        self.progress_label.setFont(progress_font)
+        self.progress_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.progress_label)
+
+        self.progress_bar = CBFProgressBar(config=config, show_rich_infos=False, parent=self)
+        layout.addWidget(self.progress_bar)
+
+        self.timings_label = QLabel(self)
+        self.timings_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.timings_label)
+
+        self.set_wallet_title(wallet_title)
+        self.set_progress_info(None)
+
+    def set_wallet_title(self, wallet_title: str | None) -> None:
+        text = (wallet_title or "").strip()
+        self.wallet_title_label.setVisible(bool(text))
+        self.wallet_title_label.setText(text)
+
+    def set_progress_info(self, progress_info: ProgressInfo | None) -> None:
+        if not progress_info:
+            self.progress_label.setText(self.tr("Preparing private sync…"))
+            self.progress_bar.setValue(0)
+            self.timings_label.setText("")
+            return
+
+        percent = int(progress_info.progress * 100)
+        if progress_info.status_msg:
+            progress_message = progress_info.status_msg
+        else:
+            progress_message = self.tr("Sync progress: {percent}%").format(percent=percent)
+        self.progress_label.setText(progress_message)
+        self.progress_bar._set_progress_info(progress_info)
+        self.timings_label.setText(
+            self.tr("Elapsed: {elapsed} | Remaining: {remaining}").format(
+                elapsed=age(progress_info.passed_time, style=AgeStyle.PLAIN),
+                remaining=age(progress_info.remaining_time, style=AgeStyle.PLAIN),
+            )
+        )
+
+
+class NetworkMapWidget(QWidget):
+    """Reusable network map widget for both wallet-local and global tool views."""
 
     _PRIVACY_INFO_URL = "https://bitcoin-safe.org/knowledge/compact-block-filters/"
+    _HOST_RESOLUTION_CACHE: dict[tuple[str, str | None], str | None] = {}
     signal_request_open_network_settings = cast(SignalProtocol[[]], pyqtSignal())
 
-    def __init__(self, config: UserConfig, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        config: UserConfig,
+        mode: NetworkMapWidgetMode = NetworkMapWidgetMode.cbf_initial_sync,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent=parent)
         self.config = config
+        self.mode = mode
+        self.signal_tracker = SignalTracker()
 
         self.geoip = RoughGeoIpDatabase()
         self._p2p_connections: list[Peer] = []
@@ -424,8 +531,11 @@ class InitialCbfSyncWidget(QWidget):
         self._cbf_peer_hosts: list[str] = []
         self._cbf_peer_count: int = 0
         self._last_progress_info: ProgressInfo | None = None
+        self._wallet_progress_cards: dict[str, WalletSyncProgressCard] = {}
+        self._resolved_server_host: str | None = None
 
         self._build_ui()
+        self.set_network_config()
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
@@ -450,6 +560,10 @@ class InitialCbfSyncWidget(QWidget):
         )
         self.privacy_help_label.textLabel.setWordWrap(False)
 
+        self.server_info_label = QLabel(self)
+        self.server_info_label.setWordWrap(True)
+        self.server_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
         self.network_settings_hint_label = QLabel(self)
         self.network_settings_hint_label.setWordWrap(True)
         self.network_settings_hint_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -468,59 +582,68 @@ class InitialCbfSyncWidget(QWidget):
 
         self.map_widget = WorldPeerMapWidget(parent=self)
 
-        self.progress_label = QLabel(self)
-        progress_font = QFont(self.progress_label.font())
-        progress_font.setPointSize(max(12, progress_font.pointSize() + 1))
-        progress_font.setBold(True)
-        self.progress_label.setFont(progress_font)
-        self.progress_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.local_progress_card = WalletSyncProgressCard(config=self.config, parent=self)
+        self.progress_label = self.local_progress_card.progress_label
+        self.progress_bar = self.local_progress_card.progress_bar
+        self.timings_label = self.local_progress_card.timings_label
 
-        self.progress_bar = CBFProgressBar(config=self.config, show_rich_infos=False, parent=self)
+        self.wallet_progress_section = QWidget(self)
+        wallet_progress_section_layout = QVBoxLayout(self.wallet_progress_section)
+        wallet_progress_section_layout.setContentsMargins(0, 0, 0, 0)
+        wallet_progress_section_layout.setSpacing(8)
+        self.wallet_progress_title_label = QLabel(self.wallet_progress_section)
+        self.wallet_progress_title_label.setVisible(False)
+        wallet_progress_section_layout.addWidget(self.wallet_progress_title_label)
+        self.wallet_progress_cards_container = QWidget(self.wallet_progress_section)
+        self.wallet_progress_cards_layout = QVBoxLayout(self.wallet_progress_cards_container)
+        self.wallet_progress_cards_layout.setContentsMargins(0, 0, 0, 0)
+        self.wallet_progress_cards_layout.setSpacing(8)
+        wallet_progress_section_layout.addWidget(self.wallet_progress_cards_container)
 
-        self.timings_label = QLabel(self)
-        self.timings_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.progress_empty_label = QLabel(self.wallet_progress_section)
+        self.progress_empty_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.progress_empty_label.setVisible(False)
+        wallet_progress_section_layout.addWidget(self.progress_empty_label)
 
         legend_layout = QHBoxLayout()
         self.peer_legend_label = IconLabel(parent=self)
         self.cbf_legend_label = IconLabel(parent=self)
+        self.server_legend_label = IconLabel(parent=self)
         self.node_legend_label = IconLabel(parent=self)
         legend_layout.addStretch()
         legend_layout.addWidget(self.peer_legend_label)
         legend_layout.addWidget(self.cbf_legend_label)
+        legend_layout.addWidget(self.server_legend_label)
         legend_layout.addWidget(self.node_legend_label)
         legend_layout.addStretch()
+
+        self.legend_divider = QFrame(self)
+        self.legend_divider.setFrameShape(QFrame.Shape.HLine)
 
         layout.addStretch(1)
         layout.addWidget(self.title_label)
         layout.addWidget(self.subtitle_label)
         layout.addWidget(self.privacy_help_label, alignment=Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.server_info_label)
         layout.addLayout(self.network_settings_row)
         layout.addWidget(self.map_widget)
-        layout.addWidget(self.progress_label)
-        layout.addWidget(self.progress_bar)
-        layout.addWidget(self.timings_label)
+        layout.addWidget(self.local_progress_card)
+        layout.addWidget(self.wallet_progress_section)
+        layout.addWidget(self.legend_divider)
         layout.addLayout(legend_layout)
         layout.addStretch(1)
 
         self.updateUi()
         self._refresh_points_and_legend()
 
+    def set_network_config(self) -> None:
+        self._resolved_server_host = self._resolve_configured_server_host()
+        self.updateUi()
+        self._refresh_points_and_legend()
+
     def set_progress_info(self, progress_info: ProgressInfo) -> None:
         self._last_progress_info = progress_info
-        percent = int(progress_info.progress * 100)
-        if progress_info.status_msg:
-            progress_message = progress_info.status_msg
-        else:
-            progress_message = self.tr("Sync progress: {percent}%").format(percent=percent)
-        self.progress_label.setText(progress_message)
-        self.progress_bar._set_progress_info(progress_info)
-
-        self.timings_label.setText(
-            self.tr("Elapsed {elapsed} | Estimated remaining {remaining}").format(
-                elapsed=age(from_date=progress_info.passed_time),
-                remaining=age(from_date=progress_info.remaining_time),
-            )
-        )
+        self.local_progress_card.set_progress_info(progress_info)
 
     def set_p2p_listener_peers(self, connections: list[Peer]) -> None:
         self._p2p_connections = list(connections)
@@ -538,38 +661,185 @@ class InitialCbfSyncWidget(QWidget):
         self._cbf_peer_count = max(0, count)
         self._refresh_points_and_legend()
 
+    def set_wallet_progress(
+        self,
+        wallet_id: str,
+        wallet_title: str,
+        progress_info: ProgressInfo,
+    ) -> None:
+        if wallet_id not in self._wallet_progress_cards:
+            card = WalletSyncProgressCard(config=self.config, parent=self.wallet_progress_cards_container)
+            self._wallet_progress_cards[wallet_id] = card
+            self.wallet_progress_cards_layout.addWidget(card)
+
+        card = self._wallet_progress_cards[wallet_id]
+        card.set_wallet_title(wallet_title)
+        card.set_progress_info(progress_info)
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def remove_wallet_progress(self, wallet_id: str) -> None:
+        card = self._wallet_progress_cards.pop(wallet_id, None)
+        if not card:
+            return
+
+        card.setParent(None)
+        card.deleteLater()
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def clear_wallet_progress(self) -> None:
+        for wallet_id in list(self._wallet_progress_cards):
+            self.remove_wallet_progress(wallet_id)
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
     def updateUi(self) -> None:
         """Update translated labels."""
-        self.title_label.setText(self.tr("Scanning Bitcoin blockchain"))
-        self.subtitle_label.setText(
-            self.tr(
-                "Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast."
-            )
+        self._update_copy()
+        self.local_progress_card.setVisible(
+            self.mode is NetworkMapWidgetMode.cbf_initial_sync
+            and self.config.network_config.server_type == BlockchainType.CompactBlockFilter
         )
-        self.privacy_help_label.set_icon_as_help(
-            tooltip=self.tr(
-                "Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions "
-                "while keeping your addresses private."
-            ),
-            click_url=self._PRIVACY_INFO_URL,
-        )
-        self.privacy_help_label.setText(self.tr("Why this protects privacy (learn more)"))
-        self.network_settings_hint_label.setText(
-            self.tr(
-                "If you have your own Electrum server or do not want to wait, connect to a public "
-                "Electrum server in network settings."
-            )
-        )
-        self.network_settings_button.setText(self.tr("Network settings"))
         if self._last_progress_info:
-            self.set_progress_info(self._last_progress_info)
+            self.local_progress_card.set_progress_info(self._last_progress_info)
         else:
-            self.progress_label.setText(self.tr("Preparing private sync…"))
-            self.progress_bar.setValue(0)
-            self.timings_label.setText("")
+            self.local_progress_card.set_progress_info(None)
+
+        self.wallet_progress_section.setVisible(
+            self.mode is NetworkMapWidgetMode.tools_tab
+            and self.config.network_config.server_type == BlockchainType.CompactBlockFilter
+        )
+        self.legend_divider.setVisible(True)
+        self._sync_wallet_progress_visibility()
         self._refresh_points_and_legend()
 
-    def _build_mapped_points(self, hosts: list[str], source: PeerSource) -> list[PeerMapPoint]:
+    def _has_active_wallet_scan(self) -> bool:
+        if self.config.network_config.server_type != BlockchainType.CompactBlockFilter:
+            return False
+        if self.mode is NetworkMapWidgetMode.cbf_initial_sync:
+            return True
+        return bool(self._wallet_progress_cards)
+
+    def _update_copy(self) -> None:
+        server_type = self.config.network_config.server_type
+        is_tools_tab = self.mode is NetworkMapWidgetMode.tools_tab
+        is_cbf = server_type == BlockchainType.CompactBlockFilter
+        is_server_map = server_type in [BlockchainType.Electrum, BlockchainType.Esplora]
+        has_active_wallet_scan = self._has_active_wallet_scan()
+
+        self.network_settings_button.setText(self.tr("Network settings"))
+        self.privacy_help_label.setVisible(is_cbf and has_active_wallet_scan)
+
+        if is_cbf and has_active_wallet_scan:
+            self.title_label.setText(self.tr("Scanning Bitcoin blockchain"))
+            self.subtitle_label.setText(
+                self.tr(
+                    "Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast."
+                )
+            )
+            self.privacy_help_label.set_icon_as_help(
+                tooltip=self.tr(
+                    "Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions "
+                    "while keeping your addresses private."
+                ),
+                click_url=self._PRIVACY_INFO_URL,
+            )
+            self.privacy_help_label.setText(self.tr("Why this protects privacy (learn more)"))
+            self.network_settings_hint_label.setText(
+                self.tr(
+                    "If you have your own Electrum server or do not want to wait, connect to a public "
+                    "Electrum server in network settings."
+                )
+            )
+            self.server_info_label.setVisible(False)
+        else:
+            server_name = self._configured_server_name()
+            self.title_label.setText(self.tr("Network Map"))
+            if is_tools_tab and is_cbf:
+                self.subtitle_label.setText(self.tr("View current network connections and servers."))
+            elif server_type == BlockchainType.Electrum:
+                self.subtitle_label.setText(
+                    self.tr("Your wallet syncs through the configured Electrum server.")
+                )
+            elif server_type == BlockchainType.Esplora:
+                self.subtitle_label.setText(
+                    self.tr("Your wallet syncs through the configured Esplora server.")
+                )
+            else:
+                self.subtitle_label.setText(self.tr("View current network connections and servers."))
+            self.privacy_help_label.setVisible(False)
+            self.network_settings_hint_label.setText(
+                self.tr("Update the active server or proxy configuration in network settings.")
+            )
+            self.server_info_label.setVisible(is_tools_tab and is_server_map)
+            if not server_name:
+                self.server_info_label.setText(self.tr("No server is configured."))
+            elif self._resolved_server_host:
+                self.server_info_label.setText(
+                    self.tr("Configured server: {server}").format(server=server_name)
+                )
+            else:
+                self.server_info_label.setText(
+                    self.tr("Configured server: {server}\nLocation unavailable.").format(server=server_name)
+                )
+
+    def _server_source_label(self) -> str | None:
+        server_type = self.config.network_config.server_type
+        if server_type == BlockchainType.Electrum:
+            return self.tr("Electrum server")
+        if server_type == BlockchainType.Esplora:
+            return self.tr("Esplora server")
+        return None
+
+    def _configured_server_name(self) -> str | None:
+        server_type = self.config.network_config.server_type
+        if server_type == BlockchainType.Electrum:
+            return self.config.network_config.electrum_url
+        if server_type == BlockchainType.Esplora:
+            return self.config.network_config.esplora_url
+        return None
+
+    def _resolve_configured_server_host(self) -> str | None:
+        server_name = self._configured_server_name()
+        if not server_name:
+            return None
+
+        host, _port = get_host_and_port(server_name)
+        if not host:
+            return None
+
+        if self.geoip.lookup_host(host):
+            return host
+
+        proxy_url = self.config.network_config.proxy_url
+        if proxy_url and ProxyInfo.parse(proxy_url).scheme.endswith("h"):
+            return None
+
+        cache_key = (host, proxy_url)
+        if cache_key in self._HOST_RESOLUTION_CACHE:
+            return self._HOST_RESOLUTION_CACHE[cache_key]
+
+        resolved_host: str | None = None
+        try:
+            results = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+            for result in results:
+                candidate = result[4][0]
+                if isinstance(candidate, str) and self.geoip.lookup_host(candidate):
+                    resolved_host = candidate
+                    break
+        except OSError:
+            resolved_host = None
+
+        self._HOST_RESOLUTION_CACHE[cache_key] = resolved_host
+        return resolved_host
+
+    def _build_mapped_points(
+        self,
+        hosts: list[str],
+        source: PeerSource,
+        label: str | None = None,
+    ) -> list[PeerMapPoint]:
         points: list[PeerMapPoint] = []
         for host in hosts:
             location = self.geoip.lookup_host(host)
@@ -582,9 +852,45 @@ class InitialCbfSyncWidget(QWidget):
                     host=host,
                     source=source,
                     country_code=location.country_code,
+                    label=label,
                 )
             )
         return points
+
+    def _build_server_points(self) -> list[PeerMapPoint]:
+        label = self._server_source_label()
+        if not label or not self._resolved_server_host:
+            return []
+        configured_server_name = self._configured_server_name()
+        if not configured_server_name:
+            return []
+
+        points = self._build_mapped_points([self._resolved_server_host], PeerSource.server, label=label)
+        if not points:
+            return []
+
+        point = points[0]
+        return [
+            PeerMapPoint(
+                latitude=point.latitude,
+                longitude=point.longitude,
+                host=configured_server_name,
+                source=PeerSource.server,
+                country_code=point.country_code,
+                label=label,
+            )
+        ]
+
+    def _sync_wallet_progress_visibility(self) -> None:
+        has_cards = bool(self._wallet_progress_cards)
+        self.wallet_progress_title_label.setVisible(False)
+        self.progress_empty_label.setVisible(False)
+        self.wallet_progress_cards_container.setVisible(has_cards)
+        self.wallet_progress_section.setVisible(
+            self.mode is NetworkMapWidgetMode.tools_tab
+            and self.config.network_config.server_type == BlockchainType.CompactBlockFilter
+            and has_cards
+        )
 
     def _refresh_points_and_legend(self) -> None:
         p2p_connections = tuple(self._p2p_connections)
@@ -599,14 +905,16 @@ class InitialCbfSyncWidget(QWidget):
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
+        server_points = self._build_server_points()
 
-        self.map_widget.set_points(node_points + p2p_points + cbf_points)
+        points = node_points + p2p_points + cbf_points + server_points
+        self.map_widget.set_points(points)
 
         gray = self.map_widget._LAND_FILL.name()
         self.peer_legend_label.setText(
             self.tr(
                 "<span style='color:{color}'>●</span> P2P listener peers: {total} "
-                "<span style='color:{gray}'>(mapped: {mapped})</span> &nbsp;&nbsp; "
+                "<span style='color:{gray}'>(mapped: {mapped})</span> &nbsp;&nbsp;"
             ).format(
                 total=len(p2p_connections),
                 mapped=len(p2p_points),
@@ -620,23 +928,45 @@ class InitialCbfSyncWidget(QWidget):
             )
         )
 
-        self.cbf_legend_label.setText(
-            self.tr(
-                "<span style='color:{color}'>●</span> CBF peers: {total} "
-                "<span style='color:{gray}'>(mapped: {mapped})</span>"
-            ).format(
-                total=max(cbf_peer_count, len(cbf_peer_hosts)),
-                mapped=len(cbf_points),
-                color=self.map_widget._CBF_COLOR.name(),
-                gray=gray,
+        show_cbf = self.config.network_config.server_type == BlockchainType.CompactBlockFilter
+        self.cbf_legend_label.setVisible(show_cbf)
+        if show_cbf:
+            self.cbf_legend_label.setText(
+                self.tr(
+                    "<span style='color:{color}'>●</span> CBF peers: {total} "
+                    "<span style='color:{gray}'>(mapped: {mapped})</span>"
+                ).format(
+                    total=max(cbf_peer_count, len(cbf_peer_hosts)),
+                    mapped=len(cbf_points),
+                    color=self.map_widget._CBF_COLOR.name(),
+                    gray=gray,
+                )
             )
-        )
-        self.cbf_legend_label.set_icon_as_help(
-            tooltip=self.tr(
-                "Short summaries (Compact Block Filters) and bitcoin blocks are"
-                "\nreceived from these peers via the bitcoin network."
+            self.cbf_legend_label.set_icon_as_help(
+                tooltip=self.tr(
+                    "Short summaries (Compact Block Filters) and bitcoin blocks are"
+                    "\nreceived from these peers via the bitcoin network."
+                )
             )
-        )
+
+        show_server = self.mode is NetworkMapWidgetMode.tools_tab and bool(server_points)
+        self.server_legend_label.setVisible(show_server)
+        if show_server:
+            self.server_legend_label.setText(
+                self.tr(
+                    "<span style='color:{color}'>●</span> {server_label}: {total} "
+                    "<span style='color:{gray}'>(mapped: {mapped})</span>"
+                ).format(
+                    total=1,
+                    mapped=len(server_points),
+                    server_label=self._server_source_label() or self.tr("Server"),
+                    color=self.map_widget._CBF_COLOR.name(),
+                    gray=gray,
+                )
+            )
+            self.server_legend_label.set_icon_as_help(
+                tooltip=self.tr("The currently configured wallet sync server.")
+            )
 
         self.node_legend_label.setText(
             self.tr(
@@ -653,3 +983,12 @@ class InitialCbfSyncWidget(QWidget):
 
     def _open_network_settings(self) -> None:
         self.signal_request_open_network_settings.emit()
+
+    def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        return super().close()
+
+
+class InitialCbfSyncWidget(NetworkMapWidget):
+    def __init__(self, config: UserConfig, parent: QWidget | None = None) -> None:
+        super().__init__(config=config, mode=NetworkMapWidgetMode.cbf_initial_sync, parent=parent)

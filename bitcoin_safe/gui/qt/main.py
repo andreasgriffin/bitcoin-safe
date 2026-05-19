@@ -88,6 +88,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.client import Client
+from bitcoin_safe.client_helpers import SyncStatus
 from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_tab import UpdateStatus
@@ -144,6 +145,7 @@ from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
 from .dialogs import PasswordQuestion, WalletIdDialog, show_textedit_message
+from .initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
 from .loading_wallet_tab import LoadingWalletTab
 from .new_wallet_welcome_screen import NetworkChoiceWelcomeScreen, NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase, create_tx_viewer
@@ -212,6 +214,8 @@ class MainWindow(UnlockableMainWindow):
         self.loop_in_thread = LoopInThread()
         self._p2p_listener_signals_connected = False
         self.signal_tracker = SignalTracker()
+        self.global_network_map_widget: NetworkMapWidget | None = None
+        self.global_network_map_node: SidebarNode[object] | None = None
 
         self.fx = FX(config=self.config, loop_in_thread=self.loop_in_thread)
         self.fx.signal_data_updated.connect(self.update_fx_rate_in_config)
@@ -393,6 +397,7 @@ class MainWindow(UnlockableMainWindow):
         self.set_title()
         self.rebuild_current_wallet_tab_menu()
         self.refresh_plugin_notification_bars()
+        self.refresh_global_network_map()
 
         current_node = node or self.tab_wallets.currentNode()
         self._sync_recent_wallets_sidebar_visibility(
@@ -506,6 +511,7 @@ class MainWindow(UnlockableMainWindow):
         self.tab_wallets.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         # Connect signals to slots
         self.tab_wallets.closeClicked.connect(self.close_tab)
+        self.tab_wallets.hideClicked.connect(self.hide_tab)
         self.tab_wallets.currentChanged.connect(self.on_currentChanged)
         self.signals.tab_history_backward.connect(self.tab_wallets.navigate_history_backward)
         self.signals.tab_history_forward.connect(self.tab_wallets.navigate_history_forward)
@@ -766,6 +772,7 @@ class MainWindow(UnlockableMainWindow):
                 else None,
                 p2p_connections=self.p2p_listener.get_current_peers() if self.p2p_listener else None,
             )
+        self.refresh_global_network_map()
 
     def on_signal_close_tabs_with_txids(self, items: list[str]):
         """On signal close tabs with txids."""
@@ -1083,6 +1090,11 @@ class MainWindow(UnlockableMainWindow):
             "",
             self.select_plugins_tab,
         )
+        self.menu_action_open_network_map = self.menu_tools.add_action(
+            "",
+            self.open_network_map,
+            icon=svg_tools.get_QIcon("bi--map.svg"),
+        )
 
         self.menu_action_check_update = self.menu_tools.add_action(
             "",
@@ -1285,6 +1297,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_tools.setTitle(self.tr("&Tools"))
         self.menu_action_open_hwi_manager.setText(self.tr("&USB Signer Tools"))
         self.menu_action_open_plugins.setText(self.tr("&Plugins"))
+        self.menu_action_open_network_map.setText(self.tr("&Network Map"))
         self.update_app_lock_action_text()
         self.menu_action_minimize_to_tray.setText(self.tr("&Minimize to tray"))
         self.update_fullscreen_action_text()
@@ -1373,7 +1386,6 @@ class MainWindow(UnlockableMainWindow):
 
     def rebuild_current_wallet_tab_menu(self) -> None:
         """Rebuild the Current Wallet submenu from the active wallet's tabs."""
-
         self.menu_current_wallet_tabs.clear()
         self.wallet_tab_shortcut_actions = []
         self.menu_action_open_plugins.setVisible(bool(self.qt_wallets))
@@ -1415,6 +1427,68 @@ class MainWindow(UnlockableMainWindow):
             return
         if plugins_node := qt_wallet.get_plugins_node():
             plugins_node.select()
+
+    def refresh_global_network_map(self, *_args: object) -> None:
+        widget = self.global_network_map_widget
+        if not widget:
+            return
+
+        widget.set_network_config()
+        widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        widget.clear_wallet_progress()
+
+        if self.p2p_listener:
+            widget.set_p2p_listener_peers(
+                [connection.peer for connection in self.p2p_listener.get_current_peers()]
+            )
+            widget.set_nodes(self.p2p_listener.peer_discovery.total_discovered_peers)
+        else:
+            widget.set_p2p_listener_peers([])
+            widget.set_nodes(set())
+
+        for qt_wallet in self.qt_wallets.values():
+            client = qt_wallet.wallet.client
+            if not client:
+                continue
+            if qt_wallet.config.network_config.server_type != BlockchainType.CompactBlockFilter:
+                continue
+            if client.sync_status not in [SyncStatus.syncing, SyncStatus.unknown]:
+                continue
+            widget.set_wallet_progress(
+                wallet_id=qt_wallet.wallet.id,
+                wallet_title=qt_wallet.wallet.id,
+                progress_info=client.progress_info,
+            )
+
+    def open_network_map(self) -> None:
+        if self.global_network_map_widget:
+            existing_node = self.tab_wallets.root.findNodeByWidget(self.global_network_map_widget)
+            if existing_node:
+                existing_node.show()
+                existing_node.select()
+                self.refresh_global_network_map()
+                return
+
+        self.global_network_map_widget = NetworkMapWidget(
+            config=self.config,
+            mode=NetworkMapWidgetMode.tools_tab,
+            parent=self.tab_wallets,
+        )
+        self.global_network_map_node = SidebarNode[object](
+            widget=self.global_network_map_widget,
+            data=self.global_network_map_widget,
+            icon=svg_tools.get_QIcon("bi--map.svg"),
+            title=self.tr("Network Map"),
+            hidable=True,
+            closable=False,
+            parent=self.tab_wallets,
+        )
+        self.signal_tracker.connect(
+            self.global_network_map_widget.signal_request_open_network_settings,
+            self.open_network_settings,
+        )
+        self.tab_wallets.root.addChildNode(self.global_network_map_node)
+        self.refresh_global_network_map()
 
     def select_relative_tab(self, delta: int) -> None:
         """Select the next or previous *top-level* tab."""
@@ -2702,10 +2776,13 @@ class MainWindow(UnlockableMainWindow):
         self.signal_tracker.connect(
             qt_wallet.signal_request_open_network_settings, self.open_network_settings
         )
+        self.signal_tracker.connect(qt_wallet.signal_progress_info, self.refresh_global_network_map)
+        self.signal_tracker.connect(qt_wallet.signal_refresh_sync_status, self.refresh_global_network_map)
 
         self.p2p_listening_update_lists(UpdateFilter())
         qt_wallet.wallet_signals.updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletOpened))
         self.update_all_history_initial_sync_widgets()
+        self.refresh_global_network_map()
 
         self.last_qtwallet = qt_wallet
         self.refresh_plugin_notification_bars()
@@ -2772,9 +2849,18 @@ class MainWindow(UnlockableMainWindow):
         d.show()
         d.raise_()
 
-    def event_wallet_tab_closed(self) -> None:
+    def event_wallet_tab_closed_or_hidden(self, node: SidebarNode[TT] | None) -> None:
         """Event wallet tab closed."""
-        if not self.tab_wallets.count():
+
+        def should_count_node(other_node: SidebarNode) -> bool:
+            if other_node is node:
+                return False
+            if other_node.hidable and not other_node.isVisible():
+                return False
+            return True
+
+        visible_other_nodes = sum([should_count_node(_node) for _node in self.tab_wallets.root.child_nodes])
+        if not visible_other_nodes:
             self._show_default_create_screen()
         # necessary to remove old qt_wallets from memory
         self.rebuild_current_wallet_tab_menu()
@@ -2782,8 +2868,9 @@ class MainWindow(UnlockableMainWindow):
     def on_any_wallet_updated(self, update_filter: UpdateFilter) -> None:
         if update_filter.reason == UpdateFilterReason.WalletOpened:
             self.rebuild_current_wallet_tab_menu()
+            self.refresh_global_network_map()
         elif update_filter.reason == UpdateFilterReason.WalletClosed:
-            self.event_wallet_tab_closed()
+            self.event_wallet_tab_closed_or_hidden(None)
 
     def remove_qt_wallet_by_id(self, wallet_id: str) -> None:
         """Remove qt wallet by id."""
@@ -2845,6 +2932,12 @@ class MainWindow(UnlockableMainWindow):
             false_button=self.tr("Close anyway"),
         )
 
+    def hide_tab(self, node: SidebarNode[TT]) -> None:
+        if not (node.hidable or node.widget == self.welcome_screen):
+            return
+        # other events
+        self.event_wallet_tab_closed_or_hidden(node)
+
     def close_tab(self, node: SidebarNode[TT]) -> None:
         """Close tab."""
         if not node.closable and not node.widget == self.welcome_screen:
@@ -2885,14 +2978,17 @@ class MainWindow(UnlockableMainWindow):
                 tab_data.export_data_simple.button_export_file.export_to_file()
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
             tab_data.close()
+        elif tab_data == self.global_network_map_widget:
+            logger.info(self.tr("Closing tab {name}").format(name=node.title))
         else:
             logger.info(self.tr("Closing tab {name}").format(name=node.title))
 
         node.removeNode()
-        del node.data
 
         # other events
-        self.event_wallet_tab_closed()
+        self.event_wallet_tab_closed_or_hidden(node)
+
+        del node.data
 
     def manual_sync(self) -> None:
         """Manual sync."""
@@ -2954,6 +3050,8 @@ class MainWindow(UnlockableMainWindow):
             self.p2p_listener.stop()
         self.remove_all_qt_wallet()
         self.mempool_manager.close()
+        if self.global_network_map_widget:
+            self.global_network_map_widget.close()
         self.fx.close()
 
         if self.new_startup_network:

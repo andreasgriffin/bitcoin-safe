@@ -126,7 +126,7 @@ from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
 from .history_range import HistoryRangeController
-from .initial_cbf_sync_widget import InitialCbfSyncWidget
+from .initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
 from .util import (
     Message,
     MessageType,
@@ -385,6 +385,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet = self.set_wallet(wallet)
         self.password = password
         self.fx = fx
+        self.network_map_widget: NetworkMapWidget | None = None
         self.external_registry = external_registry or ExternalPluginRegistry.from_config(config)
         self.plugins_menu = QMenu()
         self._file_path = file_path
@@ -714,7 +715,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.fiat_value_label_title.setText(self.tr("Value"))
         self.category_manager.updateUi()
         self.quick_receive.updateUi()
-        self.history_initial_sync_widget.updateUi()
+        if self.network_map_widget:
+            self.network_map_widget.updateUi()
         self.wallet_corruption_warning_bar.updateUi()
         self._update_history_initial_sync_overlay_visibility()
 
@@ -787,8 +789,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.signal_progress_info.emit(self.wallet.client.progress_info)
 
     def _on_history_initial_sync_progress_info(self, progress_info: ProgressInfo) -> None:
-        self.history_initial_sync_widget.set_progress_info(progress_info)
-        self.history_initial_sync_widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        if not self.should_show_initial_sync_placeholder():
+            return
+
+        history_initial_sync_widget = self.get_or_create_history_initial_sync_widget()
+        history_initial_sync_widget.set_progress_info(progress_info)
+        history_initial_sync_widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
         self._update_history_initial_sync_overlay_visibility()
 
     def should_show_initial_sync_placeholder(self) -> bool:
@@ -799,9 +805,25 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
     def _update_history_initial_sync_overlay_visibility(self) -> None:
         if self.should_show_initial_sync_placeholder():
-            self.history_tab_content_stack.setCurrentWidget(self.history_initial_sync_widget)
+            self.history_tab_content_stack.setCurrentWidget(self.get_or_create_history_initial_sync_widget())
         else:
             self.history_tab_content_stack.setCurrentWidget(self.history_tab_content)
+
+    def get_or_create_history_initial_sync_widget(self) -> NetworkMapWidget:
+        if self.network_map_widget:
+            return self.network_map_widget
+
+        self.network_map_widget = NetworkMapWidget(
+            config=self.config,
+            mode=NetworkMapWidgetMode.cbf_initial_sync,
+            parent=self.history_tab,
+        )
+        self.signal_tracker.connect(
+            self.network_map_widget.signal_request_open_network_settings,
+            self.signal_request_open_network_settings.emit,
+        )
+        self.history_tab_content_stack.addWidget(self.network_map_widget)
+        return self.network_map_widget
 
     def _suggested_increased_gap(self) -> int:
         return self.wallet.gap + max(self.wallet.gap, 100)
@@ -1645,12 +1667,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_tab_content_layout.addWidget(splitter)
         self.history_tab_content_stack.addWidget(self.history_tab_content)
 
-        self.history_initial_sync_widget = InitialCbfSyncWidget(config=self.config, parent=tab)
-        self.signal_tracker.connect(
-            self.history_initial_sync_widget.signal_request_open_network_settings,
-            self.signal_request_open_network_settings.emit,
-        )
-        self.history_tab_content_stack.addWidget(self.history_initial_sync_widget)
+        self.network_map_widget = None
 
         if history_list_with_toolbar:
             history_list_with_toolbar.hist_list.set_wallets(wallets=[self.wallet])
@@ -2123,10 +2140,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def update_history_initial_sync_widgets(
         self, total_discovered_peers: set[Peer] | None, p2p_connections: list[ConnectionInfo] | None
     ):
+        if not self.network_map_widget and not self.should_show_initial_sync_placeholder():
+            return
+
+        history_initial_sync_widget = self.get_or_create_history_initial_sync_widget()
         if p2p_connections is not None:
-            self.history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
+            history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
         if total_discovered_peers is not None:
-            self.history_initial_sync_widget.set_nodes(total_discovered_peers)
+            history_initial_sync_widget.set_nodes(total_discovered_peers)
 
     async def _sync_revealed_spks(self):
         "Syncs all revealed skps"
@@ -2339,6 +2360,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.quick_receive.close()
         self.address_tab.close()
         self.address_list_with_toolbar.close()
+        if self.network_map_widget:
+            self.network_map_widget.close()
         self.history_tab.close()
         self.history_tab.searchable_list = None
         self.history_list_with_toolbar.close()

@@ -490,7 +490,7 @@ resolved_reference = "0aecda03c09a62fa9c4c0323b1dd2f0bb302b43b"
 
 [[package]]
 name = "bitcoin-safe-lib"
-version = "2.1.1"
+version = "2.1.2"
 description = "Python tools and library"
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -508,7 +508,7 @@ pyqt6 = "^6.9.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-safe-lib.git"
 reference = "main"
-resolved_reference = "4a30aee51aeb08413d79834f8c38367fa997b867"
+resolved_reference = "dc4242eaa98da833042f157ee9ed905d9781cdce"
 
 [[package]]
 name = "bitcoin-usb"
