@@ -231,7 +231,7 @@ def get_testnet_faucet(network: bdk.Network) -> str | None:
     d = {
         bdk.Network.TESTNET: "https://coinfaucet.eu/en/btc-testnet/",
         bdk.Network.TESTNET4: "https://coinfaucet.eu/en/btc-testnet4/",
-        bdk.Network.SIGNET: "https://signet25.bublina.eu.org/",
+        bdk.Network.SIGNET: "https://faucet.coinbin.org/",
     }
     return d.get(network)
 
