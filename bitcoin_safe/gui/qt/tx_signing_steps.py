@@ -303,7 +303,7 @@ class TxSigningDeviceCard(CardBase):
         if self._qr_importer() and self._preferred_qr_type():
             button_qr = self._action_button(
                 self.tr("Show QR Code"),
-                KeyStoreImporterTypes.qr.icon_filename,
+                "bi--qr-code.svg",
             )
             button_qr.clicked.connect(self._show_qr_detail)
             buttons.append((self.tr("Sign via QR"), button_qr))

@@ -141,6 +141,7 @@ class PasswordCreation(QDialog):
 
         window_title = window_title if window_title else self.tr("Create Password")
         self.setWindowTitle(window_title)
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         self._layout = QVBoxLayout(self)
 
@@ -240,6 +241,7 @@ class WalletIdDialog(QDialog):
         self.wallet_dir = wallet_dir
         window_title = window_title if window_title else self.tr("Choose wallet name")
         self.setWindowTitle(window_title)
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
         # Create layout
         layout = QVBoxLayout(self)
@@ -308,6 +310,7 @@ def show_textedit_message(text: str, label_description: str, title: str):
     # Create a modal dialog
     """Show textedit message."""
     dialog = QDialog()
+    dialog.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
     dialog.setWindowTitle(title)
 
     # Set up the layout
