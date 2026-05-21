@@ -36,6 +36,7 @@ import logging
 from dataclasses import dataclass
 from math import ceil
 from typing import Any, Literal, cast
+from urllib.parse import urljoin
 
 import aiohttp
 import numpy as np
@@ -51,6 +52,14 @@ from bitcoin_safe.util import default_timeout
 from .network_utils import ProxyInfo
 
 logger = logging.getLogger(__name__)
+
+RECOMMENDED_FEE_KEYS = (
+    "fastestFee",
+    "halfHourFee",
+    "hourFee",
+    "economyFee",
+    "minimumFee",
+)
 
 feeLevels = [
     0,
@@ -195,6 +204,42 @@ async def fetch_from_url(
         return None
 
 
+def _is_fee_rate(value: Any) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
+
+
+def _validated_mempool_blocks(data: Any) -> list[dict[str, Any]] | None:
+    if not isinstance(data, list):
+        return None
+    if not all(isinstance(block, dict) for block in data):
+        return None
+    return [dict(block) for block in data]
+
+
+def _validated_recommended_fees(data: Any) -> dict[str, float] | None:
+    if not isinstance(data, dict):
+        return None
+
+    missing_keys = [key for key in RECOMMENDED_FEE_KEYS if key not in data]
+    if missing_keys:
+        return None
+
+    recommended: dict[str, float] = {}
+    for key in RECOMMENDED_FEE_KEYS:
+        value = data[key]
+        if not _is_fee_rate(value):
+            return None
+        recommended[key] = float(value)
+
+    return recommended
+
+
+def _validated_mempool_dict(data: Any) -> dict[str, Any] | None:
+    if not isinstance(data, dict):
+        return None
+    return dict(data)
+
+
 class TxPrio(enum.Enum):
     low = enum.auto()
     medium = enum.auto()
@@ -312,11 +357,12 @@ class MempoolManager(QObject):
     async def _set_data_from_mempoolspace(self) -> None:
         """Set data from mempoolspace."""
         self.time_of_data = datetime.datetime.now()
+        mempool_url = f"{self.network_config.mempool_url.rstrip('/')}/"
 
         urls = [
-            f"{self.network_config.mempool_url}api/v1/fees/mempool-blocks",
-            f"{self.network_config.mempool_url}api/v1/fees/recommended",
-            f"{self.network_config.mempool_url}api/mempool",
+            urljoin(mempool_url, "api/v1/fees/mempool-blocks"),
+            urljoin(mempool_url, "api/v1/fees/recommended"),
+            urljoin(mempool_url, "api/mempool"),
         ]
 
         coroutines = [
@@ -335,15 +381,38 @@ class MempoolManager(QObject):
             return
         mempool_blocks, recommended, mempool_dict = results
 
-        if mempool_blocks:
-            self.data.mempool_blocks = mempool_blocks
-        if recommended:
-            self.data.recommended = recommended
-        if mempool_dict:
-            self.data.mempool_dict = mempool_dict
-            logger.info(f"Updated mempool_dict {mempool_dict}")
+        validated_mempool_blocks = _validated_mempool_blocks(mempool_blocks)
+        if validated_mempool_blocks is not None:
+            self.data.mempool_blocks = validated_mempool_blocks
+        elif mempool_blocks is not None:
+            logger.warning(
+                "Ignoring invalid mempool blocks payload from %s: %s",
+                self.network_config.mempool_url,
+                type(mempool_blocks).__name__,
+            )
+
+        validated_recommended = _validated_recommended_fees(recommended)
+        if validated_recommended is not None:
+            self.data.recommended = validated_recommended
+        elif recommended is not None:
+            logger.warning(
+                "Ignoring invalid recommended fees payload from %s: %s",
+                self.network_config.mempool_url,
+                type(recommended).__name__,
+            )
+
+        validated_mempool_dict = _validated_mempool_dict(mempool_dict)
+        if validated_mempool_dict is not None:
+            self.data.mempool_dict = validated_mempool_dict
+            logger.info(f"Updated mempool_dict {validated_mempool_dict}")
 
             self.signal_data_updated.emit()
+        elif mempool_dict is not None:
+            logger.warning(
+                "Ignoring invalid mempool summary payload from %s: %s",
+                self.network_config.mempool_url,
+                type(mempool_dict).__name__,
+            )
 
     def _loop_is_running(self) -> bool:
         """Check whether the background asyncio loop is running."""
@@ -355,9 +424,10 @@ class MempoolManager(QObject):
         if not self._loop_is_running():
             logger.warning("Loop is not running; skipping mempool tip height fetch.")
             return 0
+        mempool_url = f"{self.network_config.mempool_url.rstrip('/')}/"
         response = self.loop_in_thread.run_foreground(
             fetch_from_url(
-                f"{self.network_config.mempool_url}api/blocks/tip/height",
+                urljoin(mempool_url, "api/blocks/tip/height"),
                 proxies=(
                     ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
                     if self.network_config.proxy_url
