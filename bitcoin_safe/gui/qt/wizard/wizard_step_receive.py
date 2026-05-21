@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
@@ -37,6 +38,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
@@ -46,7 +48,9 @@ from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.card_base import CardExpansionMode, CardList
 from bitcoin_safe.gui.qt.qt_wallet import SyncStatus
 from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.testnet_faucet import open_testnet_faucet
 from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.network_config import get_testnet_faucet
 from bitcoin_safe.pythonbdk_types import PythonUtxo
 from bitcoin_safe.signals import UpdateFilter
 
@@ -85,6 +89,21 @@ class ReceiveTest(BaseTab):
         self.tx_card_list: CardList | None = None
         self.tx_card: TutorialTxCard | None = None
         self.check_button: SpinningButton | None = None
+        self.label_receive_intro: QLabel | None = None
+        self.label_receive_why: QLabel | None = None
+        self.faucet_button: QPushButton | None = None
+
+    def get_faucet_network(self) -> bdk.Network:
+        """Return the network used for receive-step faucet actions."""
+        return self.refs.qtwalletbase.config.network
+
+    def has_faucet(self) -> bool:
+        """Return whether the current network provides a faucet."""
+        return bool(get_testnet_faucet(network=self.get_faucet_network()))
+
+    def open_faucet(self) -> None:
+        """Open the faucet for the current test network."""
+        open_testnet_faucet(self.get_faucet_network())
 
     def _on_sync_done(self, sync_status: SyncStatus) -> None:
         """On sync done."""
@@ -224,11 +243,19 @@ class ReceiveTest(BaseTab):
         set_no_margins(right_widget_layout)
         instructions_layout.addWidget(right_widget, stretch=1)
 
-        self.label_receive_description = QLabel(widget)
-        self.label_receive_description.setWordWrap(True)
+        self.label_receive_intro = QLabel(widget)
+        self.label_receive_intro.setWordWrap(True)
+        self.faucet_button = QPushButton(widget)
+        self.faucet_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.faucet_button.clicked.connect(self.open_faucet)
+        self.faucet_button.setHidden(not self.has_faucet())
+        self.label_receive_why = QLabel(widget)
+        self.label_receive_why.setWordWrap(True)
 
         right_widget_layout.addStretch(1)
-        right_widget_layout.addWidget(self.label_receive_description)
+        right_widget_layout.addWidget(self.label_receive_intro)
+        right_widget_layout.addWidget(self.faucet_button, alignment=Qt.AlignmentFlag.AlignLeft)
+        right_widget_layout.addWidget(self.label_receive_why)
         right_widget_layout.addStretch(1)
 
         self.tx_section = QGroupBox(widget)
@@ -272,22 +299,35 @@ class ReceiveTest(BaseTab):
         test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit(
             btc_symbol=self.refs.qtwalletbase.config.bitcoin_symbol.value
         )
-        self.label_receive_description.setText(
-            html_f(
-                self.tr(
-                    """Receive a <b>small</b> amount (less than {test_amount}) to 1 address of this wallet.
-                    <br><br>
-                    <b>Why?</b> <br>
-                    To know if you control the funds, you have to test spending from the wallet.
-                    <br>
-                    So before you send a substantial amount of Bitcoin into the wallet, it is <b>crucial</b> to spend from the wallet and test all signers.
-                    """  # noqa: E501
-                ).format(test_amount=test_amount),
-                add_html_and_body=True,
-                p=True,
-                size=12,
+        if self.label_receive_intro:
+            self.label_receive_intro.setText(
+                html_f(
+                    self.tr(
+                        """Receive a <b>small</b> amount (less than {test_amount}) to 1 address of this wallet.<br>"""
+                    ).format(test_amount=test_amount),
+                    add_html_and_body=True,
+                    p=True,
+                    size=12,
+                )
             )
-        )
+        if self.label_receive_why:
+            self.label_receive_why.setText(
+                html_f(
+                    self.tr(
+                        """<br><b>Why?</b> <br>
+                        To know if you control the funds, you have to test spending from the wallet.
+                        <br>
+                        So before you send a substantial amount of Bitcoin into the wallet, it is <b>crucial</b> to spend from the wallet and test all signers.
+                        """  # noqa: E501
+                    ),
+                    add_html_and_body=True,
+                    p=True,
+                    size=12,
+                )
+            )
+        if self.faucet_button:
+            self.faucet_button.setText(self.tr("Receive from faucet"))
+            self.faucet_button.setHidden(not self.has_faucet())
         if self.instructions_section:
             self.instructions_section.setTitle(self.tr("Receive instructions"))
         if self.tx_section:
