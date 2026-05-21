@@ -693,7 +693,7 @@ class MempoolButtons(VerticalButtonGroup):
         self.info_past_days.setVisible(True)
 
         self.info_confirmations.title.setText(self.tr("Confirmations"))
-        self.info_confirmations.text.setText(f"{self.tx_status.confirmations()}")
+        self.info_confirmations.text.setText(str(self.tx_status.confirmations()))
         self.info_confirmations.setVisible(True)
 
         for button in self.buttons[:1]:

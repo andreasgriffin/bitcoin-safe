@@ -33,7 +33,6 @@ import logging
 from collections.abc import Callable
 
 import bdkpython as bdk
-from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QPushButton, QWidget
 
@@ -41,6 +40,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.network_config import get_testnet_faucet
 from bitcoin_safe.signals import SignalsMin
 
+from .testnet_faucet import open_testnet_faucet
 from .util import adjust_bg_color_for_darkmode, svg_tools
 
 logger = logging.getLogger(__name__)
@@ -80,8 +80,7 @@ class NotificationBarRegtest(NotificationBar):
 
     def open_faucet(self):
         """Open faucet."""
-        if self.faucet:
-            webopen(self.faucet)
+        open_testnet_faucet(self.network)
 
     def updateUi(self) -> None:
         """UpdateUi."""
