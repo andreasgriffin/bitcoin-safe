@@ -77,14 +77,14 @@ def get_mempool_url(network: bdk.Network) -> dict[str, str]:
             "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/testnet",
         },
         bdk.Network.TESTNET4: {
-            "default": "https://mempool.space/testnet4",
-            "mempool.space": "https://mempool.space/testnet4",
-            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/testnet4",
+            "default": "https://mempool.space/testnet4/",
+            "mempool.space": "https://mempool.space/testnet4/",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/testnet4/",
         },
         bdk.Network.SIGNET: {
-            "default": "https://mempool.space/signet",
-            "mempool.space": "https://mempool.space/signet",
-            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/signet",
+            "default": "https://mempool.space/signet/",
+            "mempool.space": "https://mempool.space/signet/",
+            "tor_mempool.space": "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/signet/",
         },
     }
     return d[network]

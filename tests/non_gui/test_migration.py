@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from urllib.parse import urljoin
 
 import bdkpython as bdk
 from bitcoin_safe_lib.storage import Storage
@@ -96,6 +97,11 @@ def test_config_0_1_6_testnet4_electrum() -> None:
     assert config.network_config.electrum_use_ssl
 
     assert config.network_config.proxy_url is None
+    assert config.network_config.mempool_url == "https://mempool.space/testnet4/"
+    assert (
+        urljoin(config.network_config.mempool_url, "api/v1/fees/recommended")
+        == "https://mempool.space/testnet4/api/v1/fees/recommended"
+    )
     assert bdk.Network.TESTNET4 in config.recently_open_wallets
 
 

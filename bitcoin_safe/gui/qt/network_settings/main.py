@@ -32,6 +32,7 @@ from __future__ import annotations
 import logging
 from functools import partial
 from typing import cast
+from urllib.parse import urljoin
 
 import bdkpython as bdk
 import requests
@@ -106,8 +107,11 @@ logger = logging.getLogger(__name__)
 def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
     """Test mempool space server."""
     try:
+        mempool_url = f"{url.rstrip('/')}/"
         response = requests.get(
-            f"{url}/api/blocks/tip/height", timeout=default_timeout(proxies), proxies=proxies
+            urljoin(mempool_url, "api/blocks/tip/height"),
+            timeout=default_timeout(proxies),
+            proxies=proxies,
         )
         return response.status_code == 200
     except Exception as e:
