@@ -1093,6 +1093,12 @@ class UITx_Viewer(UITx_Base):
             network=self.network,
             wallet_functions=self.wallet_functions,
             loop_in_thread=self.loop_in_thread,
+            wizard_send_test_signer_groups=(
+                self.hidden_tx_infos.wizard_send_test_signer_groups if self.hidden_tx_infos else []
+            ),
+            wizard_send_test_index=(
+                self.hidden_tx_infos.wizard_send_test_index if self.hidden_tx_infos else None
+            ),
         )
 
         self.tx_singning_steps_container_layout.addWidget(tx_singning_steps)

@@ -80,6 +80,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
     post_create_action: PostCreateEnum = PostCreateEnum.open_tab
     wizard_request_id: str | None = None
     wizard_send_test_index: int | None = None
+    wizard_send_test_signer_groups: list[list[str]] = field(default_factory=list)
 
     def dump(self) -> dict[str, Any]:  # type: ignore[override]
         """Dump hidden fields."""
@@ -90,6 +91,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
         d["post_create_action"] = self.post_create_action.name
         d["wizard_request_id"] = self.wizard_request_id
         d["wizard_send_test_index"] = self.wizard_send_test_index
+        d["wizard_send_test_signer_groups"] = [list(group) for group in self.wizard_send_test_signer_groups]
         return d
 
     @classmethod
@@ -109,6 +111,9 @@ class HiddenTxUiInfos(BaseSaveableClass):
             dct["post_create_action"] = PostCreateEnum.open_tab
         dct.setdefault("wizard_request_id", None)
         dct.setdefault("wizard_send_test_index", None)
+        dct["wizard_send_test_signer_groups"] = [
+            list(group) for group in dct.get("wizard_send_test_signer_groups", [])
+        ]
         return cls(**filtered_for_init(dct, cls))
 
 

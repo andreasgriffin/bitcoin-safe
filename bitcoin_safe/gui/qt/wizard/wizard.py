@@ -40,6 +40,11 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton
 
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet, QtWalletBase
+from bitcoin_safe.gui.qt.send_test_schedule import (
+    SendTestStepPlan,
+    build_send_test_fingerprint_groups,
+    build_send_test_signer_groups,
+)
 from bitcoin_safe.gui.qt.wizard.wizard_base import WizardBase
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 
@@ -629,19 +634,14 @@ class Wizard(WizardBase):
         keystore_labels.extend(
             [self.tr("Signer {index}").format(index=i + 1) for i in range(len(keystore_labels), n)]
         )
+        groups = build_send_test_signer_groups(keystore_labels, (m, n))
 
-        send_test_labels: list[str] = []
-        for i_send_tests, _tutorial_step in enumerate(self.get_send_tests_steps(mn_tuple=mn_tuple)):
-            start_signer = m * i_send_tests
-            end_signer = min(m * i_send_tests + m, n)
-
-            missing_signers = m - (end_signer - start_signer)
-            start_signer -= missing_signers
-
-            labels = [keystore_labels[j] for j in range(start_signer, end_signer)]
-            send_test_labels.append(self.tr(" and ").join([f'"{label}"' for label in labels]))
-
-        return send_test_labels
+        return [
+            Wizard._format_send_test_label(
+                self, SendTestStepPlan.from_groups(groups=groups, current_index=test_number)
+            )
+            for test_number in range(len(groups))
+        ]
 
     def tx_text(self, test_number: int, mn_tuple: tuple[int, int] | None = None) -> str:
         """Tx text."""
@@ -670,6 +670,7 @@ class Wizard(WizardBase):
         """Open tx."""
         if not self.qt_wallet:
             return
+        m, n = self.qtwalletbase.get_mn_tuple()
 
         utxos = [txo for txo in self.qt_wallet.wallet.get_all_utxos()]
         if not utxos:
@@ -706,9 +707,37 @@ class Wizard(WizardBase):
         txinfos.hidden.post_create_action = PostCreateEnum.no_action
         txinfos.hidden.wizard_request_id = self.active_request_id
         txinfos.hidden.wizard_send_test_index = test_number
+        txinfos.hidden.wizard_send_test_signer_groups = build_send_test_fingerprint_groups(
+            fingerprints=[keystore.fingerprint for keystore in self.qt_wallet.wallet.keystores[:n]],
+            mn_tuple=(m, n),
+        )
 
         self.qt_wallet.uitx_creator.initial_tx_ui_infos = txinfos
         self.qt_wallet.uitx_creator.set_ui(txinfos)
+
+    def _format_send_test_label(self, plan: SendTestStepPlan) -> str:
+        """Format the signer instruction for one send test."""
+        if plan.overlap_slots_total == 0:
+            return self.tr(" and ").join([f'"{label}"' for label in plan.current_group])
+
+        required_part = self.tr(" and ").join([f'"{label}"' for label in plan.required_new_signers])
+        verified_pool_part = self.tr(" or ").join([f'"{label}"' for label in plan.verified_candidates])
+        verified_slot_part = (
+            self.tr("one verified signer")
+            if plan.overlap_slots_total == 1
+            else self.tr("{count} verified signers").format(count=plan.overlap_slots_total)
+        )
+
+        if required_part:
+            return self.tr("{required} and {verified} ({pool})").format(
+                required=required_part,
+                verified=verified_slot_part,
+                pool=verified_pool_part,
+            )
+        return self.tr("{verified} ({pool})").format(
+            verified=verified_slot_part,
+            pool=verified_pool_part,
+        )
 
     def fill_tx(self) -> None:
         """Fill tx."""

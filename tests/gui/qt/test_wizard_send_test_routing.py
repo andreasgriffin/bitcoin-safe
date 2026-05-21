@@ -34,10 +34,15 @@ from unittest.mock import Mock
 
 import bdkpython as bdk
 import pytest
+from bitcoin_qr_tools.data import DataType
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.card_base import CardExpansionMode, CardList
+from bitcoin_safe.gui.qt.send_test_schedule import (
+    build_send_test_fingerprint_groups,
+    build_send_test_signer_groups,
+)
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer, ViewerPresentation
 from bitcoin_safe.gui.qt.wizard.wizard import ReceiveTest, SendTest, TutorialStep, Wizard
 from bitcoin_safe.gui.qt.wizard.wizard_step_cards import (
@@ -49,6 +54,8 @@ from bitcoin_safe.gui.qt.wizard.wizard_step_cards import (
 )
 from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, PostCreateEnum, TxBuilderInfos
 from tests.helpers import TestConfig as WizardTestConfig
+from tests.non_gui.test_psbt_util import tr_psbt_singlesig
+from tests.non_gui.utils import create_test_seed_keystores
 
 
 class DummyWizardSignals(QObject):
@@ -136,6 +143,79 @@ def test_on_signal_psbt_created_embeds_viewer() -> None:
     fake_self._refresh_all_send_test_cards.assert_called_once_with()
 
 
+def test_build_send_test_signer_groups_2_of_3() -> None:
+    assert build_send_test_signer_groups(["A", "B", "C"], (2, 3)) == [["A", "B"], ["B", "C"]]
+
+
+def test_build_send_test_signer_groups_3_of_5() -> None:
+    assert build_send_test_signer_groups(["A", "B", "C", "D", "E"], (3, 5)) == [
+        ["A", "B", "C"],
+        ["C", "D", "E"],
+    ]
+
+
+def test_get_send_test_labels_uses_shared_grouping_helper() -> None:
+    fake_self = SimpleNamespace(
+        qtwalletbase=SimpleNamespace(
+            get_mn_tuple=lambda: (2, 3),
+            get_keystore_labels=lambda: ["Jade", "Passport", "Coldcard"],
+        ),
+        tr=lambda text: text,
+    )
+
+    labels = Wizard.get_send_test_labels(fake_self)
+
+    assert labels == ['"Jade" and "Passport"', '"Coldcard" and one verified signer ("Jade" or "Passport")']
+
+
+def test_build_send_test_fingerprint_groups_normalizes_and_groups() -> None:
+    groups = build_send_test_fingerprint_groups(
+        fingerprints=["aa11bb22", "cc33dd44", "", "EE55FF66"],
+        mn_tuple=(2, 3),
+    )
+
+    assert groups == [["AA11BB22", "CC33DD44"], ["CC33DD44", "EE55FF66"]]
+
+
+def test_open_tx_stores_send_test_signer_groups() -> None:
+    keystores = create_test_seed_keystores(
+        signers=3,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h", "m/48h/1h/2h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    created_infos: list = []
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(
+            id="wallet-id",
+            keystores=keystores,
+            labels=SimpleNamespace(get_category=lambda address: "funded"),
+            get_all_utxos=lambda: [SimpleNamespace(outpoint="outpoint-1", address="addr-1")],
+            get_unused_category_address=lambda category: SimpleNamespace(address="addr-2"),
+        ),
+        uitx_creator=SimpleNamespace(
+            initial_tx_ui_infos=None,
+            set_ui=lambda txinfos: created_infos.append(txinfos),
+        ),
+        wallet_signals=SimpleNamespace(updated=SimpleNamespace(emit=Mock())),
+    )
+    fake_self = SimpleNamespace(
+        qt_wallet=qt_wallet,
+        qtwalletbase=SimpleNamespace(get_mn_tuple=lambda: (2, 3)),
+        active_request_id="request-1",
+        tr=lambda text: text,
+        tx_text=lambda test_number: f"Send test {test_number + 1}",
+    )
+
+    Wizard.open_tx(fake_self, 1)
+
+    assert len(created_infos) == 1
+    assert created_infos[0].hidden.wizard_send_test_index == 1
+    assert created_infos[0].hidden.wizard_send_test_signer_groups == [
+        [keystores[0].fingerprint, keystores[1].fingerprint],
+        [keystores[1].fingerprint, keystores[2].fingerprint],
+    ]
+
+
 def test_show_embedded_viewer_makes_viewer_visible(qtbot) -> None:
     root = QWidget()
     qtbot.addWidget(root)
@@ -175,6 +255,37 @@ def test_show_embedded_viewer_makes_viewer_visible(qtbot) -> None:
     qtbot.waitUntil(viewer.isVisible, timeout=1_000)
     assert viewer.presentation == ViewerPresentation.embedded_card
     fake_self.refresh_cards.assert_called_once_with()
+
+
+def test_update_tx_progress_passes_wizard_signer_groups(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured_kwargs: dict[str, object] = {}
+
+    class DummyTxSigningSteps(QWidget):
+        def __init__(self, **kwargs) -> None:
+            super().__init__()
+            captured_kwargs.update(kwargs)
+
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.clear_layout", lambda layout: None)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.TxSigningSteps", DummyTxSigningSteps)
+
+    fake_self = SimpleNamespace(
+        data=SimpleNamespace(data_type=DataType.PSBT, data=tr_psbt_singlesig),
+        tx_singning_steps_container_layout=SimpleNamespace(addWidget=Mock()),
+        hidden_tx_infos=HiddenTxUiInfos(
+            wizard_send_test_index=1,
+            wizard_send_test_signer_groups=[["A", "B"], ["B", "C"]],
+        ),
+        network=bdk.Network.REGTEST,
+        wallet_functions=SimpleNamespace(),
+        loop_in_thread=None,
+        get_combined_signature_importers=lambda psbt: {"wallet.0": []},
+    )
+
+    result = UITx_Viewer.update_tx_progress(fake_self)
+
+    assert isinstance(result, DummyTxSigningSteps)
+    assert captured_kwargs["wizard_send_test_index"] == 1
+    assert captured_kwargs["wizard_send_test_signer_groups"] == [["A", "B"], ["B", "C"]]
 
 
 def test_viewer_set_presentation_disables_fee_notification_bars(qtbot) -> None:

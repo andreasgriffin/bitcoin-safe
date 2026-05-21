@@ -63,12 +63,14 @@ class IconLabel(QWidget):
         self,
         text: str = "",
         parent=None,
+        icon_on_right: bool = False,
         **kwargs,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent, **kwargs)
         self._layout = QHBoxLayout(self)
         set_no_margins(self._layout)
+        self._icon_on_right = icon_on_right
 
         self.click_url: str | None = None
 
@@ -82,10 +84,26 @@ class IconLabel(QWidget):
         self.textLabel = QLabel(text)
         self.textLabel.setTextFormat(Qt.TextFormat.RichText)
         self.textLabel.setOpenExternalLinks(True)  # Enable opening links
-        self._layout.addWidget(self.textLabel)
+        self._sync_layout_order()
 
         for widget in (self, self.icon_label, self.textLabel):
             widget.installEventFilter(self)
+
+    def set_icon_on_right(self, icon_on_right: bool) -> None:
+        """Set whether the icon should be displayed after the text."""
+        if self._icon_on_right == icon_on_right:
+            return
+        self._icon_on_right = icon_on_right
+        self._sync_layout_order()
+
+    def _sync_layout_order(self) -> None:
+        while self._layout.count():
+            self._layout.takeAt(0)
+        widgets = (
+            (self.textLabel, self.icon_label) if self._icon_on_right else (self.icon_label, self.textLabel)
+        )
+        for widget in widgets:
+            self._layout.addWidget(widget, 0, Qt.AlignmentFlag.AlignVCenter)
 
     def setText(self, a0: str | None) -> None:
         """SetText."""
