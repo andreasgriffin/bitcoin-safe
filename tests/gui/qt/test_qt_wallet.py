@@ -33,8 +33,10 @@ from types import SimpleNamespace
 
 import pytest
 
+import bitcoin_safe.gui.qt.qt_wallet as qt_wallet_module
 from bitcoin_safe.client_helpers import UpdateInfo
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet, SyncStatus
+from bitcoin_safe.pythonbdk_types import BlockchainType
 
 
 class SignalRecorder:
@@ -120,3 +122,60 @@ def test_notify_sync_error_only_emits_once_until_success() -> None:
     QTWallet._notify_sync_error(qt_wallet, RuntimeError("offline again"))
 
     assert len(notifications) == 2
+
+
+@pytest.mark.parametrize(
+    ("server_type", "expected"),
+    [
+        (BlockchainType.CompactBlockFilter, True),
+        (BlockchainType.Electrum, False),
+        (BlockchainType.Esplora, False),
+    ],
+)
+def test_should_show_initial_sync_placeholder_is_cbf_only(
+    server_type: BlockchainType, expected: bool
+) -> None:
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(
+            sorted_delta_list_transactions=lambda: [],
+            has_checkpoint=lambda: False,
+        ),
+        config=SimpleNamespace(network_config=SimpleNamespace(server_type=server_type)),
+    )
+
+    assert QTWallet.should_show_initial_sync_placeholder(qt_wallet) is expected
+
+
+def test_update_history_initial_sync_widgets_stays_lazy_when_placeholder_not_needed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    created_widgets: list[object] = []
+
+    class FakeNetworkMapWidget:
+        def __init__(self, config, mode, parent) -> None:
+            del config, mode, parent
+            self.signal_request_open_network_settings = object()
+            created_widgets.append(self)
+
+        def set_p2p_listener_peers(self, peers) -> None:
+            del peers
+
+        def set_nodes(self, nodes) -> None:
+            del nodes
+
+    monkeypatch.setattr(qt_wallet_module, "NetworkMapWidget", FakeNetworkMapWidget)
+
+    qt_wallet = SimpleNamespace(
+        history_initial_sync_widget=None,
+        network_map_widget=None,
+        should_show_initial_sync_placeholder=lambda: False,
+        get_or_create_history_initial_sync_widget=lambda: pytest.fail("should stay lazy"),
+    )
+
+    QTWallet.update_history_initial_sync_widgets(
+        qt_wallet,
+        total_discovered_peers=set(),
+        p2p_connections=[],
+    )
+
+    assert created_widgets == []

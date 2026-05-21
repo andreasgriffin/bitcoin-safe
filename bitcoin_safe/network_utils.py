@@ -29,10 +29,14 @@
 
 from __future__ import annotations
 
+import asyncio
+import ipaddress
 import json
 import logging
 import socket
 import ssl
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
@@ -42,9 +46,6 @@ import bdkpython as bdk
 import requests
 import socks
 
-from bitcoin_safe.pythonbdk_types import (
-    IpAddress,  # Requires PySocks or similar package.
-)
 from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
@@ -52,6 +53,57 @@ logger = logging.getLogger(__name__)
 
 class RequestsGetException(Exception):
     pass
+
+
+class IpAddress(bdk.IpAddress):
+    _RESOLVE_TIMEOUT_SECONDS = 5.0
+
+    @staticmethod
+    def _resolve_domain(host: str, timeout: float, proxy_info: ProxyInfo | None = None) -> str:
+        """Resolve domain."""
+        addresses = resolve_host_addresses(host, proxy_info=proxy_info, timeout=timeout)
+        if not addresses:
+            raise ValueError(f"Could not resolve domain {host!r} to an IP address")
+        return addresses[0]
+
+    @classmethod
+    def from_host(cls, host: str, proxy_info: ProxyInfo | None = None):
+        """From host."""
+        try:
+            host_ip = ipaddress.ip_address(host)
+        except ValueError:
+            resolved_host = cls._resolve_domain(host, cls._RESOLVE_TIMEOUT_SECONDS, proxy_info=proxy_info)
+            host_ip = ipaddress.ip_address(resolved_host)
+        host = str(host_ip.exploded)
+
+        try:
+            a1, a2, a3, a4 = host.split(".")
+            return cls.from_ipv4(int(a1), int(a2), int(a3), int(a4))
+        except Exception:
+            pass
+
+        try:
+            a1, a2, a3, a4, a5, a6, a7, a8 = host.split(":")
+            return cls.from_ipv6(
+                int(a1, 16),
+                int(a2, 16),
+                int(a3, 16),
+                int(a4, 16),
+                int(a5, 16),
+                int(a6, 16),
+                int(a7, 16),
+                int(a8, 16),
+            )
+        except Exception:
+            pass
+        raise Exception(f"{host=} could not be converted to {cls}")
+
+
+@dataclass(frozen=True)
+class ResolvedEndpoint:
+    host: str
+    port: int | None
+    family: int
 
 
 @dataclass
@@ -89,9 +141,139 @@ class ProxyInfo:
 
     def to_bdk(self) -> bdk.Socks5Proxy:
         """To bdk."""
+
         assert self.host, "No host set"
         assert self.port, "No port set"
         return bdk.Socks5Proxy(address=IpAddress.from_host(self.host), port=self.port)
+
+
+def is_ip_address(host: str) -> bool:
+    """Return True when the given host string is an IPv4 or IPv6 literal."""
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    return True
+
+
+def uses_remote_dns(proxy_info: ProxyInfo | None) -> bool:
+    """Return True when the proxy resolves hostnames on the proxy side."""
+    return bool(proxy_info and proxy_info.scheme.endswith("h"))
+
+
+def _family_for_ip_literal(host: str) -> int:
+    address = ipaddress.ip_address(host)
+    return socket.AF_INET if address.version == 4 else socket.AF_INET6
+
+
+def resolve_host_endpoints(
+    host: str,
+    proxy_info: ProxyInfo | None,
+    port: int | None = None,
+    timeout: float | Literal["default"] = "default",
+    family: int = socket.AF_UNSPEC,
+    socktype: int = socket.SOCK_STREAM,
+) -> list[ResolvedEndpoint]:
+    """Resolve a host into socket endpoints according to the app's proxy policy."""
+    if is_ip_address(host):
+        return [ResolvedEndpoint(host=host, port=port, family=_family_for_ip_literal(host))]
+
+    if uses_remote_dns(proxy_info):
+        logger.debug("Skipping local DNS resolution for %s because remote-DNS proxy is enabled", host)
+        return []
+
+    timeout_seconds = default_timeout(proxy_info, timeout)
+
+    def _resolve() -> list[ResolvedEndpoint]:
+        infos = socket.getaddrinfo(host, port, family=family, type=socktype)
+        endpoints: list[ResolvedEndpoint] = []
+        for resolved_family, _, _, _, sockaddr in infos:
+            if resolved_family not in (socket.AF_INET, socket.AF_INET6):
+                continue
+            candidate = sockaddr[0]
+            if not isinstance(candidate, str):
+                continue
+            candidate_port = None
+            if len(sockaddr) > 1 and isinstance(sockaddr[1], int):
+                candidate_port = sockaddr[1]
+            endpoint = ResolvedEndpoint(host=candidate, port=candidate_port, family=resolved_family)
+            if endpoint not in endpoints:
+                endpoints.append(endpoint)
+        return endpoints
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(_resolve)
+        try:
+            return future.result(timeout=timeout_seconds)
+        except FutureTimeoutError:
+            logger.warning("Timed out after %s seconds resolving host %r", timeout_seconds, host)
+            return []
+        except OSError as exc:
+            logger.debug("Could not resolve host %r: %s", host, exc)
+            return []
+
+
+async def resolve_host_endpoints_async(
+    host: str,
+    proxy_info: ProxyInfo | None,
+    port: int | None = None,
+    timeout: float | Literal["default"] = "default",
+    family: int = socket.AF_UNSPEC,
+    socktype: int = socket.SOCK_STREAM,
+) -> list[ResolvedEndpoint]:
+    """Async wrapper around the centralized hostname endpoint resolver."""
+    return await asyncio.to_thread(
+        resolve_host_endpoints,
+        host,
+        proxy_info,
+        port,
+        timeout,
+        family,
+        socktype,
+    )
+
+
+def resolve_host_addresses(
+    host: str,
+    proxy_info: ProxyInfo | None,
+    timeout: float | Literal["default"] = "default",
+    family: int = socket.AF_UNSPEC,
+    socktype: int = socket.SOCK_STREAM,
+) -> list[str]:
+    """Resolve a host into unique IP addresses according to the app's proxy policy."""
+    addresses: list[str] = []
+    for endpoint in resolve_host_endpoints(
+        host=host,
+        proxy_info=proxy_info,
+        timeout=timeout,
+        family=family,
+        socktype=socktype,
+    ):
+        if endpoint.host not in addresses:
+            addresses.append(endpoint.host)
+    return addresses
+
+
+async def resolve_host_addresses_async(
+    host: str,
+    proxy_info: ProxyInfo | None,
+    timeout: float | Literal["default"] = "default",
+    family: int = socket.AF_UNSPEC,
+    socktype: int = socket.SOCK_STREAM,
+) -> list[str]:
+    """Async wrapper around the centralized hostname resolver."""
+    endpoints = await resolve_host_endpoints_async(
+        host=host,
+        proxy_info=proxy_info,
+        timeout=timeout,
+        family=family,
+        socktype=socktype,
+    )
+    addresses: list[str] = []
+    for endpoint in endpoints:
+        if endpoint.host not in addresses:
+            addresses.append(endpoint.host)
+    return addresses
 
 
 def clean_electrum_url(url: str, electrum_use_ssl: bool) -> str:

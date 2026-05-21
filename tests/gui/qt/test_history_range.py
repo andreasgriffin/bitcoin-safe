@@ -48,6 +48,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.wallet_balance_chart import ChartPoint
 
 from ...helpers import TestConfig
+from ...util import wait_for_sync
 from .helpers import (
     Shutter,
     do_modal_click,
@@ -109,8 +110,11 @@ def test_history_range_coupling(
 
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_id).data
         assert isinstance(qt_wallet, QTWallet)
-
         history_list = qt_wallet.history_list
+        wait_for_sync(qtbot=qtbot, wallet=qt_wallet, minimum_funds=0, tx_count=0, timeout=30_000)
+        qt_wallet.refresh_caches_and_ui_lists(force_ui_refresh=True)
+        QApplication.processEvents()
+        assert not qt_wallet.has_running_sync_task()
 
         now = datetime.now()
         older = now - timedelta(days=10)
@@ -145,9 +149,9 @@ def test_history_range_coupling(
             lambda: date_picker.preset_combo.currentData() == DateRangePreset.ALL_TIME,
             timeout=5_000,
         )
-        qtbot.waitUntil(lambda: not date_picker.start_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: not date_picker.end_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: not date_picker.to_label.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.start_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.end_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.to_label.isHidden(), timeout=5_000)
         shutter.save(main_window)
 
         def expected_hidden_rows(start_ts: float, end_ts: float) -> set[int]:
@@ -186,12 +190,12 @@ def test_history_range_coupling(
         full_end = qt_wallet.wallet_balance_chart.datetime_axis.max().toSecsSinceEpoch()
         full_expected_hidden = expected_hidden_rows(full_start, full_end)
         qtbot.waitUntil(lambda: hidden_rows() == full_expected_hidden, timeout=5_000)
-        assert not date_picker.reset_button.isVisible()
+        assert date_picker.reset_button.isHidden()
         assert not date_picker.reset_button.icon().isNull()
         shutter.save(main_window)
 
         date_picker.set_preset(DateRangePreset.LAST_7_DAYS)
-        qtbot.waitUntil(lambda: date_picker.reset_button.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: not date_picker.reset_button.isHidden(), timeout=5_000)
         last_7_start = datetime.combine((now - timedelta(days=7)).date(), dt_time.min).timestamp()
         last_7_end = datetime.combine(now.date(), dt_time.max).timestamp()
         expected_last_7_hidden = expected_hidden_rows(last_7_start, last_7_end)
@@ -200,16 +204,16 @@ def test_history_range_coupling(
         shutter.save(main_window)
 
         date_picker.set_preset(DateRangePreset.LAST_30_DAYS)
-        qtbot.waitUntil(lambda: not date_picker.start_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: not date_picker.end_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: not date_picker.to_label.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.start_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.end_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.to_label.isHidden(), timeout=5_000)
 
         start_date = (now - timedelta(days=2)).date()
         end_date = now.date()
         date_picker.set_preset(DateRangePreset.CUSTOM)
-        qtbot.waitUntil(lambda: date_picker.start_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: date_picker.end_edit.isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: date_picker.to_label.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: not date_picker.start_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: not date_picker.end_edit.isHidden(), timeout=5_000)
+        qtbot.waitUntil(lambda: not date_picker.to_label.isHidden(), timeout=5_000)
         shutter.save(main_window)
         date_picker.start_edit.setDate(QDate(start_date.year, start_date.month, start_date.day))
         date_picker.end_edit.setDate(QDate(end_date.year, end_date.month, end_date.day))
@@ -229,7 +233,7 @@ def test_history_range_coupling(
         assert len(hidden_rows()) >= 2
         shutter.save(main_window)
 
-        assert date_picker.reset_button.isVisible()
+        assert not date_picker.reset_button.isHidden()
 
         zoomed_chart_start = QDateTime.fromSecsSinceEpoch(int((now - timedelta(days=6)).timestamp()))
         zoomed_chart_end = QDateTime.fromSecsSinceEpoch(int((now - timedelta(days=4)).timestamp()))
@@ -320,7 +324,7 @@ def test_history_range_coupling(
         shutter.save(main_window)
 
         date_picker.set_preset(DateRangePreset.ALL_TIME)
-        qtbot.waitUntil(lambda: not date_picker.reset_button.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.reset_button.isHidden(), timeout=5_000)
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
         shutter.save(main_window)
 
@@ -338,7 +342,7 @@ def test_history_range_coupling(
         shutter.save(main_window)
 
         date_picker.reset_button.click()
-        qtbot.waitUntil(lambda: not date_picker.reset_button.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: date_picker.reset_button.isHidden(), timeout=5_000)
         qtbot.waitUntil(
             lambda: date_picker.preset_combo.currentData() == DateRangePreset.ALL_TIME, timeout=5_000
         )

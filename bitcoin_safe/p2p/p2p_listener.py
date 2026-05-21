@@ -102,6 +102,7 @@ class P2pListener(QObject):
         self._active_peers: set[Peer] = set()
         self._current_peers: dict[int, ConnectionInfo | None] = {}
         self._stop_requested = False
+        self._proxy_info: ProxyInfo | None = None
 
         self.signal_tracker.connect(self.signal_disconnected_to, self.on_disconnected_to)
         self.signal_tracker.connect(self.signal_break_current_connection, self._on_break_current_connection)
@@ -213,7 +214,7 @@ class P2pListener(QObject):
             if not self.autodiscover_additional_peers:
                 logger.debug("Peer discovery disabled; no discovered peers available")
                 return None
-            peer = await self.peer_discovery.get_bitcoin_peer()  # may be None
+            peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
             logger.debug(f"Picked {peer=} from DNS seed")
             return peer
         if weight_dns == 0:
@@ -232,7 +233,7 @@ class P2pListener(QObject):
             logger.debug(f"Picked {peer=} from discovered_peers")
             return peer
 
-        peer = await self.peer_discovery.get_bitcoin_peer()  # may be None
+        peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
         logger.debug(f"Picked {peer=} from DNS seed")
         return peer
 
@@ -313,6 +314,7 @@ class P2pListener(QObject):
         preferred_peers: list[Peer] | None = None,
     ):
         """Start."""
+        self._proxy_info = proxy_info
         self._stop_requested = False
         for task in list(self._connection_tasks):
             task.cancel()

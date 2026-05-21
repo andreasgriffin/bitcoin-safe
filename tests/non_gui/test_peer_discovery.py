@@ -34,6 +34,7 @@ import asyncio
 import bdkpython as bdk
 
 from bitcoin_safe.network_config import Peer
+from bitcoin_safe.network_utils import ProxyInfo, ResolvedEndpoint
 from bitcoin_safe.p2p.peer_discovery import DNS_SEEDS, PeerDiscovery
 
 
@@ -42,7 +43,10 @@ def test_loopback_peer_is_excluded_when_unreachable(monkeypatch) -> None:
     monkeypatch.setitem(DNS_SEEDS, bdk.Network.BITCOIN, seed_config)
 
     class FakePeerDiscovery(PeerDiscovery):
-        async def _resolve_dns_seed(self, candidate_seed: str, seed_port: int) -> list[Peer]:
+        async def _resolve_dns_seed(
+            self, candidate_seed: str, seed_port: int, proxy_info: ProxyInfo | None
+        ) -> list[Peer]:
+            del candidate_seed, proxy_info
             return [Peer(host="127.0.0.1", port=seed_port)]
 
         async def _is_peer_reachable(self, peer: Peer, timeout: float = 0.35) -> bool:
@@ -65,7 +69,10 @@ def test_loopback_peer_is_included_when_reachable(monkeypatch) -> None:
     monkeypatch.setitem(DNS_SEEDS, bdk.Network.BITCOIN, seed_config)
 
     class FakePeerDiscovery(PeerDiscovery):
-        async def _resolve_dns_seed(self, candidate_seed: str, seed_port: int) -> list[Peer]:
+        async def _resolve_dns_seed(
+            self, candidate_seed: str, seed_port: int, proxy_info: ProxyInfo | None
+        ) -> list[Peer]:
+            del candidate_seed, proxy_info
             return [Peer(host="127.0.0.1", port=seed_port)]
 
         async def _is_peer_reachable(self, peer: Peer, timeout: float = 0.35) -> bool:
@@ -93,3 +100,40 @@ def test_total_discovered_peers_returns_snapshot() -> None:
         assert discovery.total_discovered_peers == {peer}
     finally:
         discovery.stop()
+
+
+def test_resolve_dns_seed_uses_shared_resolver(monkeypatch) -> None:
+    captured: list[tuple[str, ProxyInfo | None]] = []
+
+    async def fake_resolve_host_endpoints_async(
+        host: str,
+        proxy_info: ProxyInfo | None,
+        port: int | None = None,
+        timeout="default",
+        family=0,
+        socktype=0,
+    ) -> list[ResolvedEndpoint]:
+        del timeout, family, socktype
+        captured.append((host, proxy_info))
+        assert port == 8333
+        return [
+            ResolvedEndpoint(host="8.8.8.8", port=8333, family=0),
+            ResolvedEndpoint(host="1.1.1.1", port=18333, family=0),
+        ]
+
+    monkeypatch.setattr(
+        "bitcoin_safe.p2p.peer_discovery.resolve_host_endpoints_async",
+        fake_resolve_host_endpoints_async,
+    )
+
+    async def run() -> None:
+        discovery = PeerDiscovery(network=bdk.Network.BITCOIN, loop_in_thread=None)
+        proxy_info = ProxyInfo.parse("socks5h://127.0.0.1:9050")
+        try:
+            peers = await discovery._resolve_dns_seed("seed.example", 8333, proxy_info=proxy_info)
+            assert set(peers) == {Peer(host="8.8.8.8", port=8333), Peer(host="1.1.1.1", port=18333)}
+            assert captured == [("seed.example", proxy_info)]
+        finally:
+            discovery.stop()
+
+    asyncio.run(run())
