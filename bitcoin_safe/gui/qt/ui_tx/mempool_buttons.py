@@ -729,6 +729,13 @@ class MempoolButtons(VerticalButtonGroup):
 
         self.set_visibilities(block_index=block_index)
 
+    def reset_confirmed_info_boxes(self) -> None:
+        """Hide and clear confirmed-only info boxes before drawing a new state."""
+        for info_box in [self.info_past_days, self.info_confirmations]:
+            info_box.title.setText("")
+            info_box.text.setText("")
+            info_box.setVisible(False)
+
     def refresh(
         self,
         can_rbf_safely: bool | None = None,
@@ -739,6 +746,7 @@ class MempoolButtons(VerticalButtonGroup):
         self.tx_status = tx_status if tx_status else self.tx_status
         self.can_rbf_safely = can_rbf_safely if can_rbf_safely is not None else self.can_rbf_safely
         self.set_size(size=self._tx_status_to_size(self.tx_status))
+        self.reset_confirmed_info_boxes()
 
         if self.tx_status.chain_position and isinstance(
             self.tx_status.chain_position, bdk.ChainPosition.CONFIRMED
@@ -789,6 +797,7 @@ class MempoolButtons(VerticalButtonGroup):
             button.label_time_estimation.setHidden(self.tx_status.is_confirmed())
             button.label_approximate_median_fee.setHidden(self.tx_status.is_confirmed())
             self.info_past_days.setVisible(self.tx_status.is_confirmed())
+            self.info_confirmations.setVisible(self.tx_status.is_confirmed())
             if button.index == block_index:
                 self.ensureWidgetVisible(button)
 
