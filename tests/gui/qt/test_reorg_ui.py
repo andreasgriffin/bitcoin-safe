@@ -165,6 +165,24 @@ def _wait_for_tx_viewer_icon(main_window: MainWindow, qt_wallet: QTWallet, qtbot
     qtbot.waitUntil(condition, timeout=180_000)
 
 
+def _wait_for_tx_viewer_confirmation_box(
+    main_window: MainWindow, qt_wallet: QTWallet, qtbot: QtBot, txid: str, visible: bool
+) -> UITx_Viewer:
+    """Wait until the tx-viewer confirmation box matches the expected visibility."""
+
+    def condition() -> bool:
+        _sync_wallet_and_refresh_ui(qt_wallet=qt_wallet, qtbot=qtbot)
+        viewer = main_window.get_tx_viewer(txid)
+        if not viewer:
+            return False
+        return viewer.column_fee.fee_group.mempool_buttons.info_confirmations.isVisible() is visible
+
+    qtbot.waitUntil(condition, timeout=180_000)
+    viewer = main_window.get_tx_viewer(txid)
+    assert isinstance(viewer, UITx_Viewer)
+    return viewer
+
+
 def _wait_for_non_confirmed_tx_status(qt_wallet: QTWallet, qtbot: QtBot, txid: str, timeout_ms: int) -> bool:
     """Wait for tx status to become non-confirmed and return whether it happened in time."""
     deadline = time.time() + (timeout_ms / 1000)
@@ -429,6 +447,11 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
         logger.debug("Viewer opened for txid=%s", viewer.txid())
         logger.debug("Waiting for viewer tab icon to match confirmed status")
         _wait_for_tx_viewer_icon(main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a)
+        viewer = _wait_for_tx_viewer_confirmation_box(
+            main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, visible=True
+        )
+        confirmation_text = viewer.column_fee.fee_group.mempool_buttons.info_confirmations.text.text()
+        assert int(confirmation_text) > 0
         logger.debug("Viewer icon matches confirmed tx state")
         shutter.save(main_window)
 
@@ -537,6 +560,10 @@ def test_reorged_out_tx_stays_unconfirmed_in_history(
             # Regression check: when tx A is open in the viewer, its tab icon must update after reorg.
             logger.debug("Waiting for tx viewer icon to update after reorg")
             _wait_for_tx_viewer_icon(main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a)
+            viewer = _wait_for_tx_viewer_confirmation_box(
+                main_window=main_window, qt_wallet=qt_wallet, qtbot=qtbot, txid=txid_a, visible=False
+            )
+            assert viewer.column_fee.fee_group.mempool_buttons.info_confirmations.text.text() == ""
             shutter.save(main_window)
             logger.info("Reorged-out tx test finished successfully txid=%s", txid_a)
         finally:
