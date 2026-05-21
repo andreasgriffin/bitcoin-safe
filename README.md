@@ -141,6 +141,33 @@
   python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
   ```
 
+## Flatpak build
+
+- Reproducible Flatpak bundle build via Docker:
+
+  ```sh
+  pip install poetry
+  poetry install
+  poetry run python tools/build.py --targets flatpak --commit None
+  ```
+
+  This is the default Flatpak path and matches the GitHub workflow structure: the bundle is built inside a Docker container, then startup is tested separately in CI.
+
+- Host build, install, and smoke-test the Flatpak locally:
+
+  ```sh
+  sudo apt-get install flatpak flatpak-builder dbus-daemon desktop-file-utils
+  flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  bwrap --ro-bind / / --proc /proc true
+  pip install poetry
+  poetry install
+  poetry run python tools/build.py --targets flatpak --commit None --build-flatpak-on-host
+  ```
+
+- The Flatpak bundle is written to `dist/Bitcoin-Safe-<version>-<arch>.flatpak`.
+
+- In VS Code the `Build Flatpak` launch configuration from `.vscode/launch.json` uses the host build/install/test path.
+
 ## Development
 
 * Run the precommit manually for debugging

@@ -1,0 +1,4 @@
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z noble main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z noble-updates main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z noble-security main restricted universe
+deb https://snapshot.ubuntu.com/ubuntu/20241001T030400Z noble-backports main restricted universe

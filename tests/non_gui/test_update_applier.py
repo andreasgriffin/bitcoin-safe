@@ -252,6 +252,25 @@ def test_unsupported_format_returns_no_action(tmp_path: Path) -> None:
     assert result.action == UpdateApplierAction.none
 
 
+def test_detect_format_returns_flatpak_for_flatpak_bundle(tmp_path: Path) -> None:
+    flatpak_bundle = tmp_path / "Bitcoin-Safe-1.8.0-x86_64.flatpak"
+    flatpak_bundle.write_text("flatpak")
+
+    assert UpdateApplier.detect_format(flatpak_bundle) == UpdateArtifactFormat.flatpak
+
+
+def test_current_artifact_format_detects_flatpak_runtime_from_env(tmp_path: Path) -> None:
+    current_binary = tmp_path / "python3"
+    current_binary.write_text("python")
+    applier = UpdateApplier(
+        system="Linux",
+        current_binary=current_binary,
+        env={"FLATPAK_ID": "org.bitcoinsafe.BitcoinSafe"},
+    )
+
+    assert applier.current_artifact_format() == UpdateArtifactFormat.flatpak
+
+
 def test_can_apply_depends_on_platform_and_format(tmp_path: Path) -> None:
     appimage = tmp_path / "Bitcoin-Safe-1.8.0-x86_64.AppImage"
     appimage.write_text("appimage")

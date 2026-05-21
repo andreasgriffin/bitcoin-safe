@@ -81,6 +81,7 @@ class UpdateHandler:
 class UpdateArtifactFormat(enum.Enum):
     appimage = "appimage"
     deb = "deb"
+    flatpak = "flatpak"
     dmg = "dmg"
     pkg = "pkg"
     msi = "msi"
@@ -113,6 +114,12 @@ class UpdateApplier:
                 UpdateArtifactFormat.deb: UpdateHandler(
                     apply=self._install_linux_deb,
                     can_apply=self._can_apply_linux_deb,
+                    dialog_texts=self._dialog_texts_for_start_installer,
+                    enabled=False,
+                ),
+                UpdateArtifactFormat.flatpak: UpdateHandler(
+                    apply=self._install_linux_flatpak,
+                    can_apply=self._can_apply_linux_flatpak,
                     dialog_texts=self._dialog_texts_for_start_installer,
                     enabled=False,
                 ),
@@ -261,6 +268,8 @@ class UpdateApplier:
             return UpdateArtifactFormat.appimage
         if lower_name.endswith(".deb"):
             return UpdateArtifactFormat.deb
+        if lower_name.endswith(".flatpak"):
+            return UpdateArtifactFormat.flatpak
         if lower_name.endswith(".dmg"):
             return UpdateArtifactFormat.dmg
         if lower_name.endswith(".pkg"):
@@ -354,6 +363,29 @@ class UpdateApplier:
             was_applied=True,
             action=UpdateApplierAction.close,
             message="Started .deb installation.",
+        )
+
+    def _install_linux_flatpak(self, artifact: Path) -> UpdateApplierResult:
+        if not self._is_running_in_flatpak():
+            logger.debug("Linux Flatpak install denied: current runtime is not Flatpak.")
+            return UpdateApplierResult(
+                was_applied=False,
+                action=UpdateApplierAction.none,
+                message="Current runtime is not Flatpak; skipping installer launch.",
+            )
+        if not self._launch_detached(["flatpak", "install", "--user", "--reinstall", str(artifact)]):
+            logger.debug("Linux Flatpak install denied: failed to start flatpak install for %s", artifact)
+            return UpdateApplierResult(
+                was_applied=False,
+                action=UpdateApplierAction.none,
+                message="Could not start Flatpak installer.",
+            )
+
+        logger.debug("Linux Flatpak installer started for %s", artifact)
+        return UpdateApplierResult(
+            was_applied=True,
+            action=UpdateApplierAction.close,
+            message="Started Flatpak installation.",
         )
 
     def _open_macos_installer(self, artifact: Path) -> UpdateApplierResult:
@@ -501,6 +533,15 @@ class UpdateApplier:
             logger.debug("Can-apply Linux .deb denied: dpkg command not found.")
         return has_dpkg
 
+    def _can_apply_linux_flatpak(self, _artifact: Path) -> bool:
+        if not self._is_running_in_flatpak():
+            logger.debug("Can-apply Linux Flatpak denied: current runtime is not Flatpak.")
+            return False
+        has_flatpak = self._command_exists("flatpak")
+        if not has_flatpak:
+            logger.debug("Can-apply Linux Flatpak denied: flatpak command not found.")
+        return has_flatpak
+
     def _can_apply_macos_dmg(self, _artifact: Path) -> bool:
         has_open = self._command_exists("open")
         if not has_open:
@@ -585,6 +626,11 @@ class UpdateApplier:
         return None
 
     def _current_binary_format(self) -> UpdateArtifactFormat | None:
+        return self.current_artifact_format()
+
+    def current_artifact_format(self) -> UpdateArtifactFormat | None:
+        if self.system == "Linux" and self._is_running_in_flatpak():
+            return UpdateArtifactFormat.flatpak
         current_binary = self._current_runtime_binary_path()
         if current_binary is None:
             return None
@@ -604,6 +650,13 @@ class UpdateApplier:
     @staticmethod
     def _is_running_from_appimage_mount(binary_path: Path) -> bool:
         return any(part.startswith(".mount_") for part in binary_path.parts)
+
+    def _is_running_in_flatpak(self) -> bool:
+        if self.system != "Linux":
+            return False
+        if self.env.get("FLATPAK_ID"):
+            return True
+        return Path("/.flatpak-info").exists()
 
     @staticmethod
     def _launch_detached(cmd: list[str]) -> bool:
