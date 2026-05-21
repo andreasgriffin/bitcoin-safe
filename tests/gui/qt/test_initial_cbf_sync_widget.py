@@ -33,14 +33,16 @@ import inspect
 import ipaddress
 import json
 from datetime import timedelta
+from typing import Any
 
 from PyQt6.QtCore import QRectF
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import InitialCbfSyncWidget
+from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
 from bitcoin_safe.network_config import Peer
+from bitcoin_safe.pythonbdk_types import BlockchainType
 
 from .helpers import Shutter
 
@@ -68,6 +70,10 @@ def write_geoip_fixture(db_path) -> None:
     db_path.write_text(json.dumps(payload), encoding="utf-8")
 
 
+async def _resolve_to_google(*_args, **_kwargs) -> list[str]:
+    return ["8.8.8.8"]
+
+
 def test_initial_cbf_sync_widget_visual_smoke(
     qtbot: QtBot,
     tmp_path,
@@ -81,7 +87,7 @@ def test_initial_cbf_sync_widget_visual_smoke(
     db_file = tmp_path / "geoip_rough_v1.json"
     write_geoip_fixture(db_file)
 
-    widget = InitialCbfSyncWidget(config=test_config)
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
     widget.geoip = RoughGeoIpDatabase(db_path=db_file)
     qtbot.addWidget(widget)
     widget.resize(1100, 660)
@@ -110,8 +116,16 @@ def test_initial_cbf_sync_widget_visual_smoke(
     qtbot.wait(250)
 
     assert "P2P listener peers" in widget.peer_legend_label.textLabel.text()
-    assert "CBF peers: 2" in widget.cbf_legend_label.textLabel.text()
-    assert widget.progress_bar.value() == 41
+    if test_config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        assert "CBF peers: 2" in widget.cbf_legend_label.textLabel.text()
+        assert widget.title_label.text() == "Scanning Bitcoin blockchain"
+        assert widget.server_info_label.isHidden()
+        assert widget.progress_bar.value() == 41
+    else:
+        assert widget.cbf_legend_label.isHidden()
+        assert widget.title_label.text() == "Network Map"
+        assert widget.local_progress_card.isHidden()
+        assert widget.server_info_label.isHidden()
 
     # Hover marker for 8.8.8.8 and verify tooltip information.
     map_widget = widget.map_widget
@@ -129,7 +143,7 @@ def test_initial_cbf_sync_widget_visual_smoke(
 
 
 def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config) -> None:
-    widget = InitialCbfSyncWidget(config=test_config)
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
     qtbot.addWidget(widget)
 
     p2p_connections = [Peer(host="8.8.8.8", port=8333)]
@@ -146,5 +160,176 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
     cbf_peer_hosts.clear()
 
     assert "P2P listener peers: 1" in widget.peer_legend_label.textLabel.text()
-    assert "CBF peers: 1" in widget.cbf_legend_label.textLabel.text()
+    if test_config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        assert "CBF peers: 1" in widget.cbf_legend_label.textLabel.text()
+        assert not widget.cbf_legend_label.isHidden()
+    else:
+        assert widget.cbf_legend_label.isHidden()
+        assert widget.cbf_legend_label.textLabel.text() == ""
     assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
+
+
+def test_network_map_widget_visibility_depends_on_network_mode(
+    qtbot: QtBot, tmp_path, monkeypatch, test_config
+) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async",
+        _resolve_to_google,
+    )
+
+    cases: list[dict[str, Any]] = [
+        {
+            "server_type": BlockchainType.CompactBlockFilter,
+            "mode": NetworkMapWidgetMode.cbf_initial_sync,
+            "expected": {
+                "privacy_help_hidden": False,
+                "server_info_hidden": True,
+                "local_progress_hidden": False,
+                "wallet_progress_hidden": True,
+                "cbf_legend_hidden": False,
+                "server_legend_hidden": True,
+            },
+        },
+        {
+            "server_type": BlockchainType.CompactBlockFilter,
+            "mode": NetworkMapWidgetMode.tools_tab,
+            "expected": {
+                "privacy_help_hidden": True,
+                "server_info_hidden": True,
+                "local_progress_hidden": True,
+                "wallet_progress_hidden": True,
+                "cbf_legend_hidden": False,
+                "server_legend_hidden": True,
+            },
+        },
+        {
+            "server_type": BlockchainType.Electrum,
+            "mode": NetworkMapWidgetMode.tools_tab,
+            "server_name": "electrum.example:50002",
+            "expected": {
+                "privacy_help_hidden": True,
+                "server_info_hidden": False,
+                "local_progress_hidden": True,
+                "wallet_progress_hidden": True,
+                "cbf_legend_hidden": True,
+                "server_legend_hidden": False,
+            },
+        },
+        {
+            "server_type": BlockchainType.Esplora,
+            "mode": NetworkMapWidgetMode.tools_tab,
+            "server_name": "https://esplora.example/api",
+            "expected": {
+                "privacy_help_hidden": True,
+                "server_info_hidden": False,
+                "local_progress_hidden": True,
+                "wallet_progress_hidden": True,
+                "cbf_legend_hidden": True,
+                "server_legend_hidden": False,
+            },
+        },
+    ]
+
+    for case in cases:
+        test_config.network_config.server_type = case["server_type"]
+        test_config.network_config.electrum_url = ""
+        test_config.network_config.esplora_url = ""
+        if case["server_type"] == BlockchainType.Electrum:
+            test_config.network_config.electrum_url = case["server_name"]
+        if case["server_type"] == BlockchainType.Esplora:
+            test_config.network_config.esplora_url = case["server_name"]
+
+        widget = NetworkMapWidget(config=test_config, mode=case["mode"])
+        widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+        qtbot.addWidget(widget)
+        widget.set_network_config()
+        widget.show()
+        qtbot.waitExposed(widget)
+        if case["server_type"] in [BlockchainType.Electrum, BlockchainType.Esplora]:
+            qtbot.waitUntil(lambda widget=widget: not widget._server_resolution_pending)
+
+        expected = case["expected"]
+        assert widget.privacy_help_label.isHidden() == expected["privacy_help_hidden"]
+        assert widget.server_info_label.isHidden() == expected["server_info_hidden"]
+        assert widget.local_progress_card.isHidden() == expected["local_progress_hidden"]
+        assert widget.wallet_progress_section.isHidden() == expected["wallet_progress_hidden"]
+        assert widget.cbf_legend_label.isHidden() == expected["cbf_legend_hidden"]
+        assert widget.server_legend_label.isHidden() == expected["server_legend_hidden"]
+
+
+def test_network_map_widget_renders_multiple_wallet_progress_rows(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+
+    widget.set_wallet_progress(
+        wallet_id="wallet-a",
+        wallet_title="Wallet A",
+        progress_info=ProgressInfo(
+            progress=0.25,
+            passed_time=timedelta(seconds=30),
+            remaining_time=timedelta(minutes=3),
+            status_msg="",
+            sync_status=SyncStatus.syncing,
+        ),
+    )
+    widget.set_wallet_progress(
+        wallet_id="wallet-b",
+        wallet_title="Wallet B",
+        progress_info=ProgressInfo(
+            progress=0.75,
+            passed_time=timedelta(minutes=1),
+            remaining_time=timedelta(seconds=15),
+            status_msg="Downloading blocks",
+            sync_status=SyncStatus.syncing,
+        ),
+    )
+
+    assert len(widget._wallet_progress_cards) == 2
+    assert widget._wallet_progress_cards["wallet-a"].wallet_title_label.text() == "Wallet A"
+    assert widget._wallet_progress_cards["wallet-b"].progress_label.text() == "Downloading blocks"
+    if test_config.network_config.server_type == BlockchainType.CompactBlockFilter:
+        assert not widget.wallet_progress_section.isHidden()
+    else:
+        assert widget.wallet_progress_section.isHidden()
+
+
+def test_network_map_widget_maps_electrum_server_hostnames(
+    qtbot: QtBot, tmp_path, monkeypatch, test_config
+) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+    test_config.network_config.server_type = BlockchainType.Electrum
+    test_config.network_config.electrum_url = "electrum.example:50002"
+
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async",
+        _resolve_to_google,
+    )
+
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+    widget.set_network_config()
+    qtbot.waitUntil(lambda: not widget._server_resolution_pending)
+
+    assert not widget.server_legend_label.isHidden()
+    assert "Electrum server: 1" in widget.server_legend_label.textLabel.text()
+    assert any(point.host == "electrum.example:50002" for point in widget.map_widget._points)
+
+
+def test_network_map_widget_skips_local_dns_resolution_for_remote_dns_proxy(
+    qtbot: QtBot, test_config
+) -> None:
+    test_config.network_config.server_type = BlockchainType.Electrum
+    test_config.network_config.electrum_url = "electrum.example:50002"
+    test_config.network_config.proxy_url = "socks5h://127.0.0.1:9050"
+
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    widget.set_network_config()
+    qtbot.waitUntil(lambda: not widget._server_resolution_pending)
+
+    assert "Location unavailable." in widget.server_info_label.text()
+    assert not any(point.source.name == "server" for point in widget.map_widget._points)

@@ -257,7 +257,8 @@ class SendTest(BaseTab):
                 continue
             card = self.history_cards.pop(previous_number)
             self.card_list.remove_card(card)
-            card.deleteLater()
+            card.hide()
+            card.setParent(None)
             self._history_card_order.remove(previous_number)
 
         for previous_number in visible_previous_numbers:

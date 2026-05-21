@@ -31,12 +31,8 @@ from __future__ import annotations
 
 import datetime
 import enum
-import ipaddress
 import logging
-import socket
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from functools import cached_property, lru_cache
 from typing import Any
@@ -71,64 +67,6 @@ def is_address(a: str, network: bdk.Network) -> bool:
         logger.debug(str(e))
         return False
     return True
-
-
-class IpAddress(bdk.IpAddress):
-    _RESOLVE_TIMEOUT_SECONDS = 5.0
-
-    @staticmethod
-    def _resolve_domain(host: str, timeout: float) -> str:
-        """Resolve domain."""
-
-        def _resolve() -> str:
-            """Resolve."""
-            infos = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
-            addresses: list[str] = []
-            for family, _, _, _, sockaddr in infos:
-                if family in (socket.AF_INET, socket.AF_INET6):
-                    addresses.append(str(sockaddr[0]))
-            if not addresses:
-                raise ValueError(f"Could not resolve domain {host!r} to an IP address")
-            return addresses[0]
-
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            future = executor.submit(_resolve)
-            try:
-                return future.result(timeout=timeout)
-            except FutureTimeoutError as exc:
-                raise TimeoutError(f"Timed out after {timeout} seconds resolving domain {host!r}") from exc
-
-    @classmethod
-    def from_host(cls, host: str):
-        """From host."""
-        try:
-            host_ip = ipaddress.ip_address(host)
-        except ValueError:
-            resolved_host = cls._resolve_domain(host, cls._RESOLVE_TIMEOUT_SECONDS)
-            host_ip = ipaddress.ip_address(resolved_host)
-        host = str(host_ip.exploded)
-
-        try:
-            a1, a2, a3, a4 = host.split(".")
-            return cls.from_ipv4(int(a1), int(a2), int(a3), int(a4))
-        except Exception:
-            pass
-
-        try:
-            a1, a2, a3, a4, a5, a6, a7, a8 = host.split(":")
-            return cls.from_ipv6(
-                int(a1, 16),
-                int(a2, 16),
-                int(a3, 16),
-                int(a4, 16),
-                int(a5, 16),
-                int(a6, 16),
-                int(a7, 16),
-                int(a8, 16),
-            )
-        except Exception:
-            pass
-        raise Exception(f"{host=} could not be converted to {cls}")
 
 
 @dataclass

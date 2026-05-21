@@ -32,7 +32,6 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
-import socket
 from contextlib import suppress
 from ipaddress import ip_address
 from threading import RLock
@@ -40,6 +39,8 @@ from typing import Any
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+
+from bitcoin_safe.network_utils import ProxyInfo, resolve_host_endpoints_async
 
 from .p2p_client import Peer
 
@@ -203,6 +204,7 @@ class PeerDiscovery:
         self._owns_loop_in_thread = loop_in_thread is None
         self._state_lock = RLock()
         self._total_discovered_peers: set[Peer] = set()
+        self._proxy_info: ProxyInfo | None = None
 
     @property
     def total_discovered_peers(self) -> set[Peer]:
@@ -237,7 +239,7 @@ class PeerDiscovery:
             seed_info.host,
             required_services if required_services else None,
         )
-        peers = await self._resolve_dns_seed(candidate_seed, seed_info.port)
+        peers = await self._resolve_dns_seed(candidate_seed, seed_info.port, proxy_info=self._proxy_info)
         if self._requires_reachability_probe(seed_info.host):
             return [peer for peer in peers if await self._is_peer_reachable(peer)]
         else:
@@ -268,27 +270,21 @@ class PeerDiscovery:
         self,
         candidate_seed: str,
         seed_port: int,
+        proxy_info: ProxyInfo | None,
     ) -> list[Peer]:
         """Resolve dns seed."""
-        loop = asyncio.get_running_loop()
-
-        try:
-            addrinfos = await loop.run_in_executor(
-                None, socket.getaddrinfo, candidate_seed, None, socket.AF_UNSPEC, socket.SOCK_STREAM
-            )
-        except Exception:
+        endpoints = await resolve_host_endpoints_async(
+            candidate_seed,
+            proxy_info=proxy_info,
+            port=seed_port,
+        )
+        if not endpoints:
             return []
 
-        if not addrinfos:
-            return []
-
-        random.shuffle(addrinfos)
+        random.shuffle(endpoints)
         peers: list[Peer] = []
-        for ai in addrinfos:
-            sockaddr = ai[4]
-            ip = sockaddr[0]
-            port = sockaddr[1] or seed_port
-            peers.append(Peer(ip, port))  # type: ignore[arg-type]
+        for endpoint in endpoints:
+            peers.append(Peer(endpoint.host, endpoint.port or seed_port))
 
         return peers
 
@@ -296,8 +292,10 @@ class PeerDiscovery:
         self,
         lower_bound: int | None,
         required_services: int | None,
+        proxy_info: ProxyInfo | None = None,
         timeout: float = 5,
     ):
+        self._proxy_info = proxy_info
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
 
@@ -338,7 +336,9 @@ class PeerDiscovery:
         return return_results(batches)
 
     async def get_bitcoin_peer(
-        self, required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS
+        self,
+        required_services: int | None = DEFAULT_REQUIRED_SERVICE_FLAGS,
+        proxy_info: ProxyInfo | None = None,
     ) -> None | Peer:
         """Get bitcoin peer."""
 
@@ -346,6 +346,7 @@ class PeerDiscovery:
         peers = await self.get_bitcoin_peers(
             lower_bound=10,
             required_services=required_services,
+            proxy_info=proxy_info,
         )
         if not peers:
             return None
