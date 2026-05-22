@@ -225,7 +225,7 @@ class Client:
                 required_services=CBF_REQUIRED_SERVICE_FLAGS,
                 lower_bound=200,
                 proxy_info=proxy_info,
-                timeout=0.4,
+                timeout=0.2,
             )
         )
         peers = peers.union(discovered_peers)
