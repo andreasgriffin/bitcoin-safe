@@ -25,11 +25,9 @@ RUN apt-get update -q && \
         dbus-daemon \
         desktop-file-utils \
         elfutils \
-        faketime \
         flatpak \
         flatpak-builder \
         git \
-        libfaketime \
         librsvg2-common \
         python3 \
         sudo \

@@ -88,36 +88,6 @@ format_source_date_timestamp() {
     date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
 }
 
-verify_faketime_bundle_clock() {
-    local observed_epoch
-
-    install_faketime_prerequisites
-
-    command -v faketime >/dev/null 2>&1 || fail \
-        "faketime is required for reproducible Flatpak bundles. Rebuild the Flatpak Docker image or install faketime/libfaketime on the host."
-
-    observed_epoch="$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u +%s)"
-    [ "${observed_epoch}" = "${SOURCE_DATE_EPOCH}" ] || fail \
-        "faketime did not pin the Flatpak bundle clock as expected (got ${observed_epoch}, expected ${SOURCE_DATE_EPOCH})."
-}
-
-emit_faketime_bundle_diagnostics() {
-    local output_dir="$1"
-    local diagnostics_path="${output_dir}/faketime.txt"
-
-    {
-        printf 'faketime_path=%s\n' "$(command -v faketime || printf 'missing')"
-        printf 'faketime_version=%s\n' "$(faketime --version 2>&1 | head -n 1 || printf 'unavailable')"
-        printf 'real_epoch=%s\n' "$(date -u +%s)"
-        printf 'real_iso=%s\n' "$(date -u "+%Y-%m-%dT%H:%M:%SZ")"
-        printf 'fake_epoch=%s\n' "$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u +%s)"
-        printf 'fake_iso=%s\n' "$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u "+%Y-%m-%dT%H:%M:%SZ")"
-        printf 'source_date_epoch=%s\n' "${SOURCE_DATE_EPOCH}"
-    } > "${diagnostics_path}"
-
-    emit_hash_file "${diagnostics_path}" "${output_dir}/faketime.sha256" >/dev/null
-}
-
 emit_bundle_diff_diagnostics() {
     local first_bundle="$1"
     local second_bundle="$2"
@@ -173,28 +143,80 @@ emit_bundle_probe_imported_commit() {
     rm -rf "${import_repo_dir}"
 }
 
+normalize_flatpak_bundle_timestamp() {
+    local bundle_path="$1"
+    local commit_checksum="$2"
+    local diagnostics_path="$3"
+
+    python3 - <<'PY' "${bundle_path}" "${commit_checksum}" "${SOURCE_DATE_EPOCH}" "${diagnostics_path}"
+from __future__ import annotations
+
+from datetime import UTC, datetime
+from pathlib import Path
+import sys
+
+bundle_path = Path(sys.argv[1])
+commit_checksum = sys.argv[2]
+source_date_epoch = int(sys.argv[3])
+diagnostics_path = Path(sys.argv[4])
+commit_bytes = bytes.fromhex(commit_checksum)
+data = bundle_path.read_bytes()
+match_count = data.count(commit_bytes)
+
+if match_count != 1:
+    raise SystemExit(
+        f"Expected exactly one commit anchor in {bundle_path}, found {match_count} for commit {commit_checksum}."
+    )
+
+commit_offset = data.find(commit_bytes)
+if commit_offset < 8:
+    raise SystemExit(f"Commit anchor offset {commit_offset} is too small to contain the preceding timestamp.")
+
+timestamp_offset = commit_offset - 8
+timestamp_before = int.from_bytes(data[timestamp_offset:commit_offset], "big")
+patched = bytearray(data)
+patched[timestamp_offset:commit_offset] = source_date_epoch.to_bytes(8, "big")
+bundle_path.write_bytes(patched)
+
+diagnostics_path.write_text(
+    "\n".join(
+        [
+            f"commit={commit_checksum}",
+            f"commit_offset={commit_offset}",
+            f"timestamp_offset={timestamp_offset}",
+            f"timestamp_before={timestamp_before}",
+            f"timestamp_before_iso={datetime.fromtimestamp(timestamp_before, UTC).isoformat()}",
+            f"timestamp_after={source_date_epoch}",
+            f"timestamp_after_iso={datetime.fromtimestamp(source_date_epoch, UTC).isoformat()}",
+        ]
+    )
+    + "\n",
+    encoding="utf-8",
+)
+PY
+}
+
 run_flatpak_build_bundle() {
     local repo_dir="$1"
     local bundle_path="$2"
     local arch="$3"
+    local commit_checksum="$4"
+    local diagnostics_path="$5"
 
-    # libostree stamps the bundle's static-delta superblock with the current
-    # wall clock time. Wrap only the bundle step so the outer .flatpak bytes
-    # stay reproducible without changing the whole container clock.
-    verify_faketime_bundle_clock
-    info "Creating Flatpak bundle under faketime @${SOURCE_DATE_EPOCH}."
-    run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" \
-        flatpak build-bundle \
+    info "Creating Flatpak bundle at ${bundle_path}."
+    run_with_dbus_session flatpak build-bundle \
         "${repo_dir}" \
         "${bundle_path}" \
         "${APP_ID}" \
         "${FLATPAK_BRANCH}" \
         --arch="${arch}"
+    normalize_flatpak_bundle_timestamp "${bundle_path}" "${commit_checksum}" "${diagnostics_path}"
 }
 
 probe_flatpak_bundle_reproducibility() {
     local repo_dir="$1"
     local arch="$2"
+    local commit_checksum="$3"
     local probe_dir="${WORK_DIR}/bundle-probe"
     local bundle1="${probe_dir}/probe1.flatpak"
     local bundle2="${probe_dir}/probe2.flatpak"
@@ -204,11 +226,19 @@ probe_flatpak_bundle_reproducibility() {
     rm -rf "${probe_dir}"
     mkdir -p "${probe_dir}"
 
-    emit_faketime_bundle_diagnostics "${BUNDLE_PROBE_DEBUG_DIR}"
-
-    info "Probing Flatpak bundle reproducibility under faketime."
-    run_flatpak_build_bundle "${repo_dir}" "${bundle1}" "${arch}"
-    run_flatpak_build_bundle "${repo_dir}" "${bundle2}" "${arch}"
+    info "Probing Flatpak bundle reproducibility after timestamp normalization."
+    run_flatpak_build_bundle \
+        "${repo_dir}" \
+        "${bundle1}" \
+        "${arch}" \
+        "${commit_checksum}" \
+        "${BUNDLE_PROBE_DEBUG_DIR}/probe1-normalized.txt"
+    run_flatpak_build_bundle \
+        "${repo_dir}" \
+        "${bundle2}" \
+        "${arch}" \
+        "${commit_checksum}" \
+        "${BUNDLE_PROBE_DEBUG_DIR}/probe2-normalized.txt"
 
     hash1="$(emit_hash_file "${bundle1}" "${BUNDLE_PROBE_DEBUG_DIR}/probe1.sha256")"
     hash2="$(emit_hash_file "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}/probe2.sha256")"
@@ -216,7 +246,7 @@ probe_flatpak_bundle_reproducibility() {
     emit_bundle_probe_imported_commit "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}/probe2-import.txt"
 
     if cmp -s "${bundle1}" "${bundle2}"; then
-        info "Flatpak bundle faketime probe passed: repeated bundle hashes match."
+        info "Flatpak bundle normalization probe passed: repeated bundle hashes match."
         rm -rf "${probe_dir}"
         return
     fi
@@ -224,7 +254,7 @@ probe_flatpak_bundle_reproducibility() {
     emit_bundle_diff_diagnostics "${bundle1}" "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}"
     info "probe1 bundle hash: ${hash1}"
     info "probe2 bundle hash: ${hash2}"
-    fail "Flatpak bundle faketime probe failed. See ${BUNDLE_PROBE_DEBUG_DIR} for fake-clock and byte-diff diagnostics."
+    fail "Flatpak bundle normalization probe failed. See ${BUNDLE_PROBE_DEBUG_DIR} for timestamp and byte-diff diagnostics."
 }
 
 emit_tree_manifest() {
@@ -558,7 +588,7 @@ stage_source_tree() {
 }
 
 build_flatpak_bundle() {
-    local arch bundle_name bundle_path project_version ref_name
+    local arch bundle_name bundle_path project_version ref_name commit_checksum
 
     arch="$(flatpak --default-arch)"
     project_version="$(get_project_version)"
@@ -596,17 +626,22 @@ build_flatpak_bundle() {
         "${FLATPAK_BRANCH}"
 
     emit_ostree_ref_manifest "${REPO_DIR}" "${ref_name}" "${REPRO_DEBUG_DIR}"
+    commit_checksum="$(cat "${REPRO_DEBUG_DIR}/ostree-commit.txt")"
 
     info "Validating exported desktop metadata."
     desktop-file-validate "${BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
     test -f "${BUILDER_DIR}/files/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
         || fail "Missing exported icon for ${APP_ID}."
 
-    probe_flatpak_bundle_reproducibility "${REPO_DIR}" "${arch}"
+    probe_flatpak_bundle_reproducibility "${REPO_DIR}" "${arch}" "${commit_checksum}"
 
-    info "Creating Flatpak bundle at ${bundle_path}."
     rm -f "${bundle_path}"
-    run_flatpak_build_bundle "${REPO_DIR}" "${bundle_path}" "${arch}"
+    run_flatpak_build_bundle \
+        "${REPO_DIR}" \
+        "${bundle_path}" \
+        "${arch}" \
+        "${commit_checksum}" \
+        "${REPRO_DEBUG_DIR}/bundle-normalized.txt"
 
     test -f "${bundle_path}" || fail "Flatpak bundle was not created."
     emit_bundle_manifest "${bundle_path}" "${REPRO_DEBUG_DIR}"
