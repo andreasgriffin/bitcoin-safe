@@ -1788,85 +1788,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin düğümleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF eşleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P dinleyici eşleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Eklentiyi Sil</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158), cüzdanların adreslerinizi gizli tutarken ilgili işlemleri keşfetmesini sağlar.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>Keşfedilen bitcoin düğümleri.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Geçen süre {elapsed} | Tahmini kalan {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe, gizlilik için blok özetlerini birden fazla düğümden indirir. Bu ilk senkronizasyondan sonra güncellemeler hızlı olacaktır. Kendi Electrum sunucunuz varsa veya beklemek istemiyorsanız ağ ayarlarından herkese açık bir Electrum sunucusuna bağlanın.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>Ağ ayarları</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>Özel senkronizasyon hazırlanıyor…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Son yayınlanan mesajlar bu eşlerden bitcoin ağı üzerinden alınır.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Bitcoin blok zinciri taranıyor</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>Kısa özetler (Compact Block Filters) ve bitcoin blokları bu eşlerden bitcoin ağı üzerinden alınır.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Senkronizasyon ilerlemesi: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>Bu neden gizliliği korur (daha fazla bilgi)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2390,6 +2311,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;Ağ Haritası</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Yeni Cüzdan</translation>
 		</message>
@@ -2615,6 +2541,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>{name} sekmesi gizleniyor</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet üzerinde sıcak cüzdanlar devre dışıdır.
@@ -2644,6 +2575,11 @@ Gerçek Bitcoin kullanmadan Bitcoin Safe’i test etmek için Testnet’e geçeb
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>p2p bitcoin ağı {proxy} üzerinden izleniyor</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Ağ Haritası</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3162,6 +3098,136 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin düğümleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF eşleri: {total} &lt;span style='color:{gray}'&gt;(eşlenen: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P dinleyici eşleri: {total} &lt;span style='color:{gray}'&gt;(haritalanan: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(haritalanan: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Eklentiyi Sil</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158), cüzdanların adreslerinizi gizli tutarken ilgili işlemleri keşfetmesini sağlar.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>Yapılandırılmış sunucu: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>Yapılandırılmış sunucu: {server} Konum kullanılamıyor.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Keşfedilen bitcoin düğümleri.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Electrum sunucusu</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Esplora sunucusu</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe, gizlilik için blok özetlerini birden fazla düğümden indirir. Bu ilk senkronizasyondan sonra güncellemeler hızlı olacaktır. Kendi Electrum sunucunuz varsa veya beklemek istemiyorsanız ağ ayarlarından herkese açık bir Electrum sunucusuna bağlanın.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Ağ Haritası</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Ağ ayarları</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>Hiçbir sunucu yapılandırılmamış.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Son yayınlanan mesajlar bu eşlerden bitcoin ağı üzerinden alınır.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Bitcoin blok zinciri taranıyor</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Sunucu</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Kısa özetler (Compact Block Filters) ve bitcoin blokları bu eşlerden bitcoin ağı üzerinden alınır.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>Şu anda yapılandırılmış cüzdan eşitleme sunucusu.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>Etkin sunucuyu veya proxy yapılandırmasını ağ ayarlarında güncelleyin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>Geçerli ağ bağlantılarını ve sunucuları görüntüleyin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Bu neden gizliliği korur (daha fazla bilgi)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>Cüzdanınız yapılandırılmış Electrum sunucusu üzerinden eşitlenir.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>Cüzdanınız yapılandırılmış Esplora sunucusu üzerinden eşitlenir.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3176,11 +3242,6 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 		<message>
 			<source>Automatic</source>
 			<translation>Otomatik</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Bitcoin ağ izleme</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3276,6 +3337,11 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>P2P izleme</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>Şifre:</translation>
 		</message>
@@ -3331,8 +3397,10 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>Proxy, Sync&amp;Chat eklentisine ve abonelik satın alma sırasında uygulanmaz!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>Proxy, Sync&amp;Chat eklentisi ve abonelik satın alma sırasında geçerli değildir! Ana makine adına dayalı sunucu konumu ve DNS seed keşfi bu sürümde proxy üzerinden çözümlenmez.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4037,7 +4105,10 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 
 Saved copies to:
 {path}</source>
-			<translation>'{wallet}' Cüzdanında Kaldırılan İşlem(ler): {txs} Kayıtlı kopyalar şuraya kaydedildi: {path}</translation>
+			<translation>'{wallet}' Cüzdanında Kaldırılan İşlem(ler):
+{txs}
+Kayıtlı kopyalar şuraya kaydedildi:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4200,6 +4271,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayanları test etmek &lt;b&gt;kritik&lt;/b&gt; önem taşır.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>Alındığını kontrol et</translation>
 		</message>
@@ -4215,17 +4295,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir.
-&lt;br&gt; Bu yüzden cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayıcıları test etmek &lt;b&gt;kritiktir&lt;/b&gt;.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>Bu cüzdanın 1 adresine &lt;b&gt;küçük&lt;/b&gt; bir miktar ({test_amount} değerinden az) alın.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>Musluktan al</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6100,6 +6176,23 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>Geçen: {elapsed} | Kalan: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Özel senkronizasyon hazırlanıyor…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Senkronizasyon ilerlemesi: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6216,8 +6309,23 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>Ana makine</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>P2P dinleyici eşi</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Sunucu</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6227,11 +6335,9 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-Ülke: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} Ülke: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7378,8 +7484,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Kompakt Blok Filtreleri, tüm blok zinciri bilgilerini almanın gizli ve hızlı bir yoludur. Cüzdan, birden fazla bitcoin düğümüne doğrudan bağlanır ve onlardan blok özetlerini (Kompakt Blok Filtreleri) indirir.&lt;br&gt;Aşağıdaki 'Bitcoin Network monitoring' bölümünde manuel eşler belirtirseniz, Kompakt Blok Filtreleri önce onlara bağlanacaktır.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters, tüm blok zinciri bilgilerini edinmenin özel ve hızlı bir yoludur. Cüzdan doğrudan birden fazla bitcoin düğümüne bağlanacak ve onlardan blok özetlerini (Compact Block Filters) indirecektir.&lt;br&gt;Aşağıdaki 'P2P izleme' bölümünde manuel eşler belirtirseniz, Compact Block Filters önce onlara bağlanacaktır.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8145,6 +8251,16 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 saniye</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 saniye önce</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Orijinal işlemi daha yüksek bir ücretle çift harcamaya çalışır.
@@ -8204,8 +8320,18 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>yaklaşık 1 gün</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>yaklaşık 1 gün önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>yaklaşık 1 saat</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8214,8 +8340,28 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>yaklaşık 1 dakika</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>yaklaşık 1 dakika önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>yaklaşık 1 ay</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>yaklaşık 1 ay önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>yaklaşık 1 yıl</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8224,8 +8370,18 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>yaklaşık {} gün</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>yaklaşık {} gün önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>yaklaşık {} saat</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8234,13 +8390,38 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>yaklaşık {} dakika</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>yaklaşık {} dakika önce</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>yaklaşık {} ay</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>yaklaşık {} ay önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>yaklaşık {} yıl</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>yaklaşık {} yıl önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>1 saniye içinde</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8251,6 +8432,11 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		<message>
 			<source>in about 1 hour</source>
 			<translation>yaklaşık 1 saat içinde</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>yaklaşık 1 dakika içinde</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8284,6 +8470,11 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>yaklaşık {} yıl içinde</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>bir dakikadan kısa sürede</translation>
 		</message>
@@ -8299,13 +8490,28 @@ Orijinal işlemin RBF sinyali vermesini ve cüzdanınızın bir değişiklik ç�
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>bir dakikadan az</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>bir dakikadan kısa süre önce</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>{} yıldan fazla</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>{} yıldan fazla süre önce</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} saniye</translation>
 		</message>
 		<name>util</name>
 		<message>

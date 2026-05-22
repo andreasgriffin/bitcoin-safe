@@ -1787,85 +1787,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; نودهای بیت‌کوین: {total} &lt;span style='color:{gray}'&gt;(نگاشت‌شده: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; همتایان CBF: {total} &lt;span style='color:{gray}'&gt;(نگاشت‌شده: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; همتایان شنونده P2P: {total} &lt;span style='color:{gray}'&gt;(نگاشت‌شده: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>حذف افزونه</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) به کیف‌پول‌ها اجازه می‌دهد تراکنش‌های مرتبط را پیدا کنند در حالی که آدرس‌های شما خصوصی باقی می‌مانند.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>نودهای بیت‌کوین کشف‌شده.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>زمان سپری‌شده {elapsed} | زمان باقی‌مانده تخمینی {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe برای حفظ حریم خصوصی خلاصه‌های بلاک را از چندین نود دانلود می‌کند. پس از این همگام‌سازی اولیه، به‌روزرسانی‌ها سریع خواهند بود. اگر سرور Electrum خود را دارید یا نمی‌خواهید منتظر بمانید، در تنظیمات شبکه به یک سرور عمومی Electrum متصل شوید.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>تنظیمات شبکه</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>در حال آماده‌سازی همگام‌سازی خصوصی…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>پیام‌های اخیراً پخش‌شده از طریق شبکه بیت‌کوین از این همتایان دریافت می‌شوند.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>در حال اسکن بلاک‌چین بیت‌کوین</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>خلاصه‌های کوتاه (Compact Block Filters) و بلاک‌های بیت‌کوین از طریق شبکه بیت‌کوین از این همتایان دریافت می‌شوند.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>پیشرفت همگام‌سازی: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>چرا این از حریم خصوصی محافظت می‌کند (بیشتر بدانید)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2389,6 +2310,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;نقشه شبکه</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;کیف پول جدید</translation>
 		</message>
@@ -2614,6 +2540,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>در حال پنهان کردن زبانه {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
@@ -2643,6 +2574,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>پایش شبکه p2p بیت‌کوین از طریق پروکسی {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>نقشه شبکه</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3160,6 +3096,136 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; نودهای بیت‌کوین: {total} &lt;span style='color:{gray}'&gt;(نگاشت‌شده: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; همتایان CBF: {total} &lt;span style='color:{gray}'&gt;(نگاشت‌شده: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; همتایان شنونده P2P: {total} &lt;span style='color:{gray}'&gt;(نقشه‌برداری‌شده: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(نقشه‌برداری‌شده: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>حذف افزونه</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) به کیف‌پول‌ها اجازه می‌دهد تراکنش‌های مرتبط را پیدا کنند در حالی که آدرس‌های شما خصوصی باقی می‌مانند.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>سرور پیکربندی‌شده: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>سرور پیکربندی‌شده: {server} مکان در دسترس نیست.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>نودهای بیت‌کوین کشف‌شده.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>سرور Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>سرور Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe برای حفظ حریم خصوصی خلاصه‌های بلاک را از چندین نود دانلود می‌کند. پس از این همگام‌سازی اولیه، به‌روزرسانی‌ها سریع خواهند بود. اگر سرور Electrum خود را دارید یا نمی‌خواهید منتظر بمانید، در تنظیمات شبکه به یک سرور عمومی Electrum متصل شوید.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>نقشه شبکه</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>تنظیمات شبکه</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>هیچ سروری پیکربندی نشده است.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>پیام‌های اخیراً پخش‌شده از طریق شبکه بیت‌کوین از این همتایان دریافت می‌شوند.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>در حال اسکن بلاک‌چین بیت‌کوین</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>سرور</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>خلاصه‌های کوتاه (Compact Block Filters) و بلاک‌های بیت‌کوین از طریق شبکه بیت‌کوین از این همتایان دریافت می‌شوند.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>سرور همگام‌سازی کیف پول که در حال حاضر پیکربندی شده است.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>سرور فعال یا پیکربندی پروکسی را در تنظیمات شبکه به‌روزرسانی کنید.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>اتصالات شبکه و سرورهای فعلی را مشاهده کنید.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>چرا این از حریم خصوصی محافظت می‌کند (بیشتر بدانید)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>کیف پول شما از طریق سرور Electrum پیکربندی‌شده همگام می‌شود.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>کیف پول شما از طریق سرور Esplora پیکربندی‌شده همگام می‌شود.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3174,11 +3240,6 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		<message>
 			<source>Automatic</source>
 			<translation>خودکار</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>پایش شبکه بیت‌کوین</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3274,6 +3335,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>پایش P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>گذرواژه:</translation>
 		</message>
@@ -3329,8 +3395,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>پروکسی برای افزونه Sync&amp;Chat و هنگام خرید اشتراک اعمال نمی‌شود!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>پروکسی برای افزونه Sync&amp;Chat و هنگام خرید اشتراک اعمال نمی‌شود! مکان سرور مبتنی بر نام میزبان و کشف DNS-seed در این نسخه از طریق پروکسی حل نمی‌شوند.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4035,7 +4103,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>تراکنش(های) حذف‌شده در کیف پول '{wallet}': {txs} نسخه‌های ذخیره‌شده در: {path}</translation>
+			<translation>تراکنش(های) حذف‌شده در کیف پول '{wallet}':
+{txs}
+نسخه‌های ذخیره‌شده در:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4198,6 +4269,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید کنترل وجوه را در اختیار دارید یا نه، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از آنکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;حیاتی&lt;/b&gt; است.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>بررسی دریافت</translation>
 		</message>
@@ -4213,17 +4293,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به ۱ آدرس این کیف پول دریافت کنید.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید آیا وجوه را کنترل می‌کنید یا نه، باید خرج کردن از کیف پول را آزمایش کنید.
-&lt;br&gt; بنابراین پیش از اینکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;ضروری&lt;/b&gt; است.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>یک مبلغ &lt;b&gt;کوچک&lt;/b&gt; (کمتر از {test_amount}) به 1 آدرس این کیف پول دریافت کنید.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>دریافت از faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6097,6 +6173,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>سپری‌شده: {elapsed} | باقی‌مانده: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>در حال آماده‌سازی همگام‌سازی خصوصی…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>پیشرفت همگام‌سازی: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6213,8 +6306,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>میزبان</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>همتای شنونده P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>سرور</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6224,11 +6332,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-کشور: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} کشور: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7375,8 +7481,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>فیلترهای بلوک فشرده راهی خصوصی و سریع برای دریافت تمام اطلاعات بلاک‌چین هستند. کیف پول به‌طور مستقیم به چندین نود بیت‌کوین متصل می‌شود و خلاصه‌های بلوک (فیلترهای بلوک فشرده) را از آن‌ها دانلود می‌کند.&lt;br&gt;اگر در بخش 'Bitcoin Network monitoring' در پایین، همتایان دستی را مشخص کنید، فیلترهای بلوک فشرده ابتدا به آن‌ها متصل خواهند شد.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters روشی خصوصی و سریع برای دریافت تمام اطلاعات بلاکچین است. کیف پول مستقیماً به چندین گره bitcoin متصل می‌شود و خلاصه‌های بلوک (Compact Block Filters) را از آن‌ها دانلود می‌کند.&lt;br&gt;اگر در بخش 'پایش P2P' در پایین همتایان دستی مشخص کنید، Compact Block Filters ابتدا به آن‌ها متصل می‌شود.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8142,6 +8248,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 ثانیه</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 ثانیه پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>تلاش می‌کند تراکنش اصلی را با کارمزد بالاتر دوبار خرج کند.
@@ -8201,8 +8317,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>حدود 1 روز</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>حدود ۱ روز پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>حدود 1 ساعت</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8211,8 +8337,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>حدود 1 دقیقه</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>حدود 1 دقیقه پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>حدود 1 ماه</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>حدود ۱ ماه پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>حدود 1 سال</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8221,8 +8367,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>حدود {} روز</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>حدود {} روز پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>حدود {} ساعت</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8231,13 +8387,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>حدود {} دقیقه</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>حدود {} دقیقه پیش</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>حدود {} ماه</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>حدود {} ماه پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>حدود {} سال</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>حدود {} سال پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>در 1 ثانیه</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8248,6 +8429,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>در حدود ۱ ساعت</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>در حدود 1 دقیقه</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8281,6 +8467,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>در حدود {} سال</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>در کمتر از یک دقیقه</translation>
 		</message>
@@ -8296,13 +8487,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>کمتر از یک دقیقه</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>کمتر از یک دقیقه پیش</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>بیش از {} سال</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>بیش از {} سال پیش</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} ثانیه</translation>
 		</message>
 		<name>util</name>
 		<message>
