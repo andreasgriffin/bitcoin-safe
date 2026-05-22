@@ -46,6 +46,10 @@ normalize_tree_timestamps() {
     done
 }
 
+format_source_date_timestamp() {
+    date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
+}
+
 get_project_version() {
     if [ -n "${BITCOINSAFE_FLATPAK_VERSION:-}" ]; then
         printf '%s\n' "${BITCOINSAFE_FLATPAK_VERSION}"
@@ -157,10 +161,18 @@ run_metadata_compose_smoke_test() {
         --force-clean \
         --install-deps-from=flathub \
         --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
-        --repo="${METADATA_PROBE_REPO_DIR}" \
         --state-dir="${METADATA_PROBE_STATE_DIR}" \
         "${METADATA_PROBE_BUILDER_DIR}" \
         "${METADATA_PROBE_MANIFEST_PATH}"
+
+    run_with_dbus_session flatpak build-export \
+        --arch="${arch}" \
+        --disable-sandbox \
+        --no-update-summary \
+        --timestamp="${SOURCE_DATE_TIMESTAMP}" \
+        "${METADATA_PROBE_REPO_DIR}" \
+        "${METADATA_PROBE_BUILDER_DIR}" \
+        "${FLATPAK_BRANCH}"
 
     desktop-file-validate "${METADATA_PROBE_BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
     test -f "${METADATA_PROBE_BUILDER_DIR}/files/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
@@ -208,10 +220,18 @@ build_flatpak_bundle() {
         --force-clean \
         --install-deps-from=flathub \
         --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
-        --repo="${REPO_DIR}" \
         --state-dir="${STATE_DIR}" \
         "${BUILDER_DIR}" \
         "${MANIFEST_PATH}"
+
+    run_with_dbus_session flatpak build-export \
+        --arch="${arch}" \
+        --disable-sandbox \
+        --no-update-summary \
+        --timestamp="${SOURCE_DATE_TIMESTAMP}" \
+        "${REPO_DIR}" \
+        "${BUILDER_DIR}" \
+        "${FLATPAK_BRANCH}"
 
     info "Validating exported desktop metadata."
     desktop-file-validate "${BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
@@ -233,8 +253,10 @@ build_flatpak_bundle() {
 
 export TZ=UTC
 export SOURCE_DATE_EPOCH="$(resolve_source_date_epoch)"
+export SOURCE_DATE_TIMESTAMP="$(format_source_date_timestamp)"
 
 info "Using SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}."
+info "Using Flatpak export timestamp ${SOURCE_DATE_TIMESTAMP}."
 install_flatpak_prerequisites
 print_flatpak_toolchain_summary
 check_flatpak_sandbox_support
