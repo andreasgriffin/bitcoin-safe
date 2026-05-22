@@ -165,7 +165,21 @@ def test_get_send_test_labels_uses_shared_grouping_helper() -> None:
 
     labels = Wizard.get_send_test_labels(fake_self)
 
-    assert labels == ['"Jade" and "Passport"', '"Coldcard" and one verified signer ("Jade" or "Passport")']
+    assert labels == ['"Jade" and "Passport"', '"Passport" and "Coldcard"']
+
+
+def test_get_send_test_labels_prefer_current_group_for_overlap_tests() -> None:
+    fake_self = SimpleNamespace(
+        qtwalletbase=SimpleNamespace(
+            get_mn_tuple=lambda: (4, 6),
+            get_keystore_labels=lambda: ["A", "B", "C", "D", "E", "F"],
+        ),
+        tr=lambda text: text,
+    )
+
+    labels = Wizard.get_send_test_labels(fake_self)
+
+    assert labels == ['"A" and "B" and "C" and "D"', '"C" and "D" and "E" and "F"']
 
 
 def test_build_send_test_fingerprint_groups_normalizes_and_groups() -> None:

@@ -430,7 +430,7 @@ def test_current_send_test_target_keeps_sign_button(qtbot: QtBot, loop_in_thread
     assert future_card.header_status.click_url is None
 
 
-def test_verified_candidates_remain_expandable_while_overlap_slot_is_open(
+def test_fallback_verified_candidates_remain_expandable_while_overlap_slot_is_open(
     qtbot: QtBot, loop_in_thread, monkeypatch
 ) -> None:
     widget, keystores = _make_guided_steps_widget(
@@ -457,9 +457,9 @@ def test_verified_candidates_remain_expandable_while_overlap_slot_is_open(
     assert previous_card.header_status.textLabel.text() == "Test verified"
     assert previous_card.button_sign.isHidden()
     assert previous_card.guidance.expandable
-    assert overlap_card.header_status.isVisible()
-    assert overlap_card.header_status.textLabel.text() == "Test verified"
-    assert overlap_card.guidance.expandable
+    assert overlap_card.button_sign.isVisible()
+    assert overlap_card.button_sign.text() == "Sign with this device"
+    assert not overlap_card.header_status.isVisible()
     assert current_new_card.button_sign.isVisible()
     assert current_new_card.button_sign.text() == "Sign with this device"
 
@@ -488,6 +488,39 @@ def test_verified_candidate_locks_after_another_verified_signer_signed(
     assert remaining_verified_card.header_status.isVisible()
     assert remaining_verified_card.header_status.textLabel.text() == "Test verified"
     assert not remaining_verified_card.guidance.expandable
+    assert remaining_verified_card.button_sign.isHidden()
+    assert current_new_card.button_sign.isVisible()
+
+
+def test_preferred_verified_current_group_signers_show_sign_button_in_4_of_6(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0, 1, 2, 3], [2, 3, 4, 5]],
+        signer_count=6,
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    fallback_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    preferred_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[2].fingerprint
+    )
+    current_new_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[4].fingerprint
+    )
+
+    assert fallback_card.header_status.isVisible()
+    assert fallback_card.header_status.textLabel.text() == "Test verified"
+    assert fallback_card.guidance.expandable
+    assert preferred_card.button_sign.isVisible()
+    assert preferred_card.button_sign.text() == "Sign with this device"
     assert current_new_card.button_sign.isVisible()
 
 

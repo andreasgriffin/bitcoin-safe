@@ -717,27 +717,7 @@ class Wizard(WizardBase):
 
     def _format_send_test_label(self, plan: SendTestStepPlan) -> str:
         """Format the signer instruction for one send test."""
-        if plan.overlap_slots_total == 0:
-            return self.tr(" and ").join([f'"{label}"' for label in plan.current_group])
-
-        required_part = self.tr(" and ").join([f'"{label}"' for label in plan.required_new_signers])
-        verified_pool_part = self.tr(" or ").join([f'"{label}"' for label in plan.verified_candidates])
-        verified_slot_part = (
-            self.tr("one verified signer")
-            if plan.overlap_slots_total == 1
-            else self.tr("{count} verified signers").format(count=plan.overlap_slots_total)
-        )
-
-        if required_part:
-            return self.tr("{required} and {verified} ({pool})").format(
-                required=required_part,
-                verified=verified_slot_part,
-                pool=verified_pool_part,
-            )
-        return self.tr("{verified} ({pool})").format(
-            verified=verified_slot_part,
-            pool=verified_pool_part,
-        )
+        return self.tr(" and ").join([f'"{label}"' for label in plan.current_group])
 
     def fill_tx(self) -> None:
         """Fill tx."""

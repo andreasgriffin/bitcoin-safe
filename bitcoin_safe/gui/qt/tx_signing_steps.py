@@ -613,7 +613,9 @@ class TxSigningDeviceList(QWidget):
                 state=TxSigningHeaderState.signed,
                 expandable=True,
             )
-        if fingerprint in self.send_test_plan.required_new_signers:
+        if self.send_test_plan.signer_should_sign_now(
+            fingerprint=fingerprint, signed_fingerprints=signed_fingerprints
+        ):
             return TxSigningDeviceGuidance(
                 state=TxSigningHeaderState.sign_now,
                 expandable=True,

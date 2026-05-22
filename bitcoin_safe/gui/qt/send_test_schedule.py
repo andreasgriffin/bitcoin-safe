@@ -69,6 +69,8 @@ class SendTestStepPlan:
     current_group: tuple[str, ...] = ()
     previously_verified: tuple[str, ...] = ()
     required_new_signers: tuple[str, ...] = ()
+    preferred_verified_signers: tuple[str, ...] = ()
+    fallback_verified_signers: tuple[str, ...] = ()
     verified_candidates: tuple[str, ...] = ()
     overlap_slots_total: int = 0
     future_signers: dict[str, int] = field(default_factory=dict)
@@ -99,6 +101,13 @@ class SendTestStepPlan:
         required_new_signers = tuple(
             signer for signer in current_group if signer not in previously_verified_set
         )
+        preferred_verified_signers = tuple(
+            signer for signer in current_group if signer in previously_verified_set
+        )
+        preferred_verified_set = set(preferred_verified_signers)
+        fallback_verified_signers = tuple(
+            signer for signer in previously_verified if signer not in preferred_verified_set
+        )
         overlap_slots_total = len(current_group_set & previously_verified_set)
 
         future_signers: dict[str, int] = {}
@@ -112,6 +121,8 @@ class SendTestStepPlan:
             current_group=current_group,
             previously_verified=tuple(previously_verified),
             required_new_signers=required_new_signers,
+            preferred_verified_signers=preferred_verified_signers,
+            fallback_verified_signers=fallback_verified_signers,
             verified_candidates=tuple(previously_verified),
             overlap_slots_total=overlap_slots_total,
             future_signers=future_signers,
@@ -121,9 +132,19 @@ class SendTestStepPlan:
         """Return how many verified-candidate slots are already filled in this PSBT."""
         return len(set(self.verified_candidates) & signed_fingerprints)
 
+    def remaining_overlap_slots(self, signed_fingerprints: set[str]) -> int:
+        """Return how many overlap slots are still open in this PSBT."""
+        return max(0, self.overlap_slots_total - self.signed_verified_count(signed_fingerprints))
+
+    def signer_should_sign_now(self, fingerprint: str, signed_fingerprints: set[str]) -> bool:
+        """Return whether this signer should be recommended in the current send test."""
+        return fingerprint in self.required_new_signers or (
+            fingerprint in self.preferred_verified_signers
+            and self.remaining_overlap_slots(signed_fingerprints) > 0
+        )
+
     def verified_candidate_can_sign(self, fingerprint: str, signed_fingerprints: set[str]) -> bool:
         """Return whether this verified signer may still fill an overlap slot."""
         return (
-            fingerprint in self.verified_candidates
-            and self.signed_verified_count(signed_fingerprints) < self.overlap_slots_total
+            fingerprint in self.verified_candidates and self.remaining_overlap_slots(signed_fingerprints) > 0
         )
