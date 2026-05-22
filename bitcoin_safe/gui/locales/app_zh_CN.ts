@@ -1173,12 +1173,12 @@ Default 20</source>
     <name>DistributeSeeds</name>
     <message>
         <source>Distribute to 2 separate locations</source>
-        <translation>分发到 2 个独立位置</translation>
+        <translation>分开存放在 2 个不同的地方</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Distribute to {n} separate locations</source>
-        <translation>分发到 {n} 个独立位置</translation>
+        <translation>分开存放到 {n} 个不同的地方</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
@@ -1188,17 +1188,17 @@ Default 20</source>
     <name>DistributeSeeds</name>
     <message>
         <source>Location</source>
-        <translation>重要</translation>
+        <translation>地方</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Location 1</source>
-        <translation>位置</translation>
+        <translation>地方 1</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Location 2</source>
-        <translation>位置 1</translation>
+        <translation>地方 2</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
@@ -1233,12 +1233,12 @@ Default 20</source>
     <name>DistributeSeeds</name>
     <message>
         <source>Seed words attached</source>
-        <translation>将您的备份和签名器放在安全位置</translation>
+        <translation>已附上助记词</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
         <source>Signer device</source>
-        <translation>签名者设备</translation>
+        <translation>硬件签名器</translation>
     </message>
     <name>DistributeSeeds</name>
     <message>
@@ -2130,7 +2130,7 @@ For a single signature wallet it gives full control over the funds.</source>
     <name>KeyStoreUI</name>
     <message>
         <source>USB</source>
-        <translation>USB</translation>
+        <translation>USB 数据线</translation>
     </message>
     <name>KeyStoreUI</name>
     <message>
