@@ -87,21 +87,146 @@ modules:
     build-commands:
       - |
         set -eux
+        export PYTHONDONTWRITEBYTECODE=1
+        export TZ=UTC
+        : "${SOURCE_DATE_EPOCH:?SOURCE_DATE_EPOCH must be set for reproducible Flatpak builds}"
         PYVER="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
-        BUILD_VENV_ROOT="${PWD}/.venv"
-        python3 -m ensurepip --upgrade
-        python3 -m venv "${BUILD_VENV_ROOT}"
-        export VIRTUAL_ENV="${BUILD_VENV_ROOT}"
-        export PATH="${BUILD_VENV_ROOT}/bin:${PATH}"
-        python3 -m pip install --upgrade pip poetry
-        poetry install --only main --no-interaction --no-root
+        BUILD_CACHE_ROOT="${PWD}/.cache"
+        TOOL_VENV_ROOT="${PWD}/.tool-venv"
+        RUNTIME_VENV_ROOT="${PWD}/.runtime-venv"
+        PIP_CACHE_DIR="${BUILD_CACHE_ROOT}/pip"
+        POETRY_CACHE_DIR="${BUILD_CACHE_ROOT}/poetry"
+        POETRY_WHEEL_DIR="${BUILD_CACHE_ROOT}/poetry-wheel"
+        RUNTIME_SITE_PACKAGES="${RUNTIME_VENV_ROOT}/lib/python${PYVER}/site-packages"
+
+        python3 -m venv "${TOOL_VENV_ROOT}"
+        python3 -m venv "${RUNTIME_VENV_ROOT}"
+        "${TOOL_VENV_ROOT}/bin/python" -m ensurepip --upgrade
+        "${RUNTIME_VENV_ROOT}/bin/python" -m ensurepip --upgrade
+        "${TOOL_VENV_ROOT}/bin/python" -m pip install \
+            --no-build-isolation \
+            --no-dependencies \
+            --no-warn-script-location \
+            --cache-dir "${PIP_CACHE_DIR}" \
+            -r tools/deterministic-build/requirements-build.txt
+
+        export POETRY_CACHE_DIR
+        "${TOOL_VENV_ROOT}/bin/poetry" env use "${RUNTIME_VENV_ROOT}/bin/python"
+        "${TOOL_VENV_ROOT}/bin/poetry" install --only main --no-interaction --no-root
+
+        rm -rf "${POETRY_WHEEL_DIR}"
+        mkdir -p "${POETRY_WHEEL_DIR}" "/app/lib/python${PYVER}/site-packages" /app/bin
+        "${TOOL_VENV_ROOT}/bin/poetry" build -f wheel --output "${POETRY_WHEEL_DIR}"
+        "${RUNTIME_VENV_ROOT}/bin/python" -m pip install \
+            --no-build-isolation \
+            --no-dependencies \
+            --no-warn-script-location \
+            --no-compile \
+            --cache-dir "${PIP_CACHE_DIR}" \
+            "${POETRY_WHEEL_DIR}"/*.whl
+
+        "${RUNTIME_VENV_ROOT}/bin/python" -m pip uninstall -y \
+            build \
+            cachecontrol \
+            cleo \
+            crashtest \
+            dulwich \
+            findpython \
+            installer \
+            keyring \
+            pbs-installer \
+            pip \
+            pkginfo \
+            platformdirs \
+            poetry \
+            poetry-core \
+            pyproject-hooks \
+            requests-toolbelt \
+            setuptools \
+            shellingham \
+            tomlkit \
+            trove-classifiers \
+            virtualenv \
+            wheel \
+            || true
+
+        for build_artifact in \
+            build \
+            build-*.dist-info \
+            cachecontrol \
+            cachecontrol-*.dist-info \
+            cleo \
+            cleo-*.dist-info \
+            crashtest \
+            crashtest-*.dist-info \
+            dulwich \
+            dulwich-*.dist-info \
+            findpython \
+            findpython-*.dist-info \
+            installer \
+            installer-*.dist-info \
+            keyring \
+            keyring-*.dist-info \
+            pbs_installer \
+            pbs_installer-*.dist-info \
+            pip \
+            pip-*.dist-info \
+            pkginfo \
+            pkginfo-*.dist-info \
+            platformdirs \
+            platformdirs-*.dist-info \
+            poetry \
+            poetry-*.dist-info \
+            poetry_core \
+            poetry_core-*.dist-info \
+            pyproject_hooks \
+            pyproject_hooks-*.dist-info \
+            requests_toolbelt \
+            requests_toolbelt-*.dist-info \
+            setuptools \
+            setuptools-*.dist-info \
+            shellingham \
+            shellingham-*.dist-info \
+            tomlkit \
+            tomlkit-*.dist-info \
+            trove_classifiers \
+            trove_classifiers-*.dist-info \
+            virtualenv \
+            virtualenv-*.dist-info \
+            wheel \
+            wheel-*.dist-info \
+            ; do
+            rm -rf "${RUNTIME_SITE_PACKAGES}/${build_artifact}"
+        done
+
+        rm -f \
+            "${RUNTIME_VENV_ROOT}/bin/pip" \
+            "${RUNTIME_VENV_ROOT}/bin/pip3" \
+            "${RUNTIME_VENV_ROOT}/bin/pip${PYVER}" \
+            "${RUNTIME_VENV_ROOT}/bin/poetry" \
+            "${RUNTIME_VENV_ROOT}/bin/virtualenv" \
+            "${RUNTIME_VENV_ROOT}/bin/pyproject-build"
+
+        rm -rf "${RUNTIME_SITE_PACKAGES}/Cryptodome/SelfTest"
+        rm -rf "${RUNTIME_SITE_PACKAGES}/psutil/tests" \
+            "${RUNTIME_SITE_PACKAGES}/qrcode/tests" \
+            "${RUNTIME_SITE_PACKAGES}/websocket/tests"
+        find "${RUNTIME_VENV_ROOT}" -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
+        find "${RUNTIME_VENV_ROOT}" -type f \
+            \( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \) \
+            -delete
+        find "${RUNTIME_VENV_ROOT}" -name '__pycache__' -type d -exec rm -rf {} +
+        find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -type d -name '*.dist-info' \
+            ! -name 'slip10-*.dist-info' -exec rm -rf {} +
+        find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -name '*.egg-info' -exec rm -rf {} +
+        find "${RUNTIME_VENV_ROOT}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+
         mkdir -p "/app/lib/python${PYVER}/site-packages" /app/bin
-        cp -a "${BUILD_VENV_ROOT}/lib/python${PYVER}/site-packages/." "/app/lib/python${PYVER}/site-packages/"
-        cp -a bitcoin_safe "/app/lib/python${PYVER}/site-packages/bitcoin_safe"
-        for executable in "${BUILD_VENV_ROOT}"/bin/*; do
+        cp -a "${RUNTIME_SITE_PACKAGES}/." "/app/lib/python${PYVER}/site-packages/"
+        for executable in "${RUNTIME_VENV_ROOT}"/bin/*; do
             executable_name="$(basename "${executable}")"
             case "${executable_name}" in
-                python|python3|"python${PYVER}"|activate|activate.*)
+                python|python3|"python${PYVER}"|activate|activate.*|pip|pip3|"pip${PYVER}"|poetry|virtualenv|pyproject-build)
                     continue
                     ;;
             esac
@@ -119,7 +244,13 @@ modules:
         install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
         mkdir -p /app/app
         ln -sfn ../share /app/app/share
-        rm -rf "${BUILD_VENV_ROOT}" dist org.bitcoin_safe.BitcoinSafe.desktop
+        find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+        rm -rf \
+            "${TOOL_VENV_ROOT}" \
+            "${RUNTIME_VENV_ROOT}" \
+            "${BUILD_CACHE_ROOT}" \
+            dist \
+            org.bitcoin_safe.BitcoinSafe.desktop
     sources:
       - type: dir
         path: build/source-tree

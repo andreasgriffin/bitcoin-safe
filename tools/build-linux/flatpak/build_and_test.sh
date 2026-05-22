@@ -23,6 +23,29 @@ METADATA_PROBE_REPO_DIR="${WORK_DIR}/metadata-probe-repo"
 METADATA_PROBE_STATE_DIR="${WORK_DIR}/metadata-probe-state"
 source "${SCRIPT_DIR}/flatpak_common.sh"
 
+resolve_source_date_epoch() {
+    if [ -n "${BITCOINSAFE_SOURCE_DATE_EPOCH:-}" ]; then
+        printf '%s\n' "${BITCOINSAFE_SOURCE_DATE_EPOCH}"
+        return
+    fi
+
+    if git -C "${PROJECT_ROOT}" rev-parse --show-toplevel >/dev/null 2>&1; then
+        git -C "${PROJECT_ROOT}" show -s --format=%ct HEAD
+        return
+    fi
+
+    fail "SOURCE_DATE_EPOCH is required for reproducible Flatpak builds."
+}
+
+normalize_tree_timestamps() {
+    local path
+
+    for path in "$@"; do
+        [ -e "${path}" ] || continue
+        find "${path}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+    done
+}
+
 get_project_version() {
     if [ -n "${BITCOINSAFE_FLATPAK_VERSION:-}" ]; then
         printf '%s\n' "${BITCOINSAFE_FLATPAK_VERSION}"
@@ -113,6 +136,11 @@ modules:
       - type: dir
         path: metadata-probe-bin
 EOF
+
+    normalize_tree_timestamps \
+        "${METADATA_PROBE_SOURCE_DIR}" \
+        "${METADATA_PROBE_BIN_DIR}" \
+        "${METADATA_PROBE_MANIFEST_PATH}"
 }
 
 run_metadata_compose_smoke_test() {
@@ -128,6 +156,7 @@ run_metadata_compose_smoke_test() {
         --disable-rofiles-fuse \
         --force-clean \
         --install-deps-from=flathub \
+        --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
         --repo="${METADATA_PROBE_REPO_DIR}" \
         --state-dir="${METADATA_PROBE_STATE_DIR}" \
         "${METADATA_PROBE_BUILDER_DIR}" \
@@ -156,6 +185,8 @@ stage_source_tree() {
         --exclude='*.pyc' \
         --exclude='tools/build-linux/flatpak/build' \
         -cf - . | tar -C "${SOURCE_STAGING_DIR}" -xf -
+
+    normalize_tree_timestamps "${SOURCE_STAGING_DIR}"
 }
 
 build_flatpak_bundle() {
@@ -176,6 +207,7 @@ build_flatpak_bundle() {
         --disable-rofiles-fuse \
         --force-clean \
         --install-deps-from=flathub \
+        --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
         --repo="${REPO_DIR}" \
         --state-dir="${STATE_DIR}" \
         "${BUILDER_DIR}" \
@@ -199,6 +231,10 @@ build_flatpak_bundle() {
     printf '%s\n' "${bundle_path}" > "${WORK_DIR}/bundle-path.txt"
 }
 
+export TZ=UTC
+export SOURCE_DATE_EPOCH="$(resolve_source_date_epoch)"
+
+info "Using SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}."
 install_flatpak_prerequisites
 print_flatpak_toolchain_summary
 check_flatpak_sandbox_support
