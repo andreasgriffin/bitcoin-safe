@@ -14,6 +14,7 @@ WORK_DIR="${SCRIPT_DIR}/build"
 REPRO_DEBUG_ROOT_DIR="${WORK_DIR}/repro-debug"
 REPRO_DEBUG_DIR="${BITCOINSAFE_FLATPAK_REPRO_DEBUG_DIR:-${REPRO_DEBUG_ROOT_DIR}/latest}"
 METADATA_PROBE_DEBUG_DIR="${REPRO_DEBUG_DIR}/metadata-probe"
+BUNDLE_PROBE_DEBUG_DIR="${REPRO_DEBUG_DIR}/bundle-probe"
 SOURCE_STAGING_DIR="${WORK_DIR}/source-tree"
 BUILDER_DIR="${WORK_DIR}/builder"
 REPO_DIR="${WORK_DIR}/repo"
@@ -42,7 +43,7 @@ resolve_source_date_epoch() {
 
 setup_repro_debug_dir() {
     rm -rf "${REPRO_DEBUG_DIR}"
-    mkdir -p "${REPRO_DEBUG_DIR}" "${METADATA_PROBE_DEBUG_DIR}"
+    mkdir -p "${REPRO_DEBUG_DIR}" "${METADATA_PROBE_DEBUG_DIR}" "${BUNDLE_PROBE_DEBUG_DIR}"
 }
 
 sha256_file() {
@@ -100,6 +101,78 @@ verify_faketime_bundle_clock() {
         "faketime did not pin the Flatpak bundle clock as expected (got ${observed_epoch}, expected ${SOURCE_DATE_EPOCH})."
 }
 
+emit_faketime_bundle_diagnostics() {
+    local output_dir="$1"
+    local diagnostics_path="${output_dir}/faketime.txt"
+
+    {
+        printf 'faketime_path=%s\n' "$(command -v faketime || printf 'missing')"
+        printf 'faketime_version=%s\n' "$(faketime --version 2>&1 | head -n 1 || printf 'unavailable')"
+        printf 'real_epoch=%s\n' "$(date -u +%s)"
+        printf 'real_iso=%s\n' "$(date -u "+%Y-%m-%dT%H:%M:%SZ")"
+        printf 'fake_epoch=%s\n' "$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u +%s)"
+        printf 'fake_iso=%s\n' "$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u "+%Y-%m-%dT%H:%M:%SZ")"
+        printf 'source_date_epoch=%s\n' "${SOURCE_DATE_EPOCH}"
+    } > "${diagnostics_path}"
+
+    emit_hash_file "${diagnostics_path}" "${output_dir}/faketime.sha256" >/dev/null
+}
+
+emit_bundle_diff_diagnostics() {
+    local first_bundle="$1"
+    local second_bundle="$2"
+    local output_dir="$3"
+    local cmp_path="${output_dir}/bundle-diff.cmp.txt"
+    local diff_path="${output_dir}/bundle-diff.txt"
+    local first_offset
+    local first_octal
+    local second_octal
+    local first_decimal
+    local second_decimal
+    local first_hex
+    local second_hex
+    local start_offset
+
+    cmp -l "${first_bundle}" "${second_bundle}" | sed -n '1,20p' > "${cmp_path}" || true
+    [ -s "${cmp_path}" ] || return 0
+
+    read -r first_offset first_octal second_octal < "${cmp_path}"
+    first_decimal="$((8#${first_octal}))"
+    second_decimal="$((8#${second_octal}))"
+    first_hex="$(printf '%02x' "${first_decimal}")"
+    second_hex="$(printf '%02x' "${second_decimal}")"
+    start_offset=$(( first_offset > 16 ? first_offset - 16 : 1 ))
+
+    {
+        printf 'first_diff_offset=%s\n' "${first_offset}"
+        printf 'run1_octal=%s\n' "${first_octal}"
+        printf 'run2_octal=%s\n' "${second_octal}"
+        printf 'run1_hex=%s\n' "${first_hex}"
+        printf 'run2_hex=%s\n' "${second_hex}"
+        printf 'window_start_offset=%s\n' "${start_offset}"
+        printf '\nrun1_bytes:\n'
+        od -An -tx1 -j "$((start_offset - 1))" -N 48 "${first_bundle}"
+        printf '\nrun2_bytes:\n'
+        od -An -tx1 -j "$((start_offset - 1))" -N 48 "${second_bundle}"
+    } > "${diff_path}"
+}
+
+emit_bundle_probe_imported_commit() {
+    local bundle_path="$1"
+    local output_path="$2"
+    local import_repo_dir
+    local imported_ref
+    local imported_commit
+
+    import_repo_dir="$(mktemp -d "${WORK_DIR}/bundle-probe-import.XXXXXX")"
+    ostree init --repo="${import_repo_dir}" --mode=archive >/dev/null
+    flatpak build-import-bundle --no-update-summary "${import_repo_dir}" "${bundle_path}" >/dev/null
+    imported_ref="$(ostree refs --repo="${import_repo_dir}" | head -n 1)"
+    imported_commit="$(ostree rev-parse --repo="${import_repo_dir}" "${imported_ref}")"
+    printf 'ref=%s\ncommit=%s\n' "${imported_ref}" "${imported_commit}" > "${output_path}"
+    rm -rf "${import_repo_dir}"
+}
+
 run_flatpak_build_bundle() {
     local repo_dir="$1"
     local bundle_path="$2"
@@ -117,6 +190,41 @@ run_flatpak_build_bundle() {
         "${APP_ID}" \
         "${FLATPAK_BRANCH}" \
         --arch="${arch}"
+}
+
+probe_flatpak_bundle_reproducibility() {
+    local repo_dir="$1"
+    local arch="$2"
+    local probe_dir="${WORK_DIR}/bundle-probe"
+    local bundle1="${probe_dir}/probe1.flatpak"
+    local bundle2="${probe_dir}/probe2.flatpak"
+    local hash1
+    local hash2
+
+    rm -rf "${probe_dir}"
+    mkdir -p "${probe_dir}"
+
+    emit_faketime_bundle_diagnostics "${BUNDLE_PROBE_DEBUG_DIR}"
+
+    info "Probing Flatpak bundle reproducibility under faketime."
+    run_flatpak_build_bundle "${repo_dir}" "${bundle1}" "${arch}"
+    run_flatpak_build_bundle "${repo_dir}" "${bundle2}" "${arch}"
+
+    hash1="$(emit_hash_file "${bundle1}" "${BUNDLE_PROBE_DEBUG_DIR}/probe1.sha256")"
+    hash2="$(emit_hash_file "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}/probe2.sha256")"
+    emit_bundle_probe_imported_commit "${bundle1}" "${BUNDLE_PROBE_DEBUG_DIR}/probe1-import.txt"
+    emit_bundle_probe_imported_commit "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}/probe2-import.txt"
+
+    if cmp -s "${bundle1}" "${bundle2}"; then
+        info "Flatpak bundle faketime probe passed: repeated bundle hashes match."
+        rm -rf "${probe_dir}"
+        return
+    fi
+
+    emit_bundle_diff_diagnostics "${bundle1}" "${bundle2}" "${BUNDLE_PROBE_DEBUG_DIR}"
+    info "probe1 bundle hash: ${hash1}"
+    info "probe2 bundle hash: ${hash2}"
+    fail "Flatpak bundle faketime probe failed. See ${BUNDLE_PROBE_DEBUG_DIR} for fake-clock and byte-diff diagnostics."
 }
 
 emit_tree_manifest() {
@@ -493,6 +601,8 @@ build_flatpak_bundle() {
     desktop-file-validate "${BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
     test -f "${BUILDER_DIR}/files/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
         || fail "Missing exported icon for ${APP_ID}."
+
+    probe_flatpak_bundle_reproducibility "${REPO_DIR}" "${arch}"
 
     info "Creating Flatpak bundle at ${bundle_path}."
     rm -f "${bundle_path}"
