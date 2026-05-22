@@ -382,19 +382,25 @@ stage_source_tree() {
     rm -rf "${SOURCE_STAGING_DIR}"
     mkdir -p "${SOURCE_STAGING_DIR}"
 
-    tar -C "${PROJECT_ROOT}" \
-        --exclude='.git' \
-        --exclude='.venv' \
-        --exclude='build' \
-        --exclude='dist' \
-        --exclude='.flatpak-builder' \
-        --exclude='.mypy_cache' \
-        --exclude='.pytest_cache' \
-        --exclude='.ruff_cache' \
-        --exclude='__pycache__' \
-        --exclude='*.pyc' \
-        --exclude='tools/build-linux/flatpak/build' \
-        -cf - . | tar -C "${SOURCE_STAGING_DIR}" -xf -
+    # Stage only committed files so ignored local runtime state, such as
+    # tests/bitcoin_data/regtest/debug.log, cannot affect reproducibility.
+    if git -C "${PROJECT_ROOT}" rev-parse --show-toplevel >/dev/null 2>&1; then
+        git -C "${PROJECT_ROOT}" archive --format=tar HEAD | tar -C "${SOURCE_STAGING_DIR}" -xf -
+    else
+        tar -C "${PROJECT_ROOT}" \
+            --exclude='.git' \
+            --exclude='.venv' \
+            --exclude='build' \
+            --exclude='dist' \
+            --exclude='.flatpak-builder' \
+            --exclude='.mypy_cache' \
+            --exclude='.pytest_cache' \
+            --exclude='.ruff_cache' \
+            --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='tools/build-linux/flatpak/build' \
+            -cf - . | tar -C "${SOURCE_STAGING_DIR}" -xf -
+    fi
 
     # The copied tree inherits fresh filesystem mtimes from tar/extract, so
     # reset them to the commit timestamp before flatpak-builder sees them.
