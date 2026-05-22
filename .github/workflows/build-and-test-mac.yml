@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload DMG Files from dist/
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mac-artifact-${{ matrix.artifact_name }}
           path: dist/*.dmg
@@ -96,7 +96,7 @@ jobs:
     steps:
       - name: Download DMG Artifact for ${{ matrix.arch }}
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: mac-artifact-${{ matrix.artifact_name }}
           path: dmgs
@@ -290,7 +290,7 @@ jobs:
 
       - name: Upload DMG and Application Logs for ${{ matrix.arch }}
         if: always()  # This ensures the step runs regardless of previous failures    
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mac-tests-${{ matrix.arch }}
           path: |
