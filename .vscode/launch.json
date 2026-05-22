@@ -306,6 +306,29 @@
       "console": "integratedTerminal",
       "preLaunchTask": "Prepare VSCode Launch",
     }, {
+      "name": "Build Flatpak (Docker)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "flatpak",
+        "--commit", "None"
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Prepare VSCode Launch",
+    }, {
+      "name": "Build Flatpak (Host)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "tools/build.py",
+      "args": [
+        "--targets", "flatpak",
+        "--commit", "None",
+        "--build-flatpak-on-host"
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Prepare VSCode Launch",
+    }, {
       "name": "Sign",
       "type": "debugpy",
       "request": "launch",

@@ -1,0 +1,315 @@
+app-id: org.bitcoin_safe.BitcoinSafe
+branch: stable
+runtime: org.kde.Platform
+runtime-version: "6.9"
+sdk: org.kde.Sdk
+command: run-bitcoin-safe.sh
+separate-locales: false
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=all
+  - --filesystem=home
+modules:
+  - name: libusb
+    buildsystem: autotools
+    config-opts:
+      - --disable-static
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/doc
+      - /share/man
+    sources:
+      - type: git
+        url: https://github.com/libusb/libusb.git
+        tag: v1.0.26
+
+  - name: hidapi
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_SHARED_LIBS=ON
+      - -DHIDAPI_WITH_HIDRAW=ON
+      - -DHIDAPI_WITH_LIBUSB=ON
+      - -DHIDAPI_BUILD_HIDTEST=OFF
+      - -DHIDAPI_BUILD_TESTGUI=OFF
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/doc
+      - /share/man
+    sources:
+      - type: git
+        url: https://github.com/libusb/hidapi.git
+        tag: hidapi-0.15.0
+
+  - name: zbar
+    buildsystem: simple
+    build-commands:
+      - autoreconf -vfi
+      - >-
+        ./configure
+        --prefix=/app
+        --enable-pthread=no
+        --enable-doc=no
+        --with-python=no
+        --with-gtk=no
+        --with-qt=no
+        --with-java=no
+        --with-imagemagick=no
+        --with-dbus=no
+        --with-x=no
+        --enable-video=no
+        --with-jpeg=no
+        --enable-codes=qrcode
+        --disable-static
+        --enable-shared
+      - make -j${FLATPAK_BUILDER_N_JOBS}
+      - make install
+    cleanup:
+      - /bin
+      - /include
+      - /lib/pkgconfig
+      - /share/doc
+      - /share/man
+    sources:
+      - type: git
+        url: https://github.com/mchehab/zbar.git
+        tag: 0.23.93
+
+  - name: bitcoin-safe
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+    build-commands:
+      - |
+        set -eux
+        export PYTHONDONTWRITEBYTECODE=1
+        export TZ=UTC
+        : "${SOURCE_DATE_EPOCH:?SOURCE_DATE_EPOCH must be set for reproducible Flatpak builds}"
+        PYVER="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+        BUILD_CACHE_ROOT="${PWD}/.cache"
+        TOOL_VENV_ROOT="${PWD}/.tool-venv"
+        RUNTIME_VENV_ROOT="${PWD}/.runtime-venv"
+        PIP_CACHE_DIR="${BUILD_CACHE_ROOT}/pip"
+        POETRY_CACHE_DIR="${BUILD_CACHE_ROOT}/poetry"
+        POETRY_WHEEL_DIR="${BUILD_CACHE_ROOT}/poetry-wheel"
+        RUNTIME_SITE_PACKAGES="${RUNTIME_VENV_ROOT}/lib/python${PYVER}/site-packages"
+
+        verify_runtime_import() {
+            local module_name="$1"
+            "${RUNTIME_VENV_ROOT}/bin/python" -c "import ${module_name}" \
+                || { echo "Failed to import ${module_name} from the Flatpak runtime venv." >&2; exit 1; }
+        }
+
+        verify_payload_import() {
+            local module_name="$1"
+            PYTHONPATH="/app/lib/python${PYVER}/site-packages" \
+                python3 -s -c "import ${module_name}" \
+                || { echo "Failed to import ${module_name} from the staged Flatpak payload." >&2; exit 1; }
+        }
+
+        rewrite_python_entrypoint_shebang() {
+            local executable_path="$1"
+
+            # pip-generated scripts embed the temporary build venv path in
+            # their shebang, e.g. "#!/tmp/.../.runtime-venv/bin/python". Rewrite
+            # them to a stable launcher path before copying them into /app/bin.
+            case "$(head -n 1 "${executable_path}")" in
+                "#!${RUNTIME_VENV_ROOT}/bin/python"*)
+                    sed -i "1s|^#!.*|#!/app/bin/flatpak-python-entrypoint|" "${executable_path}"
+                    ;;
+            esac
+        }
+
+        python3 -m venv "${TOOL_VENV_ROOT}"
+        python3 -m venv "${RUNTIME_VENV_ROOT}"
+        "${TOOL_VENV_ROOT}/bin/python" -m ensurepip --upgrade
+        "${RUNTIME_VENV_ROOT}/bin/python" -m ensurepip --upgrade
+        "${TOOL_VENV_ROOT}/bin/python" -m pip install \
+            --no-build-isolation \
+            --no-dependencies \
+            --no-warn-script-location \
+            --cache-dir "${PIP_CACHE_DIR}" \
+            -r tools/deterministic-build/requirements-build.txt
+
+        # Let Poetry install runtime dependencies into the venv that will be
+        # copied into /app. Example: appdirs must end up in
+        # "${RUNTIME_SITE_PACKAGES}", not in a separate Poetry-managed cache venv.
+        export PATH="${RUNTIME_VENV_ROOT}/bin:${PATH}"
+        export POETRY_VIRTUALENVS_CREATE=false
+        export POETRY_CACHE_DIR
+        export VIRTUAL_ENV="${RUNTIME_VENV_ROOT}"
+        "${TOOL_VENV_ROOT}/bin/poetry" install --only main --no-interaction --no-root
+
+        rm -rf "${POETRY_WHEEL_DIR}"
+        mkdir -p "${POETRY_WHEEL_DIR}" "/app/lib/python${PYVER}/site-packages" /app/bin
+        "${TOOL_VENV_ROOT}/bin/poetry" build -f wheel --output "${POETRY_WHEEL_DIR}"
+        "${RUNTIME_VENV_ROOT}/bin/python" -m pip install \
+            --no-build-isolation \
+            --no-dependencies \
+            --no-warn-script-location \
+            --no-compile \
+            --cache-dir "${PIP_CACHE_DIR}" \
+            "${POETRY_WHEEL_DIR}"/*.whl
+
+        verify_runtime_import appdirs
+        verify_runtime_import bitcoin_safe
+
+        # Remove build-only tools after installation so they cannot perturb the
+        # runtime payload on the next comparison.
+        "${RUNTIME_VENV_ROOT}/bin/python" -m pip uninstall -y \
+            build \
+            cachecontrol \
+            cleo \
+            crashtest \
+            dulwich \
+            findpython \
+            installer \
+            keyring \
+            pbs-installer \
+            pip \
+            pkginfo \
+            platformdirs \
+            poetry \
+            poetry-core \
+            pyproject-hooks \
+            requests-toolbelt \
+            setuptools \
+            shellingham \
+            tomlkit \
+            trove-classifiers \
+            virtualenv \
+            wheel \
+            || true
+
+        for build_artifact in \
+            build \
+            build-*.dist-info \
+            cachecontrol \
+            cachecontrol-*.dist-info \
+            cleo \
+            cleo-*.dist-info \
+            crashtest \
+            crashtest-*.dist-info \
+            dulwich \
+            dulwich-*.dist-info \
+            findpython \
+            findpython-*.dist-info \
+            installer \
+            installer-*.dist-info \
+            keyring \
+            keyring-*.dist-info \
+            pbs_installer \
+            pbs_installer-*.dist-info \
+            pip \
+            pip-*.dist-info \
+            pkginfo \
+            pkginfo-*.dist-info \
+            platformdirs \
+            platformdirs-*.dist-info \
+            poetry \
+            poetry-*.dist-info \
+            poetry_core \
+            poetry_core-*.dist-info \
+            pyproject_hooks \
+            pyproject_hooks-*.dist-info \
+            requests_toolbelt \
+            requests_toolbelt-*.dist-info \
+            setuptools \
+            setuptools-*.dist-info \
+            shellingham \
+            shellingham-*.dist-info \
+            tomlkit \
+            tomlkit-*.dist-info \
+            trove_classifiers \
+            trove_classifiers-*.dist-info \
+            virtualenv \
+            virtualenv-*.dist-info \
+            wheel \
+            wheel-*.dist-info \
+            ; do
+            rm -rf "${RUNTIME_SITE_PACKAGES}/${build_artifact}"
+        done
+
+        rm -f \
+            "${RUNTIME_VENV_ROOT}/bin/pip" \
+            "${RUNTIME_VENV_ROOT}/bin/pip3" \
+            "${RUNTIME_VENV_ROOT}/bin/pip${PYVER}" \
+            "${RUNTIME_VENV_ROOT}/bin/poetry" \
+            "${RUNTIME_VENV_ROOT}/bin/virtualenv" \
+            "${RUNTIME_VENV_ROOT}/bin/pyproject-build"
+
+        rm -rf "${RUNTIME_SITE_PACKAGES}/Cryptodome/SelfTest"
+        rm -rf "${RUNTIME_SITE_PACKAGES}/psutil/tests" \
+            "${RUNTIME_SITE_PACKAGES}/qrcode/tests" \
+            "${RUNTIME_SITE_PACKAGES}/websocket/tests"
+        find "${RUNTIME_VENV_ROOT}" -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
+        find "${RUNTIME_VENV_ROOT}" -type f \
+            \( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \) \
+            -delete
+        find "${RUNTIME_VENV_ROOT}" -name '__pycache__' -type d -exec rm -rf {} +
+        find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -type d -name '*.dist-info' \
+            ! -name 'slip10-*.dist-info' -exec rm -rf {} +
+        find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -name '*.egg-info' -exec rm -rf {} +
+        # Normalize the venv after cleanup so the final copy does not depend on
+        # when files were installed or deleted during this build.
+        find "${RUNTIME_VENV_ROOT}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+
+        verify_runtime_import appdirs
+        verify_runtime_import bitcoin_safe
+
+        mkdir -p "/app/lib/python${PYVER}/site-packages" /app/bin
+        cp -a "${RUNTIME_SITE_PACKAGES}/." "/app/lib/python${PYVER}/site-packages/"
+        # Provide a stable interpreter entrypoint for copied console scripts.
+        # Example: /app/bin/hwi should start with /app/bin/flatpak-python-entrypoint,
+        # not a build-dir-specific /tmp/... shebang.
+        cat > /app/bin/flatpak-python-entrypoint <<EOF
+        #!/bin/sh
+        export PYTHONPATH="/app/lib/python${PYVER}/site-packages\${PYTHONPATH+:\${PYTHONPATH}}"
+        export LD_LIBRARY_PATH="/app/lib\${LD_LIBRARY_PATH+:\${LD_LIBRARY_PATH}}"
+        exec python3 -s "\$@"
+        EOF
+        chmod 755 /app/bin/flatpak-python-entrypoint
+        for executable in "${RUNTIME_VENV_ROOT}"/bin/*; do
+            executable_name="$(basename "${executable}")"
+            case "${executable_name}" in
+                python|python3|"python${PYVER}"|activate|activate.*|pip|pip3|"pip${PYVER}"|poetry|virtualenv|pyproject-build)
+                    continue
+                    ;;
+            esac
+            install -Dm755 "${executable}" "/app/bin/${executable_name}"
+            rewrite_python_entrypoint_shebang "/app/bin/${executable_name}"
+        done
+        install -Dm755 tools/build-linux/flatpak/run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
+        install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+        install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
+        install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
+        sed \
+            -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \
+            -e 's#^Icon=.*#Icon=org.bitcoin_safe.BitcoinSafe#' \
+            tools/resources/linux-bitcoin-safe.desktop \
+            > org.bitcoin_safe.BitcoinSafe.desktop
+        install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
+        mkdir -p /app/app
+        ln -sfn ../share /app/app/share
+
+        verify_payload_import appdirs
+        verify_payload_import bitcoin_safe
+
+        # Import checks above can still create bytecode on some toolchains, so
+        # scrub it before the final timestamp normalization.
+        find /app -path '*/__pycache__*' -delete
+        find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+        rm -rf \
+            "${TOOL_VENV_ROOT}" \
+            "${RUNTIME_VENV_ROOT}" \
+            "${BUILD_CACHE_ROOT}" \
+            dist \
+            org.bitcoin_safe.BitcoinSafe.desktop
+    sources:
+      - type: dir
+        path: build/source-tree

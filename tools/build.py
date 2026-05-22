@@ -65,6 +65,8 @@ assert ENABLE_TIMERS
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 DEFAULT_MODULE_NAME = "bitcoin_safe"
 DEFAULT_LOCALE_DIR = "gui/locales"
+FLATPAK_APP_ID = "org.bitcoin_safe.BitcoinSafe"
+FLATPAK_DOCKER_IMAGE = "bitcoin_safe-flatpak-builder-img"
 
 
 def calc_hashes_of_files(folder: Path) -> dict[Path, str]:
@@ -89,9 +91,10 @@ def calc_hashes_of_files(folder: Path) -> dict[Path, str]:
 class Builder:
     build_dir = "build"
 
-    def __init__(self, module_name, clean_all=False):
+    def __init__(self, module_name, clean_all=False, build_flatpak_on_host=False):
         """Initialize instance."""
         self.module_name = module_name
+        self.build_flatpak_on_host = build_flatpak_on_host
         self.version = __version__ if __version__ else "unknown-version"
         if __version__ != get_git_tag():
             # i still proceed with this, since I need to test the builds,
@@ -191,7 +194,7 @@ class Builder:
                 package_name=self.app_name_formatter(self.module_name).lower(),
                 version=self.version,
                 maintainer=f"Andreas Griffin <{CONTACT_EMAIL}>",
-                description="A bitcoin savings wallet for the entire family.",
+                description="A desktop software for managing your cold storage wallets.",
                 homepage="https://www.bitcoin-safe.org",
                 desktop_name=self.app_name_formatter(self.module_name, join_character=" "),
                 desktop_icon_name=self.app_name_formatter(self.module_name).lower() + ".svg",
@@ -208,6 +211,97 @@ class Builder:
             Path("tools/build-linux/appimage"),
             no_cache=no_cache,
             build_commit=build_commit,
+        )
+
+    @staticmethod
+    def resolve_build_commit(build_commit: None | str | Literal["current_commit"]) -> None | str:
+        """Resolve the build commit marker into a concrete commit hash."""
+        if build_commit != "current_commit":
+            return build_commit
+
+        result = subprocess.run(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True)
+        return result.stdout.strip()
+
+    def prepare_project_root_for_build(
+        self,
+        project_root: Path,
+        build_commit: None | str | Literal["current_commit"],
+        clone_namespace: str,
+    ) -> Path:
+        """Return either the current project root or a fresh clone checked out to build_commit."""
+        resolved_build_commit = self.resolve_build_commit(build_commit)
+        if not resolved_build_commit:
+            logger.info("Not doing fresh clone.")
+            return project_root
+
+        logger.info(f"BITCOINSAFE_BUILD_COMMIT={resolved_build_commit}. Doing fresh clone and git checkout.")
+        cloned_path = Path(f"/tmp/{clone_namespace}/fresh_clone/bitcoin_safe")
+        try:
+            run_local(f'rm -rf "{cloned_path}"')
+        except subprocess.CalledProcessError:
+            logger.info("We need sudo to remove previous FRESH_CLONE.")
+            run_local(f'sudo rm -rf "{cloned_path}"')
+        os.umask(0o022)
+        run_local(f'git clone "{project_root}" "{cloned_path}"')
+        original_dir = os.getcwd()
+        os.chdir(str(cloned_path))
+        run_local(f'git checkout "{resolved_build_commit}"')
+        os.chdir(original_dir)
+        return cloned_path
+
+    def move_dist_files(self, source_dist_dir: Path, dist_dir: Path) -> None:
+        """Move resulting build artifacts into the top-level dist directory."""
+        if source_dist_dir == dist_dir:
+            return
+
+        os.makedirs(dist_dir, exist_ok=True)
+        for file in source_dist_dir.iterdir():
+            if not file.is_file():
+                continue
+            logger.info(f"Moving {file} --> {dist_dir / file.name}")
+            shutil.move(
+                file,
+                dist_dir / (file.name.replace(self.module_name, self.app_name_formatter(self.module_name))),
+            )
+
+    def build_flatpak(
+        self,
+        no_cache=False,
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
+    ):
+        """Build a Flatpak bundle, in Docker by default or on the host when requested."""
+        if self.build_flatpak_on_host:
+            self.build_flatpak_on_host_bundle(build_commit=build_commit)
+            return
+
+        self.build_in_docker(
+            FLATPAK_DOCKER_IMAGE,
+            Path("tools/build-linux/flatpak"),
+            no_cache=no_cache,
+            build_commit=build_commit,
+            container_run_args="--privileged --security-opt seccomp=unconfined --user root",
+        )
+
+    def build_flatpak_on_host_bundle(
+        self,
+        build_commit: None | str | Literal["current_commit"] = "current_commit",
+    ) -> None:
+        """Build, install, and smoke-test a Flatpak bundle on the current host."""
+        project_root = Path(".").resolve().absolute()
+        project_root_or_freshclone_root = self.prepare_project_root_for_build(
+            project_root=project_root,
+            build_commit=build_commit,
+            clone_namespace="bitcoin_safe-flatpak-host",
+        )
+        flatpak_script = project_root / "tools" / "build-linux" / "flatpak" / "build_and_test.sh"
+
+        dist_dir = project_root / "dist"
+        dist_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info("Building Flatpak bundle.")
+        subprocess.run(
+            [str(flatpak_script), str(project_root_or_freshclone_root), str(dist_dir), FLATPAK_APP_ID],
+            check=True,
         )
 
     def build_windows_exe_and_installer_docker(
@@ -227,6 +321,8 @@ class Builder:
         build_folder: Path,
         no_cache=False,
         build_commit: None | str | Literal["current_commit"] = "current_commit",
+        container_run_args: str = "",
+        container_project_root: str = "/opt/wine64/drive_c/bitcoin_safe",
     ):
         """_summary_
 
@@ -245,8 +341,8 @@ class Builder:
         path_build = PROJECT_ROOT / build_folder
         DISTDIR = PROJECT_ROOT / "dist"
         BUILD_UID = PROJECT_ROOT.stat().st_uid
+        BUILD_GID = PROJECT_ROOT.stat().st_gid
         BUILD_CACHEDIR = path_build / ".cache"
-        original_dir = os.getcwd()
 
         # Initialize DOCKER_BUILD_FLAGS
         DOCKER_BUILD_FLAGS = ""
@@ -257,39 +353,24 @@ class Builder:
             logger.info(f"BITCOINSAFE_DOCKER_NOCACHE is set. Deleting {BUILD_CACHEDIR}")
             run_local(f'rm -rf "{BUILD_CACHEDIR}"')
 
-        if build_commit == "current_commit":
-            # Get the current git HEAD commit
-            result = subprocess.run(
-                ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True
-            )
-            build_commit = result.stdout.strip()
+        resolved_build_commit = self.resolve_build_commit(build_commit)
 
-        if not build_commit:
+        if not resolved_build_commit:
             # Local development build
             DOCKER_BUILD_FLAGS += f" --build-arg UID={BUILD_UID}"
             logger.info("Building within current project")
 
         logger.info("Building docker image.")
         run_local(f'docker build {DOCKER_BUILD_FLAGS} -t {docker_image} "{path_build}"')
+        docker_image_id = subprocess.check_output(
+            ["docker", "image", "inspect", "--format", "{{.Id}}", docker_image], text=True
+        ).strip()
 
-        # Possibly do a fresh clone
-        cloned_path: Path | None = None
-        if build_commit:
-            logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            cloned_path = Path(f"/tmp/{docker_image.replace(' ', '')}/fresh_clone/bitcoin_safe")
-            try:
-                run_local(f'rm -rf "{cloned_path}"')
-            except subprocess.CalledProcessError:
-                logger.info("We need sudo to remove previous FRESH_CLONE.")
-                run_local(f'sudo rm -rf "{cloned_path}"')
-            os.umask(0o022)
-            run_local(f'git clone "{PROJECT_ROOT}" "{cloned_path}"')
-            os.chdir(str(cloned_path))
-            run_local(f'git checkout "{build_commit}"')
-            os.chdir(original_dir)
-            PROJECT_ROOT_OR_FRESHCLONE_ROOT = cloned_path
-        else:
-            logger.info("Not doing fresh clone.")
+        PROJECT_ROOT_OR_FRESHCLONE_ROOT = self.prepare_project_root_for_build(
+            project_root=PROJECT_ROOT,
+            build_commit=resolved_build_commit,
+            clone_namespace=docker_image.replace(" ", ""),
+        )
 
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / build_folder / "dist"
 
@@ -298,25 +379,19 @@ class Builder:
         run_local(
             f"docker run "
             f"--name {docker_image}-container "
-            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":/opt/wine64/drive_c/bitcoin_safe '
+            f"{container_run_args} "
+            f"-e BITCOINSAFE_BUILD_UID={BUILD_UID} "
+            f"-e BITCOINSAFE_BUILD_GID={BUILD_GID} "
+            f"-e BITCOINSAFE_DOCKER_IMAGE={docker_image} "
+            f"-e BITCOINSAFE_DOCKER_IMAGE_ID={docker_image_id} "
+            f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":{container_project_root} '
             f"--rm "
-            f"--workdir /opt/wine64/drive_c/bitcoin_safe/{build_folder} "
+            f"--workdir {container_project_root}/{build_folder} "
             f"  -i   {docker_image} "
             f"./run_in_docker.sh"
         )
 
-        # Ensure the resulting binary location is independent of fresh_clone
-        if Source_Dist_dir != DISTDIR:
-            os.makedirs(DISTDIR, exist_ok=True)
-            for file in Source_Dist_dir.iterdir():
-                if not file.is_file():
-                    continue
-                logger.info(f"Moving {file} --> {DISTDIR / file.name}")
-                shutil.move(
-                    file,
-                    DISTDIR
-                    / (file.name.replace(self.module_name, self.app_name_formatter(self.module_name))),
-                )
+        self.move_dist_files(Source_Dist_dir, DISTDIR)
 
     def build_dmg(
         self,
@@ -326,34 +401,17 @@ class Builder:
         PROJECT_ROOT_OR_FRESHCLONE_ROOT = PROJECT_ROOT = Path(".").resolve().absolute()
         DISTDIR = PROJECT_ROOT / "dist"
 
-        if build_commit == "current_commit":
-            # Get the current git HEAD commit
-            result = subprocess.run(
-                ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, check=True, text=True
-            )
-            build_commit = result.stdout.strip()
+        resolved_build_commit = self.resolve_build_commit(build_commit)
 
-        if not build_commit:
+        if not resolved_build_commit:
             # Local development build
             logger.info("Building within current project")
 
-        # Possibly do a fresh clone
-        cloned_path: Path | None = None
-        if build_commit:
-            logger.info(f"BITCOINSAFE_BUILD_COMMIT={build_commit}. Doing fresh clone and git checkout.")
-            cloned_path = Path(f"/tmp/{build_commit.replace(' ', '')}/fresh_clone/bitcoin_safe")
-            try:
-                run_local(f'rm -rf "{cloned_path}"')
-            except subprocess.CalledProcessError:
-                logger.info("We need sudo to remove previous FRESH_CLONE.")
-                run_local(f'sudo rm -rf "{cloned_path}"')
-            os.umask(0o022)
-            run_local(f'git clone "{PROJECT_ROOT}" "{cloned_path}"')
-            os.chdir(str(cloned_path))
-            run_local(f'git checkout "{build_commit}"')
-            PROJECT_ROOT_OR_FRESHCLONE_ROOT = cloned_path
-        else:
-            logger.info("Not doing fresh clone.")
+        PROJECT_ROOT_OR_FRESHCLONE_ROOT = self.prepare_project_root_for_build(
+            project_root=PROJECT_ROOT,
+            build_commit=resolved_build_commit,
+            clone_namespace=str(resolved_build_commit or "local-build"),
+        )
 
         Source_Dist_dir = PROJECT_ROOT_OR_FRESHCLONE_ROOT / "dist"
 
@@ -385,6 +443,7 @@ class Builder:
             "windows": self.build_windows_exe_and_installer_docker,
             "mac": self.build_dmg,
             "deb": self.appimage2deb,
+            "flatpak": self.build_flatpak,
             "snap": self.build_snap,
         }
 
@@ -618,12 +677,21 @@ if __name__ == "__main__":
         action="store_true",
         help="poetry lock --no-update --no-cache. This is important to ensure all hashes are included in the lockfile. ",
     )
+    parser.add_argument(
+        "--build-flatpak-on-host",
+        action="store_true",
+        help="Build/install/test Flatpak on the current host instead of using the reproducible Docker build path.",
+    )
     args = parser.parse_args()
     module_name: str = args.module_name
     locale_dir: str = args.locale_dir
 
     if args.lock:
-        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
+        builder = Builder(
+            module_name=DEFAULT_MODULE_NAME,
+            clean_all=args.clean,
+            build_flatpak_on_host=args.build_flatpak_on_host,
+        )
         builder.lock()
 
     if args.commit == "None":
@@ -639,7 +707,11 @@ if __name__ == "__main__":
             print(f"--targets was given with the values: {args.targets}")
             targets = [t.replace(",", "") for t in targets]  # type: ignore
 
-        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
+        builder = Builder(
+            module_name=DEFAULT_MODULE_NAME,
+            clean_all=args.clean,
+            build_flatpak_on_host=args.build_flatpak_on_host,
+        )
         builder.package_application(targets=targets, build_commit=args.commit)
 
     if args.update_translations:
@@ -657,5 +729,9 @@ if __name__ == "__main__":
         translation_handler.csv_to_ts()
 
     if args.sign:
-        builder = Builder(module_name=DEFAULT_MODULE_NAME, clean_all=args.clean)
+        builder = Builder(
+            module_name=DEFAULT_MODULE_NAME,
+            clean_all=args.clean,
+            build_flatpak_on_host=args.build_flatpak_on_host,
+        )
         builder.sign()

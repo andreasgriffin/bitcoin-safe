@@ -32,6 +32,11 @@ jobs:
     uses: ./.github/workflows/build-appimage-and-test.yml
     secrets: inherit
 
+  flatpak:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
+    uses: ./.github/workflows/build-flatpak-and-test.yml
+    secrets: inherit
+
   windows:
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-windows-and-test.yml
