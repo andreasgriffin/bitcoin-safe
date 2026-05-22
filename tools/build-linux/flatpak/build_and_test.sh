@@ -100,7 +100,7 @@ modules:
       - install -Dm644 ${APP_ID}.metainfo.xml /app/share/metainfo/${APP_ID}.metainfo.xml
       - |
         sed \\
-            -e 's#^Exec=.*#Exec=${APP_ID} %F#' \\
+            -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \\
             -e 's#^Icon=.*#Icon=${APP_ID}#' \\
             linux-bitcoin-safe.desktop \\
             > ${APP_ID}.desktop

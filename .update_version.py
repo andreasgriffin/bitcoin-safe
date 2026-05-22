@@ -29,6 +29,9 @@
 
 from __future__ import annotations
 
+import datetime
+import re
+
 import tomlkit
 
 from bitcoin_safe import __version__
@@ -52,4 +55,36 @@ def update_poetry_version(file_path, new_version):
         print("Could not find the 'tool.poetry.version' key in the pyproject.toml")
 
 
+def update_flatpak_metainfo_release(file_path: str, new_version: str) -> None:
+    """Update the current Flatpak metainfo release entry."""
+    with open(file_path, encoding="utf-8") as file:
+        content = file.read()
+
+    release_pattern = re.compile(r'(<release\b[^>]*\bversion=")([^"]+)(".*?\bdate=")([^"]+)(".*?/>)')
+    match = release_pattern.search(content)
+    if not match:
+        print(f'Could not find a release entry in "{file_path}"')
+        return
+
+    current_version = match.group(2)
+    current_date = match.group(4)
+    release_date = datetime.date.today().isoformat() if current_version != new_version else current_date
+
+    updated_content = release_pattern.sub(
+        rf"\g<1>{new_version}\g<3>{release_date}\g<5>",
+        content,
+        count=1,
+    )
+
+    if updated_content == content:
+        return
+
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(updated_content)
+    print(f"Release updated to {new_version} in {file_path}")
+
+
 update_poetry_version("pyproject.toml", __version__)
+update_flatpak_metainfo_release(
+    "tools/build-linux/flatpak/org.bitcoinsafe.BitcoinSafe.metainfo.xml", __version__
+)
