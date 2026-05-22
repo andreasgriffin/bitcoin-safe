@@ -333,7 +333,9 @@ class PeerDiscovery:
             logger.warning(f"Peer discovery timed out after {timeout} seconds")
             return return_results(partial_results)
 
-        return return_results(batches)
+        result = return_results(batches)
+        logger.info(f"Discovered {len(result)} peers")
+        return result
 
     async def get_bitcoin_peer(
         self,
