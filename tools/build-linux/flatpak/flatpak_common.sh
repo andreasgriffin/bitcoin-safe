@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REQUIRED_TOOLS=(appstreamcli faketime flatpak flatpak-builder dbus-run-session desktop-file-validate ostree timeout tar)
+REQUIRED_TOOLS=(appstreamcli flatpak flatpak-builder dbus-run-session desktop-file-validate ostree timeout tar)
 
 fail() {
     printf 'ERROR: %s\n' "$*" >&2
@@ -47,12 +47,22 @@ install_flatpak_prerequisites() {
         appstream-util \
         dbus-daemon \
         desktop-file-utils \
-        faketime \
         flatpak \
         flatpak-builder \
-        libfaketime \
         ostree
     ensure_appstream_cli_compose_support
+}
+
+install_faketime_prerequisites() {
+    if command -v faketime >/dev/null 2>&1; then
+        return
+    fi
+
+    info "Installing faketime for reproducible Flatpak bundling."
+    sudo apt-get update
+    sudo apt-get install -y \
+        faketime \
+        libfaketime
 }
 
 print_flatpak_toolchain_summary() {
@@ -60,7 +70,7 @@ print_flatpak_toolchain_summary() {
     printf 'INFO:   %s\n' "$(flatpak --version | head -n 1)"
     printf 'INFO:   %s\n' "$(flatpak-builder --version | head -n 1)"
     printf 'INFO:   %s\n' "$(appstreamcli --version | head -n 1)"
-    printf 'INFO:   faketime path: %s\n' "$(command -v faketime)"
+    printf 'INFO:   faketime path: %s\n' "$(command -v faketime || printf 'not-installed')"
     printf 'INFO:   appstreamcli path: %s\n' "$(command -v appstreamcli)"
 }
 

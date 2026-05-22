@@ -90,6 +90,8 @@ format_source_date_timestamp() {
 verify_faketime_bundle_clock() {
     local observed_epoch
 
+    install_faketime_prerequisites
+
     command -v faketime >/dev/null 2>&1 || fail \
         "faketime is required for reproducible Flatpak bundles. Rebuild the Flatpak Docker image or install faketime/libfaketime on the host."
 
