@@ -112,6 +112,16 @@ modules:
                 || { echo "Failed to import ${module_name} from the staged Flatpak payload." >&2; exit 1; }
         }
 
+        rewrite_python_entrypoint_shebang() {
+            local executable_path="$1"
+
+            case "$(head -n 1 "${executable_path}")" in
+                "#!${RUNTIME_VENV_ROOT}/bin/python"*)
+                    sed -i "1s|^#!.*|#!/app/bin/flatpak-python-entrypoint|" "${executable_path}"
+                    ;;
+            esac
+        }
+
         python3 -m venv "${TOOL_VENV_ROOT}"
         python3 -m venv "${RUNTIME_VENV_ROOT}"
         "${TOOL_VENV_ROOT}/bin/python" -m ensurepip --upgrade
@@ -244,6 +254,13 @@ modules:
 
         mkdir -p "/app/lib/python${PYVER}/site-packages" /app/bin
         cp -a "${RUNTIME_SITE_PACKAGES}/." "/app/lib/python${PYVER}/site-packages/"
+        cat > /app/bin/flatpak-python-entrypoint <<EOF
+        #!/bin/sh
+        export PYTHONPATH="/app/lib/python${PYVER}/site-packages\${PYTHONPATH+:\${PYTHONPATH}}"
+        export LD_LIBRARY_PATH="/app/lib\${LD_LIBRARY_PATH+:\${LD_LIBRARY_PATH}}"
+        exec python3 -s "\$@"
+        EOF
+        chmod 755 /app/bin/flatpak-python-entrypoint
         for executable in "${RUNTIME_VENV_ROOT}"/bin/*; do
             executable_name="$(basename "${executable}")"
             case "${executable_name}" in
@@ -252,6 +269,7 @@ modules:
                     ;;
             esac
             install -Dm755 "${executable}" "/app/bin/${executable_name}"
+            rewrite_python_entrypoint_shebang "/app/bin/${executable_name}"
         done
         install -Dm755 tools/build-linux/flatpak/run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
         install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
@@ -269,6 +287,7 @@ modules:
         verify_payload_import appdirs
         verify_payload_import bitcoin_safe
 
+        find /app -path '*/__pycache__*' -delete
         find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
         rm -rf \
             "${TOOL_VENV_ROOT}" \
