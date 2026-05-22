@@ -131,7 +131,7 @@ jobs:
 
     - name: Upload output Files from tests/output
       if: always()  # This ensures the step runs regardless of previous failures    
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pytest-output-${{ matrix.python-version }}-${{ inputs.os }}-${{ inputs.backend }}
         path: tests/output
