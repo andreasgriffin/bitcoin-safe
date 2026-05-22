@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import enum
 import logging
 from dataclasses import dataclass, field
 from typing import TypeVar
@@ -49,9 +50,11 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.card_base import CardBase, CardList
+from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode, CardList
 from bitcoin_safe.gui.qt.export_data import ExportDataSimple, FileToolButton, SyncChatToolButton
+from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.qr_components.square_buttons import CloseButton
+from bitcoin_safe.gui.qt.send_test_schedule import SendTestStepPlan
 from bitcoin_safe.gui.qt.signer_ui import SignedUI, SignerUI
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.tx_util import get_clients
@@ -97,6 +100,20 @@ class SigningDevice:
         if self.wallet_ids:
             parts.append(", ".join(self.wallet_ids))
         return " - ".join(parts)
+
+
+class TxSigningHeaderState(enum.Enum):
+    sign_now = enum.auto()
+    signed = enum.auto()
+    test_verified = enum.auto()
+    keep_ready = enum.auto()
+
+
+@dataclass
+class TxSigningDeviceGuidance:
+    state: TxSigningHeaderState = TxSigningHeaderState.sign_now
+    next_test_number: int | None = None
+    expandable: bool = True
 
 
 def preferred_psbt_qr_type(hardware_signer: HardwareSigner) -> QrExportType | None:
@@ -182,6 +199,7 @@ class TxSigningDeviceCard(CardBase):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
+        guidance: TxSigningDeviceGuidance | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
@@ -193,6 +211,10 @@ class TxSigningDeviceCard(CardBase):
         self.wallet_functions = wallet_functions
         self.loop_in_thread = loop_in_thread
         self.qr_export_widget: ExportDataSimple | None = None
+        self.guidance = guidance or TxSigningDeviceGuidance()
+        self.set_expansion_mode(
+            CardExpansionMode.EXPANDABLE if self.guidance.expandable else CardExpansionMode.FIXED_COLLAPSED
+        )
 
         self.set_title(device.label)
         self.set_subtitle(device.subtitle)
@@ -202,8 +224,8 @@ class TxSigningDeviceCard(CardBase):
         self.button_sign.clicked.connect(self.signal_expand_requested.emit)
         self.header_right_layout.addWidget(self.button_sign)
 
-        self.label_signed = QLabel(self.header_right_widget)
-        self.header_right_layout.addWidget(self.label_signed)
+        self.header_status = IconLabel(parent=self.header_right_widget, icon_on_right=True)
+        self.header_right_layout.addWidget(self.header_status)
 
         self.button_close = CloseButton(parent=self.header_right_widget)
         self.button_close.clicked.connect(self._collapse_from_header)
@@ -221,6 +243,8 @@ class TxSigningDeviceCard(CardBase):
 
     def expand(self) -> None:
         """Expand and show the correct first body for this device state."""
+        if not self._can_expand():
+            return
         super().expand()
         if self.device.signature_available:
             self._show_signature_details()
@@ -237,18 +261,52 @@ class TxSigningDeviceCard(CardBase):
     def updateUi(self) -> None:
         """Update visible texts."""
         self.button_sign.setText(self.tr("Sign with this device"))
-        self.label_signed.setText(self.tr("Signed"))
         self.button_close.setToolTip(self.tr("Collapse"))
+        self._update_header_status()
         self._update_header_actions()
 
     def _update_header_actions(self) -> None:
         self.button_close.setVisible(self.is_expanded)
-        self.button_sign.setVisible(not self.device.signature_available and not self.is_expanded)
-        self.label_signed.setVisible(self.device.signature_available and not self.is_expanded)
+        show_sign_button = not self.is_expanded and self.guidance.state == TxSigningHeaderState.sign_now
+        self.button_sign.setVisible(show_sign_button)
+        self.header_status.setVisible(not self.is_expanded and not show_sign_button)
 
     def _collapse_from_header(self) -> None:
         self.collapse()
         self.signal_collapse_requested.emit()
+
+    def _can_expand(self) -> bool:
+        return self.guidance.expandable
+
+    def _update_header_status(self) -> None:
+        self.header_status.click_url = None
+        self.header_status.setToolTip("")
+        self.header_status.icon_label.setToolTip("")
+        self.header_status.textLabel.setToolTip("")
+        self.header_status.icon_label.unsetCursor()
+        self.header_status.textLabel.unsetCursor()
+        self.header_status.unsetCursor()
+        self.header_status.set_icon(None)
+
+        if self.guidance.state == TxSigningHeaderState.signed:
+            self.header_status.setText(self.tr("Signed"))
+            return
+        if self.guidance.state == TxSigningHeaderState.test_verified:
+            self.header_status.setText(self.tr("Test verified"))
+            self.header_status.set_icon(svg_tools.get_QIcon("checkmark.svg"))
+            return
+        if self.guidance.state == TxSigningHeaderState.keep_ready:
+            next_test_number = self.guidance.next_test_number or 1
+            self.header_status.setText(
+                self.tr("Keep ready for test {number}").format(number=next_test_number)
+            )
+            self.header_status.set_icon_as_help(
+                self.tr("This signer is needed in send test {number}. Do not sign with it yet.").format(
+                    number=next_test_number
+                )
+            )
+            return
+        self.header_status.setText("")
 
     def _show_initial_body(self) -> None:
         if self.device.signature_available:
@@ -506,6 +564,7 @@ class TxSigningDeviceList(QWidget):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
+        send_test_plan: SendTestStepPlan | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
@@ -516,7 +575,9 @@ class TxSigningDeviceList(QWidget):
         self.network = network
         self.wallet_functions = wallet_functions
         self.loop_in_thread = loop_in_thread
+        self.send_test_plan = send_test_plan or SendTestStepPlan()
         self.cards: list[TxSigningDeviceCard] = []
+        signed_fingerprints = {device.fingerprint for device in devices if device.signature_available}
 
         layout = QVBoxLayout(self)
         set_no_margins(layout)
@@ -532,6 +593,7 @@ class TxSigningDeviceList(QWidget):
                 network=network,
                 wallet_functions=wallet_functions,
                 loop_in_thread=loop_in_thread,
+                guidance=self._guidance_for_device(device=device, signed_fingerprints=signed_fingerprints),
                 parent=self,
             )
             self.cards.append(card)
@@ -539,6 +601,43 @@ class TxSigningDeviceList(QWidget):
 
         self.card_list.collapse_all()
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+
+    def _guidance_for_device(
+        self,
+        device: SigningDevice,
+        signed_fingerprints: set[str],
+    ) -> TxSigningDeviceGuidance:
+        fingerprint = device.fingerprint
+        if device.signature_available:
+            return TxSigningDeviceGuidance(
+                state=TxSigningHeaderState.signed,
+                expandable=True,
+            )
+        if self.send_test_plan.signer_should_sign_now(
+            fingerprint=fingerprint, signed_fingerprints=signed_fingerprints
+        ):
+            return TxSigningDeviceGuidance(
+                state=TxSigningHeaderState.sign_now,
+                expandable=True,
+            )
+        if fingerprint in self.send_test_plan.verified_candidates:
+            return TxSigningDeviceGuidance(
+                state=TxSigningHeaderState.test_verified,
+                expandable=self.send_test_plan.verified_candidate_can_sign(
+                    fingerprint=fingerprint,
+                    signed_fingerprints=signed_fingerprints,
+                ),
+            )
+        if next_test_number := self.send_test_plan.future_signers.get(fingerprint):
+            return TxSigningDeviceGuidance(
+                state=TxSigningHeaderState.keep_ready,
+                next_test_number=next_test_number,
+                expandable=False,
+            )
+        return TxSigningDeviceGuidance(
+            state=TxSigningHeaderState.sign_now,
+            expandable=True,
+        )
 
 
 class TxSigningSteps(StepProgressContainer):
@@ -549,6 +648,8 @@ class TxSigningSteps(StepProgressContainer):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
+        wizard_send_test_signer_groups: list[list[str]] | None = None,
+        wizard_send_test_index: int | None = None,
         parent: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
@@ -571,6 +672,12 @@ class TxSigningSteps(StepProgressContainer):
         self.signature_importer_dict = signature_importer_dict
         self.signature_importer_steps = list(signature_importer_dict.values())
         self.signing_devices = self._collect_signing_devices()
+        self.wizard_send_test_signer_groups = wizard_send_test_signer_groups or []
+        self.wizard_send_test_index = wizard_send_test_index
+        self.send_test_plan = SendTestStepPlan.from_groups(
+            self._normalized_wizard_send_test_signer_groups(),
+            self.wizard_send_test_index,
+        )
         self._initialized_step_widgets: set[int] = set()
         self._allow_lazy_step_widget_creation = True
 
@@ -616,6 +723,7 @@ class TxSigningSteps(StepProgressContainer):
             network=self.network,
             wallet_functions=self.wallet_functions,
             loop_in_thread=self.loop_in_thread,
+            send_test_plan=self.send_test_plan,
             parent=self,
         )
 
@@ -787,6 +895,16 @@ class TxSigningSteps(StepProgressContainer):
         if not KeyStore.is_fingerprint_valid(fingerprint):
             return ""
         return KeyStore.format_fingerprint(fingerprint)
+
+    def _normalized_wizard_send_test_signer_groups(self) -> list[list[str]]:
+        return [
+            [
+                fingerprint
+                for fingerprint in (self._normalize_fingerprint(item) for item in group)
+                if fingerprint
+            ]
+            for group in self.wizard_send_test_signer_groups
+        ]
 
 
 if __name__ == "__main__":

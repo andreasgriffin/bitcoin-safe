@@ -41,7 +41,9 @@ from bitcoin_safe.gui.qt.tx_signing_steps import (
     SignerUI,
     SigningDevice,
     TxSigningDeviceCard,
+    TxSigningDeviceGuidance,
     TxSigningDeviceList,
+    TxSigningHeaderState,
     TxSigningSteps,
     allows_psbt_qr_type_choice,
     preferred_psbt_qr_type,
@@ -146,7 +148,7 @@ def test_signed_ui_is_shown_on_matching_device_card(qtbot: QtBot, loop_in_thread
     assert signed_ui
     assert keystores[0].fingerprint in signed_ui.edit_signature.toPlainText()
     assert unsigned_card.body.findChild(SignedUI) is None
-    assert signed_card.label_signed.text() == "Signed"
+    assert signed_card.header_status.textLabel.text() == "Signed"
 
 
 def test_mixed_steps_keep_device_cards_instead_of_step_summary(
@@ -320,6 +322,61 @@ def _make_file_device_card(qtbot: QtBot, loop_in_thread) -> TxSigningDeviceCard:
     return card
 
 
+def _make_guided_steps_widget(
+    qtbot: QtBot,
+    loop_in_thread,
+    monkeypatch,
+    wizard_send_test_index: int,
+    group_indexes: list[list[int]],
+    signed_indexes: tuple[int, ...] = (),
+    signer_count: int = 3,
+) -> tuple[TxSigningSteps, list]:
+    signals = Signals()
+    keystores = create_test_seed_keystores(
+        signers=signer_count,
+        key_origins=[f"m/48h/1h/{i}h/2h" for i in range(signer_count)],
+        network=bdk.Network.REGTEST,
+    )
+    wallet = DummyWallet(id="multisig", keystores=keystores)
+    signer_groups = [[keystores[index].fingerprint for index in group] for group in group_indexes]
+    qr_importer = SignatureImporterQR(
+        network=bdk.Network.REGTEST,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        display_label=keystores[0].fingerprint,
+        signer_identities=[SignerIdentity(id=keystores[0].fingerprint, fingerprint=keystores[0].fingerprint)],
+    )
+    signature_importers: list = [qr_importer]
+    for index in signed_indexes:
+        fingerprint = keystores[index].fingerprint
+        signature_importers.append(
+            SignatureImporterFile(
+                network=bdk.Network.REGTEST,
+                close_all_video_widgets=signals.close_all_video_widgets,
+                loop_in_thread=loop_in_thread,
+                display_label=fingerprint,
+                signer_identities=[SignerIdentity(id=fingerprint, fingerprint=fingerprint)],
+                signatures={0: PartialSig(signature="3044deadbeef", sighash_type="ALL")},
+            )
+        )
+
+    monkeypatch.setattr(TxSigningSteps, "_involved_wallets", lambda self: [wallet])
+    widget = TxSigningSteps(
+        signature_importer_dict={"wallet.0": signature_importers},
+        psbt=tr_psbt_singlesig,
+        network=bdk.Network.REGTEST,
+        wallet_functions=WalletFunctions(signals),
+        loop_in_thread=loop_in_thread,
+        wizard_send_test_signer_groups=signer_groups,
+        wizard_send_test_index=wizard_send_test_index,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+    return widget, keystores
+
+
 def test_show_qr_code_opens_popup_and_shows_import_only_detail(qtbot: QtBot, loop_in_thread) -> None:
     card = _make_qr_device_card(qtbot, loop_in_thread)
 
@@ -341,6 +398,214 @@ def test_show_qr_code_opens_popup_and_shows_import_only_detail(qtbot: QtBot, loo
     body_button_texts = {button.text() for button in card.body.findChildren(QPushButton)}
     assert body_button_texts == {"Scan QR code"}
     export_widget.close()
+
+
+def test_current_send_test_target_keeps_sign_button(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=0,
+        group_indexes=[[0, 1], [1, 2]],
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    current_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    future_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[2].fingerprint
+    )
+
+    assert current_card.button_sign.isVisible()
+    assert current_card.button_sign.text() == "Sign with this device"
+    assert not current_card.header_status.isVisible()
+    assert future_card.header_status.isVisible()
+    assert future_card.header_status.textLabel.text() == "Keep ready for test 2"
+    assert (
+        future_card.header_status.toolTip()
+        == "This signer is needed in send test 2. Do not sign with it yet."
+    )
+    assert future_card.header_status.click_url is None
+
+
+def test_fallback_verified_candidates_remain_expandable_while_overlap_slot_is_open(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0, 1], [1, 2]],
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    previous_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    overlap_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[1].fingerprint
+    )
+    current_new_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[2].fingerprint
+    )
+
+    assert previous_card.header_status.isVisible()
+    assert previous_card.header_status.textLabel.text() == "Test verified"
+    assert previous_card.button_sign.isHidden()
+    assert previous_card.guidance.expandable
+    assert overlap_card.button_sign.isVisible()
+    assert overlap_card.button_sign.text() == "Sign with this device"
+    assert not overlap_card.header_status.isVisible()
+    assert current_new_card.button_sign.isVisible()
+    assert current_new_card.button_sign.text() == "Sign with this device"
+
+
+def test_verified_candidate_locks_after_another_verified_signer_signed(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0, 1], [1, 2]],
+        signed_indexes=(0,),
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    remaining_verified_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[1].fingerprint
+    )
+    current_new_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[2].fingerprint
+    )
+
+    assert remaining_verified_card.header_status.isVisible()
+    assert remaining_verified_card.header_status.textLabel.text() == "Test verified"
+    assert not remaining_verified_card.guidance.expandable
+    assert remaining_verified_card.button_sign.isHidden()
+    assert current_new_card.button_sign.isVisible()
+
+
+def test_preferred_verified_current_group_signers_show_sign_button_in_4_of_6(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0, 1, 2, 3], [2, 3, 4, 5]],
+        signer_count=6,
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    fallback_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    preferred_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[2].fingerprint
+    )
+    current_new_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[4].fingerprint
+    )
+
+    assert fallback_card.header_status.isVisible()
+    assert fallback_card.header_status.textLabel.text() == "Test verified"
+    assert fallback_card.guidance.expandable
+    assert preferred_card.button_sign.isVisible()
+    assert preferred_card.button_sign.text() == "Sign with this device"
+    assert current_new_card.button_sign.isVisible()
+
+
+def test_verified_signers_without_overlap_slots_stay_locked(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0], [1], [2], [3], [4]],
+        signer_count=5,
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    verified_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    current_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[1].fingerprint
+    )
+
+    assert verified_card.header_status.isVisible()
+    assert verified_card.header_status.textLabel.text() == "Test verified"
+    assert not verified_card.guidance.expandable
+    assert current_card.button_sign.isVisible()
+
+
+def test_signed_device_guidance_overrides_send_now(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
+    widget, keystores = _make_guided_steps_widget(
+        qtbot=qtbot,
+        loop_in_thread=loop_in_thread,
+        monkeypatch=monkeypatch,
+        wizard_send_test_index=1,
+        group_indexes=[[0, 1], [1, 2]],
+        signed_indexes=(1,),
+    )
+    step_widget = widget.stacked_widget.widget(0)
+    assert isinstance(step_widget, TxSigningDeviceList)
+
+    signed_card = next(
+        card for card in step_widget.cards if card.device.fingerprint == keystores[1].fingerprint
+    )
+
+    assert signed_card.header_status.isVisible()
+    assert signed_card.header_status.textLabel.text() == "Signed"
+    assert signed_card.button_sign.isHidden()
+
+
+def test_read_only_guidance_card_does_not_expand(qtbot: QtBot, loop_in_thread) -> None:
+    signals = Signals()
+    qr_importer = SignatureImporterQR(
+        network=bdk.Network.REGTEST,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        display_label="836DA7F8",
+        signer_identities=[SignerIdentity(id="836DA7F8", fingerprint="836DA7F8")],
+    )
+    card = TxSigningDeviceCard(
+        device=SigningDevice(
+            fingerprint="836DA7F8",
+            label=HardwareSigners.jade.display_name,
+            hardware_signer=HardwareSigners.jade,
+        ),
+        signature_importers=[qr_importer],
+        psbt=tr_psbt_singlesig,
+        network=bdk.Network.REGTEST,
+        wallet_functions=WalletFunctions(signals),
+        loop_in_thread=loop_in_thread,
+        guidance=TxSigningDeviceGuidance(
+            state=TxSigningHeaderState.keep_ready,
+            next_test_number=2,
+            expandable=False,
+        ),
+    )
+    qtbot.addWidget(card)
+    card.show()
+
+    card.expand()
+
+    assert not card.is_expanded
+    assert card.header_status.textLabel.text() == "Keep ready for test 2"
+    assert card.header_status.toolTip() == "This signer is needed in send test 2. Do not sign with it yet."
 
 
 def test_generic_signer_qr_popup_keeps_qr_type_choice_visible(qtbot: QtBot, loop_in_thread) -> None:
