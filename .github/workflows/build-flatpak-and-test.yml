@@ -80,16 +80,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flatpak-artifacts
-          path: dist/*.flatpak
+          path: |
+            dist/*.flatpak
+            tools/build-linux/flatpak/build/repro-debug/**
           if-no-files-found: error
-
-      - name: Upload Flatpak reproducibility diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: flatpak-repro-debug
-          path: tools/build-linux/flatpak/build/repro-debug/**
-          if-no-files-found: warn
 
   test:
     needs: build
@@ -175,6 +169,7 @@ jobs:
         with:
           name: flatpak-startup-logs
           path: |
+            artifacts/repro-debug/**
             tools/build-linux/flatpak/build/flatpak-run.log
             tools/build-linux/flatpak/build/flatpak-screenshot-*.xwd
             tools/build-linux/flatpak/build/flatpak-screenshot-*.png
