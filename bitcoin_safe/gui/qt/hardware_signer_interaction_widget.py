@@ -90,12 +90,11 @@ class BaseHardwareSignerInteractionWidget(QWidget):
         """Add button."""
         self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
 
-    def add_help_button(self, help_widget: QWidget) -> QPushButton:
+    def add_help_button(self) -> QPushButton:
         """Add help button."""
         self.buttonBoxHelp = QDialogButtonBox()
         help_button = QPushButton(self)
         help_button.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
-        help_button.clicked.connect(help_widget.show)
         self.buttonBoxHelp.addButton(help_button, QDialogButtonBox.ButtonRole.ActionRole)
         self._layout.addWidget(self.buttonBoxHelp)
         self._layout.setAlignment(self.buttonBoxHelp, Qt.AlignmentFlag.AlignCenter)

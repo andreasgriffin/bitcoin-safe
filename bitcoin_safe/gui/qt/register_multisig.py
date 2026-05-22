@@ -36,6 +36,8 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_qr_tools.unified_encoder import QrExportType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from PyQt6.QtCore import QObject, Qt
+from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QPushButton, QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
@@ -76,11 +78,11 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         self.wallet = wallet
         self.wallet_functions = wallet_functions
         self.hardware_signer = hardware_signer
+        self._help_widget: ScreenshotsRegisterMultisig | None = None
         self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
 
-        ## help
-        screenshots = ScreenshotsRegisterMultisig()
-        self.add_help_button(screenshots)
+        help_button = self.add_help_button()
+        help_button.clicked.connect(self._show_help_widget)
 
         if self.wallet and self.wallet_functions:
             data = Data(
@@ -146,6 +148,35 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             self.add_button(self.button_export_file)
 
         self.updateUi()
+
+    def _show_help_widget(self) -> None:
+        """Show a fresh help window each time to avoid stale deleted child widgets."""
+        if self._help_widget:
+            try:
+                self._help_widget.destroyed.disconnect(self._clear_help_widget)
+            except TypeError:
+                pass
+            self._help_widget.close()
+
+        self._help_widget = ScreenshotsRegisterMultisig(parent=None)
+        self._help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        self._help_widget.destroyed.connect(self._clear_help_widget)
+        self._help_widget.setWindowTitle(self.tr("Device instructions"))
+        self._help_widget.setWindowFlag(Qt.WindowType.Window, True)
+        self._help_widget.show()
+        self._help_widget.raise_()
+        self._help_widget.activateWindow()
+
+    def _clear_help_widget(self, destroyed_widget: QObject | None = None) -> None:
+        """Clear the cached help window reference after the window is destroyed."""
+        _ = destroyed_widget
+        self._help_widget = None
+
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
+        """Close any detached help window alongside the parent widget."""
+        if self._help_widget:
+            self._help_widget.close()
+        super().closeEvent(a0)
 
     def set_minimum_size_as_floating_window(self) -> None:
         """Set minimum size as floating window."""

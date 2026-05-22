@@ -60,6 +60,7 @@ from bitcoin_safe.gui.qt.register_multisig import (
     preferred_register_multisig_qr_type,
 )
 from bitcoin_safe.gui.qt.settings import Settings
+from bitcoin_safe.gui.qt.usb_register_multisig import USBRegisterMultisigWidget
 from bitcoin_safe.hardware_signers import DescriptorQrExportTypes, HardwareSigners
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.signature_manager import Asset, GitHubRelease
@@ -146,6 +147,66 @@ def test_register_multisig_dialog_uses_hardware_signer_default_qr(
     assert dialog.export_qr_button.export_qr_widget.combo_qr_type.getCurrentExportType() == (
         DescriptorQrExportTypes.coldcard_legacy
     )
+
+
+@pytest.mark.marker_qt_1
+def test_register_multisig_help_window_reopens_cleanly(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    dialog = RegisterMultisigInteractionWidget(
+        wallet_functions=None,
+        wallet=None,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.waitExposed(dialog)
+
+    qtbot.mouseClick(dialog.help_button, Qt.MouseButton.LeftButton)
+    qtbot.waitUntil(lambda: dialog._help_widget is not None and dialog._help_widget.isVisible())
+
+    assert dialog._help_widget is not None
+    assert dialog._help_widget.parentWidget() is None
+    assert dialog._help_widget.isWindow()
+
+    dialog._help_widget.close()
+    qtbot.waitUntil(lambda: dialog._help_widget is None)
+
+    qtbot.mouseClick(dialog.help_button, Qt.MouseButton.LeftButton)
+    qtbot.waitUntil(lambda: dialog._help_widget is not None and dialog._help_widget.isVisible())
+
+    assert dialog._help_widget is not None
+    assert dialog._help_widget.parentWidget() is None
+    assert dialog._help_widget.isWindow()
+
+
+@pytest.mark.marker_qt_1
+def test_usb_register_multisig_help_window_reopens_cleanly(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = USBRegisterMultisigWidget(
+        network=bdk.Network.REGTEST,
+        wallet_functions=WalletFunctions(Signals()),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    qtbot.waitExposed(widget)
+
+    qtbot.mouseClick(widget.button_help, Qt.MouseButton.LeftButton)
+    qtbot.waitUntil(lambda: widget._help_widget is not None and widget._help_widget.isVisible())
+
+    assert widget._help_widget is not None
+    assert widget._help_widget.parentWidget() is None
+    assert widget._help_widget.isWindow()
+
+    widget._help_widget.close()
+    qtbot.waitUntil(lambda: widget._help_widget is None)
+
+    qtbot.mouseClick(widget.button_help, Qt.MouseButton.LeftButton)
+    qtbot.waitUntil(lambda: widget._help_widget is not None and widget._help_widget.isVisible())
+
+    assert widget._help_widget is not None
+    assert widget._help_widget.parentWidget() is None
+    assert widget._help_widget.isWindow()
 
 
 @pytest.mark.marker_qt_2
