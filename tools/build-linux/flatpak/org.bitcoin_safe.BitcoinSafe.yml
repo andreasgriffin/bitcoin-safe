@@ -99,6 +99,19 @@ modules:
         POETRY_WHEEL_DIR="${BUILD_CACHE_ROOT}/poetry-wheel"
         RUNTIME_SITE_PACKAGES="${RUNTIME_VENV_ROOT}/lib/python${PYVER}/site-packages"
 
+        verify_runtime_import() {
+            local module_name="$1"
+            "${RUNTIME_VENV_ROOT}/bin/python" -c "import ${module_name}" \
+                || { echo "Failed to import ${module_name} from the Flatpak runtime venv." >&2; exit 1; }
+        }
+
+        verify_payload_import() {
+            local module_name="$1"
+            PYTHONPATH="/app/lib/python${PYVER}/site-packages" \
+                python3 -s -c "import ${module_name}" \
+                || { echo "Failed to import ${module_name} from the staged Flatpak payload." >&2; exit 1; }
+        }
+
         python3 -m venv "${TOOL_VENV_ROOT}"
         python3 -m venv "${RUNTIME_VENV_ROOT}"
         "${TOOL_VENV_ROOT}/bin/python" -m ensurepip --upgrade
@@ -110,8 +123,10 @@ modules:
             --cache-dir "${PIP_CACHE_DIR}" \
             -r tools/deterministic-build/requirements-build.txt
 
+        export PATH="${RUNTIME_VENV_ROOT}/bin:${PATH}"
+        export POETRY_VIRTUALENVS_CREATE=false
         export POETRY_CACHE_DIR
-        "${TOOL_VENV_ROOT}/bin/poetry" env use "${RUNTIME_VENV_ROOT}/bin/python"
+        export VIRTUAL_ENV="${RUNTIME_VENV_ROOT}"
         "${TOOL_VENV_ROOT}/bin/poetry" install --only main --no-interaction --no-root
 
         rm -rf "${POETRY_WHEEL_DIR}"
@@ -124,6 +139,9 @@ modules:
             --no-compile \
             --cache-dir "${PIP_CACHE_DIR}" \
             "${POETRY_WHEEL_DIR}"/*.whl
+
+        verify_runtime_import appdirs
+        verify_runtime_import bitcoin_safe
 
         "${RUNTIME_VENV_ROOT}/bin/python" -m pip uninstall -y \
             build \
@@ -221,6 +239,9 @@ modules:
         find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -name '*.egg-info' -exec rm -rf {} +
         find "${RUNTIME_VENV_ROOT}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
 
+        verify_runtime_import appdirs
+        verify_runtime_import bitcoin_safe
+
         mkdir -p "/app/lib/python${PYVER}/site-packages" /app/bin
         cp -a "${RUNTIME_SITE_PACKAGES}/." "/app/lib/python${PYVER}/site-packages/"
         for executable in "${RUNTIME_VENV_ROOT}"/bin/*; do
@@ -244,6 +265,10 @@ modules:
         install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
         mkdir -p /app/app
         ln -sfn ../share /app/app/share
+
+        verify_payload_import appdirs
+        verify_payload_import bitcoin_safe
+
         find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
         rm -rf \
             "${TOOL_VENV_ROOT}" \
