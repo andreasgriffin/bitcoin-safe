@@ -40,6 +40,9 @@ resolve_source_date_epoch() {
 normalize_tree_timestamps() {
     local path
 
+    # Keep staged files at the commit timestamp instead of the local checkout
+    # time. Example: the copied source tree should not differ just because it
+    # was staged at 09:00 in one build and 09:05 in the next.
     for path in "$@"; do
         [ -e "${path}" ] || continue
         find "${path}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
@@ -47,6 +50,8 @@ normalize_tree_timestamps() {
 }
 
 format_source_date_timestamp() {
+    # flatpak build-export expects an RFC3339 timestamp, e.g.
+    # "2026-05-22T07:30:00Z", not a raw unix epoch.
     date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
 }
 
@@ -141,6 +146,8 @@ modules:
         path: metadata-probe-bin
 EOF
 
+    # The probe uses generated files, so normalize those too before we ask
+    # Flatpak to export metadata from them.
     normalize_tree_timestamps \
         "${METADATA_PROBE_SOURCE_DIR}" \
         "${METADATA_PROBE_BIN_DIR}" \
@@ -165,6 +172,9 @@ run_metadata_compose_smoke_test() {
         "${METADATA_PROBE_BUILDER_DIR}" \
         "${METADATA_PROBE_MANIFEST_PATH}"
 
+    # Export in a second explicit step so the OSTree commit timestamp is pinned
+    # as well. Example: the same finished app dir should not export to
+    # different commits at 10:00 and 10:01.
     run_with_dbus_session flatpak build-export \
         --arch="${arch}" \
         --disable-sandbox \
@@ -198,6 +208,8 @@ stage_source_tree() {
         --exclude='tools/build-linux/flatpak/build' \
         -cf - . | tar -C "${SOURCE_STAGING_DIR}" -xf -
 
+    # The copied tree inherits fresh filesystem mtimes from tar/extract, so
+    # reset them to the commit timestamp before flatpak-builder sees them.
     normalize_tree_timestamps "${SOURCE_STAGING_DIR}"
 }
 
@@ -224,6 +236,9 @@ build_flatpak_bundle() {
         "${BUILDER_DIR}" \
         "${MANIFEST_PATH}"
 
+    # AppImage already controls its final packaging timestamp explicitly. Do
+    # the same for Flatpak export so equal app dirs produce equal OSTree
+    # commits and bundles.
     run_with_dbus_session flatpak build-export \
         --arch="${arch}" \
         --disable-sandbox \
@@ -255,6 +270,8 @@ export TZ=UTC
 export SOURCE_DATE_EPOCH="$(resolve_source_date_epoch)"
 export SOURCE_DATE_TIMESTAMP="$(format_source_date_timestamp)"
 
+# Use the git commit time as the single reproducibility clock for staging,
+# flatpak-builder, and flatpak build-export.
 info "Using SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}."
 info "Using Flatpak export timestamp ${SOURCE_DATE_TIMESTAMP}."
 install_flatpak_prerequisites

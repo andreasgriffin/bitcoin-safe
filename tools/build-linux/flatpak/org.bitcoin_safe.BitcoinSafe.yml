@@ -115,6 +115,9 @@ modules:
         rewrite_python_entrypoint_shebang() {
             local executable_path="$1"
 
+            # pip-generated scripts embed the temporary build venv path in
+            # their shebang, e.g. "#!/tmp/.../.runtime-venv/bin/python". Rewrite
+            # them to a stable launcher path before copying them into /app/bin.
             case "$(head -n 1 "${executable_path}")" in
                 "#!${RUNTIME_VENV_ROOT}/bin/python"*)
                     sed -i "1s|^#!.*|#!/app/bin/flatpak-python-entrypoint|" "${executable_path}"
@@ -133,6 +136,9 @@ modules:
             --cache-dir "${PIP_CACHE_DIR}" \
             -r tools/deterministic-build/requirements-build.txt
 
+        # Let Poetry install runtime dependencies into the venv that will be
+        # copied into /app. Example: appdirs must end up in
+        # "${RUNTIME_SITE_PACKAGES}", not in a separate Poetry-managed cache venv.
         export PATH="${RUNTIME_VENV_ROOT}/bin:${PATH}"
         export POETRY_VIRTUALENVS_CREATE=false
         export POETRY_CACHE_DIR
@@ -153,6 +159,8 @@ modules:
         verify_runtime_import appdirs
         verify_runtime_import bitcoin_safe
 
+        # Remove build-only tools after installation so they cannot perturb the
+        # runtime payload on the next comparison.
         "${RUNTIME_VENV_ROOT}/bin/python" -m pip uninstall -y \
             build \
             cachecontrol \
@@ -247,6 +255,8 @@ modules:
         find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -type d -name '*.dist-info' \
             ! -name 'slip10-*.dist-info' -exec rm -rf {} +
         find "${RUNTIME_SITE_PACKAGES}" -mindepth 1 -maxdepth 1 -name '*.egg-info' -exec rm -rf {} +
+        # Normalize the venv after cleanup so the final copy does not depend on
+        # when files were installed or deleted during this build.
         find "${RUNTIME_VENV_ROOT}" -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
 
         verify_runtime_import appdirs
@@ -254,6 +264,9 @@ modules:
 
         mkdir -p "/app/lib/python${PYVER}/site-packages" /app/bin
         cp -a "${RUNTIME_SITE_PACKAGES}/." "/app/lib/python${PYVER}/site-packages/"
+        # Provide a stable interpreter entrypoint for copied console scripts.
+        # Example: /app/bin/hwi should start with /app/bin/flatpak-python-entrypoint,
+        # not a build-dir-specific /tmp/... shebang.
         cat > /app/bin/flatpak-python-entrypoint <<EOF
         #!/bin/sh
         export PYTHONPATH="/app/lib/python${PYVER}/site-packages\${PYTHONPATH+:\${PYTHONPATH}}"
@@ -287,6 +300,8 @@ modules:
         verify_payload_import appdirs
         verify_payload_import bitcoin_safe
 
+        # Import checks above can still create bytecode on some toolchains, so
+        # scrub it before the final timestamp normalization.
         find /app -path '*/__pycache__*' -delete
         find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
         rm -rf \

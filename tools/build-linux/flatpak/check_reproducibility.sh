@@ -48,6 +48,9 @@ checkout_bundle_tree() {
 
     rm -rf "${repo_dir}" "${checkout_dir}"
     mkdir -p "${repo_dir}"
+    # Compare imported OSTree payloads when bundle hashes differ. This tells us
+    # whether the drift is inside the app files or only in outer bundle
+    # metadata.
     flatpak build-import-bundle --no-update-summary "${repo_dir}" "${bundle_path}" >/dev/null
     ref="$(ostree refs --repo="${repo_dir}" | head -n 1)"
     [ -n "${ref}" ] || fail "No OSTree ref was imported from ${bundle_path}."
