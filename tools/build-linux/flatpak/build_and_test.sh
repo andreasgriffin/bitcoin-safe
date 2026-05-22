@@ -87,6 +87,17 @@ format_source_date_timestamp() {
     date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
 }
 
+verify_faketime_bundle_clock() {
+    local observed_epoch
+
+    command -v faketime >/dev/null 2>&1 || fail \
+        "faketime is required for reproducible Flatpak bundles. Rebuild the Flatpak Docker image or install faketime/libfaketime on the host."
+
+    observed_epoch="$(run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" date -u +%s)"
+    [ "${observed_epoch}" = "${SOURCE_DATE_EPOCH}" ] || fail \
+        "faketime did not pin the Flatpak bundle clock as expected (got ${observed_epoch}, expected ${SOURCE_DATE_EPOCH})."
+}
+
 run_flatpak_build_bundle() {
     local repo_dir="$1"
     local bundle_path="$2"
@@ -95,20 +106,10 @@ run_flatpak_build_bundle() {
     # libostree stamps the bundle's static-delta superblock with the current
     # wall clock time. Wrap only the bundle step so the outer .flatpak bytes
     # stay reproducible without changing the whole container clock.
-    if command -v faketime >/dev/null 2>&1; then
-        info "Creating Flatpak bundle under faketime @${SOURCE_DATE_EPOCH}."
-        run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" \
-            flatpak build-bundle \
-            "${repo_dir}" \
-            "${bundle_path}" \
-            "${APP_ID}" \
-            "${FLATPAK_BRANCH}" \
-            --arch="${arch}"
-        return
-    fi
-
-    info "faketime is unavailable; creating Flatpak bundle without fake time."
-    run_with_dbus_session flatpak build-bundle \
+    verify_faketime_bundle_clock
+    info "Creating Flatpak bundle under faketime @${SOURCE_DATE_EPOCH}."
+    run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" \
+        flatpak build-bundle \
         "${repo_dir}" \
         "${bundle_path}" \
         "${APP_ID}" \
