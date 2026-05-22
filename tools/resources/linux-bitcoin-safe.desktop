@@ -4,6 +4,6 @@ Name=Bitcoin Safe
 Exec=org.bitcoin-safe.bitcoin-safe %F
 Icon=bitcoin-safe
 Categories=Utility;
-Comment=A bitcoin wallet for the entire family.
+Comment=A desktop software for managing your cold storage wallets
 StartupWMClass=Bitcoin Safe
 

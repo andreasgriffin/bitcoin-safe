@@ -194,7 +194,7 @@ class Builder:
                 package_name=self.app_name_formatter(self.module_name).lower(),
                 version=self.version,
                 maintainer=f"Andreas Griffin <{CONTACT_EMAIL}>",
-                description="A bitcoin savings wallet for the entire family.",
+                description="A desktop software for managing your cold storage wallets.",
                 homepage="https://www.bitcoin-safe.org",
                 desktop_name=self.app_name_formatter(self.module_name, join_character=" "),
                 desktop_icon_name=self.app_name_formatter(self.module_name).lower() + ".svg",

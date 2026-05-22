@@ -2,7 +2,7 @@
 
 # Bitcoin Safe
 
-#### A bitcoin savings wallet for the entire family
+#### A desktop software for managing your cold storage wallets
 
 - **Easy Multisig-Wallet Setup**
   - [Step-by-Step instructions](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) for a secure MultiSig setup with [PDF backup sheets](https://bitcoin-safe.org/en/features/pdf-export/)

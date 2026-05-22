@@ -79,7 +79,7 @@ class LicenseDialog(QDialog):
             """                       
 <p><b>Bitcoin-Safe</b></p>                       
 
-<p>Bitcoin-Safe: A bitcoin wallet for the entire family.<br>
+<p>Bitcoin-Safe: A desktop software for managing your cold storage wallets.<br>
 Copyright (C) 2024  Andreas Griffin</p>
 
 <p>This program is free software: you can redistribute it and/or modify<br>
