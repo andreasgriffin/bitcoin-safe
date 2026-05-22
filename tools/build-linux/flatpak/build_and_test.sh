@@ -87,6 +87,35 @@ format_source_date_timestamp() {
     date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
 }
 
+run_flatpak_build_bundle() {
+    local repo_dir="$1"
+    local bundle_path="$2"
+    local arch="$3"
+
+    # libostree stamps the bundle's static-delta superblock with the current
+    # wall clock time. Wrap only the bundle step so the outer .flatpak bytes
+    # stay reproducible without changing the whole container clock.
+    if command -v faketime >/dev/null 2>&1; then
+        info "Creating Flatpak bundle under faketime @${SOURCE_DATE_EPOCH}."
+        run_with_dbus_session faketime "@${SOURCE_DATE_EPOCH}" \
+            flatpak build-bundle \
+            "${repo_dir}" \
+            "${bundle_path}" \
+            "${APP_ID}" \
+            "${FLATPAK_BRANCH}" \
+            --arch="${arch}"
+        return
+    fi
+
+    info "faketime is unavailable; creating Flatpak bundle without fake time."
+    run_with_dbus_session flatpak build-bundle \
+        "${repo_dir}" \
+        "${bundle_path}" \
+        "${APP_ID}" \
+        "${FLATPAK_BRANCH}" \
+        --arch="${arch}"
+}
+
 emit_tree_manifest() {
     local root_path="$1"
     local output_dir="$2"
@@ -464,12 +493,7 @@ build_flatpak_bundle() {
 
     info "Creating Flatpak bundle at ${bundle_path}."
     rm -f "${bundle_path}"
-    run_with_dbus_session flatpak build-bundle \
-        "${REPO_DIR}" \
-        "${bundle_path}" \
-        "${APP_ID}" \
-        "${FLATPAK_BRANCH}" \
-        --arch="${arch}"
+    run_flatpak_build_bundle "${REPO_DIR}" "${bundle_path}" "${arch}"
 
     test -f "${bundle_path}" || fail "Flatpak bundle was not created."
     emit_bundle_manifest "${bundle_path}" "${REPRO_DEBUG_DIR}"
