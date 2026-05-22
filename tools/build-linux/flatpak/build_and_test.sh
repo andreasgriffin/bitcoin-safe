@@ -229,6 +229,7 @@ emit_bundle_manifest() {
     info "bundle hash: ${digest}"
 
     import_repo_dir="$(mktemp -d "${WORK_DIR}/bundle-import.XXXXXX")"
+    ostree init --repo="${import_repo_dir}" --mode=archive >/dev/null
     flatpak build-import-bundle --no-update-summary "${import_repo_dir}" "${bundle_path}" >/dev/null
     imported_ref="$(ostree refs --repo="${import_repo_dir}" | head -n 1)"
     imported_commit="$(ostree rev-parse --repo="${import_repo_dir}" "${imported_ref}")"
