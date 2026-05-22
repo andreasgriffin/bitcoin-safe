@@ -1788,85 +1788,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Вузли Bitcoin: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Піри CBF: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P слухач-піри: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Видалити плагін</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) дозволяють гаманцям знаходити релевантні транзакції, зберігаючи ваші адреси приватними.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>Виявлені вузли bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Минуло {elapsed} | Орієнтовно залишилось {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe завантажує зведення блоків із кількох вузлів для конфіденційності. Після цієї початкової синхронізації оновлення будуть швидкими. Якщо у вас є власний сервер Electrum або ви не хочете чекати, під’єднайтеся до публічного сервера Electrum у налаштуваннях мережі.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>Налаштування мережі</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>Підготовка приватної синхронізації…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Нещодавно трансльовані повідомлення отримуються від цих пірів через мережу bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Сканування блокчейну Bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>Короткі зведення (Compact Block Filters) і блоки bitcoin отримуються від цих пірів через мережу bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Прогрес синхронізації: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>Чому це захищає приватність (докладніше)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2390,6 +2311,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;Карта мережі</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Новий гаманець</translation>
 		</message>
@@ -2615,6 +2541,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>Приховування вкладки {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Гарячі гаманці вимкнено в Bitcoin Mainnet.
@@ -2644,6 +2575,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Моніторинг p2p-мережі біткоїна через проксі {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Карта мережі</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3162,6 +3098,136 @@ median-time-past — це медіанна мітка часу останніх 
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Вузли Bitcoin: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Піри CBF: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P-піри, що слухають: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(зіставлено: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Видалити плагін</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) дозволяють гаманцям знаходити релевантні транзакції, зберігаючи ваші адреси приватними.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>Налаштований сервер: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>Налаштований сервер: {server} Місцезнаходження недоступне.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Виявлені вузли bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Сервер Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Сервер Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe завантажує зведення блоків із кількох вузлів для конфіденційності. Після цієї початкової синхронізації оновлення будуть швидкими. Якщо у вас є власний сервер Electrum або ви не хочете чекати, під’єднайтеся до публічного сервера Electrum у налаштуваннях мережі.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Карта мережі</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Налаштування мережі</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>Жоден сервер не налаштовано.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Нещодавно трансльовані повідомлення отримуються від цих пірів через мережу bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Сканування блокчейну Bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Сервер</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Короткі зведення (Compact Block Filters) і блоки bitcoin отримуються від цих пірів через мережу bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>Поточний налаштований сервер синхронізації гаманця.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>Оновіть активний сервер або конфігурацію проксі в налаштуваннях мережі.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>Переглянути поточні мережеві підключення та сервери.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Чому це захищає приватність (докладніше)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>Ваш гаманець синхронізується через налаштований сервер Electrum.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>Ваш гаманець синхронізується через налаштований сервер Esplora.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3176,11 +3242,6 @@ median-time-past — це медіанна мітка часу останніх 
 		<message>
 			<source>Automatic</source>
 			<translation>Автоматично</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Моніторинг мережі Bitcoin</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3276,6 +3337,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>Моніторинг P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>Пароль:</translation>
 		</message>
@@ -3331,8 +3397,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>Проксі не застосовується до плагіна Sync&amp;Chat і під час купівлі підписки!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>Проксі не застосовується до плагіна Sync&amp;Chat і під час купівлі підписки! Визначення місцезнаходження сервера на основі імені хоста та виявлення DNS-seed у цій версії не виконуються через проксі.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4037,7 +4105,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>Видалені транзакції в гаманці «{wallet}»: {txs} Збережені копії в: {path}</translation>
+			<translation>Видалені транзакції в гаманці «{wallet}»:
+{txs}
+Збережені копії в:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4200,6 +4271,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця. &lt;br&gt; Тому, перш ніж надсилати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця й протестувати всіх підписантів.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>Перевірити, чи отримано</translation>
 		</message>
@@ -4215,17 +4295,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця.
-&lt;br&gt; Тому перед тим, як надіслати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця та протестувати всіх підписувачів.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>Отримайте &lt;b&gt;невелику&lt;/b&gt; суму (менше ніж {test_amount}) на 1 адресу цього гаманця.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>Отримати з faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6100,6 +6176,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>Минуло: {elapsed} | Залишилось: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Підготовка приватної синхронізації…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Прогрес синхронізації: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6216,8 +6309,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>Хост</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>P2P слухач-пір</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Сервер</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6227,11 +6335,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-Країна: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} Країна: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7378,8 +7484,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Компактні фільтри блоків — це приватний і швидкий спосіб отримати всю інформацію блокчейна. Гаманець безпосередньо підключатиметься до кількох вузлів bitcoin і завантажуватиме з них зведення блоків (компактні фільтри блоків).&lt;br&gt;Якщо ви вкажете ручних пірів у розділі 'Bitcoin Network monitoring' нижче, компактні фільтри блоків спочатку підключаться до них.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters — це приватний і швидкий спосіб отримати всю інформацію блокчейну. Гаманець напряму під’єднається до кількох bitcoin-вузлів і завантажить від них зведення блоків (Compact Block Filters).&lt;br&gt;Якщо ви вкажете ручних пірів у розділі «Моніторинг P2P» нижче, Compact Block Filters спочатку під’єднається до них.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8145,6 +8251,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 секунда</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 секунду тому</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Намагається здійснити подвійну витрату початкової транзакції з вищою комісією.
@@ -8204,8 +8320,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>близько 1 дня</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>близько 1 дня тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>близько 1 години</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8214,8 +8340,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>близько 1 хвилини</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>близько 1 хвилини тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>близько 1 місяця</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>близько 1 місяця тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>близько 1 року</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8224,8 +8370,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>близько {} днів</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>близько {} днів тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>близько {} годин</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8234,13 +8390,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>близько {} хвилин</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>близько {} хвилин тому</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>близько {} місяців</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>близько {} місяців тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>близько {} років</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>близько {} років тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>через 1 секунду</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8251,6 +8432,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>приблизно за 1 годину</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>приблизно через 1 хвилину</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8284,6 +8470,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>приблизно через {} років</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>менше ніж за хвилину</translation>
 		</message>
@@ -8299,13 +8490,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>менше хвилини</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>менше хвилини тому</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>понад {} років</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>понад {} років тому</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} секунд</translation>
 		</message>
 		<name>util</name>
 		<message>

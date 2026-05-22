@@ -1786,85 +1786,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; बिटकॉइन नोड्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF पीयर्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P लिसनर पीयर्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>प्लगइन हटाएं</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) वॉलेट को आपके पते निजी रखते हुए संबंधित लेनदेन खोजने की अनुमति देते हैं।</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>खोजे गए बिटकॉइन नोड्स।</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>बीत चुका समय {elapsed} | अनुमानित शेष {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe गोपनीयता के लिए कई नोड्स से ब्लॉक सारांश डाउनलोड करता है। इस प्रारंभिक सिंक के बाद, अपडेट तेज़ होंगे। यदि आपके पास अपना Electrum सर्वर है या आप इंतज़ार नहीं करना चाहते, तो नेटवर्क सेटिंग्स में किसी सार्वजनिक Electrum सर्वर से कनेक्ट करें।</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>नेटवर्क सेटिंग्स</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>निजी सिंक तैयार किया जा रहा है…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>हाल ही में प्रसारित संदेश इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>बिटकॉइन ब्लॉकचेन स्कैन किया जा रहा है</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>संक्षिप्त सारांश (Compact Block Filters) और बिटकॉइन ब्लॉक इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>सिंक प्रगति: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>यह गोपनीयता की रक्षा क्यों करता है (और जानें)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2386,6 +2307,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;नेटवर्क मैप</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;नया वॉलेट</translation>
 		</message>
@@ -2611,6 +2537,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>{name} टैब छिपाया जा रहा है</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet पर हॉट वॉलेट अक्षम हैं। आप वास्तविक Bitcoin का उपयोग किए बिना Bitcoin Safe का परीक्षण करने के लिए Testnet पर स्विच कर सकते हैं।</translation>
@@ -2639,6 +2570,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>प्रॉक्सी {proxy} के माध्यम से बिटकॉइन p2p नेटवर्क की निगरानी</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>नेटवर्क मैप</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3153,6 +3089,136 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; बिटकॉइन नोड्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF पीयर्स: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P सुनने वाले पीयर: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(मैप किए गए: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>प्लगइन हटाएं</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) वॉलेट को आपके पते निजी रखते हुए संबंधित लेनदेन खोजने की अनुमति देते हैं।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>कॉन्फ़िगर किया गया सर्वर: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>कॉन्फ़िगर किया गया सर्वर: {server} स्थान उपलब्ध नहीं है।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>खोजे गए बिटकॉइन नोड्स।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Electrum सर्वर</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Esplora सर्वर</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe गोपनीयता के लिए कई नोड्स से ब्लॉक सारांश डाउनलोड करता है। इस प्रारंभिक सिंक के बाद, अपडेट तेज़ होंगे। यदि आपके पास अपना Electrum सर्वर है या आप इंतज़ार नहीं करना चाहते, तो नेटवर्क सेटिंग्स में किसी सार्वजनिक Electrum सर्वर से कनेक्ट करें।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>नेटवर्क मैप</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>नेटवर्क सेटिंग्स</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>कोई सर्वर कॉन्फ़िगर नहीं है।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>हाल ही में प्रसारित संदेश इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>बिटकॉइन ब्लॉकचेन स्कैन किया जा रहा है</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>सर्वर</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>संक्षिप्त सारांश (Compact Block Filters) और बिटकॉइन ब्लॉक इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>वर्तमान में कॉन्फ़िगर किया गया वॉलेट सिंक सर्वर।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>नेटवर्क सेटिंग्स में सक्रिय सर्वर या प्रॉक्सी कॉन्फ़िगरेशन अपडेट करें।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>वर्तमान नेटवर्क कनेक्शन और सर्वर देखें।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>यह गोपनीयता की रक्षा क्यों करता है (और जानें)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>आपका वॉलेट कॉन्फ़िगर किए गए Electrum सर्वर के माध्यम से सिंक होता है।</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>आपका वॉलेट कॉन्फ़िगर किए गए Esplora सर्वर के माध्यम से सिंक होता है।</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3167,11 +3233,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Automatic</source>
 			<translation>स्वचालित</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>बिटकॉइन नेटवर्क मॉनिटरिंग</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3267,6 +3328,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>P2P निगरानी</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>पासवर्ड:</translation>
 		</message>
@@ -3322,8 +3388,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>प्रॉक्सी Sync&amp;Chat प्लगइन और सदस्यता खरीद के दौरान लागू नहीं होता!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>प्रॉक्सी Sync&amp;Chat प्लगइन और सदस्यता खरीद के दौरान लागू नहीं होता! इस संस्करण में होस्टनाम-आधारित सर्वर स्थान और DNS-seed खोज प्रॉक्सी के माध्यम से हल नहीं किए जाते।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4025,7 +4093,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>वॉलेट '{wallet}' में हटाए गए लेन-देन: {txs} सहेजी गई प्रतियां यहां: {path}</translation>
+			<translation>वॉलेट '{wallet}' में हटाए गए लेन-देन:
+{txs}
+सहेजी गई प्रतियां यहां:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4186,6 +4257,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप धन पर नियंत्रण रखते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए वॉलेट में Bitcoin की बड़ी राशि भेजने से पहले, वॉलेट से खर्च करना और सभी हस्ताक्षरकर्ताओं का परीक्षण करना &lt;b&gt;अत्यंत महत्वपूर्ण&lt;/b&gt; है।</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>प्राप्ति की जांच करें</translation>
 		</message>
@@ -4201,14 +4281,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ({test_amount} से कम) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए वॉलेट में पर्याप्त मात्रा में Bitcoin भेजने से पहले, वॉलेट से खर्च करना और सभी साइनरों का परीक्षण करना &lt;b&gt;अत्यंत महत्वपूर्ण&lt;/b&gt; है।                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि ({test_amount} से कम) प्राप्त करें।&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>faucet से प्राप्त करें</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6079,6 +6158,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>बीता: {elapsed} | शेष: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>निजी सिंक तैयार किया जा रहा है…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>सिंक प्रगति: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6195,8 +6291,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>होस्ट</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>P2P लिसनर पीयर</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>सर्वर</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6206,11 +6317,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-देश: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} देश: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7357,8 +7466,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>कॉम्पैक्ट ब्लॉक फ़िल्टर सभी ब्लॉकचेन जानकारी प्राप्त करने का एक निजी और तेज़ तरीका हैं। वॉलेट कई बिटकॉइन नोड्स से सीधे जुड़कर उनसे ब्लॉक सारांश (कॉम्पैक्ट ब्लॉक फ़िल्टर) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे दिए गए 'Bitcoin Network monitoring' अनुभाग में मैनुअल पीयर निर्दिष्ट करते हैं, तो कॉम्पैक्ट ब्लॉक फ़िल्टर पहले उनसे कनेक्ट होंगे।</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters सभी ब्लॉकचेन जानकारी प्राप्त करने का एक निजी और तेज़ तरीका है। वॉलेट सीधे कई bitcoin नोड्स से जुड़ेगा और उनसे ब्लॉक सारांश (Compact Block Filters) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे 'P2P निगरानी' अनुभाग में मैनुअल पीयर निर्दिष्ट करते हैं, तो Compact Block Filters पहले उनसे जुड़ेगा।</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8120,6 +8229,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 सेकंड</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 सेकंड पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>उच्च शुल्क के साथ मूल लेन-देन को डबल-स्पेंड करने का प्रयास करता है। केवल RBF संकेतित लेन-देन पर काम करता है और सफलता की गारंटी नहीं है।</translation>
@@ -8175,8 +8294,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>लगभग 1 दिन</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>लगभग 1 दिन पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>लगभग 1 घंटा</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8185,8 +8314,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>लगभग 1 मिनट</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>लगभग 1 मिनट पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>लगभग 1 महीना</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>लगभग 1 महीने पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>लगभग 1 वर्ष</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8195,8 +8344,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>लगभग {} दिन</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>लगभग {} दिन पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>लगभग {} घंटे</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8205,13 +8364,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>लगभग {} मिनट</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>लगभग {} मिनट पहले</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>लगभग {} महीने</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>लगभग {} महीने पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>लगभग {} वर्ष</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>लगभग {} वर्ष पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>1 सेकंड में</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8222,6 +8406,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>लगभग 1 घंटे में</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>लगभग 1 मिनट में</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8255,6 +8444,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>लगभग {} वर्षों में</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>एक मिनट से कम समय में</translation>
 		</message>
@@ -8270,13 +8464,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>एक मिनट से कम</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>एक मिनट से कम समय पहले</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>{} वर्षों से अधिक</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>{} साल से अधिक पहले</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} सेकंड</translation>
 		</message>
 		<name>util</name>
 		<message>

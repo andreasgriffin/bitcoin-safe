@@ -1785,85 +1785,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; โหนด Bitcoin: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ CBF: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ตัวฟัง P2P: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>ลบปลั๊กอิน</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) ช่วยให้วอลเล็ตค้นพบธุรกรรมที่เกี่ยวข้องในขณะที่ยังคงรักษาความเป็นส่วนตัวของที่อยู่ของคุณ</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>ค้นพบโหนด bitcoin แล้ว</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>เวลาที่ผ่านไป {elapsed} | เวลาที่เหลือโดยประมาณ {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe ดาวน์โหลดสรุปบล็อกจากหลายโหนดเพื่อความเป็นส่วนตัว หลังจากการซิงค์เริ่มต้นนี้ การอัปเดตจะรวดเร็ว หากคุณมีเซิร์ฟเวอร์ Electrum ของคุณเองหรือไม่ต้องการรอ ให้เชื่อมต่อกับเซิร์ฟเวอร์ Electrum สาธารณะในการตั้งค่าเครือข่าย</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>การตั้งค่าเครือข่าย</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>กำลังเตรียมการซิงก์แบบส่วนตัว…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>ข้อความที่เพิ่งถูกเผยแพร่จะได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>กำลังสแกนบล็อกเชน Bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>สรุปสั้น ๆ (Compact Block Filters) และบล็อก bitcoin ได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>ความคืบหน้าการซิงก์: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>เหตุใดสิ่งนี้จึงปกป้องความเป็นส่วนตัว (เรียนรู้เพิ่มเติม)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2386,6 +2307,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;แผนที่เครือข่าย</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;กระเป๋าเงินใหม่</translation>
 		</message>
@@ -2611,6 +2537,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>กำลังซ่อนแท็บ {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ Bitcoin Safe โดยไม่ต้องใช้ Bitcoin จริง</translation>
@@ -2639,6 +2570,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>กำลังตรวจสอบเครือข่าย bitcoin แบบ p2p ผ่านพร็อกซี {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>แผนที่เครือข่าย</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3152,6 +3088,136 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; โหนด Bitcoin: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ CBF: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; เพียร์ตัวรับฟัง P2P: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(แมปแล้ว: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>ลบปลั๊กอิน</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) ช่วยให้วอลเล็ตค้นพบธุรกรรมที่เกี่ยวข้องในขณะที่ยังคงรักษาความเป็นส่วนตัวของที่อยู่ของคุณ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server} ไม่มีข้อมูลตำแหน่ง</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>ค้นพบโหนด bitcoin แล้ว</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>เซิร์ฟเวอร์ Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>เซิร์ฟเวอร์ Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe ดาวน์โหลดสรุปบล็อกจากหลายโหนดเพื่อความเป็นส่วนตัว หลังจากการซิงค์เริ่มต้นนี้ การอัปเดตจะรวดเร็ว หากคุณมีเซิร์ฟเวอร์ Electrum ของคุณเองหรือไม่ต้องการรอ ให้เชื่อมต่อกับเซิร์ฟเวอร์ Electrum สาธารณะในการตั้งค่าเครือข่าย</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>แผนที่เครือข่าย</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>การตั้งค่าเครือข่าย</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>ยังไม่ได้กำหนดค่าเซิร์ฟเวอร์</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>ข้อความที่เพิ่งถูกเผยแพร่จะได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>กำลังสแกนบล็อกเชน Bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>เซิร์ฟเวอร์</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>สรุปสั้น ๆ (Compact Block Filters) และบล็อก bitcoin ได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>เซิร์ฟเวอร์ซิงค์กระเป๋าเงินที่กำหนดค่าอยู่ในปัจจุบัน</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>อัปเดตเซิร์ฟเวอร์ที่ใช้งานอยู่หรือการกำหนดค่าพร็อกซีในการตั้งค่าเครือข่าย</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>ดูการเชื่อมต่อเครือข่ายและเซิร์ฟเวอร์ปัจจุบัน</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>เหตุใดสิ่งนี้จึงปกป้องความเป็นส่วนตัว (เรียนรู้เพิ่มเติม)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>กระเป๋าเงินของคุณซิงค์ผ่านเซิร์ฟเวอร์ Electrum ที่กำหนดค่าไว้</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>กระเป๋าเงินของคุณซิงค์ผ่านเซิร์ฟเวอร์ Esplora ที่กำหนดค่าไว้</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3166,11 +3232,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Automatic</source>
 			<translation>อัตโนมัติ</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>การเฝ้าติดตามเครือข่ายบิตคอยน์</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3265,6 +3326,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>การตรวจสอบ P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>รหัสผ่าน:</translation>
 		</message>
@@ -3320,8 +3386,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>พร็อกซีไม่ใช้กับปลั๊กอิน Sync&amp;Chat และระหว่างการซื้อการสมัครสมาชิก!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>พร็อกซีไม่มีผลกับปลั๊กอิน Sync&amp;Chat และระหว่างการซื้อการสมัครสมาชิก! ตำแหน่งเซิร์ฟเวอร์ตามชื่อโฮสต์และการค้นหา DNS-seed จะไม่ถูกแก้ไขผ่านพร็อกซีในเวอร์ชันนี้</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4023,7 +4091,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>ธุรกรรมที่ถูกนำออกในวอลเล็ต '{wallet}': {txs} บันทึกสำเนาไปที่: {path}</translation>
+			<translation>ธุรกรรมที่ถูกนำออกในวอลเล็ต '{wallet}':
+{txs}
+บันทึกสำเนาไปที่:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4184,6 +4255,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้รู้ว่าคุณควบคุมเงินอยู่หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>ตรวจสอบว่าได้รับหรือไม่</translation>
 		</message>
@@ -4199,14 +4279,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>รับจำนวนเงิน &lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้ &lt;br&gt;&lt;br&gt; &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้ทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน จึงเป็นเรื่อง &lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt; ที่ต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>รับจาก faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6076,6 +6155,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>ผ่านไปแล้ว: {elapsed} | คงเหลือ: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>กำลังเตรียมการซิงก์แบบส่วนตัว…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>ความคืบหน้าการซิงก์: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6192,8 +6288,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>โฮสต์</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>เพียร์ตัวฟัง P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>เซิร์ฟเวอร์</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6203,11 +6314,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-ประเทศ: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} ประเทศ: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7354,8 +7463,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>ตัวกรองบล็อกแบบกะทัดรัดเป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนดบิตคอยน์หลายโหนดและดาวน์โหลดสรุปบล็อก (ตัวกรองบล็อกแบบกะทัดรัด) จากโหนดเหล่านั้น&lt;br&gt;หากคุณระบุเพียร์แบบกำหนดเองในส่วน 'Bitcoin Network monitoring' ด้านล่าง ตัวกรองบล็อกแบบกะทัดรัดจะเชื่อมต่อกับเพียร์เหล่านั้นก่อน</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters เป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนด bitcoin หลายโหนดและดาวน์โหลดสรุปบล็อก (Compact Block Filters) จากโหนดเหล่านั้น&lt;br&gt;หากคุณระบุเพียร์ด้วยตนเองในส่วน 'การตรวจสอบ P2P' ด้านล่าง Compact Block Filters จะเชื่อมต่อกับเพียร์เหล่านั้นก่อน</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8117,6 +8226,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 วินาที</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 วินาทีที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>พยายามทำการใช้จ่ายซ้ำของธุรกรรมเดิมด้วยค่าธรรมเนียมที่สูงกว่า ใช้ได้เฉพาะกับธุรกรรมที่ส่งสัญญาณ RBF และไม่รับประกันความสำเร็จ</translation>
@@ -8172,8 +8291,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>ประมาณ 1 วัน</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>ประมาณ 1 วันที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>ประมาณ 1 ชั่วโมง</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8182,8 +8311,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>ประมาณ 1 นาที</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>ประมาณ 1 นาทีที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>ประมาณ 1 เดือน</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>ประมาณ 1 เดือนที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>ประมาณ 1 ปี</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8192,8 +8341,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>ประมาณ {} วัน</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>ประมาณ {} วันที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>ประมาณ {} ชั่วโมง</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8202,13 +8361,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>ประมาณ {} นาที</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>ประมาณ {} นาทีที่แล้ว</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>ประมาณ {} เดือน</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>ประมาณ {} เดือนที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>ประมาณ {} ปี</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>ประมาณ {} ปีที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>ใน 1 วินาที</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8219,6 +8403,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>ในประมาณ 1 ชั่วโมง</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>ในประมาณ 1 นาที</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8252,6 +8441,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>ในประมาณ {} ปี</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>ในเวลาน้อยกว่าหนึ่งนาที</translation>
 		</message>
@@ -8267,13 +8461,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>น้อยกว่าหนึ่งนาที</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>น้อยกว่าหนึ่งนาทีที่แล้ว</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>มากกว่า {} ปี</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>มากกว่า {} ปีที่แล้ว</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} วินาที</translation>
 		</message>
 		<name>util</name>
 		<message>

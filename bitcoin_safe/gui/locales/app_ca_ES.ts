@@ -1788,85 +1788,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodes Bitcoin: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers CBF: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers listener P2P: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Suprimeix el connector</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) permeten que les carteres descobreixin transaccions rellevants mantenint les vostres adreces privades.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>Nodes bitcoin descoberts.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Temps transcorregut {elapsed} | Restant estimat {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe descarrega resums de blocs de múltiples nodes per privadesa. Després d’aquesta sincronització inicial, les actualitzacions seran ràpides. Si tens el teu propi servidor Electrum o no vols esperar, connecta’t a un servidor Electrum públic a la configuració de xarxa.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>Configuració de xarxa</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>Preparant sincronització privada…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Els missatges recentment emesos es reben d’aquests peers a través de la xarxa bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Escanejant la blockchain de Bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>Resums curts (Compact Block Filters) i blocs bitcoin es reben d’aquests peers a través de la xarxa bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Progrés de sincronització: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>Per què això protegeix la privadesa (més informació)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2390,6 +2311,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;Mapa de xarxa</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Nova cartera</translation>
 		</message>
@@ -2615,6 +2541,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>S'està amagant la pestanya {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
@@ -2644,6 +2575,11 @@ Pots canviar a Testnet per provar Bitcoin Safe sense utilitzar Bitcoin real.</tr
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Monitoratge de la xarxa bitcoin p2p a través del proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Mapa de xarxa</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3162,6 +3098,136 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodes Bitcoin: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers CBF: {total} &lt;span style='color:{gray}'&gt;(assignats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peers oients P2P: {total} &lt;span style='color:{gray}'&gt;(mapats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapats: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Suprimeix el connector</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) permeten que les carteres descobreixin transaccions rellevants mantenint les vostres adreces privades.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>Servidor configurat: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>Servidor configurat: {server} Ubicació no disponible.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Nodes bitcoin descoberts.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Servidor Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Servidor Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe descarrega resums de blocs de múltiples nodes per privadesa. Després d’aquesta sincronització inicial, les actualitzacions seran ràpides. Si tens el teu propi servidor Electrum o no vols esperar, connecta’t a un servidor Electrum públic a la configuració de xarxa.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Mapa de xarxa</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Configuració de xarxa</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>No hi ha cap servidor configurat.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Els missatges recentment emesos es reben d’aquests peers a través de la xarxa bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Escanejant la blockchain de Bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Servidor</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Resums curts (Compact Block Filters) i blocs bitcoin es reben d’aquests peers a través de la xarxa bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>El servidor de sincronització del moneder configurat actualment.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>Actualitzeu el servidor actiu o la configuració del proxy a la configuració de xarxa.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>Mostra les connexions de xarxa i els servidors actuals.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Per què això protegeix la privadesa (més informació)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>El vostre moneder se sincronitza a través del servidor Electrum configurat.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>El vostre moneder se sincronitza a través del servidor Esplora configurat.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3176,11 +3242,6 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		<message>
 			<source>Automatic</source>
 			<translation>Automàtic</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Monitoratge de la xarxa Bitcoin</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3276,6 +3337,11 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>Monitoratge P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>Contrasenya:</translation>
 		</message>
@@ -3331,8 +3397,10 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>El servidor intermediari no s’aplica al connector Sync&amp;Chat ni durant la compra de la subscripció!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>El proxy no s’aplica al connector Sync&amp;Chat ni durant la compra de la subscripció! La ubicació del servidor basada en el nom d’amfitrió i el descobriment DNS-seed no es resolen a través del proxy en aquesta versió.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4037,7 +4105,10 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 
 Saved copies to:
 {path}</source>
-			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}': {txs} Còpies desades a: {path}</translation>
+			<translation>Transacció(ns) eliminada(es) a la cartera '{wallet}':
+{txs}
+Còpies desades a:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4200,6 +4271,15 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des del moneder. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin al moneder, és &lt;b&gt;crucial&lt;/b&gt; gastar des del moneder i provar tots els signants.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>Comprova si s'ha rebut</translation>
 		</message>
@@ -4215,17 +4295,13 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>Rep una quantitat &lt;b&gt;petita&lt;/b&gt; (inferior a {test_amount}) a 1 adreça d’aquesta cartera.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controles els fons, has de provar de gastar des de la cartera.
-&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin a la cartera, és &lt;b&gt;crucial&lt;/b&gt; gastar des de la cartera i provar tots els signadors.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>Rebeu una quantitat &lt;b&gt;petita&lt;/b&gt; (menys de {test_amount}) a 1 adreça d’aquest moneder.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>Rebre del faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6100,6 +6176,23 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>Transcorregut: {elapsed} | Restant: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Preparant sincronització privada…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Progrés de sincronització: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6216,8 +6309,23 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>Amfitrió</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>Peer listener P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Servidor</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6227,11 +6335,9 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-País: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} País: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7378,8 +7484,8 @@ País: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Els Filtres de Blocs Compactes són una manera privada i ràpida d’obtenir tota la informació de la cadena de blocs. La cartera es connectarà directament a diversos nodes de bitcoin i en descarregarà resums de blocs (Filtres de Blocs Compactes).&lt;br&gt;Si especifiqueu parells manuals a la secció 'Bitcoin Network monitoring' de sota, els Filtres de Blocs Compactes s’hi connectaran primer.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters són una manera privada i ràpida d’obtenir tota la informació de la cadena de blocs. El moneder es connectarà directament a diversos nodes bitcoin i en descarregarà resums de blocs (Compact Block Filters).&lt;br&gt;Si especifiqueu peers manuals a la secció 'Monitoratge P2P' de sota, Compact Block Filters s’hi connectarà primer.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8145,6 +8251,16 @@ Fes clic aquí per saber-ne més.</translation>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 segon</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>fa 1 segon</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Intenta fer una doble despesa de la transacció original amb una comissió més alta.
@@ -8204,8 +8320,18 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>aproximadament 1 dia</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>fa aproximadament 1 dia</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>aproximadament 1 hora</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8214,8 +8340,28 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>aproximadament 1 minut</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>fa aproximadament 1 minut</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>aproximadament 1 mes</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>fa aproximadament 1 mes</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>aproximadament 1 any</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8224,8 +8370,18 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>aproximadament {} dies</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>fa aproximadament {} dies</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>aproximadament {} hores</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8234,13 +8390,38 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>aproximadament {} minuts</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>fa aproximadament {} minuts</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>aproximadament {} mesos</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>fa aproximadament {} mesos</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>aproximadament {} anys</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>fa aproximadament {} anys</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>d’aquí a 1 segon</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8251,6 +8432,11 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		<message>
 			<source>in about 1 hour</source>
 			<translation>en aproximadament 1 hora</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>d’aquí a aproximadament 1 minut</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8284,6 +8470,11 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>d’aquí a aproximadament {} anys</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>en menys d'un minut</translation>
 		</message>
@@ -8299,13 +8490,28 @@ Requereix que l’original indiqui RBF i que el moneder tingui una sortida de ca
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>menys d’un minut</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>fa menys d'un minut</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>més de {} anys</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>fa més de {} anys</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} segons</translation>
 		</message>
 		<name>util</name>
 		<message>

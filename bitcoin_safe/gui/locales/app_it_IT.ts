@@ -1789,85 +1789,6 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodi Bitcoin: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer CBF: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Elimina Plugin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>I Compact Block Filters (BIP157/BIP158) permettono ai wallet di scoprire transazioni rilevanti mantenendo privati i tuoi indirizzi.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>Nodi bitcoin scoperti.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Tempo trascorso {elapsed} | Stimato rimanente {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe scarica riepiloghi dei blocchi da più nodi per la privacy. Dopo questa sincronizzazione iniziale, gli aggiornamenti saranno rapidi. Se hai un tuo server Electrum o non vuoi attendere, connettiti a un server Electrum pubblico nelle impostazioni di rete.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>Impostazioni di rete</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>Preparazione sincronizzazione privata…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>I messaggi trasmessi recentemente vengono ricevuti da questi peer tramite la rete bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Scansione della blockchain Bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>Brevi riepiloghi (Compact Block Filters) e blocchi bitcoin vengono ricevuti da questi peer tramite la rete bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Avanzamento sincronizzazione: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>Perché questo protegge la privacy (scopri di più)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2391,6 +2312,11 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;Mappa di rete</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Nuovo Portafoglio</translation>
 		</message>
@@ -2616,6 +2542,11 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>Nascondendo la scheda {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>I wallet hot sono disabilitati su Bitcoin Mainnet.
@@ -2645,6 +2576,11 @@ Puoi passare a Testnet per provare Bitcoin Safe senza usare Bitcoin reali.</tran
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Monitoraggio della rete bitcoin p2p tramite il proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Mappa di rete</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3163,6 +3099,136 @@ quindi è normalmente circa {minutes} minuti indietro rispetto alla punta.</tran
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nodi Bitcoin: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer CBF: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mappati: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Elimina Plugin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>I Compact Block Filters (BIP157/BIP158) permettono ai wallet di scoprire transazioni rilevanti mantenendo privati i tuoi indirizzi.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>Server configurato: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>Server configurato: {server} Posizione non disponibile.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Nodi bitcoin scoperti.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Server Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Server Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe scarica riepiloghi dei blocchi da più nodi per la privacy. Dopo questa sincronizzazione iniziale, gli aggiornamenti saranno rapidi. Se hai un tuo server Electrum o non vuoi attendere, connettiti a un server Electrum pubblico nelle impostazioni di rete.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Mappa di rete</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Impostazioni di rete</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>Nessun server è configurato.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>I messaggi trasmessi recentemente vengono ricevuti da questi peer tramite la rete bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Scansione della blockchain Bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Server</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Brevi riepiloghi (Compact Block Filters) e blocchi bitcoin vengono ricevuti da questi peer tramite la rete bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>Il server di sincronizzazione del portafoglio attualmente configurato.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>Aggiorna il server attivo o la configurazione del proxy nelle impostazioni di rete.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>Visualizza le connessioni di rete e i server correnti.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Perché questo protegge la privacy (scopri di più)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>Il tuo portafoglio si sincronizza tramite il server Electrum configurato.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>Il tuo portafoglio si sincronizza tramite il server Esplora configurato.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3177,11 +3243,6 @@ quindi è normalmente circa {minutes} minuti indietro rispetto alla punta.</tran
 		<message>
 			<source>Automatic</source>
 			<translation>Automatico</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Monitoraggio della rete Bitcoin</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3279,6 +3340,11 @@ Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>Monitoraggio P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>Password:</translation>
 		</message>
@@ -3334,8 +3400,10 @@ Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>Il proxy non si applica al plugin Sync&amp;Chat né durante l’acquisto dell’abbonamento!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>Il proxy non si applica al plugin Sync&amp;Chat né durante l’acquisto dell’abbonamento! La posizione del server basata sul nome host e il rilevamento DNS-seed non vengono risolti tramite il proxy in questa versione.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4040,7 +4108,10 @@ L’uso di più peer migliora la copertura ma utilizza più larghezza di banda e
 
 Saved copies to:
 {path}</source>
-			<translation>Transazione/i rimossa/e nel portafoglio '{wallet}': {txs} Copie salvate in: {path}</translation>
+			<translation>Transazione/i rimossa/e nel portafoglio '{wallet}':
+{txs}
+Copie salvate in:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4203,6 +4274,15 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt; Per sapere se controlli i fondi, devi testare una spesa dal portafoglio. &lt;br&gt; Quindi, prima di inviare una quantità sostanziale di Bitcoin nel portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>Controlla se ricevuto</translation>
 		</message>
@@ -4218,17 +4298,13 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>Ricevi un importo &lt;b&gt;piccolo&lt;/b&gt; (inferiore a {test_amount}) su 1 indirizzo di questo portafoglio.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt; Per sapere se controlli i fondi, devi testare una spesa dal portafoglio.
-&lt;br&gt; Quindi, prima di inviare una quantità consistente di Bitcoin nel portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>Ricevi un importo &lt;b&gt;piccolo&lt;/b&gt; (inferiore a {test_amount}) su 1 indirizzo di questo portafoglio.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>Ricevi da faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6103,6 +6179,23 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>Trascorso: {elapsed} | Rimanente: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Preparazione sincronizzazione privata…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Avanzamento sincronizzazione: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6219,8 +6312,23 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>Host</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>Peer listener P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Server</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6230,11 +6338,9 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-Paese: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} Paese: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7381,8 +7487,8 @@ Paese: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>I Filtri di Blocchi Compatti sono un modo privato e veloce per ottenere tutte le informazioni della blockchain. Il wallet si collegherà direttamente a più nodi bitcoin e scaricherà da essi i riepiloghi dei blocchi (Filtri di Blocchi Compatti).&lt;br&gt;Se specifichi peer manuali nella sezione 'Bitcoin Network monitoring' qui sotto, i Filtri di Blocchi Compatti si collegheranno prima a essi.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters è un modo privato e veloce per ottenere tutte le informazioni della blockchain. Il portafoglio si collegherà direttamente a più nodi bitcoin e scaricherà da essi i riepiloghi dei blocchi (Compact Block Filters).&lt;br&gt;Se specifichi peer manuali nella sezione 'Monitoraggio P2P' qui sotto, Compact Block Filters si collegherà prima a questi.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8148,6 +8254,16 @@ Clicca qui per saperne di più.</translation>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 secondo</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 secondo fa</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Tenta un double-spend della transazione originale con una commissione più alta.
@@ -8207,8 +8323,18 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>circa 1 giorno</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>circa 1 giorno fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>circa 1 ora</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8217,8 +8343,28 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>circa 1 minuto</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>circa 1 minuto fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>circa 1 mese</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>circa 1 mese fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>circa 1 anno</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8227,8 +8373,18 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>circa {} giorni</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>circa {} giorni fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>circa {} ore</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8237,13 +8393,38 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>circa {} minuti</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>circa {} minuti fa</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>circa {} mesi</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>circa {} mesi fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>circa {} anni</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>circa {} anni fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>tra 1 secondo</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8254,6 +8435,11 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		<message>
 			<source>in about 1 hour</source>
 			<translation>tra circa 1 ora</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>tra circa 1 minuto</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8287,6 +8473,11 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>tra circa {} anni</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>tra meno di un minuto</translation>
 		</message>
@@ -8302,13 +8493,28 @@ Richiede che l’originale segnali RBF e che il wallet possieda un output di res
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>meno di un minuto</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>meno di un minuto fa</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>oltre {} anni</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>oltre {} anni fa</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} secondi</translation>
 		</message>
 		<name>util</name>
 		<message>

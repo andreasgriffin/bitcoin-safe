@@ -1789,85 +1789,6 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nút Bitcoin: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer CBF: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer listener P2P: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Xóa Plugin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) cho phép ví phát hiện các giao dịch liên quan trong khi vẫn giữ địa chỉ của bạn riêng tư.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>Các nút bitcoin đã phát hiện.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>Đã trôi qua {elapsed} | Ước tính còn lại {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe tải xuống tóm tắt khối từ nhiều nút để bảo vệ quyền riêng tư. Sau lần đồng bộ ban đầu này, các bản cập nhật sẽ nhanh. Nếu bạn có máy chủ Electrum riêng hoặc không muốn chờ, hãy kết nối với một máy chủ Electrum công khai trong cài đặt mạng.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>Cài đặt mạng</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>Đang chuẩn bị đồng bộ riêng tư…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Các thông điệp vừa phát sóng được nhận từ các peer này qua mạng bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Đang quét blockchain Bitcoin</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>Các bản tóm tắt ngắn (Compact Block Filters) và các khối bitcoin được nhận từ các peer này qua mạng bitcoin.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Tiến trình đồng bộ: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>Tại sao điều này bảo vệ quyền riêng tư (tìm hiểu thêm)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2391,6 +2312,11 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;Bản đồ Mạng</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;Ví mới</translation>
 		</message>
@@ -2616,6 +2542,11 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>Đang ẩn thẻ {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Ví nóng bị tắt trên Bitcoin Mainnet.
@@ -2645,6 +2576,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm Bitcoin Safe mà khô
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>Đang giám sát mạng bitcoin p2p qua proxy {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Bản đồ Mạng</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3163,6 +3099,136 @@ nên thường chậm khoảng {minutes} phút so với tip.</translation>
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Nút Bitcoin: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer CBF: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Peer lắng nghe P2P: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(đã ánh xạ: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>Xóa Plugin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) cho phép ví phát hiện các giao dịch liên quan trong khi vẫn giữ địa chỉ của bạn riêng tư.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>Máy chủ đã cấu hình: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>Máy chủ đã cấu hình: {server} Không có vị trí.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>Các nút bitcoin đã phát hiện.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Máy chủ Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Máy chủ Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe tải xuống tóm tắt khối từ nhiều nút để bảo vệ quyền riêng tư. Sau lần đồng bộ ban đầu này, các bản cập nhật sẽ nhanh. Nếu bạn có máy chủ Electrum riêng hoặc không muốn chờ, hãy kết nối với một máy chủ Electrum công khai trong cài đặt mạng.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>Bản đồ Mạng</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>Cài đặt mạng</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>Chưa cấu hình máy chủ nào.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>Các thông điệp vừa phát sóng được nhận từ các peer này qua mạng bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Đang quét blockchain Bitcoin</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Máy chủ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>Các bản tóm tắt ngắn (Compact Block Filters) và các khối bitcoin được nhận từ các peer này qua mạng bitcoin.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>Máy chủ đồng bộ ví hiện đang được cấu hình.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>Cập nhật máy chủ đang hoạt động hoặc cấu hình proxy trong cài đặt mạng.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>Xem các kết nối mạng và máy chủ hiện tại.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>Tại sao điều này bảo vệ quyền riêng tư (tìm hiểu thêm)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>Ví của bạn đồng bộ qua máy chủ Electrum đã cấu hình.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>Ví của bạn đồng bộ qua máy chủ Esplora đã cấu hình.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3177,11 +3243,6 @@ nên thường chậm khoảng {minutes} phút so với tip.</translation>
 		<message>
 			<source>Automatic</source>
 			<translation>Tự động</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Giám sát mạng Bitcoin</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3277,6 +3338,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>Giám sát P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>Mật khẩu:</translation>
 		</message>
@@ -3332,8 +3398,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>Proxy không áp dụng cho plugin Sync&amp;Chat và trong quá trình mua đăng ký!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>Proxy không áp dụng cho plugin Sync&amp;Chat và trong khi mua gói đăng ký! Vị trí máy chủ dựa trên tên máy chủ và phát hiện DNS-seed không được phân giải qua proxy trong phiên bản này.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4037,7 +4105,10 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 
 Saved copies to:
 {path}</source>
-			<translation>Giao dịch đã bị xóa trong Ví '{wallet}': {txs} Bản sao đã lưu tại: {path}</translation>
+			<translation>Giao dịch đã bị xóa trong Ví '{wallet}':
+{txs}
+Bản sao đã lưu tại:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4200,6 +4271,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát số tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví. &lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả người ký là &lt;b&gt;cực kỳ quan trọng&lt;/b&gt;.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>Kiểm tra nếu đã nhận</translation>
 		</message>
@@ -4215,17 +4295,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>Nhận một khoản &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví.
-&lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả các thiết bị ký là &lt;b&gt;rất quan trọng&lt;/b&gt;.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>Nhận một khoản &lt;b&gt;nhỏ&lt;/b&gt; (ít hơn {test_amount}) vào 1 địa chỉ của ví này.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>Nhận từ faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6101,6 +6177,23 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>Đã trôi qua: {elapsed} | Còn lại: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>Đang chuẩn bị đồng bộ riêng tư…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Tiến trình đồng bộ: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6217,8 +6310,23 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>Máy chủ</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>Peer listener P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>Máy chủ</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6228,11 +6336,9 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-Quốc gia: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} Quốc gia: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7379,8 +7485,8 @@ Quốc gia: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters là cách riêng tư và nhanh để lấy toàn bộ thông tin blockchain. Ví sẽ kết nối trực tiếp tới nhiều node bitcoin và tải tóm tắt block (Compact Block Filters) từ chúng.&lt;br&gt;Nếu bạn chỉ định peer thủ công trong phần 'Bitcoin Network monitoring' bên dưới, Compact Block Filters sẽ kết nối tới chúng trước.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters là một cách riêng tư và nhanh chóng để lấy toàn bộ thông tin blockchain. Ví sẽ kết nối trực tiếp với nhiều nút bitcoin và tải xuống các bản tóm tắt khối (Compact Block Filters) từ chúng.&lt;br&gt;Nếu bạn chỉ định peer thủ công trong phần 'Giám sát P2P' bên dưới, Compact Block Filters sẽ kết nối với chúng trước.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8145,6 +8251,16 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 giây</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 giây trước</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Thử double-spend giao dịch gốc với phí cao hơn.
@@ -8204,8 +8320,18 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>khoảng 1 ngày</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>khoảng 1 ngày trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>khoảng 1 giờ</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8214,8 +8340,28 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>khoảng 1 phút</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>khoảng 1 phút trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>khoảng 1 tháng</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>khoảng 1 tháng trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>khoảng 1 năm</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8224,8 +8370,18 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>khoảng {} ngày</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>khoảng {} ngày trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>khoảng {} giờ</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8234,13 +8390,38 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>khoảng {} phút</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>khoảng {} phút trước</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>khoảng {} tháng</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>khoảng {} tháng trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>khoảng {} năm</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>khoảng {} năm trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>trong 1 giây</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8251,6 +8432,11 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		<message>
 			<source>in about 1 hour</source>
 			<translation>trong khoảng 1 giờ</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>trong khoảng 1 phút</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8284,6 +8470,11 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>trong khoảng {} năm</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>trong chưa đầy một phút</translation>
 		</message>
@@ -8299,13 +8490,28 @@ Yêu cầu giao dịch gốc báo hiệu RBF và ví của bạn sở hữu mộ
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>ít hơn một phút</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>chưa đầy một phút trước</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>hơn {} năm</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>hơn {} năm trước</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} giây</translation>
 		</message>
 		<name>util</name>
 		<message>

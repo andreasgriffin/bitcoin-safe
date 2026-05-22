@@ -1785,85 +1785,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin node များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peer များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peer များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>ပလပ်အင် ဖျက်ရန်</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>Compact Block Filters (BIP157/BIP158) သည် wallet များအား သင့်လိပ်စာများ၏ ကိုယ်ရေးလုံခြုံမှုကို ထိန်းသိမ်းထားစဉ် ဆက်စပ်သော transaction များကို ရှာဖွေခွင့်ပြုသည်။</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>တွေ့ရှိထားသော bitcoin node များ။</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>ကြာမြင့်ချိန် {elapsed} | ခန့်မှန်းကျန်ရှိချိန် {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe သည် ကိုယ်ရေးလုံခြုံမှုအတွက် node များစွာမှ block အကျဉ်းချုပ်များကို ဒေါင်းလုဒ်လုပ်သည်။ ဤကနဦး sync ပြီးနောက် update များသည် မြန်ဆန်မည်။ သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက network settings တွင် public Electrum server တစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>ကွန်ရက် ဆက်တင်များ</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>ကိုယ်ရေးလုံခြုံသော sync ကို ပြင်ဆင်နေသည်…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>မကြာသေးမီက broadcast လုပ်ထားသော message များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>Bitcoin blockchain ကို scan လုပ်နေသည်</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>အကျဉ်းချုပ်များ (Compact Block Filters) နှင့် bitcoin block များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>Sync တိုးတက်မှု: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>ဤအရာက ကိုယ်ရေးလုံခြုံမှုကို မည်သို့ကာကွယ်ပေးသနည်း (ပိုမိုလေ့လာရန်)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2385,6 +2306,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;ကွန်ရက်မြေပုံ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>ပိုက်ဆံအိတ်အသစ်</translation>
 		</message>
@@ -2610,6 +2536,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>{name} တက်ဘ်ကို ဖျောက်နေသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ Bitcoin Safe ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
@@ -2638,6 +2569,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>proxy {proxy} မှတစ်ဆင့် p2p bitcoin ကွန်ယက်ကို စောင့်ကြည့်နေသည်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>ကွန်ရက်မြေပုံ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3151,6 +3087,136 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin node များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peer များ: {total} &lt;span style='color:{gray}'&gt;(map လုပ်ထားသည်: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P နားထောင်နေသော peer များ: {total} &lt;span style='color:{gray}'&gt;(မြေပုံချထားပြီး: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(မြေပုံချထားပြီး: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>ပလပ်အင် ဖျက်ရန်</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>Compact Block Filters (BIP157/BIP158) သည် wallet များအား သင့်လိပ်စာများ၏ ကိုယ်ရေးလုံခြုံမှုကို ထိန်းသိမ်းထားစဉ် ဆက်စပ်သော transaction များကို ရှာဖွေခွင့်ပြုသည်။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>ပြင်ဆင်ထားသော ဆာဗာ: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>ပြင်ဆင်ထားသော ဆာဗာ: {server} တည်နေရာ မရရှိနိုင်ပါ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>တွေ့ရှိထားသော bitcoin node များ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>Electrum ဆာဗာ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>Esplora ဆာဗာ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>Bitcoin Safe သည် ကိုယ်ရေးလုံခြုံမှုအတွက် node များစွာမှ block အကျဉ်းချုပ်များကို ဒေါင်းလုဒ်လုပ်သည်။ ဤကနဦး sync ပြီးနောက် update များသည် မြန်ဆန်မည်။ သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက network settings တွင် public Electrum server တစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>ကွန်ရက်မြေပုံ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>ကွန်ရက် ဆက်တင်များ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>ဆာဗာ မပြင်ဆင်ထားပါ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>မကြာသေးမီက broadcast လုပ်ထားသော message များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>Bitcoin blockchain ကို scan လုပ်နေသည်</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>ဆာဗာ</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>အကျဉ်းချုပ်များ (Compact Block Filters) နှင့် bitcoin block များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>လက်ရှိ ပြင်ဆင်ထားသော ပိုက်ဆံအိတ် sync ဆာဗာ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>ကွန်ရက်ဆက်တင်များတွင် လက်ရှိအသုံးပြုနေသော ဆာဗာ သို့မဟုတ် proxy ပြင်ဆင်မှုကို အပ်ဒိတ်လုပ်ပါ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>လက်ရှိ ကွန်ရက်ချိတ်ဆက်မှုများနှင့် ဆာဗာများကို ကြည့်ပါ။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>ဤအရာက ကိုယ်ရေးလုံခြုံမှုကို မည်သို့ကာကွယ်ပေးသနည်း (ပိုမိုလေ့လာရန်)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>သင့်ပိုက်ဆံအိတ်သည် ပြင်ဆင်ထားသော Electrum ဆာဗာမှတစ်ဆင့် sync လုပ်သည်။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>သင့်ပိုက်ဆံအိတ်သည် ပြင်ဆင်ထားသော Esplora ဆာဗာမှတစ်ဆင့် sync လုပ်သည်။</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3165,11 +3231,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Automatic</source>
 			<translation>အလိုအလျောက်</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>Bitcoin ကွန်ယက် စောင့်ကြည့်မှု</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3264,6 +3325,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>P2P စောင့်ကြည့်ခြင်း</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>စကားဝှက်:</translation>
 		</message>
@@ -3319,8 +3385,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>Proxy သည် Sync&amp;Chat plugin နှင့် subscription ဝယ်ယူနေချိန်တွင် မသက်ဆိုင်ပါ။</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>proxy သည် Sync&amp;Chat plugin နှင့် subscription ဝယ်ယူနေစဉ် မသက်ရောက်ပါ! ဤဗားရှင်းတွင် hostname အခြေခံ ဆာဗာတည်နေရာနှင့် DNS-seed ရှာဖွေမှုများကို proxy မှတစ်ဆင့် ဖြေရှင်းမပေးပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4022,7 +4090,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>ဝေါလက် '{wallet}' တွင် ဖယ်ရှားထားသော ငွေလွှဲမှု(များ): {txs} သိမ်းဆည်းထားသော မိတ္တူများကို: {path}</translation>
+			<translation>ဝေါလက် '{wallet}' တွင် ဖယ်ရှားထားသော ငွေလွှဲမှု(များ):
+{txs}
+သိမ်းဆည်းထားသော မိတ္တူများကို:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4183,6 +4254,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; ရန်ပုံငွေများကို သင်ထိန်းချုပ်နိုင်ခြင်းရှိမရှိ သိရန် ပိုက်ဆံအိတ်မှ သုံးစွဲခြင်းကို စမ်းသပ်ရပါမည်။ &lt;br&gt; ထို့ကြောင့် ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ပမာဏများစွာ မပို့မီ ပိုက်ဆံအိတ်မှ သုံးစွဲပြီး လက်မှတ်ထိုးသူအားလုံးကို စမ်းသပ်ရန် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt;ပါသည်။</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>လက်ခံရရှိသည်ကိုစစ်ဆေးပါ</translation>
 		</message>
@@ -4198,14 +4278,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>ဤ wallet ၏ address ၁ ခုသို့ &lt;b&gt;အနည်းငယ်&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။ &lt;br&gt;&lt;br&gt; &lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; သင် ရန်ပုံငွေများကို ထိန်းချုပ်နိုင်ကြောင်း သိရန် wallet မှ အသုံးပြုခြင်းကို စမ်းသပ်ရမည်။ &lt;br&gt; ထို့ကြောင့် Bitcoin ပမာဏများစွာကို wallet ထဲသို့ မပို့မီ wallet မှ အသုံးပြုပြီး signer အားလုံးကို စမ်းသပ်ခြင်းသည် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt; ပါသည်။                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>ဤပိုက်ဆံအိတ်၏ လိပ်စာ 1 ခုသို့ &lt;b&gt;နည်းငယ်သော&lt;/b&gt; ပမာဏ ({test_amount} ထက်နည်း) ကို လက်ခံပါ။&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>faucet မှ လက်ခံပါ</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6075,6 +6154,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>ကုန်လွန်ပြီး: {elapsed} | ကျန်ရှိ: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>ကိုယ်ရေးလုံခြုံသော sync ကို ပြင်ဆင်နေသည်…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>Sync တိုးတက်မှု: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6191,8 +6287,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>ဟို့စ်</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>P2P listener peer</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>ဆာဗာ</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6202,11 +6313,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-နိုင်ငံ: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} နိုင်ငံ: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7353,8 +7462,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters သည် ဘလောက်ချိန်း အချက်အလက်အားလုံးကို ကိုယ်ရေးကိုယ်တာအနေဖြင့် လျင်မြန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ Wallet သည် bitcoin node များစွာသို့ တိုက်ရိုက် ချိတ်ဆက်ပြီး ထိုနေရာများမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်လုပ်ပါမည်။&lt;br&gt;အောက်ပါ 'Bitcoin Network monitoring' အပိုင်းတွင် manual peer များကို သတ်မှတ်ပါက Compact Block Filters သည် အရင်ဆုံး ထို peer များသို့ ချိတ်ဆက်ပါမည်။</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters သည် blockchain အချက်အလက်အားလုံးကို ကိုယ်ရေးကိုယ်တာလုံခြုံပြီး မြန်ဆန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ ပိုက်ဆံအိတ်သည် bitcoin node အများအပြားနှင့် တိုက်ရိုက်ချိတ်ဆက်ပြီး ၎င်းတို့ထံမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်လုပ်ပါမည်။&lt;br&gt;အောက်ရှိ 'P2P စောင့်ကြည့်ခြင်း' အပိုင်းတွင် manual peer များကို သတ်မှတ်ပါက Compact Block Filters သည် ၎င်းတို့နှင့် အရင်ဆုံးချိတ်ဆက်ပါမည်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8117,6 +8226,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 စက္ကန့်</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>1 စက္ကန့် လွန်ခဲ့ပြီး</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>Child-Pays-For-Parent သည် စောင့်ဆိုင်းနေသော အရောင်းအဝယ်၏ အလှည့်ငွေထွက်ပေါက်ကို အခကြေးပိုမြင့်စွာ အသုံးပြုပြီး နှစ်ခုလုံးကို ဘလော့တစ်ခုထဲသို့ ဆွဲခေါ်ပါသည်။ အသုံးပြုနိုင်သော အလှည့်ငွေထွက်ပေါက် ရှိပြီး ပေါင်းစပ်အခကြေးနှုန်းကို မြှင့်တင်ပါကသာ လုပ်ဆောင်ပါသည်။</translation>
@@ -8172,8 +8291,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>ခန့်မှန်းခြေ 1 ရက်</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>တစ်နှစ်အကြာက</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>ခန့်မှန်းခြေ 1 နာရီ</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8182,8 +8311,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>ခန့်မှန်းခြေ 1 မိနစ်</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>ခန့်မှန်းခြေ 1 မိနစ် လွန်ခဲ့ပြီး</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>ခန့်မှန်းခြေ 1 လ</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>လလောက် လွန်ခဲ့သည်</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>ခန့်မှန်းခြေ 1 နှစ်</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8192,8 +8341,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>ခန့်မှန်းခြေ {} ရက်</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>အတည်မပြုရ</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>ခန့်မှန်းခြေ {} နာရီ</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8202,13 +8361,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>ခန့်မှန်းခြေ {} မိနစ်</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>တစ်နာရီအကြာက</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>ခန့်မှန်းခြေ {} လ</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>{} လခန့် လွန်ခဲ့သည်</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>ခန့်မှန်းခြေ {} နှစ်</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>ခန့်မှန်းခြေ {} နှစ် လွန်ခဲ့ပြီး</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>1 စက္ကန့်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8219,6 +8403,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>တစ်နာရီခန့် အတွင်း</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>ခန့်မှန်းခြေ 1 မိနစ်အတွင်း</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8252,6 +8441,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>ခန့်မှန်းခြေ {} နှစ်အတွင်း</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>တစ်မိနစ်အတွင်း</translation>
 		</message>
@@ -8267,13 +8461,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>တစ်မိနစ်ထက်နည်း</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>တစ်မိနစ်ထက် ငယ်သည့် အချိန်က</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>{} နှစ်ကျော်</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>{} နှစ်ကျော်က</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} စက္ကန့်</translation>
 		</message>
 		<name>util</name>
 		<message>

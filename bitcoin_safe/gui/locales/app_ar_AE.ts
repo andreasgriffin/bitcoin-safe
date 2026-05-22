@@ -1787,85 +1787,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; عقد بيتكوين: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران CBF: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp; </source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران مستمعو P2P: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt; </translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>حذف الإضافة</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>تتيح Compact Block Filters ‏(BIP157/BIP158) للمحافظ اكتشاف المعاملات ذات الصلة مع الحفاظ على خصوصية عناوينك.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>تم اكتشاف عقد بيتكوين.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Elapsed {elapsed} | Estimated remaining {remaining}</source>
-			<translation>الوقت المنقضي {elapsed} | المتبقي المقدر {remaining}</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>يقوم Bitcoin Safe بتنزيل ملخصات الكتل من عدة عقد للحفاظ على الخصوصية. بعد هذه المزامنة الأولية، ستكون التحديثات سريعة. إذا كان لديك خادم Electrum خاص بك أو لا تريد الانتظار، فاتصل بخادم Electrum عام من إعدادات الشبكة.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>إعدادات الشبكة</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>جارٍ تحضير المزامنة الخاصة…</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>يتم استلام الرسائل التي تم بثها مؤخرًا من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>جارٍ فحص سلسلة كتل البيتكوين</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
-received from these peers via the bitcoin network.</source>
-			<translation>يتم استلام الملخصات القصيرة (Compact Block Filters) وكتل البيتكوين من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>تقدم المزامنة: {percent}%</translation>
-		</message>
-		<name>InitialCbfSyncWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>لماذا يحمي هذا الخصوصية (اعرف المزيد)</translation>
-		</message>
-	</context>
-	<context>
 		<name>InterfaceSettingsUi</name>
 		<message>
 			<source>App lock password</source>
@@ -2389,6 +2310,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>&amp;Network Map</source>
+			<translation>&amp;خريطة الشبكة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>&amp;New Wallet</source>
 			<translation>&amp;محفظة جديدة</translation>
 		</message>
@@ -2614,6 +2540,11 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Hiding tab {name}</source>
+			<translation>جارٍ إخفاء علامة التبويب {name}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
 			<translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
@@ -2643,6 +2574,11 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
 			<translation>مراقبة شبكة البيتكوين p2p عبر الوكيل {proxy}</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Network Map</source>
+			<translation>خريطة الشبكة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3160,6 +3096,136 @@ median-time-past هو الطابع الزمني الوسيط لآخر 11 كتل�
 		</message>
 	</context>
 	<context>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; عقد بيتكوين: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران CBF: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران الاستماع P2P: {total} &lt;span style='color:{gray}'&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>حذف الإضافة</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+			<translation>تتيح Compact Block Filters ‏(BIP157/BIP158) للمحافظ اكتشاف المعاملات ذات الصلة مع الحفاظ على خصوصية عناوينك.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}</source>
+			<translation>الخادم المُعدّ: {server}</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Configured server: {server}
+Location unavailable.</source>
+			<translation>الخادم المُعدّ: {server} الموقع غير متاح.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Discovered bitcoin nodes.</source>
+			<translation>تم اكتشاف عقد بيتكوين.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Electrum server</source>
+			<translation>خادم Electrum</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Esplora server</source>
+			<translation>خادم Esplora</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+			<translation>يقوم Bitcoin Safe بتنزيل ملخصات الكتل من عدة عقد للحفاظ على الخصوصية. بعد هذه المزامنة الأولية، ستكون التحديثات سريعة. إذا كان لديك خادم Electrum خاص بك أو لا تريد الانتظار، فاتصل بخادم Electrum عام من إعدادات الشبكة.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network Map</source>
+			<translation>خريطة الشبكة</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Network settings</source>
+			<translation>إعدادات الشبكة</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>No server is configured.</source>
+			<translation>لم يتم إعداد أي خادم.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Recently broadcasted messages are received
+from these peers via the bitcoin network.</source>
+			<translation>يتم استلام الرسائل التي تم بثها مؤخرًا من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Scanning Bitcoin blockchain</source>
+			<translation>جارٍ فحص سلسلة كتل البيتكوين</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>الخادم</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+received from these peers via the bitcoin network.</source>
+			<translation>يتم استلام الملخصات القصيرة (Compact Block Filters) وكتل البيتكوين من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>The currently configured wallet sync server.</source>
+			<translation>خادم مزامنة المحفظة المُعدّ حاليًا.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Update the active server or proxy configuration in network settings.</source>
+			<translation>حدّث الخادم النشط أو إعدادات الوكيل في إعدادات الشبكة.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>View current network connections and servers.</source>
+			<translation>اعرض اتصالات الشبكة والخوادم الحالية.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Why this protects privacy (learn more)</source>
+			<translation>لماذا يحمي هذا الخصوصية (اعرف المزيد)</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Electrum server.</source>
+			<translation>تتزامن محفظتك عبر خادم Electrum المُعدّ.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>Your wallet syncs through the configured Esplora server.</source>
+			<translation>تتزامن محفظتك عبر خادم Esplora المُعدّ.</translation>
+		</message>
+	</context>
+	<context>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Apply and restart</source>
@@ -3174,11 +3240,6 @@ median-time-past هو الطابع الزمني الوسيط لآخر 11 كتل�
 		<message>
 			<source>Automatic</source>
 			<translation>تلقائي</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Bitcoin network monitoring</source>
-			<translation>مراقبة شبكة البيتكوين</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3276,6 +3337,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>P2P monitoring</source>
+			<translation>مراقبة P2P</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Password:</source>
 			<translation>كلمة المرور:</translation>
 		</message>
@@ -3331,8 +3397,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!</source>
-			<translation>لا ينطبق البروكسي على مكوّن Sync&amp;Chat الإضافي ولا أثناء شراء الاشتراك!</translation>
+plugin and during subscription purchase!
+Hostname-based server location and DNS-seed discovery
+are not resolved through the proxy in this version.</source>
+			<translation>لا ينطبق الوكيل على إضافة Sync&amp;Chat وأثناء شراء الاشتراك! لا يتم حل موقع الخادم المعتمد على اسم المضيف واكتشاف DNS-seed عبر الوكيل في هذا الإصدار.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4037,7 +4105,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>المعاملة/المعاملات المُزالة في المحفظة '{wallet}': {txs} تم حفظ النسخ في: {path}</translation>
+			<translation>المعاملة/المعاملات المُزالة في المحفظة '{wallet}':
+{txs}
+تم حفظ النسخ في:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4200,6 +4271,15 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>ReceiveTest</name>
 		<message>
+			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+                        To know if you control the funds, you have to test spending from the wallet.
+                        &lt;br&gt;
+                        So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
+                        </source>
+			<translation>&lt;br&gt;&lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة. &lt;br&gt; لذلك قبل أن ترسل مبلغًا كبيرًا من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
 			<source>Check if received</source>
 			<translation>تحقق مما تم استلامه</translation>
 		</message>
@@ -4215,17 +4295,13 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.
-                    &lt;br&gt;&lt;br&gt;
-                    &lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
-                    To know if you control the funds, you have to test spending from the wallet.
-                    &lt;br&gt;
-                    So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
-                    </source>
-			<translation>استلم مبلغاً &lt;b&gt;صغيراً&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.
-&lt;br&gt;&lt;br&gt; &lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.
-&lt;br&gt; لذلك قبل أن ترسل كمية كبيرة من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.
-                    </translation>
+			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.&lt;br&gt;</translation>
+		</message>
+		<name>ReceiveTest</name>
+		<message>
+			<source>Receive from faucet</source>
+			<translation>استلام من faucet</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -6099,6 +6175,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 	</context>
 	<context>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+			<translation>المنقضي: {elapsed} | المتبقي: {remaining}</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Preparing private sync…</source>
+			<translation>جارٍ تحضير المزامنة الخاصة…</translation>
+		</message>
+		<name>WalletSyncProgressCard</name>
+		<message>
+			<source>Sync progress: {percent}%</source>
+			<translation>تقدم المزامنة: {percent}%</translation>
+		</message>
+	</context>
+	<context>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
@@ -6215,8 +6308,23 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>Host</source>
+			<translation>المضيف</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>IP</source>
+			<translation>IP</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>P2P listener peer</source>
 			<translation>قرين مستمع P2P</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
+			<source>Server</source>
+			<translation>الخادم</translation>
 		</message>
 		<name>WorldPeerMapWidget</name>
 		<message>
@@ -6226,11 +6334,9 @@ Do you want to broadcast anyway?</source>
 		<name>WorldPeerMapWidget</name>
 		<message>
 			<source>{source}
-IP: {ip}
+{endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source}
-IP: {ip}
-الدولة: {country}</translation>
+			<translation>{source} {endpoint_label}: {ip} الدولة: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7377,8 +7483,8 @@ IP: {ip}
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'Bitcoin Network monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>مرشحات الكتل المدمجة هي طريقة خاصة وسريعة للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرةً بعدة عُقد بيتكوين وتقوم بتنزيل ملخصات الكتل (مرشحات الكتل المدمجة) منها.&lt;br&gt;إذا حددت أقرانًا يدويين في قسم 'Bitcoin Network monitoring' أدناه، فستتصل مرشحات الكتل المدمجة بهم أولاً.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
+			<translation>Compact Block Filters هي طريقة خاصة وسريعة للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرة بعدة عُقد bitcoin وستنزّل منها ملخصات الكتل (Compact Block Filters).&lt;br&gt;إذا حدّدت أقرانًا يدويين في قسم 'مراقبة P2P' أدناه، فستتصل Compact Block Filters بهم أولًا.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8142,6 +8248,16 @@ Click here to learn more.</source>
 	<context>
 		<name>util</name>
 		<message>
+			<source>1 second</source>
+			<translation>1 ثانية</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>1 second ago</source>
+			<translation>منذ 1 ثانية</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
 			<translation>يحاول إجراء إنفاق مزدوج للمعاملة الأصلية برسوم أعلى.
@@ -8201,8 +8317,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 day</source>
+			<translation>حوالي 1 يوم</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 day ago</source>
 			<translation>منذ حوالي يوم واحد</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 hour</source>
+			<translation>حوالي 1 ساعة</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8211,8 +8337,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about 1 minute</source>
+			<translation>حوالي 1 دقيقة</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 minute ago</source>
+			<translation>منذ حوالي 1 دقيقة</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 month</source>
+			<translation>حوالي 1 شهر</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about 1 month ago</source>
 			<translation>قبل حوالي 1 شهر</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about 1 year</source>
+			<translation>حوالي 1 سنة</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8221,8 +8367,18 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} days</source>
+			<translation>حوالي {} أيام</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} days ago</source>
 			<translation>منذ حوالي {} أيام</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} hours</source>
+			<translation>حوالي {} ساعات</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8231,13 +8387,38 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} minutes</source>
+			<translation>حوالي {} دقائق</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} minutes ago</source>
 			<translation>منذ {} دقيقة تقريبًا</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>about {} months</source>
+			<translation>حوالي {} أشهر</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>about {} months ago</source>
 			<translation>منذ حوالي {} أشهر</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years</source>
+			<translation>حوالي {} سنوات</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>about {} years ago</source>
+			<translation>منذ حوالي {} سنوات</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in 1 second</source>
+			<translation>خلال 1 ثانية</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8248,6 +8429,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<message>
 			<source>in about 1 hour</source>
 			<translation>في حوالي 1 ساعة</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>in about 1 minute</source>
+			<translation>خلال حوالي 1 دقيقة</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8281,6 +8467,11 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>in about {} years</source>
+			<translation>خلال حوالي {} سنوات</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>in less than a minute</source>
 			<translation>في أقل من دقيقة</translation>
 		</message>
@@ -8296,13 +8487,28 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		</message>
 		<name>util</name>
 		<message>
+			<source>less than a minute</source>
+			<translation>أقل من دقيقة</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>less than a minute ago</source>
 			<translation>قبل أقل من دقيقة</translation>
 		</message>
 		<name>util</name>
 		<message>
+			<source>over {} years</source>
+			<translation>أكثر من {} سنوات</translation>
+		</message>
+		<name>util</name>
+		<message>
 			<source>over {} years ago</source>
 			<translation>منذ أكثر من {} سنة</translation>
+		</message>
+		<name>util</name>
+		<message>
+			<source>{} seconds</source>
+			<translation>{} ثوانٍ</translation>
 		</message>
 		<name>util</name>
 		<message>
