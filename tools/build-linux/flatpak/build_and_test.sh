@@ -140,20 +140,29 @@ with manifest_path.open("w", encoding="utf-8") as handle:
         relative_path = "." if path == root else path.relative_to(root).as_posix()
         stat_result = os.lstat(path)
         file_type = "other"
+        size = "-"
         target = "-"
         sha256 = "-"
         if stat.S_ISREG(stat_result.st_mode):
             file_type = "file"
+            size = str(stat_result.st_size)
             sha256 = file_digest(path)
         elif stat.S_ISDIR(stat_result.st_mode):
             file_type = "dir"
         elif stat.S_ISLNK(stat_result.st_mode):
             file_type = "symlink"
+            size = str(stat_result.st_size)
             target = os.readlink(path)
+        else:
+            size = str(stat_result.st_size)
         mtime = "-" if mtime_mode == "ignore" else str(int(stat_result.st_mtime))
+        # Directory st_size reflects host filesystem allocation details, e.g.
+        # the same children may occupy 16384 bytes in one build dir and 20480
+        # in another. Excluding it keeps the manifest focused on semantic tree
+        # content instead of ext4 bookkeeping noise.
         handle.write(
             f"{relative_path}\t{file_type}\t{stat.S_IMODE(stat_result.st_mode):04o}\t"
-            f"{stat_result.st_size}\t{mtime}\t{target}\t{sha256}\n"
+            f"{size}\t{mtime}\t{target}\t{sha256}\n"
         )
 PY
 
