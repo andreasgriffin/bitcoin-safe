@@ -40,12 +40,13 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
@@ -59,7 +60,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 
 from ...signals import WalletFunctions
-from .util import Message, MessageType, generate_help_button
+from .util import Message, MessageType
 
 logger = logging.getLogger(__name__)
 
@@ -168,8 +169,10 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
         loop_in_thread: LoopInThread,
     ) -> None:
         """Initialize instance."""
-        screenshots = ScreenshotsRegisterMultisig()
-        self.button_help = generate_help_button(screenshots, title="Help")
+        self._help_widget: ScreenshotsRegisterMultisig | None = None
+        self.button_help = QPushButton()
+        self.button_help.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
+        self.button_help.clicked.connect(self._show_help_widget)
 
         super().__init__(network, wallet_functions=wallet_functions, loop_in_thread=loop_in_thread)
 
@@ -189,8 +192,33 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         """CloseEvent."""
+        if self._help_widget:
+            self._help_widget.close()
         self.signal_end_hwi_blocker.emit()
         return super().closeEvent(a0)
+
+    def _show_help_widget(self) -> None:
+        """Show a fresh help window each time to avoid stale deleted child widgets."""
+        if self._help_widget:
+            try:
+                self._help_widget.destroyed.disconnect(self._clear_help_widget)
+            except TypeError:
+                pass
+            self._help_widget.close()
+
+        self._help_widget = ScreenshotsRegisterMultisig(parent=None)
+        self._help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        self._help_widget.destroyed.connect(self._clear_help_widget)
+        self._help_widget.setWindowTitle(self.button_help.text())
+        self._help_widget.setWindowFlag(Qt.WindowType.Window, True)
+        self._help_widget.show()
+        self._help_widget.raise_()
+        self._help_widget.activateWindow()
+
+    def _clear_help_widget(self, destroyed_widget: QObject | None = None) -> None:
+        """Clear the cached help window reference after the window is destroyed."""
+        _ = destroyed_widget
+        self._help_widget = None
 
     def updateUi(self) -> None:
         """UpdateUi."""
