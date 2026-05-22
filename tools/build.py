@@ -362,6 +362,9 @@ class Builder:
 
         logger.info("Building docker image.")
         run_local(f'docker build {DOCKER_BUILD_FLAGS} -t {docker_image} "{path_build}"')
+        docker_image_id = subprocess.check_output(
+            ["docker", "image", "inspect", "--format", "{{.Id}}", docker_image], text=True
+        ).strip()
 
         PROJECT_ROOT_OR_FRESHCLONE_ROOT = self.prepare_project_root_for_build(
             project_root=PROJECT_ROOT,
@@ -379,6 +382,8 @@ class Builder:
             f"{container_run_args} "
             f"-e BITCOINSAFE_BUILD_UID={BUILD_UID} "
             f"-e BITCOINSAFE_BUILD_GID={BUILD_GID} "
+            f"-e BITCOINSAFE_DOCKER_IMAGE={docker_image} "
+            f"-e BITCOINSAFE_DOCKER_IMAGE_ID={docker_image_id} "
             f'-v "{PROJECT_ROOT_OR_FRESHCLONE_ROOT}":{container_project_root} '
             f"--rm "
             f"--workdir {container_project_root}/{build_folder} "

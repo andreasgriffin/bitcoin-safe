@@ -9,12 +9,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORK_DIR="${SCRIPT_DIR}/build/repro-check"
 RUN1_DIR="${WORK_DIR}/run1"
 RUN2_DIR="${WORK_DIR}/run2"
-REPO1_DIR="${WORK_DIR}/repo1"
-REPO2_DIR="${WORK_DIR}/repo2"
-CHECKOUT1_DIR="${WORK_DIR}/checkout1"
-CHECKOUT2_DIR="${WORK_DIR}/checkout2"
+IMPORT_REPO1_DIR="${WORK_DIR}/import-repo1"
+IMPORT_REPO2_DIR="${WORK_DIR}/import-repo2"
+IMPORT_CHECKOUT1_DIR="${WORK_DIR}/import-checkout1"
+IMPORT_CHECKOUT2_DIR="${WORK_DIR}/import-checkout2"
 SOURCE_DATE_EPOCH="$(git -C "${PROJECT_ROOT}" show -s --format=%ct HEAD)"
-VERSION="$(git -C "${PROJECT_ROOT}" describe --tags --always --abbrev=20)"
 
 source "${SCRIPT_DIR}/flatpak_common.sh"
 
@@ -25,22 +24,85 @@ require_clean_checkout() {
         || fail "A clean checkout is required for reproducibility checks."
 }
 
-build_once() {
+require_host_build_tools() {
+    command -v docker >/dev/null 2>&1 || fail "docker is required for Flatpak reproducibility checks."
+    command -v poetry >/dev/null 2>&1 || fail "poetry is required for Flatpak reproducibility checks."
+}
+
+prepare_run_dir() {
     local run_dir="$1"
 
     rm -rf "${run_dir}"
     mkdir -p "${run_dir}/dist"
-    BITCOINSAFE_FLATPAK_SKIP_INSTALL_AND_TEST=1 \
-    BITCOINSAFE_FLATPAK_VERSION="${VERSION}" \
-    BITCOINSAFE_SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH}" \
-        bash "${SCRIPT_DIR}/build_and_test.sh" "${PROJECT_ROOT}" "${run_dir}/dist" "${APP_ID}"
+}
+
+copy_latest_repro_debug() {
+    local run_dir="$1"
+    local latest_debug_dir="${PROJECT_ROOT}/tools/build-linux/flatpak/build/repro-debug/latest"
+
+    [ -d "${latest_debug_dir}" ] || fail "Missing reproducibility diagnostics at ${latest_debug_dir}."
+    cp -a "${latest_debug_dir}" "${run_dir}/repro-debug"
+}
+
+copy_flatpak_bundle() {
+    local run_dir="$1"
+    local bundle_path
+
+    bundle_path="$(find "${PROJECT_ROOT}/dist" -maxdepth 1 -type f -name '*.flatpak' | sort | head -n 1)"
+    [ -n "${bundle_path}" ] || fail "No Flatpak bundle was produced in ${PROJECT_ROOT}/dist."
+    cp -a "${bundle_path}" "${run_dir}/dist/"
+}
+
+build_once() {
+    local run_dir="$1"
+
+    prepare_run_dir "${run_dir}"
+    find "${PROJECT_ROOT}/dist" -maxdepth 1 -type f -name '*.flatpak' -delete 2>/dev/null || true
+
+    PATH="$(poetry -C "${PROJECT_ROOT}" env info -p)/bin:${PATH}" \
+        poetry -C "${PROJECT_ROOT}" run python tools/build.py --targets flatpak --commit None
+
+    copy_flatpak_bundle "${run_dir}"
+    copy_latest_repro_debug "${run_dir}"
 }
 
 bundle_path_for() {
     find "$1/dist" -type f -name '*.flatpak' | sort | head -n 1
 }
 
-checkout_bundle_tree() {
+compare_text_file() {
+    local description="$1"
+    local first_path="$2"
+    local second_path="$3"
+
+    if cmp -s "${first_path}" "${second_path}"; then
+        return 0
+    fi
+
+    info "${description}"
+    diff -u "${first_path}" "${second_path}" | sed -n '1,200p' || true
+    exit 1
+}
+
+compare_manifest_stage() {
+    local description="$1"
+    local manifest_name="$2"
+    local run1_debug_dir="$3"
+    local run2_debug_dir="$4"
+
+    if cmp -s "${run1_debug_dir}/${manifest_name}.sha256" "${run2_debug_dir}/${manifest_name}.sha256"; then
+        return 0
+    fi
+
+    info "${description}"
+    info "run1 ${manifest_name} hash: $(cat "${run1_debug_dir}/${manifest_name}.sha256")"
+    info "run2 ${manifest_name} hash: $(cat "${run2_debug_dir}/${manifest_name}.sha256")"
+    diff -u "${run1_debug_dir}/${manifest_name}.manifest" "${run2_debug_dir}/${manifest_name}.manifest" \
+        | sed -n '1,200p' || true
+    exit 1
+}
+
+checkout_imported_bundle_tree() {
     local bundle_path="$1"
     local repo_dir="$2"
     local checkout_dir="$3"
@@ -48,26 +110,92 @@ checkout_bundle_tree() {
 
     rm -rf "${repo_dir}" "${checkout_dir}"
     mkdir -p "${repo_dir}"
-    # Compare imported OSTree payloads when bundle hashes differ. This tells us
-    # whether the drift is inside the app files or only in outer bundle
-    # metadata.
     flatpak build-import-bundle --no-update-summary "${repo_dir}" "${bundle_path}" >/dev/null
     ref="$(ostree refs --repo="${repo_dir}" | head -n 1)"
     [ -n "${ref}" ] || fail "No OSTree ref was imported from ${bundle_path}."
     ostree --repo="${repo_dir}" checkout "${ref}" "${checkout_dir}"
 }
 
+compare_imported_bundle_trees() {
+    local bundle1="$1"
+    local bundle2="$2"
+
+    checkout_imported_bundle_tree "${bundle1}" "${IMPORT_REPO1_DIR}" "${IMPORT_CHECKOUT1_DIR}"
+    checkout_imported_bundle_tree "${bundle2}" "${IMPORT_REPO2_DIR}" "${IMPORT_CHECKOUT2_DIR}"
+
+    if diff -qr "${IMPORT_CHECKOUT1_DIR}" "${IMPORT_CHECKOUT2_DIR}" >/dev/null; then
+        fail "Outer Flatpak bundles differ, but the imported bundle trees match. This points to bundle-level metadata drift."
+    fi
+
+    diff -qr "${IMPORT_CHECKOUT1_DIR}" "${IMPORT_CHECKOUT2_DIR}" | sed -n '1,200p' || true
+    fail "Imported bundle payload trees differ even though earlier checkpoints matched."
+}
+
+compare_run_diagnostics() {
+    local run1_debug_dir="$1"
+    local run2_debug_dir="$2"
+    local bundle1="$3"
+    local bundle2="$4"
+
+    compare_text_file \
+        "Build context differs between Flatpak runs." \
+        "${run1_debug_dir}/context.txt" \
+        "${run2_debug_dir}/context.txt"
+
+    compare_manifest_stage \
+        "Staged source tree differs between Docker Flatpak builds." \
+        "source-tree" \
+        "${run1_debug_dir}" \
+        "${run2_debug_dir}"
+
+    compare_manifest_stage \
+        "Finalized /app tree differs between Docker Flatpak builds." \
+        "builder-files" \
+        "${run1_debug_dir}" \
+        "${run2_debug_dir}"
+
+    if ! cmp -s "${run1_debug_dir}/ostree-files.sha256" "${run2_debug_dir}/ostree-files.sha256"; then
+        info "Exported OSTree file tree differs while finalized /app tree matches."
+        info "run1 ostree-files hash: $(cat "${run1_debug_dir}/ostree-files.sha256")"
+        info "run2 ostree-files hash: $(cat "${run2_debug_dir}/ostree-files.sha256")"
+        diff -u "${run1_debug_dir}/ostree-files.manifest" "${run2_debug_dir}/ostree-files.manifest" \
+            | sed -n '1,200p' || true
+        exit 1
+    fi
+
+    if ! cmp -s "${run1_debug_dir}/ostree-commit.txt" "${run2_debug_dir}/ostree-commit.txt"; then
+        info "Exported OSTree commit differs while finalized /app tree and exported file tree match."
+        info "run1 ostree commit: $(cat "${run1_debug_dir}/ostree-commit.txt")"
+        info "run2 ostree commit: $(cat "${run2_debug_dir}/ostree-commit.txt")"
+        diff -u "${run1_debug_dir}/ostree-show.txt" "${run2_debug_dir}/ostree-show.txt" | sed -n '1,200p' || true
+        exit 1
+    fi
+
+    if cmp -s "${run1_debug_dir}/bundle.sha256" "${run2_debug_dir}/bundle.sha256"; then
+        info "Reproducibility check passed: bundle hashes match exactly."
+        return
+    fi
+
+    info "run1 bundle hash: $(cat "${run1_debug_dir}/bundle.sha256")"
+    info "run2 bundle hash: $(cat "${run2_debug_dir}/bundle.sha256")"
+
+    if cmp -s "${run1_debug_dir}/bundle-imported-commit.txt" "${run2_debug_dir}/bundle-imported-commit.txt"; then
+        fail "Outer Flatpak bundle differs while imported bundle commit matches."
+    fi
+
+    compare_imported_bundle_trees "${bundle1}" "${bundle2}"
+}
+
 require_clean_checkout
+require_host_build_tools
 install_flatpak_prerequisites
-check_flatpak_sandbox_support
-ensure_flathub_remote
 
 rm -rf "${WORK_DIR}"
 mkdir -p "${WORK_DIR}"
 
-info "Building first Flatpak bundle."
+info "Building first Flatpak bundle through the Docker build path."
 build_once "${RUN1_DIR}"
-info "Building second Flatpak bundle."
+info "Building second Flatpak bundle through the Docker build path."
 build_once "${RUN2_DIR}"
 
 BUNDLE1="$(bundle_path_for "${RUN1_DIR}")"
@@ -75,23 +203,4 @@ BUNDLE2="$(bundle_path_for "${RUN2_DIR}")"
 [ -n "${BUNDLE1}" ] || fail "First Flatpak bundle was not produced."
 [ -n "${BUNDLE2}" ] || fail "Second Flatpak bundle was not produced."
 
-SHA1="$(sha256sum "${BUNDLE1}" | awk '{print $1}')"
-SHA2="$(sha256sum "${BUNDLE2}" | awk '{print $1}')"
-info "First bundle SHA256:  ${SHA1}"
-info "Second bundle SHA256: ${SHA2}"
-
-if [ "${SHA1}" = "${SHA2}" ]; then
-    info "Reproducibility check passed: bundle hashes match exactly."
-    exit 0
-fi
-
-info "Bundle hashes differ; comparing imported OSTree trees."
-checkout_bundle_tree "${BUNDLE1}" "${REPO1_DIR}" "${CHECKOUT1_DIR}"
-checkout_bundle_tree "${BUNDLE2}" "${REPO2_DIR}" "${CHECKOUT2_DIR}"
-
-if diff -qr "${CHECKOUT1_DIR}" "${CHECKOUT2_DIR}" >/dev/null; then
-    fail "Flatpak payload trees match, but the outer .flatpak bundles differ."
-fi
-
-diff -qr "${CHECKOUT1_DIR}" "${CHECKOUT2_DIR}" || true
-fail "Flatpak payload trees differ between repeated builds."
+compare_run_diagnostics "${RUN1_DIR}/repro-debug" "${RUN2_DIR}/repro-debug" "${BUNDLE1}" "${BUNDLE2}"

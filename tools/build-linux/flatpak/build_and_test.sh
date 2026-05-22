@@ -11,6 +11,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST_PATH="${SCRIPT_DIR}/${APP_ID}.yml"
 INSTALL_AND_TEST_SCRIPT="${SCRIPT_DIR}/install_and_smoke_test_bundle.sh"
 WORK_DIR="${SCRIPT_DIR}/build"
+REPRO_DEBUG_ROOT_DIR="${WORK_DIR}/repro-debug"
+REPRO_DEBUG_DIR="${BITCOINSAFE_FLATPAK_REPRO_DEBUG_DIR:-${REPRO_DEBUG_ROOT_DIR}/latest}"
+METADATA_PROBE_DEBUG_DIR="${REPRO_DEBUG_DIR}/metadata-probe"
 SOURCE_STAGING_DIR="${WORK_DIR}/source-tree"
 BUILDER_DIR="${WORK_DIR}/builder"
 REPO_DIR="${WORK_DIR}/repo"
@@ -37,6 +40,35 @@ resolve_source_date_epoch() {
     fail "SOURCE_DATE_EPOCH is required for reproducible Flatpak builds."
 }
 
+setup_repro_debug_dir() {
+    rm -rf "${REPRO_DEBUG_DIR}"
+    mkdir -p "${REPRO_DEBUG_DIR}" "${METADATA_PROBE_DEBUG_DIR}"
+}
+
+sha256_file() {
+    python3 - <<'PY' "$1"
+from pathlib import Path
+import hashlib
+import sys
+
+digest = hashlib.sha256()
+with Path(sys.argv[1]).open("rb") as handle:
+    for chunk in iter(lambda: handle.read(1 << 20), b""):
+        digest.update(chunk)
+print(digest.hexdigest())
+PY
+}
+
+emit_hash_file() {
+    local input_path="$1"
+    local output_path="$2"
+    local digest
+
+    digest="$(sha256_file "${input_path}")"
+    printf '%s\n' "${digest}" > "${output_path}"
+    printf '%s\n' "${digest}"
+}
+
 normalize_tree_timestamps() {
     local path
 
@@ -53,6 +85,155 @@ format_source_date_timestamp() {
     # flatpak build-export expects an RFC3339 timestamp, e.g.
     # "2026-05-22T07:30:00Z", not a raw unix epoch.
     date -u -d "@${SOURCE_DATE_EPOCH}" "+%Y-%m-%dT%H:%M:%SZ"
+}
+
+emit_tree_manifest() {
+    local root_path="$1"
+    local output_dir="$2"
+    local label="$3"
+    local mtime_mode="${4:-filesystem}"
+    local manifest_path="${output_dir}/${label}.manifest"
+    local hash_path="${output_dir}/${label}.sha256"
+    local digest
+
+    python3 - <<'PY' "${root_path}" "${manifest_path}" "${mtime_mode}"
+from __future__ import annotations
+
+from pathlib import Path
+import hashlib
+import os
+import stat
+import sys
+
+root = Path(sys.argv[1]).resolve()
+manifest_path = Path(sys.argv[2])
+mtime_mode = sys.argv[3]
+
+
+def iter_paths(path: Path):
+    yield path
+    if not path.is_dir():
+        return
+
+    def walk_dir(directory: Path):
+        for entry in sorted(os.scandir(directory), key=lambda item: item.name):
+            entry_path = Path(entry.path)
+            yield entry_path
+            if entry.is_dir(follow_symlinks=False):
+                yield from walk_dir(entry_path)
+
+    yield from walk_dir(path)
+
+
+def file_digest(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+manifest_path.parent.mkdir(parents=True, exist_ok=True)
+with manifest_path.open("w", encoding="utf-8") as handle:
+    handle.write("path\ttype\tmode\tsize\tmtime\ttarget\tsha256\n")
+    for path in iter_paths(root):
+        relative_path = "." if path == root else path.relative_to(root).as_posix()
+        stat_result = os.lstat(path)
+        file_type = "other"
+        target = "-"
+        sha256 = "-"
+        if stat.S_ISREG(stat_result.st_mode):
+            file_type = "file"
+            sha256 = file_digest(path)
+        elif stat.S_ISDIR(stat_result.st_mode):
+            file_type = "dir"
+        elif stat.S_ISLNK(stat_result.st_mode):
+            file_type = "symlink"
+            target = os.readlink(path)
+        mtime = "-" if mtime_mode == "ignore" else str(int(stat_result.st_mtime))
+        handle.write(
+            f"{relative_path}\t{file_type}\t{stat.S_IMODE(stat_result.st_mode):04o}\t"
+            f"{stat_result.st_size}\t{mtime}\t{target}\t{sha256}\n"
+        )
+PY
+
+    digest="$(emit_hash_file "${manifest_path}" "${hash_path}")"
+    info "${label} manifest hash: ${digest}"
+}
+
+emit_build_context() {
+    local output_dir="$1"
+    local context_path="${output_dir}/context.txt"
+    local context_hash_path="${output_dir}/context.sha256"
+    local git_commit git_describe arch digest
+
+    git_commit="$(git -C "${PROJECT_ROOT}" rev-parse HEAD)"
+    git_describe="$(git -C "${PROJECT_ROOT}" describe --tags --dirty --always --abbrev=20)"
+    arch="$(flatpak --default-arch)"
+
+    cat > "${context_path}" <<EOF
+git_commit=${git_commit}
+git_describe=${git_describe}
+source_date_epoch=${SOURCE_DATE_EPOCH}
+source_date_timestamp=${SOURCE_DATE_TIMESTAMP}
+flatpak_version=$(flatpak --version | head -n 1)
+flatpak_builder_version=$(flatpak-builder --version | head -n 1)
+appstreamcli_version=$(appstreamcli --version | head -n 1)
+python_version=$(python3 --version)
+arch=${arch}
+docker_image=${BITCOINSAFE_DOCKER_IMAGE:-unknown}
+docker_image_id=${BITCOINSAFE_DOCKER_IMAGE_ID:-unknown}
+EOF
+
+    digest="$(emit_hash_file "${context_path}" "${context_hash_path}")"
+    info "build context hash: ${digest}"
+}
+
+get_app_ref() {
+    local arch="$1"
+
+    printf 'app/%s/%s/%s\n' "${APP_ID}" "${arch}" "${FLATPAK_BRANCH}"
+}
+
+emit_ostree_ref_manifest() {
+    local repo_dir="$1"
+    local ref_name="$2"
+    local output_dir="$3"
+    local commit
+    local checkout_dir
+
+    commit="$(ostree rev-parse --repo="${repo_dir}" "${ref_name}")"
+    printf '%s\n' "${ref_name}" > "${output_dir}/ostree-ref.txt"
+    printf '%s\n' "${commit}" > "${output_dir}/ostree-commit.txt"
+    ostree show --repo="${repo_dir}" "${commit}" > "${output_dir}/ostree-show.txt"
+    ostree show --repo="${repo_dir}" --raw "${commit}" > "${output_dir}/ostree-show.raw"
+    ostree show --repo="${repo_dir}" --list-metadata-keys "${commit}" > "${output_dir}/ostree-metadata-keys.txt"
+    ostree ls --repo="${repo_dir}" -R -C "${commit}" > "${output_dir}/ostree-ls.txt"
+
+    checkout_dir="$(mktemp -d "${WORK_DIR}/ostree-checkout.XXXXXX")"
+    ostree --repo="${repo_dir}" checkout "${commit}" "${checkout_dir}"
+    emit_tree_manifest "${checkout_dir}" "${output_dir}" "ostree-files" "ignore"
+    rm -rf "${checkout_dir}"
+}
+
+emit_bundle_manifest() {
+    local bundle_path="$1"
+    local output_dir="$2"
+    local digest
+    local import_repo_dir
+    local imported_ref
+    local imported_commit
+
+    digest="$(emit_hash_file "${bundle_path}" "${output_dir}/bundle.sha256")"
+    info "bundle hash: ${digest}"
+
+    import_repo_dir="$(mktemp -d "${WORK_DIR}/bundle-import.XXXXXX")"
+    flatpak build-import-bundle --no-update-summary "${import_repo_dir}" "${bundle_path}" >/dev/null
+    imported_ref="$(ostree refs --repo="${import_repo_dir}" | head -n 1)"
+    imported_commit="$(ostree rev-parse --repo="${import_repo_dir}" "${imported_ref}")"
+    printf '%s\n' "${imported_ref}" > "${output_dir}/bundle-imported-ref.txt"
+    printf '%s\n' "${imported_commit}" > "${output_dir}/bundle-imported-commit.txt"
+    rm -rf "${import_repo_dir}"
 }
 
 get_project_version() {
@@ -156,8 +337,10 @@ EOF
 
 run_metadata_compose_smoke_test() {
     local arch
+    local probe_ref
 
     arch="$(flatpak --default-arch)"
+    probe_ref="$(get_app_ref "${arch}")"
     write_metadata_probe_files
 
     info "Running metadata compose smoke test."
@@ -183,6 +366,9 @@ run_metadata_compose_smoke_test() {
         "${METADATA_PROBE_REPO_DIR}" \
         "${METADATA_PROBE_BUILDER_DIR}" \
         "${FLATPAK_BRANCH}"
+
+    emit_tree_manifest "${METADATA_PROBE_BUILDER_DIR}/files" "${METADATA_PROBE_DEBUG_DIR}" "builder-files"
+    emit_ostree_ref_manifest "${METADATA_PROBE_REPO_DIR}" "${probe_ref}" "${METADATA_PROBE_DEBUG_DIR}"
 
     desktop-file-validate "${METADATA_PROBE_BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
     test -f "${METADATA_PROBE_BUILDER_DIR}/files/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
@@ -211,15 +397,17 @@ stage_source_tree() {
     # The copied tree inherits fresh filesystem mtimes from tar/extract, so
     # reset them to the commit timestamp before flatpak-builder sees them.
     normalize_tree_timestamps "${SOURCE_STAGING_DIR}"
+    emit_tree_manifest "${SOURCE_STAGING_DIR}" "${REPRO_DEBUG_DIR}" "source-tree"
 }
 
 build_flatpak_bundle() {
-    local arch bundle_name bundle_path project_version
+    local arch bundle_name bundle_path project_version ref_name
 
     arch="$(flatpak --default-arch)"
     project_version="$(get_project_version)"
     bundle_name="Bitcoin-Safe-${project_version}-${arch}.flatpak"
     bundle_path="${DIST_DIR}/${bundle_name}"
+    ref_name="$(get_app_ref "${arch}")"
 
     rm -rf "${BUILDER_DIR}" "${REPO_DIR}" "${STATE_DIR}"
     mkdir -p "${BUILDER_DIR}" "${REPO_DIR}" "${STATE_DIR}" "${DIST_DIR}" "${WORK_DIR}"
@@ -236,6 +424,8 @@ build_flatpak_bundle() {
         "${BUILDER_DIR}" \
         "${MANIFEST_PATH}"
 
+    emit_tree_manifest "${BUILDER_DIR}/files" "${REPRO_DEBUG_DIR}" "builder-files"
+
     # AppImage already controls its final packaging timestamp explicitly. Do
     # the same for Flatpak export so equal app dirs produce equal OSTree
     # commits and bundles.
@@ -247,6 +437,8 @@ build_flatpak_bundle() {
         "${REPO_DIR}" \
         "${BUILDER_DIR}" \
         "${FLATPAK_BRANCH}"
+
+    emit_ostree_ref_manifest "${REPO_DIR}" "${ref_name}" "${REPRO_DEBUG_DIR}"
 
     info "Validating exported desktop metadata."
     desktop-file-validate "${BUILDER_DIR}/files/share/applications/${APP_ID}.desktop"
@@ -263,6 +455,7 @@ build_flatpak_bundle() {
         --arch="${arch}"
 
     test -f "${bundle_path}" || fail "Flatpak bundle was not created."
+    emit_bundle_manifest "${bundle_path}" "${REPRO_DEBUG_DIR}"
     printf '%s\n' "${bundle_path}" > "${WORK_DIR}/bundle-path.txt"
 }
 
@@ -270,12 +463,14 @@ export TZ=UTC
 export SOURCE_DATE_EPOCH="$(resolve_source_date_epoch)"
 export SOURCE_DATE_TIMESTAMP="$(format_source_date_timestamp)"
 
+setup_repro_debug_dir
 # Use the git commit time as the single reproducibility clock for staging,
 # flatpak-builder, and flatpak build-export.
 info "Using SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}."
 info "Using Flatpak export timestamp ${SOURCE_DATE_TIMESTAMP}."
 install_flatpak_prerequisites
 print_flatpak_toolchain_summary
+emit_build_context "${REPRO_DEBUG_DIR}"
 check_flatpak_sandbox_support
 ensure_flathub_remote
 run_metadata_compose_smoke_test

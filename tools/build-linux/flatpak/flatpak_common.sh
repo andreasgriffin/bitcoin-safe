@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REQUIRED_TOOLS=(appstreamcli flatpak flatpak-builder dbus-run-session desktop-file-validate timeout tar)
+REQUIRED_TOOLS=(appstreamcli flatpak flatpak-builder dbus-run-session desktop-file-validate ostree timeout tar)
 
 fail() {
     printf 'ERROR: %s\n' "$*" >&2
@@ -48,7 +48,8 @@ install_flatpak_prerequisites() {
         dbus-daemon \
         desktop-file-utils \
         flatpak \
-        flatpak-builder
+        flatpak-builder \
+        ostree
     ensure_appstream_cli_compose_support
 }
 
