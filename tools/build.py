@@ -65,7 +65,7 @@ assert ENABLE_TIMERS
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 DEFAULT_MODULE_NAME = "bitcoin_safe"
 DEFAULT_LOCALE_DIR = "gui/locales"
-FLATPAK_APP_ID = "org.bitcoinsafe.BitcoinSafe"
+FLATPAK_APP_ID = "org.bitcoin_safe.BitcoinSafe"
 FLATPAK_DOCKER_IMAGE = "bitcoin_safe-flatpak-builder-img"
 
 

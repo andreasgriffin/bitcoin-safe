@@ -4,7 +4,7 @@ set -euo pipefail
 
 PROJECT_ROOT="${1:?usage: build_and_test.sh <project-root> <dist-dir> [app-id]}"
 DIST_DIR="${2:?usage: build_and_test.sh <project-root> <dist-dir> [app-id]}"
-APP_ID="${3:-org.bitcoinsafe.BitcoinSafe}"
+APP_ID="${3:-org.bitcoin_safe.BitcoinSafe}"
 FLATPAK_BRANCH="stable"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

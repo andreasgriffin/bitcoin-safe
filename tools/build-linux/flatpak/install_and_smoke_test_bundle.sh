@@ -3,7 +3,7 @@
 set -euo pipefail
 
 BUNDLE_PATH="${1:?usage: install_and_smoke_test_bundle.sh <bundle-path> [app-id]}"
-APP_ID="${2:-org.bitcoinsafe.BitcoinSafe}"
+APP_ID="${2:-org.bitcoin_safe.BitcoinSafe}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORK_DIR="${SCRIPT_DIR}/build"

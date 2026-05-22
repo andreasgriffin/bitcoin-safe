@@ -23,7 +23,7 @@ mkdir -p "${DISTDIR}"
 export BITCOINSAFE_FLATPAK_SKIP_INSTALL_AND_TEST=1
 export BITCOINSAFE_FLATPAK_VERSION="${VERSION}"
 
-bash "${CONTRIB_FLATPAK}/build_and_test.sh" "${PROJECT_ROOT}" "${DISTDIR}" "org.bitcoinsafe.BitcoinSafe"
+bash "${CONTRIB_FLATPAK}/build_and_test.sh" "${PROJECT_ROOT}" "${DISTDIR}" "org.bitcoin_safe.BitcoinSafe"
 
 if [ "$(id -u)" = "0" ] && [ -n "${BITCOINSAFE_BUILD_UID:-}" ] && [ -n "${BITCOINSAFE_BUILD_GID:-}" ]; then
     chown -R "${BITCOINSAFE_BUILD_UID}:${BITCOINSAFE_BUILD_GID}" "${CONTRIB_FLATPAK}"

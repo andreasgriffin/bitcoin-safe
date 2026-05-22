@@ -1,4 +1,4 @@
-app-id: org.bitcoinsafe.BitcoinSafe
+app-id: org.bitcoin_safe.BitcoinSafe
 branch: stable
 runtime: org.kde.Platform
 runtime-version: "6.9"
@@ -108,18 +108,18 @@ modules:
             install -Dm755 "${executable}" "/app/bin/${executable_name}"
         done
         install -Dm755 tools/build-linux/flatpak/run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-        install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoinsafe.BitcoinSafe.svg
-        install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoinsafe.BitcoinSafe.png
-        install -Dm644 tools/build-linux/flatpak/org.bitcoinsafe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoinsafe.BitcoinSafe.metainfo.xml
+        install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+        install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
+        install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
         sed \
             -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \
-            -e 's#^Icon=.*#Icon=org.bitcoinsafe.BitcoinSafe#' \
+            -e 's#^Icon=.*#Icon=org.bitcoin_safe.BitcoinSafe#' \
             tools/resources/linux-bitcoin-safe.desktop \
-            > org.bitcoinsafe.BitcoinSafe.desktop
-        install -Dm644 org.bitcoinsafe.BitcoinSafe.desktop /app/share/applications/org.bitcoinsafe.BitcoinSafe.desktop
+            > org.bitcoin_safe.BitcoinSafe.desktop
+        install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
         mkdir -p /app/app
         ln -sfn ../share /app/app/share
-        rm -rf "${BUILD_VENV_ROOT}" dist org.bitcoinsafe.BitcoinSafe.desktop
+        rm -rf "${BUILD_VENV_ROOT}" dist org.bitcoin_safe.BitcoinSafe.desktop
     sources:
       - type: dir
         path: build/source-tree

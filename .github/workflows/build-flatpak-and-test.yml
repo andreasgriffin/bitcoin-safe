@@ -159,7 +159,7 @@ jobs:
             echo "No Flatpak bundle found for smoke test"
             exit 1
           fi
-          bash tools/build-linux/flatpak/install_and_smoke_test_bundle.sh "$BUNDLE_PATH" org.bitcoinsafe.BitcoinSafe
+          bash tools/build-linux/flatpak/install_and_smoke_test_bundle.sh "$BUNDLE_PATH" org.bitcoin_safe.BitcoinSafe
 
       - name: Upload Flatpak startup logs
         if: always()
@@ -170,5 +170,5 @@ jobs:
             tools/build-linux/flatpak/build/flatpak-run.log
             tools/build-linux/flatpak/build/flatpak-screenshot-*.xwd
             tools/build-linux/flatpak/build/flatpak-screenshot-*.png
-            ${{ env.HOME }}/.var/app/org.bitcoinsafe.BitcoinSafe/config/bitcoin_safe/bitcoin_safe.log
+            ${{ env.HOME }}/.var/app/org.bitcoin_safe.BitcoinSafe/config/bitcoin_safe/bitcoin_safe.log
           if-no-files-found: ignore

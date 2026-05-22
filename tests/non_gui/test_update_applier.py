@@ -265,7 +265,7 @@ def test_current_artifact_format_detects_flatpak_runtime_from_env(tmp_path: Path
     applier = UpdateApplier(
         system="Linux",
         current_binary=current_binary,
-        env={"FLATPAK_ID": "org.bitcoinsafe.BitcoinSafe"},
+        env={"FLATPAK_ID": "org.bitcoin_safe.BitcoinSafe"},
     )
 
     assert applier.current_artifact_format() == UpdateArtifactFormat.flatpak

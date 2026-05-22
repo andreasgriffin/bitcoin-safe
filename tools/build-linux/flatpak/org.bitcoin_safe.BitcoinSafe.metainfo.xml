@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.bitcoinsafe.BitcoinSafe</id>
+  <id>org.bitcoin_safe.BitcoinSafe</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
   <name>Bitcoin Safe</name>
   <summary>A desktop software for managing your cold storage wallets</summary>
-  <developer id="org.bitcoinsafe">
+  <developer id="org.bitcoin_safe">
     <name>Andreas Griffin</name>
   </developer>
-  <launchable type="desktop-id">org.bitcoinsafe.BitcoinSafe.desktop</launchable>
+  <launchable type="desktop-id">org.bitcoin_safe.BitcoinSafe.desktop</launchable>
   <description>
     <p>Bitcoin Safe is a bitcoin savings wallet focused on family-friendly multisig setup, hardware signers, and long-term self-custody.</p>
     <p>It supports USB, QR, and SD-card hardware wallet workflows, guided setup, PDF backups, transaction visualization, and synchronized labels across devices.</p>
