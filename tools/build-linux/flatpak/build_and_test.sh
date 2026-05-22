@@ -211,6 +211,7 @@ emit_ostree_ref_manifest() {
     ostree ls --repo="${repo_dir}" -R -C "${commit}" > "${output_dir}/ostree-ls.txt"
 
     checkout_dir="$(mktemp -d "${WORK_DIR}/ostree-checkout.XXXXXX")"
+    rm -rf "${checkout_dir}"
     ostree --repo="${repo_dir}" checkout "${commit}" "${checkout_dir}"
     emit_tree_manifest "${checkout_dir}" "${output_dir}" "ostree-files" "ignore"
     rm -rf "${checkout_dir}"
