@@ -111,6 +111,105 @@ def test_mempool_manager_ignores_html_fee_payload(monkeypatch) -> None:
     assert manager.data.mempool_dict["count"] == 4_500
 
 
+def test_mempool_manager_normalizes_empty_mempool_blocks_payload(monkeypatch) -> None:
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.SIGNET),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+    manager.network_config.mempool_url = "https://mempool.space/signet"
+
+    async def fake_fetch(url: str, proxies=None, timeout="default"):
+        del proxies, timeout
+        payloads = {
+            "https://mempool.space/signet/api/v1/fees/mempool-blocks": [],
+            "https://mempool.space/signet/api/v1/fees/recommended": {
+                "fastestFee": 2.0,
+                "halfHourFee": 1.5,
+                "hourFee": float(MIN_RELAY_FEE),
+                "economyFee": float(MIN_RELAY_FEE),
+                "minimumFee": float(MIN_RELAY_FEE),
+            },
+            "https://mempool.space/signet/api/mempool": {
+                "count": 0,
+                "vsize": 0,
+                "total_fee": 0,
+                "fee_histogram": [],
+            },
+        }
+        return payloads[url]
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+
+    asyncio.run(manager._set_data_from_mempoolspace())
+
+    assert manager.data.mempool_blocks == [
+        {
+            "blockSize": 1,
+            "blockVSize": 1,
+            "nTx": 0,
+            "totalFees": MIN_RELAY_FEE,
+            "medianFee": MIN_RELAY_FEE,
+            "feeRange": [MIN_RELAY_FEE, MIN_RELAY_FEE],
+        }
+    ]
+    assert manager.fee_rates_min_max(0) == (MIN_RELAY_FEE, MIN_RELAY_FEE)
+    assert manager.median_block_fee_rate(0) == MIN_RELAY_FEE
+    assert manager.block_info(0).median_fee == MIN_RELAY_FEE
+    assert manager.max_reasonable_fee_rate() == MIN_RELAY_FEE * 1.2
+
+
+def test_mempool_manager_ignores_invalid_fee_range_payload(monkeypatch) -> None:
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.SIGNET),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+    manager.network_config.mempool_url = "https://mempool.space/signet"
+    original_mempool_blocks = [dict(block) for block in manager.data.mempool_blocks]
+
+    async def fake_fetch(url: str, proxies=None, timeout="default"):
+        del proxies, timeout
+        payloads = {
+            "https://mempool.space/signet/api/v1/fees/mempool-blocks": [
+                {
+                    "blockSize": 975_000,
+                    "blockVSize": 975_000,
+                    "nTx": 1_800,
+                    "totalFees": 1_200_000,
+                    "medianFee": 12.0,
+                    "feeRange": [],
+                }
+            ],
+            "https://mempool.space/signet/api/v1/fees/recommended": manager.data.recommended,
+            "https://mempool.space/signet/api/mempool": manager.data.mempool_dict,
+        }
+        return payloads[url]
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+
+    asyncio.run(manager._set_data_from_mempoolspace())
+
+    assert manager.data.mempool_blocks == original_mempool_blocks
+
+
+def test_mempool_manager_accessors_fallback_when_blocks_are_empty() -> None:
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.SIGNET),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+    manager.data.mempool_blocks = []
+
+    assert manager.fee_rates_min_max(0) == (MIN_RELAY_FEE, MIN_RELAY_FEE)
+    assert manager.median_block_fee_rate(0) == MIN_RELAY_FEE
+    block_info = manager.block_info(0)
+    assert block_info.min_fee == MIN_RELAY_FEE
+    assert block_info.max_fee == MIN_RELAY_FEE
+    assert block_info.median_fee == MIN_RELAY_FEE
+    assert manager.max_reasonable_fee_rate() == MIN_RELAY_FEE * 1.2
+
+
 def test_mempool_defaults_are_normalized_and_legacy_slashless_values_still_work() -> None:
     assert get_mempool_url(bdk.Network.SIGNET)["default"] == "https://mempool.space/signet/"
     assert get_mempool_url(bdk.Network.TESTNET4)["default"] == "https://mempool.space/testnet4/"
