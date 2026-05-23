@@ -211,9 +211,32 @@ def _is_fee_rate(value: Any) -> bool:
 def _validated_mempool_blocks(data: Any) -> list[dict[str, Any]] | None:
     if not isinstance(data, list):
         return None
-    if not all(isinstance(block, dict) for block in data):
-        return None
-    return [dict(block) for block in data]
+    if not data:
+        return [
+            {
+                "blockSize": 1,
+                "blockVSize": 1,
+                "nTx": 0,
+                "totalFees": MIN_RELAY_FEE,
+                "medianFee": MIN_RELAY_FEE,
+                "feeRange": [MIN_RELAY_FEE, MIN_RELAY_FEE],
+            }
+        ]
+
+    validated_blocks: list[dict[str, Any]] = []
+    for block in data:
+        if not isinstance(block, dict):
+            return None
+        fee_range = block.get("feeRange")
+        median_fee = block.get("medianFee")
+        if not isinstance(fee_range, list) or not fee_range:
+            return None
+        if not all(_is_fee_rate(fee_rate) for fee_rate in fee_range):
+            return None
+        if not _is_fee_rate(median_fee):
+            return None
+        validated_blocks.append(dict(block))
+    return validated_blocks
 
 
 def _validated_recommended_fees(data: Any) -> dict[str, float] | None:
@@ -279,6 +302,14 @@ class MempoolManager(QObject):
         self.time_of_data = datetime.datetime.fromtimestamp(0)
         logger.debug(f"initialized {self.__class__.__name__}")
 
+    def _fallback_mempool_block(self) -> dict[str, Any]:
+        return dict(self.data._empty_mempool_blocks()[0])
+
+    def _effective_mempool_block(self, block_index: int) -> dict[str, Any]:
+        blocks = self.data.mempool_blocks if self.data.mempool_blocks else [self._fallback_mempool_block()]
+        clamped_index = min(block_index, len(blocks) - 1)
+        return blocks[clamped_index]
+
     def block_info(self, block_index: int, decimal_precision=1) -> BlockInfo:
         """Block info."""
         min_fee, max_fee = self.fee_rates_min_max(block_index)
@@ -289,17 +320,16 @@ class MempoolManager(QObject):
 
     def fee_rates_min_max(self, block_index: int) -> tuple[int, float]:
         """Fee rates min max."""
-        block_index = min(block_index, len(self.data.mempool_blocks) - 1)
-        fee_rates = self.data.mempool_blocks[block_index]["feeRange"]
+        fee_rates = self._effective_mempool_block(block_index)["feeRange"]
         return min(fee_rates), max(fee_rates)
 
     def median_block_fee_rate(self, block_index: int, decimal_precision=1) -> float:
         """Median block fee rate."""
-        block_index = min(block_index, len(self.data.mempool_blocks) - 1)
+        block = self._effective_mempool_block(block_index)
         # mempool returns media fee of 0, even though the minimum feein feeRange is 1
-        median = round(self.data.mempool_blocks[block_index]["medianFee"], decimal_precision)
-        min_in_feerange = round(min(self.data.mempool_blocks[block_index]["feeRange"]), decimal_precision)
-        max_in_feerange = round(max(self.data.mempool_blocks[block_index]["feeRange"]), decimal_precision)
+        median = round(block["medianFee"], decimal_precision)
+        min_in_feerange = round(min(block["feeRange"]), decimal_precision)
+        max_in_feerange = round(max(block["feeRange"]), decimal_precision)
         if median < min_in_feerange:
             median = min_in_feerange
         if median > max_in_feerange:
