@@ -3126,7 +3126,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Plugin löschen</translation>
+			<translation>Bitcoin Safe lädt Blockzusammenfassungen aus Datenschutzgründen von mehreren Knoten herunter. Nach dieser anfänglichen Synchronisierung werden Updates schnell sein.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3162,7 +3162,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe lädt Blockzusammenfassungen aus Datenschutzgründen von mehreren Nodes herunter. Nach dieser anfänglichen Synchronisierung werden Updates schnell sein. Wenn Sie Ihren eigenen Electrum-Server haben oder nicht warten möchten, verbinden Sie sich in den Netzwerkeinstellungen mit einem öffentlichen Electrum-Server.</translation>
+			<translation>Wenn Sie Ihren eigenen Electrum-Server haben oder nicht warten möchten, verbinden Sie sich in den Netzwerkeinstellungen mit einem öffentlichen Electrum-Server.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3211,7 +3211,7 @@ von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Update the active server or proxy configuration in network settings.</source>
-			<translation>Aktualisiere den aktiven Server oder die Proxy-Konfiguration in den Netzwerkeinstellungen.</translation>
+			<translation>Aktualisieren Sie den aktiven Server oder die Proxy-Konfiguration in den Netzwerkeinstellungen.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3226,12 +3226,12 @@ von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Your wallet syncs through the configured Electrum server.</source>
-			<translation>Deine Wallet synchronisiert über den konfigurierten Electrum-Server.</translation>
+			<translation>Ihre Wallet synchronisiert über den konfigurierten Electrum-Server.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
-			<translation>Deine Wallet synchronisiert über den konfigurierten Esplora-Server.</translation>
+			<translation>Ihre Wallet synchronisiert über den konfigurierten Esplora-Server.</translation>
 		</message>
 	</context>
 	<context>
@@ -3408,7 +3408,7 @@ Mempool-Instanz: {server}</translation>
 plugin and during subscription purchase!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy in this version.</source>
-			<translation>Der Proxy gilt nicht für das Sync&amp;Chat-Plugin und während des Kaufs eines Abonnements! Hostname-basierte Serverstandorte und DNS-seed-Erkennung werden in dieser Version nicht über den Proxy aufgelöst.</translation>
+			<translation>Der Proxy gilt nicht für das Sync&amp;Chat-Plugin und während des Kaufs eines Abonnements! Hostname-basierte Serverstandorte und DNS-Seed-Erkennung werden in dieser Version nicht über den Proxy aufgelöst.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -7499,7 +7499,7 @@ Country: {country}</source>
 		<name>net_conf</name>
 		<message>
 			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters sind eine private und schnelle Möglichkeit, alle Blockchain-Informationen zu erhalten. Die Wallet verbindet sich direkt mit mehreren bitcoin-Knoten und lädt Blockzusammenfassungen (Compact Block Filters) von ihnen herunter.&lt;br&gt;Wenn du im Abschnitt „P2P-Überwachung“ unten manuelle Peers angibst, verbindet sich Compact Block Filters zuerst mit ihnen.</translation>
+			<translation>Compact Block Filters sind eine private und schnelle Möglichkeit, alle Blockchain-Informationen zu erhalten. Die Wallet verbindet sich direkt mit mehreren Bitcoin-Knoten und lädt Blockzusammenfassungen (Compact Block Filters) von ihnen herunter.&lt;br&gt;Wenn Sie im Abschnitt „P2P-Überwachung“ unten manuelle Peers angeben, verbinden sich die Compact Block Filters zuerst mit ihnen.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8539,7 +8539,7 @@ Erfordert, dass die ursprüngliche Transaktion RBF signalisiert und Ihre Wallet 
 		<name>util</name>
 		<message>
 			<source>{} seconds ago</source>
-			<translation>{} Sekunden her</translation>
+			<translation>vor {} Sekunden</translation>
 		</message>
 	</context>
 	<context>
