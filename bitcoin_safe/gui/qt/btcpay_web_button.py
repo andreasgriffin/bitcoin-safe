@@ -656,16 +656,6 @@ class DonateDialog(QWidget):
         description.setOpenExternalLinks(True)
         layout.addWidget(description)
 
-        contact_label = QLabel(
-            self.tr(
-                "Want to discuss a larger contribution or partnership? Use the contact button "
-                "below to reach us."
-            )
-        )
-        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        contact_label.setWordWrap(True)
-        layout.addWidget(contact_label)
-
         currency_iso = fx.get_currency_iso()
 
         self.donation_widget = DonationInvoiceWidget(
@@ -679,6 +669,16 @@ class DonateDialog(QWidget):
         )
         self.donation_widget.payment_completed.connect(self._on_payment_complete)
         layout.addWidget(self.donation_widget)
+
+        contact_label = QLabel(
+            self.tr(
+                "Want to discuss a larger contribution or partnership? Use the contact button "
+                "below to reach us."
+            )
+        )
+        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        contact_label.setWordWrap(True)
+        layout.addWidget(contact_label)
 
         self.contact_button = QPushButton(self.tr("Email us"))
         self.contact_button.clicked.connect(mail_contact)
