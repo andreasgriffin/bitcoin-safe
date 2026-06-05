@@ -57,6 +57,7 @@ from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
 from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 
 from ...signals import WalletFunctions
@@ -167,8 +168,10 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
         network: bdk.Network,
         wallet_functions: WalletFunctions,
         loop_in_thread: LoopInThread,
+        hardware_signer: HardwareSigner | None = None,
     ) -> None:
         """Initialize instance."""
+        self.hardware_signer = hardware_signer
         self._help_widget: ScreenshotsRegisterMultisig | None = None
         self.button_help = QPushButton()
         self.button_help.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
@@ -206,10 +209,18 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
                 pass
             self._help_widget.close()
 
-        self._help_widget = ScreenshotsRegisterMultisig(parent=None)
+        self._help_widget = ScreenshotsRegisterMultisig(
+            hardware_signers=[self.hardware_signer] if self.hardware_signer else None,
+            parent=None,
+        )
         self._help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         self._help_widget.destroyed.connect(self._clear_help_widget)
-        self._help_widget.setWindowTitle(self.button_help.text())
+        if self.hardware_signer:
+            self._help_widget.setWindowTitle(
+                self.tr("{device} instructions").format(device=self.hardware_signer.display_name)
+            )
+        else:
+            self._help_widget.setWindowTitle(self.tr("Device instructions"))
         self._help_widget.setWindowFlag(Qt.WindowType.Window, True)
         self._help_widget.show()
         self._help_widget.raise_()

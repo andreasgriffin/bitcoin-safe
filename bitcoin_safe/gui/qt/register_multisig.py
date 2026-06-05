@@ -127,6 +127,7 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 network=self.wallet.network,
                 wallet_functions=self.wallet_functions,
                 loop_in_thread=loop_in_thread,
+                hardware_signer=self.hardware_signer,
             )
             self.usb_widget.set_descriptor(
                 keystores=self.wallet.keystores,
@@ -149,6 +150,16 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
 
         self.updateUi()
 
+    def _help_hardware_signers(self) -> list[HardwareSigner] | None:
+        """Return the signer to show in help, if one is selected."""
+        return [self.hardware_signer] if self.hardware_signer else None
+
+    def _help_window_title(self) -> str:
+        """Return the help window title."""
+        if self.hardware_signer:
+            return self.tr("{device} instructions").format(device=self.hardware_signer.display_name)
+        return self.tr("Device instructions")
+
     def _show_help_widget(self) -> None:
         """Show a fresh help window each time to avoid stale deleted child widgets."""
         if self._help_widget:
@@ -158,10 +169,13 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
                 pass
             self._help_widget.close()
 
-        self._help_widget = ScreenshotsRegisterMultisig(parent=None)
+        self._help_widget = ScreenshotsRegisterMultisig(
+            hardware_signers=self._help_hardware_signers(),
+            parent=None,
+        )
         self._help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         self._help_widget.destroyed.connect(self._clear_help_widget)
-        self._help_widget.setWindowTitle(self.tr("Device instructions"))
+        self._help_widget.setWindowTitle(self._help_window_title())
         self._help_widget.setWindowFlag(Qt.WindowType.Window, True)
         self._help_widget.show()
         self._help_widget.raise_()
