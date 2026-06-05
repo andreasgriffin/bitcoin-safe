@@ -503,7 +503,7 @@ class KeyStoreUI(CardBase):
                 hardware_signer.info_url,
             )
         return (
-            self.tr('Learn more about <a href="{url}">supported hardware signers</a>.').format(
+            self.tr('Learn more about <a href="{url}">supported signers</a>.').format(
                 url=SUPPORTED_HARDWARE_SIGNERS_URL
             ),
             SUPPORTED_HARDWARE_SIGNERS_URL,
