@@ -1914,8 +1914,8 @@ pois o tamanho final da transação é desconhecido.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Saiba mais sobre &lt;a href="{url}"&gt;signatários de hardware compatíveis&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Saiba mais sobre &lt;a href="{url}"&gt;signatários compatíveis&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4278,7 +4278,8 @@ As saídas permanecem as mesmas; apenas a taxa muda.</translation>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Por quê?&lt;/b&gt; &lt;br&gt; Para saber se você controla os fundos, é preciso testar um gasto a partir da carteira.
-&lt;br&gt; Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.                        </translation>
+&lt;br&gt; Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4494,6 +4495,11 @@ As saídas permanecem as mesmas; apenas a taxa muda.</translation>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Registrar {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruções do {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5243,7 +5249,7 @@ Se quiser continuar usando ambos, redefina agora a chave de sincronização do C
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Mantenha pronto para o teste {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5298,12 +5304,12 @@ Se quiser continuar usando ambos, redefina agora a chave de sincronização do C
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Teste verificado</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Este signatário é necessário no teste de envio {number}. Ainda não assine com ele.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5612,6 +5618,11 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instruções do dispositivo</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Ajuda</translation>
 		</message>
@@ -5629,6 +5640,11 @@ A transmissão falhará. Deseja transmitir mesmo assim?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Carteira multisig registrada com sucesso no assinador de hardware</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruções do {device}</translation>
 		</message>
 	</context>
 	<context>

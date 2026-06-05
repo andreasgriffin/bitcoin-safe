@@ -1912,8 +1912,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;समर्थित हार्डवेयर साइनरों&lt;/a&gt; के बारे में और जानें।</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;समर्थित हस्ताक्षरकर्ताओं&lt;/a&gt; के बारे में और जानें।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4480,6 +4480,11 @@ Outputs stay the same; only the fee changes.</source>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} पंजीकृत करें</translation>
 		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} निर्देश</translation>
+		</message>
 	</context>
 	<context>
 		<name>RelayDialog</name>
@@ -5226,7 +5231,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>परीक्षण {number} के लिए तैयार रखें</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5281,12 +5286,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>परीक्षण सत्यापित</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>इस हस्ताक्षरकर्ता की भेजने के परीक्षण {number} में आवश्यकता है। अभी इससे हस्ताक्षर न करें।</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5593,6 +5598,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>डिवाइस निर्देश</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>मदद</translation>
 		</message>
@@ -5610,6 +5620,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>हार्डवेयर साइनर पर मल्टीसिग वॉलेट सफलतापूर्वक पंजीकृत</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} निर्देश</translation>
 		</message>
 	</context>
 	<context>

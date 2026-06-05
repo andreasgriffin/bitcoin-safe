@@ -1911,8 +1911,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;ပံ့ပိုးထားသော ဟာ့ဒ်ဝဲ လက်မှတ်ထိုးသူများ&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;ပံ့ပိုးထားသော လက်မှတ်ရေးထိုးသူများ&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4477,6 +4477,11 @@ Outputs stay the same; only the fee changes.</source>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} ကို စာရင်းသွင်းပါ</translation>
 		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} လမ်းညွှန်ချက်များ</translation>
+		</message>
 	</context>
 	<context>
 		<name>RelayDialog</name>
@@ -5223,7 +5228,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>စမ်းသပ်မှု {number} အတွက် အဆင်သင့်ထားပါ</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5278,12 +5283,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>စမ်းသပ်မှု အတည်ပြုပြီး</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>ဤလက်မှတ်ရေးထိုးသူသည် ပေးပို့စမ်းသပ်မှု {number} တွင် လိုအပ်ပါသည်။ ၎င်းဖြင့် မလက်မှတ်ထိုးသေးပါနှင့်။</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5589,6 +5594,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>စက်အညွှန်းများ</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>အကူအညီ</translation>
 		</message>
@@ -5606,6 +5616,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်ကိုအောင်မြင်စွာမှတ်ပုံတင်ခဲ့သည်။</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} လမ်းညွှန်ချက်များ</translation>
 		</message>
 	</context>
 	<context>

@@ -1914,8 +1914,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;সমর্থিত হার্ডওয়্যার সাইনার&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;সমর্থিত স্বাক্ষরকারীদের&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4481,6 +4481,11 @@ Outputs stay the same; only the fee changes.</source>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} নিবন্ধন করুন</translation>
 		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} নির্দেশাবলী</translation>
+		</message>
 	</context>
 	<context>
 		<name>RelayDialog</name>
@@ -5227,7 +5232,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>পরীক্ষা {number}-এর জন্য প্রস্তুত রাখুন</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5282,12 +5287,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>পরীক্ষা যাচাই করা হয়েছে</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>এই স্বাক্ষরকারী পাঠানোর পরীক্ষা {number}-এ প্রয়োজন। এখনও এটি দিয়ে স্বাক্ষর করবেন না।</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5595,6 +5600,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>ডিভাইস নির্দেশাবলী</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>সহায়তা</translation>
 		</message>
@@ -5612,6 +5622,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>hardware signer-এ multisig wallet সফলভাবে নিবন্ধিত হয়েছে</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} নির্দেশাবলী</translation>
 		</message>
 	</context>
 	<context>

@@ -1913,8 +1913,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Pelajari lebih lanjut tentang &lt;a href="{url}"&gt;penanda tangan perangkat keras yang didukung&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Pelajari lebih lanjut tentang &lt;a href="{url}"&gt;penanda tangan yang didukung&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4277,7 +4277,8 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengontrol dana tersebut, Anda harus menguji pembelanjaan dari dompet.
-&lt;br&gt; Jadi sebelum Anda mengirim Bitcoin dalam jumlah besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pembelanjaan dari dompet dan menguji semua penanda tangan.                        </translation>
+&lt;br&gt; Jadi sebelum Anda mengirim Bitcoin dalam jumlah besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pembelanjaan dari dompet dan menguji semua penanda tangan.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4493,6 +4494,11 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Daftarkan {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruksi {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5242,7 +5248,7 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Siapkan untuk tes {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5297,12 +5303,12 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Tes terverifikasi</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Penanda tangan ini diperlukan dalam tes kirim {number}. Jangan tanda tangani dengannya dulu.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5611,6 +5617,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instruksi perangkat</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Bantuan</translation>
 		</message>
@@ -5628,6 +5639,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Berhasil mendaftarkan dompet multisig di penanda tangan perangkat keras</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruksi {device}</translation>
 		</message>
 	</context>
 	<context>
