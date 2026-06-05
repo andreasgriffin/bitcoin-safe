@@ -3142,7 +3142,8 @@ por isso normalmente está cerca de {minutes} minutos atrás da ponta.</translat
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Servidor configurado: {server} Localização indisponível.</translation>
+			<translation>Servidor configurado: {server}
+Localização indisponível.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4285,7 +4286,8 @@ As saídas mantêm-se; apenas a taxa muda.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Porquê?&lt;/b&gt; &lt;br&gt; Para saber se controla os fundos, tem de testar o gasto a partir da carteira. &lt;br&gt; Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Porquê?&lt;/b&gt; &lt;br&gt; Para saber se controla os fundos, tem de testar o gasto a partir da carteira.
+&lt;br&gt; Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4492,6 +4494,11 @@ As saídas mantêm-se; apenas a taxa muda.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instruções do dispositivo</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5244,6 +5251,11 @@ Se quiser continuar a usar ambos, redefina agora a chave de sincronização do C
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Partilhar com...</translation>
 		</message>
@@ -5291,6 +5303,16 @@ Se quiser continuar a usar ambos, redefina agora a chave de sincronização do C
 		<message>
 			<source>Signed</source>
 			<translation>Assinado</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6350,7 +6372,9 @@ A transmissão irá falhar. Deseja transmitir mesmo assim?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} País: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+País: {country}</translation>
 		</message>
 	</context>
 	<context>

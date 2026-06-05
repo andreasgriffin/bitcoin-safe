@@ -3137,7 +3137,8 @@ son 11 bloğun medyan zaman damgasıdır, bu nedenle genellikle zincirin ucundan
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Yapılandırılmış sunucu: {server} Konum kullanılamıyor.</translation>
+			<translation>Yapılandırılmış sunucu: {server}
+Konum kullanılamıyor.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4276,7 +4277,8 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir. &lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayanları test etmek &lt;b&gt;kritik&lt;/b&gt; önem taşır.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir.
+&lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayanları test etmek &lt;b&gt;kritik&lt;/b&gt; önem taşır.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4483,6 +4485,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Cihaz talimatları</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5235,6 +5242,11 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Şununla paylaş...</translation>
 		</message>
@@ -5282,6 +5294,16 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<message>
 			<source>Signed</source>
 			<translation>İmzalandı</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6337,7 +6359,9 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Ülke: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Ülke: {country}</translation>
 		</message>
 	</context>
 	<context>

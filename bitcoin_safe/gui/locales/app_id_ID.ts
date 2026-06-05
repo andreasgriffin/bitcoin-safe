@@ -3136,7 +3136,8 @@ sehingga biasanya sekitar {minutes} menit di belakang ujung rantai.</translation
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Server yang dikonfigurasi: {server} Lokasi tidak tersedia.</translation>
+			<translation>Server yang dikonfigurasi: {server}
+Lokasi tidak tersedia.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4275,7 +4276,8 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengontrol dana tersebut, Anda harus menguji pembelanjaan dari dompet. &lt;br&gt; Jadi sebelum Anda mengirim Bitcoin dalam jumlah besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pembelanjaan dari dompet dan menguji semua penanda tangan.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Mengapa?&lt;/b&gt; &lt;br&gt; Untuk mengetahui apakah Anda mengontrol dana tersebut, Anda harus menguji pembelanjaan dari dompet.
+&lt;br&gt; Jadi sebelum Anda mengirim Bitcoin dalam jumlah besar ke dompet, sangat &lt;b&gt;penting&lt;/b&gt; untuk melakukan pembelanjaan dari dompet dan menguji semua penanda tangan.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4482,6 +4484,11 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instruksi perangkat</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5234,6 +5241,11 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Bagikan dengan...</translation>
 		</message>
@@ -5281,6 +5293,16 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<message>
 			<source>Signed</source>
 			<translation>Ditandatangani</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6336,7 +6358,9 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Negara: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Negara: {country}</translation>
 		</message>
 	</context>
 	<context>
