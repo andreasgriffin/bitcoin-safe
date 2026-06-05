@@ -1110,6 +1110,13 @@ class AddressListWithToolbar(TreeViewWithToolbar):
             self.category_combobox.currentText() in self.category_core.wallet.labels.categories
         )
 
+    def _update_filter_combobox_texts(self) -> None:
+        """Refresh translated filter labels after a language switch."""
+        for index, addr_type in enumerate(AddressTypeFilter):
+            self.change_button.setItemText(index, addr_type.ui_text())
+        for index, addr_usage_state in enumerate(AddressUsageStateFilter):
+            self.used_button.setItemText(index, addr_usage_state.ui_text())
+
     def update_with_filter(self, update_filter: UpdateFilter):
         """Update with filter."""
         self.updateUi()
@@ -1119,6 +1126,7 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         super().updateUi()
 
         self.set_visibilities()
+        self._update_filter_combobox_texts()
 
         for action in list(self.menu.actions()):
             sub = action.menu()

@@ -53,6 +53,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
 from ..util import to_color_name
@@ -326,8 +327,8 @@ class QuickReceive(QWidget):
         self.manage_categories_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.manage_categories_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.manage_categories_button.setFlat(True)
-        self.manage_categories_button.setText(self.tr("Manage Categories"))
-        self.manage_categories_button.setToolTip(self.tr("Open the category manager"))
+        self.manage_categories_button.setText(translate("QuickReceive", "Manage Categories"))
+        self.manage_categories_button.setToolTip(translate("QuickReceive", "Open the category manager"))
         self.manage_categories_button.clicked.connect(self.signal_manage_categories_requested.emit)
         header_layout.addWidget(self.manage_categories_button)
 
@@ -395,9 +396,9 @@ class QuickReceive(QWidget):
 
     def updateUi(self):
         """UpdateUi."""
-        self.label_title.setText(self.tr("Quick Receive"))
-        self.manage_categories_button.setText(self.tr("Manage Categories"))
-        self.manage_categories_button.setToolTip(self.tr("Open the category manager"))
+        self.label_title.setText(translate("QuickReceive", "Quick Receive"))
+        self.manage_categories_button.setText(translate("QuickReceive", "Manage Categories"))
+        self.manage_categories_button.setToolTip(translate("QuickReceive", "Open the category manager"))
         self.add_category_button.updateUi()
         for gb in self.group_boxes:
             gb.updateUi()

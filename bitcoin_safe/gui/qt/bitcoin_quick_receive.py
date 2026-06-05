@@ -66,11 +66,7 @@ class BitcoinQuickReceive(
 
         # signals
         self.wallet_signals.updated.connect(self.update_content)
-        self.wallet_signals.language_switch.connect(self.refresh_all)
-
-    def refresh_all(self):
-        """Refresh all."""
-        self.update_content(UpdateFilter(refresh_all=True))
+        self.signals_min.language_switch.connect(self.updateUi)
 
     def set_address(self, category: str, address_info: bdk.AddressInfo) -> ReceiveGroup:
         """Set address."""

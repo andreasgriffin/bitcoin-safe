@@ -1757,6 +1757,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))
         self.menu_hiddden_columns.setTitle(translate("mytreeview", "Visible columns"))
+        self.fill_menu_hiddden_columns()
 
     def close(self) -> bool:
         """Close."""
