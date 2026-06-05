@@ -1911,8 +1911,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;지원되는 하드웨어 서명자&lt;/a&gt;에 대해 자세히 알아보세요.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;지원되는 서명자&lt;/a&gt;에 대해 자세히 알아보세요.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4273,7 +4273,8 @@ Outputs stay the same; only the fee changes.</source>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;왜 필요한가요?&lt;/b&gt; &lt;br&gt; 자금을 제어하고 있는지 확인하려면 지갑에서 지출을 테스트해야 합니다.
-&lt;br&gt; 따라서 지갑으로 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출해 보고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요&lt;/b&gt;합니다.                        </translation>
+&lt;br&gt; 따라서 지갑으로 상당한 양의 Bitcoin을 보내기 전에 지갑에서 지출해 보고 모든 서명자를 테스트하는 것이 &lt;b&gt;매우 중요&lt;/b&gt;합니다.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4489,6 +4490,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} 등록하기</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 지침</translation>
 		</message>
 	</context>
 	<context>
@@ -5238,7 +5244,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>테스트 {number}을 위해 준비해 두세요</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5293,12 +5299,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>테스트 확인됨</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>이 서명자는 보내기 테스트 {number}에 필요합니다. 아직 이 서명자로 서명하지 마세요.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5606,6 +5612,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>장치 지침</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>도움말</translation>
 		</message>
@@ -5623,6 +5634,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>하드웨어 서명 기계에 멀티시그 지갑을 성공적으로 등록함</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 지침</translation>
 		</message>
 	</context>
 	<context>

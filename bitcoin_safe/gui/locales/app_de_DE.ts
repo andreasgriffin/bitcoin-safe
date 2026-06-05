@@ -66,7 +66,7 @@
 		<name>AbstractSignatureImporter</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>Die TXID der signierten PSBT stimmt nicht mit der ursprünglichen TXID überein.</translation>
+			<translation>Die TXID der signierten PSBT stimmt nicht mit der ursprünglichen TXID überein</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
@@ -1333,7 +1333,7 @@ Standardwert 20</translation>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Thanks for Bitcoin Safe!</source>
-			<translation>Nachricht (optional)</translation>
+			<translation>Vielen Dank für Bitcoin Safe!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1919,8 +1919,8 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Erfahre mehr über &lt;a href="{url}"&gt;unterstützte Hardware-Signer&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Erfahren Sie mehr über &lt;a href="{url}"&gt;unterstützte Signierer&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2035,7 +2035,7 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>Der Seed ist das Geheimnis, das das Signieren von Transaktionen ermöglicht.
+			<translation>Der Seed ist das Geheimnis, das Signieren von Transaktionen ermöglicht.
 Bei einer Single-Signature-Wallet gibt er die volle Kontrolle über die Gelder.</translation>
 		</message>
 		<name>KeyStoreUI</name>
@@ -4287,7 +4287,8 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen.
-&lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.                        </translation>
+&lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4503,6 +4504,11 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} registrieren</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device}-Anweisungen</translation>
 		</message>
 	</context>
 	<context>
@@ -5252,7 +5258,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Für Test {number} bereithalten</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5307,12 +5313,12 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Test verifiziert</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Dieser Signierer wird im Sendetest {number} benötigt. Noch nicht damit signieren.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5626,6 +5632,11 @@ Möchten Sie trotzdem senden?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Geräteanweisungen</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Hilfe</translation>
 		</message>
@@ -5643,6 +5654,11 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Multisig-Wallet erfolgreich auf Hardware-Signer registriert</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device}-Anweisungen</translation>
 		</message>
 	</context>
 	<context>

@@ -1914,8 +1914,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Дізнайтеся більше про &lt;a href="{url}"&gt;підтримувані апаратні підписувачі&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Дізнайтеся більше про &lt;a href="{url}"&gt;підтримуваних підписантів&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4278,7 +4278,8 @@ Outputs stay the same; only the fee changes.</source>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Чому?&lt;/b&gt; &lt;br&gt; Щоб знати, чи контролюєте ви кошти, потрібно протестувати витрачання з гаманця.
-&lt;br&gt; Тому, перш ніж надсилати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця й протестувати всіх підписантів.                        </translation>
+&lt;br&gt; Тому, перш ніж надсилати значну суму Bitcoin у гаманець, &lt;b&gt;критично важливо&lt;/b&gt; витратити з гаманця й протестувати всіх підписантів.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4494,6 +4495,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Зареєструвати {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Інструкції для {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5243,7 +5249,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Тримайте готовим для тесту {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5298,12 +5304,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Тест підтверджено</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Цей підписант потрібен у тесті надсилання {number}. Ще не підписуйте ним.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5612,6 +5618,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Інструкції пристрою</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Довідка</translation>
 		</message>
@@ -5629,6 +5640,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Успішно зареєстровано мультисиг-гаманець на апаратному підписувачі</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Інструкції для {device}</translation>
 		</message>
 	</context>
 	<context>

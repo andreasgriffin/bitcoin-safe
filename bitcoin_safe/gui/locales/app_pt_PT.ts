@@ -1025,7 +1025,7 @@ Por favor, faça backup deste descritor para poder recuperar os fundos!</transla
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet name</source>
-			<translation>Inicie primeiro o teste gratuito e depois faça a gestão ou atualize a subscrição aqui.</translation>
+			<translation>Nome da carteira</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1144,7 +1144,7 @@ Predefinido 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>1. Print backup sheets</source>
-			<translation>Nome da carteira</translation>
+			<translation>1. Imprimir folhas de cópia de segurança</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1209,7 +1209,7 @@ Predefinido 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
-			<translation>Localização 2</translation>
+			<translation>Abra as instruções para ver palavras seed neste signatário.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1249,7 +1249,7 @@ Predefinido 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
-			<translation>Dispositivo signatário</translation>
+			<translation>Armazene cada signatário junto com a sua cópia de segurança e palavras seed na mesma localização.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1333,7 +1333,7 @@ Predefinido 20</translation>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Thanks for Bitcoin Safe!</source>
-			<translation>Mensagem (opcional)</translation>
+			<translation>Obrigado pelo Bitcoin Safe!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1427,7 +1427,7 @@ Predefinido 20</translation>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>Obrigado pelo Bitcoin Safe!</translation>
+			<translation>Eliminar Plugin</translation>
 		</message>
 	</context>
 	<context>
@@ -1919,8 +1919,8 @@ pois o tamanho final da transação é desconhecido.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Saiba mais sobre &lt;a href="{url}"&gt;signatários de hardware suportados&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Saiba mais sobre &lt;a href="{url}"&gt;signatários suportados&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2023,13 +2023,15 @@ pois o tamanho final da transação é desconhecido.</translation>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>A impressão digital de 8 dígitos identifica a seed.
-Pode escrevê-la no assinador de hardware para acompanhar diferentes seeds e dispositivos de assinatura.</translation>
+Pode escrevê-la no assinador de hardware 
+para acompanhar diferentes seeds e dispositivos de assinatura.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The key origin is needed to construct
 transactions (PSBTs) correctly and is connected to the xPub.</source>
-			<translation>A origem da chave é necessária para construir transações (PSBTs) corretamente e está ligada à xPub.</translation>
+			<translation>A origem da chave é necessária para construir
+transações (PSBTs) corretamente e está ligada à xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3126,7 +3128,7 @@ por isso normalmente está cerca de {minutes} minutos atrás da ponta.</translat
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Eliminar Plugin</translation>
+			<translation>Bitcoin Safe transfere sumários de blocos de múltiplos nós para privacidade. Após a sincronização inicial, as atualizações serão rápidas.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3409,7 +3411,10 @@ Deixe em branco para confiar na descoberta automática de peers.</translation>
 plugin and during subscription purchase!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy in this version.</source>
-			<translation>O proxy não se aplica ao plugin Sync&amp;Chat nem durante a compra da subscrição! A localização do servidor baseada no nome de anfitrião e a descoberta DNS-seed não são resolvidas através do proxy nesta versão.</translation>
+			<translation>O proxy não se aplica ao plugin Sync&amp;Chat
+nem durante a compra da subscrição!
+A localização do servidor baseada no nome de anfitrião e a descoberta DNS-seed
+não são resolvidas através do proxy nesta versão.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -4114,7 +4119,9 @@ Utilizar mais peers melhora a cobertura, mas utiliza mais largura de banda e lig
 Saved copies to:
 {path}</source>
 			<translation>Transação(ões) removida(s) na carteira '{wallet}':
+
 {txs}
+
 Cópias guardadas em:
 {path}</translation>
 		</message>
@@ -4286,8 +4293,11 @@ As saídas mantêm-se; apenas a taxa muda.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Porquê?&lt;/b&gt; &lt;br&gt; Para saber se controla os fundos, tem de testar o gasto a partir da carteira.
-&lt;br&gt; Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.                        </translation>
+			<translation>&lt;br&gt;&lt;b&gt;Porquê?&lt;/b&gt; &lt;br&gt;
+                        Para saber se controla os fundos, tem de testar o gasto a partir da carteira.
+                        &lt;br&gt;
+                        Portanto, antes de enviar uma quantia substancial de Bitcoin para a carteira, é &lt;b&gt;crucial&lt;/b&gt; gastar a partir da carteira e testar todos os signatários.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4503,6 +4513,11 @@ As saídas mantêm-se; apenas a taxa muda.</translation>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Registar {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruções do {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5252,7 +5267,7 @@ Se quiser continuar a usar ambos, redefina agora a chave de sincronização do C
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Mantenha pronto para o teste {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5307,12 +5322,12 @@ Se quiser continuar a usar ambos, redefina agora a chave de sincronização do C
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Teste verificado</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Este signatário é necessário no teste de envio {number}. Ainda não assine com ele.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5625,6 +5640,11 @@ A transmissão irá falhar. Deseja transmitir mesmo assim?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instruções do dispositivo</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Ajuda</translation>
 		</message>
@@ -5642,6 +5662,11 @@ A transmissão irá falhar. Deseja transmitir mesmo assim?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Carteira multisig registada com sucesso no assinante de hardware</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruções do {device}</translation>
 		</message>
 	</context>
 	<context>

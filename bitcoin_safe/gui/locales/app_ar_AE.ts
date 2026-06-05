@@ -1913,8 +1913,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>تعرّف على المزيد حول &lt;a href="{url}"&gt;موقّعي الأجهزة المدعومين&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>تعرّف على المزيد حول &lt;a href="{url}"&gt;الموقّعين المدعومين&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4278,7 +4278,8 @@ Outputs stay the same; only the fee changes.</source>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.
-&lt;br&gt; لذلك قبل أن ترسل مبلغًا كبيرًا من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.                        </translation>
+&lt;br&gt; لذلك قبل أن ترسل مبلغًا كبيرًا من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4494,6 +4495,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>تسجيل {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>تعليمات {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5243,7 +5249,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>أبقِه جاهزًا للاختبار {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5298,12 +5304,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>تم التحقق من الاختبار</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>هذا الموقّع مطلوب في اختبار الإرسال {number}. لا توقّع به بعد.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5611,6 +5617,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>تعليمات الجهاز</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>مساعدة</translation>
 		</message>
@@ -5628,6 +5639,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>تم تسجيل محفظة متعددة التوقيعات بنجاح على الموقع الأجهزة</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>تعليمات {device}</translation>
 		</message>
 	</context>
 	<context>

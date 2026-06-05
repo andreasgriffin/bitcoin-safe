@@ -1916,8 +1916,8 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Dowiedz się więcej o &lt;a href="{url}"&gt;obsługiwanych sprzętowych podpisujących&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Dowiedz się więcej o &lt;a href="{url}"&gt;obsługiwanych podpisujących&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4281,7 +4281,8 @@ Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Dlaczego?&lt;/b&gt; &lt;br&gt; Aby wiedzieć, czy kontrolujesz środki, musisz przetestować wydawanie z portfela.
-&lt;br&gt; Dlatego przed wysłaniem znacznej kwoty Bitcoin do portfela &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie wydatku z portfela i przetestowanie wszystkich podpisujących.                        </translation>
+&lt;br&gt; Dlatego przed wysłaniem znacznej kwoty Bitcoin do portfela &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie wydatku z portfela i przetestowanie wszystkich podpisujących.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4497,6 +4498,11 @@ Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Zarejestruj {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instrukcje dla {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5246,7 +5252,7 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Przygotuj do testu {number}</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5301,12 +5307,12 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Test zweryfikowany</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Ten podpisujący jest potrzebny w teście wysyłania {number}. Nie podpisuj nim jeszcze.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5619,6 +5625,11 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instrukcje urządzenia</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Pomoc</translation>
 		</message>
@@ -5636,6 +5647,11 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Pomyślnie zarejestrowano portfel multisig na sprzętowym podpisującym</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instrukcje dla {device}</translation>
 		</message>
 	</context>
 	<context>

@@ -1914,8 +1914,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;Desteklenen donanım imzacıları&lt;/a&gt; hakkında daha fazla bilgi edinin.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;Desteklenen imzalayıcılar&lt;/a&gt; hakkında daha fazla bilgi edinin.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4278,7 +4278,8 @@ Outputs stay the same; only the fee changes.</source>
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
 			<translation>&lt;br&gt;&lt;b&gt;Neden?&lt;/b&gt; &lt;br&gt; Fonları kontrol edip etmediğinizi bilmek için cüzdandan harcama yapmayı test etmeniz gerekir.
-&lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayanları test etmek &lt;b&gt;kritik&lt;/b&gt; önem taşır.                        </translation>
+&lt;br&gt; Bu nedenle, cüzdana önemli miktarda Bitcoin göndermeden önce cüzdandan harcama yapmak ve tüm imzalayanları test etmek &lt;b&gt;kritik&lt;/b&gt; önem taşır.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4494,6 +4495,11 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} kaydet</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} talimatları</translation>
 		</message>
 	</context>
 	<context>
@@ -5243,7 +5249,7 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>Test {number} için hazır tutun</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5298,12 +5304,12 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>Test doğrulandı</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>Bu imzalayıcı, gönderme testi {number} için gereklidir. Henüz onunla imzalamayın.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5612,6 +5618,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Cihaz talimatları</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Yardım</translation>
 		</message>
@@ -5629,6 +5640,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Multisig cüzdanı donanım imzalayıcıya başarıyla kaydedildi</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} talimatları</translation>
 		</message>
 	</context>
 	<context>

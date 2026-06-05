@@ -1918,8 +1918,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>了解更多关于&lt;a href="{url}"&gt;受支持的硬件签名器&lt;/a&gt;的信息。</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>了解更多关于&lt;a href="{url}"&gt;支持的签名者&lt;/a&gt;的信息。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4501,6 +4501,11 @@ Outputs stay the same; only the fee changes.</source>
 			<source>Register {wallet_name}</source>
 			<translation>注册 {wallet_name}</translation>
 		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 说明</translation>
+		</message>
 	</context>
 	<context>
 		<name>RelayDialog</name>
@@ -5249,7 +5254,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Keep ready for test {number}</source>
-			<translation/>
+			<translation>为测试 {number} 做好准备</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5304,12 +5309,12 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Test verified</source>
-			<translation/>
+			<translation>测试已验证</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation/>
+			<translation>发送测试 {number} 需要此签名者。暂时不要用它签名。</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5621,6 +5626,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>设备说明</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>帮助</translation>
 		</message>
@@ -5638,6 +5648,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>已在硬件签名器上成功注册多重签名钱包</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 说明</translation>
 		</message>
 	</context>
 	<context>
