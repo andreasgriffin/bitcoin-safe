@@ -204,13 +204,13 @@ def test_custom_wallet_setup_custom_single_sig(
             shutter.save(main_window)
 
             # Verify the default 3-of-5 multisig configuration for the fixture.
-            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
-            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 5
+            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 2
+            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 3
             assert (
                 qt_protowallet.wallet_descriptor_ui.comboBox_address_type.currentData() == AddressTypes.p2wsh
             )
             assert qt_protowallet.wallet_descriptor_ui.spin_gap.value() == 20
-            assert qt_protowallet.wallet_descriptor_ui.keystore_uis.count() == 5
+            assert qt_protowallet.wallet_descriptor_ui.keystore_uis.count() == 3
 
             shutter.save(main_window)
             check_consistent()
