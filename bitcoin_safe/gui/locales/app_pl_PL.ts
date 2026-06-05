@@ -3139,7 +3139,8 @@ median-time-past to medianowy znacznik czasu ostatnich 11 bloków, więc zwykle 
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Skonfigurowany serwer: {server} Lokalizacja niedostępna.</translation>
+			<translation>Skonfigurowany serwer: {server}
+Lokalizacja niedostępna.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4279,7 +4280,8 @@ Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Dlaczego?&lt;/b&gt; &lt;br&gt; Aby wiedzieć, czy kontrolujesz środki, musisz przetestować wydawanie z portfela. &lt;br&gt; Dlatego przed wysłaniem znacznej kwoty Bitcoin do portfela &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie wydatku z portfela i przetestowanie wszystkich podpisujących.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Dlaczego?&lt;/b&gt; &lt;br&gt; Aby wiedzieć, czy kontrolujesz środki, musisz przetestować wydawanie z portfela.
+&lt;br&gt; Dlatego przed wysłaniem znacznej kwoty Bitcoin do portfela &lt;b&gt;kluczowe&lt;/b&gt; jest wykonanie wydatku z portfela i przetestowanie wszystkich podpisujących.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4486,6 +4488,11 @@ Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instrukcje urządzenia</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5238,6 +5245,11 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Udostępnij przez...</translation>
 		</message>
@@ -5285,6 +5297,16 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 		<message>
 			<source>Signed</source>
 			<translation>Podpisano</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6344,7 +6366,9 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Kraj: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Kraj: {country}</translation>
 		</message>
 	</context>
 	<context>

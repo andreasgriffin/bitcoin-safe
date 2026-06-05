@@ -3142,7 +3142,8 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Konfigurierter Server: {server} Standort nicht verfügbar.</translation>
+			<translation>Konfigurierter Server: {server}
+Standort nicht verfügbar.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4285,7 +4286,8 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen. &lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen.
+&lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4492,6 +4494,11 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Geräteanweisungen</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5244,6 +5251,11 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Teilen mit...</translation>
 		</message>
@@ -5291,6 +5303,16 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<message>
 			<source>Signed</source>
 			<translation>Signiert</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6351,7 +6373,9 @@ Möchten Sie trotzdem senden?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Land: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Land: {country}</translation>
 		</message>
 	</context>
 	<context>

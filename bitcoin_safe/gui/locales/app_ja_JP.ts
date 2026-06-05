@@ -3125,7 +3125,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>設定済みサーバー: {server} 位置情報を利用できません。</translation>
+			<translation>設定済みサーバー: {server}
+位置情報を利用できません。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4260,7 +4261,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt; 資金を自分が管理しているかどうかを知るには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、ウォレットに相当額の Bitcoin を送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;極めて重要&lt;/b&gt;です。</translation>
+			<translation>&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt; 資金を自分が管理しているかどうかを知るには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、ウォレットに相当額の Bitcoin を送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;極めて重要&lt;/b&gt;です。                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4467,6 +4468,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>デバイスの手順</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5217,6 +5223,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>共有先...</translation>
 		</message>
@@ -5264,6 +5275,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>署名済み</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6315,7 +6336,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} 国: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+国: {country}</translation>
 		</message>
 	</context>
 	<context>

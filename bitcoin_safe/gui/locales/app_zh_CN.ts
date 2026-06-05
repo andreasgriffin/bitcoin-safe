@@ -3139,7 +3139,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>已配置服务器：{server} 位置不可用。</translation>
+			<translation>已配置服务器：{server}
+位置不可用。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4283,7 +4284,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道你是否控制这些资金，你必须测试从钱包中支出。 &lt;br&gt; 因此，在你向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要的&lt;/b&gt;。</translation>
+			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道你是否控制这些资金，你必须测试从钱包中支出。 &lt;br&gt; 因此，在你向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要的&lt;/b&gt;。                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4490,6 +4491,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>设备说明</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5242,6 +5248,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>分享给……</translation>
 		</message>
@@ -5289,6 +5300,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>已签名</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6346,7 +6367,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}：{ip} 国家/地区：{country}</translation>
+			<translation>{source}
+{endpoint_label}：{ip}
+国家/地区：{country}</translation>
 		</message>
 	</context>
 	<context>

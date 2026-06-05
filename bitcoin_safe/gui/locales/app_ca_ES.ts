@@ -3137,7 +3137,8 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Servidor configurat: {server} Ubicació no disponible.</translation>
+			<translation>Servidor configurat: {server}
+Ubicació no disponible.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4276,7 +4277,8 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des del moneder. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin al moneder, és &lt;b&gt;crucial&lt;/b&gt; gastar des del moneder i provar tots els signants.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des del moneder.
+&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin al moneder, és &lt;b&gt;crucial&lt;/b&gt; gastar des del moneder i provar tots els signants.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4483,6 +4485,11 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>Instruccions del dispositiu</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5235,6 +5242,11 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Comparteix amb...</translation>
 		</message>
@@ -5282,6 +5294,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		<message>
 			<source>Signed</source>
 			<translation>Signat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6337,7 +6359,9 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} País: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+País: {country}</translation>
 		</message>
 	</context>
 	<context>

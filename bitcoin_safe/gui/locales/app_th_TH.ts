@@ -3127,7 +3127,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server} ไม่มีข้อมูลตำแหน่ง</translation>
+			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server}
+ไม่มีข้อมูลตำแหน่ง</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4260,7 +4261,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้รู้ว่าคุณควบคุมเงินอยู่หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt;</translation>
+			<translation>&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้รู้ว่าคุณควบคุมเงินอยู่หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt;                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4467,6 +4468,11 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Device instructions</source>
+			<translation>คำแนะนำของอุปกรณ์</translation>
+		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register {wallet_name}</source>
@@ -5217,6 +5223,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>แชร์กับ...</translation>
 		</message>
@@ -5264,6 +5275,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>ลงนามแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation/>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation/>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6316,7 +6337,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} ประเทศ: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+ประเทศ: {country}</translation>
 		</message>
 	</context>
 	<context>
