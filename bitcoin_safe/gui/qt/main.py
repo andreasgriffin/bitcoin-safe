@@ -2442,7 +2442,7 @@ class MainWindow(UnlockableMainWindow):
     def click_custom_signature(self) -> None:
         """Click custom signature."""
         self.open_qtprotowallet_setup(
-            (3, 5),
+            (2, 3),
             wallet_id=self.preferred_wallet_id(self.welcome_screen.wallet_name),
             show_tutorial=False,
         )
