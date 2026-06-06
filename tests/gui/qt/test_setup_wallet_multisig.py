@@ -133,8 +133,8 @@ def _run_multisig_wizard_test(
             )
             assert step.card_total_signers.label_value.text() == str(signers)
             assert step.card_total_signers.label_subtitle.text() == "signers"
-            assert step.buttonbox_buttons[0].isVisible()
-            step.buttonbox_buttons[0].click()
+            assert step.button_next.isVisible()
+            step.button_next.click()
 
         page_wallet_setup(wizard)
 
@@ -183,7 +183,7 @@ def _run_multisig_wizard_test(
                 shutter.save(main_window)
                 if TutorialStep.register in wizard.tab_generators:
                     step = wizard.tab_generators[TutorialStep.register]
-                    step.buttonbox_buttons[0].click()
+                    step.button_next.click()
                     shutter.save(main_window)
 
             page_register(wizard)
@@ -193,8 +193,8 @@ def _run_multisig_wizard_test(
                 step = wizard.tab_generators[TutorialStep.plugins]
                 assert isinstance(step, PluginListStep)
                 assert wizard.current_step() == TutorialStep.plugins
-                assert step.buttonbox_buttons[0].isVisible()
-                step.buttonbox_buttons[0].click()
+                assert step.button_next.isVisible()
+                step.button_next.click()
                 qtbot.waitUntil(lambda: wizard.current_step() == TutorialStep.receive, timeout=5_000)
                 shutter.save(main_window)
 
@@ -300,9 +300,9 @@ def _run_multisig_wizard_test(
                 step.backup_sheets_printed = True
                 step.seed_words_attached_confirmed = True
                 step._refresh_action_buttons()
-                assert step.buttonbox_buttons[0].isVisible()
-                qtbot.waitUntil(lambda: step.buttonbox_buttons[0].isEnabled(), timeout=5_000)
-                step.buttonbox_buttons[0].click()
+                assert step.button_next.isVisible()
+                qtbot.waitUntil(lambda: step.button_next.isEnabled(), timeout=5_000)
+                step.button_next.click()
                 qtbot.waitUntil(lambda: not wizard.should_be_visible, timeout=5_000)
                 shutter.save(main_window)
 

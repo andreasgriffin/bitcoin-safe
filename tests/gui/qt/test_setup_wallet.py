@@ -179,16 +179,16 @@ def _finish_tutorial(wizard: Wizard, qtbot: QtBot) -> None:
     distribute.backup_sheets_printed = True
     distribute.seed_words_attached_confirmed = True
     distribute._refresh_action_buttons()
-    qtbot.waitUntil(lambda: distribute.buttonbox_buttons[0].isEnabled(), timeout=5_000)
-    distribute.buttonbox_buttons[0].click()
+    qtbot.waitUntil(lambda: distribute.button_next.isEnabled(), timeout=5_000)
+    distribute.button_next.click()
     if wizard.should_be_visible:
         qtbot.waitUntil(lambda: wizard.current_step() == TutorialStep.plugins, timeout=5_000)
 
         plugins = wizard.tab_generators[TutorialStep.plugins]
         assert isinstance(plugins, PluginListStep)
-        qtbot.waitUntil(lambda: plugins.buttonbox_buttons[0].isVisible(), timeout=5_000)
-        qtbot.waitUntil(lambda: plugins.buttonbox_buttons[0].isEnabled(), timeout=5_000)
-        plugins.buttonbox_buttons[0].click()
+        qtbot.waitUntil(lambda: plugins.button_next.isVisible(), timeout=5_000)
+        qtbot.waitUntil(lambda: plugins.button_next.isEnabled(), timeout=5_000)
+        plugins.button_next.click()
     qtbot.waitUntil(lambda: not wizard.should_be_visible, timeout=5_000)
 
 
@@ -288,7 +288,7 @@ def test_plugins_step_reparents_plugin_manager_widget(
 
         wizard.set_current_index(wizard.index_of_step(TutorialStep.plugins))
         qtbot.waitUntil(lambda: plugins_step.plugins_host_layout.indexOf(plugin_widget) != -1, timeout=5_000)
-        plugins_step.buttonbox_buttons[0].click()
+        plugins_step.button_next.click()
         qtbot.waitUntil(lambda: wizard.current_step() == TutorialStep.receive, timeout=5_000)
         assert wizard.should_be_visible
         qtbot.waitUntil(lambda: qt_wallet.tabs.findNodeByWidget(plugin_widget) == plugins_node, timeout=5_000)
@@ -348,7 +348,7 @@ def test_plugins_step_shows_enabled_plugin_in_sidebar(
         qtbot.waitUntil(lambda: not plugins_node.isHidden(), timeout=5_000)
         qtbot.waitUntil(lambda: not plugin_node.isHidden(), timeout=5_000)
 
-        plugins_step.buttonbox_buttons[0].click()
+        plugins_step.button_next.click()
         qtbot.waitUntil(lambda: wizard.current_step() == TutorialStep.receive, timeout=5_000)
         assert not plugins_node.isHidden()
         assert not plugin_node.isHidden()
