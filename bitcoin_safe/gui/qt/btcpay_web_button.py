@@ -45,7 +45,6 @@ from typing import Any, cast
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
-import requests
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import (
@@ -71,7 +70,7 @@ from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
 from bitcoin_safe.constants import CONTACT_EMAIL, LOGO_NAME
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
-from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.network_utils import ProxyInfo, post_form_async
 from bitcoin_safe.util import SATOSHIS_PER_BTC, OptExcInfo
 from bitcoin_safe.util_os import webopen
 
@@ -178,8 +177,8 @@ class BTCPayWebButton(QPushButton):
         redirect_url_override: str | None = None,
         checkout_desc: str | None = None,
     ) -> tuple[int, BtcPayInvoiceDetails]:
-        proxies = (
-            ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
+        proxy_info = (
+            ProxyInfo.parse(self.config.network_config.proxy_url)
             if self.config.network_config.proxy_url
             else None
         )
@@ -198,12 +197,12 @@ class BTCPayWebButton(QPushButton):
         if checkout_desc:
             request_data["checkoutDesc"] = checkout_desc
 
-        response = requests.post(
-            DONATION_INVOICE_ENDPOINT,
+        response = await post_form_async(
+            url=DONATION_INVOICE_ENDPOINT,
             data=request_data,
+            proxy_info=proxy_info,
+            timeout=20 if proxy_info else 10,
             allow_redirects=False,
-            timeout=20 if proxies else 10,
-            proxies=proxies,
         )
         status_code, invoice_url = response.status_code, response.headers.get("Location")
 
@@ -214,6 +213,7 @@ class BTCPayWebButton(QPushButton):
     # ---------- callbacks ----------
 
     def _on_invoice_created(self, result: tuple[int, BtcPayInvoiceDetails]) -> None:
+        self.future_invoice = None
         status_code, invoice_details = result
         self.setEnabled(True)
 
@@ -253,6 +253,7 @@ class BTCPayWebButton(QPushButton):
             )
 
     def _on_invoice_error(self, invoice_details: BtcPayInvoiceDetails, exc_info: OptExcInfo) -> None:
+        self.future_invoice = None
         exc_info_for_logger: tuple[type[BaseException], BaseException, TracebackType | None] | None = None
         if exc_info and exc_info[0] and exc_info[1]:
             exc_info_for_logger = cast(
@@ -268,9 +269,9 @@ class BTCPayWebButton(QPushButton):
         self.signal_payment_completed.emit(invoice_details)
         self._stop_callback_server()
 
-    def cancel_invoice_task(self):
+    def cancel_invoice_task(self) -> None:
         # cancel pending async task if supported
-        if self.future_invoice is not None and self.future_invoice.running():
+        if self.future_invoice is not None and not self.future_invoice.done():
             try:
                 self.future_invoice.cancel()
             except Exception:
