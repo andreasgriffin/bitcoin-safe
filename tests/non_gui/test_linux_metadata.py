@@ -32,12 +32,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from tools.appimage_to_deb_converter import Appimage2debConverter
-from tools.generate_linux_metadata import (
+from tools.generate_packaging_metadata import (
     APPIMAGE_EXECUTABLE,
     APPIMAGE_ICON_NAME,
     DESKTOP_ENTRY_PATH,
     FLATPAK_DESKTOP_ID,
     FLATPAK_METAINFO_PATH,
+    WINDOWS_NSI_METADATA_PATH,
 )
 
 from bitcoin_safe.app_metadata import APP_METADATA
@@ -56,6 +57,11 @@ def test_desktop_entry_matches_generated_metadata() -> None:
 def test_flatpak_metainfo_matches_generated_metadata() -> None:
     metainfo = (PROJECT_ROOT / FLATPAK_METAINFO_PATH).read_text(encoding="utf-8")
     assert metainfo == APP_METADATA.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID)
+
+
+def test_windows_nsi_metadata_matches_generated_metadata() -> None:
+    windows_nsi_metadata = (PROJECT_ROOT / WINDOWS_NSI_METADATA_PATH).read_text(encoding="utf-8")
+    assert windows_nsi_metadata == APP_METADATA.render_windows_nsi_defines()
 
 
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:

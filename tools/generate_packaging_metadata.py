@@ -41,12 +41,13 @@ from bitcoin_safe.app_metadata import APP_METADATA
 
 DESKTOP_ENTRY_PATH = Path("tools/resources/linux-bitcoin-safe.desktop")
 FLATPAK_METAINFO_PATH = Path("tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml")
+WINDOWS_NSI_METADATA_PATH = Path("tools/build-wine/bitcoin_safe_metadata.nsh")
 APPIMAGE_EXECUTABLE = "org.bitcoin-safe.bitcoin-safe %F"
 APPIMAGE_ICON_NAME = "bitcoin-safe"
 FLATPAK_DESKTOP_ID = "org.bitcoin_safe.BitcoinSafe.desktop"
 
 
-def write_linux_metadata(project_root: Path) -> None:
+def write_packaging_metadata(project_root: Path) -> None:
     desktop_path = project_root / DESKTOP_ENTRY_PATH
     desktop_path.write_text(
         APP_METADATA.render_desktop_entry(exec_command=APPIMAGE_EXECUTABLE, icon_name=APPIMAGE_ICON_NAME),
@@ -55,24 +56,70 @@ def write_linux_metadata(project_root: Path) -> None:
 
     metainfo_path = project_root / FLATPAK_METAINFO_PATH
     metainfo_path.write_text(
-        APP_METADATA.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID), encoding="utf-8"
+        APP_METADATA.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID),
+        encoding="utf-8",
     )
 
+    windows_nsi_metadata_path = project_root / WINDOWS_NSI_METADATA_PATH
+    windows_nsi_metadata_path.write_text(APP_METADATA.render_windows_nsi_defines(), encoding="utf-8")
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate shared Linux desktop metadata files.")
-    parser.add_argument(
+
+def get_metadata_value(field: str) -> str:
+    values = {
+        "application-name": APP_METADATA.application_name,
+        "homepage": APP_METADATA.homepage,
+        "summary": APP_METADATA.summary,
+        "macos-bundle-name": APP_METADATA.macos_bundle_name,
+        "macos-dmg-volume-name": APP_METADATA.macos_dmg_volume_name,
+        "macos-executable-name": APP_METADATA.macos_executable_name,
+        "windows-publisher": APP_METADATA.developer_name,
+    }
+    return values[field]
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Generate or query shared packaging metadata.")
+    subparsers = parser.add_subparsers(dest="command", required=False)
+
+    write_parser = subparsers.add_parser("write-files", help="Write generated packaging metadata files.")
+    write_parser.add_argument(
         "--project-root",
         default=PROJECT_ROOT,
         type=Path,
         help="Project root where the metadata files should be written.",
     )
-    return parser.parse_args()
+
+    get_parser = subparsers.add_parser("get", help="Print a shared metadata value.")
+    get_parser.add_argument(
+        "field",
+        choices=(
+            "application-name",
+            "homepage",
+            "summary",
+            "macos-bundle-name",
+            "macos-dmg-volume-name",
+            "macos-executable-name",
+            "windows-publisher",
+        ),
+    )
+
+    return parser
 
 
 def main() -> None:
-    args = parse_args()
-    write_linux_metadata(args.project_root.resolve())
+    parser = build_parser()
+    args = parser.parse_args()
+
+    if args.command in (None, "write-files"):
+        project_root = PROJECT_ROOT if args.command is None else args.project_root.resolve()
+        write_packaging_metadata(project_root)
+        return
+
+    if args.command == "get":
+        print(get_metadata_value(args.field))
+        return
+
+    raise ValueError(f"Unsupported command: {args.command}")
 
 
 if __name__ == "__main__":

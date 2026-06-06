@@ -2,17 +2,10 @@
 ;Include Modern UI
   !include "TextFunc.nsh" ;Needed for the $GetSize function. I know, doesn't sound logical, it isn't.
   !include "MUI2.nsh"
+  !include "bitcoin_safe_metadata.nsh"
 
 ;--------------------------------
 ;Variables
-
-  !define PRODUCT_NAME "Bitcoin Safe"
-  !define PRODUCT_WEB_SITE "https://github.com/andreasgriffin/bitcoin-safe"
-  !define PRODUCT_PUBLISHER "Andreas Griffin"
-  !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-
-;--------------------------------
-;General
 
   ;Name and file
   Name "${PRODUCT_NAME}"
@@ -56,14 +49,13 @@
 
   ;VIAddVersionKey - Adds a field in the Version Tab of the File Properties. This can either be a field provided by the system or a user defined field.
   VIAddVersionKey ProductName "${PRODUCT_NAME} Installer"
-  VIAddVersionKey Comments "The installer for ${PRODUCT_NAME}"
-  VIAddVersionKey CompanyName "${PRODUCT_NAME}"
-  VIAddVersionKey LegalCopyright "2013-2018 ${PRODUCT_PUBLISHER}"
+  VIAddVersionKey Comments "${PRODUCT_INSTALLER_COMMENTS}"
+  VIAddVersionKey CompanyName "${PRODUCT_PUBLISHER}"
+  VIAddVersionKey LegalCopyright "${PRODUCT_COPYRIGHT}"
   VIAddVersionKey FileDescription "${PRODUCT_NAME} Installer"
   VIAddVersionKey FileVersion ${PRODUCT_VERSION}
   VIAddVersionKey ProductVersion ${PRODUCT_VERSION}
   VIAddVersionKey InternalName "${PRODUCT_NAME} Installer"
-  VIAddVersionKey LegalTrademarks "${PRODUCT_NAME} is a trademark of ${PRODUCT_PUBLISHER}"
   VIAddVersionKey OriginalFilename "${PRODUCT_NAME}.exe"
 
 ;--------------------------------

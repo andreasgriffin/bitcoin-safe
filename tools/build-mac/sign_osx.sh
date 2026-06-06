@@ -4,8 +4,6 @@ set -e
 
 security -v unlock-keychain login.keychain
 
-PACKAGE=Bitcoin_Safe
-
 . "$(dirname "$0")/../build_tools_util.sh"
 
 CONTRIB_OSX="$(dirname "$(realpath "$0")")"
@@ -13,6 +11,8 @@ CONTRIB="$CONTRIB_OSX/.."
 PROJECT_ROOT="$CONTRIB/.."
 CACHEDIR="$CONTRIB_OSX/.cache"
 CODESIGN_CERT="andreas"
+METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
+PACKAGE="$(python3 "$METADATA_SCRIPT" get application-name)"
 
 cd "$PROJECT_ROOT"
 
@@ -75,6 +75,6 @@ DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"
 # fi
 
 info "Creating .DMG"
-hdiutil create -fs HFS+ -volname $PACKAGE -srcfolder dist/$PACKAGE.app dist/bitcoin_safe-$VERSION.dmg || fail "Could not create .DMG"
+hdiutil create -fs HFS+ -volname "$PACKAGE" -srcfolder "dist/$PACKAGE.app" "dist/bitcoin_safe-$VERSION.dmg" || fail "Could not create .DMG"
 
 DoCodeSignMaybe ".DMG" "dist/bitcoin_safe-${VERSION}.dmg"

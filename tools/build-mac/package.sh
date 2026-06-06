@@ -6,6 +6,10 @@ PROJECT_ROOT="$(dirname "$(readlink -e "$0")")/../.."
 CONTRIB="$PROJECT_ROOT/tools"
 . "$CONTRIB"/build_tools_util.sh
 
+METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
+PACKAGE_NAME="$(python3 "$METADATA_SCRIPT" get macos-bundle-name)"
+DMG_VOLUME_NAME="$(python3 "$METADATA_SCRIPT" get macos-dmg-volume-name)"
+
 # note: GCC 10.1 will need an extra option, see https://github.com/bitcoin/bitcoin/pull/19553
 
 cdrkit_version=1.1.11
@@ -24,7 +28,7 @@ export PATH=$PATH:~/bin
 
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 Bitcoin_Safe.app"
+    echo "Usage: $0 ${PACKAGE_NAME}"
     exit -127
 fi
 
@@ -69,27 +73,27 @@ echo $VERSION
 
 rm -rf /tmp/bitcoin_safe-macos/image > /dev/null 2>&1
 mkdir /tmp/bitcoin_safe-macos/image/
-cp -r $1 /tmp/bitcoin_safe-macos/image/
+cp -r "$1" /tmp/bitcoin_safe-macos/image/
 
 build_dir=$(dirname "$1")
 test -n "$build_dir" -a -d "$build_dir" || exit
-cd $build_dir
+cd "$build_dir"
 
 ${genisoimage} \
     -no-cache-inodes \
     -D \
     -l \
     -probe \
-    -V "Bitcoin_Safe" \
+    -V "${DMG_VOLUME_NAME}" \
     -no-pad \
     -r \
     -dir-mode 0755 \
     -apple \
-    -o Bitcoin_Safe_uncompressed.dmg \
+    -o bitcoin_safe_uncompressed.dmg \
     /tmp/bitcoin_safe-macos/image || fail "Unable to create uncompressed dmg"
 
-dmg dmg Bitcoin_Safe_uncompressed.dmg bitcoin_safe-$VERSION.dmg || fail "Unable to create compressed dmg"
-rm Bitcoin_Safe_uncompressed.dmg
+dmg dmg bitcoin_safe_uncompressed.dmg bitcoin_safe-$VERSION.dmg || fail "Unable to create compressed dmg"
+rm bitcoin_safe_uncompressed.dmg
 
 echo "Done."
 sha256sum bitcoin_safe-$VERSION.dmg

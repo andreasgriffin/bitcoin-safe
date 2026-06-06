@@ -7,10 +7,6 @@ set -e
 # ======================
 PYTHON_VERSION=3.12.3
 PY_VER_MAJOR="3.12"  # as it appears in fs paths
-EXECUTABLE_NAME="run_Bitcoin_Safe"
-PACKAGE='Bitcoin Safe'
-PACKAGE_NAME="$PACKAGE.app"
-GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
 export GCC_STRIP_BINARIES="1"
 export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ with .pyc
@@ -30,6 +26,9 @@ POETRY_CACHE_DIR="$CACHEDIR/poetry_cache"
 mkdir -p "$CACHEDIR" "$DLL_TARGET_DIR"
 
 cd "$PROJECT_ROOT"
+
+PACKAGE="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get application-name)"
+PACKAGE_NAME="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get macos-bundle-name)"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
 

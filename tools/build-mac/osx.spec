@@ -1,18 +1,22 @@
 # -*- mode: python -*-
 
-from pathlib import Path
 import platform
 import site
-from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs, copy_metadata
+import sys, os
+from pathlib import Path
+
 from PyInstaller.building.api import COLLECT, EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 from PyInstaller.building.osx import BUNDLE
-
-import sys, os
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs, copy_metadata
 
 import certifi
 
+PROJECT_ROOT = os.path.abspath(".")
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
+from bitcoin_safe.app_metadata import APP_METADATA
 
 # Function to determine target architecture based on Python's running architecture
 def get_target_arch():
@@ -28,10 +32,9 @@ print(f"Building for {target_arch=}")
 
 
 
-EXECUTABLE_NAME=f"run_Bitcoin_Safe"
-PACKAGE_NAME='Bitcoin Safe.app'
+EXECUTABLE_NAME = APP_METADATA.macos_executable_name
+PACKAGE_NAME = APP_METADATA.macos_bundle_name
 PYPKG='bitcoin_safe'
-PROJECT_ROOT = os.path.abspath(".")
 ICONS_FILE=f"{PROJECT_ROOT}/tools/resources/icon.icns"
 
 
@@ -169,9 +172,13 @@ app = BUNDLE(
     icon=ICONS_FILE,
     bundle_identifier=None,
     info_plist={
+        'CFBundleDisplayName': APP_METADATA.application_name,
         'NSHighResolutionCapable': 'True',
         'NSSupportsAutomaticGraphicsSwitching': 'True',
         'CFBundleExecutable': EXECUTABLE_NAME,
+        'CFBundleGetInfoString': f'{APP_METADATA.application_name} {VERSION}',
+        'CFBundleName': APP_METADATA.application_name,
+        'NSHumanReadableCopyright': APP_METADATA.copyright_notice,
         'CFBundleURLTypes': [
             {
                 'CFBundleURLName': 'bitcoin',
@@ -179,6 +186,6 @@ app = BUNDLE(
             }
         ],
         'LSMinimumSystemVersion': '11',
-        'NSCameraUsageDescription': 'Bitcoin Safe would like to access the camera to scan for QR codes',
+        'NSCameraUsageDescription': APP_METADATA.macos_camera_usage_description,
     },
 )
