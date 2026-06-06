@@ -37,7 +37,6 @@ from PyQt6.QtCore import QLocale, Qt
 from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QCheckBox,
-    QDialogButtonBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -93,7 +92,7 @@ class RegisterMultisig(BaseTab):
         widget_layout.addWidget(self.label_import)
         self.custom_yes_button = QPushButton("", self.buttonbox)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
-        self.buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
+        self.buttonbox.add_action_button(self.custom_yes_button)
 
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=self.refs.qtwalletbase.get_editable_protowallet,

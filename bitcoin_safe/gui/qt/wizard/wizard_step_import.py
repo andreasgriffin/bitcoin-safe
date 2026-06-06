@@ -33,7 +33,6 @@ from functools import partial
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import (
-    QDialogButtonBox,
     QLabel,
     QMessageBox,
     QPushButton,
@@ -107,8 +106,7 @@ class ImportXpubs(BaseTab):
             self.keystore_uis = None
         else:
             self.button_next.setHidden(True)
-            self.buttonbox_buttons.append(self.button_create_wallet)
-            self.buttonbox.addButton(self.button_create_wallet, QDialogButtonBox.ButtonRole.AcceptRole)
+            self.buttonbox.add_action_button(self.button_create_wallet)
             self.button_create_wallet.clicked.connect(self._create_wallet)
 
         tutorial_widget = TutorialWidget(

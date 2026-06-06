@@ -40,7 +40,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import QObject
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QDialogButtonBox, QPushButton
+from PyQt6.QtWidgets import QDialogButtonBox, QHBoxLayout, QPushButton, QWidget
 
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.i18n import translate
@@ -49,12 +49,39 @@ from ....pdfrecovery import TEXT_24_WORDS
 from ....signals import Signals
 from ..qt_wallet import QTWallet, QtWalletBase
 from ..step_progress_bar import StepProgressContainer, TutorialWidget
-from ..util import create_button_box, one_time_signal_connection, svg_tools
+from ..util import one_time_signal_connection, svg_tools
 
 if TYPE_CHECKING:
     from .wizard import TutorialStep, Wizard
 
 logger = logging.getLogger(__name__)
+
+
+class WizardNavigationBar(QWidget):
+    def __init__(
+        self,
+        go_to_next_index: Callable,
+        go_to_previous_index: Callable,
+        parent: QWidget | None = None,
+    ) -> None:
+        """Initialize instance."""
+        super().__init__(parent)
+        self.button_previous = QPushButton(parent=self)
+        self.button_previous.clicked.connect(go_to_previous_index)
+
+        self.button_next = QPushButton(parent=self)
+        self.button_next.clicked.connect(go_to_next_index)
+
+        self._layout = QHBoxLayout(self)
+        self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.addWidget(self.button_previous)
+        self._layout.addStretch()
+        self._layout.addWidget(self.button_next)
+
+    def add_action_button(self, button: QPushButton) -> None:
+        """Insert an extra action button before the next-step button."""
+        button.setParent(self)
+        self._layout.insertWidget(self._layout.count() - 1, button)
 
 
 class FloatingButtonBar(QDialogButtonBox):
@@ -183,11 +210,9 @@ class BaseTab(QObject):
 
         self.loop_in_thread = loop_in_thread
         self.signal_tracker = SignalTracker()
-        self.buttonbox, self.buttonbox_buttons = create_button_box(
-            self.refs.go_to_next_index,
-            self.refs.go_to_previous_index,
-            ok_text="",
-            cancel_text="",
+        self.buttonbox = WizardNavigationBar(
+            go_to_next_index=self.refs.go_to_next_index,
+            go_to_previous_index=self.refs.go_to_previous_index,
             parent=refs.container,
         )
         self.buttonbox.setVisible(False)
@@ -198,12 +223,12 @@ class BaseTab(QObject):
     @property
     def button_next(self) -> QPushButton:
         """Button next."""
-        return self.buttonbox_buttons[0]
+        return self.buttonbox.button_next
 
     @property
     def button_previous(self) -> QPushButton:
         """Button previous."""
-        return self.buttonbox_buttons[1]
+        return self.buttonbox.button_previous
 
     @abstractmethod
     def create(self) -> TutorialWidget:
