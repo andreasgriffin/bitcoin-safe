@@ -61,6 +61,7 @@ import json
 import logging
 import os
 import os.path
+import sys
 import tempfile
 from collections.abc import Callable, Iterable, Sequence
 from decimal import Decimal
@@ -134,7 +135,7 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
-from .util import do_copy
+from .util import do_copy, set_no_margins
 
 logger = logging.getLogger(__name__)
 
@@ -1669,12 +1670,14 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
 
     def create_layout(self) -> None:
         """Create layout."""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
+        self._layout = QVBoxLayout(self)
+        self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
         self.create_toolbar_with_menu("")
-        layout.addLayout(self.toolbar)
-        layout.addWidget(self.searchable_list)
+        self._layout.addWidget(self.toolbar)
+        if sys.platform == "darwin":
+            self._layout.setSpacing(0)
+        self._layout.addWidget(self.searchable_list)
 
     def _searchable_list_export_as_csv(self):
         """Searchable list export as csv."""
@@ -1691,37 +1694,39 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
             "",
         )
 
-        toolbar_button = QToolButton()
+        toolbar_button = QToolButton(self)
 
         toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
         toolbar_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         toolbar_button.setMenu(self.menu)
         toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.toolbar = QHBoxLayout()
+        self.toolbar = QWidget(self)
+        self.toolbar_layout = QHBoxLayout(self.toolbar)
+        set_no_margins(self.toolbar_layout)
 
-        self.balance_label = QLabel()
+        self.balance_label = QLabel(self.toolbar)
         self.balance_label.setVisible(False)
 
-        self.search_edit = QLineEdit()
+        self.search_edit = QLineEdit(self.toolbar)
         self.search_edit.setClearButtonEnabled(True)
         self.search_edit.setMaximumWidth(280)
         if self.searchable_list:
             self.search_edit.textChanged.connect(self.searchable_list.filter)
 
-        self.toolbar.addWidget(self.balance_label)
-        self.toolbar.addStretch()
-        self.toolbar.addWidget(self.search_edit)
-        self.toolbar.addWidget(toolbar_button)
+        self.toolbar_layout.addWidget(self.balance_label)
+        self.toolbar_layout.addStretch()
+        self.toolbar_layout.addWidget(self.search_edit)
+        self.toolbar_layout.addWidget(toolbar_button)
         self.fill_menu_hiddden_columns()
 
     def insert_filter_widget(self, widget: QWidget) -> None:
         """Insert a filter widget before the search field."""
-        self.toolbar.insertWidget(self.toolbar.count() - 2, widget)
+        self.toolbar_layout.insertWidget(self.toolbar_layout.count() - 2, widget)
 
     def insert_leading_toolbar_widget(self, widget: QWidget) -> None:
         """Insert a widget at the start of the toolbar."""
-        self.toolbar.insertWidget(0, widget)
+        self.toolbar_layout.insertWidget(0, widget)
 
     def fill_menu_hiddden_columns(self):
         """Fill menu hiddden columns."""

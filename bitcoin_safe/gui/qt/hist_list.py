@@ -962,14 +962,14 @@ class HistListWithToolbar(TreeViewWithToolbar):
             svg_tools=svg_tools,
         )
         self.sync_button.clicked.connect(self._on_sync_button_clicked)
-        self.toolbar.insertWidget(0, self.sync_button)
+        self.toolbar_layout.insertWidget(0, self.sync_button)
 
         self.cbf_progress_bar = CBFProgressBar(config=config, parent=self)
-        self.toolbar.insertWidget(1, self.cbf_progress_bar)
+        self.toolbar_layout.insertWidget(1, self.cbf_progress_bar)
 
         self.date_range_picker = DateRangePicker(self)
         add_item_with_top_spacer(
-            self.toolbar,
+            self.toolbar_layout,
             self.date_range_picker,
             top_offset_px=self._MACOS_DATE_RANGE_PICKER_TOP_OFFSET_PX,
             index=2,

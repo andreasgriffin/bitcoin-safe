@@ -1200,15 +1200,15 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         ):
             b = QPushButton(self.tr("Generate to selected adddresses"))
             b.clicked.connect(self._mine_to_selected_addresses)
-            self.toolbar.insertWidget(self.toolbar.count() - 2, b)
+            self.toolbar_layout.insertWidget(self.toolbar_layout.count() - 2, b)
 
         hbox = self.create_toolbar_buttons()
-        self.toolbar.insertLayout(self.toolbar.count() - 1, hbox)
+        self.toolbar_layout.insertLayout(self.toolbar_layout.count() - 1, hbox)
 
         # category
-        self.toolbar.insertWidget(0, self.button_create_address)
-        self.toolbar.insertWidget(1, self.button_create_address_label)
-        self.toolbar.insertWidget(2, self.category_combobox)
+        self.toolbar_layout.insertWidget(0, self.button_create_address)
+        self.toolbar_layout.insertWidget(1, self.button_create_address_label)
+        self.toolbar_layout.insertWidget(2, self.category_combobox)
 
     def create_toolbar_buttons(self) -> QHBoxLayout:
         """Create toolbar buttons."""
