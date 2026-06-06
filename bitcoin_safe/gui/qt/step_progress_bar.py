@@ -42,7 +42,6 @@ from PyQt6.QtCore import QEvent, QPoint, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygon
 from PyQt6.QtWidgets import (
     QApplication,
-    QDialogButtonBox,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -715,7 +714,7 @@ class TutorialWidget(QWidget):
         self,
         container: StepProgressContainer,
         widget: QWidget,
-        button_box: QDialogButtonBox,
+        button_box: QWidget,
         buttonbox_always_visible=False,
     ) -> None:
         """Initialize instance."""

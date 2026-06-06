@@ -37,7 +37,6 @@ from PyQt6.QtCore import QLocale, Qt
 from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QCheckBox,
-    QDialogButtonBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -49,7 +48,7 @@ from bitcoin_safe.execute_config import DEFAULT_LANG_CODE
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.keystore import KeyStore
@@ -93,7 +92,7 @@ class RegisterMultisig(BaseTab):
         widget_layout.addWidget(self.label_import)
         self.custom_yes_button = QPushButton("", self.buttonbox)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
-        self.buttonbox.addButton(self.custom_yes_button, QDialogButtonBox.ButtonRole.AcceptRole)
+        self.buttonbox.add_action_button(self.custom_yes_button)
 
         self.keystore_uis = KeyStoreUIs(
             get_editable_protowallet=self.refs.qtwalletbase.get_editable_protowallet,
@@ -112,9 +111,6 @@ class RegisterMultisig(BaseTab):
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
         tutorial_widget.set_callback(partial(self._callback, tutorial_widget))
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
-        )
 
         self.updateUi()
         self.set_current_signer(0)
@@ -326,9 +322,6 @@ class DistributeSeeds(BaseTab):
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
-        )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
 
         self.updateUi()

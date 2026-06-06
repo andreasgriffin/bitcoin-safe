@@ -541,7 +541,7 @@ def test_configure_creator_for_embedded_send_test_swaps_reset_for_previous() -> 
     creator.set_fee_notification_bars_enabled.assert_called_once_with(False)
     creator.button_back.setVisible.assert_called_once_with(False)
     creator.set_show_reset_button.assert_called_once_with(False)
-    button_box.addButton.assert_called_once_with(previous_button, QDialogButtonBox.ButtonRole.RejectRole)
+    button_box.addButton.assert_called_once_with(previous_button, QDialogButtonBox.ButtonRole.ResetRole)
 
 
 def test_configure_creator_for_standard_send_restores_reset_button() -> None:
