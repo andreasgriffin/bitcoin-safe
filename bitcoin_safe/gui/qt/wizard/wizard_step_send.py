@@ -82,7 +82,6 @@ class SendTest(BaseTab):
         wizard = self.wizard_parent()
         has_pending_tx = bool(wizard and self.test_number in wizard.pending_txid_by_send_test)
         if should_be_visible:
-            self.refs.floating_button_box.setVisible(False)
             if wizard:
                 wizard._configure_creator_for_embedded_send_test(True)
             if wizard and wizard.get_send_test_txid(self.test_number) in wizard.recognized_txids:
@@ -147,7 +146,8 @@ class SendTest(BaseTab):
             wizard.on_send_test_step_activated(self.test_number)
             return
 
-        self.refs.floating_button_box.fill_tx()
+        if wizard := self.wizard_parent():
+            wizard.fill_tx()
 
     def create(self) -> TutorialWidget:
         """Create."""

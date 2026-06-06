@@ -51,7 +51,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.descriptors import get_default_address_type
 from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 
 from ..styled_card_frame import BaseCardFrame
 from ..util import (
@@ -391,9 +391,6 @@ class WalletSetupOptions(BaseTab):
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
-        )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
 
         self.button_next.clicked.disconnect()

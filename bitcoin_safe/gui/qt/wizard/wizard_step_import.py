@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 
 from ..util import MessageType, caught_exception_message
 from .wizard_support import BaseTab, WizardTabInfo
@@ -113,9 +113,6 @@ class ImportXpubs(BaseTab):
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
         tutorial_widget.set_callback(partial(self._callback, tutorial_widget))
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
-        )
 
         self.updateUi()
         return tutorial_widget
