@@ -9,7 +9,7 @@
    version="1.1"
    id="svg10"
    sodipodi:docname="shield-2-of-3 - signers.svg"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@
   <sodipodi:namedview
      id="namedview12"
      pagecolor="#ffffff"
-     bordercolor="#000000"
+     bordercolor="currentColor"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -27,7 +27,7 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="26.65625"
-     inkscape:cx="11.6483"
+     inkscape:cx="11.629543"
      inkscape:cy="16.075029"
      inkscape:window-width="1331"
      inkscape:window-height="1008"
@@ -47,11 +47,13 @@
      cy="14"
      r="2.6"
      fill="#1976D2"
-     id="circle4" />
+     id="circle4"
+     style="fill:currentColor" />
   <circle
      cx="19"
      cy="14"
      r="2.6"
      fill="#1976D2"
-     id="circle6" />
+     id="circle6"
+     style="fill:currentColor" />
 </svg>
