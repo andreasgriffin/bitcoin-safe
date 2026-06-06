@@ -632,6 +632,7 @@ class DonateDialog(QWidget):
         self.setMinimumHeight(620)
 
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(40, 40, 40, 40)
 
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
