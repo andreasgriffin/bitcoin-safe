@@ -508,7 +508,7 @@ pyqt6 = "^6.9.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-safe-lib.git"
 reference = "main"
-resolved_reference = "dc4242eaa98da833042f157ee9ed905d9781cdce"
+resolved_reference = "7c7c22ccd31215b8b7bf7b267edfac685f826cf8"
 
 [[package]]
 name = "bitcoin-usb"
@@ -4598,14 +4598,14 @@ typing-extensions = {version = ">=4.13.2", markers = "python_version < \"3.11\""
 
 [[package]]
 name = "wcwidth"
-version = "0.7.0"
+version = "0.8.0"
 description = "Measures the displayed width of unicode strings in a terminal"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "wcwidth-0.7.0-py3-none-any.whl", hash = "sha256:5d69154c429a82910e241c738cd0e2976fac8a2dd47a1a805f4afed1c0f136f2"},
-    {file = "wcwidth-0.7.0.tar.gz", hash = "sha256:90e3a7ea092341c44b99562e75d09e4d5160fe7a3974c6fb842a101a95e7eed0"},
+    {file = "wcwidth-0.8.0-py3-none-any.whl", hash = "sha256:8c75e6099cefd197c4bcc67a486f70b5dbc68f997c05f34a811d853910450d64"},
+    {file = "wcwidth-0.8.0.tar.gz", hash = "sha256:68a882ff6d14e3d14e0cae590b96a0551be64ce4905408112a8254434a1bdf69"},
 ]
 
 [[package]]
