@@ -42,9 +42,11 @@ from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import unquote, urlparse
 
+import aiohttp
 import bdkpython as bdk
 import requests
 import socks
+from aiohttp_socks import ProxyConnector
 
 from bitcoin_safe.util import default_timeout
 
@@ -145,6 +147,53 @@ class ProxyInfo:
         assert self.host, "No host set"
         assert self.port, "No port set"
         return bdk.Socks5Proxy(address=IpAddress.from_host(self.host), port=self.port)
+
+
+@dataclass(frozen=True)
+class AsyncHttpResponse:
+    status_code: int
+    headers: dict[str, str]
+    body: bytes
+
+
+def _aiohttp_session_kwargs(
+    proxy_info: ProxyInfo | None, timeout: float
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    session_kwargs: dict[str, Any] = {"timeout": aiohttp.ClientTimeout(total=timeout)}
+    request_kwargs: dict[str, Any] = {}
+
+    if not proxy_info:
+        return session_kwargs, request_kwargs
+
+    scheme = proxy_info.scheme.lower()
+    if scheme.startswith("socks"):
+        session_kwargs["connector"] = ProxyConnector.from_url(proxy_info.get_url())
+        return session_kwargs, request_kwargs
+
+    if scheme.startswith("http"):
+        request_kwargs["proxy"] = proxy_info.get_url()
+        return session_kwargs, request_kwargs
+
+    raise ValueError(f"Unsupported proxy scheme for aiohttp: {proxy_info.scheme}")
+
+
+async def post_form_async(
+    url: str,
+    data: dict[str, str],
+    proxy_info: ProxyInfo | None,
+    timeout: float,
+    allow_redirects: bool = False,
+) -> AsyncHttpResponse:
+    session_kwargs, request_kwargs = _aiohttp_session_kwargs(proxy_info=proxy_info, timeout=timeout)
+    async with aiohttp.ClientSession(**session_kwargs) as session:
+        async with session.post(
+            url, data=data, allow_redirects=allow_redirects, **request_kwargs
+        ) as response:
+            return AsyncHttpResponse(
+                status_code=response.status,
+                headers=dict(response.headers),
+                body=await response.read(),
+            )
 
 
 def is_ip_address(host: str) -> bool:
