@@ -299,7 +299,7 @@ class Wizard(WizardBase):
         if embedded:
             if self.send_test_previous_button not in creator.button_box.buttons():
                 creator.button_box.addButton(
-                    self.send_test_previous_button, QDialogButtonBox.ButtonRole.RejectRole
+                    self.send_test_previous_button, QDialogButtonBox.ButtonRole.ResetRole
                 )
             self.send_test_previous_button.setVisible(True)
             return
