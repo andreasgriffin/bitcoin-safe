@@ -12,8 +12,8 @@
   - [All wallets require hardware signers/wallets](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/) for safe seed storage 
   - Powered by **[BDK](https://github.com/bitcoindevkit/bdk)**
 - **Fast**
-  - Electrum/Esplora server
-  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) with [transaction notifications](https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/)
+  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) by default for private syncing without a centralized server, with [transaction notifications](https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/)
+  - Optional Electrum/Esplora server support
 - **Multi-Language**
   - [🇺🇸](https://bitcoin-safe.org/en/),  [🇨🇳](https://bitcoin-safe.org/zh/), [🇪🇸](https://bitcoin-safe.org/es/), [🇯🇵](https://bitcoin-safe.org/ja/), [🇷🇺](https://bitcoin-safe.org/ru/), [🇵🇹](https://bitcoin-safe.org/pt/), [🇧🇷](https://bitcoin-safe.org/pt/), [🇮🇳](https://bitcoin-safe.org/hi/), [🇦🇪](https://bitcoin-safe.org/ar/), [🇮🇹](https://bitcoin-safe.org/it/), [🇫🇷](https://bitcoin-safe.org/fr/), [🇩🇪](https://bitcoin-safe.org/de/), [🇲🇲](https://bitcoin-safe.org/my/), [🇰🇷](https://bitcoin-safe.org/ko/), [🇹🇭](https://bitcoin-safe.org/th/), [🇮🇷](https://bitcoin-safe.org/fa/), [🇵🇱](https://bitcoin-safe.org/pl/), [🇪🇸](https://bitcoin-safe.org/ca/), [🇮🇩](https://bitcoin-safe.org/id/), [🇹🇷](https://bitcoin-safe.org/tr/), [🇺🇦](https://bitcoin-safe.org/uk/), [🇻🇳](https://bitcoin-safe.org/en/), [🇧🇩](https://bitcoin-safe.org/en/)  (more upon request)
 - **Simpler** address labels by using categories (e.g. "KYC", "Non-KYC", "Work", "Friends", ...)
@@ -94,8 +94,8 @@
   - Optional custom nostr server 
 
 - **Fast syncing**: 
-  - Electrum/Esplora server
-  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) 
+  - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) by default for private syncing without a centralized server
+  - Optional Electrum/Esplora server support
 
 
 ## Installation from Git repository
@@ -286,10 +286,10 @@ Free code signing provided by [SignPath.io](https://about.signpath.io/), certifi
 
 ## Privacy policy
 This program uses by default
-- the electrum/esplora server of [blockstream.com](https://blockstream.com/) to fetch blockchain data
+- [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) to fetch blockchain data privately from multiple Bitcoin nodes, without relying on a centralized server
 - fetches mempool fee information from [mempool.space](https://mempool.space/)
 
-You can specify your own (personal) server for both in "Network settings".
+You can still specify your own Electrum, Esplora, or RPC server in "Network settings".
 
 When enabeling the Sync&Chat feature [default relays](https://github.com/andreasgriffin/bitcoin-nostr-chat/blob/main/bitcoin_nostr_chat/default_relays.py) are used to transmit encrypted data to your approved trusted devices. You can specify your own relay(s) in the Sync&Chat settings.
 
