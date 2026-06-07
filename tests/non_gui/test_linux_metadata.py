@@ -70,8 +70,27 @@ def test_macos_packaging_includes_license_file() -> None:
     package_sh = (PROJECT_ROOT / "tools" / "build-mac" / "package.sh").read_text(encoding="utf-8")
 
     assert '(f"{PROJECT_ROOT}/LICENSE.md", "LICENSE.txt")' in osx_spec
-    assert 'cp "LICENSE.md" "dmg-package/LICENSE.txt"' in make_osx
-    assert 'cp "$LICENSE_SOURCE_PATH" /tmp/bitcoin_safe-macos/image/LICENSE.txt' in package_sh
+    assert "create_styled_dmg.sh" in make_osx
+    assert "create_styled_dmg.sh" in package_sh
+    assert "LICENSE.txt" not in make_osx
+    assert "LICENSE.txt" not in package_sh
+
+
+def test_macos_packaging_uses_styled_dmg_background() -> None:
+    background_image_path = PROJECT_ROOT / "tools" / "resources" / "dmg-background.png"
+    create_styled_dmg = (PROJECT_ROOT / "tools" / "build-mac" / "create_styled_dmg.sh").read_text(
+        encoding="utf-8"
+    )
+    make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
+    sign_osx = (PROJECT_ROOT / "tools" / "build-mac" / "sign_osx.sh").read_text(encoding="utf-8")
+
+    assert background_image_path.exists()
+    assert "tools/resources/dmg-background.png" in make_osx
+    assert "tools/resources/dmg-background.png" in sign_osx
+    assert (
+        'set background picture of view_options to file ".background:dmg-background.png"' in create_styled_dmg
+    )
+    assert 'set position of item "Applications" of container window to {470, 215}' in create_styled_dmg
 
 
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:

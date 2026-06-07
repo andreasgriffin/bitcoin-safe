@@ -13,6 +13,7 @@ CACHEDIR="$CONTRIB_OSX/.cache"
 CODESIGN_CERT="andreas"
 METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
 PACKAGE="$(python3 "$METADATA_SCRIPT" get application-name)"
+DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 cd "$PROJECT_ROOT"
 
@@ -75,6 +76,10 @@ DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"
 # fi
 
 info "Creating .DMG"
-hdiutil create -fs HFS+ -volname "$PACKAGE" -srcfolder "dist/$PACKAGE.app" "dist/bitcoin_safe-$VERSION.dmg" || fail "Could not create .DMG"
+"$CONTRIB_OSX/create_styled_dmg.sh" \
+    "dist/$PACKAGE.app" \
+    "dist/bitcoin_safe-$VERSION.dmg" \
+    "$PACKAGE" \
+    "$DMG_BACKGROUND_PATH" || fail "Could not create .DMG"
 
 DoCodeSignMaybe ".DMG" "dist/bitcoin_safe-${VERSION}.dmg"

@@ -29,6 +29,7 @@ cd "$PROJECT_ROOT"
 
 PACKAGE="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get application-name)"
 PACKAGE_NAME="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get macos-bundle-name)"
+DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
 
@@ -240,31 +241,13 @@ find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 |
 info "Moving dist/${PACKAGE_NAME} to dmg-package/"
 mv "dist/${PACKAGE_NAME}" dmg-package/
 
-info "Adding top-level license"
-cp "LICENSE.md" "dmg-package/LICENSE.txt"
-touch -h -t '200101220000' "dmg-package/LICENSE.txt"
-
-info "Adding Applications symlink" 
-ln -s /Applications "dmg-package/Applications"
-touch -h -t '200101220000' "dmg-package/Applications"
-
 info "Creating unsigned .DMG"
-# Workaround resource busy bug on github on MacOS 13
-# https://github.com/actions/runner-images/issues/7522
-# package all of build/ to also include the Applications symlink 
-i=0
-until     hdiutil create \
-            -fs HFS+ \
-            -volname "$PACKAGE" \
-            -srcfolder "dmg-package" \
-            "dist/bitcoin_safe-$VERSION-unsigned.dmg"     
-do
-    if [ $i -eq 10 ]; then  
-        fail "Could not create .DMG"; 
-    fi
-    i=$((i+1))
-    sleep 1
-done
+"$CONTRIB_OSX/create_styled_dmg.sh" \
+    "dmg-package/${PACKAGE_NAME}" \
+    "dist/bitcoin_safe-$VERSION-unsigned.dmg" \
+    "$PACKAGE" \
+    "$DMG_BACKGROUND_PATH" \
+    || fail "Could not create styled .DMG"
 
 # reset poetry config
 poetry config virtualenvs.create true
