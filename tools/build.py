@@ -190,7 +190,7 @@ class Builder:
         """Appimage2deb."""
         for filename in self.list_files("dist/", extension=".AppImage"):
             package_name = self.app_name_formatter(self.module_name).lower()
-            desktop_file_name = f"{package_name}.desktop"
+            desktop_file_name = f"{APP_METADATA.flatpak_app_id}.desktop"
             converter = Appimage2debConverter(
                 appimage=filename,
                 output_deb=filename.with_suffix(".deb"),
@@ -203,10 +203,12 @@ class Builder:
                     exec_command=f"/opt/{package_name}/AppRun",
                     icon_name=f"/opt/{package_name}/{package_name}.svg",
                 ),
+                desktop_file_id=desktop_file_name,
                 appstream_component_id=APP_METADATA.flatpak_app_id,
                 appstream_metainfo_content=APP_METADATA.render_metainfo(
                     launchable_desktop_id=desktop_file_name
                 ),
+                debian_copyright_content=APP_METADATA.render_debian_copyright(package_name=package_name),
             )
             converter.convert()
 

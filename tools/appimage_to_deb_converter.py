@@ -49,8 +49,10 @@ class Appimage2debConverter:
         desktop_icon_name="",
         desktop_categories="Utility",
         desktop_entry_content="",
+        desktop_file_id=None,
         appstream_component_id=None,
         appstream_metainfo_content="",
+        debian_copyright_content="",
     ):
         """Initialize instance."""
         self.appimage = Path(appimage).resolve()
@@ -72,8 +74,10 @@ class Appimage2debConverter:
         self.desktop_icon_name = desktop_icon_name
         self.desktop_categories = desktop_categories
         self.desktop_entry_content = desktop_entry_content
+        self.desktop_file_id = desktop_file_id
         self.appstream_component_id = appstream_component_id
         self.appstream_metainfo_content = appstream_metainfo_content
+        self.debian_copyright_content = debian_copyright_content
         self._source_date_epoch = self._resolve_source_date_epoch()
 
     @staticmethod
@@ -182,7 +186,8 @@ exit 0
         """Create desktop file."""
         applications_dir = package_root / "usr" / "share" / "applications"
         applications_dir.mkdir(parents=True, exist_ok=True)
-        desktop_file_path = applications_dir / f"{self.package_name}.desktop"
+        desktop_file_basename = self.desktop_file_id or f"{self.package_name}.desktop"
+        desktop_file_path = applications_dir / desktop_file_basename
 
         if self.desktop_entry_content:
             desktop_file_path.write_text(self.desktop_entry_content, encoding="utf-8")
@@ -219,6 +224,16 @@ exit 0
         metainfo_dir.mkdir(parents=True, exist_ok=True)
         metainfo_path = metainfo_dir / f"{self.appstream_component_id}.metainfo.xml"
         metainfo_path.write_text(self.appstream_metainfo_content, encoding="utf-8")
+
+    def _create_debian_copyright_file(self, package_root: Path) -> None:
+        """Install a standard Debian copyright file when provided."""
+        if not self.debian_copyright_content:
+            return
+
+        copyright_dir = package_root / "usr" / "share" / "doc" / self.package_name
+        copyright_dir.mkdir(parents=True, exist_ok=True)
+        copyright_path = copyright_dir / "copyright"
+        copyright_path.write_text(self.debian_copyright_content, encoding="utf-8")
 
     def _build_deb(self, package_root: Path) -> None:
         """Build deb."""
@@ -270,6 +285,7 @@ exit 0
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
             self._create_appstream_metadata(package_root)
+            self._create_debian_copyright_file(package_root)
 
             self._normalize_package_tree(package_root)
 

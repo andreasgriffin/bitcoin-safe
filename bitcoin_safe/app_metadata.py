@@ -54,6 +54,7 @@ class ApplicationMetadata:
     copyright_year_range: str
     macos_camera_usage_description: str
     macos_executable_name: str
+    source_repository: str
 
     @property
     def version(self) -> str:
@@ -78,6 +79,25 @@ class ApplicationMetadata:
     @property
     def macos_dmg_volume_name(self) -> str:
         return self.application_name
+
+    def render_debian_copyright(self, package_name: str) -> str:
+        return (
+            "Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n"
+            f"Upstream-Name: {self.application_name}\n"
+            f"Upstream-Contact: {self.maintainer}\n"
+            f"Source: {self.source_repository}\n"
+            f"License: {self.project_license}\n"
+            "\n"
+            "Files: *\n"
+            f"Copyright: {self.copyright_notice}\n"
+            f"License: {self.project_license}\n"
+            f"Comment: Debian package metadata for {package_name}.\n"
+            "\n"
+            f"License: {self.project_license}\n"
+            " This package is distributed under the GNU General Public License, version 3 only.\n"
+            " On Debian systems, the full license text can be found in\n"
+            " /usr/share/common-licenses/GPL-3.\n"
+        )
 
     def render_desktop_entry(self, exec_command: str, icon_name: str) -> str:
         lines = [
@@ -155,4 +175,5 @@ APP_METADATA = ApplicationMetadata(
     copyright_year_range="2023-2026",
     macos_camera_usage_description="Bitcoin Safe would like to access the camera to scan QR codes",
     macos_executable_name="run_Bitcoin_Safe",
+    source_repository="https://github.com/andreasgriffin/bitcoin-safe",
 )
