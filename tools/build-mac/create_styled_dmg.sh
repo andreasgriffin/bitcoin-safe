@@ -17,6 +17,10 @@ WINDOW_WIDTH=640
 WINDOW_HEIGHT=400
 WINDOW_RIGHT=$((WINDOW_LEFT + WINDOW_WIDTH))
 WINDOW_BOTTOM=$((WINDOW_TOP + WINDOW_HEIGHT))
+APP_ICON_X=150
+APP_ICON_Y=215
+APPLICATIONS_ICON_X=490
+APPLICATIONS_ICON_Y=215
 
 TEMP_ROOT="$(mktemp -d "/tmp/bitcoin_safe_dmg.XXXXXX")"
 STAGING_DIR="${TEMP_ROOT}/staging"
@@ -115,8 +119,8 @@ tell application "Finder"
     set icon size of view_options to 128
     set text size of view_options to 14
     set background picture of view_options to background_image
-    set position of item "${APP_NAME}" of dmg_window to {170, 215}
-    set position of item "Applications" of dmg_window to {470, 215}
+    set position of item "${APP_NAME}" of dmg_window to {${APP_ICON_X}, ${APP_ICON_Y}}
+    set position of item "Applications" of dmg_window to {${APPLICATIONS_ICON_X}, ${APPLICATIONS_ICON_Y}}
     update folder dmg_folder without registering applications
     delay 2
     close dmg_window

@@ -129,6 +129,18 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
         "set the bounds of dmg_window to {${WINDOW_LEFT}, ${WINDOW_TOP}, ${WINDOW_RIGHT}, ${WINDOW_BOTTOM}}"
         in create_styled_dmg
     )
+    assert "APP_ICON_X=150" in create_styled_dmg
+    assert "APP_ICON_Y=215" in create_styled_dmg
+    assert "APPLICATIONS_ICON_X=490" in create_styled_dmg
+    assert "APPLICATIONS_ICON_Y=215" in create_styled_dmg
+    assert (
+        'set position of item "${APP_NAME}" of dmg_window to {${APP_ICON_X}, ${APP_ICON_Y}}'
+        in create_styled_dmg
+    )
+    assert (
+        'set position of item "Applications" of dmg_window to '
+        "{${APPLICATIONS_ICON_X}, ${APPLICATIONS_ICON_Y}}" in create_styled_dmg
+    )
     assert "open folder dmg_folder" in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
     assert "hdiutil convert" in create_styled_dmg
