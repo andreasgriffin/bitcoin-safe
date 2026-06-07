@@ -99,7 +99,6 @@ def test_macos_packaging_includes_license_file() -> None:
 
     assert '(f"{PROJECT_ROOT}/LICENSE.md", "LICENSE.txt")' in osx_spec
     assert "create_styled_dmg.sh" in make_osx
-    assert "create_styled_dmg.sh" in package_sh
     assert "LICENSE.txt" not in make_osx
     assert "LICENSE.txt" not in package_sh
 
@@ -109,11 +108,9 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
         encoding="utf-8"
     )
     make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
-    package_sh = (PROJECT_ROOT / "tools" / "build-mac" / "package.sh").read_text(encoding="utf-8")
     sign_osx = (PROJECT_ROOT / "tools" / "build-mac" / "sign_osx.sh").read_text(encoding="utf-8")
 
     assert "tools/resources/dmg-background.png" in make_osx
-    assert "tools/resources/dmg-background.png" in package_sh
     assert "tools/resources/dmg-background.png" in sign_osx
     assert 'BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"' in create_styled_dmg
     assert (
@@ -153,6 +150,24 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert '-srcfolder "${STAGING_DIR}"' in create_styled_dmg
     assert 'ln -s /Applications "${STAGING_DIR}/Applications"' in create_styled_dmg
     assert "osascript" in create_styled_dmg
+
+
+def test_macos_reproducible_package_script_preserves_cdrkit_flow() -> None:
+    package_sh = (PROJECT_ROOT / "tools" / "build-mac" / "package.sh").read_text(encoding="utf-8")
+    dmg_tools = (PROJECT_ROOT / "tools" / "build-mac" / "ensure_reproducible_dmg_tools.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "ensure_reproducible_dmg_tools.sh" in package_sh
+    assert "ensure_reproducible_dmg_tools" in package_sh
+    assert '"$BITCOIN_SAFE_GENISOIMAGE"' in package_sh
+    assert '"$BITCOIN_SAFE_DMG_COMPRESSOR" dmg' in package_sh
+    assert "DMG_VOLUME_NAME" in package_sh
+    assert "create_styled_dmg.sh" not in package_sh
+    assert 'GENISOIMAGE_PATH="${DMG_TOOLS_BIN_DIR}/genisoimage-${CDRKIT_VERSION}"' in dmg_tools
+    assert 'DMG_COMPRESSOR_PATH="${DMG_TOOLS_BIN_DIR}/dmg"' in dmg_tools
+    assert "cdrkit-deterministic.patch" in dmg_tools
+    assert "git clone" in dmg_tools
 
 
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:
