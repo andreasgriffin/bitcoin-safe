@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from xml.sax.saxutils import escape
 
@@ -184,6 +185,72 @@ class ApplicationMetadata:
             f'!define PRODUCT_COPYRIGHT "{self.copyright_notice}"\n'
             '!define PRODUCT_UNINST_KEY "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${PRODUCT_NAME}"\n'
         )
+
+    def render_windows_version_info(
+        self,
+        original_filename: str,
+        file_description: str,
+        product_version: str | None = None,
+        internal_name: str | None = None,
+    ) -> str:
+        version_text = product_version or self.version
+        file_version = self._windows_version_tuple(version_text)
+        escaped_company_name = self._python_unicode_literal(self.developer_name)
+        escaped_file_description = self._python_unicode_literal(file_description)
+        escaped_file_version = self._python_unicode_literal(version_text)
+        escaped_homepage = self._python_unicode_literal(self.homepage)
+        escaped_internal_name = self._python_unicode_literal(
+            internal_name or original_filename.removesuffix(".exe")
+        )
+        escaped_copyright = self._python_unicode_literal(self.copyright_notice)
+        escaped_original_filename = self._python_unicode_literal(original_filename)
+        escaped_product_name = self._python_unicode_literal(self.application_name)
+        escaped_product_version = self._python_unicode_literal(version_text)
+        tuple_text = ", ".join(str(part) for part in file_version)
+
+        return (
+            "# UTF-8\n"
+            "VSVersionInfo(\n"
+            "  ffi=FixedFileInfo(\n"
+            f"    filevers=({tuple_text}),\n"
+            f"    prodvers=({tuple_text}),\n"
+            "    mask=0x3F,\n"
+            "    flags=0x0,\n"
+            "    OS=0x4,\n"
+            "    fileType=0x1,\n"
+            "    subtype=0x0,\n"
+            "    date=(0, 0)\n"
+            "  ),\n"
+            "  kids=[\n"
+            "    StringFileInfo([\n"
+            "      StringTable(\n"
+            "        u'040904B0',\n"
+            "        [\n"
+            f"          StringStruct(u'CompanyName', u'{escaped_company_name}'),\n"
+            f"          StringStruct(u'Comments', u'{escaped_homepage}'),\n"
+            f"          StringStruct(u'FileDescription', u'{escaped_file_description}'),\n"
+            f"          StringStruct(u'FileVersion', u'{escaped_file_version}'),\n"
+            f"          StringStruct(u'InternalName', u'{escaped_internal_name}'),\n"
+            f"          StringStruct(u'LegalCopyright', u'{escaped_copyright}'),\n"
+            f"          StringStruct(u'OriginalFilename', u'{escaped_original_filename}'),\n"
+            f"          StringStruct(u'ProductName', u'{escaped_product_name}'),\n"
+            f"          StringStruct(u'ProductVersion', u'{escaped_product_version}')\n"
+            "        ]\n"
+            "      )\n"
+            "    ]),\n"
+            "    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])\n"
+            "  ]\n"
+            ")\n"
+        )
+
+    def _windows_version_tuple(self, version: str) -> tuple[int, int, int, int]:
+        numbers = [int(match) for match in re.findall(r"\d+", version)]
+        while len(numbers) < 4:
+            numbers.append(0)
+        return numbers[0], numbers[1], numbers[2], numbers[3]
+
+    def _python_unicode_literal(self, value: str) -> str:
+        return value.replace("\\", "\\\\").replace("'", "\\'")
 
 
 APP_METADATA = ApplicationMetadata(

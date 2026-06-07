@@ -13,9 +13,47 @@ PYPKG="bitcoin_safe"
 PROJECT_ROOT = "C:/bitcoin_safe"
 ICONS_FILE=f"{PROJECT_ROOT}/tools/resources/icon.ico"
 
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from bitcoin_safe.app_metadata import APP_METADATA
+
 cmdline_name = os.environ.get("bitcoin_safe_CMDLINE_NAME")
 if not cmdline_name:
     raise Exception('no name')
+
+windows_build_version = os.environ.get("BITCOIN_SAFE_WINDOWS_VERSION", APP_METADATA.version)
+
+
+def create_version_info_file(relative_path: str, original_filename: str, file_description: str) -> str:
+    version_info_path = Path(relative_path)
+    version_info_path.parent.mkdir(parents=True, exist_ok=True)
+    version_info_path.write_text(
+        APP_METADATA.render_windows_version_info(
+            original_filename=original_filename,
+            file_description=file_description,
+            product_version=windows_build_version,
+        ),
+        encoding="utf-8",
+    )
+    return str(version_info_path)
+
+
+portable_version_info_path = create_version_info_file(
+    relative_path=os.path.join("build", "version-info", "portable.txt"),
+    original_filename=f"{cmdline_name}-portable.exe",
+    file_description=f"{APP_METADATA.application_name} Portable",
+)
+setup_version_info_path = create_version_info_file(
+    relative_path=os.path.join("build", "version-info", "setup.txt"),
+    original_filename=f"{cmdline_name}.exe",
+    file_description=APP_METADATA.application_name,
+)
+debug_version_info_path = create_version_info_file(
+    relative_path=os.path.join("build", "version-info", "debug.txt"),
+    original_filename=f"{cmdline_name}-debug.exe",
+    file_description=f"{APP_METADATA.application_name} Debug",
+)
 
 # see https://github.com/pyinstaller/pyinstaller/issues/2005
 hiddenimports = []
@@ -157,6 +195,7 @@ exe_portable = EXE(
     debug=False,
     strip=False,
     upx=False,
+    version=portable_version_info_path,
     icon=ICONS_FILE,
     console=False)
 
@@ -171,6 +210,7 @@ exe_inside_setup_noconsole = EXE(
     debug=False,
     strip=False,
     upx=False,
+    version=setup_version_info_path,
     icon=ICONS_FILE,
     console=False)
 
@@ -182,6 +222,7 @@ exe_inside_setup_console = EXE(
     debug=False,
     strip=False,
     upx=False,
+    version=debug_version_info_path,
     icon=ICONS_FILE,
     console=True)
 

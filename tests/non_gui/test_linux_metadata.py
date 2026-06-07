@@ -64,6 +64,34 @@ def test_windows_nsi_metadata_matches_generated_metadata() -> None:
     assert windows_nsi_metadata == APP_METADATA.render_windows_nsi_defines()
 
 
+def test_windows_version_info_is_generated_from_shared_metadata() -> None:
+    version_info = APP_METADATA.render_windows_version_info(
+        original_filename="bitcoin_safe-portable.exe",
+        file_description="Bitcoin Safe Portable",
+        product_version="2.0.0rc2",
+    )
+
+    assert "filevers=(2, 0, 0, 2)" in version_info
+    assert "StringStruct(u'CompanyName', u'Andreas Griffin')" in version_info
+    assert "StringStruct(u'FileDescription', u'Bitcoin Safe Portable')" in version_info
+    assert "StringStruct(u'OriginalFilename', u'bitcoin_safe-portable.exe')" in version_info
+    assert "StringStruct(u'ProductName', u'Bitcoin Safe')" in version_info
+    assert "StringStruct(u'ProductVersion', u'2.0.0rc2')" in version_info
+
+
+def test_windows_build_scripts_embed_shared_version_info() -> None:
+    deterministic_spec = (PROJECT_ROOT / "tools" / "build-wine" / "deterministic.spec").read_text(
+        encoding="utf-8"
+    )
+    build_exe = (PROJECT_ROOT / "tools" / "build-wine" / "build_exe.sh").read_text(encoding="utf-8")
+
+    assert "render_windows_version_info" in deterministic_spec
+    assert "version=portable_version_info_path" in deterministic_spec
+    assert "version=setup_version_info_path" in deterministic_spec
+    assert "version=debug_version_info_path" in deterministic_spec
+    assert "BITCOIN_SAFE_WINDOWS_VERSION" in build_exe
+
+
 def test_macos_packaging_includes_license_file() -> None:
     osx_spec = (PROJECT_ROOT / "tools" / "build-mac" / "osx.spec").read_text(encoding="utf-8")
     make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
