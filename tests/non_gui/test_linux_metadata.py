@@ -115,6 +115,8 @@ def test_macos_packaging_uses_styled_dmg_background() -> None:
     assert background_image_path.exists()
     assert "tools/resources/dmg-background.png" in make_osx
     assert "tools/resources/dmg-background.png" in sign_osx
+    assert "if exists disk volume_name then" in create_styled_dmg
+    assert 'error "Finder could not see mounted disk "' in create_styled_dmg
     assert (
         'set background picture of view_options to file ".background:dmg-background.png"' in create_styled_dmg
     )

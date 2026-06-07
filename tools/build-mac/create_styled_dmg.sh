@@ -59,8 +59,18 @@ fi
 chflags hidden "${TEMP_ROOT}/mount/.background"
 
 osascript <<EOF
+set volume_name to "${VOLUME_NAME}"
 tell application "Finder"
-    tell disk "${VOLUME_NAME}"
+    repeat 30 times
+        if exists disk volume_name then
+            exit repeat
+        end if
+        delay 1
+    end repeat
+    if not (exists disk volume_name) then
+        error "Finder could not see mounted disk " & quote & volume_name & quote
+    end if
+    tell disk volume_name
         open
         set current view of container window to icon view
         set toolbar visible of container window to false
