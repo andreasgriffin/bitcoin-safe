@@ -9,12 +9,30 @@ on:
         description: "Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)"
         required: false
         type: string
+      artifact_name_prefix:
+        description: "Optional prefix for uploaded artifact names"
+        required: false
+        default: ""
+        type: string
+      run_tests:
+        description: "Run the Flatpak smoke test after the build"
+        required: false
+        default: true
+        type: boolean
   workflow_call:
     inputs:
       commitHash:
         required: false
         type: string
         default: ""
+      artifact_name_prefix:
+        required: false
+        type: string
+        default: ""
+      run_tests:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build:
@@ -79,13 +97,14 @@ jobs:
       - name: Upload Flatpak artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flatpak-artifacts
+          name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: |
             dist/*.flatpak
             tools/build-linux/flatpak/build/repro-debug/**
           if-no-files-found: error
 
   test:
+    if: ${{ inputs.run_tests }}
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -108,7 +127,7 @@ jobs:
       - name: Download Flatpak artifact
         uses: actions/download-artifact@v4
         with:
-          name: flatpak-artifacts
+          name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: artifacts
 
       - name: Install Linux test dependencies

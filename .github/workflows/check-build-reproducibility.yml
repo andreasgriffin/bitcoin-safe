@@ -1,0 +1,269 @@
+name: Check Build Reproducibility
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      commitHash:
+        description: "Enter the commit hash to build twice (leave empty to use the current branch HEAD)"
+        required: false
+        type: string
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+
+jobs:
+  linux-run-1:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-appimage-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-linux-run-1-
+      run_tests: false
+    secrets: inherit
+
+  linux-run-2:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-appimage-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-linux-run-2-
+      run_tests: false
+    secrets: inherit
+
+  compare-linux:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    needs:
+      - linux-run-1
+      - linux-run-2
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download first Linux artifact set
+        uses: actions/download-artifact@v7
+        with:
+          name: repro-linux-run-1-linux-artifacts
+          path: artifacts/linux-run-1
+
+      - name: Download second Linux artifact set
+        uses: actions/download-artifact@v7
+        with:
+          name: repro-linux-run-2-linux-artifacts
+          path: artifacts/linux-run-2
+
+      - name: Compare Linux AppImage tarball checksums
+        id: compare_linux_appimage_tarballs
+        continue-on-error: true
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/linux-run-1 \
+            --second-dir artifacts/linux-run-2 \
+            --pattern '*.AppImage.tar.gz' \
+            --label 'Linux AppImage tarballs'
+
+      - name: Compare Linux deb checksums
+        id: compare_linux_debs
+        continue-on-error: true
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/linux-run-1 \
+            --second-dir artifacts/linux-run-2 \
+            --pattern '*.deb' \
+            --label 'Linux debs'
+
+      - name: Extract AppImage tarballs
+        run: |
+          set -euo pipefail
+          for directory in artifacts/linux-run-1 artifacts/linux-run-2; do
+            find "$directory" -type f -name '*.AppImage.tar.gz' -print0 | while IFS= read -r -d '' archive; do
+              tar -xzf "$archive" -C "$(dirname "$archive")"
+            done
+          done
+
+      - name: Compare extracted AppImage checksums
+        id: compare_linux_appimages
+        continue-on-error: true
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/linux-run-1 \
+            --second-dir artifacts/linux-run-2 \
+            --pattern '*.AppImage' \
+            --label 'Linux AppImage payloads'
+
+      - name: Install AppImage diff dependencies
+        if: ${{ steps.compare_linux_appimages.outcome == 'failure' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y squashfs-tools
+
+      - name: Run AppImage diff report
+        if: ${{ steps.compare_linux_appimages.outcome == 'failure' }}
+        run: |
+          set -euo pipefail
+          APPIMAGE_A=$(find artifacts/linux-run-1 -type f -name '*.AppImage' | head -n 1)
+          APPIMAGE_B=$(find artifacts/linux-run-2 -type f -name '*.AppImage' | head -n 1)
+          bash tools/build-linux/appimage/appimage-diff-report.sh \
+            --work artifacts/appimage-diff-report \
+            "$APPIMAGE_A" \
+            "$APPIMAGE_B"
+
+      - name: Upload AppImage diff report
+        if: ${{ steps.compare_linux_appimages.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-appimage-diff-report
+          path: artifacts/appimage-diff-report
+          if-no-files-found: error
+
+      - name: Fail on Linux reproducibility mismatches
+        if: ${{ steps.compare_linux_appimage_tarballs.outcome == 'failure' || steps.compare_linux_debs.outcome == 'failure' || steps.compare_linux_appimages.outcome == 'failure' }}
+        run: |
+          echo "Linux reproducibility mismatch detected."
+          exit 1
+
+  flatpak-run-1:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-flatpak-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-flatpak-run-1-
+      run_tests: false
+    secrets: inherit
+
+  flatpak-run-2:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-flatpak-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-flatpak-run-2-
+      run_tests: false
+    secrets: inherit
+
+  compare-flatpak:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    needs:
+      - flatpak-run-1
+      - flatpak-run-2
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download first Flatpak artifact set
+        uses: actions/download-artifact@v4
+        with:
+          name: repro-flatpak-run-1-flatpak-artifacts
+          path: artifacts/flatpak-run-1
+
+      - name: Download second Flatpak artifact set
+        uses: actions/download-artifact@v4
+        with:
+          name: repro-flatpak-run-2-flatpak-artifacts
+          path: artifacts/flatpak-run-2
+
+      - name: Compare Flatpak artifact checksums
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/flatpak-run-1 \
+            --second-dir artifacts/flatpak-run-2 \
+            --pattern '*.flatpak' \
+            --label Flatpak
+
+  windows-run-1:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-windows-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-windows-run-1-
+      run_tests: false
+    secrets: inherit
+
+  windows-run-2:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    uses: ./.github/workflows/build-windows-and-test.yml
+    with:
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event.pull_request.head.sha || '' }}
+      artifact_name_prefix: repro-windows-run-2-
+      run_tests: false
+    secrets: inherit
+
+  compare-windows:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    needs:
+      - windows-run-1
+      - windows-run-2
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download first Windows artifact set
+        uses: actions/download-artifact@v7
+        with:
+          name: repro-windows-run-1-win-artifacts
+          path: artifacts/windows-run-1
+
+      - name: Download second Windows artifact set
+        uses: actions/download-artifact@v7
+        with:
+          name: repro-windows-run-2-win-artifacts
+          path: artifacts/windows-run-2
+
+      - name: Compare Windows portable checksums
+        id: compare_windows_portable
+        continue-on-error: true
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/windows-run-1 \
+            --second-dir artifacts/windows-run-2 \
+            --pattern '*portable.exe' \
+            --label 'Windows portable'
+
+      - name: Compare Windows setup checksums
+        id: compare_windows_setup
+        continue-on-error: true
+        run: |
+          python tools/compare_artifact_sets.py \
+            --first-dir artifacts/windows-run-1 \
+            --second-dir artifacts/windows-run-2 \
+            --pattern '*setup.exe' \
+            --label 'Windows setup'
+
+      - name: Install Windows diff dependencies
+        if: ${{ steps.compare_windows_setup.outcome == 'failure' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install pefile
+
+      - name: Run Windows setup diff report
+        if: ${{ steps.compare_windows_setup.outcome == 'failure' }}
+        run: |
+          python tools/build-wine/compare_setup_builds.py \
+            --local artifacts/windows-run-1 \
+            --cloud artifacts/windows-run-2 \
+            --local-json artifacts/windows-run-1/setup-compare-local.json \
+            --cloud-json artifacts/windows-run-2/setup-compare-cloud.json \
+            > artifacts/windows-setup-diff-report.txt
+
+      - name: Upload Windows setup diff report
+        if: ${{ steps.compare_windows_setup.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-setup-diff-report
+          path: |
+            artifacts/windows-setup-diff-report.txt
+            artifacts/windows-run-1/setup-compare-local.json
+            artifacts/windows-run-2/setup-compare-cloud.json
+          if-no-files-found: error
+
+      - name: Fail on Windows reproducibility mismatches
+        if: ${{ steps.compare_windows_portable.outcome == 'failure' || steps.compare_windows_setup.outcome == 'failure' }}
+        run: |
+          echo "Windows reproducibility mismatch detected."
+          exit 1
