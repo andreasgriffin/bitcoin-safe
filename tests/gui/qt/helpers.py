@@ -54,6 +54,7 @@ from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QAction
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
+    QAbstractButton,
     QApplication,
     QDialogButtonBox,
     QFileDialog,
@@ -230,9 +231,7 @@ def setup_single_sig_wallet(
     save_wallet(
         test_config=test_config,
         wallet_name=wallet_name,
-        save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-            QDialogButtonBox.StandardButton.Apply
-        ),
+        save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
     )
 
     qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
@@ -441,7 +440,7 @@ def type_text_in_edit(text: str, edit: QLineEdit | QTextEdit) -> None:
 def save_wallet(
     test_config: UserConfig,
     wallet_name: str,
-    save_button: QPushButton,
+    save_button: QAbstractButton,
 ) -> Path:
     """Save wallet."""
     wallet_file = Path(test_config.config_dir) / f"{wallet_name}.wallet"
@@ -456,6 +455,18 @@ def save_wallet(
 
         mock_open.assert_called_once()
     return wallet_file
+
+
+def get_apply_button(button_box: QDialogButtonBox) -> QAbstractButton:
+    """Return the apply button for both standard and custom button-box layouts."""
+    if button := button_box.button(QDialogButtonBox.StandardButton.Apply):
+        return button
+
+    for candidate in button_box.buttons():
+        if button_box.buttonRole(candidate) == QDialogButtonBox.ButtonRole.AcceptRole:
+            return candidate
+
+    raise AssertionError("Apply button not found in dialog button box")
 
 
 def close_wallet(

@@ -53,6 +53,7 @@ from .helpers import (
     close_wallet,
     do_modal_click,
     fund_wallet,
+    get_apply_button,
     main_window_context,
     save_wallet,
     select_manual_entry_signer,
@@ -113,9 +114,7 @@ def test_rbf_cpfp_flow(
         save_wallet(
             test_config=test_config,
             wallet_name=wallet_name,
-            save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-                QDialogButtonBox.StandardButton.Apply
-            ),
+            save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
         )
 
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
