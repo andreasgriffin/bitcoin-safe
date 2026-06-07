@@ -208,6 +208,9 @@ class Builder:
                 appstream_metainfo_content=APP_METADATA.render_metainfo(
                     launchable_desktop_id=desktop_file_name
                 ),
+                legacy_appstream_content=APP_METADATA.render_legacy_appdata(
+                    launchable_desktop_id=desktop_file_name
+                ),
                 debian_copyright_content=APP_METADATA.render_debian_copyright(package_name=package_name),
             )
             converter.convert()

@@ -110,16 +110,23 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
         appstream_metainfo_content=APP_METADATA.render_metainfo(
             launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
         ),
+        legacy_appstream_content=APP_METADATA.render_legacy_appdata(
+            launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
+        ),
         debian_copyright_content=APP_METADATA.render_debian_copyright(package_name="bitcoin-safe"),
     )
 
     converter._create_desktop_file(package_root)
     converter._create_appstream_metadata(package_root)
+    converter._create_legacy_appstream_metadata(package_root)
     converter._create_debian_copyright_file(package_root)
 
     desktop_path = package_root / "usr" / "share" / "applications" / "org.bitcoin_safe.BitcoinSafe.desktop"
     metainfo_path = (
         package_root / "usr" / "share" / "metainfo" / f"{APP_METADATA.flatpak_app_id}.metainfo.xml"
+    )
+    legacy_appdata_path = (
+        package_root / "usr" / "share" / "appdata" / f"{APP_METADATA.flatpak_app_id}.appdata.xml"
     )
     debian_copyright_path = package_root / "usr" / "share" / "doc" / "bitcoin-safe" / "copyright"
 
@@ -130,6 +137,12 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
     assert metainfo_path.read_text(encoding="utf-8") == APP_METADATA.render_metainfo(
         launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
     )
+    assert legacy_appdata_path.read_text(encoding="utf-8") == APP_METADATA.render_legacy_appdata(
+        launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
+    )
+    legacy_appdata = legacy_appdata_path.read_text(encoding="utf-8")
+    assert "<developer_name>Andreas Griffin</developer_name>" in legacy_appdata
+    assert '<developer id="org.bitcoin_safe">' in legacy_appdata
     assert debian_copyright_path.read_text(encoding="utf-8") == APP_METADATA.render_debian_copyright(
         package_name="bitcoin-safe"
     )
