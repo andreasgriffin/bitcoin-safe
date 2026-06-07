@@ -9,9 +9,10 @@ security -v unlock-keychain login.keychain
 CONTRIB_OSX="$(dirname "$(realpath "$0")")"
 CONTRIB="$CONTRIB_OSX/.."
 PROJECT_ROOT="$CONTRIB/.."
+. "$CONTRIB_OSX"/app_metadata.sh
 CACHEDIR="$CONTRIB_OSX/.cache"
 CODESIGN_CERT="andreas"
-PACKAGE="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.application_name)')"
+PACKAGE="$(bitcoin_safe_application_name "$PROJECT_ROOT")"
 DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 cd "$PROJECT_ROOT"

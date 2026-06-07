@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Literal
 
 from appimage_to_deb_converter import Appimage2debConverter
-from bitcoin_safe.app_metadata import APP_METADATA
+from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
@@ -66,7 +66,9 @@ assert ENABLE_TIMERS
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 DEFAULT_MODULE_NAME = "bitcoin_safe"
 DEFAULT_LOCALE_DIR = "gui/locales"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FLATPAK_APP_ID = APP_METADATA.flatpak_app_id
+FLATPAK_METAINFO_PATH = PROJECT_ROOT / "tools" / "build-linux" / "flatpak" / f"{FLATPAK_APP_ID}.metainfo.xml"
 FLATPAK_DOCKER_IMAGE = "bitcoin_safe-flatpak-builder-img"
 
 
@@ -189,6 +191,7 @@ class Builder:
     def appimage2deb(self, **kwargs):
         """Appimage2deb."""
         for filename in self.list_files("dist/", extension=".AppImage"):
+            release_date = resolve_metainfo_release_date(FLATPAK_METAINFO_PATH, self.version)
             package_name = self.app_name_formatter(self.module_name).lower()
             desktop_file_name = f"{APP_METADATA.flatpak_app_id}.desktop"
             converter = Appimage2debConverter(
@@ -206,7 +209,8 @@ class Builder:
                 desktop_file_id=desktop_file_name,
                 appstream_component_id=APP_METADATA.flatpak_app_id,
                 appstream_metainfo_content=APP_METADATA.render_metainfo(
-                    launchable_desktop_id=desktop_file_name
+                    launchable_desktop_id=desktop_file_name,
+                    release_date=release_date,
                 ),
                 debian_copyright_content=APP_METADATA.render_debian_copyright(package_name=package_name),
             )

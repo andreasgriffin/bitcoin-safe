@@ -29,11 +29,14 @@
 
 from __future__ import annotations
 
+import datetime
+import subprocess
 from pathlib import Path
 
 from tools.appimage_to_deb_converter import Appimage2debConverter
 
-from bitcoin_safe.app_metadata import APP_METADATA
+from bitcoin_safe import __version__
+from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DESKTOP_ENTRY_PATH = Path("tools/resources/linux-bitcoin-safe.desktop")
@@ -42,6 +45,10 @@ WINDOWS_NSI_METADATA_PATH = Path("tools/build-wine/bitcoin_safe_metadata.nsh")
 APPIMAGE_EXECUTABLE = "org.bitcoin-safe.bitcoin-safe %F"
 APPIMAGE_ICON_NAME = "bitcoin-safe"
 FLATPAK_DESKTOP_ID = "org.bitcoin_safe.BitcoinSafe.desktop"
+
+
+def appstream_release_date() -> str:
+    return resolve_metainfo_release_date(PROJECT_ROOT / FLATPAK_METAINFO_PATH, __version__)
 
 
 def test_desktop_entry_matches_generated_metadata() -> None:
@@ -54,7 +61,10 @@ def test_desktop_entry_matches_generated_metadata() -> None:
 
 def test_flatpak_metainfo_matches_generated_metadata() -> None:
     metainfo = (PROJECT_ROOT / FLATPAK_METAINFO_PATH).read_text(encoding="utf-8")
-    assert metainfo == APP_METADATA.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID)
+    assert metainfo == APP_METADATA.render_metainfo(
+        launchable_desktop_id=FLATPAK_DESKTOP_ID,
+        release_date=appstream_release_date(),
+    )
 
 
 def test_windows_nsi_metadata_matches_generated_metadata() -> None:
@@ -171,10 +181,93 @@ def test_macos_reproducible_package_script_preserves_cdrkit_flow() -> None:
     assert "git clone" in dmg_tools
 
 
+def test_release_date_resolver_preserves_existing_date_for_same_version(tmp_path: Path) -> None:
+    metainfo_path = tmp_path / "same-version.metainfo.xml"
+    metainfo_path.write_text('<release version="2.0.0rc2" date="2026-06-06"/>', encoding="utf-8")
+
+    assert (
+        resolve_metainfo_release_date(
+            metainfo_path,
+            "2.0.0rc2",
+            current_date=datetime.date(2030, 1, 2),
+            repository_root=PROJECT_ROOT,
+        )
+        == "2026-04-14"
+    )
+
+
+def test_release_date_resolver_uses_latest_tag_when_version_tag_is_missing(tmp_path: Path) -> None:
+    metainfo_path = tmp_path / "new-version.metainfo.xml"
+    metainfo_path.write_text('<release version="2.0.0rc2" date="2026-06-06"/>', encoding="utf-8")
+
+    assert (
+        resolve_metainfo_release_date(
+            metainfo_path,
+            "2.0.0rc3",
+            current_date=datetime.date(2030, 1, 2),
+            repository_root=PROJECT_ROOT,
+        )
+        == "2026-05-17"
+    )
+
+
+def test_release_date_resolver_uses_version_tag_when_release_is_missing(tmp_path: Path) -> None:
+    metainfo_path = tmp_path / "missing-release.metainfo.xml"
+    metainfo_path.write_text("<component></component>", encoding="utf-8")
+
+    assert (
+        resolve_metainfo_release_date(
+            metainfo_path,
+            "2.0.0rc2",
+            current_date=datetime.date(2030, 1, 2),
+            repository_root=PROJECT_ROOT,
+        )
+        == "2026-04-14"
+    )
+
+
+def test_release_date_resolver_falls_back_to_clock_without_git_metadata(tmp_path: Path) -> None:
+    metainfo_path = tmp_path / "no-git.metainfo.xml"
+    metainfo_path.write_text("<component></component>", encoding="utf-8")
+
+    assert (
+        resolve_metainfo_release_date(
+            metainfo_path,
+            "2.0.0rc2",
+            current_date=datetime.date(2030, 1, 2),
+        )
+        == "2030-01-02"
+    )
+
+
+def test_macos_scripts_use_repo_root_bound_metadata_helper(tmp_path: Path) -> None:
+    helper_path = PROJECT_ROOT / "tools" / "build-mac" / "app_metadata.sh"
+    helper_content = helper_path.read_text(encoding="utf-8")
+
+    assert 'PYTHONPATH="${pythonpath}" python3 - "${field_name}"' in helper_content
+    for script_name in ("make_osx.sh", "package.sh", "sign_osx.sh", "compare_dmg"):
+        script_content = (PROJECT_ROOT / "tools" / "build-mac" / script_name).read_text(encoding="utf-8")
+        assert "app_metadata.sh" in script_content
+        assert "python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA" not in script_content
+
+    result = subprocess.run(
+        [
+            "bash",
+            "-lc",
+            f'cd "{tmp_path}" && source "{helper_path}" && bitcoin_safe_application_name "{PROJECT_ROOT}"',
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert result.stdout.strip() == APP_METADATA.application_name
+
+
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:
     appimage_path = tmp_path / "bitcoin-safe.AppImage"
     appimage_path.write_text("stub", encoding="utf-8")
     package_root = tmp_path / "package-root"
+    release_date = appstream_release_date()
 
     converter = Appimage2debConverter(
         appimage=appimage_path,
@@ -186,7 +279,8 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
         desktop_file_id="org.bitcoin_safe.BitcoinSafe.desktop",
         appstream_component_id=APP_METADATA.flatpak_app_id,
         appstream_metainfo_content=APP_METADATA.render_metainfo(
-            launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
+            launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop",
+            release_date=release_date,
         ),
         debian_copyright_content=APP_METADATA.render_debian_copyright(package_name="bitcoin-safe"),
     )
@@ -206,7 +300,8 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
         icon_name="/opt/bitcoin-safe/bitcoin-safe.svg",
     )
     assert metainfo_path.read_text(encoding="utf-8") == APP_METADATA.render_metainfo(
-        launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop"
+        launchable_desktop_id="org.bitcoin_safe.BitcoinSafe.desktop",
+        release_date=release_date,
     )
     assert debian_copyright_path.read_text(encoding="utf-8") == APP_METADATA.render_debian_copyright(
         package_name="bitcoin-safe"

@@ -29,15 +29,12 @@
 
 from __future__ import annotations
 
-import datetime
-import re
-from dataclasses import replace
 from pathlib import Path
 
 import tomlkit
 
 from bitcoin_safe import __version__
-from bitcoin_safe.app_metadata import APP_METADATA
+from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
 
 PYPROJECT_PATH = Path("pyproject.toml")
 DESKTOP_ENTRY_PATH = Path("tools/resources/linux-bitcoin-safe.desktop")
@@ -63,37 +60,19 @@ def update_poetry_version(file_path: Path, new_version: str) -> None:
         print("Could not find the 'tool.poetry.version' key in the pyproject.toml")
 
 
-def resolve_release_date(file_path: Path, new_version: str) -> str:
-    """Keep the existing release date unless the version changed."""
-    with open(file_path, encoding="utf-8") as file:
-        content = file.read()
-
-    release_pattern = re.compile(r'(<release\b[^>]*\bversion=")([^"]+)(".*?\bdate=")([^"]+)(".*?/>)')
-    match = release_pattern.search(content)
-    if not match:
-        return datetime.date.today().isoformat()
-
-    current_version = match.group(2)
-    current_date = match.group(4)
-    if current_version != new_version:
-        return datetime.date.today().isoformat()
-    return current_date
-
-
 def write_generated_packaging_files(new_version: str) -> None:
     """Write the checked-in packaging metadata derived from APP_METADATA."""
-    release_date = resolve_release_date(FLATPAK_METAINFO_PATH, new_version)
-    metadata = replace(APP_METADATA, release_date=release_date)
+    release_date = resolve_metainfo_release_date(FLATPAK_METAINFO_PATH, new_version)
 
     DESKTOP_ENTRY_PATH.write_text(
-        metadata.render_desktop_entry(exec_command=APPIMAGE_EXECUTABLE, icon_name=APPIMAGE_ICON_NAME),
+        APP_METADATA.render_desktop_entry(exec_command=APPIMAGE_EXECUTABLE, icon_name=APPIMAGE_ICON_NAME),
         encoding="utf-8",
     )
     FLATPAK_METAINFO_PATH.write_text(
-        metadata.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID),
+        APP_METADATA.render_metainfo(launchable_desktop_id=FLATPAK_DESKTOP_ID, release_date=release_date),
         encoding="utf-8",
     )
-    WINDOWS_NSI_METADATA_PATH.write_text(metadata.render_windows_nsi_defines(), encoding="utf-8")
+    WINDOWS_NSI_METADATA_PATH.write_text(APP_METADATA.render_windows_nsi_defines(), encoding="utf-8")
     print(f"Generated packaging metadata for {new_version}")
 
 

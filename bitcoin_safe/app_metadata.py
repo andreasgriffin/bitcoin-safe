@@ -29,12 +29,17 @@
 
 from __future__ import annotations
 
+import datetime
 import re
+import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 from xml.sax.saxutils import escape
 
 from bitcoin_safe import __version__
 from bitcoin_safe.constants import CONTACT_EMAIL
+
+RELEASE_ENTRY_PATTERN = re.compile(r'(<release\b[^>]*\bversion=")([^"]+)(".*?\bdate=")([^"]+)(".*?/>)')
 
 
 @dataclass(frozen=True)
@@ -51,7 +56,6 @@ class ApplicationMetadata:
     metadata_license: str
     desktop_categories: tuple[str, ...]
     flatpak_app_id: str
-    release_date: str
     copyright_year_range: str
     macos_camera_usage_description: str
     macos_executable_name: str
@@ -114,7 +118,7 @@ class ApplicationMetadata:
         ]
         return "\n".join(lines) + "\n"
 
-    def render_metainfo(self, launchable_desktop_id: str) -> str:
+    def render_metainfo(self, launchable_desktop_id: str, release_date: str) -> str:
         paragraphs = "\n".join(f"    <p>{escape(paragraph)}</p>" for paragraph in self.description_paragraphs)
         return (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -138,7 +142,7 @@ class ApplicationMetadata:
             "    <category>Finance</category>\n"
             "  </categories>\n"
             "  <releases>\n"
-            f'    <release version="{escape(self.version)}" date="{escape(self.release_date)}"/>\n'
+            f'    <release version="{escape(self.version)}" date="{escape(release_date)}"/>\n'
             "  </releases>\n"
             "</component>\n"
         )
@@ -222,6 +226,94 @@ class ApplicationMetadata:
         return value.replace("\\", "\\\\").replace("'", "\\'")
 
 
+def resolve_metainfo_release_date(
+    metainfo_path: Path,
+    version: str,
+    current_date: datetime.date | None = None,
+    repository_root: Path | None = None,
+) -> str:
+    """Resolve the AppStream release date from git tags before falling back."""
+
+    repo_root = repository_root or find_git_repository_root(metainfo_path)
+    tagged_release_date = resolve_git_tag_date(repo_root, version) if repo_root else None
+    if tagged_release_date:
+        return tagged_release_date
+
+    content = metainfo_path.read_text(encoding="utf-8")
+    match = RELEASE_ENTRY_PATTERN.search(content)
+    if not match:
+        return resolve_latest_git_tag_date(repo_root) or (current_date or datetime.date.today()).isoformat()
+
+    current_version = match.group(2)
+    current_release_date = match.group(4)
+    if current_version == version:
+        return current_release_date
+    return resolve_latest_git_tag_date(repo_root) or (current_date or datetime.date.today()).isoformat()
+
+
+def find_git_repository_root(start_path: Path) -> Path | None:
+    """Walk upward until a git repository root is found."""
+
+    for candidate in (start_path.resolve(), *start_path.resolve().parents):
+        git_path = candidate / ".git"
+        if git_path.exists():
+            return candidate
+    return None
+
+
+def resolve_git_tag_date(repository_root: Path, version: str) -> str | None:
+    """Return the exact tag date for version if that tag exists."""
+
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repository_root),
+                "for-each-ref",
+                "--format=%(creatordate:short)",
+                f"refs/tags/{version}",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return None
+
+    tag_date = result.stdout.strip()
+    return tag_date or None
+
+
+def resolve_latest_git_tag_date(repository_root: Path | None) -> str | None:
+    """Return the most recent git tag date when available."""
+
+    if not repository_root:
+        return None
+
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repository_root),
+                "for-each-ref",
+                "--sort=-creatordate",
+                "--count=1",
+                "--format=%(creatordate:short)",
+                "refs/tags",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return None
+
+    tag_date = result.stdout.strip()
+    return tag_date or None
+
+
 APP_METADATA = ApplicationMetadata(
     application_name="Bitcoin Safe",
     desktop_startup_wm_class="Bitcoin Safe",
@@ -238,7 +330,6 @@ APP_METADATA = ApplicationMetadata(
     metadata_license="CC0-1.0",
     desktop_categories=("Utility", "Finance"),
     flatpak_app_id="org.bitcoin_safe.BitcoinSafe",
-    release_date="2026-06-06",
     copyright_year_range="2023-2026",
     macos_camera_usage_description="Bitcoin Safe would like to access the camera to scan QR codes",
     macos_executable_name="run_Bitcoin_Safe",

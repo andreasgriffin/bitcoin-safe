@@ -17,6 +17,7 @@ export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ with .pyc
 CONTRIB_OSX="$(dirname "$(realpath "$0")")"
 CONTRIB="$CONTRIB_OSX/.."
 PROJECT_ROOT="$CONTRIB/.."
+. "$CONTRIB_OSX"/app_metadata.sh
 CACHEDIR="$CONTRIB_OSX/.cache"
 export DLL_TARGET_DIR="$CACHEDIR/dlls"
 PIP_CACHE_DIR="$CACHEDIR/pip_cache"
@@ -27,8 +28,8 @@ mkdir -p "$CACHEDIR" "$DLL_TARGET_DIR"
 
 cd "$PROJECT_ROOT"
 
-PACKAGE="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.application_name)')"
-PACKAGE_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')"
+PACKAGE="$(bitcoin_safe_application_name "$PROJECT_ROOT")"
+PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"
 DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."

@@ -6,10 +6,11 @@ PROJECT_ROOT="$(dirname "$(readlink -e "$0")")/../.."
 CONTRIB="$PROJECT_ROOT/tools"
 CONTRIB_OSX="$PROJECT_ROOT/tools/build-mac"
 . "$CONTRIB"/build_tools_util.sh
+. "$CONTRIB_OSX"/app_metadata.sh
 . "$CONTRIB_OSX"/ensure_reproducible_dmg_tools.sh
 
-PACKAGE_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')"
-DMG_VOLUME_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_dmg_volume_name)')"
+PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"
+DMG_VOLUME_NAME="$(bitcoin_safe_macos_dmg_volume_name "$PROJECT_ROOT")"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 ${PACKAGE_NAME}"
