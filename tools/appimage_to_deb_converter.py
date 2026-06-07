@@ -52,7 +52,6 @@ class Appimage2debConverter:
         desktop_file_id=None,
         appstream_component_id=None,
         appstream_metainfo_content="",
-        legacy_appstream_content="",
         debian_copyright_content="",
     ):
         """Initialize instance."""
@@ -78,7 +77,6 @@ class Appimage2debConverter:
         self.desktop_file_id = desktop_file_id
         self.appstream_component_id = appstream_component_id
         self.appstream_metainfo_content = appstream_metainfo_content
-        self.legacy_appstream_content = legacy_appstream_content
         self.debian_copyright_content = debian_copyright_content
         self._source_date_epoch = self._resolve_source_date_epoch()
 
@@ -227,16 +225,6 @@ exit 0
         metainfo_path = metainfo_dir / f"{self.appstream_component_id}.metainfo.xml"
         metainfo_path.write_text(self.appstream_metainfo_content, encoding="utf-8")
 
-    def _create_legacy_appstream_metadata(self, package_root: Path) -> None:
-        """Install legacy AppStream metadata when provided."""
-        if not self.appstream_component_id or not self.legacy_appstream_content:
-            return
-
-        appdata_dir = package_root / "usr" / "share" / "appdata"
-        appdata_dir.mkdir(parents=True, exist_ok=True)
-        appdata_path = appdata_dir / f"{self.appstream_component_id}.appdata.xml"
-        appdata_path.write_text(self.legacy_appstream_content, encoding="utf-8")
-
     def _create_debian_copyright_file(self, package_root: Path) -> None:
         """Install a standard Debian copyright file when provided."""
         if not self.debian_copyright_content:
@@ -297,7 +285,6 @@ exit 0
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
             self._create_appstream_metadata(package_root)
-            self._create_legacy_appstream_metadata(package_root)
             self._create_debian_copyright_file(package_root)
 
             self._normalize_package_tree(package_root)
